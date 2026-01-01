@@ -4,6 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WSDC 2025: Ивенты</title>
+    
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "WSDC 2025: Ивенты",
+      "description": "Изменения в глобальном топе и региональные тренды",
+      "url": "https://wsdc-analytics.github.io/events_2025.html",
+      "datePublished": "2025-01-02",
+      "dateModified": "2025-01-02",
+      "author": {
+        "@type": "Organization",
+        "name": "WSDC Analytics"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "WSDC Analytics",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://wsdc-analytics.github.io/events_background.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://wsdc-analytics.github.io/events_2025.html"
+      }
+    }
+    </script>
+    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
@@ -277,6 +307,37 @@
             transition: background-color 0.2s ease;
         }
 
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #2d3748;
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 24px;
+            transition: opacity 0.2s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.7;
+        }
+
+        .back-link::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .article-meta {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 12px;
+        }
+
+        .article-date {
+            display: inline-block;
+        }
+
         /* Footer */
         .article-footer {
             background-color: #fafafa;
@@ -329,8 +390,12 @@
 
 <div class="magazine-container">
     <header class="article-header">
+        <a href="/" class="back-link" style="color: white; position: relative; z-index: 2;">Назад на главную</a>
         <h1 class="article-title">WSDC 2025: Ивенты</h1>
         <div class="article-subtitle">Изменения в глобальном топе и региональные тренды.</div>
+        <div class="article-meta">
+            <span class="article-date">Опубликовано: 2 января 2025</span>
+        </div>
     </header>
 
     <article class="article-content">
