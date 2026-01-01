@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Data-driven insights and analysis on the West Coast Swing competitive scene. WSDC events rankings, statistics, and trends.">
+    <meta name="keywords" content="WSDC, West Coast Swing, swing dance, competitive dance, dance analytics, WCS events">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wsdc-analitycs.github.io/">
+    <meta property="og:title" content="WSDC Analytics - Data-Driven Insights on West Coast Swing">
+    <meta property="og:description" content="Data-driven insights and analysis on the West Coast Swing competitive scene.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://wsdc-analitycs.github.io/">
+    <meta property="twitter:title" content="WSDC Analytics - Data-Driven Insights on West Coast Swing">
+    <meta property="twitter:description" content="Data-driven insights and analysis on the West Coast Swing competitive scene.">
+    
+    <title>WSDC Analytics - Data-Driven Insights on West Coast Swing</title>
+    
+    <!-- Google Analytics - замените G-XXXXXXXXXX на ваш Tracking ID -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #2d3748;
+            background-color: #fafafa;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 16px;
+            letter-spacing: -1.5px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #666;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 40px auto 60px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            font-size: 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            background: white;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2d3748;
+            box-shadow: 0 0 0 3px rgba(45, 55, 72, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+
+        .search-results {
+            margin-top: 24px;
+            padding: 0;
+        }
+
+        .search-result-item {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 12px;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .search-result-item h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        .search-result-item p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .article-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 32px;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .article-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #2d3748;
+        }
+
+        .article-card .meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .article-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .language-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #2d3748;
+            color: white;
+            font-size: 12px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #e5e5e5;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 24px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WSDC Analytics</h1>
+            <p class="subtitle">Data-driven insights and analysis on the West Coast Swing competitive scene</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search articles..." autocomplete="off">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="search-results hidden" id="searchResults"></div>
+        </div>
+
+        <div class="articles-grid" id="articlesGrid">
+            <a href="events_2025.html" class="article-card">
+                <div class="meta">2025 • Events Analysis</div>
+                <h2>WSDC 2025: Events <span class="language-badge">RU</span></h2>
+                <p>Comprehensive analysis of the top WSDC events in 2025, including rankings by points and new dancers, with regional breakdowns for Europe and the United States.</p>
+            </a>
+
+            <a href="events_2025_en.html" class="article-card">
+                <div class="meta">2025 • Events Analysis</div>
+                <h2>WSDC 2025: Events <span class="language-badge">EN</span></h2>
+                <p>Comprehensive analysis of the top WSDC events in 2025, including rankings by points and new dancers, with regional breakdowns for Europe and the United States.</p>
+            </a>
+        </div>
+
+        <footer>
+            <p>Data source: World Swing Dance Council (WSDC) Database</p>
+            <p style="margin-top: 8px;">Interactive Dashboard: <a href="https://public.tableau.com/app/profile/denisbalakin/viz/WSDCnew/KPIsDashboard" target="_blank" style="color: #2d3748; text-decoration: underline;">WSDC KPI Dashboard</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Данные статей для поиска
+        const articles = [
+            {
+                title: "WSDC 2025: Events",
+                language: "RU",
+                description: "Comprehensive analysis of the top WSDC events in 2025, including rankings by points and new dancers, with regional breakdowns for Europe and the United States.",
+                url: "events_2025.html",
+                keywords: "events, rankings, points, new dancers, Europe, United States, WSDC, 2025, анализ ивентов, рейтинг"
+            },
+            {
+                title: "WSDC 2025: Events",
+                language: "EN",
+                description: "Comprehensive analysis of the top WSDC events in 2025, including rankings by points and new dancers, with regional breakdowns for Europe and the United States.",
+                url: "events_2025_en.html",
+                keywords: "events, rankings, points, new dancers, Europe, United States, WSDC, 2025, analysis"
+            }
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const articlesGrid = document.getElementById('articlesGrid');
+
+        function normalizeText(text) {
+            return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function searchArticles(query) {
+            if (!query || query.trim() === '') {
+                searchResults.classList.add('hidden');
+                articlesGrid.style.display = 'grid';
+                return;
+            }
+
+            const normalizedQuery = normalizeText(query);
+            const results = articles.filter(article => {
+                const titleMatch = normalizeText(article.title).includes(normalizedQuery);
+                const descMatch = normalizeText(article.description).includes(normalizedQuery);
+                const keywordsMatch = normalizeText(article.keywords).includes(normalizedQuery);
+                return titleMatch || descMatch || keywordsMatch;
+            });
+
+            displayResults(results, query);
+        }
+
+        function displayResults(results, query) {
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No articles found for "' + query + '"</div>';
+                searchResults.classList.remove('hidden');
+                articlesGrid.style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            results.forEach(article => {
+                html += `
+                    <a href="${article.url}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;">
+                        <h3>${article.title} <span class="language-badge">${article.language}</span></h3>
+                        <p>${article.description}</p>
+                    </a>
+                `;
+            });
+
+            searchResults.innerHTML = html;
+            searchResults.classList.remove('hidden');
+            articlesGrid.style.display = 'none';
+        }
+
+        // Обработчик поиска
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchArticles(e.target.value);
+            }, 300);
+        });
+
+        // Показать все статьи при очистке поиска
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                searchResults.classList.add('hidden');
+                articlesGrid.style.display = 'grid';
+            }
+        });
+    </script>
+</body>
+</html>
+

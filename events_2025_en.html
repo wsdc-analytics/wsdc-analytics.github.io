@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSDC 2025: Events</title>
+    <!-- Connect Twemoji for guaranteed flag rendering on Windows -->
+    <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <style>
+        /* Styles for Twemoji */
+        img.emoji {
+            height: 1em;
+            width: 1em;
+            margin: 0 .05em 0 .1em;
+            vertical-align: -0.1em;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #2d3748;
+            background-color: #ffffff;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .magazine-container {
+            max-width: 980px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        /* Header */
+        .article-header {
+            background: #2d3748 url('events_background.png') center bottom / 100% 100% no-repeat;
+            color: white;
+            padding: 100px 80px 80px;
+            border-bottom: 1px solid #e5e5e5;
+            position: relative;
+        }
+        
+        .article-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #2d3748;
+            opacity: 0.85;
+            z-index: 0;
+        }
+        
+        .article-header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .article-title {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            letter-spacing: -1.5px;
+            max-width: 800px;
+        }
+
+        .article-subtitle {
+            font-size: 21px;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-top: 0;
+            line-height: 1.5;
+            max-width: 700px;
+            color: #e0e0e0;
+        }
+
+        /* Content */
+        .article-content {
+            padding: 80px 80px;
+        }
+
+        .intro {
+            font-size: 22px;
+            line-height: 1.75;
+            color: #2d3748;
+            margin: 0 0 60px 0;
+            font-weight: 400;
+            border-left: 3px solid #2d3748;
+            padding-left: 32px;
+            max-width: 700px;
+        }
+
+        .section {
+            margin: 60px 0;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 24px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 24px;
+            max-width: 700px;
+        }
+
+        p {
+            margin-bottom: 24px;
+            max-width: 700px;
+        }
+
+        /* Tables */
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 24px 0; /* Чуть меньше отступ сверху/снизу */
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+        }
+
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px; /* Базовый шрифт таблицы меньше */
+            border: none;
+            min-width: 450px; /* Разрешаем таблице быть уже */
+        }
+
+        .rank-table th {
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px; /* Аккуратный заголовок */
+            letter-spacing: 0.5px;
+            padding: 10px 12px; /* Компактные отступы */
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .rank-table th.center-align {
+            text-align: center;
+        }
+
+        .rank-table td {
+            padding: 10px 12px; /* Компактные отступы */
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: middle;
+        }
+
+        .rank-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-col {
+            font-weight: 700;
+            color: #cbd5e0;
+            width: 75px; /* Increased width */
+            text-align: left; /* Left align */
+            padding-left: 12px;
+            font-size: 15px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .rank-col.top-3 {
+            color: #2d3748;
+            font-size: 18px;
+        }
+
+        .event-name {
+            font-weight: 700;
+            color: #2d3748;
+            display: block;
+            margin-bottom: 4px; /* Меньше отступ до комментария */
+            font-size: 15px; /* Аккуратный шрифт */
+            line-height: 1.3;
+        }
+
+        .event-comment {
+            font-size: 13px; /* Мелкий, но читаемый комментарий */
+            color: #718096;
+            line-height: 1.4;
+            display: block;
+        }
+
+        .event-flag {
+            margin-right: 6px;
+            font-size: 16px; /* Чуть меньше флаг */
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+        }
+
+        .metric-cell {
+            white-space: nowrap;
+            text-align: right;
+            line-height: 1.3;
+        }
+
+        .growth-cell {
+            white-space: nowrap;
+            text-align: center;
+            vertical-align: middle;
+            padding-left: 8px;
+            padding-right: 8px;
+            line-height: 1.3;
+            min-width: 60px; /* Минимальная ширина для тренда */
+        }
+
+        .metric-val {
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 15px;
+            color: #2d3748;
+        }
+
+        .growth-positive {
+            color: #2f855a;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .growth-neutral {
+            color: #a0aec0;
+            font-size: 13px;
+            display: inline-block;
+        }
+        
+        .growth-negative {
+            color: #e53e3e;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Diff indicators */
+        .diff-pos { color: #38a169; font-size: 11px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
+        .diff-neg { color: #e53e3e; font-size: 11px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
+        .diff-new { color: #718096; font-size: 10px; font-weight: 700; margin-left: 4px; text-transform: uppercase; vertical-align: middle; }
+
+        .table-note {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+            background: #f7fafc;
+            padding: 12px 16px;
+            border-radius: 4px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        .rank-table tbody tr:hover {
+            background-color: #f7fafc;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Footer */
+        .article-footer {
+            background-color: #fafafa;
+            padding: 48px 80px;
+            border-top: 2px solid #2d3748;
+            margin-top: 80px;
+        }
+
+        .data-note {
+            font-size: 14px;
+            color: #666;
+            max-width: 700px;
+        }
+
+        .data-note a {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .article-header { padding: 50px 20px; }
+            .article-content { padding: 30px 16px; } 
+            .article-title { font-size: 28px; word-wrap: break-word; } 
+            .intro { font-size: 18px; padding-left: 16px; border-left-width: 3px; }
+            
+            .section { margin: 32px 0; }
+            .section-title { font-size: 24px; }
+            
+            /* Table adjustments for mobile */
+            .table-scroll { 
+                margin: 20px -16px; 
+                width: calc(100% + 32px);
+                border-left: none; 
+                border-right: none; 
+                border-radius: 0;
+            }
+            .rank-table { min-width: 340px; } /* Force scroll only on very narrow tables */
+            .rank-table th, .rank-table td { padding: 8px 10px; }
+            
+            .event-name { font-size: 14px; margin-bottom: 3px; }
+            .rank-col { font-size: 14px; width: 50px; padding-left: 8px; }
+            .metric-val { font-size: 14px; }
+            .event-flag { font-size: 14px; }
+            
+            .event-comment { font-size: 12px; line-height: 1.35; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="magazine-container">
+    <header class="article-header">
+        <h1 class="article-title">WSDC 2025: Events</h1>
+        <div class="article-subtitle">Changes in the global top and regional trends.</div>
+    </header>
+
+    <article class="article-content">
+        <div class="intro">
+            The 2025 season brought significant changes to the top WSDC event rankings. With MADjam — one of the largest events in recent years — on pause, the landscape shifted, creating new opportunities for other events to rise.
+        </div>
+
+        <!-- Section 1: Global Total Points -->
+        <section class="section">
+            <h2 class="section-title">Competition Scale (Points)</h2>
+            <div class="section-desc">
+                The sum of all ranking points awarded at an event. This metric correlates with division size (Tier) and best reflects the competitive "weight" of the event.
+            </div>
+            
+            <p>This year, Europe takes the lead in this category.</p>
+
+            <div class="table-scroll">
+<table class="rank-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px">#</th>
+                        <th>Event</th>
+                        <th style="text-align: right">Points</th>
+                        <th class="center-align">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-col top-3">1 <span class="diff-pos">▲ +1</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇭🇺</span> BudaFest</span>
+                            <span class="event-comment">Leads the year in total points awarded. BudaFest 2025 awarded just 2 more points than in 2024, setting up an intriguing indirect competition with MADjam when it returns in 2026.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">766</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+0.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">2 <span class="diff-pos">▲ +1</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Wild Wild Westie</span>
+                            <span class="event-comment">Texas's largest event maintains its leading position.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">709</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">3 <span class="diff-pos">▲ +3</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Boogie By The Bay</span>
+                            <span class="event-comment">One of California's oldest events showed significant growth, moving up from 6th to 3rd place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">672</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+11.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">4 <span class="diff-pos">▲ +7</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Liberty Swing</span>
+                            <span class="event-comment">Returned to the elite, jumping from 11th straight to 4th place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">633</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+6.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">5</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Atlanta Swing Classic</span>
+                            <span class="event-comment">Maintains a stable position in the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">632</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">6 <span class="diff-pos">▲ +2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Easter Swing</span>
+                            <span class="event-comment">New Jersey event moved up from 8th to 6th place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">622</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">7</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Swingtacular</span>
+                            <span class="event-comment">Another California event maintained its elite position.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">620</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">8 <span class="diff-pos">▲ +4</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> J&J O'Rama</span>
+                            <span class="event-comment">The legendary event returned to the top ten, moving up from 12th to 8th place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">616</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+5.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">9 <span class="diff-pos">▲ +1</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇩🇪</span> German Open</span>
+                            <span class="event-comment">Germany's largest event moved up from 10th to 9th place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">611</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+2.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">10 <span class="diff-pos">▲ +4</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇵🇱</span> King Swing</span>
+                            <span class="event-comment">Poland's largest event made its first appearance in the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">610</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+9.7%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+            <div class="table-note"><em>Note: Dropped out of the top 10: <strong>MADjam</strong> (paused in 2025), <strong>DC Swing eXperience</strong> (586 pts, 12th place) and <strong>French Open WCS</strong> (493 pts, ~30th place).</em></div>
+        </section>
+
+        <!-- Section 2: Global New Dancers -->
+        <section class="section">
+            <h2 class="section-title">New Dancers (New)</h2>
+            <div class="section-desc">
+                The number of dancers who received their first points at an event. This metric reflects the inflow of new dancers.
+            </div>
+            
+            <p>Unlike the points ranking, where positions are more stable, the top by new dancers constantly changes. Events with actively growing local communities regularly appear in the top, while traditional leaders may temporarily yield positions due to various external conditions and circumstances.</p>
+
+            <div class="table-scroll">
+<table class="rank-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px">#</th>
+                        <th>Event</th>
+                        <th style="text-align: right">New</th>
+                        <th class="center-align">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-col top-3">1</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇸🇬</span> Asia WCS Open</span>
+                            <span class="event-comment">Remains the main entry point for new dancers in Asia, though 2024 saw more new dancers registered here (36 vs 32).</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">32</span></td>
+                        <td class="growth-cell"><span class="growth-negative">-8.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">2</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇫🇷</span> West In Lyon</span>
+                            <span class="event-comment">France continues to show strong community growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">27</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+17.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">3</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇷🇺</span> St.Petersburg WCS Nights</span>
+                            <span class="event-comment">Saw explosive growth in the number of dancers receiving their first points compared to 2024.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">27</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+125%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">4</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇵🇱</span> King Swing</span>
+                            <span class="event-comment">This Polish event continues to drive strong community growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">27</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+12.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">5</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇲🇾</span> MY Swing</span>
+                            <span class="event-comment">This Malaysian event makes its debut in the global top, reflecting growing WCS activity across Asia.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">27</span></td>
+                        <td class="growth-cell"><span class="growth-positive">New</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">6</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Midnight Madness WCS</span>
+                            <span class="event-comment">Despite a decline in new dancers compared to last year, maintains its position in the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">25</span></td>
+                        <td class="growth-cell"><span class="growth-negative">-28.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">7</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> SwingCouver</span>
+                            <span class="event-comment">Technically a Canadian brand, but effectively a major American event near Portland. After relocating, showed impressive growth in new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">25</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+127.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">8</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇷🇺</span> Swing & Snow</span>
+                            <span class="event-comment">The second Russian event to appear in the global top.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">25</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+177.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">9</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Swing Over</span>
+                            <span class="event-comment">Orlando is emerging as a new major destination.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">24</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+41.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">10</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇭🇺</span> BudaFest</span>
+                            <span class="event-comment">The points leader also shows strong momentum in attracting new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">24</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+20.0%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+            <div class="table-note"><em>Note: The "new dancers" metric is highly volatile — the top 10 lineup regularly changes from year to year. This volatility stems from the many factors that influence an event's appeal to newcomers: marketing, regional dynamics, and competitive landscape. Compared to 2024, <strong>Swing City Chicago</strong>, <strong>Halloween SwingThing</strong>, <strong>Austin Rocks</strong>, <strong>German Open</strong>, <strong>DC Swing eXperience</strong>, <strong>Atlanta Swing Classic</strong>, <strong>Wild Wild Westie</strong>, and <strong>Trilogy Swing</strong> dropped out of the top ten. Only <strong>Asia WCS Open</strong> and <strong>Midnight Madness WCS</strong> remained in the top 10.</em></div>
+        </section>
+
+        <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;">
+
+        <!-- Section 3: European Top -->
+        <section class="section">
+            <h2 class="section-title">European Top (Points)</h2>
+            <p>BudaFest continues to dominate, but the competition below is fierce. The gap between 5th and 10th place is just 54 points. As more dancers participate across divisions, events award more points overall. When events grow at similar rates, the relative gaps between positions narrow. For comparison, this same gap was 106 points in 2020.</p>
+
+            <div class="table-scroll">
+<table class="rank-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px">#</th>
+                        <th>Event</th>
+                        <th style="text-align: right">Points</th>
+                        <th class="center-align">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-col top-3">1</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇭🇺</span> BudaFest</span>
+                            <span class="event-comment">Undisputed continental leader for the third year in a row.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">766</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+0.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">2 <span class="diff-pos">▲ +2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇩🇪</span> German Open</span>
+                            <span class="event-comment">Moved to clear second place, displacing French Open.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">611</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+2.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">3 <span class="diff-pos">▲ +1</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇵🇱</span> King Swing</span>
+                            <span class="event-comment">Poland's largest event moved up from 4th to 3rd place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">610</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+9.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">4 <span class="diff-pos">▲ +3</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇸🇪</span> Scandinavian Open</span>
+                            <span class="event-comment">This Swedish event jumped from 7th to 4th place, known for its impressive lighting and production quality.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">599</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+18.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">5</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇵🇱</span> Warsaw Halloween Swing</span>
+                            <span class="event-comment">Maintains a stable position in the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">568</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+11.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">6 <span class="diff-pos">▲ +2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇮🇹</span> Milan Modern Swing</span>
+                            <span class="event-comment">Climbed from 8th to 6th place with the fastest growth rate in the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">545</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+21.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">7 <span class="diff-pos">▲ +3</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇫🇷</span> Paris Westie Fest</span>
+                            <span class="event-comment">Became the largest French event of the year, ahead of national competitors.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">533</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+19.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">8 <span class="diff-neg">▼ -2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇫🇷</span> West In Lyon</span>
+                            <span class="event-comment">Slipped from 6th to 8th place, just 3 points behind its Parisian counterpart.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">530</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+4.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">9 <span class="diff-neg">▼ -2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇩🇪</span> Bavarian Open</span>
+                            <span class="event-comment">Fell from 7th to 9th place in a tightly contested group.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">525</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+6.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">10</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇫🇮</span> Finnfest</span>
+                            <span class="event-comment">Holds its position in the top 10 with steady growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">514</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+15.0%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+            <div class="table-note"><em>Note: Compared to 2024, <strong>French Open WCS</strong> (was 2nd) dropped out of the top ten.</em></div>
+        </section>
+
+        <!-- Section 4: European New Dancers -->
+        <section class="section">
+            <h2 class="section-title">New Dancers in Europe (New)</h2>
+            <p>The "new dancers" metric in Europe is highly volatile — the top 10 lineup changes constantly. An event's appeal to newcomers depends on many factors, and even small shifts in new dancer numbers can significantly impact rankings.</p>
+            
+            <div class="table-scroll">
+<table class="rank-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px">#</th>
+                        <th>Event</th>
+                        <th style="text-align: right">New</th>
+                        <th class="center-align">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-col top-3">1</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇫🇷</span> West In Lyon</span>
+                            <span class="event-comment">The main entry point for French dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">27</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+17.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">2</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇷🇺</span> St.Petersburg WCS Nights</span>
+                            <span class="event-comment">Explosive growth of the main Russian event.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">27</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+125%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">3</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇷🇺</span> Swing & Snow</span>
+                            <span class="event-comment">Another Russian event with record newcomer growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">25</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+177.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">4</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇭🇺</span> BudaFest</span>
+                            <span class="event-comment">Europe's largest event continues to attract new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">24</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+20.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">5</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇪🇸</span> Mediterranean Open WCS</span>
+                            <span class="event-comment">This new Spanish event, attracting many French dancers, made an impressive debut.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">24</span></td>
+                        <td class="growth-cell"><span class="growth-positive">New</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">6</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇩🇪</span> D-Townswing</span>
+                            <span class="event-comment">Consistently attracts many new dancers in Germany, despite a slight decline this year.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">24</span></td>
+                        <td class="growth-cell"><span class="growth-negative">-4.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">7</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇧🇪</span> Swingside Invitational</span>
+                            <span class="event-comment">This Belgian event consistently draws strong numbers of new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">23</span></td>
+                        <td class="growth-cell"><span class="growth-neutral">0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">8</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇸🇪</span> Rock The Barn</span>
+                            <span class="event-comment">This Swedish summer festival saw growth of nearly a third in this metric.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">22</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+29.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">9</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇵🇱</span> Warsaw Summer Nights Westival</span>
+                            <span class="event-comment">The Polish entry in this ranking.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">22</span></td>
+                        <td class="growth-cell"><span class="growth-positive">New</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">10</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇦🇹</span> SwingVester</span>
+                            <span class="event-comment">Rounding out the top 10 from Austria.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">21</span></td>
+                        <td class="growth-cell"><span class="growth-neutral">0%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+            <div class="table-note"><em>Note: As in the global ranking, the European "new dancers" ranking sees constant rotation. Compared to 2024, <strong>German Open</strong> (last year's leader), <strong>Autumn Swing Challenge</strong>, <strong>Winter White</strong>, <strong>Bristol Swing Fiesta</strong>, <strong>Paris Westie Fest</strong>, <strong>Midland Swing Open</strong>, and <strong>Milan Modern Swing</strong> dropped out of the top ten.</em></div>
+        </section>
+
+        <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;">
+
+        <!-- Section 5: US Top -->
+        <section class="section">
+            <h2 class="section-title">US Top (Points)</h2>
+            <p>The US scene remains strong, with Wild Wild Westie and Boogie By The Bay at the top. The competition is tight throughout the top 10, showcasing the depth of the American WCS community.</p>
+
+            <div class="table-scroll"><table class="rank-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px">#</th>
+                        <th>Event</th>
+                        <th style="text-align: right">Points</th>
+                        <th class="center-align">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-col top-3">1 <span class="diff-pos">▲ +1</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Wild Wild Westie</span>
+                            <span class="event-comment">Maintains its position as the top US event.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">709</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">2 <span class="diff-pos">▲ +3</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Boogie By The Bay</span>
+                            <span class="event-comment">Showed strong growth to secure second place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">672</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+11.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">3 <span class="diff-pos">▲ +7</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Liberty Swing</span>
+                            <span class="event-comment">Returned to elite status, jumping from 11th straight to 3rd place.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">633</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+6.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">4</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Atlanta Swing Classic</span>
+                            <span class="event-comment">Consistently holds 4th place among US events.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">632</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">5 <span class="diff-pos">▲ +2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Easter Swing</span>
+                            <span class="event-comment">One of the oldest US events maintains its place in the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">622</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">6</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Swingtacular</span>
+                            <span class="event-comment">This California powerhouse maintains its elite position.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">620</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+3.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">7 <span class="diff-pos">▲ +4</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> J&J O'Rama</span>
+                            <span class="event-comment">The legendary event returned to the top ten.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">616</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+5.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">8 <span class="diff-neg">▼ -5</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> DC Swing eXperience</span>
+                            <span class="event-comment">Remains strong in the US ranking despite a drop in position.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">586</span></td>
+                        <td class="growth-cell"><span class="growth-negative">-5.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">9 <span class="diff-pos">▲ +8</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Spotlight Dance Challenge</span>
+                            <span class="event-comment">Showed impressive growth to break into the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">580</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+17.9%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">10 <span class="diff-pos">▲ +2</span></td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> The Chicago Classic</span>
+                            <span class="event-comment">Strong growth rounds out the top 10.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">578</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+32.0%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+            <div class="table-note"><em>Note: Compared to 2024, <strong>SwingTime</strong> (487 pts, previously in top 10) and <strong>The Open World Swing Dance Championships</strong> (511 pts, previously in top 10) dropped out of the top 10.</em></div>
+        </section>
+
+        <!-- Section 6: US New Dancers -->
+        <section class="section">
+            <h2 class="section-title">New Dancers in the US (New)</h2>
+            <p>The picture here is quite different from the "Points" ranking. Regional events with growing local communities that actively attract new dancers lead the way, alongside established powerhouses.</p>
+
+            <div class="table-scroll">
+<table class="rank-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px">#</th>
+                        <th>Event</th>
+                        <th style="text-align: right">New</th>
+                        <th class="center-align">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-col top-3">1</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Midnight Madness WCS</span>
+                            <span class="event-comment">Leads the US ranking in attracting new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">25</span></td>
+                        <td class="growth-cell"><span class="growth-positive">New</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">2</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> SwingCouver</span>
+                            <span class="event-comment">Technically a Canadian brand, but effectively a major American event near Portland. After relocating, showed impressive growth in new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">25</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+127.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col top-3">3</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Swing Over</span>
+                            <span class="event-comment">Orlando is emerging as a new major destination.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">24</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+41.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">4</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Boogie By The Bay</span>
+                            <span class="event-comment">The points leader also shows explosive growth in new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">23</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+228.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">5</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Austin Rocks</span>
+                            <span class="event-comment">This Texas event shows strong community growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">23</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+35.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">6</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Trilogy Swing</span>
+                            <span class="event-comment">Maintains steady position in attracting new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">23</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+4.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">7</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Midwest Westie Fest</span>
+                            <span class="event-comment">This Midwest event shows solid growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">23</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+21.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">8</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Rose City Swing</span>
+                            <span class="event-comment">This Portland-area event shows consistent growth.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">22</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+15.8%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">9</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Swing City Chicago</span>
+                            <span class="event-comment">This Chicago event maintains a strong presence despite a slight decline.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">22</span></td>
+                        <td class="growth-cell"><span class="growth-negative">-4.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-col">10</td>
+                        <td class="event-cell">
+                            <span class="event-name"><span class="event-flag">🇺🇸</span> Wild Wild Westie</span>
+                            <span class="event-comment">The points leader also shows consistent growth in new dancers.</span>
+                        </td>
+                        <td class="metric-cell"><span class="metric-val">21</span></td>
+                        <td class="growth-cell"><span class="growth-positive">+16.7%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>
+            <div class="table-note"><em>Note: Compared to 2024, <strong>Austin Swing Dance Championships</strong>, <strong>SwingTime</strong>, <strong>Liberty Swing Dance Championships</strong>, <strong>Spotlight Dance Challenge</strong>, <strong>Novice Invitational</strong>, <strong>Swing Fling</strong>, <strong>The Chicago Classic</strong>, and <strong>Atlanta Swing Classic</strong> dropped out of the top 10.</em></div>
+        </section>
+
+    </article>
+
+    <footer class="article-footer">
+        <div class="data-note">
+            <strong>Data source:</strong> Analysis of World Swing Dance Council (WSDC) database. Figures include all ranking competitions and points awarded in Skill Level divisions.<br><br>
+            <strong>About metrics:</strong> <strong>Points</strong> — the sum of all ranking points awarded. <strong>New</strong> — dancers who received their WSDC number for the first time.<br><br>
+            <strong>Interactive dashboard:</strong> <a href="https://public.tableau.com/app/profile/denisbalakin/viz/WSDCnew/KPIsDashboard" target="_blank" rel="noopener noreferrer">View WSDC KPI Dashboard</a>
+        </div>
+    </footer>
+</div>
+
+<script>
+    // Initialize Twemoji to replace system emojis with SVGs
+    twemoji.parse(document.body);
+</script>
+</body>
+</html>

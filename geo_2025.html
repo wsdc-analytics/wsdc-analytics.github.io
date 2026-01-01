@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSDC 2025: География свинга</title>
+    <!-- Подключаем Twemoji -->
+    <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <style>
+        /* Базовые стили из events_2025.html */
+        img.emoji {
+            height: 1em;
+            width: 1em;
+            margin: 0 .05em 0 .1em;
+            vertical-align: -0.1em;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #2d3748;
+            background-color: #ffffff;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .magazine-container {
+            max-width: 980px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        /* Header */
+        .article-header {
+            background: #2d3748; 
+            color: white;
+            padding: 100px 80px 80px;
+            border-bottom: 1px solid #e5e5e5;
+            position: relative;
+        }
+        
+        .article-title {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            letter-spacing: -1.5px;
+            max-width: 800px;
+        }
+        
+        .article-subtitle {
+            font-size: 21px;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-top: 0;
+            line-height: 1.5;
+            max-width: 700px;
+            color: #e0e0e0;
+        }
+        
+        /* Content */
+        .article-content { padding: 80px 80px; }
+        .intro {
+            font-size: 22px;
+            line-height: 1.75;
+            color: #2d3748;
+            margin: 0 0 60px 0;
+            font-weight: 400;
+            border-left: 3px solid #2d3748;
+            padding-left: 32px;
+            max-width: 700px;
+        }
+        .section { margin: 60px 0; }
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 24px 0;
+            letter-spacing: -0.5px;
+        }
+        .section-desc {
+            font-size: 16px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 24px;
+            max-width: 700px;
+        }
+        p { margin-bottom: 24px; max-width: 700px; }
+        
+        /* Tables */
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 24px 0;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+        }
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            border: none;
+            min-width: 600px;
+        }
+        .rank-table th {
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .rank-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: middle;
+        }
+        .rank-col {
+            font-weight: 700;
+            color: #cbd5e0;
+            width: 75px;
+            text-align: left;
+            padding-left: 12px;
+            font-size: 15px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .rank-col.top-3 { color: #2d3748; font-size: 18px; }
+        .event-name {
+            font-weight: 700;
+            color: #2d3748;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+        .event-comment {
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.4;
+            display: block;
+        }
+        .diff-pos { color: #38a169; font-size: 11px; font-weight: 600; margin-left: 2px; vertical-align: middle; }
+        .diff-neg { color: #e53e3e; font-size: 11px; font-weight: 600; margin-left: 2px; vertical-align: middle; }
+        .diff-neutral { color: #a0aec0; font-size: 11px; margin-left: 2px; display: none; }
+        .diff-new { color: #3182ce; font-size: 10px; font-weight: 700; margin-left: 2px; text-transform: uppercase; vertical-align: middle; }
+
+        .event-flag {
+            margin-right: 6px;
+            font-size: 16px;
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+        }
+        .metric-cell {
+            white-space: nowrap;
+            text-align: right;
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .table-note {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+            background: #f7fafc;
+            padding: 12px 16px;
+            border-radius: 4px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        /* Footer */
+        .article-footer {
+            background-color: #fafafa;
+            padding: 48px 80px;
+            border-top: 2px solid #2d3748;
+            margin-top: 80px;
+        }
+        .data-note { font-size: 14px; color: #666; max-width: 700px; }
+        .data-note a { color: #2d3748; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .article-header { padding: 50px 20px; }
+            .article-content { padding: 30px 16px; }
+            .article-title { font-size: 28px; }
+            .intro { font-size: 18px; padding-left: 16px; }
+            .table-scroll { margin: 20px -16px; width: calc(100% + 32px); border: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="magazine-container">
+    <header class="article-header">
+        <h1 class="article-title">WSDC 2025: География свинга</h1>
+        <div class="article-subtitle">Где сейчас танцуют: страны, регионы и города.</div>
+    </header>
+
+    <article class="article-content">
+        <div class="intro">
+            Если посмотреть на WSDC сезон 2025 года через призму географии, открывается интересная картина распределения танцевальной активности между континентами. Европа <strong>впервые обошла</strong> Северную Америку по притоку новых танцоров (1151 против 1017). Для сравнения: в 2024 году Америка лидировала с заметным отрывом (931 против 839).
+        </div>
+
+        <!-- Section 1: Global Map (Countries) -->
+        <section class="section">
+            <h2 class="section-title">Мировая арена: Рейтинг Стран</h2>
+            <p>США остаются недосягаемым лидером по общему объему (более 26 тысяч поинтов). Однако за вторую строчку рейтинга наблюдается высокая конкуренция.</p>
+            <p><strong>Франция</strong> (4280 pts) заняла второе место, опередив <strong>Германию</strong> (3843 pts) благодаря большему количеству ивентов и высокой активности комьюнити. Это делает Францию главным танцевальным центром континентальной Европы.</p>
+
+            <div class="table-scroll">
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px">#</th>
+                            <th>Страна</th>
+                            <th style="text-align: right">Events</th>
+                            <th style="text-align: right">Points</th>
+                            <th style="text-align: right">New Dancers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rank-col top-3">1</td>
+                            <td class="event-cell"><span class="event-flag">🇺🇸</span> United States</td>
+                            <td class="metric-cell" style="text-align: right">75</td>
+                            <td class="metric-cell">26,352</td>
+                            <td class="metric-cell">946</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col top-3">2</td>
+                            <td class="event-cell"><span class="event-flag">🇫🇷</span> France</td>
+                            <td class="metric-cell" style="text-align: right">11</td>
+                            <td class="metric-cell">4,280</td>
+                            <td class="metric-cell">173</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col top-3">3</td>
+                            <td class="event-cell"><span class="event-flag">🇩🇪</span> Germany</td>
+                            <td class="metric-cell" style="text-align: right">10</td>
+                            <td class="metric-cell">3,843</td>
+                            <td class="metric-cell">197</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">4</td>
+                            <td class="event-cell"><span class="event-flag">🇸🇪</span> Sweden</td>
+                            <td class="metric-cell" style="text-align: right">7</td>
+                            <td class="metric-cell">2,603</td>
+                            <td class="metric-cell">127</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">5 <span class="diff-pos">▲ +2</span></td>
+                            <td class="event-cell"><span class="event-flag">🇵🇱</span> Poland</td>
+                            <td class="metric-cell" style="text-align: right">5</td>
+                            <td class="metric-cell">2,393</td>
+                            <td class="metric-cell">128</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">6</td>
+                            <td class="event-cell"><span class="event-flag">🇬🇧</span> United Kingdom</td>
+                            <td class="metric-cell" style="text-align: right">7</td>
+                            <td class="metric-cell">2,012</td>
+                            <td class="metric-cell">118</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">7 <span class="diff-neg">▼ -2</span></td>
+                            <td class="event-cell"><span class="event-flag">🇷🇺</span> Russia</td>
+                            <td class="metric-cell" style="text-align: right">7</td>
+                            <td class="metric-cell">2,037</td>
+                            <td class="metric-cell">96</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">8</td>
+                            <td class="event-cell"><span class="event-flag">🇭🇺</span> Hungary</td>
+                            <td class="metric-cell" style="text-align: right">4</td>
+                            <td class="metric-cell">1,934</td>
+                            <td class="metric-cell">82</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">9</td>
+                            <td class="event-cell"><span class="event-flag">🇨🇦</span> Canada</td>
+                            <td class="metric-cell" style="text-align: right">6</td>
+                            <td class="metric-cell">1,359</td>
+                            <td class="metric-cell">84</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">10</td>
+                            <td class="event-cell"><span class="event-flag">🇫🇮</span> Finland</td>
+                            <td class="metric-cell" style="text-align: right">3</td>
+                            <td class="metric-cell">1,037</td>
+                            <td class="metric-cell">66</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-note">
+                <em>Примечание: Самый впечатляющий рост показала <strong>Польша</strong>, поднявшаяся с 7-го на 5-е место в мировом рейтинге (почти +1000 поинтов к прошлому году).</em>
+            </div>
+        </section>
+
+        <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;">
+
+        <!-- Section 2: Regional Battles -->
+        <section class="section">
+            <h2 class="section-title">География США: Лидеры среди штатов</h2>
+            <p>Внутри США выделяются два явных центра притяжения. <strong>Калифорния (CA)</strong> удерживает лидерство по "спортивной массе" (почти 5000 поинтов), являясь главным хабом для опытных танцоров.</p>
+            <p>В то же время <strong>Техас (TX)</strong>, несмотря на небольшое снижение по сравнению с прошлым годом, сохраняет самую высокую динамику развития: именно здесь появилось больше всего новых танцоров WSDC (144 человека).</p>
+
+            <div class="table-scroll">
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px">#</th>
+                            <th>Штат</th>
+                            <th style="text-align: right">Events</th>
+                            <th style="text-align: right">Points</th>
+                            <th style="text-align: right">New Dancers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rank-col top-3">1</td>
+                            <td class="event-cell">California (CA) <span class="event-comment">Лидер по поинтам</span></td>
+                            <td class="metric-cell" style="text-align: right">11</td>
+                            <td class="metric-cell">4,906</td>
+                            <td class="metric-cell">115</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col top-3">2</td>
+                            <td class="event-cell">Texas (TX) <span class="event-comment">Лидер по New Dancers</span></td>
+                            <td class="metric-cell" style="text-align: right">8</td>
+                            <td class="metric-cell">3,063</td>
+                            <td class="metric-cell">144</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col top-3">3</td>
+                            <td class="event-cell">Florida (FL) <span class="event-comment">Стабильное 3-е место</span></td>
+                            <td class="metric-cell" style="text-align: right">7</td>
+                            <td class="metric-cell">1,884</td>
+                            <td class="metric-cell">91</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">4</td>
+                            <td class="event-cell">Oregon (OR)</td>
+                            <td class="metric-cell" style="text-align: right">4</td>
+                            <td class="metric-cell">1,588</td>
+                            <td class="metric-cell">80</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">5</td>
+                            <td class="event-cell">Massachusetts (MA)</td>
+                            <td class="metric-cell" style="text-align: right">4</td>
+                            <td class="metric-cell">1,505</td>
+                            <td class="metric-cell">63</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: Rest of World -->
+        <section class="section">
+            <h2 class="section-title">Тихоокеанский регион и Азия</h2>
+            <div class="section-desc">Мир WSDC не ограничивается Атлантикой. В других регионах формируются свои центры притяжения.</div>
+            
+            <p><strong>Азия:</strong> Регион сфокусирован вокруг крупных мегаполисов. Лидер года — <strong>Куала-Лумпур (Малайзия)</strong>, показавший высокий результат благодаря крупному ивенту MY Swing. Южная Корея (Инчхон и Сеул) остается важнейшим стратегическим хабом.</p>
+            
+            <p><strong>Океания:</strong> Австралия демонстрирует удивительную децентрализацию. Танцевальная жизнь равномерно распределена между Аделаидой, Голд-Костом и Сиднеем.</p>
+
+            <div class="table-scroll">
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th>Региональный Лидер</th>
+                            <th style="text-align: right">Points</th>
+                            <th style="text-align: right">New Dancers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="event-cell"><span class="event-flag">🇲🇾</span> Kuala Lumpur (Malaysia)</td>
+                            <td class="metric-cell">402</td>
+                            <td class="metric-cell">33</td>
+                        </tr>
+                        <tr>
+                            <td class="event-cell"><span class="event-flag">🇰🇷</span> Incheon (South Korea)</td>
+                            <td class="metric-cell">366</td>
+                            <td class="metric-cell">12</td>
+                        </tr>
+                        <tr>
+                            <td class="event-cell"><span class="event-flag">🇰🇷</span> Seoul (South Korea)</td>
+                            <td class="metric-cell">281</td>
+                            <td class="metric-cell">20</td>
+                        </tr>
+                        <tr>
+                            <td class="event-cell"><span class="event-flag">🇦🇺</span> Adelaide (Australia)</td>
+                            <td class="metric-cell">250</td>
+                            <td class="metric-cell">19</td>
+                        </tr>
+                        <tr>
+                            <td class="event-cell"><span class="event-flag">🇦🇺</span> Gold Coast (Australia)</td>
+                            <td class="metric-cell">236</td>
+                            <td class="metric-cell">9</td>
+                        </tr>
+                        <tr>
+                            <td class="event-cell"><span class="event-flag">🇳🇿</span> Auckland (New Zealand)</td>
+                            <td class="metric-cell">230</td>
+                            <td class="metric-cell">10</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;">
+
+        <!-- Section 4: Global Cities -->
+        <section class="section">
+            <h2 class="section-title">Танцевальные столицы мира (Топ Городов)</h2>
+            <p>Если убрать границы стран и посмотреть на конкретные города, карта мира меняется. В 2025 году у нас новый абсолютный лидер.</p>
+            
+            <p><strong>Стокгольм</strong> стал мировой столицей свинга, сместив с первого места <strong>Будапешт</strong> (лидера 2024 года). Шведская столица заняла первое место и по сумме поинтов, и по количеству привлеченных новичков.</p>
+
+            <div class="table-scroll">
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px">#</th>
+                            <th>Город</th>
+                            <th style="text-align: right">Events</th>
+                            <th style="text-align: right">Points</th>
+                            <th style="text-align: right">New Dancers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rank-col top-3">🥇 <span class="diff-pos">▲ +1</span></td>
+                            <td class="event-cell">
+                                <span class="event-name"><span class="event-flag">🇸🇪</span> Stockholm</span>
+                                <span class="event-comment">Новый абсолютный лидер года.</span>
+                            </td>
+                            <td class="metric-cell" style="text-align: right">5</td>
+                            <td class="metric-cell">2,069</td>
+                            <td class="metric-cell">86</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col top-3">🥈 <span class="diff-neg">▼ -1</span></td>
+                            <td class="event-cell">
+                                <span class="event-name"><span class="event-flag">🇭🇺</span> Budapest</span>
+                                <span class="event-comment">Главный европейский мега-хаб.</span>
+                            </td>
+                            <td class="metric-cell" style="text-align: right">4</td>
+                            <td class="metric-cell">1,934</td>
+                            <td class="metric-cell">82</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col top-3">🥉</td>
+                            <td class="event-cell">
+                                <span class="event-name"><span class="event-flag">🇺🇸</span> San Francisco</span>
+                                <span class="event-comment">Столица американского свинга.</span>
+                            </td>
+                            <td class="metric-cell" style="text-align: right">2</td>
+                            <td class="metric-cell">1,292</td>
+                            <td class="metric-cell">50</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">4</td>
+                            <td class="event-cell"><span class="event-flag">🇺🇸</span> Orlando</td>
+                            <td class="metric-cell" style="text-align: right">4</td>
+                            <td class="metric-cell">1,136</td>
+                            <td class="metric-cell">56</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">5</td>
+                            <td class="event-cell"><span class="event-flag">🇺🇸</span> Atlanta</td>
+                            <td class="metric-cell" style="text-align: right">2</td>
+                            <td class="metric-cell">1,101</td>
+                            <td class="metric-cell">52</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">6</td>
+                            <td class="event-cell"><span class="event-flag">🇩🇪</span> Freiburg</td>
+                            <td class="metric-cell" style="text-align: right">2</td>
+                            <td class="metric-cell">1,088</td>
+                            <td class="metric-cell">45</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">7</td>
+                            <td class="event-cell"><span class="event-flag">🇺🇸</span> Phoenix</td>
+                            <td class="metric-cell" style="text-align: right">3</td>
+                            <td class="metric-cell">1,082</td>
+                            <td class="metric-cell">34</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">8</td>
+                            <td class="event-cell"><span class="event-flag">🇵🇱</span> Kraków</td>
+                            <td class="metric-cell" style="text-align: right">2</td>
+                            <td class="metric-cell">1,025</td>
+                            <td class="metric-cell">59</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">9</td>
+                            <td class="event-cell"><span class="event-flag">🇺🇸</span> Seattle</td>
+                            <td class="metric-cell" style="text-align: right">2</td>
+                            <td class="metric-cell">965</td>
+                            <td class="metric-cell">47</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-col">10</td>
+                            <td class="event-cell"><span class="event-flag">🇺🇸</span> Austin</td>
+                            <td class="metric-cell" style="text-align: right">3</td>
+                            <td class="metric-cell">960</td>
+                            <td class="metric-cell">54</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-note">
+                <em>Интересный факт: <strong>Краков</strong> и <strong>Варшава</strong> (12-е место) оба входят в мировой топ-15. Польша — единственная европейская страна с двумя столь мощными независимыми центрами.</em>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="article-footer">
+        <div class="data-note">
+            <strong>Источник данных:</strong> Анализ базы данных WSDC за 2025 год. Геолокация ивентов нормализована. Учитываются только ивенты, прошедшие в 2025 году.<br><br>
+            <strong>New Dancers:</strong> Танцоры, для которых первым рейтинговым ивентом в карьере стал турнир в указанном регионе в 2025 году.
+        </div>
+    </footer>
+</div>
+
+<script>
+    twemoji.parse(document.body);
+</script>
+</body>
+</html>
