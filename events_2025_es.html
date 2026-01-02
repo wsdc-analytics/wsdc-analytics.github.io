@@ -610,11 +610,6 @@
     <header class="article-header">
         <div class="article-header-top">
             <a href="index.html" class="back-link" id="backLink" style="color: white; position: relative; z-index: 2;">Volver al inicio</a>
-            <div class="language-switcher-article">
-                <button class="lang-btn-article" data-lang="ru">RU</button>
-                <button class="lang-btn-article" data-lang="en">EN</button>
-                <button class="lang-btn-article" data-lang="es">ES</button>
-            </div>
         </div>
         <h1 class="article-title">WSDC 2025: Eventos</h1>
         <div class="article-subtitle">Cambios en el top global y tendencias regionales.</div>
@@ -1338,19 +1333,6 @@
         // Inicialización
         const currentLang = getCurrentLanguage();
         updateBackLink();
-
-        // Manejadores de cambio de idioma
-        const langButtons = document.querySelectorAll('.lang-btn-article');
-        langButtons.forEach(btn => {
-            if (btn.dataset.lang === currentLang) {
-                btn.classList.add('active');
-            }
-            btn.addEventListener('click', () => {
-                if (!btn.disabled) {
-                    setLanguage(btn.dataset.lang);
-                }
-            });
-        });
     })();
 </script>
 </body>
