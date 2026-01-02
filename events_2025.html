@@ -404,6 +404,91 @@
             line-height: 1.6;
         }
 
+        /* Cusdis form styling */
+        #cusdis_thread {
+            max-width: 100%;
+            box-sizing: border-box;
+            min-height: 500px;
+            overflow: visible !important;
+            height: auto !important;
+        }
+
+        #cusdis_thread > div {
+            overflow: visible !important;
+            height: auto !important;
+        }
+
+        #cusdis_thread * {
+            box-sizing: border-box;
+        }
+
+        #cusdis_thread form {
+            max-width: 100%;
+        }
+
+        /* Cusdis form layout - make fields horizontal on desktop */
+        #cusdis_thread form > div:first-child {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 768px) {
+            #cusdis_thread form > div:first-child {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* Form inputs */
+        #cusdis_thread textarea {
+            width: 100% !important;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        #cusdis_thread input[type="text"],
+        #cusdis_thread input[type="email"] {
+            width: 100% !important;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        #cusdis_thread input:focus,
+        #cusdis_thread textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        #cusdis_thread button[type="submit"],
+        #cusdis_thread button {
+            padding: 10px 20px;
+            background-color: #2d3748;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #cusdis_thread button:hover {
+            background-color: #1a202c;
+        }
+
         /* Footer */
         .article-footer {
             background-color: #fafafa;
@@ -428,6 +513,9 @@
             .article-content { padding: 30px 16px; } 
             .article-title { font-size: 28px; word-wrap: break-word; } 
             .intro { font-size: 18px; padding-left: 16px; border-left-width: 3px; }
+            .comments-container { padding: 40px 20px; }
+            .comments-tabs { flex-wrap: wrap; }
+            .comments-tab { padding: 10px 16px; font-size: 14px; }
             
             .section { margin: 32px 0; }
             .section-title { font-size: 24px; }
@@ -1004,18 +1092,18 @@
     <section class="comments-container">
         <h2 class="comments-title">Комментарии</h2>
         <div class="comments-tabs">
-            <button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
-            <button class="comments-tab" data-tab="cusdis">Cusdis (без регистрации)</button>
+            <button class="comments-tab" data-tab="giscus">GitHub (Giscus)</button>
+            <button class="comments-tab active" data-tab="cusdis">Cusdis (без регистрации)</button>
         </div>
-        <div class="comments-info" id="giscus-info">
+        <div class="comments-info" id="giscus-info" style="display: none;">
             Для комментирования необходим GitHub аккаунт. <a href="https://github.com/signup" target="_blank">Создать бесплатный аккаунт</a>
         </div>
-        <div class="comments-info" id="cusdis-info" style="display: none;">
+        <div class="comments-info" id="cusdis-info">
             Можно комментировать анонимно (указав имя и email) или через GitHub. Полностью бесплатно, без рекламы.
         </div>
         <div class="comments-content">
             <!-- Giscus comments -->
-            <div class="comments-panel active" id="giscus-panel">
+            <div class="comments-panel" id="giscus-panel">
                 <script src="https://giscus.app/client.js"
                         data-repo="wsdc-analytics/wsdc-analytics.github.io"
                         data-repo-id="R_kgDOQyQ1Mw"
@@ -1033,7 +1121,7 @@
                 </script>
             </div>
             <!-- Cusdis comments -->
-            <div class="comments-panel" id="cusdis-panel">
+            <div class="comments-panel active" id="cusdis-panel">
                 <div id="cusdis_thread" data-host="https://cusdis.com" data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-page-id="events_2025" data-page-url="https://wsdc-analytics.github.io/events_2025.html" data-page-title="WSDC 2025: Ивенты"></div>
                 <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
             </div>
