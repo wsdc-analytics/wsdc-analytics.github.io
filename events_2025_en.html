@@ -446,26 +446,17 @@
             line-height: 1.6;
         }
 
-        /* Cusdis form styling - remove all height restrictions */
-        #cusdis_thread,
-        #cusdis_thread *,
-        #cusdis_thread > *,
-        #cusdis_thread > * > *,
-        #cusdis_thread form,
-        #cusdis_thread form > *,
-        #cusdis_thread [class*="cusdis"],
-        #cusdis_thread [id*="cusdis"] {
-            max-height: none !important;
-            height: auto !important;
+        /* Cusdis form styling - fixed height container */
+        #cusdis-panel {
+            height: 1000px !important;
             overflow: visible !important;
-            overflow-y: visible !important;
-            overflow-x: visible !important;
         }
 
-        #cusdis-panel {
+        #cusdis_thread {
+            height: 1000px !important;
             overflow: visible !important;
-            max-height: none !important;
-            height: auto !important;
+            overflow-y: visible !important;
+            overflow-x: hidden !important;
         }
 
         .comments-content {
@@ -474,8 +465,6 @@
 
         .comments-panel.active {
             overflow: visible !important;
-            max-height: none !important;
-            height: auto !important;
         }
 
         #cusdis_thread * {
@@ -1377,6 +1366,11 @@
                     if (infoElement) {
                         infoElement.style.display = 'block';
                     }
+
+                    // Set fixed height when switching to Cusdis
+                    if (targetTab === 'cusdis') {
+                        setTimeout(setCusdisFixedHeight, 100);
+                    }
                 });
             });
         });
@@ -1395,50 +1389,32 @@
     // Initialize Twemoji to replace system emojis with SVGs
     twemoji.parse(document.body);
 
-    // Fix Cusdis widget height after loading
-    function fixCusdisHeight() {
+    // Set fixed height for Cusdis container
+    function setCusdisFixedHeight() {
+        const cusdisPanel = document.getElementById('cusdis-panel');
         const cusdisThread = document.getElementById('cusdis_thread');
-        if (!cusdisThread) return;
-
-        // Remove all height restrictions and overflow
-        function removeHeightRestrictions(element) {
-            if (!element) return;
-            element.style.maxHeight = 'none';
-            element.style.height = 'auto';
-            element.style.overflow = 'visible';
-            element.style.overflowY = 'visible';
-            element.style.overflowX = 'visible';
-            
-            // Recursively apply to all child elements
-            Array.from(element.children || []).forEach(child => {
-                removeHeightRestrictions(child);
-            });
-        }
-
-        // Apply after loading with delay
-        setTimeout(() => {
-            removeHeightRestrictions(cusdisThread);
-        }, 500);
-
-        // Also apply on DOM changes (when Cusdis adds content)
-        const observer = new MutationObserver(() => {
-            removeHeightRestrictions(cusdisThread);
-        });
         
-        observer.observe(cusdisThread, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class']
-        });
+        if (cusdisPanel) {
+            cusdisPanel.style.height = '1000px';
+            cusdisPanel.style.overflow = 'visible';
+        }
+        
+        if (cusdisThread) {
+            cusdisThread.style.height = '1000px';
+            cusdisThread.style.overflow = 'visible';
+            cusdisThread.style.overflowY = 'visible';
+        }
     }
 
-    // Run after page load
+    // Run after page load and when switching to Cusdis
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fixCusdisHeight);
+        document.addEventListener('DOMContentLoaded', setCusdisFixedHeight);
     } else {
-        fixCusdisHeight();
+        setCusdisFixedHeight();
     }
+    
+    // Also apply when switching tabs
+    setTimeout(setCusdisFixedHeight, 1000);
 
     // Языковой переключатель для статей
     (function() {
