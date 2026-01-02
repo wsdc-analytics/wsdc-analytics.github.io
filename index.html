@@ -424,7 +424,7 @@
                 html += `
                     <a href="${article.url}?lang=${lang}" class="article-card">
                         <div class="meta">2025 • Events Analysis</div>
-                        <h2>${article.title} <span class="language-badge">${article.language}</span></h2>
+                        <h2>${article.title}</h2>
                         <p>${article.description}</p>
                     </a>
                 `;
@@ -486,7 +486,7 @@
             results.forEach(article => {
                 html += `
                     <a href="${article.url}?lang=${currentLang}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;">
-                        <h3>${article.title} <span class="language-badge">${article.language}</span></h3>
+                        <h3>${article.title}</h3>
                         <p>${article.description}</p>
                     </a>
                 `;
