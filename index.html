@@ -409,11 +409,11 @@
 
             // Фильтрация и отображение статей
             const articles = articlesByLang[lang] || [];
-            displayArticles(articles);
+            displayArticles(articles, lang);
         }
 
         // Отображение статей
-        function displayArticles(articles) {
+        function displayArticles(articles, lang) {
             if (articles.length === 0) {
                 articlesGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">Статьи на этом языке пока недоступны.</div>';
                 return;
@@ -482,9 +482,10 @@
             }
 
             let html = '';
+            const currentLang = getCurrentLanguage();
             results.forEach(article => {
                 html += `
-                    <a href="${article.url}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;">
+                    <a href="${article.url}?lang=${currentLang}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;">
                         <h3>${article.title} <span class="language-badge">${article.language}</span></h3>
                         <p>${article.description}</p>
                     </a>
