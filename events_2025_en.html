@@ -338,12 +338,28 @@
             display: inline-block;
         }
 
+        /* Comments section */
+        .comments-container {
+            background-color: #ffffff;
+            padding: 60px 80px;
+            margin-top: 0;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .comments-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+
         /* Footer */
         .article-footer {
             background-color: #fafafa;
             padding: 48px 80px;
             border-top: 2px solid #2d3748;
-            margin-top: 80px;
+            margin-top: 0;
         }
 
         .data-note {
@@ -1087,6 +1103,26 @@
         </section>
 
     </article>
+
+    <!-- Comments section -->
+    <section class="comments-container">
+        <h2 class="comments-title">Comments</h2>
+        <script src="https://giscus.app/client.js"
+                data-repo="wsdc-analytics/wsdc-analytics.github.io"
+                data-repo-id="REPO_ID"
+                data-category="General"
+                data-category-id="CATEGORY_ID"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="light"
+                data-lang="en"
+                crossorigin="anonymous"
+                async>
+        </script>
+    </section>
 
     <footer class="article-footer">
         <div class="data-note">
