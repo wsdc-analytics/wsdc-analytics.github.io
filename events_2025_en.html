@@ -1395,6 +1395,51 @@
     // Initialize Twemoji to replace system emojis with SVGs
     twemoji.parse(document.body);
 
+    // Fix Cusdis widget height after loading
+    function fixCusdisHeight() {
+        const cusdisThread = document.getElementById('cusdis_thread');
+        if (!cusdisThread) return;
+
+        // Remove all height restrictions and overflow
+        function removeHeightRestrictions(element) {
+            if (!element) return;
+            element.style.maxHeight = 'none';
+            element.style.height = 'auto';
+            element.style.overflow = 'visible';
+            element.style.overflowY = 'visible';
+            element.style.overflowX = 'visible';
+            
+            // Recursively apply to all child elements
+            Array.from(element.children || []).forEach(child => {
+                removeHeightRestrictions(child);
+            });
+        }
+
+        // Apply after loading with delay
+        setTimeout(() => {
+            removeHeightRestrictions(cusdisThread);
+        }, 500);
+
+        // Also apply on DOM changes (when Cusdis adds content)
+        const observer = new MutationObserver(() => {
+            removeHeightRestrictions(cusdisThread);
+        });
+        
+        observer.observe(cusdisThread, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+    }
+
+    // Run after page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fixCusdisHeight);
+    } else {
+        fixCusdisHeight();
+    }
+
     // Языковой переключатель для статей
     (function() {
         function getCurrentLanguage() {
