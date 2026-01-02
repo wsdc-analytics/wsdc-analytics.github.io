@@ -446,17 +446,13 @@
             line-height: 1.6;
         }
 
-        /* Cusdis form styling - fixed height container */
+        /* Cusdis form styling */
         #cusdis-panel {
-            height: 1000px !important;
             overflow: visible !important;
         }
 
         #cusdis_thread {
-            height: 1000px !important;
             overflow: visible !important;
-            overflow-y: visible !important;
-            overflow-x: hidden !important;
         }
 
         .comments-content {
@@ -1304,18 +1300,18 @@
     <section class="comments-container">
         <h2 class="comments-title">Comments</h2>
         <div class="comments-tabs">
-            <button class="comments-tab" data-tab="giscus">GitHub (Giscus)</button>
-            <button class="comments-tab active" data-tab="cusdis">Cusdis (No account needed)</button>
+            <button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
+            <button class="comments-tab" data-tab="cusdis">Cusdis (No account needed)</button>
         </div>
-        <div class="comments-info" id="giscus-info" style="display: none;">
+        <div class="comments-info" id="giscus-info">
             A GitHub account is required to comment. <a href="https://github.com/signup" target="_blank">Create a free account</a>
         </div>
-        <div class="comments-info" id="cusdis-info">
+        <div class="comments-info" id="cusdis-info" style="display: none;">
             You can comment anonymously (by providing name and email) or via GitHub. Completely free, no ads.
         </div>
         <div class="comments-content">
             <!-- Giscus comments -->
-            <div class="comments-panel" id="giscus-panel">
+            <div class="comments-panel active" id="giscus-panel">
                 <script src="https://giscus.app/client.js"
                         data-repo="wsdc-analytics/wsdc-analytics.github.io"
                         data-repo-id="R_kgDOQyQ1Mw"
@@ -1333,7 +1329,7 @@
                 </script>
             </div>
             <!-- Cusdis comments -->
-            <div class="comments-panel active" id="cusdis-panel">
+            <div class="comments-panel" id="cusdis-panel">
                 <div id="cusdis_thread" data-host="https://cusdis.com" data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-page-id="events_2025_en" data-page-url="https://wsdc-analytics.github.io/events_2025_en.html" data-page-title="WSDC 2025: Events"></div>
                 <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
             </div>
@@ -1367,9 +1363,10 @@
                         infoElement.style.display = 'block';
                     }
 
-                    // Set fixed height when switching to Cusdis
+                    // Remove height restrictions when switching to Cusdis
                     if (targetTab === 'cusdis') {
-                        setTimeout(setCusdisFixedHeight, 100);
+                        setTimeout(removeCusdisHeightRestrictions, 100);
+                        setTimeout(removeCusdisHeightRestrictions, 500);
                     }
                 });
             });
@@ -1389,32 +1386,67 @@
     // Initialize Twemoji to replace system emojis with SVGs
     twemoji.parse(document.body);
 
-    // Set fixed height for Cusdis container
-    function setCusdisFixedHeight() {
-        const cusdisPanel = document.getElementById('cusdis-panel');
+    // Remove all height restrictions in Cusdis widget
+    function removeCusdisHeightRestrictions() {
         const cusdisThread = document.getElementById('cusdis_thread');
-        
-        if (cusdisPanel) {
-            cusdisPanel.style.height = '1000px';
-            cusdisPanel.style.overflow = 'visible';
+        if (!cusdisThread) return;
+
+        function removeRestrictions(element) {
+            if (!element) return;
+            
+            // Remove all height and overflow restrictions
+            element.style.maxHeight = '';
+            element.style.height = '';
+            element.style.overflow = '';
+            element.style.overflowY = '';
+            element.style.overflowX = '';
+            
+            // Check computed styles and force visible overflow
+            const computedStyle = window.getComputedStyle(element);
+            if (computedStyle.overflow === 'hidden' || computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll') {
+                element.style.setProperty('overflow', 'visible', 'important');
+            }
+            if (computedStyle.overflowY === 'hidden' || computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+                element.style.setProperty('overflow-y', 'visible', 'important');
+            }
+            if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') {
+                element.style.setProperty('max-height', 'none', 'important');
+            }
+            
+            // Recursively process all child elements
+            Array.from(element.children || []).forEach(child => {
+                removeRestrictions(child);
+            });
         }
+
+        // Apply with intervals to capture all dynamically created elements
+        removeRestrictions(cusdisThread);
+        setTimeout(() => removeRestrictions(cusdisThread), 500);
+        setTimeout(() => removeRestrictions(cusdisThread), 1500);
+        setTimeout(() => removeRestrictions(cusdisThread), 3000);
         
-        if (cusdisThread) {
-            cusdisThread.style.height = '1000px';
-            cusdisThread.style.overflow = 'visible';
-            cusdisThread.style.overflowY = 'visible';
-        }
+        // Use MutationObserver to track changes
+        const observer = new MutationObserver(() => {
+            removeRestrictions(cusdisThread);
+        });
+        
+        observer.observe(cusdisThread, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
     }
 
-    // Run after page load and when switching to Cusdis
+    // Run after page load
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setCusdisFixedHeight);
+        document.addEventListener('DOMContentLoaded', removeCusdisHeightRestrictions);
     } else {
-        setCusdisFixedHeight();
+        removeCusdisHeightRestrictions();
     }
     
     // Also apply when switching tabs
-    setTimeout(setCusdisFixedHeight, 1000);
+    setTimeout(removeCusdisHeightRestrictions, 1000);
 
     // Языковой переключатель для статей
     (function() {

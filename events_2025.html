@@ -446,17 +446,13 @@
             line-height: 1.6;
         }
 
-        /* Cusdis form styling - fixed height container */
+        /* Cusdis form styling */
         #cusdis-panel {
-            height: 1000px !important;
             overflow: visible !important;
         }
 
         #cusdis_thread {
-            height: 1000px !important;
             overflow: visible !important;
-            overflow-y: visible !important;
-            overflow-x: hidden !important;
         }
 
         .comments-content {
@@ -1150,18 +1146,18 @@
     <section class="comments-container">
         <h2 class="comments-title">Комментарии</h2>
         <div class="comments-tabs">
-            <button class="comments-tab" data-tab="giscus">GitHub (Giscus)</button>
-            <button class="comments-tab active" data-tab="cusdis">Cusdis (без регистрации)</button>
+            <button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
+            <button class="comments-tab" data-tab="cusdis">Cusdis (без регистрации)</button>
         </div>
-        <div class="comments-info" id="giscus-info" style="display: none;">
+        <div class="comments-info" id="giscus-info">
             Для комментирования необходим GitHub аккаунт. <a href="https://github.com/signup" target="_blank">Создать бесплатный аккаунт</a>
         </div>
-        <div class="comments-info" id="cusdis-info">
+        <div class="comments-info" id="cusdis-info" style="display: none;">
             Можно комментировать анонимно (указав имя и email) или через GitHub. Полностью бесплатно, без рекламы.
         </div>
         <div class="comments-content">
             <!-- Giscus comments -->
-            <div class="comments-panel" id="giscus-panel">
+            <div class="comments-panel active" id="giscus-panel">
                 <script src="https://giscus.app/client.js"
                         data-repo="wsdc-analytics/wsdc-analytics.github.io"
                         data-repo-id="R_kgDOQyQ1Mw"
@@ -1179,7 +1175,7 @@
                 </script>
             </div>
             <!-- Cusdis comments -->
-            <div class="comments-panel active" id="cusdis-panel">
+            <div class="comments-panel" id="cusdis-panel">
                 <div id="cusdis_thread" data-host="https://cusdis.com" data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-page-id="events_2025" data-page-url="https://wsdc-analytics.github.io/events_2025.html" data-page-title="WSDC 2025: Ивенты"></div>
                 <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
             </div>
@@ -1213,9 +1209,10 @@
                         infoElement.style.display = 'block';
                     }
 
-                    // Установить фиксированную высоту при переключении на Cusdis
+                    // Удалить ограничения высоты при переключении на Cusdis
                     if (targetTab === 'cusdis') {
-                        setTimeout(setCusdisFixedHeight, 100);
+                        setTimeout(removeCusdisHeightRestrictions, 100);
+                        setTimeout(removeCusdisHeightRestrictions, 500);
                     }
                 });
             });
@@ -1235,32 +1232,67 @@
     // Запускаем Twemoji для замены системных эмодзи на SVG
     twemoji.parse(document.body);
 
-    // Установка фиксированной высоты для Cusdis контейнера
-    function setCusdisFixedHeight() {
-        const cusdisPanel = document.getElementById('cusdis-panel');
+    // Удаление всех ограничений высоты в Cusdis виджете
+    function removeCusdisHeightRestrictions() {
         const cusdisThread = document.getElementById('cusdis_thread');
-        
-        if (cusdisPanel) {
-            cusdisPanel.style.height = '1000px';
-            cusdisPanel.style.overflow = 'visible';
+        if (!cusdisThread) return;
+
+        function removeRestrictions(element) {
+            if (!element) return;
+            
+            // Удаляем все ограничения высоты и overflow
+            element.style.maxHeight = '';
+            element.style.height = '';
+            element.style.overflow = '';
+            element.style.overflowY = '';
+            element.style.overflowX = '';
+            
+            // Проверяем computed styles и принудительно устанавливаем видимый overflow
+            const computedStyle = window.getComputedStyle(element);
+            if (computedStyle.overflow === 'hidden' || computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll') {
+                element.style.setProperty('overflow', 'visible', 'important');
+            }
+            if (computedStyle.overflowY === 'hidden' || computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+                element.style.setProperty('overflow-y', 'visible', 'important');
+            }
+            if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') {
+                element.style.setProperty('max-height', 'none', 'important');
+            }
+            
+            // Рекурсивно обрабатываем все дочерние элементы
+            Array.from(element.children || []).forEach(child => {
+                removeRestrictions(child);
+            });
         }
+
+        // Применяем с интервалами для захвата всех динамически созданных элементов
+        removeRestrictions(cusdisThread);
+        setTimeout(() => removeRestrictions(cusdisThread), 500);
+        setTimeout(() => removeRestrictions(cusdisThread), 1500);
+        setTimeout(() => removeRestrictions(cusdisThread), 3000);
         
-        if (cusdisThread) {
-            cusdisThread.style.height = '1000px';
-            cusdisThread.style.overflow = 'visible';
-            cusdisThread.style.overflowY = 'visible';
-        }
+        // Используем MutationObserver для отслеживания изменений
+        const observer = new MutationObserver(() => {
+            removeRestrictions(cusdisThread);
+        });
+        
+        observer.observe(cusdisThread, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
     }
 
-    // Запускаем после загрузки страницы и при переключении на Cusdis
+    // Запускаем после загрузки страницы
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setCusdisFixedHeight);
+        document.addEventListener('DOMContentLoaded', removeCusdisHeightRestrictions);
     } else {
-        setCusdisFixedHeight();
+        removeCusdisHeightRestrictions();
     }
     
     // Также применяем при переключении табов
-    setTimeout(setCusdisFixedHeight, 1000);
+    setTimeout(removeCusdisHeightRestrictions, 1000);
 
     // Языковой переключатель для статей
     (function() {
