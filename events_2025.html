@@ -446,38 +446,36 @@
             line-height: 1.6;
         }
 
-        /* Cusdis form styling */
-        #cusdis_thread {
-            max-width: 100%;
-            box-sizing: border-box;
-            min-height: 800px !important;
-            overflow: visible !important;
-            height: auto !important;
+        /* Cusdis form styling - remove all height restrictions */
+        #cusdis_thread,
+        #cusdis_thread *,
+        #cusdis_thread > *,
+        #cusdis_thread > * > *,
+        #cusdis_thread form,
+        #cusdis_thread form > *,
+        #cusdis_thread [class*="cusdis"],
+        #cusdis_thread [id*="cusdis"] {
             max-height: none !important;
-        }
-
-        #cusdis_thread > div,
-        #cusdis_thread > div > div {
-            overflow: visible !important;
             height: auto !important;
-            max-height: none !important;
+            overflow: visible !important;
+            overflow-y: visible !important;
+            overflow-x: visible !important;
         }
 
         #cusdis-panel {
-            min-height: 800px !important;
             overflow: visible !important;
-            height: auto !important;
             max-height: none !important;
+            height: auto !important;
         }
 
         .comments-content {
             overflow: visible !important;
-            min-height: 800px !important;
         }
 
         .comments-panel.active {
             overflow: visible !important;
             max-height: none !important;
+            height: auto !important;
         }
 
         #cusdis_thread * {
