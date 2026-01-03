@@ -228,9 +228,54 @@
         @media (max-width: 768px) {
             .article-header { padding: 50px 20px; }
             .article-content { padding: 30px 16px; }
-            .article-title { font-size: 28px; }
-            .intro { font-size: 18px; padding-left: 16px; }
-            .table-scroll { margin: 20px -16px; width: calc(100% + 32px); border: none; }
+            .article-title { font-size: 28px; word-wrap: break-word; }
+            .intro { font-size: 18px; padding-left: 16px; border-left-width: 3px; }
+            .section { margin: 32px 0; }
+            .section-title { font-size: 24px; }
+            
+            /* Table adjustments for mobile */
+            .table-scroll { 
+                margin: 20px -16px; 
+                width: calc(100% + 32px);
+                border-left: none; 
+                border-right: none; 
+                border-radius: 0;
+            }
+            .rank-table { 
+                min-width: 300px; 
+                font-size: 12px;
+            }
+            .rank-table th, .rank-table td { 
+                padding: 8px 8px; 
+            }
+            .rank-table th {
+                font-size: 10px;
+            }
+            
+            .event-name { 
+                font-size: 12px; 
+                margin-bottom: 2px; 
+            }
+            .rank-col { 
+                font-size: 11px; 
+                width: 35px; 
+                padding-left: 6px; 
+            }
+            .rank-col.top-3 {
+                font-size: 13px;
+            }
+            .metric-cell { 
+                font-size: 12px; 
+            }
+            .event-flag { 
+                font-size: 12px; 
+            }
+            .event-comment { 
+                display: none; 
+            }
+            .diff-pos, .diff-neg {
+                font-size: 9px;
+            }
         }
     </style>
 </head>
@@ -385,7 +430,7 @@
                     <tbody>
                         <tr>
                             <td class="rank-col top-3">1</td>
-                            <td class="event-cell">California (CA) <span class="event-comment">Лидер по поинтам и размеру комьюнити</span></td>
+                            <td class="event-cell">California (CA)</td>
                             <td class="metric-cell" style="text-align: right">12</td>
                             <td class="metric-cell">5,472</td>
                             <td class="metric-cell">619</td>
@@ -393,7 +438,7 @@
                         </tr>
                         <tr>
                             <td class="rank-col top-3">2</td>
-                            <td class="event-cell">Texas (TX) <span class="event-comment">Лидер по New Dancers</span></td>
+                            <td class="event-cell">Texas (TX)</td>
                             <td class="metric-cell" style="text-align: right">8</td>
                             <td class="metric-cell">3,063</td>
                             <td class="metric-cell">434</td>
@@ -401,7 +446,7 @@
                         </tr>
                         <tr>
                             <td class="rank-col top-3">3 <span class="diff-pos">▲ +3</span></td>
-                            <td class="event-cell">Florida (FL) <span class="event-comment">Стабильное 3-е место</span></td>
+                            <td class="event-cell">Florida (FL)</td>
                             <td class="metric-cell" style="text-align: right">6</td>
                             <td class="metric-cell">1,741</td>
                             <td class="metric-cell">319</td>
@@ -600,7 +645,6 @@
                             <td class="rank-col top-3">🥇 <span class="diff-pos">▲ +1</span></td>
                             <td class="event-cell">
                                 <span class="event-name"><span class="event-flag">🇸🇪</span> Stockholm</span>
-                                <span class="event-comment">Новый абсолютный лидер года по всем метрикам.</span>
                             </td>
                             <td class="metric-cell" style="text-align: right">5</td>
                             <td class="metric-cell">2,069</td>
@@ -611,7 +655,6 @@
                             <td class="rank-col top-3">🥈 <span class="diff-neg">▼ +1</span></td>
                             <td class="event-cell">
                                 <span class="event-name"><span class="event-flag">🇭🇺</span> Budapest</span>
-                                <span class="event-comment">Главный европейский мега-хаб.</span>
                             </td>
                             <td class="metric-cell" style="text-align: right">4</td>
                             <td class="metric-cell">1,934</td>
@@ -622,7 +665,6 @@
                             <td class="rank-col top-3">🥉 <span class="diff-pos">▲ +2</span></td>
                             <td class="event-cell">
                                 <span class="event-name"><span class="event-flag">🇺🇸</span> Washington, DC</span>
-                                <span class="event-comment">Столица США — новый лидер среди американских городов.</span>
                             </td>
                             <td class="metric-cell" style="text-align: right">3</td>
                             <td class="metric-cell">1,410</td>
@@ -633,7 +675,6 @@
                             <td class="rank-col">4 <span class="diff-neg">▼ +1</span></td>
                             <td class="event-cell">
                                 <span class="event-name"><span class="event-flag">🇺🇸</span> San Francisco</span>
-                                <span class="event-comment">Столица американского свинга.</span>
                             </td>
                             <td class="metric-cell" style="text-align: right">2</td>
                             <td class="metric-cell">1,292</td>
