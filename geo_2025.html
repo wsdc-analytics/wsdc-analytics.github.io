@@ -80,6 +80,68 @@
             position: relative;
         }
         
+        .article-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .language-switcher-article {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .language-switcher-article button {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .language-switcher-article button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .language-switcher-article button.active {
+            background: white;
+            border-color: white;
+            color: #2d3748;
+        }
+
+        .language-switcher-article button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-link:hover {
+            opacity: 0.7;
+        }
+
+        .back-link::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
         .article-title {
             font-size: 52px;
             font-weight: 700;
@@ -229,6 +291,8 @@
             .article-header { padding: 50px 20px; }
             .article-content { padding: 30px 16px; }
             .article-title { font-size: 28px; word-wrap: break-word; }
+            .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .language-switcher-article { align-self: flex-end; }
             .intro { font-size: 18px; padding-left: 16px; border-left-width: 3px; }
             .section { margin: 32px 0; }
             .section-title { font-size: 24px; }
@@ -294,6 +358,14 @@
 
 <div class="magazine-container">
     <header class="article-header">
+        <div class="article-header-top">
+            <a href="/" class="back-link" id="backLink" style="color: white; position: relative; z-index: 2;">Назад на главную</a>
+            <div class="language-switcher-article">
+                <button data-lang="ru" class="lang-btn-article">RU</button>
+                <button data-lang="en" class="lang-btn-article" disabled>EN</button>
+                <button data-lang="es" class="lang-btn-article" disabled>ES</button>
+            </div>
+        </div>
         <h1 class="article-title">WSDC 2025: География свинга</h1>
         <div class="article-subtitle">Где сейчас танцуют: страны, регионы и города.</div>
     </header>
@@ -756,6 +828,65 @@
 
 <script>
     twemoji.parse(document.body);
+    
+    // Языковой переключатель для статей
+    (function() {
+        function getCurrentLanguage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+                return urlLang;
+            }
+            const storedLang = localStorage.getItem('wsdc-lang');
+            if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) {
+                return storedLang;
+            }
+            return 'ru'; // По умолчанию для русской статьи
+        }
+
+        function setLanguage(lang) {
+            localStorage.setItem('wsdc-lang', lang);
+            const url = new URL(window.location);
+            url.searchParams.set('lang', lang);
+            
+            // Перенаправление на соответствующую версию статьи
+            // Пока есть только русская версия, другие версии будут добавлены позже
+            if (lang === 'ru') {
+                window.location.href = 'geo_2025.html?lang=ru';
+            } else if (lang === 'en') {
+                // window.location.href = 'geo_2025_en.html?lang=en';
+                // Пока отключено, будет добавлено позже
+            } else if (lang === 'es') {
+                // window.location.href = 'geo_2025_es.html?lang=es';
+                // Пока отключено, будет добавлено позже
+            }
+        }
+
+        function updateBackLink() {
+            const currentLang = getCurrentLanguage();
+            const backLink = document.getElementById('backLink');
+            if (backLink) {
+                backLink.href = `/?lang=${currentLang}`;
+            }
+        }
+
+        // Инициализация
+        const currentLang = getCurrentLanguage();
+        updateBackLink();
+
+        // Обработчики переключения языка
+        const langButtons = document.querySelectorAll('.lang-btn-article');
+        langButtons.forEach(btn => {
+            if (btn.dataset.lang === currentLang) {
+                btn.classList.add('active');
+            }
+            btn.addEventListener('click', () => {
+                if (!btn.disabled) {
+                    setLanguage(btn.dataset.lang);
+                }
+            });
+        });
+    })();
 </script>
 </body>
 </html>
