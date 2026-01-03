@@ -1334,6 +1334,19 @@
         // Inicialización
         const currentLang = getCurrentLanguage();
         updateBackLink();
+
+        // Manejadores de cambio de idioma
+        const langButtons = document.querySelectorAll('.lang-btn-article');
+        langButtons.forEach(btn => {
+            if (btn.dataset.lang === currentLang) {
+                btn.classList.add('active');
+            }
+            btn.addEventListener('click', () => {
+                if (!btn.disabled) {
+                    setLanguage(btn.dataset.lang);
+                }
+            });
+        });
     })();
 </script>
 </body>
