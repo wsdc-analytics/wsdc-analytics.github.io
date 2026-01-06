@@ -291,7 +291,7 @@
                 <button data-lang="es" class="lang-btn">ES</button>
             </div>
             <h1>WSDC Analytics</h1>
-            <p class="subtitle">Data-driven insights and analysis on the West Coast Swing competitive scene</p>
+            <p class="subtitle" id="subtitle">Data-driven insights and analysis on the West Coast Swing competitive scene</p>
         </header>
 
         <div class="search-container">
@@ -436,6 +436,17 @@
             };
             if (searchInput) {
                 searchInput.placeholder = placeholders[lang] || placeholders.en;
+            }
+
+            // Обновление подзаголовка
+            const subtitles = {
+                ru: 'Данные и анализ соревновательной сцены West Coast Swing',
+                en: 'Data-driven insights and analysis on the West Coast Swing competitive scene',
+                es: 'Análisis e insights basados en datos de la escena competitiva de West Coast Swing'
+            };
+            const subtitleElement = document.getElementById('subtitle');
+            if (subtitleElement) {
+                subtitleElement.textContent = subtitles[lang] || subtitles.en;
             }
 
             // Фильтрация и отображение статей
