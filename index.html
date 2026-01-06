@@ -419,19 +419,29 @@
         // Форматирование даты по языку
         function formatDate(dateString, lang) {
             const date = new Date(dateString);
-            const options = {
-                ru: { year: 'numeric', month: 'long', day: 'numeric' },
-                en: { year: 'numeric', month: 'long', day: 'numeric' },
-                es: { year: 'numeric', month: 'long', day: 'numeric' }
+            if (isNaN(date.getTime())) return '';
+            
+            const day = date.getDate();
+            const monthNames = {
+                ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                     'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+                en: ['January', 'February', 'March', 'April', 'May', 'June',
+                     'July', 'August', 'September', 'October', 'November', 'December'],
+                es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
             };
             
-            const localeMap = {
-                ru: 'ru-RU',
-                en: 'en-US',
-                es: 'es-ES'
-            };
+            const month = monthNames[lang] ? monthNames[lang][date.getMonth()] : monthNames.en[date.getMonth()];
+            const year = date.getFullYear();
             
-            return date.toLocaleDateString(localeMap[lang] || 'en-US', options[lang] || options.en);
+            // Форматы: RU: "2 января 2025", EN: "January 2, 2025", ES: "2 de enero de 2025"
+            if (lang === 'ru') {
+                return `${day} ${month} ${year}`;
+            } else if (lang === 'es') {
+                return `${day} de ${month} de ${year}`;
+            } else {
+                return `${month} ${day}, ${year}`;
+            }
         }
 
         // Отображение статей
