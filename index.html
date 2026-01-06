@@ -323,7 +323,9 @@
                     language: "RU",
                     description: "Изменения в глобальном топе и региональные тренды.",
                     url: "events_2025.html",
-                    keywords: "ивенты, рейтинг, поинты, новички, Европа, США, WSDC, 2025, анализ ивентов"
+                    keywords: "ивенты, рейтинг, поинты, новички, Европа, США, WSDC, 2025, анализ ивентов",
+                    datePublished: "2025-01-02",
+                    category: "Анализ ивентов"
                 }
             ],
             en: [
@@ -332,7 +334,9 @@
                     language: "EN",
                     description: "Changes in the global top and regional trends.",
                     url: "events_2025_en.html",
-                    keywords: "events, rankings, points, new dancers, Europe, United States, WSDC, 2025, analysis"
+                    keywords: "events, rankings, points, new dancers, Europe, United States, WSDC, 2025, analysis",
+                    datePublished: "2025-01-02",
+                    category: "Events Analysis"
                 }
             ],
             es: [
@@ -341,7 +345,9 @@
                     language: "ES",
                     description: "Cambios en el top global y tendencias regionales.",
                     url: "events_2025_es.html",
-                    keywords: "eventos, rankings, puntos, nuevos bailarines, Europa, Estados Unidos, WSDC, 2025, análisis"
+                    keywords: "eventos, rankings, puntos, nuevos bailarines, Europa, Estados Unidos, WSDC, 2025, análisis",
+                    datePublished: "2025-01-02",
+                    category: "Análisis de eventos"
                 }
             ]
         };
@@ -410,18 +416,46 @@
             displayArticles(articles, lang);
         }
 
+        // Форматирование даты по языку
+        function formatDate(dateString, lang) {
+            const date = new Date(dateString);
+            const options = {
+                ru: { year: 'numeric', month: 'long', day: 'numeric' },
+                en: { year: 'numeric', month: 'long', day: 'numeric' },
+                es: { year: 'numeric', month: 'long', day: 'numeric' }
+            };
+            
+            const localeMap = {
+                ru: 'ru-RU',
+                en: 'en-US',
+                es: 'es-ES'
+            };
+            
+            return date.toLocaleDateString(localeMap[lang] || 'en-US', options[lang] || options.en);
+        }
+
         // Отображение статей
         function displayArticles(articles, lang) {
             if (articles.length === 0) {
-                articlesGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">Статьи на этом языке пока недоступны.</div>';
+                const noArticlesText = {
+                    ru: 'Статьи на этом языке пока недоступны.',
+                    en: 'Articles in this language are not available yet.',
+                    es: 'Los artículos en este idioma aún no están disponibles.'
+                };
+                articlesGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">${noArticlesText[lang] || noArticlesText.en}</div>`;
                 return;
             }
 
             let html = '';
             articles.forEach(article => {
+                const formattedDate = article.datePublished ? formatDate(article.datePublished, lang) : '';
+                const metaText = formattedDate && article.category 
+                    ? `${formattedDate} • ${article.category}`
+                    : (article.category || '');
+                
                 html += `
                     <a href="${article.url}?lang=${lang}" class="article-card">
-                        <div class="meta">2025 • Events Analysis</div>
+                        <div class="meta">${metaText}</div>
                         <h2>${article.title}</h2>
                         <p>${article.description}</p>
                     </a>
