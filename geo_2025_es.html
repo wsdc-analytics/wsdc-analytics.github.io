@@ -959,15 +959,25 @@
     // Language switcher for articles
     (function() {
         function getCurrentLanguage() {
+            // Определяем язык по имени файла
+            const pathname = window.location.pathname;
+            if (pathname.includes('_en.html')) return 'en';
+            if (pathname.includes('_es.html')) return 'es';
+            if (pathname.includes('geo_2025.html')) return 'ru';
+            
+            // Проверяем параметр URL
             const urlParams = new URLSearchParams(window.location.search);
             const urlLang = urlParams.get('lang');
             if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
                 return urlLang;
             }
+            
+            // Проверяем localStorage
             const storedLang = localStorage.getItem('wsdc-lang');
             if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) {
                 return storedLang;
             }
+            
             return 'es'; // Default for Spanish article
         }
 
@@ -1001,12 +1011,16 @@
         // Language switch handlers
         const langButtons = document.querySelectorAll('.lang-btn-article');
         langButtons.forEach(btn => {
+            // Убираем все активные классы, затем добавляем нужный
+            btn.classList.remove('active');
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
             }
-            btn.addEventListener('click', () => {
-                if (!btn.disabled) {
-                    setLanguage(btn.dataset.lang);
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetLang = btn.dataset.lang;
+                if (targetLang && targetLang !== currentLang) {
+                    setLanguage(targetLang);
                 }
             });
         });

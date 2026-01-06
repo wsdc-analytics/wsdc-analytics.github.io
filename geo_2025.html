@@ -959,15 +959,25 @@
     // Языковой переключатель для статей
     (function() {
         function getCurrentLanguage() {
+            // Определяем язык по имени файла
+            const pathname = window.location.pathname;
+            if (pathname.includes('_en.html')) return 'en';
+            if (pathname.includes('_es.html')) return 'es';
+            if (pathname.includes('geo_2025.html')) return 'ru';
+            
+            // Проверяем параметр URL
             const urlParams = new URLSearchParams(window.location.search);
             const urlLang = urlParams.get('lang');
             if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
                 return urlLang;
             }
+            
+            // Проверяем localStorage
             const storedLang = localStorage.getItem('wsdc-lang');
             if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) {
                 return storedLang;
             }
+            
             return 'ru'; // По умолчанию для русской статьи
         }
 
@@ -977,15 +987,12 @@
             url.searchParams.set('lang', lang);
             
             // Перенаправление на соответствующую версию статьи
-            // Пока есть только русская версия, другие версии будут добавлены позже
             if (lang === 'ru') {
                 window.location.href = 'geo_2025.html?lang=ru';
             } else if (lang === 'en') {
-                // window.location.href = 'geo_2025_en.html?lang=en';
-                // Пока отключено, будет добавлено позже
+                window.location.href = 'geo_2025_en.html?lang=en';
             } else if (lang === 'es') {
-                // window.location.href = 'geo_2025_es.html?lang=es';
-                // Пока отключено, будет добавлено позже
+                window.location.href = 'geo_2025_es.html?lang=es';
             }
         }
 
@@ -1004,12 +1011,16 @@
         // Обработчики переключения языка
         const langButtons = document.querySelectorAll('.lang-btn-article');
         langButtons.forEach(btn => {
+            // Убираем все активные классы, затем добавляем нужный
+            btn.classList.remove('active');
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
             }
-            btn.addEventListener('click', () => {
-                if (!btn.disabled) {
-                    setLanguage(btn.dataset.lang);
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetLang = btn.dataset.lang;
+                if (targetLang && targetLang !== currentLang) {
+                    setLanguage(targetLang);
                 }
             });
         });
