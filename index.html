@@ -319,6 +319,15 @@
         const articlesByLang = {
             ru: [
                 {
+                    title: "WSDC 2025: Города и регионы",
+                    language: "RU",
+                    description: "География WCS 2025: от городов до регионов, баланс сил и карта активности.",
+                    url: "geo_2025.html",
+                    keywords: "география, города, регионы, страны, штаты, WSDC, 2025, анализ",
+                    datePublished: "2026-01-07",
+                    category: "География"
+                },
+                {
                     title: "WSDC 2025: Ивенты",
                     language: "RU",
                     description: "Изменения в глобальном топе и региональные тренды.",
@@ -330,6 +339,15 @@
             ],
             en: [
                 {
+                    title: "WSDC 2025: Cities and Regions",
+                    language: "EN",
+                    description: "WCS Geography 2025: from cities to regions, balance of power and activity map.",
+                    url: "geo_2025_en.html",
+                    keywords: "geography, cities, regions, countries, states, WSDC, 2025, analysis",
+                    datePublished: "2026-01-07",
+                    category: "Geography"
+                },
+                {
                     title: "WSDC 2025: Events",
                     language: "EN",
                     description: "Changes in the global top and regional trends.",
@@ -340,6 +358,15 @@
                 }
             ],
             es: [
+                {
+                    title: "WSDC 2025: Ciudades y Regiones",
+                    language: "ES",
+                    description: "Geografía WCS 2025: de ciudades a regiones, balance de poder y mapa de actividad.",
+                    url: "geo_2025_es.html",
+                    keywords: "geografía, ciudades, regiones, países, estados, WSDC, 2025, análisis",
+                    datePublished: "2026-01-07",
+                    category: "Geografía"
+                },
                 {
                     title: "WSDC 2025: Eventos",
                     language: "ES",
@@ -456,8 +483,15 @@
                 return;
             }
 
+            // Сортировка статей от новых к старым (по дате публикации)
+            const sortedArticles = [...articles].sort((a, b) => {
+                const dateA = a.datePublished ? new Date(a.datePublished) : new Date(0);
+                const dateB = b.datePublished ? new Date(b.datePublished) : new Date(0);
+                return dateB - dateA; // Более новые статьи первыми
+            });
+
             let html = '';
-            articles.forEach(article => {
+            sortedArticles.forEach(article => {
                 const formattedDate = article.datePublished ? formatDate(article.datePublished, lang) : '';
                 const metaText = formattedDate && article.category 
                     ? `${formattedDate} • ${article.category}`
