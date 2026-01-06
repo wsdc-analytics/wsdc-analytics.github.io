@@ -32,7 +32,7 @@
       "description": "Geographic analysis of WSDC 2025: statistics on cities and regions on a global scale.",
       "url": "https://wsdc-analytics.github.io/geo_2025_en.html",
       "datePublished": "2026-01-02",
-      "dateModified": "2026-01-02",
+      "dateModified": "2026-01-04",
       "author": {
         "@type": "Organization",
         "name": "WSDC Analytics"
@@ -1011,7 +1011,7 @@
         // Language switch handlers
         const langButtons = document.querySelectorAll('.lang-btn-article');
         langButtons.forEach(btn => {
-            // Убираем все активные классы, затем добавляем нужный
+            // Remove all active classes, then add the needed one
             btn.classList.remove('active');
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
