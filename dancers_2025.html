@@ -262,11 +262,32 @@
         }
         
         
+        /* Table title and subtitle */
+        .table-title-wrapper {
+            margin: 32px 0 16px;
+            max-width: 700px;
+        }
+        
+        .table-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.3px;
+        }
+        
+        .table-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+        }
+        
         /* Metric switcher buttons */
         .metric-switcher {
             display: flex;
             gap: 12px;
-            margin: 32px 0 24px;
+            margin: 0 0 24px;
             flex-wrap: wrap;
             justify-content: flex-end;
         }
@@ -535,7 +556,85 @@
 <!-- Section 1: Global Top with Metric Switcher -->
 <section class="section">
 <h2 class="section-title">Общий топ</h2>
-<p>Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
+
+<!-- Table Title and Metric Switcher -->
+<div class="table-title-wrapper">
+<h3 class="table-title" id="globalTableTitle">Топ танцоров по поинтам</h3>
+<p class="table-subtitle">Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
+
+<!-- Metric Switcher -->
+<div class="metric-switcher">
+<button class="metric-btn active" data-metric="points" data-label="# Points"># Points</button>
+<button class="metric-btn" data-metric="wins" data-label="# Wins"># Wins</button>
+<button class="metric-btn" data-metric="events" data-label="# Events"># Events</button>
+</div>
+</div>
+
+<!-- Dynamic Table Container -->
+<div class="table-scroll" id="metricTableContainer">
+<table class="rank-table" id="metricTable">
+<thead>
+<tr>
+<th style="width: 30px">#</th>
+<th>Имя</th>
+<th style="text-align: right" id="metricHeader"># Points</th>
+</tr>
+</thead>
+<tbody id="metricTableBody">
+<!-- Points data (default) -->
+<tr>
+<td class="rank-col top-3">1</td>
+<td class="dancer-cell">Kristen Wallace</td>
+<td class="metric-cell" style="text-align: right">160</td>
+</tr>
+<tr>
+<td class="rank-col top-3">2</td>
+<td class="dancer-cell">Zachary Skinner</td>
+<td class="metric-cell" style="text-align: right">137</td>
+</tr>
+<tr>
+<td class="rank-col top-3">3</td>
+<td class="dancer-cell">Sebastian Quinones</td>
+<td class="metric-cell" style="text-align: right">125</td>
+</tr>
+<tr>
+<td class="rank-col">4</td>
+<td class="dancer-cell">Mathias Mendillo</td>
+<td class="metric-cell" style="text-align: right">104</td>
+</tr>
+<tr>
+<td class="rank-col">5</td>
+<td class="dancer-cell">Mackenzie Keister</td>
+<td class="metric-cell" style="text-align: right">104</td>
+</tr>
+<tr>
+<td class="rank-col">6</td>
+<td class="dancer-cell">Keerigan Rudd</td>
+<td class="metric-cell" style="text-align: right">105</td>
+</tr>
+<tr>
+<td class="rank-col">7</td>
+<td class="dancer-cell">Igor Pitangui</td>
+<td class="metric-cell" style="text-align: right">92</td>
+</tr>
+<tr>
+<td class="rank-col">8</td>
+<td class="dancer-cell">Nicole Ramirez</td>
+<td class="metric-cell" style="text-align: right">61</td>
+</tr>
+<tr>
+<td class="rank-col">9</td>
+<td class="dancer-cell">Aleksandra Radziejewska</td>
+<td class="metric-cell" style="text-align: right">54</td>
+</tr>
+<tr>
+<td class="rank-col">10</td>
+<td class="dancer-cell">Hanna Junk</td>
+<td class="metric-cell" style="text-align: right">52</td>
+</tr>
+</tbody>
+</table>
+</div>
 
 <!-- Significant highlights (unique, no duplicates) -->
 <div class="highlight-insight" style="margin-top: 32px;">
@@ -597,79 +696,6 @@
 <p><strong>География:</strong> 95.2% поинтов набрал на американских ивентах, а также один раз побеждал в Австралии.</p>
 <p><strong>Самый успешный ивент:</strong> Wild Wild Westie — 15 поинтов.</p>
 </div>
-
-<!-- Metric Switcher -->
-<div class="metric-switcher">
-<button class="metric-btn active" data-metric="points" data-label="# Points"># Points</button>
-<button class="metric-btn" data-metric="wins" data-label="# Wins"># Wins</button>
-<button class="metric-btn" data-metric="events" data-label="# Events"># Events</button>
-</div>
-
-<!-- Dynamic Table Container -->
-<div class="table-scroll" id="metricTableContainer">
-<table class="rank-table" id="metricTable">
-<thead>
-<tr>
-<th style="width: 30px">#</th>
-<th>Имя</th>
-<th style="text-align: right" id="metricHeader"># Points</th>
-</tr>
-</thead>
-<tbody id="metricTableBody">
-<!-- Points data (default) -->
-<tr>
-<td class="rank-col top-3">1</td>
-<td class="dancer-cell">Kristen Wallace</td>
-<td class="metric-cell" style="text-align: right">160</td>
-</tr>
-<tr>
-<td class="rank-col top-3">2</td>
-<td class="dancer-cell">Zachary Skinner</td>
-<td class="metric-cell" style="text-align: right">137</td>
-</tr>
-<tr>
-<td class="rank-col top-3">3</td>
-<td class="dancer-cell">Sebastian Quinones</td>
-<td class="metric-cell" style="text-align: right">125</td>
-</tr>
-<tr>
-<td class="rank-col">4</td>
-<td class="dancer-cell">Igor Pitangui</td>
-<td class="metric-cell" style="text-align: right">110</td>
-</tr>
-<tr>
-<td class="rank-col">5</td>
-<td class="dancer-cell">Keerigan Rudd</td>
-<td class="metric-cell" style="text-align: right">105</td>
-</tr>
-<tr>
-<td class="rank-col">6</td>
-<td class="dancer-cell">Mackenzie Keister</td>
-<td class="metric-cell" style="text-align: right">104</td>
-</tr>
-<tr>
-<td class="rank-col">7</td>
-<td class="dancer-cell">Hanna Junk</td>
-<td class="metric-cell" style="text-align: right">104</td>
-</tr>
-<tr>
-<td class="rank-col">8</td>
-<td class="dancer-cell">Mathias Mendillo</td>
-<td class="metric-cell" style="text-align: right">104</td>
-</tr>
-<tr>
-<td class="rank-col">9</td>
-<td class="dancer-cell">Noelle Hoeppner</td>
-<td class="metric-cell" style="text-align: right">102</td>
-</tr>
-<tr>
-<td class="rank-col">10</td>
-<td class="dancer-cell">Clement Turpain</td>
-<td class="metric-cell" style="text-align: right">102</td>
-</tr>
-</tbody>
-</table>
-</div>
 </section>
 
 <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
@@ -677,56 +703,18 @@
 <!-- Section 2: Russian Top with Metric Switcher -->
 <section class="section">
 <h2 class="section-title">Топ-10 российских танцоров по skill-level номинациям</h2>
-<p>Российское комьюнити WSDC демонстрирует активное развитие. Танцоры из России регулярно участвуют в соревнованиях и показывают стабильно высокие результаты. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
-<!-- Significant highlights (unique, no duplicates) -->
-<div class="highlight-insight" style="margin-top: 32px;">
-<p><strong>Elena Kotelnikova</strong> — абсолютный лидер российского рейтинга по поинтам (79) и одна из самых активных: получила поинты на 9 ивентах, выступая в двух ролях в двух номинациях (8 раз как фолловер в Advanced, 7 раз как лидер в Intermediate). Одержала две победы (по одной в каждой роли).</p>
-<p><strong>География:</strong> 57.0% поинтов набрала на российских ивентах (4 ивента), 34.2% на европейских (4 ивента). Две победы в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> French Open WCS (Paris, France) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Daniel Pavlov</strong> — лидер по победам среди российских танцоров и единственный с победами в высшей номинации Champions (одна победа), помимо трех побед в All-Stars. Получил поинты на 9 ивентах, показав исключительную результативность: четыре победы из девяти ивентов, где набрал поинты.</p>
-<p><strong>География:</strong> 94.1% поинтов набрал на европейских ивентах (7 ивентов), все четыре победы в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> BudaFest Open WCS Championships (Budapest, Hungary) — 15 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Marina Motronenko</strong> — самая активная российская участница: получила поинты на 10 ивентах в номинации All-Stars, одержав одну победу. Высокая результативность: поинты на каждом ивенте.</p>
-<p><strong>География:</strong> все 26 поинтов набрала на европейских ивентах (10 ивентов), одна победа в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> French Open WCS (Paris, France) — 6 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Polina Khapaeva</strong> — впечатляющий дебютный год: 62 поинта (3-е место), получила поинты на 6 ивентах, выступая в двух ролях в номинациях Novice и Intermediate (5 раз как фолловер, 2 раза как лидер), демонстрируя быстрое развитие.</p>
-<p><strong>География:</strong> 93.5% поинтов набрала на российских ивентах (5 ивентов), 6.5% на европейских (1 ивент). Побед пока нет.</p>
-<p><strong>Самый успешный ивент:</strong> Shooba Dooba Swing (Moscow, Russia) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Tatiana Kaneva</strong> — вторая в российском рейтинге по поинтам (64), продемонстрировала эффективный рост через skill-level номинации: получила поинты в Novice (3 раза) и Intermediate (4 раза), одержав две победы в Intermediate. Получила поинты на 7 ивентах.</p>
-<p><strong>География:</strong> 65.6% поинтов набрала на российских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> St.Petersburg WCS Nights (St. Petersburg, Russia) — 15 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Anastasiya Yuzhakova</strong> — одна из самых стабильных российских участниц: вошла во все три топ-10 (5-я по поинтам, 5-я по победам, 2-я по ивентам). Все 9 выступлений с поинтами — в номинации Advanced, что демонстрирует стабильность на высоком уровне. Одержала две победы на разных ивентах.</p>
-<p><strong>География:</strong> 46.5% поинтов набрала на российских ивентах (4 ивента), 48.8% на европейских (4 ивента).</p>
-<p><strong>Самый успешный ивент:</strong> St.Petersburg WCS Nights (St. Petersburg, Russia) — 10 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Olga Khvan</strong> — лидер по поинтам в All-Stars среди российских танцоров: набрала 29 поинтов в этой номинации (из 39 поинтов всего), демонстрируя высокий уровень в высшей skill-level категории. Получила поинты на 6 ивентах, выступая преимущественно в All-Stars.</p>
-<p><strong>География:</strong> все 39 поинтов набрала на ивентах в США (6 ивентов).</p>
-<p><strong>Самый успешный ивент:</strong> City of Angels (Los Angeles, United States) — 16 поинтов.</p>
-</div>
+<!-- Table Title and Metric Switcher -->
+<div class="table-title-wrapper">
+<h3 class="table-title" id="ruTableTitle">Топ российских танцоров по поинтам</h3>
+<p class="table-subtitle">Российское комьюнити WSDC демонстрирует активное развитие. Танцоры из России регулярно участвуют в соревнованиях и показывают стабильно высокие результаты. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="ru-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="ru-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="ru-events" data-label="# Events"># Events</button>
+</div>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -794,6 +782,49 @@
 </tbody>
 </table>
 </div>
+
+<!-- Significant highlights (unique, no duplicates) -->
+<div class="highlight-insight" style="margin-top: 32px;">
+<p><strong>Elena Kotelnikova</strong> — абсолютный лидер российского рейтинга по поинтам (79) и одна из самых активных: получила поинты на 9 ивентах, выступая в двух ролях в двух номинациях (8 раз как фолловер в Advanced, 7 раз как лидер в Intermediate). Одержала две победы (по одной в каждой роли).</p>
+<p><strong>География:</strong> 57.0% поинтов набрала на российских ивентах (4 ивента), 34.2% на европейских (4 ивента). Две победы в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> French Open WCS (Paris, France) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Daniel Pavlov</strong> — лидер по победам среди российских танцоров и единственный с победами в высшей номинации Champions (одна победа), помимо трех побед в All-Stars. Получил поинты на 9 ивентах, показав исключительную результативность: четыре победы из девяти ивентов, где набрал поинты.</p>
+<p><strong>География:</strong> 94.1% поинтов набрал на европейских ивентах (7 ивентов), все четыре победы в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> BudaFest Open WCS Championships (Budapest, Hungary) — 15 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Marina Motronenko</strong> — самая активная российская участница: получила поинты на 10 ивентах в номинации All-Stars, одержав одну победу. Высокая результативность: поинты на каждом ивенте.</p>
+<p><strong>География:</strong> все 26 поинтов набрала на европейских ивентах (10 ивентов), одна победа в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> French Open WCS (Paris, France) — 6 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Polina Khapaeva</strong> — впечатляющий дебютный год: 62 поинта (3-е место), получила поинты на 6 ивентах, выступая в двух ролях в номинациях Novice и Intermediate (5 раз как фолловер, 2 раза как лидер), демонстрируя быстрое развитие.</p>
+<p><strong>География:</strong> 93.5% поинтов набрала на российских ивентах (5 ивентов), 6.5% на европейских (1 ивент). Побед пока нет.</p>
+<p><strong>Самый успешный ивент:</strong> Shooba Dooba Swing (Moscow, Russia) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Tatiana Kaneva</strong> — вторая в российском рейтинге по поинтам (64), продемонстрировала эффективный рост через skill-level номинации: получила поинты в Novice (3 раза) и Intermediate (4 раза), одержав две победы в Intermediate. Получила поинты на 7 ивентах.</p>
+<p><strong>География:</strong> 65.6% поинтов набрала на российских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> St.Petersburg WCS Nights (St. Petersburg, Russia) — 15 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Anastasiya Yuzhakova</strong> — одна из самых стабильных российских участниц: вошла во все три топ-10 (5-я по поинтам, 5-я по победам, 2-я по ивентам). Все 9 выступлений с поинтами — в номинации Advanced, что демонстрирует стабильность на высоком уровне. Одержала две победы на разных ивентах.</p>
+<p><strong>География:</strong> 46.5% поинтов набрала на российских ивентах (4 ивента), 48.8% на европейских (4 ивента).</p>
+<p><strong>Самый успешный ивент:</strong> St.Petersburg WCS Nights (St. Petersburg, Russia) — 10 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Olga Khvan</strong> — лидер по поинтам в All-Stars среди российских танцоров: набрала 29 поинтов в этой номинации (из 39 поинтов всего), демонстрируя высокий уровень в высшей skill-level категории. Получила поинты на 6 ивентах, выступая преимущественно в All-Stars.</p>
+<p><strong>География:</strong> все 39 поинтов набрала на ивентах в США (6 ивентов).</p>
+<p><strong>Самый успешный ивент:</strong> City of Angels (Los Angeles, United States) — 16 поинтов.</p>
+</div>
 </section>
 
 <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
@@ -801,50 +832,18 @@
 <!-- Section 3: Sophisticated Top -->
 <section class="section">
 <h2 class="section-title">Топ-10 танцоров по Sophisticated номинациям</h2>
-<p>Sophisticated — возрастная номинация для танцоров 35+ лет, которая позволяет соревноваться независимо от skill-level дивизиона. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
-<!-- Significant highlights -->
-<div class="highlight-insight" style="margin-top: 32px;">
-<p><strong>Chloe Winzar</strong> — абсолютный лидер по поинтам (94) как фолловер: получила поинты на 13 ивентах, одержала четыре победы. Демонстрирует стабильно высокие результаты в возрастной номинации.</p>
-<p><strong>География:</strong> поинты набрала в трех регионах, преимущественно в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> Nordic WCS Championships (Stockholm, Sweden) — 21 поинт.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Stanley Seguy</strong> — лидер по победам в Sophisticated: из 9 ивентов, где получил поинты, шесть завершились победами (66.7% результативность). Набрал 81 поинт как лидер, показывая исключительную конкурентоспособность.</p>
-<p><strong>География:</strong> все 99 поинтов набрал на европейских ивентах, все шесть побед одержаны в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> BudaFest Open WCS Championships (Budapest, Hungary) — 15 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Jerome Tangha</strong> — самая высокая активность в Sophisticated: получил поинты на 15 ивентах как лидер (1-е место по ивентам), одержал четыре победы, набрал 78 поинтов. Поделил первое место по активности с Lucie Renaud.</p>
-<p><strong>География:</strong> все 100 поинтов набрал на европейских ивентах, все четыре победы одержаны в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> WCS Festival (Duesseldorf, Germany) — 12 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Haley Hauglum</strong> — стабильный результат: 2-е место по поинтам (91) и 2-е место по победам (пять побед) как фолловер, получила поинты на 14 ивентах. Все победы одержаны на крупных соревнованиях.</p>
-<p><strong>География:</strong> 89.7% поинтов набрала на американских ивентах, также получила поинты в Океании, побеждала в обоих регионах.</p>
-<p><strong>Самый успешный ивент:</strong> USA Grand Nationals (Atlanta) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Marine Monin</strong> — третий результат по поинтам (87) и высокий процент побед: четыре победы из 11 ивентов как фолловер.</p>
-<p><strong>География:</strong> все 93 поинта набрала на европейских ивентах, все четыре победы одержаны в Европе.</p>
-<p><strong>Самый успешный ивент:</strong> UK WCS Championships (Sipson, United Kingdom) — 15 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Jerome Fernandez</strong> — разделил 4-е место по поинтам (81) как лидер, получил поинты на 15 ивентах (Sophisticated), одержал две победы.</p>
-<p><strong>География:</strong> побеждал в двух регионах (Европа и Азия).</p>
-<p><strong>Самый успешный ивент:</strong> Korean Open WCS Championships (Incheon, Republic of Korea) — 15 поинтов.</p>
-</div>
+<!-- Table Title and Metric Switcher -->
+<div class="table-title-wrapper">
+<h3 class="table-title" id="sophTableTitle">Топ танцоров по поинтам (Sophisticated)</h3>
+<p class="table-subtitle">Sophisticated — возрастная номинация для танцоров 35+ лет, которая позволяет соревноваться независимо от skill-level дивизиона. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="soph-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="soph-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="soph-events" data-label="# Events"># Events</button>
+</div>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -912,85 +911,60 @@
 </tbody>
 </table>
 </div>
+
+<!-- Significant highlights -->
+<div class="highlight-insight" style="margin-top: 32px;">
+<p><strong>Chloe Winzar</strong> — абсолютный лидер по поинтам (94) как фолловер: получила поинты на 13 ивентах, одержала четыре победы. Демонстрирует стабильно высокие результаты в возрастной номинации.</p>
+<p><strong>География:</strong> поинты набрала в трех регионах, преимущественно в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> Nordic WCS Championships (Stockholm, Sweden) — 21 поинт.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Stanley Seguy</strong> — лидер по победам в Sophisticated: из 9 ивентов, где получил поинты, шесть завершились победами (66.7% результативность). Набрал 81 поинт как лидер, показывая исключительную конкурентоспособность.</p>
+<p><strong>География:</strong> все 99 поинтов набрал на европейских ивентах, все шесть побед одержаны в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> BudaFest Open WCS Championships (Budapest, Hungary) — 15 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Jerome Tangha</strong> — самая высокая активность в Sophisticated: получил поинты на 15 ивентах как лидер (1-е место по ивентам), одержал четыре победы, набрал 78 поинтов. Поделил первое место по активности с Lucie Renaud.</p>
+<p><strong>География:</strong> все 100 поинтов набрал на европейских ивентах, все четыре победы одержаны в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> WCS Festival (Duesseldorf, Germany) — 12 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Haley Hauglum</strong> — стабильный результат: 2-е место по поинтам (91) и 2-е место по победам (пять побед) как фолловер, получила поинты на 14 ивентах. Все победы одержаны на крупных соревнованиях.</p>
+<p><strong>География:</strong> 89.7% поинтов набрала на американских ивентах, также получила поинты в Океании, побеждала в обоих регионах.</p>
+<p><strong>Самый успешный ивент:</strong> USA Grand Nationals (Atlanta) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Marine Monin</strong> — третий результат по поинтам (87) и высокий процент побед: четыре победы из 11 ивентов как фолловер.</p>
+<p><strong>География:</strong> все 93 поинта набрала на европейских ивентах, все четыре победы одержаны в Европе.</p>
+<p><strong>Самый успешный ивент:</strong> UK WCS Championships (Sipson, United Kingdom) — 15 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Jerome Fernandez</strong> — разделил 4-е место по поинтам (81) как лидер, получил поинты на 15 ивентах (Sophisticated), одержал две победы.</p>
+<p><strong>География:</strong> побеждал в двух регионах (Европа и Азия).</p>
+<p><strong>Самый успешный ивент:</strong> Korean Open WCS Championships (Incheon, Republic of Korea) — 15 поинтов.</p>
+</div>
 </section>
 
 <!-- Section 4: European Events Top -->
 <section class="section">
 <h2 class="section-title">Топ-10 танцоров по результатам европейских ивентов</h2>
-<p>Этот раздел показывает топ-10 танцоров по результатам только европейских ивентов в skill-level номинациях. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
-<!-- Significant highlights -->
-<div class="highlight-insight" style="margin-top: 32px;">
-<p><strong>Daniel Curl</strong> — 6-е место по поинтам на европейских ивентах (76 поинтов) и 10-е место по ивентам (12 ивентов). Продемонстрировал эффективный рост через skill-level номинации: получил поинты в Novice (27 поинтов), Intermediate (42 поинта) и Advanced (7 поинтов), показывая последовательное развитие через три дивизиона. Одержал одну победу в Intermediate. Все поинты набраны исключительно на европейских ивентах.</p>
-<p><strong>География:</strong> все 76 поинтов набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Slovenian Open (Ljubljana, Slovenia) — 26 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Michael Kuss</strong> — 7-8 место по поинтам на европейских ивентах (74 поинта), выступал преимущественно в Advanced (52 поинта, две победы) и также в Novice (22 поинта). Демонстрирует высокие результаты в Advanced номинации. Получил поинты на 9 европейских ивентах. Все поинты набраны исключительно на европейских ивентах.</p>
-<p><strong>География:</strong> все 74 поинта набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> German Open (Freiburg, Germany) — 15 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Melina Voglhuber</strong> — 9-е место по поинтам на европейских ивентах (72 поинта). Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (32 поинта), Intermediate (31 поинт) и Advanced (9 поинтов), показывая последовательный рост через три дивизиона. Одержала две победы в Intermediate. Все поинты набраны исключительно на европейских ивентах.</p>
-<p><strong>География:</strong> все 72 поинта набрала на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> SwingIN Festival (Bonn, Germany) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Tina Kronberg</strong> — входит в топ-10 по поинтам на европейских ивентах (58 поинтов). Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (42 поинта, одна победа) и Intermediate (16 поинтов, одна победа), показывая последовательный рост через два дивизиона. Одержала две победы, получила поинты на 5 европейских ивентах. Все поинты набраны исключительно на европейских ивентах.</p>
-<p><strong>География:</strong> все 58 поинтов набрала на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Mooseland Swing (Östersund, Sweden) — 25 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Florian Hamm</strong> — 5-7 место по ивентам на европейских ивентах (14 ивентов). Все поинты набрал в высшей номинации All-Stars, демонстрируя специализацию и стабильность на высшем skill-level: 14 выступлений в All-Stars, одержал две победы. 84.8% его поинтов набрано на европейских ивентах.</p>
-<p><strong>География:</strong> 84.8% поинтов набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Bavarian Open (Munich, Germany) — 10 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Camille Picano</strong> — 5-7 место по ивентам на европейских ивентах (14 ивентов). Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (27 поинтов), Intermediate (1 поинт) и Advanced (38 поинтов), одержав три победы (одна в Novice, две в Advanced). 97.1% ее поинтов набрано на европейских ивентах.</p>
-<p><strong>География:</strong> 97.1% поинтов набрала на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Avignon City Swing (Nimes, France) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Clement Turpain</strong> — выступал в высших номинациях All-Stars (27 поинтов, две победы) и Advanced (32 поинта) на европейских ивентах. Продемонстрировал прогрессию от Advanced к All-Stars, демонстрируя достижения на высоком уровне. Получил поинты на 6 европейских ивентах. 57.8% его поинтов набрано на европейских ивентах.</p>
-<p><strong>География:</strong> 57.8% поинтов набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Warsaw Halloween Swing (Warsaw, Poland) — 22 поинта.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Vincent Roubadia</strong> — выступал в Novice (23 поинта) и Intermediate (36 поинтов) на европейских ивентах. Продемонстрировал эффективную прогрессию через номинации: Novice → Intermediate. Демонстрирует высокие результаты в средних skill-level номинациях, получил поинты на 8 европейских ивентах. Все поинты набраны исключительно на европейских ивентах.</p>
-<p><strong>География:</strong> все 59 поинтов набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Arousa Westie Fest (Sanxenxo, Spain) — 14 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Joshua Schubert</strong> — 6-9 место по победам (четыре победы) и 1-2 место по количеству ивентов (17 ивентов) на европейских ивентах. Все поинты набрал в высшей номинации All-Stars, демонстрируя исключительную активность и стабильность на высшем skill-level. 98.3% его поинтов набрано на европейских ивентах.</p>
-<p><strong>География:</strong> 98.3% поинтов набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Swingtzerland (Zurich, Switzerland) — 10 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Allan Thivoz</strong> — лидер по победам на европейских ивентах (шесть побед), все в высшей номинации All-Stars, что является выдающимся достижением. Набрал 55 поинтов, получил поинты на 10 европейских ивентах, все исключительно в All-Stars. Демонстрирует специализацию и высокую результативность на высшем skill-level. 98.2% его поинтов набрано на европейских ивентах.</p>
-<p><strong>География:</strong> 98.2% поинтов набрал на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Scandinavian Open (Stockholm, Sweden) — 10 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Christina Landowski</strong> — 3-4 место по количеству ивентов на европейских ивентах (15 ивентов), набрала 54 поинта. Выступала преимущественно в Advanced (51 поинт, одна победа) и также получила поинты в All-Stars (3 поинта), демонстрируя прогрессию к высшей номинации. Все поинты набраны исключительно на европейских ивентах.</p>
-<p><strong>География:</strong> все 54 поинта набрала на европейских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Bavarian Open (Munich, Germany) — 12 поинтов.</p>
-</div>
+<!-- Table Title and Metric Switcher -->
+<div class="table-title-wrapper">
+<h3 class="table-title" id="euTableTitle">Топ танцоров по поинтам (европейские ивенты)</h3>
+<p class="table-subtitle">Этот раздел показывает топ-10 танцоров по результатам только европейских ивентов в skill-level номинациях. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="eu-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="eu-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="eu-events" data-label="# Events"># Events</button>
+</div>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -1058,48 +1032,89 @@
 </tbody>
 </table>
 </div>
+
+<!-- Significant highlights -->
+<div class="highlight-insight" style="margin-top: 32px;">
+<p><strong>Daniel Curl</strong> — 6-е место по поинтам на европейских ивентах (76 поинтов) и 10-е место по ивентам (12 ивентов). Продемонстрировал эффективный рост через skill-level номинации: получил поинты в Novice (27 поинтов), Intermediate (42 поинта) и Advanced (7 поинтов), показывая последовательное развитие через три дивизиона. Одержал одну победу в Intermediate. Все поинты набраны исключительно на европейских ивентах.</p>
+<p><strong>География:</strong> все 76 поинтов набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Slovenian Open (Ljubljana, Slovenia) — 26 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Michael Kuss</strong> — 7-8 место по поинтам на европейских ивентах (74 поинта), выступал преимущественно в Advanced (52 поинта, две победы) и также в Novice (22 поинта). Демонстрирует высокие результаты в Advanced номинации. Получил поинты на 9 европейских ивентах. Все поинты набраны исключительно на европейских ивентах.</p>
+<p><strong>География:</strong> все 74 поинта набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> German Open (Freiburg, Germany) — 15 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Melina Voglhuber</strong> — 9-е место по поинтам на европейских ивентах (72 поинта). Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (32 поинта), Intermediate (31 поинт) и Advanced (9 поинтов), показывая последовательный рост через три дивизиона. Одержала две победы в Intermediate. Все поинты набраны исключительно на европейских ивентах.</p>
+<p><strong>География:</strong> все 72 поинта набрала на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> SwingIN Festival (Bonn, Germany) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Tina Kronberg</strong> — входит в топ-10 по поинтам на европейских ивентах (58 поинтов). Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (42 поинта, одна победа) и Intermediate (16 поинтов, одна победа), показывая последовательный рост через два дивизиона. Одержала две победы, получила поинты на 5 европейских ивентах. Все поинты набраны исключительно на европейских ивентах.</p>
+<p><strong>География:</strong> все 58 поинтов набрала на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Mooseland Swing (Östersund, Sweden) — 25 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Florian Hamm</strong> — 5-7 место по ивентам на европейских ивентах (14 ивентов). Все поинты набрал в высшей номинации All-Stars, демонстрируя специализацию и стабильность на высшем skill-level: 14 выступлений в All-Stars, одержал две победы. 84.8% его поинтов набрано на европейских ивентах.</p>
+<p><strong>География:</strong> 84.8% поинтов набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Bavarian Open (Munich, Germany) — 10 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Camille Picano</strong> — 5-7 место по ивентам на европейских ивентах (14 ивентов). Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (27 поинтов), Intermediate (1 поинт) и Advanced (38 поинтов), одержав три победы (одна в Novice, две в Advanced). 97.1% ее поинтов набрано на европейских ивентах.</p>
+<p><strong>География:</strong> 97.1% поинтов набрала на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Avignon City Swing (Nimes, France) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Clement Turpain</strong> — выступал в высших номинациях All-Stars (27 поинтов, две победы) и Advanced (32 поинта) на европейских ивентах. Продемонстрировал прогрессию от Advanced к All-Stars, демонстрируя достижения на высоком уровне. Получил поинты на 6 европейских ивентах. 57.8% его поинтов набрано на европейских ивентах.</p>
+<p><strong>География:</strong> 57.8% поинтов набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Warsaw Halloween Swing (Warsaw, Poland) — 22 поинта.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Vincent Roubadia</strong> — выступал в Novice (23 поинта) и Intermediate (36 поинтов) на европейских ивентах. Продемонстрировал эффективную прогрессию через номинации: Novice → Intermediate. Демонстрирует высокие результаты в средних skill-level номинациях, получил поинты на 8 европейских ивентах. Все поинты набраны исключительно на европейских ивентах.</p>
+<p><strong>География:</strong> все 59 поинтов набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Arousa Westie Fest (Sanxenxo, Spain) — 14 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Joshua Schubert</strong> — 6-9 место по победам (четыре победы) и 1-2 место по количеству ивентов (17 ивентов) на европейских ивентах. Все поинты набрал в высшей номинации All-Stars, демонстрируя исключительную активность и стабильность на высшем skill-level. 98.3% его поинтов набрано на европейских ивентах.</p>
+<p><strong>География:</strong> 98.3% поинтов набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Swingtzerland (Zurich, Switzerland) — 10 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Allan Thivoz</strong> — лидер по победам на европейских ивентах (шесть побед), все в высшей номинации All-Stars, что является выдающимся достижением. Набрал 55 поинтов, получил поинты на 10 европейских ивентах, все исключительно в All-Stars. Демонстрирует специализацию и высокую результативность на высшем skill-level. 98.2% его поинтов набрано на европейских ивентах.</p>
+<p><strong>География:</strong> 98.2% поинтов набрал на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Scandinavian Open (Stockholm, Sweden) — 10 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Christina Landowski</strong> — 3-4 место по количеству ивентов на европейских ивентах (15 ивентов), набрала 54 поинта. Выступала преимущественно в Advanced (51 поинт, одна победа) и также получила поинты в All-Stars (3 поинта), демонстрируя прогрессию к высшей номинации. Все поинты набраны исключительно на европейских ивентах.</p>
+<p><strong>География:</strong> все 54 поинта набрала на европейских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Bavarian Open (Munich, Germany) — 12 поинтов.</p>
+</div>
 </section>
 
 <section class="section">
 <h2 class="section-title">Топ-10 испанских танцоров</h2>
-<p>Этот раздел показывает топ-10 испанских танцоров по результатам в skill-level номинациях в 2025 году. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
-<!-- Significant highlights -->
-<div class="highlight-insight" style="margin-top: 32px;">
-<p><strong>Julien Espagnet</strong> — лидер по поинтам среди испанских танцоров (1-е место, 65 поинтов) и 4-е место по ивентам (8 ивентов). Продемонстрировал эффективную прогрессию через skill-level номинации: получил поинты в Newcomer (8 поинтов), Novice (36 поинтов) и Intermediate (21 поинт, одна победа), показывая последовательный рост через три дивизиона. Одержал одну победу в Intermediate.</p>
-<p><strong>География:</strong> 27.7% поинтов набрал на испанских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Arousa Westie Fest (Sanxenxo, Spain) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Fran Vidal</strong> — 2-е место по поинтам (50 поинтов), лидер по победам (1-е место, две победы) и 2-е место по ивентам (11 ивентов) среди испанских танцоров. Все поинты набрал в Advanced номинации, демонстрируя специализацию и высокие результаты на высоком skill-level. Одержал две победы в Advanced.</p>
-<p><strong>География:</strong> 2.0% поинтов набрал на испанских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Warsaw Halloween Swing (Warsaw, Poland) — 12 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Alvaro Hilario Garcia</strong> — 3-е место по поинтам (47 поинтов), лидер по ивентам (1-е место, 16 ивентов) и 6-е место по победам (одна победа) среди испанских танцоров. Продемонстрировал эффективную прогрессию: получил поинты в Intermediate (34 поинта, одна победа) и Advanced (13 поинтов), показывая последовательный рост через два дивизиона.</p>
-<p><strong>География:</strong> 21.3% поинтов набрал на испанских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Mediterranean Open WCS (Barcelona, Spain) — 10 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Margarita Perepelkina</strong> — 5-е место по поинтам (29 поинтов), 4-е место по победам (одна победа) и 5-6 место по ивентам (6 ивентов) среди испанских танцоров. Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (8 поинтов) и Intermediate (21 поинт, одна победа), показывая последовательный рост через два дивизиона.</p>
-<p><strong>География:</strong> 31.0% поинтов набрала на испанских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> Lisbon Westie Fest (Lisbon, Portugal) — 18 поинтов.</p>
-</div>
-
-<div class="highlight-insight">
-<p><strong>Miquel Menendez</strong> — 8-е место по поинтам (23 поинта) и 3-е место по ивентам (10 ивентов) среди испанских танцоров. Продемонстрировал прогрессию от Advanced к All-Stars, демонстрируя достижения на высоком уровне: получил поинты в Advanced (1 поинт) и All-Stars (22 поинта). Демонстрирует специализацию на высшем skill-level.</p>
-<p><strong>География:</strong> 0.0% поинтов набрал на испанских ивентах.</p>
-<p><strong>Самый успешный ивент:</strong> The Chicago Classic (Chicago, United States) — 8 поинтов.</p>
-</div>
+<!-- Table Title and Metric Switcher -->
+<div class="table-title-wrapper">
+<h3 class="table-title" id="esTableTitle">Топ испанских танцоров по поинтам</h3>
+<p class="table-subtitle">Этот раздел показывает топ-10 испанских танцоров по результатам в skill-level номинациях в 2025 году. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
 
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="es-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="es-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="es-events" data-label="# Events"># Events</button>
+</div>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -1166,6 +1181,37 @@
 </tr>
 </tbody>
 </table>
+</div>
+
+<!-- Significant highlights -->
+<div class="highlight-insight" style="margin-top: 32px;">
+<p><strong>Julien Espagnet</strong> — лидер по поинтам среди испанских танцоров (1-е место, 65 поинтов) и 4-е место по ивентам (8 ивентов). Продемонстрировал эффективную прогрессию через skill-level номинации: получил поинты в Newcomer (8 поинтов), Novice (36 поинтов) и Intermediate (21 поинт, одна победа), показывая последовательный рост через три дивизиона. Одержал одну победу в Intermediate.</p>
+<p><strong>География:</strong> 27.7% поинтов набрал на испанских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Arousa Westie Fest (Sanxenxo, Spain) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Fran Vidal</strong> — 2-е место по поинтам (50 поинтов), лидер по победам (1-е место, две победы) и 2-е место по ивентам (11 ивентов) среди испанских танцоров. Все поинты набрал в Advanced номинации, демонстрируя специализацию и высокие результаты на высоком skill-level. Одержал две победы в Advanced.</p>
+<p><strong>География:</strong> 2.0% поинтов набрал на испанских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Warsaw Halloween Swing (Warsaw, Poland) — 12 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Alvaro Hilario Garcia</strong> — 3-е место по поинтам (47 поинтов), лидер по ивентам (1-е место, 16 ивентов) и 6-е место по победам (одна победа) среди испанских танцоров. Продемонстрировал эффективную прогрессию: получил поинты в Intermediate (34 поинта, одна победа) и Advanced (13 поинтов), показывая последовательный рост через два дивизиона.</p>
+<p><strong>География:</strong> 21.3% поинтов набрал на испанских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Mediterranean Open WCS (Barcelona, Spain) — 10 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Margarita Perepelkina</strong> — 5-е место по поинтам (29 поинтов), 4-е место по победам (одна победа) и 5-6 место по ивентам (6 ивентов) среди испанских танцоров. Продемонстрировала эффективную прогрессию через skill-level номинации: получила поинты в Novice (8 поинтов) и Intermediate (21 поинт, одна победа), показывая последовательный рост через два дивизиона.</p>
+<p><strong>География:</strong> 31.0% поинтов набрала на испанских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> Lisbon Westie Fest (Lisbon, Portugal) — 18 поинтов.</p>
+</div>
+
+<div class="highlight-insight">
+<p><strong>Miquel Menendez</strong> — 8-е место по поинтам (23 поинта) и 3-е место по ивентам (10 ивентов) среди испанских танцоров. Продемонстрировал прогрессию от Advanced к All-Stars, демонстрируя достижения на высоком уровне: получил поинты в Advanced (1 поинт) и All-Stars (22 поинта). Демонстрирует специализацию на высшем skill-level.</p>
+<p><strong>География:</strong> 0.0% поинтов набрал на испанских ивентах.</p>
+<p><strong>Самый успешный ивент:</strong> The Chicago Classic (Chicago, United States) — 8 поинтов.</p>
 </div>
 </section>
 
@@ -1340,9 +1386,22 @@
             events: '# Events'
         };
 
+        const metricTitles = {
+            points: 'Топ танцоров по поинтам',
+            wins: 'Топ танцоров по победам',
+            events: 'Топ танцоров по ивентам'
+        };
+
         function switchMetric(metric) {
             const data = metricData[metric];
             const label = metricLabels[metric];
+            const title = metricTitles[metric];
+            
+            // Update table title
+            const titleElement = document.getElementById('globalTableTitle');
+            if (titleElement && title) {
+                titleElement.textContent = title;
+            }
             
             // Update header
             const header = document.getElementById('metricHeader');
@@ -1366,9 +1425,9 @@
                 }).join('');
             }
             
-            // Update buttons
-            const buttons = document.querySelectorAll('.metric-btn');
-            buttons.forEach(btn => {
+            // Update buttons (only global metric buttons - buttons without prefix)
+            const globalButtons = document.querySelectorAll('[data-metric="points"], [data-metric="wins"], [data-metric="events"]');
+            globalButtons.forEach(btn => {
                 if (btn.dataset.metric === metric) {
                     btn.classList.add('active');
                 } else {
@@ -1417,10 +1476,23 @@
             ]
         };
 
+        const sophMetricTitles = {
+            points: 'Топ танцоров по поинтам (Sophisticated)',
+            wins: 'Топ танцоров по победам (Sophisticated)',
+            events: 'Топ танцоров по ивентам (Sophisticated)'
+        };
+
         function switchSophMetric(metric) {
             const metricKey = metric.replace('soph-', '');
             const data = sophMetricData[metricKey];
             const label = metricLabels[metricKey];
+            const title = sophMetricTitles[metricKey];
+            
+            // Update table title
+            const titleElement = document.getElementById('sophTableTitle');
+            if (titleElement && title) {
+                titleElement.textContent = title;
+            }
             
             // Update header
             const header = document.getElementById('sophMetricHeader');
@@ -1504,9 +1576,23 @@
             ]
         };
 
+        const ruMetricTitles = {
+            points: 'Топ российских танцоров по поинтам',
+            wins: 'Топ российских танцоров по победам',
+            events: 'Топ российских танцоров по ивентам'
+        };
+
         function switchRuMetric(metric) {
+            const metricKey = metric.replace('ru-', '');
             const data = ruMetricData[metric];
-            const label = metricLabels[metric.replace('ru-', '')];
+            const label = metricLabels[metricKey];
+            const title = ruMetricTitles[metricKey];
+            
+            // Update table title
+            const titleElement = document.getElementById('ruTableTitle');
+            if (titleElement && title) {
+                titleElement.textContent = title;
+            }
             
             // Update header
             const header = document.getElementById('ruMetricHeader');
@@ -1581,9 +1667,23 @@
             ]
         };
 
+        const euMetricTitles = {
+            points: 'Топ танцоров по поинтам (европейские ивенты)',
+            wins: 'Топ танцоров по победам (европейские ивенты)',
+            events: 'Топ танцоров по ивентам (европейские ивенты)'
+        };
+
         function switchEuMetric(metric) {
+            const metricKey = metric.replace('eu-', '');
             const data = euMetricData[metric];
-            const label = metricLabels[metric.replace('eu-', '')];
+            const label = metricLabels[metricKey];
+            const title = euMetricTitles[metricKey];
+            
+            // Update table title
+            const titleElement = document.getElementById('euTableTitle');
+            if (titleElement && title) {
+                titleElement.textContent = title;
+            }
             
             // Update header
             const header = document.getElementById('euMetricHeader');
@@ -1654,9 +1754,23 @@
             ]
         };
 
+        const esMetricTitles = {
+            points: 'Топ испанских танцоров по поинтам',
+            wins: 'Топ испанских танцоров по победам',
+            events: 'Топ испанских танцоров по ивентам'
+        };
+
         function switchEsMetric(metric) {
+            const metricKey = metric.replace('es-', '');
             const data = esMetricData[metric];
-            const label = metricLabels[metric.replace('es-', '')];
+            const label = metricLabels[metricKey];
+            const title = esMetricTitles[metricKey];
+            
+            // Update table title
+            const titleElement = document.getElementById('esTableTitle');
+            if (titleElement && title) {
+                titleElement.textContent = title;
+            }
             
             // Update header
             const header = document.getElementById('esMetricHeader');
