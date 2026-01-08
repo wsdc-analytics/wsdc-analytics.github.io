@@ -268,12 +268,23 @@
             max-width: 700px;
         }
         
+        .table-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
         .table-title {
             font-size: 24px;
             font-weight: 700;
             color: #2d3748;
-            margin: 0 0 8px 0;
+            margin: 0;
             letter-spacing: -0.3px;
+            flex: 1;
+            min-width: 200px;
         }
         
         .table-subtitle {
@@ -287,7 +298,7 @@
         .metric-switcher {
             display: flex;
             gap: 12px;
-            margin: 0 0 24px;
+            margin: 0;
             flex-wrap: wrap;
             justify-content: flex-end;
         }
@@ -408,6 +419,17 @@
             .section { margin: 32px 0; }
             .section-title { font-size: 24px; }
             
+            .table-header-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .table-title {
+                font-size: 20px;
+            }
+            .table-subtitle {
+                font-size: 13px;
+            }
             .table-scroll { 
                 margin: 20px -16px; 
                 width: calc(100% + 32px);
@@ -560,15 +582,16 @@
 
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
+<div class="table-header-row">
 <h3 class="table-title" id="globalTableTitle">Топ танцоров по поинтам</h3>
-<p class="table-subtitle">Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
-
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="events" data-label="# Events"># Events</button>
 </div>
+</div>
+<p class="table-subtitle">Используйте переключатель выше, чтобы выбрать метрику для просмотра.</p>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -707,15 +730,16 @@
 
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
+<div class="table-header-row">
 <h3 class="table-title" id="ruTableTitle">Топ российских танцоров по поинтам</h3>
-<p class="table-subtitle">Российское комьюнити WSDC демонстрирует активное развитие. Танцоры из России регулярно участвуют в соревнованиях и показывают стабильно высокие результаты. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
-
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="ru-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="ru-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="ru-events" data-label="# Events"># Events</button>
 </div>
+</div>
+<p class="table-subtitle">Используйте переключатель выше, чтобы выбрать метрику для просмотра.</p>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -836,15 +860,16 @@
 
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
+<div class="table-header-row">
 <h3 class="table-title" id="sophTableTitle">Топ танцоров по поинтам (Sophisticated)</h3>
-<p class="table-subtitle">Sophisticated — возрастная номинация для танцоров 35+ лет, которая позволяет соревноваться независимо от skill-level дивизиона. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
-
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="soph-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="soph-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="soph-events" data-label="# Events"># Events</button>
 </div>
+</div>
+<p class="table-subtitle">Используйте переключатель выше, чтобы выбрать метрику для просмотра.</p>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -957,15 +982,16 @@
 
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
+<div class="table-header-row">
 <h3 class="table-title" id="euTableTitle">Топ танцоров по поинтам (европейские ивенты)</h3>
-<p class="table-subtitle">Этот раздел показывает топ-10 танцоров по результатам только европейских ивентов в skill-level номинациях. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
-
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="eu-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="eu-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="eu-events" data-label="# Events"># Events</button>
 </div>
+</div>
+<p class="table-subtitle">Используйте переключатель выше, чтобы выбрать метрику для просмотра.</p>
 </div>
 
 <!-- Dynamic Table Container -->
@@ -1107,15 +1133,16 @@
 
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
+<div class="table-header-row">
 <h3 class="table-title" id="esTableTitle">Топ испанских танцоров по поинтам</h3>
-<p class="table-subtitle">Этот раздел показывает топ-10 испанских танцоров по результатам в skill-level номинациях в 2025 году. Используйте переключатель ниже, чтобы выбрать метрику для просмотра. Важно: метрика "Events" показывает количество ивентов, где танцор получил поинты (занял места), а не общее количество участий.</p>
-
 <!-- Metric Switcher -->
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="es-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="es-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="es-events" data-label="# Events"># Events</button>
 </div>
+</div>
+<p class="table-subtitle">Используйте переключатель выше, чтобы выбрать метрику для просмотра.</p>
 </div>
 
 <!-- Dynamic Table Container -->
