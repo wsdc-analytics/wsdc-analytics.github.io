@@ -196,11 +196,7 @@
         }
         .section { margin: 60px 0; }
         .section-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #2d3748;
-            margin: 0 0 24px 0;
-            letter-spacing: -0.5px;
+            display: none; /* Скрываем старые заголовки разделов */
         }
         .section-desc {
             font-size: 16px;
@@ -278,7 +274,7 @@
         }
         
         .table-title {
-            font-size: 24px;
+            font-size: 16px;
             font-weight: 700;
             color: #2d3748;
             margin: 0;
@@ -286,6 +282,23 @@
             flex: 1;
             min-width: 200px;
             align-self: flex-start;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-title-main {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1.4;
+        }
+        
+        .table-title-metric {
+            font-size: 12px;
+            font-weight: 400;
+            color: #718096;
+            line-height: 1.5;
+            margin-top: 4px;
         }
         
         .table-subtitle {
@@ -600,7 +613,10 @@
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
 <div class="table-header-row">
-<h3 class="table-title" id="globalTableTitle">Топ танцоров по поинтам</h3>
+<h3 class="table-title" id="globalTableTitle">
+<span class="table-title-main">Общий топ</span>
+<span class="table-title-metric" id="globalTableMetric">по поинтам</span>
+</h3>
 <!-- Metric Switcher -->
 <div class="metric-switcher-wrapper">
 <div class="metric-switcher">
@@ -750,7 +766,10 @@
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
 <div class="table-header-row">
-<h3 class="table-title" id="ruTableTitle">Топ российских танцоров по поинтам</h3>
+<h3 class="table-title" id="ruTableTitle">
+<span class="table-title-main">Российский топ</span>
+<span class="table-title-metric" id="ruTableMetric">по поинтам</span>
+</h3>
 <!-- Metric Switcher -->
 <div class="metric-switcher-wrapper">
 <div class="metric-switcher">
@@ -882,7 +901,10 @@
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
 <div class="table-header-row">
-<h3 class="table-title" id="sophTableTitle">Топ танцоров по поинтам (Sophisticated)</h3>
+<h3 class="table-title" id="sophTableTitle">
+<span class="table-title-main">Sophisticated</span>
+<span class="table-title-metric" id="sophTableMetric">по поинтам</span>
+</h3>
 <!-- Metric Switcher -->
 <div class="metric-switcher-wrapper">
 <div class="metric-switcher">
@@ -1006,7 +1028,10 @@
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
 <div class="table-header-row">
-<h3 class="table-title" id="euTableTitle">Топ танцоров по поинтам (европейские ивенты)</h3>
+<h3 class="table-title" id="euTableTitle">
+<span class="table-title-main">Европейский топ</span>
+<span class="table-title-metric" id="euTableMetric">по поинтам</span>
+</h3>
 <!-- Metric Switcher -->
 <div class="metric-switcher-wrapper">
 <div class="metric-switcher">
@@ -1159,7 +1184,10 @@
 <!-- Table Title and Metric Switcher -->
 <div class="table-title-wrapper">
 <div class="table-header-row">
-<h3 class="table-title" id="esTableTitle">Топ испанских танцоров по поинтам</h3>
+<h3 class="table-title" id="esTableTitle">
+<span class="table-title-main">Испанский топ</span>
+<span class="table-title-metric" id="esTableMetric">по поинтам</span>
+</h3>
 <!-- Metric Switcher -->
 <div class="metric-switcher-wrapper">
 <div class="metric-switcher">
@@ -1441,21 +1469,21 @@
             events: '# Events'
         };
 
-        const metricTitles = {
-            points: 'Топ танцоров по поинтам',
-            wins: 'Топ танцоров по победам',
-            events: 'Топ танцоров по ивентам'
+        const metricSubtitles = {
+            points: 'по поинтам',
+            wins: 'по победам',
+            events: 'по ивентам'
         };
 
         function switchMetric(metric) {
             const data = metricData[metric];
             const label = metricLabels[metric];
-            const title = metricTitles[metric];
+            const subtitle = metricSubtitles[metric];
             
-            // Update table title
-            const titleElement = document.getElementById('globalTableTitle');
-            if (titleElement && title) {
-                titleElement.textContent = title;
+            // Update table metric subtitle
+            const metricElement = document.getElementById('globalTableMetric');
+            if (metricElement && subtitle) {
+                metricElement.textContent = subtitle;
             }
             
             // Update header
@@ -1531,22 +1559,16 @@
             ]
         };
 
-        const sophMetricTitles = {
-            points: 'Топ танцоров по поинтам (Sophisticated)',
-            wins: 'Топ танцоров по победам (Sophisticated)',
-            events: 'Топ танцоров по ивентам (Sophisticated)'
-        };
-
         function switchSophMetric(metric) {
             const metricKey = metric.replace('soph-', '');
             const data = sophMetricData[metricKey];
             const label = metricLabels[metricKey];
-            const title = sophMetricTitles[metricKey];
+            const subtitle = metricSubtitles[metricKey];
             
-            // Update table title
-            const titleElement = document.getElementById('sophTableTitle');
-            if (titleElement && title) {
-                titleElement.textContent = title;
+            // Update table metric subtitle
+            const metricElement = document.getElementById('sophTableMetric');
+            if (metricElement && subtitle) {
+                metricElement.textContent = subtitle;
             }
             
             // Update header
@@ -1631,22 +1653,16 @@
             ]
         };
 
-        const ruMetricTitles = {
-            points: 'Топ российских танцоров по поинтам',
-            wins: 'Топ российских танцоров по победам',
-            events: 'Топ российских танцоров по ивентам'
-        };
-
         function switchRuMetric(metric) {
             const metricKey = metric.replace('ru-', '');
             const data = ruMetricData[metric];
             const label = metricLabels[metricKey];
-            const title = ruMetricTitles[metricKey];
+            const subtitle = metricSubtitles[metricKey];
             
-            // Update table title
-            const titleElement = document.getElementById('ruTableTitle');
-            if (titleElement && title) {
-                titleElement.textContent = title;
+            // Update table metric subtitle
+            const metricElement = document.getElementById('ruTableMetric');
+            if (metricElement && subtitle) {
+                metricElement.textContent = subtitle;
             }
             
             // Update header
@@ -1722,22 +1738,16 @@
             ]
         };
 
-        const euMetricTitles = {
-            points: 'Топ танцоров по поинтам (европейские ивенты)',
-            wins: 'Топ танцоров по победам (европейские ивенты)',
-            events: 'Топ танцоров по ивентам (европейские ивенты)'
-        };
-
         function switchEuMetric(metric) {
             const metricKey = metric.replace('eu-', '');
             const data = euMetricData[metric];
             const label = metricLabels[metricKey];
-            const title = euMetricTitles[metricKey];
+            const subtitle = metricSubtitles[metricKey];
             
-            // Update table title
-            const titleElement = document.getElementById('euTableTitle');
-            if (titleElement && title) {
-                titleElement.textContent = title;
+            // Update table metric subtitle
+            const metricElement = document.getElementById('euTableMetric');
+            if (metricElement && subtitle) {
+                metricElement.textContent = subtitle;
             }
             
             // Update header
@@ -1809,22 +1819,16 @@
             ]
         };
 
-        const esMetricTitles = {
-            points: 'Топ испанских танцоров по поинтам',
-            wins: 'Топ испанских танцоров по победам',
-            events: 'Топ испанских танцоров по ивентам'
-        };
-
         function switchEsMetric(metric) {
             const metricKey = metric.replace('es-', '');
             const data = esMetricData[metric];
             const label = metricLabels[metricKey];
-            const title = esMetricTitles[metricKey];
+            const subtitle = metricSubtitles[metricKey];
             
-            // Update table title
-            const titleElement = document.getElementById('esTableTitle');
-            if (titleElement && title) {
-                titleElement.textContent = title;
+            // Update table metric subtitle
+            const metricElement = document.getElementById('esTableMetric');
+            if (metricElement && subtitle) {
+                metricElement.textContent = subtitle;
             }
             
             // Update header
