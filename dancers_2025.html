@@ -290,18 +290,29 @@
         .table-subtitle {
             font-size: 14px;
             color: #718096;
-            margin: 8px 0 16px 0;
+            margin: 0 0 16px 0;
             line-height: 1.5;
-            text-align: right;
         }
         
         /* Metric switcher buttons */
+        .metric-switcher-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
         .metric-switcher {
             display: flex;
             gap: 12px;
             margin: 0;
             flex-wrap: wrap;
             justify-content: flex-end;
+        }
+        
+        .metric-switcher + .table-subtitle {
+            margin: 0;
+            text-align: right;
         }
         
         .metric-btn {
@@ -586,14 +597,14 @@
 <div class="table-header-row">
 <h3 class="table-title" id="globalTableTitle">Топ танцоров по поинтам</h3>
 <!-- Metric Switcher -->
+<div class="metric-switcher-wrapper">
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="events" data-label="# Events"># Events</button>
 </div>
-</div>
-<div style="text-align: right; max-width: 700px;">
 <p class="table-subtitle">Используйте переключатели чтобы выбрать метрику.</p>
+</div>
 </div>
 </div>
 
@@ -736,14 +747,14 @@
 <div class="table-header-row">
 <h3 class="table-title" id="ruTableTitle">Топ российских танцоров по поинтам</h3>
 <!-- Metric Switcher -->
+<div class="metric-switcher-wrapper">
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="ru-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="ru-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="ru-events" data-label="# Events"># Events</button>
 </div>
-</div>
-<div style="text-align: right; max-width: 700px;">
 <p class="table-subtitle">Используйте переключатели чтобы выбрать метрику.</p>
+</div>
 </div>
 </div>
 
@@ -868,14 +879,14 @@
 <div class="table-header-row">
 <h3 class="table-title" id="sophTableTitle">Топ танцоров по поинтам (Sophisticated)</h3>
 <!-- Metric Switcher -->
+<div class="metric-switcher-wrapper">
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="soph-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="soph-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="soph-events" data-label="# Events"># Events</button>
 </div>
-</div>
-<div style="text-align: right; max-width: 700px;">
 <p class="table-subtitle">Используйте переключатели чтобы выбрать метрику.</p>
+</div>
 </div>
 </div>
 
@@ -992,14 +1003,14 @@
 <div class="table-header-row">
 <h3 class="table-title" id="euTableTitle">Топ танцоров по поинтам (европейские ивенты)</h3>
 <!-- Metric Switcher -->
+<div class="metric-switcher-wrapper">
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="eu-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="eu-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="eu-events" data-label="# Events"># Events</button>
 </div>
-</div>
-<div style="text-align: right; max-width: 700px;">
 <p class="table-subtitle">Используйте переключатели чтобы выбрать метрику.</p>
+</div>
 </div>
 </div>
 
@@ -1145,14 +1156,14 @@
 <div class="table-header-row">
 <h3 class="table-title" id="esTableTitle">Топ испанских танцоров по поинтам</h3>
 <!-- Metric Switcher -->
+<div class="metric-switcher-wrapper">
 <div class="metric-switcher">
 <button class="metric-btn active" data-metric="es-points" data-label="# Points"># Points</button>
 <button class="metric-btn" data-metric="es-wins" data-label="# Wins"># Wins</button>
 <button class="metric-btn" data-metric="es-events" data-label="# Events"># Events</button>
 </div>
-</div>
-<div style="text-align: right; max-width: 700px;">
 <p class="table-subtitle">Используйте переключатели чтобы выбрать метрику.</p>
+</div>
 </div>
 </div>
 
