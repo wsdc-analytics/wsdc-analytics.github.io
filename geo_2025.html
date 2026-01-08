@@ -416,6 +416,88 @@
             .diff-pos, .diff-neg {
                 font-size: 8px;
             }
+            .comments-container { padding: 40px 20px; }
+            .comments-tabs { flex-wrap: wrap; }
+            .comments-tab { padding: 10px 16px; font-size: 14px; }
+        }
+
+        /* Comments section */
+        .comments-container {
+            background-color: #ffffff;
+            padding: 60px 80px;
+            margin-top: 0;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .comments-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .comments-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        .comments-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .comments-tab:hover {
+            color: #2d3748;
+            background: #f7fafc;
+        }
+
+        .comments-tab.active {
+            color: #2d3748;
+            border-bottom-color: #2d3748;
+            font-weight: 600;
+        }
+
+        .comments-content {
+            min-height: 200px;
+        }
+
+        .comments-panel {
+            display: none;
+        }
+
+        .comments-panel.active {
+            display: block;
+        }
+
+        .comments-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+
+        .comments-info a {
+            color: #2d3748;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .comments-container { padding: 40px 20px; }
+            .comments-tabs { flex-wrap: wrap; }
+            .comments-tab { padding: 10px 16px; font-size: 14px; }
         }
     </style>
 </head>
@@ -907,6 +989,34 @@
                 География WSDC 2025 показывает динамичный ландшафт: от уникальных достижений отдельных городов до перераспределения сил между регионами. Европа усиливает позиции, а локальные комьюнити доказывают, что размер города не определяет его место в танцевальной карте мира.
             </div>
 </section>
+
+<!-- Comments section -->
+<section class="comments-container">
+<h2 class="comments-title">Комментарии</h2>
+<div class="comments-tabs">
+<button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
+<button class="comments-tab" data-tab="cusdis">Cusdis (без регистрации)</button>
+</div>
+<div class="comments-info" id="giscus-info">
+            Для комментирования необходим GitHub аккаунт. <a href="https://github.com/signup" rel="noopener noreferrer" target="_blank">Создать бесплатный аккаунт</a>
+</div>
+<div class="comments-info" id="cusdis-info" style="display: none;">
+            Можно комментировать анонимно (указав имя и email) или через GitHub. Полностью бесплатно, без рекламы.
+        </div>
+<div class="comments-content">
+<!-- Giscus comments -->
+<div class="comments-panel active" id="giscus-panel">
+<script async="" crossorigin="anonymous" data-category="General" data-category-id="DIC_kwDOQyQ1M84C0e-Q" data-emit-metadata="0" data-input-position="bottom" data-lang="ru" data-mapping="pathname" data-reactions-enabled="1" data-repo="wsdc-analytics/wsdc-analytics.github.io" data-repo-id="R_kgDOQyQ1Mw" data-strict="0" data-theme="light" src="https://giscus.app/client.js">
+</script>
+</div>
+<!-- Cusdis comments -->
+<div class="comments-panel" id="cusdis-panel">
+<div data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-host="https://cusdis.com" data-page-id="geo_2025" data-page-title="WSDC 2025: Города и регионы" data-page-url="https://wsdc-analytics.github.io/geo_2025.html" id="cusdis_thread"></div>
+<script async="" defer="" src="https://cusdis.com/js/cusdis.es.js"></script>
+</div>
+</div>
+</section>
+
 </article>
 <footer class="article-footer">
 <div class="data-note">
@@ -988,6 +1098,35 @@
                 if (targetLang && targetLang !== currentLang) {
                     setLanguage(targetLang);
                 }
+            });
+        });
+
+        // Tab switching for comments
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.comments-tab');
+            const panels = document.querySelectorAll('.comments-panel');
+            const infos = document.querySelectorAll('.comments-info');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update panels
+                    panels.forEach(p => p.classList.remove('active'));
+                    document.getElementById(targetTab + '-panel').classList.add('active');
+
+                    // Update info
+                    infos.forEach(i => i.style.display = 'none');
+                    const infoId = targetTab + '-info';
+                    const infoElement = document.getElementById(infoId);
+                    if (infoElement) {
+                        infoElement.style.display = 'block';
+                    }
+                });
             });
         });
     })();
