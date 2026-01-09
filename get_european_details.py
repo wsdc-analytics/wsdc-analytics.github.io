@@ -40,7 +40,7 @@ def get_location_info(loc_id, event_name):
         return "Stockholm, Sweden"
     return ""
 
-targets = ['Sebastian Gerwald']
+targets = ['Alexa Partos']
 
 for target in targets:
     stats = {'points':0,'wins':0,'events':set(),'competitions':defaultdict(int),
