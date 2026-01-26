@@ -386,84 +386,85 @@
         /* Data visualization styles */
         .data-visualization {
             width: 100%;
-            margin: 60px 0;
-            background: #fafafa;
-            padding: 48px 40px;
+            margin: 48px 0;
+            background: #ffffff;
+            padding: 32px 24px;
             border: none;
-            border-top: 2px solid #2d3748;
-            border-bottom: 2px solid #2d3748;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .chart-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: #2d3748;
-            margin: 0 0 40px 0;
+            margin: 0 0 28px 0;
             text-align: left;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.4px;
         }
 
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin: 0 0 24px 0;
+            gap: 16px;
+            margin: 0 0 20px 0;
         }
 
         .kpi-card {
-            background: #ffffff;
-            padding: 32px 24px;
+            background: #f7fafc;
+            padding: 20px 16px;
             text-align: left;
-            border: 1px solid #e5e5e5;
-            border-top: 3px solid #2d3748;
+            border: 1px solid #e2e8f0;
+            border-top: 2px solid #2d3748;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 180px;
-            transition: box-shadow 0.2s ease;
+            justify-content: flex-start;
+            min-height: 120px;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
         .kpi-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border-color: #cbd5e0;
         }
 
         .kpi-label {
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: #666;
-            margin-bottom: 20px;
-            min-height: 32px;
+            letter-spacing: 1px;
+            color: #718096;
+            margin-bottom: 12px;
+            min-height: auto;
             display: flex;
             align-items: flex-start;
             justify-content: flex-start;
-            line-height: 1.5;
+            line-height: 1.4;
             font-weight: 600;
         }
 
         .kpi-value {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 700;
             color: #2d3748;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             line-height: 1;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
 
         .kpi-change {
-            font-size: 15px;
+            font-size: 14px;
             color: #2d3748;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
         }
         
         .kpi-previous {
-            font-size: 12px;
-            color: #666;
+            font-size: 11px;
+            color: #718096;
             margin-top: auto;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .kpi-change.negative {
@@ -473,21 +474,21 @@
         .comparison-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0 0 24px 0;
-            font-size: 16px;
-            border: 1px solid #e5e5e5;
+            margin: 0 0 20px 0;
+            font-size: 15px;
+            border: 1px solid #e2e8f0;
         }
 
         .comparison-table th {
-            background: #2d3748;
-            color: white;
-            padding: 16px 20px;
+            background: #f7fafc;
+            color: #2d3748;
+            padding: 12px 16px;
             text-align: left;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #2d3748;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .comparison-table th[style*="text-align: right"] {
@@ -495,8 +496,8 @@
         }
 
         .comparison-table td {
-            padding: 16px 20px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 12px 16px;
+            border-bottom: 1px solid #edf2f7;
         }
 
         .comparison-table tbody tr:last-child td {
@@ -504,15 +505,15 @@
         }
 
         .comparison-table tbody tr:hover {
-            background: #fafafa;
+            background: #f7fafc;
         }
 
         .comparison-table tbody tr:nth-child(even) {
-            background: #fafafa;
+            background: #fafbfc;
         }
 
         .comparison-table tbody tr:nth-child(even):hover {
-            background: #f5f5f5;
+            background: #f1f5f9;
         }
 
         .metric-label {
@@ -535,13 +536,13 @@
         }
 
         .bar-chart {
-            margin: 0 0 24px 0;
+            margin: 0 0 20px 0;
         }
 
         .bar-row {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
 
         .bar-row:last-child {
@@ -549,8 +550,8 @@
         }
 
         .bar-label {
-            width: 160px;
-            font-size: 15px;
+            width: 140px;
+            font-size: 14px;
             color: #2d3748;
             font-weight: 500;
             flex-shrink: 0;
@@ -558,9 +559,9 @@
 
         .bar-container {
             flex: 1;
-            height: 36px;
+            height: 28px;
             background: transparent;
-            margin: 0 24px;
+            margin: 0 16px;
             position: relative;
             overflow: visible;
         }
@@ -575,9 +576,9 @@
         }
 
         .bar-value {
-            width: 200px;
+            width: 180px;
             text-align: right;
-            font-size: 14px;
+            font-size: 13px;
             color: #2d3748;
             font-weight: 500;
             position: relative;
@@ -592,29 +593,77 @@
         }
         
         .bar-value-secondary {
-            color: #666;
-            font-size: 13px;
+            color: #718096;
+            font-size: 12px;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
         }
         
         .bar-value-percent {
-            color: #666;
-            font-size: 13px;
+            color: #718096;
+            font-size: 12px;
             font-weight: 500;
         }
         
         .bar-value-percent.negative {
-            color: #d32f2f;
+            color: #e53e3e;
         }
 
 
         @media (max-width: 768px) {
+            .data-visualization {
+                padding: 24px 16px;
+                margin: 32px -16px;
+            }
+
+            .chart-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
             .kpi-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .kpi-card {
+                padding: 16px 12px;
+                min-height: 100px;
+            }
+
+            .kpi-value {
+                font-size: 28px;
+            }
+
+            .kpi-change {
+                font-size: 13px;
+            }
+
+            .kpi-previous {
+                font-size: 10px;
             }
             
             .comparison-table {
                 font-size: 14px;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 10px 12px;
+            }
+
+            .bar-label {
+                width: 100px;
+                font-size: 13px;
+            }
+
+            .bar-container {
+                height: 24px;
+                margin: 0 12px;
+            }
+
+            .bar-value {
+                width: 140px;
+                font-size: 12px;
             }
         }
 
@@ -728,7 +777,7 @@
                     
                     <p>At the city level, the numbers are even more evocative. Warsaw and Kraków recorded surges exceeding 80%, while Freiburg’s 82% jump highlights the vitality of mid-sized European cities. Stockholm and Budapest continue to rank among the world's most active cities, proving that growth is not just limited to traditional capitals but is occurring in a dense network of accessible regional events.</p>
                     
-                    <p>In North America, the story is one of redistribution. While historical centers like San Francisco saw a slight activity dip, newer competitive clusters in cities like Washington and Orlando recorded growth exceeding 20%. This suggests a maturing ecosystem where the dance is spreading more evenly across the continent, moving away from a few centralized hubs toward a wider range of active states and cities.</p>
+                    <p>In North America, the story is one of redistribution. While traditional leaders like California saw a slight activity dip (-0.7%), newer competitive clusters in states like Texas (+24.6%), Florida (+49.1%), and Oregon (+33.6%) recorded impressive growth. This suggests a maturing ecosystem where the dance is spreading more evenly across the continent, moving away from a few centralized hubs toward a wider range of active states and regions.</p>
                 </div>
 
                 <!-- European Region Visualization -->
@@ -841,50 +890,78 @@
                         </div>
                     </div>
                     
-                    <h3 style="font-size: 20px; margin: 48px 0 24px; color: #2d3748; font-weight: 700; letter-spacing: -0.3px;">Top Cities by Points</h3>
+                    <h3 style="font-size: 20px; margin: 48px 0 24px; color: #2d3748; font-weight: 700; letter-spacing: -0.3px;">Top States by Points</h3>
                     <div class="bar-chart">
-                        <!-- Max: 1,437 (San Francisco 2024) -->
+                        <!-- Max: 5,472 (California 2025) -->
                         <div class="bar-row">
-                            <div class="bar-label">Washington</div>
+                            <div class="bar-label">California</div>
                             <div class="bar-container">
-                                <div class="bar-fill-2025" style="width: 98.1%"></div>
+                                <div class="bar-fill-2025" style="width: 100.0%"></div>
                             </div>
-                            <div class="bar-value"><span class="bar-value-primary">1,410</span> <span class="bar-value-secondary">/ 1,146</span> <span class="bar-value-percent">(23.0%)</span></div>
+                            <div class="bar-value"><span class="bar-value-primary">5,472</span> <span class="bar-value-secondary">/ 5,509</span> <span class="bar-value-percent negative">(-0.7%)</span></div>
                         </div>
                         <div class="bar-row">
-                            <div class="bar-label">San Francisco</div>
+                            <div class="bar-label">Texas</div>
                             <div class="bar-container">
-                                <div class="bar-fill-2025" style="width: 89.9%"></div>
+                                <div class="bar-fill-2025" style="width: 58.6%"></div>
                             </div>
-                            <div class="bar-value"><span class="bar-value-primary">1,292</span> <span class="bar-value-secondary">/ 1,437</span> <span class="bar-value-percent negative">(-10.1%)</span></div>
+                            <div class="bar-value"><span class="bar-value-primary">3,206</span> <span class="bar-value-secondary">/ 2,574</span> <span class="bar-value-percent">(+24.6%)</span></div>
                         </div>
                         <div class="bar-row">
-                            <div class="bar-label">Phoenix</div>
+                            <div class="bar-label">Florida</div>
                             <div class="bar-container">
-                                <div class="bar-fill-2025" style="width: 85.2%"></div>
+                                <div class="bar-fill-2025" style="width: 31.8%"></div>
                             </div>
-                            <div class="bar-value"><span class="bar-value-primary">1,225</span> <span class="bar-value-secondary">/ 1,159</span> <span class="bar-value-percent">(5.7%)</span></div>
+                            <div class="bar-value"><span class="bar-value-primary">1,741</span> <span class="bar-value-secondary">/ 1,168</span> <span class="bar-value-percent">(+49.1%)</span></div>
                         </div>
                         <div class="bar-row">
-                            <div class="bar-label">Dallas</div>
+                            <div class="bar-label">Oregon</div>
                             <div class="bar-container">
-                                <div class="bar-fill-2025" style="width: 84.7%"></div>
+                                <div class="bar-fill-2025" style="width: 31.7%"></div>
                             </div>
-                            <div class="bar-value"><span class="bar-value-primary">1,217</span> <span class="bar-value-secondary">/ 1,002</span> <span class="bar-value-percent">(21.5%)</span></div>
+                            <div class="bar-value"><span class="bar-value-primary">1,736</span> <span class="bar-value-secondary">/ 1,299</span> <span class="bar-value-percent">(+33.6%)</span></div>
                         </div>
                         <div class="bar-row">
-                            <div class="bar-label">Chicago</div>
+                            <div class="bar-label">Massachusetts</div>
                             <div class="bar-container">
-                                <div class="bar-fill-2025" style="width: 81.9%"></div>
+                                <div class="bar-fill-2025" style="width: 29.4%"></div>
                             </div>
-                            <div class="bar-value"><span class="bar-value-primary">1,178</span> <span class="bar-value-secondary">/ 1,111</span> <span class="bar-value-percent">(6.0%)</span></div>
+                            <div class="bar-value"><span class="bar-value-primary">1,609</span> <span class="bar-value-secondary">/ 1,409</span> <span class="bar-value-percent">(+14.2%)</span></div>
                         </div>
                         <div class="bar-row">
-                            <div class="bar-label">Atlanta</div>
+                            <div class="bar-label">District of Columbia</div>
                             <div class="bar-container">
-                                <div class="bar-fill-2025" style="width: 76.6%"></div>
+                                <div class="bar-fill-2025" style="width: 25.8%"></div>
                             </div>
-                            <div class="bar-value"><span class="bar-value-primary">1,101</span> <span class="bar-value-secondary">/ 1,054</span> <span class="bar-value-percent">(4.5%)</span></div>
+                            <div class="bar-value"><span class="bar-value-primary">1,410</span> <span class="bar-value-secondary">/ 1,146</span> <span class="bar-value-percent">(+23.0%)</span></div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Illinois</div>
+                            <div class="bar-container">
+                                <div class="bar-fill-2025" style="width: 21.5%"></div>
+                            </div>
+                            <div class="bar-value"><span class="bar-value-primary">1,178</span> <span class="bar-value-secondary">/ 1,268</span> <span class="bar-value-percent negative">(-7.1%)</span></div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Georgia</div>
+                            <div class="bar-container">
+                                <div class="bar-fill-2025" style="width: 20.1%"></div>
+                            </div>
+                            <div class="bar-value"><span class="bar-value-primary">1,101</span> <span class="bar-value-secondary">/ 1,054</span> <span class="bar-value-percent">(+4.5%)</span></div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Arizona</div>
+                            <div class="bar-container">
+                                <div class="bar-fill-2025" style="width: 19.8%"></div>
+                            </div>
+                            <div class="bar-value"><span class="bar-value-primary">1,082</span> <span class="bar-value-secondary">/ 950</span> <span class="bar-value-percent">(+13.9%)</span></div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">North Carolina</div>
+                            <div class="bar-container">
+                                <div class="bar-fill-2025" style="width: 18.1%"></div>
+                            </div>
+                            <div class="bar-value"><span class="bar-value-primary">990</span> <span class="bar-value-secondary">/ 1,007</span> <span class="bar-value-percent negative">(-1.7%)</span></div>
                         </div>
                     </div>
                     
