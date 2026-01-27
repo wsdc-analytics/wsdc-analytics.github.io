@@ -733,6 +733,92 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+
+            .comments-container {
+                padding: 40px 20px;
+            }
+
+            .comments-tabs {
+                flex-wrap: wrap;
+            }
+
+            .comments-tab {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+
+        /* Comments section */
+        .comments-container {
+            background-color: #ffffff;
+            padding: 60px 80px;
+            margin-top: 0;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .comments-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .comments-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        .comments-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .comments-tab:hover {
+            color: #2d3748;
+            background: #f7fafc;
+        }
+
+        .comments-tab.active {
+            color: #2d3748;
+            border-bottom-color: #2d3748;
+            font-weight: 600;
+        }
+
+        .comments-content {
+            min-height: 200px;
+        }
+
+        .comments-panel {
+            display: none;
+        }
+
+        .comments-panel.active {
+            display: block;
+        }
+
+        .comments-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+
+        .comments-info a {
+            color: #2d3748;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -1176,6 +1262,40 @@
                     <p>Es difícil calcular exactamente cuántas personas vuelan a través del océano, pero la tendencia es obvia: el mundo del WCS se está volviendo más estrecho. El estilo estadounidense se encuentra con la creatividad europea, dando lugar a algo nuevo. Y esto es solo el comienzo: Asia y Australia también muestran un crecimiento constante. WCS finalmente dejó de ser un "baile estadounidense" — ahora es un lenguaje global de comunicación.</p>
                 </div>
             </section>
+
+            <!-- Comments section -->
+            <section class="comments-container">
+                <h2 class="comments-title">Comentarios</h2>
+                <div class="comments-tabs">
+                    <button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
+                    <button class="comments-tab" data-tab="cusdis">Cusdis (sin registro)</button>
+                </div>
+                <div class="comments-info" id="giscus-info">
+                    Se requiere una cuenta de GitHub para comentar. <a href="https://github.com/signup"
+                        rel="noopener noreferrer" target="_blank">Crear una cuenta gratuita</a>
+                </div>
+                <div class="comments-info" id="cusdis-info" style="display: none;">
+                    Puedes comentar de forma anónima (proporcionando nombre y email) o a través de GitHub. Completamente gratis, sin anuncios.
+                </div>
+                <div class="comments-content">
+                    <!-- Giscus comments -->
+                    <div class="comments-panel active" id="giscus-panel">
+                        <script async crossorigin="anonymous" data-category="General"
+                            data-category-id="DIC_kwDOQyQ1M84C0e-Q" data-emit-metadata="0" data-input-position="bottom"
+                            data-lang="es" data-mapping="pathname" data-reactions-enabled="1"
+                            data-repo="wsdc-analytics/wsdc-analytics.github.io" data-repo-id="R_kgDOQyQ1Mw"
+                            data-strict="0" data-theme="light" src="https://giscus.app/client.js">
+                            </script>
+                    </div>
+                    <!-- Cusdis comments -->
+                    <div class="comments-panel" id="cusdis-panel">
+                        <div data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-host="https://cusdis.com"
+                            data-page-id="overview_2025_es" data-page-title="West Coast Swing en 2025: diferencias continentales en la dinámica de desarrollo"
+                            data-page-url="https://wsdc-analytics.github.io/overview_2025_es.html" id="cusdis_thread"></div>
+                        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+                    </div>
+                </div>
+            </section>
         </article>
 
         <!-- Article Footer -->
@@ -1241,6 +1361,35 @@
                 btn.addEventListener('click', () => {
                     if (!btn.disabled) {
                         setLanguage(btn.dataset.lang);
+                    }
+                });
+            });
+        })();
+
+        // Comments tabs switching
+        (function() {
+            const tabs = document.querySelectorAll('.comments-tab');
+            const panels = document.querySelectorAll('.comments-panel');
+            const infos = document.querySelectorAll('.comments-info');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update panels
+                    panels.forEach(p => p.classList.remove('active'));
+                    document.getElementById(targetTab + '-panel').classList.add('active');
+
+                    // Update info
+                    infos.forEach(i => i.style.display = 'none');
+                    const infoId = targetTab + '-info';
+                    const infoElement = document.getElementById(infoId);
+                    if (infoElement) {
+                        infoElement.style.display = 'block';
                     }
                 });
             });
