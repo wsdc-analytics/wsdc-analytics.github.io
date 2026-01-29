@@ -39,6 +39,11 @@
     }
     </script>
     
+    <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preload" href="static/data/articles.json" as="fetch" crossorigin>
+    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
@@ -48,6 +53,37 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568; /* Улучшенный контраст вместо #666 */
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -57,10 +93,31 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.7;
-            color: #2d3748;
-            background-color: #fafafa;
+            color: var(--text-primary);
+            background-color: var(--bg-secondary);
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 1000;
+            border-radius: 0 0 4px 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .skip-link:focus {
+            top: 0;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .container {
@@ -87,24 +144,31 @@
         .language-switcher button {
             padding: 8px 16px;
             background: transparent;
-            border: 2px solid #e5e5e5;
+            border: 2px solid var(--border-color);
             border-radius: 6px;
             font-size: 14px;
             font-weight: 500;
-            color: #666;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
+            min-height: 36px; /* Touch-friendly */
         }
 
         .language-switcher button:hover {
-            border-color: #2d3748;
-            color: #2d3748;
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: translateY(-1px);
+        }
+
+        .language-switcher button:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
         }
 
         .language-switcher button.active {
-            background: #2d3748;
-            border-color: #2d3748;
+            background: var(--color-primary);
+            border-color: var(--color-primary);
             color: white;
         }
 
@@ -119,14 +183,14 @@
         h1 {
             font-size: 48px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin-bottom: 16px;
             letter-spacing: -1.5px;
         }
 
         .subtitle {
             font-size: 20px;
-            color: #666;
+            color: var(--text-secondary);
             font-weight: 400;
             max-width: 600px;
             margin: 0 auto;
@@ -145,16 +209,16 @@
             width: 100%;
             padding: 16px 50px 16px 20px;
             font-size: 16px;
-            border: 2px solid #e5e5e5;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
-            background: white;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: var(--bg-primary);
+            transition: border-color var(--transition-base), box-shadow var(--transition-base);
             font-family: inherit;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #2d3748;
+            border-color: var(--color-primary);
             box-shadow: 0 0 0 3px rgba(45, 55, 72, 0.1);
         }
 
@@ -163,7 +227,7 @@
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #666;
+            color: var(--text-secondary);
             pointer-events: none;
         }
 
@@ -173,34 +237,35 @@
         }
 
         .search-result-item {
-            background: white;
-            border: 1px solid #e5e5e5;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 12px;
-            transition: box-shadow 0.2s ease;
+            transition: box-shadow var(--transition-base), transform var(--transition-base);
         }
 
         .search-result-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .search-result-item h3 {
             font-size: 18px;
             margin-bottom: 8px;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .search-result-item p {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin: 0;
         }
 
         .no-results {
             text-align: center;
             padding: 40px;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 16px;
         }
 
@@ -216,31 +281,39 @@
         }
 
         .article-card {
-            background: white;
-            border: 1px solid #e5e5e5;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid transparent;
             border-radius: 8px;
             padding: 32px;
-            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            transition: all var(--transition-base);
             text-decoration: none;
             color: inherit;
             display: block;
+            position: relative;
         }
 
         .article-card:hover {
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-left-color: var(--color-primary);
+        }
+
+        .article-card:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
         }
 
         .article-card h2 {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 12px;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .article-card .meta {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -248,7 +321,7 @@
 
         .article-card p {
             font-size: 16px;
-            color: #666;
+            color: var(--text-secondary);
             line-height: 1.6;
         }
 
@@ -256,10 +329,45 @@
         footer {
             margin-top: 80px;
             padding-top: 40px;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color);
             text-align: center;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 14px;
+        }
+
+        footer a {
+            color: var(--color-primary);
+            text-decoration: underline;
+            transition: opacity var(--transition-base);
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+        }
+
+        /* Визуально скрытый элемент для screen readers */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Touch-friendly размеры для мобильных */
+        @media (hover: none) and (pointer: coarse) {
+            .language-switcher button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .article-card {
+                min-height: 120px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -283,30 +391,42 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     <div class="container">
         <header>
-            <div class="language-switcher">
-                <button data-lang="ru" class="lang-btn">RU</button>
-                <button data-lang="en" class="lang-btn">EN</button>
-                <button data-lang="es" class="lang-btn">ES</button>
+            <div class="language-switcher" role="group" aria-label="Выбор языка">
+                <button data-lang="ru" class="lang-btn" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
+                <button data-lang="en" class="lang-btn" aria-label="Switch to English" aria-pressed="false">EN</button>
+                <button data-lang="es" class="lang-btn" aria-label="Cambiar a español" aria-pressed="false">ES</button>
             </div>
             <h1>WSDC Analytics</h1>
             <p class="subtitle" id="subtitle">Data-driven insights and analysis on the West Coast Swing competitive scene</p>
         </header>
 
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" class="search-input" id="searchInput" placeholder="Search articles..." autocomplete="off">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+        <main id="main-content">
+            <div class="search-container">
+                <div class="search-box">
+                    <label for="searchInput" class="visually-hidden">Поиск статей</label>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Search articles..." 
+                        autocomplete="off"
+                        aria-label="Поиск статей"
+                        aria-expanded="false"
+                        aria-controls="searchResults">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="search-results hidden" id="searchResults" role="region" aria-live="polite" aria-label="Результаты поиска"></div>
             </div>
-            <div class="search-results hidden" id="searchResults"></div>
-        </div>
 
-        <div class="articles-grid" id="articlesGrid">
-            <!-- Статьи загружаются динамически через JavaScript -->
-        </div>
+            <div class="articles-grid" id="articlesGrid" role="list">
+                <!-- Статьи загружаются динамически через JavaScript -->
+            </div>
+        </main>
 
         <footer>
             <p>Data source: <a href="https://www.worldsdc.com/registry-points/" target="_blank" rel="noopener noreferrer" style="color: #2d3748; text-decoration: underline;">World Swing Dance Council (WSDC) Database</a></p>
@@ -320,7 +440,12 @@
 
         // Загрузка статей
         fetch('static/data/articles.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 articlesByLang = data;
                 // Обновление интерфейса после загрузки данных
@@ -329,7 +454,14 @@
             })
             .catch(error => {
                 console.error('Error loading articles:', error);
-                document.getElementById('articlesGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: red;">Error loading articles. Please try again later.</div>';
+                const errorMessages = {
+                    ru: 'Ошибка загрузки статей. Пожалуйста, попробуйте позже или откройте страницу через веб-сервер.',
+                    en: 'Error loading articles. Please try again later or open the page through a web server.',
+                    es: 'Error al cargar artículos. Por favor, intente más tarde o abra la página a través de un servidor web.'
+                };
+                const currentLang = getCurrentLanguage();
+                const errorText = errorMessages[currentLang] || errorMessages.en;
+                document.getElementById('articlesGrid').innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">${errorText}</div>`;
             });
 
         const searchInput = document.getElementById('searchInput');
@@ -373,8 +505,10 @@
             langButtons.forEach(btn => {
                 if (btn.dataset.lang === lang) {
                     btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
                 } else {
                     btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
                 }
             });
 
@@ -452,14 +586,14 @@
             });
 
             let html = '';
-            sortedArticles.forEach(article => {
+            sortedArticles.forEach((article, index) => {
                 const formattedDate = article.datePublished ? formatDate(article.datePublished, lang) : '';
                 const metaText = formattedDate && article.category 
                     ? `${formattedDate} • ${article.category}`
                     : (article.category || '');
                 
                 html += `
-                    <a href="${article.url}?lang=${lang}" class="article-card">
+                    <a href="${article.url}?lang=${lang}" class="article-card" role="listitem" aria-label="Читать статью: ${article.title}">
                         <div class="meta">${metaText}</div>
                         <h2>${article.title}</h2>
                         <p>${article.description}</p>
@@ -489,6 +623,7 @@
         function searchArticles(query) {
             if (!query || query.trim() === '') {
                 searchResults.classList.add('hidden');
+                searchResults.setAttribute('aria-expanded', 'false');
                 articlesGrid.style.display = 'grid';
                 // Восстановить статьи текущего языка
                 const currentLang = getCurrentLanguage();
@@ -511,18 +646,32 @@
         }
 
         function displayResults(results, query) {
+            const currentLang = getCurrentLanguage();
+            const noResultsText = {
+                ru: 'Ничего не найдено для',
+                en: 'No articles found for',
+                es: 'No se encontraron artículos para'
+            };
+            
             if (results.length === 0) {
-                searchResults.innerHTML = '<div class="no-results">No articles found for "' + query + '"</div>';
+                const text = noResultsText[currentLang] || noResultsText.en;
+                searchResults.innerHTML = `<div class="no-results" role="status">${text} "${query}"</div>`;
                 searchResults.classList.remove('hidden');
+                searchResults.setAttribute('aria-expanded', 'true');
                 articlesGrid.style.display = 'none';
                 return;
             }
 
-            let html = '';
-            const currentLang = getCurrentLanguage();
+            const countText = {
+                ru: `Найдено: ${results.length} ${results.length === 1 ? 'статья' : 'статей'}`,
+                en: `Found: ${results.length} ${results.length === 1 ? 'article' : 'articles'}`,
+                es: `Encontrado: ${results.length} ${results.length === 1 ? 'artículo' : 'artículos'}`
+            };
+            
+            let html = `<div class="search-results-header" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">${countText[currentLang] || countText.en}</div>`;
             results.forEach(article => {
                 html += `
-                    <a href="${article.url}?lang=${currentLang}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;">
+                    <a href="${article.url}?lang=${currentLang}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;" role="article">
                         <h3>${article.title}</h3>
                         <p>${article.description}</p>
                     </a>
@@ -531,15 +680,24 @@
 
             searchResults.innerHTML = html;
             searchResults.classList.remove('hidden');
+            searchResults.setAttribute('aria-expanded', 'true');
             articlesGrid.style.display = 'none';
         }
 
-        // Обработчик поиска
+        // Обработчик поиска с улучшенной обратной связью
         let searchTimeout;
         searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
             clearTimeout(searchTimeout);
+            
+            if (query) {
+                searchInput.setAttribute('aria-expanded', 'true');
+            } else {
+                searchInput.setAttribute('aria-expanded', 'false');
+            }
+            
             searchTimeout = setTimeout(() => {
-                searchArticles(e.target.value);
+                searchArticles(query);
             }, 300);
         });
 

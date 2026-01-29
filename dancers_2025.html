@@ -9,7 +9,13 @@
         content="Топ-танцоры WSDC 2025: лидеры по поинтам, победам и количеству ивентов с поинтами в skill-level номинациях."
         name="description" />
     <meta content="WSDC, West Coast Swing, танцоры, рейтинг, топ, статистика, анализ, 2025" name="keywords" />
-    <!-- Open Graph / Facebook -->
+        <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preload" href="dancers_header_bg.png" as="image" fetchpriority="high">
+
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
+<!-- Open Graph / Facebook -->
     <meta content="article" property="og:type" />
     <meta content="https://wsdc-analytics.github.io/dancers_2025.html" property="og:url" />
     <meta content="WSDC 2025: Топ-танцоры" property="og:title" />
@@ -59,8 +65,60 @@
         gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <!-- Подключаем Twemoji -->
-    <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
     <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+        
+            opacity: 0;
+            pointer-events: none;}
+        .skip-link:focus {
+            top: 0;
+        
+            opacity: 1;
+            pointer-events: auto;}
+
+
         img.emoji {
             height: 1em;
             width: 1em;
@@ -77,8 +135,8 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.7;
-            color: #2d3748;
-            background-color: #ffffff;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
         }
@@ -86,16 +144,18 @@
         .magazine-container {
             max-width: 980px;
             margin: 0 auto;
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
         }
 
         /* Header */
         .article-header {
-            background: #2d3748 url('dancers_header_bg.png') center center / cover no-repeat;
+            background: var(--color-primary) url('dancers_header_bg.png') center center / cover no-repeat;
             color: white;
             padding: 100px 80px 80px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid var(--border-color);
             position: relative;
+            will-change: transform;
+            background-attachment: scroll;
         }
 
         .article-header::before {
@@ -136,7 +196,7 @@
             font-weight: 500;
             color: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
@@ -148,7 +208,7 @@
         .language-switcher-article button.active {
             background: white;
             border-color: white;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .language-switcher-article button:disabled {
@@ -161,7 +221,7 @@
             text-decoration: none;
             font-size: 14px;
             opacity: 0.9;
-            transition: opacity 0.2s ease;
+            transition: opacity var(--transition-base);
             position: relative;
             z-index: 2;
         }
@@ -203,10 +263,10 @@
         .intro {
             font-size: 22px;
             line-height: 1.4;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 60px 0;
             font-weight: 400;
-            border-left: 3px solid #2d3748;
+            border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
         }
@@ -222,7 +282,7 @@
 
         .section-desc {
             font-size: 16px;
-            color: #666;
+            color: var(--text-secondary);
             font-style: italic;
             margin-bottom: 24px;
             max-width: 700px;
@@ -246,11 +306,11 @@
         .pull-quote {
             font-size: 24px;
             font-style: italic;
-            color: #2d3748;
+            color: var(--text-primary);
             text-align: justify;
             padding: 0;
             margin: 40px 0;
-            border-left: 4px solid #2d3748;
+            border-left: 4px solid var(--color-primary);
             padding-left: 32px;
             line-height: 1.6;
             max-width: 700px;
@@ -258,7 +318,7 @@
         }
 
         .highlight-insight {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             border-left: 4px solid #4299e1;
             padding: 20px 24px;
             margin: 32px 0;
@@ -270,7 +330,7 @@
             margin-bottom: 12px;
             font-size: 17px;
             line-height: 1.7;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .highlight-insight p:last-child {
@@ -309,7 +369,7 @@
         .table-title {
             font-size: 16px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0;
             letter-spacing: -0.3px;
             flex: 1;
@@ -322,21 +382,21 @@
         .table-title-main {
             font-size: 24px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             line-height: 1.4;
         }
 
         .table-title-metric {
             font-size: 14px;
             font-weight: 400;
-            color: #718096;
+            color: var(--text-tertiary);
             line-height: 1.5;
             margin-top: 4px;
         }
 
         .table-subtitle {
             font-size: 12px;
-            color: #718096;
+            color: var(--text-tertiary);
             margin: 0 0 16px 0;
             line-height: 1.5;
         }
@@ -364,14 +424,14 @@
 
         .metric-btn {
             padding: 8px 16px;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             border: 2px solid #e2e8f0;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 500;
             color: #4a5568;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
@@ -396,7 +456,7 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin: 24px 0;
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             max-width: 700px;
         }
@@ -410,7 +470,7 @@
         }
 
         .rank-table th {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             color: #4a5568;
             font-weight: 600;
             text-transform: uppercase;
@@ -440,14 +500,14 @@
         }
 
         .rank-col.top-3 {
-            color: #2d3748;
+            color: var(--text-primary);
             font-size: 18px;
         }
 
         .event-cell,
         .dancer-cell {
             font-weight: 500;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .metric-cell {
@@ -455,15 +515,15 @@
             text-align: right;
             font-family: 'SF Mono', 'Roboto Mono', monospace;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .table-note {
             margin-top: 15px;
             font-size: 14px;
-            color: #718096;
+            color: var(--text-tertiary);
             font-style: italic;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             padding: 12px 16px;
             border-radius: 4px;
             border-left: 3px solid #cbd5e0;
@@ -471,21 +531,21 @@
 
         /* Footer */
         .article-footer {
-            background-color: #fafafa;
+            background-color: var(--bg-secondary);
             padding: 48px 80px;
-            border-top: 2px solid #2d3748;
+            border-top: 2px solid var(--color-primary);
             margin-top: 80px;
         }
 
         .data-note {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             max-width: 700px;
             line-height: 1.8;
         }
 
         .data-note a {
-            color: #2d3748;
+            color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -619,16 +679,16 @@
 
         /* Comments section */
         .comments-container {
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
             padding: 60px 80px;
             margin-top: 0;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color);
         }
 
         .comments-title {
             font-size: 28px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin-bottom: 24px;
             letter-spacing: -0.5px;
         }
@@ -647,20 +707,20 @@
             border-bottom: 3px solid transparent;
             font-size: 15px;
             font-weight: 500;
-            color: #666;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
         .comments-tab:hover {
-            color: #2d3748;
-            background: #f7fafc;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
         }
 
         .comments-tab.active {
-            color: #2d3748;
-            border-bottom-color: #2d3748;
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -678,15 +738,15 @@
 
         .comments-info {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 16px;
             padding: 12px;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             border-radius: 4px;
         }
 
         .comments-info a {
-            color: #2d3748;
+            color: var(--text-primary);
             text-decoration: underline;
         }
 
@@ -708,20 +768,23 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+    
     <div class="magazine-container">
         <header class="article-header">
             <div class="article-header-top">
                 <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;">Назад
                     на главную</a>
-                <div class="language-switcher-article">
-                    <button class="lang-btn-article active" data-lang="ru">RU</button>
-                    <button class="lang-btn-article" data-lang="en">EN</button>
-                    <button class="lang-btn-article" data-lang="es">ES</button>
+                <div class="language-switcher-article" role="group" aria-label="Выбор языка">
+                    <button class="lang-btn-article active" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="true">RU</button>
+                    <button class="lang-btn-article" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
+                    <button class="lang-btn-article" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
                 </div>
             </div>
             <h1 class="article-title">WSDC 2025: Танцоры</h1>
             <div class="article-subtitle">Наиболее успешные танцоры WCS в 2025 году</div>
         </header>
+        <main id="main-content">
         <article class="article-content">
             <div class="intro">
                 В этой статье мы рассмотрим для кого из танцоров WCS 2025 год был наиболее успешен в Skill Level
@@ -919,7 +982,7 @@
                 </div>
             </section>
 
-            <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;" />
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;" />
             <!-- Section 4: European Events Top -->
             <section class="section">
                 <h2 class="section-title">Топ-10 танцоров по результатам европейских ивентов</h2>
@@ -1080,7 +1143,7 @@
                 </div>
 
             </section>
-            <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;" />
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;" />
             <!-- Section 2: Russian Top with Metric Switcher -->
             <section class="section">
                 <h2 class="section-title">Топ-10 российских танцоров по skill-level номинациям</h2>
@@ -1236,7 +1299,7 @@
                 </div>
             </section>
 
-            <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;" />
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;" />
 
             <!-- Comments section -->
             <section class="comments-container">
@@ -1274,6 +1337,7 @@
             </section>
 
         </article>
+        </main>
         <footer class="article-footer">
             <div class="data-note">
                 <strong>Источник данных:</strong> Анализ базы данных <a href="https://www.worldsdc.com/registry-points/"
@@ -1337,8 +1401,10 @@
             langButtons.forEach(btn => {
                 if (btn.dataset.lang === currentLang) {
                     btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
                 } else {
                     btn.disabled = false;
+                    btn.setAttribute('aria-pressed', 'false');
                 }
                 btn.addEventListener('click', () => {
                     if (!btn.disabled) {
@@ -1452,8 +1518,10 @@
                 globalButtons.forEach(btn => {
                     if (btn.dataset.metric === metric) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     } else {
                         btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed', 'false');
                     }
                 });
             }
@@ -1536,8 +1604,10 @@
                 sophButtons.forEach(btn => {
                     if (btn.dataset.metric === metric) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     } else {
                         btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed', 'false');
                     }
                 });
             }
@@ -1631,8 +1701,10 @@
                 ruButtons.forEach(btn => {
                     if (btn.dataset.metric === metric) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     } else {
                         btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed', 'false');
                     }
                 });
             }
@@ -1715,8 +1787,10 @@
                 euButtons.forEach(btn => {
                     if (btn.dataset.metric === metric) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     } else {
                         btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed', 'false');
                     }
                 });
             }
@@ -1796,8 +1870,10 @@
                 esButtons.forEach(btn => {
                     if (btn.dataset.metric === metric) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     } else {
                         btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed', 'false');
                     }
                 });
             }
@@ -1880,8 +1956,10 @@
                 usButtons.forEach(btn => {
                     if (btn.dataset.metric === metric) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     } else {
                         btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed', 'false');
                     }
                 });
             }

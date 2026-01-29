@@ -48,9 +48,48 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
+    <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preload" href="overview_header_bg.png" as="image" fetchpriority="high">
+
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <!-- Preload критического фонового изображения -->
+    <link rel="preload" href="overview_header_bg.png" as="image" fetchpriority="high">
+    
     <!-- Подключаем Twemoji для гарантированного отображения флагов на Windows -->
-    <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
     <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -60,26 +99,48 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
             line-height: 1.7;
-            color: #2d3748;
-            background-color: #ffffff;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+        
+            opacity: 0;
+            pointer-events: none;}
+        .skip-link:focus {
+            top: 0;
+        
+            opacity: 1;
+            pointer-events: auto;}
+
         .magazine-container {
             max-width: 980px;
             margin: 0 auto;
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
         }
 
         /* Header */
         .article-header {
-            background: #2d3748 url('overview_header_bg.png') center center / cover no-repeat;
+            background: var(--color-primary) url('overview_header_bg.png') center center / cover no-repeat;
+            background-attachment: scroll; /* Оптимизация производительности */
             color: white;
             padding: 100px 80px 80px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid var(--border-color);
             position: relative;
+            will-change: transform; /* Оптимизация для GPU */
         }
         
         .article-header::before {
@@ -89,9 +150,16 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: #2d3748;
+            background: var(--color-primary);
             opacity: 0.7;
             z-index: 0;
+        }
+        
+        /* Оптимизация загрузки фонового изображения */
+        @media (prefers-reduced-motion: reduce) {
+            .article-header {
+                background-attachment: scroll;
+            }
         }
         
         .article-header > * {
@@ -121,19 +189,26 @@
             font-weight: 500;
             color: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
+            min-height: 32px;
         }
 
         .language-switcher-article button:hover {
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .language-switcher-article button:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
         }
 
         .language-switcher-article button.active {
             background: white;
             border-color: white;
-            color: #2d3748;
+            color: var(--color-primary);
         }
 
         .language-switcher-article button:disabled {
@@ -183,10 +258,10 @@
         .intro {
             font-size: 22px;
             line-height: 1.75;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 80px 0;
             font-weight: 400;
-            border-left: 3px solid #2d3748;
+            border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
             text-align: justify;
@@ -199,7 +274,7 @@
         .section-title {
             font-size: 36px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 32px 0;
             letter-spacing: -1px;
             line-height: 1.2;
@@ -208,7 +283,7 @@
         .section-content {
             font-size: 17px;
             line-height: 1.75;
-            color: #2d3748;
+            color: var(--text-primary);
             margin-bottom: 0;
             max-width: 700px;
             text-align: justify;
@@ -242,7 +317,7 @@
 
         .image-caption {
             font-size: 13px;
-            color: #666;
+            color: var(--text-secondary);
             font-style: normal;
             margin-top: 24px;
             padding: 0;
@@ -254,11 +329,11 @@
         .pull-quote {
             font-size: 28px;
             font-style: italic;
-            color: #2d3748;
+            color: var(--text-primary);
             text-align: justify;
             padding: 0;
             margin: 60px 0;
-            border-left: 4px solid #2d3748;
+            border-left: 4px solid var(--color-primary);
             padding-left: 32px;
             line-height: 1.6;
             max-width: 700px;
@@ -274,26 +349,26 @@
 
         /* Footer */
         .article-footer {
-            background-color: #fafafa;
+            background-color: var(--bg-secondary);
             padding: 48px 80px;
-            border-top: 2px solid #2d3748;
+            border-top: 2px solid var(--color-primary);
             margin-top: 80px;
         }
 
         .data-note {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             font-style: normal;
             line-height: 1.7;
             max-width: 700px;
         }
 
         .data-note a {
-            color: #2d3748;
+            color: var(--color-primary);
             text-decoration: underline;
             text-decoration-thickness: 1px;
             text-underline-offset: 2px;
-            transition: opacity 0.2s ease;
+            transition: opacity var(--transition-base);
         }
 
         .data-note a:hover {
@@ -386,19 +461,21 @@
         .data-visualization {
             max-width: 700px;
             margin: 48px 0;
-            background: #ffffff;
+            background: var(--bg-primary);
             padding: 32px 24px;
             border: none;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             box-sizing: border-box;
             overflow-x: hidden;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
         }
 
         .chart-title {
             font-size: 22px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 28px 0;
             text-align: left;
             letter-spacing: -0.4px;
@@ -414,28 +491,49 @@
         }
 
         .kpi-card {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             padding: 20px 16px;
             text-align: left;
-            border: 1px solid #e2e8f0;
-            border-top: 2px solid #2d3748;
+            border: 1px solid var(--border-color);
+            border-top: 2px solid var(--color-primary);
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             min-height: 120px;
-            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
         }
 
         .kpi-card:hover {
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-            border-color: #cbd5e0;
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-color-hover);
+            transform: translateY(-2px);
+        }
+
+        .kpi-card:hover::before {
+            transform: scaleX(1);
         }
 
         .kpi-label {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #718096;
+            color: var(--text-tertiary);
             margin-bottom: 12px;
             min-height: auto;
             display: flex;
@@ -448,7 +546,7 @@
         .kpi-value {
             font-size: 36px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin-bottom: 8px;
             line-height: 1;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
@@ -457,7 +555,7 @@
 
         .kpi-change {
             font-size: 14px;
-            color: #2d3748;
+            color: var(--text-primary);
             font-weight: 600;
             margin-bottom: 6px;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
@@ -465,7 +563,7 @@
         
         .kpi-previous {
             font-size: 11px;
-            color: #718096;
+            color: var(--text-tertiary);
             margin-top: auto;
             line-height: 1.5;
         }
@@ -480,19 +578,22 @@
             border-collapse: collapse;
             margin: 0 0 20px 0;
             font-size: 15px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
 
         .comparison-table th {
-            background: #f7fafc;
-            color: #2d3748;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             padding: 12px 16px;
             text-align: left;
             font-weight: 600;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid var(--border-color);
         }
 
         .comparison-table th[style*="text-align: right"] {
@@ -501,40 +602,57 @@
 
         .comparison-table td {
             padding: 12px 16px;
-            border-bottom: 1px solid #edf2f7;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color var(--transition-fast);
         }
 
         .comparison-table tbody tr:last-child td {
             border-bottom: none;
         }
 
+        .comparison-table tbody tr {
+            transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+            cursor: default;
+        }
+
         .comparison-table tbody tr:hover {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
+            box-shadow: inset 2px 0 0 var(--color-primary);
         }
 
         .comparison-table tbody tr:nth-child(even) {
-            background: #fafbfc;
+            background: var(--bg-secondary);
         }
 
         .comparison-table tbody tr:nth-child(even):hover {
-            background: #f1f5f9;
+            background: var(--bg-tertiary);
+        }
+
+        /* Улучшенные hover-эффекты для ячеек таблицы */
+        .comparison-table td {
+            position: relative;
+        }
+
+        .comparison-table tbody tr:hover td.metric-value,
+        .comparison-table tbody tr:hover td.metric-change {
+            font-weight: 700;
         }
 
         .metric-label {
             font-weight: 500;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .metric-value {
             text-align: right;
-            color: #2d3748;
+            color: var(--text-primary);
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
             font-weight: 600;
         }
 
         .metric-change {
             text-align: right;
-            color: #2d3748;
+            color: var(--text-primary);
             font-weight: 600;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
         }
@@ -551,6 +669,18 @@
             margin-bottom: 14px;
             width: 100%;
             max-width: 100%;
+            padding: 4px 0;
+            transition: transform var(--transition-fast);
+            cursor: default;
+        }
+
+        .bar-row:hover {
+            transform: translateX(2px);
+        }
+
+        .bar-row:hover .bar-label {
+            font-weight: 600;
+            color: var(--color-primary);
         }
 
         .bar-row:last-child {
@@ -560,7 +690,7 @@
         .bar-label {
             width: 140px;
             font-size: 14px;
-            color: #2d3748;
+            color: var(--text-primary);
             font-weight: 500;
             flex-shrink: 0;
         }
@@ -573,15 +703,21 @@
             margin: 0 16px;
             position: relative;
             overflow: visible;
+            border-radius: 4px;
         }
 
         .bar-fill-2025 {
             height: 100%;
-            background: #e2e8f0;
+            background: var(--bg-tertiary);
             position: absolute;
             top: 0;
             left: 0;
-            transition: width 0.6s ease;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+        }
+
+        .bar-row:hover .bar-fill-2025 {
+            background: var(--border-color-hover);
         }
 
         .bar-value {
@@ -590,28 +726,28 @@
             top: 50%;
             transform: translateY(-50%);
             font-size: 14px;
-            color: #1a202c;
+            color: var(--color-primary-dark);
             font-weight: 600;
             z-index: 10;
             white-space: nowrap;
         }
         
         .bar-value-primary {
-            color: #1a202c;
+            color: var(--color-primary-dark);
             font-weight: 700;
             font-size: 14px;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
         }
         
         .bar-value-secondary {
-            color: #2d3748;
+            color: var(--text-primary);
             font-size: 13px;
             font-weight: 500;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
         }
         
         .bar-value-percent {
-            color: #4a5568;
+            color: var(--text-secondary);
             font-size: 13px;
             font-weight: 500;
         }
@@ -774,20 +910,26 @@
             border-bottom: 3px solid transparent;
             font-size: 15px;
             font-weight: 500;
-            color: #666;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
+            padding: 8px 16px;
         }
 
         .comments-tab:hover {
-            color: #2d3748;
-            background: #f7fafc;
+            color: var(--color-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .comments-tab:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
         }
 
         .comments-tab.active {
-            color: #2d3748;
-            border-bottom-color: #2d3748;
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
             font-weight: 600;
         }
 
@@ -805,29 +947,35 @@
 
         .comments-info {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 16px;
             padding: 12px;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             border-radius: 4px;
         }
 
         .comments-info a {
-            color: #2d3748;
+            color: var(--color-primary);
             text-decoration: underline;
+            transition: opacity var(--transition-base);
+        }
+
+        .comments-info a:hover {
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     <div class="magazine-container">
         <!-- Article Header -->
         <header class="article-header">
             <div class="article-header-top">
-                <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;">Назад на главную</a>
-                <div class="language-switcher-article">
-                    <button class="lang-btn-article active" data-lang="ru">RU</button>
-                    <button class="lang-btn-article" data-lang="en">EN</button>
-                    <button class="lang-btn-article" data-lang="es">ES</button>
+                <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;" aria-label="Вернуться на главную страницу">Назад на главную</a>
+                <div class="language-switcher-article" role="group" aria-label="Выбор языка">
+                    <button class="lang-btn-article active" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="true">RU</button>
+                    <button class="lang-btn-article" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
+                    <button class="lang-btn-article" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
                 </div>
             </div>
             <h1 class="article-title">WSDC 2025: Континентальные различия в динамике развития</h1>
@@ -835,6 +983,7 @@
         </header>
 
         <!-- Main Article Content -->
+        <main id="main-content">
         <article class="article-content">
             <div class="intro">
                 West Coast Swing уже давно перерос статус локального калифорнийского развлечения, превратившись в танцевальную индустрию мирового масштаба. Международные поездки на турниры стали привычной нормой, а танцевальная карта мира продолжает расширяться. Статистика 2025 года фиксирует в некотором роде переломный момент: традиционные центры WCS уступают в динамике и масштабности новым регионам, показывающим впечатляющие темпы роста.
@@ -1253,9 +1402,9 @@
             <!-- Comments section -->
             <section class="comments-container">
                 <h2 class="comments-title">Комментарии</h2>
-                <div class="comments-tabs">
-                    <button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
-                    <button class="comments-tab" data-tab="cusdis">Cusdis (без регистрации)</button>
+                <div class="comments-tabs" role="tablist" aria-label="Выбор системы комментариев">
+                    <button class="comments-tab active" data-tab="giscus" role="tab" aria-selected="true" aria-controls="giscus-panel" id="giscus-tab">GitHub (Giscus)</button>
+                    <button class="comments-tab" data-tab="cusdis" role="tab" aria-selected="false" aria-controls="cusdis-panel" id="cusdis-tab">Cusdis (без регистрации)</button>
                 </div>
                 <div class="comments-info" id="giscus-info">
                     Для комментирования необходим GitHub аккаунт. <a href="https://github.com/signup"
@@ -1267,7 +1416,7 @@
                 </div>
                 <div class="comments-content">
                     <!-- Giscus comments -->
-                    <div class="comments-panel active" id="giscus-panel">
+                    <div class="comments-panel active" id="giscus-panel" role="tabpanel" aria-labelledby="giscus-tab">
                         <script async crossorigin="anonymous" data-category="General"
                             data-category-id="DIC_kwDOQyQ1M84C0e-Q" data-emit-metadata="0" data-input-position="bottom"
                             data-lang="ru" data-mapping="pathname" data-reactions-enabled="1"
@@ -1276,7 +1425,7 @@
                             </script>
                     </div>
                     <!-- Cusdis comments -->
-                    <div class="comments-panel" id="cusdis-panel">
+                    <div class="comments-panel" id="cusdis-panel" role="tabpanel" aria-labelledby="cusdis-tab" hidden>
                         <div data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-host="https://cusdis.com"
                             data-page-id="overview_2025" data-page-title="WSDC 2025: Континентальные различия в динамике развития"
                             data-page-url="https://wsdc-analytics.github.io/overview_2025.html" id="cusdis_thread"></div>
@@ -1285,6 +1434,7 @@
                 </div>
             </section>
         </article>
+        </main>
 
         <!-- Article Footer -->
         <footer class="article-footer">
@@ -1347,8 +1497,10 @@
         langButtons.forEach(btn => {
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
             } else {
                 btn.disabled = false;
+                btn.setAttribute('aria-pressed', 'false');
             }
             btn.addEventListener('click', () => {
                 if (!btn.disabled) {
@@ -1369,12 +1521,21 @@
                 const targetTab = this.getAttribute('data-tab');
 
                 // Update tabs
-                tabs.forEach(t => t.classList.remove('active'));
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
                 this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
 
                 // Update panels
-                panels.forEach(p => p.classList.remove('active'));
-                document.getElementById(targetTab + '-panel').classList.add('active');
+                panels.forEach(p => {
+                    p.classList.remove('active');
+                    p.setAttribute('hidden', '');
+                });
+                const activePanel = document.getElementById(targetTab + '-panel');
+                activePanel.classList.add('active');
+                activePanel.removeAttribute('hidden');
 
                 // Update info
                 infos.forEach(i => i.style.display = 'none');

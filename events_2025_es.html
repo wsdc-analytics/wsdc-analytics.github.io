@@ -6,6 +6,12 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Análisis de los principales eventos WSDC en 2025: cambios en los rankings globales, tendencias regionales, estadísticas sobre puntos y nuevos bailarines." name="description"/>
 <meta content="WSDC, West Coast Swing, eventos, ranking, estadísticas, análisis, 2025" name="keywords"/>
+    <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preload" href="events_background.png" as="image" fetchpriority="high">
+
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
 <!-- Open Graph / Facebook -->
 <meta content="article" property="og:type"/>
 <meta content="https://wsdc-analytics.github.io/events_2025_es.html" property="og:url"/>
@@ -56,8 +62,60 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
 <!-- Connect Twemoji for guaranteed flag rendering on Windows -->
-<script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js"></script>
+<script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
 <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+        
+            opacity: 0;
+            pointer-events: none;}
+        .skip-link:focus {
+            top: 0;
+        
+            opacity: 1;
+            pointer-events: auto;}
+
+
         /* Styles for Twemoji */
         img.emoji {
             height: 1em;
@@ -74,8 +132,8 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.7;
-            color: #2d3748;
-            background-color: #ffffff;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
         }
@@ -83,16 +141,18 @@
         .magazine-container {
             max-width: 980px;
             margin: 0 auto;
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
         }
 
         /* Header */
         .article-header {
-            background: #2d3748 url('events_background.png') center bottom / 100% 100% no-repeat;
+            background: var(--color-primary) url('events_background.png') center bottom / 100% 100% no-repeat;
             color: white;
             padding: 100px 80px 80px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid var(--border-color);
             position: relative;
+            will-change: transform;
+            background-attachment: scroll;
         }
         
         .article-header::before {
@@ -102,7 +162,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: #2d3748;
+            background: var(--color-primary);
             opacity: 0.85;
             z-index: 0;
         }
@@ -134,7 +194,7 @@
             font-weight: 500;
             color: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
@@ -146,7 +206,7 @@
         .language-switcher-article button.active {
             background: white;
             border-color: white;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .language-switcher-article button:disabled {
@@ -181,10 +241,10 @@
         .intro {
             font-size: 22px;
             line-height: 1.75;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 60px 0;
             font-weight: 400;
-            border-left: 3px solid #2d3748;
+            border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
             text-align: justify;
@@ -197,14 +257,14 @@
         .section-title {
             font-size: 32px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 24px 0;
             letter-spacing: -0.5px;
         }
 
         .section-desc {
             font-size: 16px;
-            color: #666;
+            color: var(--text-secondary);
             font-style: italic;
             margin-bottom: 24px;
             max-width: 700px;
@@ -223,7 +283,7 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin: 24px 0;
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
         }
 
@@ -236,7 +296,7 @@
         }
 
         .rank-table th {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             color: #4a5568;
             font-weight: 600;
             text-transform: uppercase;
@@ -274,13 +334,13 @@
         }
 
         .rank-col.top-3 {
-            color: #2d3748;
+            color: var(--text-primary);
             font-size: 18px;
         }
 
         .event-name {
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             display: block;
             margin-bottom: 4px;
             font-size: 15px;
@@ -289,7 +349,7 @@
 
         .event-comment {
             font-size: 13px;
-            color: #718096;
+            color: var(--text-tertiary);
             line-height: 1.4;
             display: block;
         }
@@ -322,7 +382,7 @@
             font-family: 'SF Mono', 'Roboto Mono', monospace;
             font-weight: 700;
             font-size: 15px;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .growth-positive {
@@ -348,21 +408,21 @@
         /* Diff indicators */
         .diff-pos { color: #38a169; font-size: 11px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
         .diff-neg { color: #e53e3e; font-size: 11px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
-        .diff-new { color: #718096; font-size: 10px; font-weight: 700; margin-left: 4px; text-transform: uppercase; vertical-align: middle; }
+        .diff-new { color: var(--text-tertiary); font-size: 10px; font-weight: 700; margin-left: 4px; text-transform: uppercase; vertical-align: middle; }
 
         .table-note {
             margin-top: 15px;
             font-size: 14px;
-            color: #718096;
+            color: var(--text-tertiary);
             font-style: italic;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             padding: 12px 16px;
             border-radius: 4px;
             border-left: 3px solid #cbd5e0;
         }
 
         .rank-table tbody tr:hover {
-            background-color: #f7fafc;
+            background-color: var(--bg-tertiary);
             transition: background-color 0.2s ease;
         }
 
@@ -370,11 +430,11 @@
         .back-link {
             display: inline-flex;
             align-items: center;
-            color: #2d3748;
+            color: var(--text-primary);
             text-decoration: none;
             font-size: 15px;
             margin-bottom: 24px;
-            transition: opacity 0.2s ease;
+            transition: opacity var(--transition-base);
         }
 
         .back-link:hover {
@@ -399,16 +459,16 @@
 
         /* Comments section */
         .comments-container {
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
             padding: 60px 80px;
             margin-top: 0;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color);
         }
 
         .comments-title {
             font-size: 28px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin-bottom: 24px;
             letter-spacing: -0.5px;
         }
@@ -427,20 +487,20 @@
             border-bottom: 3px solid transparent;
             font-size: 15px;
             font-weight: 500;
-            color: #666;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
         .comments-tab:hover {
-            color: #2d3748;
-            background: #f7fafc;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
         }
 
         .comments-tab.active {
-            color: #2d3748;
-            border-bottom-color: #2d3748;
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -458,7 +518,7 @@
 
         .comments-info {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 24px;
             line-height: 1.6;
         }
@@ -507,7 +567,7 @@
             width: 100% !important;
             min-height: 120px;
             padding: 12px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             font-family: inherit;
             font-size: 14px;
@@ -520,7 +580,7 @@
         #cusdis_thread input[type="email"] {
             width: 100% !important;
             padding: 10px 12px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             font-family: inherit;
             font-size: 14px;
@@ -537,7 +597,7 @@
         #cusdis_thread button[type="submit"],
         #cusdis_thread button {
             padding: 10px 20px;
-            background-color: #2d3748;
+            background-color: var(--text-primary);
             color: white;
             border: none;
             border-radius: 6px;
@@ -553,20 +613,20 @@
 
         /* Footer */
         .article-footer {
-            background-color: #fafafa;
+            background-color: var(--bg-secondary);
             padding: 48px 80px;
-            border-top: 2px solid #2d3748;
+            border-top: 2px solid var(--color-primary);
             margin-top: 0;
         }
 
         .data-note {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             max-width: 700px;
         }
 
         .data-note a {
-            color: #2d3748;
+            color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -605,14 +665,16 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+    
 <div class="magazine-container">
 <header class="article-header">
 <div class="article-header-top">
 <a class="back-link" href="index.html" id="backLink" style="color: white; position: relative; z-index: 2;">Volver al inicio</a>
-<div class="language-switcher-article">
-<button class="lang-btn-article" data-lang="ru">RU</button>
-<button class="lang-btn-article" data-lang="en">EN</button>
-<button class="lang-btn-article" data-lang="es">ES</button>
+<div class="language-switcher-article" role="group" aria-label="Выбор языка">
+<button class="lang-btn-article" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
+<button class="lang-btn-article" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
+<button class="lang-btn-article" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
 </div>
 </div>
 <h1 class="article-title">WSDC 2025: Eventos</h1>
@@ -621,7 +683,8 @@
 <span class="article-date">Publicado: 2 de enero de 2026</span>
 </div>
 </header>
-<article class="article-content">
+<main id="main-content">
+        <article class="article-content">
 <div class="intro">
             La temporada 2025 trajo cambios significativos a los rankings de los principales eventos WSDC. Con MADjam  - uno de los eventos más grandes de los últimos años -  en pausa, el panorama cambió, creando nuevas oportunidades para que otros eventos ascendieran.
         </div>
@@ -849,7 +912,7 @@
 </table>
 </div>
 </section>
-<hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;"/>
 <!-- Section 3: European Top -->
 <section class="section">
 <h2 class="section-title">Top Europeo (Puntos)</h2>
@@ -1068,7 +1131,7 @@
 </table>
 </div>
 </section>
-<hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;"/>
 <!-- Section 5: Spanish Events (2025) -->
 <section class="section">
 <h2 class="section-title">Eventos en España (2025)</h2>
@@ -1300,6 +1363,9 @@
         langButtons.forEach(btn => {
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+            } else {
+                btn.setAttribute('aria-pressed', 'false');
             }
             btn.addEventListener('click', () => {
                 if (!btn.disabled) {

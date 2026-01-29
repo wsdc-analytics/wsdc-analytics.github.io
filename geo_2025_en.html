@@ -7,6 +7,12 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Geographic analysis of WSDC 2025: statistics on cities and regions on a global scale." name="description"/>
 <meta content="WSDC, West Coast Swing, geography, statistics, countries, cities, analysis, 2025" name="keywords"/>
+    <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preload" href="wsdc_geo_wordcloud.png" as="image" fetchpriority="high">
+
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
 <!-- Open Graph / Facebook -->
 <meta content="article" property="og:type"/>
 <meta content="https://wsdc-analytics.github.io/geo_2025_en.html" property="og:url"/>
@@ -53,8 +59,60 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
 <!-- Twemoji -->
-<script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js"></script>
+<script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
 <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+        
+            opacity: 0;
+            pointer-events: none;}
+        .skip-link:focus {
+            top: 0;
+        
+            opacity: 1;
+            pointer-events: auto;}
+
+
         /* Base styles */
         img.emoji {
             height: 1em;
@@ -66,24 +124,26 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.7;
-            color: #2d3748;
-            background-color: #ffffff;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
         }
         .magazine-container {
             max-width: 980px;
             margin: 0 auto;
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
         }
         
         /* Header */
         .article-header {
-            background: #2d3748 url('wsdc_geo_wordcloud.png') center bottom / 100% 100% no-repeat;
+            background: var(--color-primary) url('wsdc_geo_wordcloud.png') center bottom / 100% 100% no-repeat;
             color: white;
             padding: 100px 80px 80px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid var(--border-color);
             position: relative;
+            will-change: transform;
+            background-attachment: scroll;
         }
         
         .article-header::before {
@@ -124,7 +184,7 @@
             font-weight: 500;
             color: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
@@ -136,7 +196,7 @@
         .language-switcher-article button.active {
             background: white;
             border-color: white;
-            color: #2d3748;
+            color: var(--text-primary);
         }
 
         .language-switcher-article button:disabled {
@@ -149,7 +209,7 @@
             text-decoration: none;
             font-size: 14px;
             opacity: 0.9;
-            transition: opacity 0.2s ease;
+            transition: opacity var(--transition-base);
             position: relative;
             z-index: 2;
         }
@@ -188,10 +248,10 @@
         .intro {
             font-size: 22px;
             line-height: 1.75;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 60px 0;
             font-weight: 400;
-            border-left: 3px solid #2d3748;
+            border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
             text-align: justify;
@@ -200,13 +260,13 @@
         .section-title {
             font-size: 32px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0 0 24px 0;
             letter-spacing: -0.5px;
         }
         .section-desc {
             font-size: 16px;
-            color: #666;
+            color: var(--text-secondary);
             font-style: italic;
             margin-bottom: 24px;
             max-width: 700px;
@@ -219,11 +279,11 @@
         .pull-quote {
             font-size: 24px;
             font-style: italic;
-            color: #2d3748;
+            color: var(--text-primary);
             text-align: justify;
             padding: 0;
             margin: 40px 0;
-            border-left: 4px solid #2d3748;
+            border-left: 4px solid var(--color-primary);
             padding-left: 32px;
             line-height: 1.6;
             max-width: 700px;
@@ -231,7 +291,7 @@
         }
         
         .highlight-insight {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             border-left: 4px solid #4299e1;
             padding: 20px 24px;
             margin: 32px 0;
@@ -243,7 +303,7 @@
             margin-bottom: 12px;
             font-size: 17px;
             line-height: 1.7;
-            color: #2d3748;
+            color: var(--text-primary);
         }
         
         .highlight-insight p:last-child {
@@ -260,7 +320,7 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin: 24px 0;
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
         }
         .rank-table {
@@ -271,7 +331,7 @@
             min-width: 600px;
         }
         .rank-table th {
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             color: #4a5568;
             font-weight: 600;
             text-transform: uppercase;
@@ -297,17 +357,17 @@
             line-height: 1.2;
             white-space: nowrap;
         }
-        .rank-col.top-3 { color: #2d3748; font-size: 18px; }
+        .rank-col.top-3 { color: var(--text-primary); font-size: 18px; }
         .event-name {
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             display: block;
             margin-bottom: 4px;
             font-size: 15px;
         }
         .event-comment {
             font-size: 13px;
-            color: #718096;
+            color: var(--text-tertiary);
             line-height: 1.4;
             display: block;
         }
@@ -328,15 +388,15 @@
             text-align: right;
             font-family: 'SF Mono', 'Roboto Mono', monospace;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
         }
         
         .table-note {
             margin-top: 15px;
             font-size: 14px;
-            color: #718096;
+            color: var(--text-tertiary);
             font-style: italic;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             padding: 12px 16px;
             border-radius: 4px;
             border-left: 3px solid #cbd5e0;
@@ -344,13 +404,13 @@
 
         /* Footer */
         .article-footer {
-            background-color: #fafafa;
+            background-color: var(--bg-secondary);
             padding: 48px 80px;
-            border-top: 2px solid #2d3748;
+            border-top: 2px solid var(--color-primary);
             margin-top: 80px;
         }
-        .data-note { font-size: 14px; color: #666; max-width: 700px; }
-        .data-note a { color: #2d3748; font-weight: 600; }
+        .data-note { font-size: 14px; color: var(--text-secondary); max-width: 700px; }
+        .data-note a { color: var(--text-primary); font-weight: 600; }
 
         @media (max-width: 768px) {
             .article-header { padding: 50px 20px; }
@@ -423,16 +483,16 @@
 
         /* Comments section */
         .comments-container {
-            background-color: #ffffff;
+            background-color: var(--bg-primary);
             padding: 60px 80px;
             margin-top: 0;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color);
         }
 
         .comments-title {
             font-size: 28px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--text-primary);
             margin-bottom: 24px;
             letter-spacing: -0.5px;
         }
@@ -451,20 +511,20 @@
             border-bottom: 3px solid transparent;
             font-size: 15px;
             font-weight: 500;
-            color: #666;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-base);
             font-family: inherit;
         }
 
         .comments-tab:hover {
-            color: #2d3748;
-            background: #f7fafc;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
         }
 
         .comments-tab.active {
-            color: #2d3748;
-            border-bottom-color: #2d3748;
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -482,15 +542,15 @@
 
         .comments-info {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 16px;
             padding: 12px;
-            background: #f7fafc;
+            background: var(--bg-tertiary);
             border-radius: 4px;
         }
 
         .comments-info a {
-            color: #2d3748;
+            color: var(--text-primary);
             text-decoration: underline;
         }
 
@@ -502,20 +562,23 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+    
 <div class="magazine-container">
 <header class="article-header">
 <div class="article-header-top">
 <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;">Back to home</a>
-<div class="language-switcher-article">
-<button class="lang-btn-article" data-lang="ru">RU</button>
-<button class="lang-btn-article active" data-lang="en">EN</button>
-<button class="lang-btn-article" data-lang="es">ES</button>
+<div class="language-switcher-article" role="group" aria-label="Выбор языка">
+<button class="lang-btn-article" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
+<button class="lang-btn-article active" data-lang="en" aria-label="Switch to English" aria-pressed="true">EN</button>
+<button class="lang-btn-article" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
 </div>
 </div>
 <h1 class="article-title">WSDC 2025: Cities and Regions</h1>
 <div class="article-subtitle">WCS Geography 2025: from cities to regions, balance of power and activity map.</div>
 </header>
-<article class="article-content">
+<main id="main-content">
+        <article class="article-content">
 <div class="intro">
             Kraków jumped from 21st to 8th place. California has led for 33 out of 35 years. The geographic analysis of WSDC events in 2025 reveals not just numbers, but a shift in the balance of power: European countries hold 7 positions in the global top 10 regions. This article examines where WCS is danced today and how the map of dance activity has changed, from individual cities to major regions.
         </div>
@@ -635,7 +698,7 @@
 <em>Dropped out of top 10: <strong>Austin, TX</strong> (960 pts, 11th place), <strong>Portland, OR</strong> (956 pts, 12th place), <strong>Denver, CO</strong> (916 pts, 14th place).</em>
 </div>
 </section>
-<hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;"/>
 <!-- Section 2: Regional Comparison -->
 <section class="section">
 <h2 class="section-title">Regional Activity</h2>
@@ -754,7 +817,7 @@
 <em>Dropped out of regional top 10: <strong>Oregon, USA</strong> (1,736 pts, 11th place), <strong>Massachusetts, USA</strong> (1,505 pts, 12th place).</em>
 </div>
 </section>
-<hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;"/>
 <!-- Section 3A: US States -->
 <section class="section">
 <h2 class="section-title">Top 10 US States</h2>
@@ -860,7 +923,7 @@
 <em>Dropped out of top 10: <strong>Washington</strong> (1,033 pts in 2024, 965 pts, 11th place in 2025).</em>
 </div>
 </section>
-<hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;"/>
 <!-- Section 3B: European Countries -->
 <section class="section">
 <h2 class="section-title">Top 10 European Countries</h2>
@@ -966,7 +1029,7 @@
 <em>Dropped out of top 10: <strong>Italy</strong> (449 pts in 2024, 545 pts, 12th place in 2025).</em>
 </div>
 </section>
-<hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 60px 0;"/>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;"/>
 <!-- Section: Patterns -->
 <section class="section">
 <h2 class="section-title">Patterns of Regional Development</h2>
@@ -1018,6 +1081,7 @@
 </section>
 
 </article>
+        </main>
 <footer class="article-footer">
 <div class="data-note">
 <strong>Data source:</strong> Analysis of <a href="https://www.worldsdc.com/registry-points/" rel="noopener noreferrer" target="_blank">WSDC</a> database for 2025.<br/><br/>
@@ -1089,8 +1153,10 @@
         langButtons.forEach(btn => {
             // Remove all active classes, then add the needed one
             btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
             }
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
