@@ -2,7 +2,7 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 
-DATA_DIR = Path('/Users/ania/.cursor/my-project/My-Tableau-Projects/WSDC/WSDC Points')
+DATA_DIR = Path('/Users/ania/.cursor/projects/tableau/My-Tableau-Projects/WSDC/WSDC Points')
 RESULTS_FILE = DATA_DIR / 'dancers_results_info.csv'
 DANCERS_FILE = DATA_DIR / 'dancer_role_info.csv'
 LOCATION_FILE = DATA_DIR / 'location_info.csv'
