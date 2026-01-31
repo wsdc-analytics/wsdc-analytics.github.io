@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="Интерактивная временная шкала эволюции правил WSDC с 2002 по 2026 год: от базовых диапазонов до современной пороговой системы." name="description"/>
+    <meta content="WSDC, правила, эволюция, история, изменения, 2002-2026, Points Registry, Event Rules" name="keywords"/>
+    <!-- Open Graph / Facebook -->
+    <meta content="article" property="og:type"/>
+    <meta content="https://wsdc-analytics.github.io/rules_evolution_2025.html" property="og:url"/>
+    <meta content="Эволюция правил WSDC: 24 года развития" property="og:title"/>
+    <meta content="Интерактивная временная шкала эволюции правил WSDC с 2002 по 2026 год" property="og:description"/>
+    <!-- Twitter -->
+    <meta content="summary_large_image" property="twitter:card"/>
+    <meta content="https://wsdc-analytics.github.io/rules_evolution_2025.html" property="twitter:url"/>
+    <meta content="Эволюция правил WSDC: 24 года развития" property="twitter:title"/>
+    <meta content="Интерактивная временная шкала эволюции правил WSDC с 2002 по 2026 год" property="twitter:description"/>
+    <title>Эволюция правил WSDC: 24 года развития</title>
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Эволюция правил WSDC: 24 года развития",
+      "description": "Интерактивная временная шкала эволюции правил WSDC с 2002 по 2026 год",
+      "url": "https://wsdc-analytics.github.io/rules_evolution_2025.html",
+      "datePublished": "2026-01-28",
+      "dateModified": "2026-01-28",
+      "author": {
+        "@type": "Organization",
+        "name": "WSDC Analytics"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "WSDC Analytics"
+      }
+    }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-LMLCY5PE8Z');
+    </script>
+    <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
+    <!-- Подключаем Twemoji для гарантированного отображения флагов на Windows -->
+    <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
+    <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .skip-link:focus {
+            top: 0;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .magazine-container {
+            max-width: 980px;
+            margin: 0 auto;
+            background-color: var(--bg-primary);
+        }
+
+        /* Header */
+        .article-header {
+            background: var(--color-primary);
+            color: white;
+            padding: 100px 80px 80px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .article-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .language-switcher-article {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .language-switcher-article button {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            min-height: 32px;
+        }
+
+        .language-switcher-article button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .language-switcher-article button:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        .language-switcher-article button.active {
+            background: white;
+            border-color: white;
+            color: var(--color-primary);
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.2s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.7;
+        }
+
+        .article-title {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            letter-spacing: -1.5px;
+            max-width: 800px;
+        }
+
+        .article-subtitle {
+            font-size: 21px;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-top: 0;
+            font-style: normal;
+            line-height: 1.5;
+            max-width: 700px;
+            color: #e0e0e0;
+        }
+
+        /* Main Content */
+        .article-content {
+            padding: 80px 80px;
+        }
+
+        .intro {
+            font-size: 22px;
+            line-height: 1.75;
+            color: var(--text-primary);
+            margin: 0 0 80px 0;
+            font-weight: 400;
+            border-left: 3px solid var(--color-primary);
+            padding-left: 32px;
+            max-width: 700px;
+            text-align: justify;
+        }
+
+        .section {
+            margin: 80px 0;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 32px 0;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .section-content {
+            font-size: 17px;
+            line-height: 1.75;
+            color: var(--text-primary);
+            margin-bottom: 0;
+            max-width: 700px;
+            text-align: justify;
+        }
+
+        .section-content p {
+            margin-bottom: 24px;
+        }
+
+        /* Timeline Styles */
+        .timeline-container {
+            position: relative;
+            padding: 40px 0;
+            margin: 60px 0;
+            max-width: 800px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--border-color) 0%, var(--color-primary) 50%, var(--border-color) 100%);
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 48px;
+            padding-left: 80px;
+            z-index: 1;
+            transition: transform var(--transition-fast);
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(4px);
+        }
+
+        .timeline-year-marker {
+            position: absolute;
+            left: 18px;
+            top: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 3px solid var(--border-color);
+            z-index: 2;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-item.critical .timeline-year-marker {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(45, 55, 72, 0.1), var(--shadow-md);
+            width: 28px;
+            height: 28px;
+            left: 16px;
+            top: 6px;
+        }
+
+        .timeline-item.important .timeline-year-marker {
+            border-color: var(--color-primary-light);
+            background: var(--bg-primary);
+            border-width: 4px;
+        }
+
+        .timeline-item.active .timeline-year-marker {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 6px rgba(45, 55, 72, 0.15), var(--shadow-md);
+        }
+
+        .timeline-year-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-year {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .timeline-version {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-criticality {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .timeline-criticality .star {
+            font-size: 16px;
+            color: var(--text-tertiary);
+        }
+
+        .timeline-criticality.critical-5 .star {
+            color: #f59e0b;
+        }
+
+        .timeline-criticality.important-4 .star {
+            color: #3b82f6;
+        }
+
+        .timeline-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all var(--transition-base);
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .timeline-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--color-primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .timeline-toggle:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-toggle:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        .timeline-toggle-icon {
+            transition: transform var(--transition-base);
+            font-size: 14px;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .timeline-item.expanded .timeline-toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .timeline-summary {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.5;
+            flex: 1;
+            margin: 0;
+        }
+
+        .timeline-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease-out, opacity 0.3s ease-out;
+            padding: 0;
+            opacity: 0;
+        }
+
+        .timeline-item.expanded .timeline-details,
+        .timeline-item.default-expanded .timeline-details {
+            max-height: 5000px;
+            padding: 20px 0;
+            opacity: 1;
+            overflow: visible;
+        }
+
+        .timeline-changes {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+        }
+
+        .timeline-changes li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .timeline-changes li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .timeline-context {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--color-primary);
+            border-radius: 4px;
+        }
+
+        .timeline-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity var(--transition-fast);
+        }
+
+        .timeline-link:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        /* Critical item styling */
+        .timeline-item.critical {
+            background: linear-gradient(to right, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            padding: 28px 24px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            box-shadow: var(--shadow-md);
+            margin-left: -24px;
+            padding-left: 104px;
+            position: relative;
+        }
+
+        .timeline-item.critical::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--color-primary);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .timeline-item.critical .timeline-year {
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timeline-item.important {
+            border-left: 3px solid var(--color-primary-light);
+            padding-left: 77px;
+            background: var(--bg-secondary);
+            padding-top: 20px;
+            padding-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        .article-footer {
+            background-color: var(--bg-secondary);
+            padding: 48px 80px;
+            border-top: 2px solid var(--color-primary);
+            margin-top: 80px;
+        }
+
+        .data-note {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: normal;
+            line-height: 1.7;
+            max-width: 700px;
+        }
+
+        .data-note a {
+            color: var(--color-primary);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+            transition: opacity 0.2s ease;
+        }
+
+        .data-note a:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 48px 32px;
+            }
+
+            .article-header {
+                padding: 64px 32px 48px;
+            }
+
+            .article-title {
+                font-size: 36px;
+                letter-spacing: -1px;
+            }
+
+            .article-subtitle {
+                font-size: 18px;
+            }
+
+            .intro {
+                font-size: 19px;
+                padding-left: 24px;
+            }
+
+            .section-content {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .timeline-container {
+                padding: 20px 0;
+            }
+
+            .timeline-line {
+                left: 20px;
+            }
+
+            .timeline-item {
+                padding-left: 60px;
+            }
+
+            .timeline-year-marker {
+                left: 8px;
+                width: 20px;
+                height: 20px;
+            }
+
+            .timeline-year {
+                font-size: 28px;
+            }
+
+            .timeline-item.critical {
+                padding-left: 80px;
+                margin-left: -20px;
+            }
+
+            .article-footer {
+                padding: 32px 32px;
+            }
+
+            .article-header-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .language-switcher-article {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+    <div class="magazine-container">
+        <header class="article-header">
+            <div class="article-header-top">
+                <a href="index.html" class="back-link">← На главную</a>
+                <div class="language-switcher-article" role="group" aria-label="Выбор языка">
+                    <button onclick="window.location.href='rules_evolution_2025.html'" class="active" aria-pressed="true" aria-label="Русский язык">RU</button>
+                    <button onclick="window.location.href='rules_evolution_2025_en.html'" aria-pressed="false" aria-label="English language">EN</button>
+                    <button onclick="window.location.href='rules_evolution_2025_es.html'" aria-pressed="false" aria-label="Español">ES</button>
+                </div>
+            </div>
+            <h1 class="article-title">Эволюция правил WSDC: 24 года развития</h1>
+            <p class="article-subtitle">Интерактивная временная шкала изменений правил WSDC с 2002 по 2026 год</p>
+        </header>
+        <main id="main-content">
+            <article class="article-content">
+                <div class="intro">
+                    За 24 года правила WSDC прошли путь от простой системы диапазонов до сложной пороговой модели с детализированными требованиями. Эта временная шкала показывает ключевые изменения, которые формировали современную систему соревнований West Coast Swing.
+                </div>
+
+                <section class="section">
+                    <h2 class="section-title">Временная шкала изменений</h2>
+                    <div class="section-content">
+                        <p>Нажмите на год, чтобы увидеть детали изменений. Последние четыре года раскрыты по умолчанию.</p>
+                    </div>
+
+                    <div class="timeline-container">
+                        <div class="timeline-line"></div>
+
+                        <!-- 2026 -->
+                        <div class="timeline-item default-expanded" data-year="2026" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2026</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="true" aria-controls="details-2026">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Обновление Competitor Surcharge и запуск программы сертификации судей</span>
+                            </button>
+                            <div class="timeline-details" id="details-2026">
+                                <ul class="timeline-changes">
+                                    <li>Дополнительный сбор с участников (Competitor Surcharge) увеличен до $2 за каждую заявку на соревнование (с 1 января 2026)</li>
+                                    <li>Добавлен новый раздел правил: Программа сертификации судей WSDC, которая начнет действовать с 1 января 2027 года</li>
+                                    <li>Добавлена гибкость в структуре раундов: разрешено пропустить один раунд, если количество участников не более чем на 10% превышает максимум предыдущего Tier (например, Tier 4 с 43 участниками может проводиться только с prelims и финалом)</li>
+                                    <li>Уточнены правила для петиций (запросов на изменение дивизиона), вторичных ролей (когда танцор выступает в другой роли) и структуры соревнований</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Последняя версия правил на момент публикации статьи. Программа сертификации судей показывает движение к профессионализации судейства.
+                                </div>
+                                <a href="https://www.worldsdc.com/wp-content/uploads/2026/01/WSDC-Registry-Event-Rules-Jan-17-2026.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать оригинальный документ (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2025 -->
+                        <div class="timeline-item" data-year="2025" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2025</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2025">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Введение ежегодной Membership Fee и обновление требований к Trial Events</span>
+                            </button>
+                            <div class="timeline-details" id="details-2025">
+                                <ul class="timeline-changes">
+                                    <li>Введена новая ежегодная плата за членство (Membership Fee): $200 за каждое официальное событие WSDC (Registry Event)</li>
+                                    <li>Дополнительный сбор с участников (Competitor Surcharge): $1 за каждую заявку, с плановым увеличением до $2 с 1 января 2026</li>
+                                    <li>Пробные события (Trial Events) теперь обязаны использовать сертифицированного главного судью и начислять поинты участникам</li>
+                                    <li>Минимальное количество участников для официальных событий: 120 заявок (80 для развивающихся регионов)</li>
+                                    <li>Обновлены правила для вторичной роли (когда танцор выступает в роли, отличной от основной)</li>
+                                    <li>Введен новый процесс "План действий" (Action Plan) для случаев нарушения правил организаторами событий</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Значительные изменения в финансовой структуре и требованиях к событиям. Trial Events теперь полноценно интегрированы в систему начисления поинтов.
+                                </div>
+                                <a href="https://www.worldsdc.com/wp-content/uploads/2024/12/wsdcrules.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать оригинальный документ (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2024 -->
+                        <div class="timeline-item important" data-year="2024" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2024</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2024">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Рекордное количество версий за год: активная эволюция правил</span>
+                            </button>
+                            <div class="timeline-details" id="details-2024">
+                                <ul class="timeline-changes">
+                                    <li>Новые пороги для доступа в дивизион Champions: разрешено (Allowed) при 1 поинте Champions или 150 поинтах All Star; обязательно (Required) при 10 поинтах Champions или 225 поинтах All Star</li>
+                                    <li>Петиция на повышение дивизиона (Petition up): теперь возможна только через комитет главных судей WSDC, подача за 15 дней до события с приложением 2 видео</li>
+                                    <li>Формально введен стандарт оценки Callback (повторного вызова): Yes=10 поинтов, Alt1=4.5, Alt2=4.3, Alt3=4.2, No=0</li>
+                                    <li>Обновлено правило времени и расстояния (Time/Distance Rule): теперь действует глобально - 200 миль или 5 выходных дней между событиями</li>
+                                    <li>Усилены требования по членству в WSDC, штрафам за нарушения и предотвращению конфликтов интересов</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Небывалая активность обновлений (4 версии за год) показывает активное развитие системы и быстрое реагирование на потребности сообщества.
+                                </div>
+                                <a href="https://www.worldsdc.com/wp-content/uploads/2024/07/2024-Registry-Event-Rules_v2024.2B.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2024.2B (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2023 -->
+                        <div class="timeline-item important" data-year="2023" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2023</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2023">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Масштабное расширение: документ вырос до 14 страниц (+75%)</span>
+                            </button>
+                            <div class="timeline-details" id="details-2023">
+                                <ul class="timeline-changes">
+                                    <li>Полный пересмотр структуры правил для организаторов событий (Event Rules)</li>
+                                    <li>Уточнены требования к площадкам для соревнований: минимум 150 кв.м танцевальной площади, требования к размещению и обслуживанию участников</li>
+                                    <li>Подтверждены пороги для дивизиона All-Star: 150 поинтов для разрешенного доступа, 225 поинтов для обязательного</li>
+                                    <li>Усилены ограничения для вторичной роли: танцор может выступать в другой роли только на один уровень ниже основного дивизиона</li>
+                                    <li>Детализированы процедуры для развивающихся регионов: альтернативный вариант - минимум 80 участников + 100 посетителей вместо стандартных 120 участников</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Значительное расширение документа отражает накопленный опыт после COVID и необходимость детализации стандартов для растущего сообщества.
+                                </div>
+                                <a href="static/rules/2023-Registry-Event-Rules_vFinal3b-2023.1D.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2023.1D (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2020 -->
+                        <div class="timeline-item critical" data-year="2020" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2020</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2020">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">COVID адаптация: первый раз правила изменены из-за глобального кризиса</span>
+                            </button>
+                            <div class="timeline-details" id="details-2020">
+                                <ul class="timeline-changes">
+                                    <li>Доступ в дивизион Champions: танцоры All Star с 150 и более поинтами должны быть допущены к участию в Champion Jack & Jill</li>
+                                    <li>Дополнение 2021 года: разрешено выступать в обоих ролях (лидер и фолловер) в одном дивизионе с отдельным отслеживанием поинтов для каждой роли</li>
+                                    <li>Дополнение 2021 года: заморозка (freeze) правила "3-летнего окна" для дивизионов Advanced и All Star из-за пандемии COVID-19</li>
+                                    <li>Дополнение 2021 года: запрет на виртуальное судейство соревнований</li>
+                                    <li>Дополнение 2021 года: временное снижение минимального количества участников до 60 на 2021 год для поддержки событий в условиях пандемии</li>
+                                    <li>Добавлена гибкость по выбору площадок: специальные требования для нестандартных локаций (special venue)</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Критическое изменение, которое позволило индустрии выжить в условиях пандемии. Быстрая адаптация через addendum показывает гибкость WSDC.
+                                </div>
+                                <a href="static/rules/2020.1B-Registry-Event-Rules_with-addendum-5-14-2021.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2020.1B с addendum (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2019 -->
+                        <div class="timeline-item important" data-year="2019" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2019</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2019">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Обязательные раунды и закрепление системы</span>
+                            </button>
+                            <div class="timeline-details" id="details-2019">
+                                <ul class="timeline-changes">
+                                    <li>Обязательное количество раундов: с 1 июля 2019 года количество раундов в соревновании должно соответствовать уровню события (Tier)</li>
+                                    <li>Закреплена система из 6 уровней событий (6-tier система) в зависимости от количества участников</li>
+                                    <li>Уточнения по смене ролей: официально разрешено менять роль (лидер/фолловер) только в рамках установленных правил</li>
+                                    <li>Закреплены требования к идентификационному номеру участника WSDC (Competitor ID) для отслеживания результатов</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Формализация требований к структуре соревнований и закрепление правил для ролей и идентификации участников.
+                                </div>
+                                <a href="static/rules/2019.1A-Registry-Event-Rules_Final.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2019.1A (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2018 -->
+                        <div class="timeline-item critical" data-year="2018" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2018</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2018">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Структурная революция: разделение единого документа на два специализированных</span>
+                            </button>
+                            <div class="timeline-details" id="details-2018">
+                                <ul class="timeline-changes">
+                                    <li>Разделение единого документа на два специализированных: "Правила Points Registry" для танцоров и "Правила Registry Events" для организаторов событий</li>
+                                    <li>Введение системы из 6 уровней событий (6-tier): от Tier 1 (5-10 участников) до Tier 6 (130+ участников)</li>
+                                    <li>Таблица продвижения (Advancement Chart): установлена логика "разрешено/обязательно" для каждого дивизиона (Novice 16/30, Intermediate 30/45, Advanced 45/60, All Star 150/225 поинтов)</li>
+                                    <li>Формализованы обязанности директора события (Event Director) и участника (Competitor)</li>
+                                    <li>Детализированы правила петиций: максимальное изменение дивизиона составляет ±1 уровень</li>
+                                    <li>Уточнена квалификация ролей: различие между основной (primary) и вторичной (secondary) ролью танцора</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Кардинальное изменение структуры документации. Разделение ответственности: правила для танцоров ≠ правила для организаторов. Каждая группа получила специализированный документ, что упростило понимание требований.
+                                </div>
+                                <a href="static/rules/2018.1A-Registry-Event-Rules-and-Requirements.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2018.1A (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2015 -->
+                        <div class="timeline-item" data-year="2015" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2015</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2015">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Переход к пороговой модели: от диапазонов к минимальным значениям</span>
+                            </button>
+                            <div class="timeline-details" id="details-2015">
+                                <ul class="timeline-changes">
+                                    <li>Переход от системы диапазонов к пороговой модели: Novice менее 15 поинтов, Intermediate от 15 поинтов Novice и менее 30 поинтов Intermediate, Advanced от 30 поинтов Intermediate</li>
+                                    <li>Дивизион All Star: требуется минимум 45 поинтов Advanced, набранных за последние 3 года</li>
+                                    <li>Введена единая система идентификационных номеров (ID) для отслеживания ролей танцоров</li>
+                                    <li>Директор события (Event Director) обязан сообщать результаты в WSDC в течение 10 дней после события</li>
+                                    <li>Процесс петиций: максимальное изменение дивизиона составляет ±1 уровень, при нарушениях поинты не начисляются</li>
+                                    <li>Поинты лидеров и фолловеров учитываются отдельно для каждой роли, но суммируются при определении продвижения в следующий дивизион</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Фундаментальный переход от жестких диапазонов к пороговой системе, которая дала больше гибкости танцорам в выборе времени перехода между дивизионами.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2015 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2011 -->
+                        <div class="timeline-item" data-year="2011" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2011</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2011">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Разделение Tier по ролям: учет неравенства лидеров и фолловеров</span>
+                            </button>
+                            <div class="timeline-details" id="details-2011">
+                                <ul class="timeline-changes">
+                                    <li>Новый принцип определения уровня события (Tier): теперь уровень определяется отдельно для лидеров и отдельно для фолловеров</li>
+                                    <li>В одном соревновании могут быть две разные таблицы начисления поинтов - одна для лидеров, другая для фолловеров</li>
+                                    <li>Минимальное требование: не менее 5 лидеров и 5 фолловеров, иначе событие не засчитывается для начисления поинтов</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Признание неравенства количества лидеров и фолловеров в соревнованиях. Это позволило более справедливо начислять поинты в зависимости от реального количества участников в каждой роли.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2011.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2011 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2009 -->
+                        <div class="timeline-item" data-year="2009" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2009</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2009">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Жесткие минимумы для переходов между дивизионами</span>
+                            </button>
+                            <div class="timeline-details" id="details-2009">
+                                <ul class="timeline-changes">
+                                    <li>Жесткие требования для перехода: из Novice в Intermediate только при наличии 20 поинтов; из Intermediate в Advanced требуется 25 поинтов</li>
+                                    <li>Начисление поинтов по уровням событий (Tier): для Tier 1 - 5/4/3/2/1 поинтов за места; для Tier 3 - 15/12/10/8/6 поинтов</li>
+                                    <li>Ограничения: один участник может выступать только в одном дивизионе Jack & Jill, один идентификационный номер (ID) используется для обеих ролей</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Установление четких минимальных требований для перехода между дивизионами. Рост наград за крупные конкурсы (Tier3) стимулировал участие в больших событиях.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2009.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2009 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2007 -->
+                        <div class="timeline-item" data-year="2007" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2007</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2007">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Реформа Tier-based scoring и появление All-Star как отслеживаемого дивизиона</span>
+                            </button>
+                            <div class="timeline-details" id="details-2007">
+                                <ul class="timeline-changes">
+                                    <li>Впервые введена система уровней событий (Tier 1-3), зависящая от количества пар, участвующих в соревновании</li>
+                                    <li>Начисление баллов по уровням: Tier 1 - 8/6/4/2/1 поинтов, Tier 2 - 10/8/6/4/2 поинтов, Tier 3 - 12/10/8/6/4 поинтов за места</li>
+                                    <li>Дивизион All Star: впервые упоминается как отдельный отслеживаемый дивизион (рекомендуется минимум 40 поинтов Advanced для доступа)</li>
+                                    <li>Правила продвижения: в Novice можно оставаться до 20 поинтов + первое место; в Intermediate до 25 поинтов + первое место</li>
+                                    <li>Появляется термин "массовое количество событий" (mass number of events) для описания активных участников</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Введение системы Tier стало основой для современной структуры начисления поинтов. Появление All-Star как отдельного дивизиона создало промежуточный уровень между Advanced и Champions.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2007.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2007 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2004 -->
+                        <div class="timeline-item" data-year="2004" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2004</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2004">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Уточнения без структурных реформ: FAQ и детализация сценариев</span>
+                            </button>
+                            <div class="timeline-details" id="details-2004">
+                                <ul class="timeline-changes">
+                                    <li>Добавлен раздел FAQ с детализацией сценариев: соревнования только с финалом (finals-only), комбинированные дивизионы</li>
+                                    <li>Ограничения: если в дивизионе менее 5 пар, поинты не начисляются</li>
+                                    <li>Рекомендации для танцоров: оставаться в дивизионе до набора 20 поинтов и получения первого места</li>
+                                    <li>Сохранена система диапазонов поинтов для дивизионов: Beginner/Newcomer (1-10), Novice (1-19), Intermediate (20-29), Advanced (30+)</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Уточнения существующей системы без кардинальных изменений. Рекомендация "20 points" стала стандартом на следующие годы.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-2004.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2004 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2002 -->
+                        <div class="timeline-item" data-year="2002" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2002</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2002">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Формирование базовых принципов: начало современной системы</span>
+                            </button>
+                            <div class="timeline-details" id="details-2002">
+                                <ul class="timeline-changes">
+                                    <li>Установлена базовая система диапазонов поинтов для дивизионов: Beginner/Newcomer (1-10), Novice (1-19), Intermediate (20-29), Advanced (30+)</li>
+                                    <li>Простая система начисления поинтов: фиксированная шкала 10/6/4/3/2/1 за места с 1-го по 6-е, все финалисты получают 1 поинт</li>
+                                    <li>Дивизион Champions: создается только по желанию организатора события, не является обязательным</li>
+                                    <li>Реестр поинтов (Points Registry) ведется WSDC с 1993 года для отслеживания результатов участников</li>
+                                    <li>Рекомендация для танцоров: оставаться в дивизионе до получения первого места перед переходом в следующий</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Первый доступный документ правил WSDC. Устанавливает базовую структуру дивизионов и систему начисления поинтов. Points Registry начал вестись с 1993 года, что означает 9 лет истории до этого документа.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-2002.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Скачать версию 2002 (PDF)</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+        <footer class="article-footer">
+            <div class="data-note">
+                <p><strong>Источники данных:</strong> Официальные документы WSDC из архива правил (2002-2026). Анализ основан на текстах документов и метаданных версий.</p>
+                <p><strong>Методология:</strong> Изменения выделены на основе сравнения структуры документов, версионирования и содержания правил. Критичность изменений оценена по влиянию на структуру системы и сообщество.</p>
+                <p><strong>Примечание:</strong> Некоторые годы (2012-2014, 2016-2017, 2021-2022) отсутствуют в архиве. Если у вас есть доступ к этим документам, пожалуйста, свяжитесь с нами.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Twemoji для флагов
+        if (typeof twemoji !== 'undefined') {
+            twemoji.parse(document.body);
+        }
+
+        // Timeline accordion functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize default-expanded items
+            const defaultExpanded = document.querySelectorAll('.timeline-item.default-expanded');
+            defaultExpanded.forEach(item => {
+                const toggle = item.querySelector('.timeline-toggle');
+                const icon = toggle.querySelector('.timeline-toggle-icon');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'true');
+                    icon.style.transform = 'rotate(90deg)';
+                }
+            });
+
+            const toggleButtons = document.querySelectorAll('.timeline-toggle');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const item = this.closest('.timeline-item');
+                    const isExpanded = item.classList.contains('expanded') || item.classList.contains('default-expanded');
+                    const details = item.querySelector('.timeline-details');
+                    const icon = this.querySelector('.timeline-toggle-icon');
+                    
+                    if (isExpanded) {
+                        // Collapse (including default-expanded items)
+                        item.classList.remove('expanded');
+                        item.classList.remove('default-expanded');
+                        details.style.maxHeight = '0';
+                        details.style.padding = '0';
+                        details.style.opacity = '0';
+                        details.style.overflow = 'hidden';
+                        this.setAttribute('aria-expanded', 'false');
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        // Expand
+                        item.classList.add('expanded');
+                        // Calculate proper height including all content
+                        const tempHeight = details.scrollHeight;
+                        details.style.maxHeight = Math.max(tempHeight + 100, 5000) + 'px';
+                        details.style.padding = '20px 0';
+                        details.style.opacity = '1';
+                        details.style.overflow = 'visible';
+                        this.setAttribute('aria-expanded', 'true');
+                        icon.style.transform = 'rotate(90deg)';
+                        
+                        // Smooth scroll to item
+                        setTimeout(() => {
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                    }
+                });
+            });
+
+            // Highlight active year on scroll
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px',
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    const item = entry.target.closest('.timeline-item');
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.timeline-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>

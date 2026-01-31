@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="Línea de tiempo interactiva de la evolución de las reglas WSDC de 2002 a 2026: de rangos básicos al sistema de umbrales moderno." name="description"/>
+    <meta content="WSDC, reglas, evolución, historia, cambios, 2002-2026, Points Registry, Event Rules" name="keywords"/>
+    <!-- Open Graph / Facebook -->
+    <meta content="article" property="og:type"/>
+    <meta content="https://wsdc-analytics.github.io/rules_evolution_2025_es.html" property="og:url"/>
+    <meta content="Evolución de las reglas WSDC: 24 años de desarrollo" property="og:title"/>
+    <meta content="Línea de tiempo interactiva de la evolución de las reglas WSDC de 2002 a 2026" property="og:description"/>
+    <!-- Twitter -->
+    <meta content="summary_large_image" property="twitter:card"/>
+    <meta content="https://wsdc-analytics.github.io/rules_evolution_2025_es.html" property="twitter:url"/>
+    <meta content="Evolución de las reglas WSDC: 24 años de desarrollo" property="twitter:title"/>
+    <meta content="Línea de tiempo interactiva de la evolución de las reglas WSDC de 2002 a 2026" property="twitter:description"/>
+    <title>Evolución de las reglas WSDC: 24 años de desarrollo</title>
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Evolución de las reglas WSDC: 24 años de desarrollo",
+      "description": "Línea de tiempo interactiva de la evolución de las reglas WSDC de 2002 a 2026",
+      "url": "https://wsdc-analytics.github.io/rules_evolution_2025_es.html",
+      "datePublished": "2026-01-28",
+      "dateModified": "2026-01-28",
+      "author": {
+        "@type": "Organization",
+        "name": "WSDC Analytics"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "WSDC Analytics"
+      }
+    }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-LMLCY5PE8Z');
+    </script>
+    <!-- Resource hints для оптимизации производительности -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
+    <!-- Подключаем Twemoji для гарантированного отображения флагов на Windows -->
+    <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
+    <style>
+        :root {
+            /* Основные цвета */
+            --color-primary: #2d3748;
+            --color-primary-dark: #1a202c;
+            --color-primary-light: #4a5568;
+            
+            /* Фоны */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f7fafc;
+            
+            /* Текст - улучшенный контраст */
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            
+            /* Границы */
+            --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            
+            /* Тени */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Переходы */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            --transition-slow: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+
+        /* Skip link для доступности */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .skip-link:focus {
+            top: 0;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .magazine-container {
+            max-width: 980px;
+            margin: 0 auto;
+            background-color: var(--bg-primary);
+        }
+
+        /* Header */
+        .article-header {
+            background: var(--color-primary);
+            color: white;
+            padding: 100px 80px 80px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .article-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .language-switcher-article {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .language-switcher-article button {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            min-height: 32px;
+        }
+
+        .language-switcher-article button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .language-switcher-article button:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        .language-switcher-article button.active {
+            background: white;
+            border-color: white;
+            color: var(--color-primary);
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.2s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.7;
+        }
+
+        .article-title {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            letter-spacing: -1.5px;
+            max-width: 800px;
+        }
+
+        .article-subtitle {
+            font-size: 21px;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-top: 0;
+            font-style: normal;
+            line-height: 1.5;
+            max-width: 700px;
+            color: #e0e0e0;
+        }
+
+        /* Main Content */
+        .article-content {
+            padding: 80px 80px;
+        }
+
+        .intro {
+            font-size: 22px;
+            line-height: 1.75;
+            color: var(--text-primary);
+            margin: 0 0 80px 0;
+            font-weight: 400;
+            border-left: 3px solid var(--color-primary);
+            padding-left: 32px;
+            max-width: 700px;
+            text-align: justify;
+        }
+
+        .section {
+            margin: 80px 0;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 32px 0;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .section-content {
+            font-size: 17px;
+            line-height: 1.75;
+            color: var(--text-primary);
+            margin-bottom: 0;
+            max-width: 700px;
+            text-align: justify;
+        }
+
+        .section-content p {
+            margin-bottom: 24px;
+        }
+
+        /* Timeline Styles */
+        .timeline-container {
+            position: relative;
+            padding: 40px 0;
+            margin: 60px 0;
+            max-width: 800px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--border-color) 0%, var(--color-primary) 50%, var(--border-color) 100%);
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 48px;
+            padding-left: 80px;
+            z-index: 1;
+            transition: transform var(--transition-fast);
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(4px);
+        }
+
+        .timeline-year-marker {
+            position: absolute;
+            left: 18px;
+            top: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 3px solid var(--border-color);
+            z-index: 2;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-item.critical .timeline-year-marker {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(45, 55, 72, 0.1), var(--shadow-md);
+            width: 28px;
+            height: 28px;
+            left: 16px;
+            top: 6px;
+        }
+
+        .timeline-item.important .timeline-year-marker {
+            border-color: var(--color-primary-light);
+            background: var(--bg-primary);
+            border-width: 4px;
+        }
+
+        .timeline-item.active .timeline-year-marker {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 6px rgba(45, 55, 72, 0.15), var(--shadow-md);
+        }
+
+        .timeline-year-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-year {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .timeline-version {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-criticality {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .timeline-criticality .star {
+            font-size: 16px;
+            color: var(--text-tertiary);
+        }
+
+        .timeline-criticality.critical-5 .star {
+            color: #f59e0b;
+        }
+
+        .timeline-criticality.important-4 .star {
+            color: #3b82f6;
+        }
+
+        .timeline-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px 0;
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color var(--transition-fast);
+            width: 100%;
+            text-align: left;
+        }
+
+        .timeline-toggle:hover {
+            color: var(--color-primary);
+        }
+
+        .timeline-toggle:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .timeline-toggle-icon {
+            transition: transform var(--transition-base);
+            font-size: 12px;
+        }
+
+        .timeline-item.expanded .timeline-toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .timeline-summary {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .timeline-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease-out, opacity 0.3s ease-out;
+            padding: 0;
+            opacity: 0;
+        }
+
+        .timeline-item.expanded .timeline-details,
+        .timeline-item.default-expanded .timeline-details {
+            max-height: 5000px;
+            padding: 20px 0;
+            opacity: 1;
+            overflow: visible;
+        }
+
+        .timeline-changes {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+        }
+
+        .timeline-changes li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .timeline-changes li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .timeline-context {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--color-primary);
+            border-radius: 4px;
+        }
+
+        .timeline-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity var(--transition-fast);
+        }
+
+        .timeline-link:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        /* Critical item styling */
+        .timeline-item.critical {
+            background: linear-gradient(to right, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            padding: 28px 24px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            box-shadow: var(--shadow-md);
+            margin-left: -24px;
+            padding-left: 104px;
+            position: relative;
+        }
+
+        .timeline-item.critical::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--color-primary);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .timeline-item.critical .timeline-year {
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timeline-item.important {
+            border-left: 3px solid var(--color-primary-light);
+            padding-left: 77px;
+            background: var(--bg-secondary);
+            padding-top: 20px;
+            padding-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        .article-footer {
+            background-color: var(--bg-secondary);
+            padding: 48px 80px;
+            border-top: 2px solid var(--color-primary);
+            margin-top: 80px;
+        }
+
+        .data-note {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: normal;
+            line-height: 1.7;
+            max-width: 700px;
+        }
+
+        .data-note a {
+            color: var(--color-primary);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+            transition: opacity 0.2s ease;
+        }
+
+        .data-note a:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 48px 32px;
+            }
+
+            .article-header {
+                padding: 64px 32px 48px;
+            }
+
+            .article-title {
+                font-size: 36px;
+                letter-spacing: -1px;
+            }
+
+            .article-subtitle {
+                font-size: 18px;
+            }
+
+            .intro {
+                font-size: 19px;
+                padding-left: 24px;
+            }
+
+            .section-content {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .timeline-container {
+                padding: 20px 0;
+            }
+
+            .timeline-line {
+                left: 20px;
+            }
+
+            .timeline-item {
+                padding-left: 60px;
+            }
+
+            .timeline-year-marker {
+                left: 8px;
+                width: 20px;
+                height: 20px;
+            }
+
+            .timeline-year {
+                font-size: 28px;
+            }
+
+            .timeline-item.critical {
+                padding-left: 80px;
+                margin-left: -20px;
+            }
+
+            .article-footer {
+                padding: 32px 32px;
+            }
+
+            .article-header-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .language-switcher-article {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Saltar al contenido</a>
+    <div class="magazine-container">
+        <header class="article-header">
+            <div class="article-header-top">
+                <a href="index.html" class="back-link">← Volver al inicio</a>
+                <div class="language-switcher-article" role="group" aria-label="Selección de idioma">
+                    <button onclick="window.location.href='rules_evolution_2025.html'" aria-pressed="false" aria-label="Русский язык">RU</button>
+                    <button onclick="window.location.href='rules_evolution_2025_en.html'" aria-pressed="false" aria-label="English language">EN</button>
+                    <button onclick="window.location.href='rules_evolution_2025_es.html'" class="active" aria-pressed="true" aria-label="Español">ES</button>
+                </div>
+            </div>
+            <h1 class="article-title">Evolución de las reglas WSDC: 24 años de desarrollo</h1>
+            <p class="article-subtitle">Línea de tiempo interactiva de cambios en las reglas WSDC de 2002 a 2026</p>
+        </header>
+        <main id="main-content">
+            <article class="article-content">
+                <div class="intro">
+                    Durante 24 años, las reglas WSDC han evolucionado de un sistema simple basado en rangos a un modelo complejo de umbrales con requisitos detallados. Esta línea de tiempo muestra los cambios clave que dieron forma al sistema moderno de competición de West Coast Swing.
+                </div>
+
+                <section class="section">
+                    <h2 class="section-title">Línea de tiempo de cambios</h2>
+                    <div class="section-content">
+                        <p>Haz clic en un año para ver los detalles de los cambios. Los últimos cuatro años están expandidos por defecto.</p>
+                    </div>
+
+                    <div class="timeline-container">
+                        <div class="timeline-line"></div>
+
+                        <!-- 2026 -->
+                        <div class="timeline-item default-expanded" data-year="2026" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2026</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="true" aria-controls="details-2026">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Actualización de Competitor Surcharge y lanzamiento del programa de certificación de jueces</span>
+                            </button>
+                            <div class="timeline-details" id="details-2026">
+                                <ul class="timeline-changes">
+                                    <li>Tarifa adicional cobrada a competidores (Competitor Surcharge) aumentada a $2 por cada entrada a competencia (a partir del 1 de enero de 2026)</li>
+                                    <li>Agregada nueva sección a las reglas: Programa de Certificación de Jueces WSDC, que comenzará a funcionar el 1 de enero de 2027</li>
+                                    <li>Actualizada definición de Tier 5 (nivel de competencia): ahora eventos con 80-129 competidores (anteriormente 40-79)</li>
+                                    <li>Aclaradas reglas para peticiones (solicitudes para cambiar división), roles secundarios (cuando bailarín compite en rol diferente) y estructura de concurso</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Última versión de las reglas al momento de publicación. El programa de certificación de jueces muestra movimiento hacia la profesionalización del juicio.
+                                </div>
+                                <a href="https://www.worldsdc.com/wp-content/uploads/2026/01/WSDC-Registry-Event-Rules-Jan-17-2026.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar documento original (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2025 -->
+                        <div class="timeline-item" data-year="2025" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2025</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2025">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Introducción de la tarifa anual de membresía y actualización de requisitos para Trial Events</span>
+                            </button>
+                            <div class="timeline-details" id="details-2025">
+                                <ul class="timeline-changes">
+                                    <li>Nueva tarifa anual de membresía (Membership Fee): $200 por cada evento oficial WSDC (Registry Event)</li>
+                                    <li>Tarifa adicional cobrada a competidores (Competitor Surcharge): $1 por entrada, con aumento planificado a $2 a partir del 1 de enero de 2026</li>
+                                    <li>Eventos de prueba (Trial Events, nuevos eventos buscando estatus oficial) ahora deben usar juez jefe certificado y otorgar puntos a participantes</li>
+                                    <li>Número mínimo de participantes para eventos oficiales: 120 entradas (80 para regiones en desarrollo)</li>
+                                    <li>Reglas actualizadas para rol secundario (cuando bailarín compite en rol diferente al primario)</li>
+                                    <li>Nuevo proceso "Plan de Acción" para casos de violaciones de reglas por organizadores de eventos</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Cambios significativos en la estructura financiera y requisitos de eventos. Los Trial Events ahora están completamente integrados en el sistema de puntos.
+                                </div>
+                                <a href="https://www.worldsdc.com/wp-content/uploads/2024/12/wsdcrules.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar documento original (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2024 -->
+                        <div class="timeline-item important" data-year="2024" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2024</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2024">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Número récord de versiones por año: evolución activa de reglas</span>
+                            </button>
+                            <div class="timeline-details" id="details-2024">
+                                <ul class="timeline-changes">
+                                    <li>Nuevos umbrales para acceso a división Champions: permitido con 1 punto de Champion o 150 puntos de All Star; requerido con 10 puntos de Champion o 225 puntos de All Star</li>
+                                    <li>Petición para subir de división (Petition up): ahora posible solo a través del Comité de Jueces Jefes WSDC, presentación 15 días antes del evento con 2 videos adjuntos</li>
+                                    <li>Estándar de puntuación de callback formalmente introducido (para callbacks en competencias): Sí=10 puntos, Alt1=4.5, Alt2=4.3, Alt3=4.2, No=0</li>
+                                    <li>Regla de tiempo y distancia (Time/Distance Rule) actualizada: ahora aplica globalmente - 200 millas o 5 días de fin de semana entre eventos</li>
+                                    <li>Requisitos fortalecidos para membresía WSDC, penalizaciones por violaciones y prevención de conflictos de interés</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Actividad de actualización sin precedentes (4 versiones por año) muestra desarrollo activo del sistema y respuesta rápida a las necesidades de la comunidad.
+                                </div>
+                                <a href="https://www.worldsdc.com/wp-content/uploads/2024/07/2024-Registry-Event-Rules_v2024.2B.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2024.2B (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2023 -->
+                        <div class="timeline-item important" data-year="2023" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2023</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2023">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Expansión masiva: documento creció a 14 páginas (+75%)</span>
+                            </button>
+                            <div class="timeline-details" id="details-2023">
+                                <ul class="timeline-changes">
+                                    <li>Revisión completa de estructura de reglas para organizadores de eventos (Event Rules)</li>
+                                    <li>Requisitos de lugar para competencias aclarados: mínimo 150 m² de pista de baile, requisitos para diseño y servicios a participantes</li>
+                                    <li>Umbrales para división All-Star confirmados: 150 puntos para acceso permitido, 225 puntos para requerido</li>
+                                    <li>Restricciones para rol secundario fortalecidas: bailarín puede competir en rol diferente solo un nivel por debajo de división primaria</li>
+                                    <li>Procedimientos detallados para regiones en desarrollo: opción alternativa - mínimo 80 participantes + 100 asistentes en lugar de 120 participantes estándar</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Expansión significativa del documento refleja experiencia acumulada después de COVID y la necesidad de detallar estándares para una comunidad en crecimiento.
+                                </div>
+                                <a href="static/rules/2023-Registry-Event-Rules_vFinal3b-2023.1D.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2023.1D (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2020 -->
+                        <div class="timeline-item critical" data-year="2020" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2020</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2020">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Adaptación COVID: primera vez que las reglas cambian debido a una crisis global</span>
+                            </button>
+                            <div class="timeline-details" id="details-2020">
+                                <ul class="timeline-changes">
+                                    <li>Acceso a división Champions: bailarines All Star con 150 o más puntos deben ser admitidos a Champion Jack & Jill</li>
+                                    <li>Addendum 2021: permitido competir en ambos roles (líder y follower) en una división con seguimiento separado de puntos para cada rol</li>
+                                    <li>Addendum 2021: congelación de regla de "ventana de 3 años" para divisiones Advanced y All Star debido a pandemia COVID-19</li>
+                                    <li>Addendum 2021: prohibición de juicio virtual de competencias</li>
+                                    <li>Addendum 2021: reducción temporal de participantes mínimos a 60 para 2021 para apoyar eventos durante pandemia</li>
+                                    <li>Agregada flexibilidad en selección de lugar: requisitos especiales para ubicaciones no estándar (lugar especial)</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Cambio crítico que permitió a la industria sobrevivir durante la pandemia. Adaptación rápida a través de addendum muestra flexibilidad de WSDC.
+                                </div>
+                                <a href="static/rules/2020.1B-Registry-Event-Rules_with-addendum-5-14-2021.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2020.1B con addendum (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2019 -->
+                        <div class="timeline-item important" data-year="2019" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2019</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2019">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Rondas obligatorias y consolidación del sistema</span>
+                            </button>
+                            <div class="timeline-details" id="details-2019">
+                                <ul class="timeline-changes">
+                                    <li>Número obligatorio de rondas: a partir del 1 de julio de 2019, número de rondas en competencia debe corresponder al nivel del evento (Tier)</li>
+                                    <li>Consolidación del sistema con 6 niveles de eventos (sistema de 6 niveles) basado en número de participantes</li>
+                                    <li>Aclaraciones sobre cambio de roles: oficialmente permitido cambiar rol (líder/follower) solo dentro de reglas establecidas</li>
+                                    <li>Establecidos requisitos para número de identificación de competidor WSDC (Competitor ID) para seguimiento de resultados</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Formalización de requisitos de estructura de competición y consolidación de reglas para roles e identificación de competidores.
+                                </div>
+                                <a href="static/rules/2019.1A-Registry-Event-Rules_Final.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2019.1A (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2018 -->
+                        <div class="timeline-item critical" data-year="2018" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2018</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2018">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Revolución estructural: división de un solo documento en dos especializados</span>
+                            </button>
+                            <div class="timeline-details" id="details-2018">
+                                <ul class="timeline-changes">
+                                    <li>División de documento único en dos especializados: "Reglas de Points Registry" para bailarines y "Reglas de Registry Events" para organizadores de eventos</li>
+                                    <li>Introducción del sistema con 6 niveles de eventos (6 niveles): desde Tier 1 (5-10 participantes) hasta Tier 6 (130+ participantes)</li>
+                                    <li>Tabla de avance: establecida lógica "permitido/requerido" para cada división (Novice 16/30, Intermediate 30/45, Advanced 45/60, All Star 150/225 puntos)</li>
+                                    <li>Responsabilidades formalizadas de director de evento (Event Director) y competidor</li>
+                                    <li>Reglas de peticiones detalladas: cambio máximo de división es ±1 nivel</li>
+                                    <li>Calificación de rol aclarada: distinción entre rol primario y secundario del bailarín</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Cambio radical en la estructura de documentación. Separación de responsabilidades: reglas para bailarines ≠ reglas para organizadores. Cada grupo recibió un documento especializado, simplificando la comprensión de los requisitos.
+                                </div>
+                                <a href="static/rules/2018.1A-Registry-Event-Rules-and-Requirements.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2018.1A (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2015 -->
+                        <div class="timeline-item" data-year="2015" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2015</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2015">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Transición al modelo de umbrales: de rangos a valores mínimos</span>
+                            </button>
+                            <div class="timeline-details" id="details-2015">
+                                <ul class="timeline-changes">
+                                    <li>Transición de sistema de rangos a modelo de umbrales: Novice menos de 15 puntos, Intermediate desde 15 puntos Novice y menos de 30 puntos Intermediate, Advanced desde 30 puntos Intermediate</li>
+                                    <li>División All Star: requiere mínimo 45 puntos Advanced obtenidos durante últimos 3 años</li>
+                                    <li>Introducido sistema unificado de números de identificación (ID) para seguimiento de roles de bailarines</li>
+                                    <li>Director de evento (Event Director) debe reportar resultados a WSDC dentro de 10 días después del evento</li>
+                                    <li>Proceso de petición: cambio máximo de división es ±1 nivel, violaciones resultan en sin puntos otorgados</li>
+                                    <li>Puntos de líder y follower rastreados por separado para cada rol, pero sumados al determinar avance a siguiente división</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Transición fundamental de rangos rígidos al sistema de umbrales, dando a los bailarines más flexibilidad al elegir el momento para transiciones de división.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2015 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2011 -->
+                        <div class="timeline-item" data-year="2011" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2011</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2011">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Separación de Tier por roles: contabilización de desigualdad líder/follower</span>
+                            </button>
+                            <div class="timeline-details" id="details-2011">
+                                <ul class="timeline-changes">
+                                    <li>Nuevo principio para determinar nivel de evento (Tier): ahora nivel determinado por separado para líderes y por separado para followers</li>
+                                    <li>Una competencia puede tener dos tablas diferentes de asignación de puntos - una para líderes, otra para followers</li>
+                                    <li>Requisito mínimo: al menos 5 líderes y 5 followers, de lo contrario evento no cuenta para asignación de puntos</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Reconocimiento de desigualdad en número de líderes y followers en competiciones. Esto permitió asignación más justa de puntos basada en número real de participantes en cada rol.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2011.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2011 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2009 -->
+                        <div class="timeline-item" data-year="2009" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2009</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2009">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Mínimos estrictos para transiciones de división</span>
+                            </button>
+                            <div class="timeline-details" id="details-2009">
+                                <ul class="timeline-changes">
+                                    <li>Requisitos estrictos para transiciones: de Novice a Intermediate solo con 20 puntos; de Intermediate a Advanced requiere 25 puntos</li>
+                                    <li>Asignación de puntos por niveles de evento (Tier): para Tier 1 - 5/4/3/2/1 puntos por colocaciones; para Tier 3 - 15/12/10/8/6 puntos</li>
+                                    <li>Restricciones: un participante puede competir en solo una división Jack & Jill, un número de identificación (ID) usado para ambos roles</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Establecimiento de requisitos mínimos claros para transiciones de división. Recompensas aumentadas para concursos grandes (Tier3) incentivaron participación en eventos importantes.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2009.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2009 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2007 -->
+                        <div class="timeline-item" data-year="2007" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2007</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2007">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Reforma de puntuación basada en Tier y aparición de All-Star como división rastreada</span>
+                            </button>
+                            <div class="timeline-details" id="details-2007">
+                                <ul class="timeline-changes">
+                                    <li>Primera introducción del sistema de niveles de evento (Tier 1-3), dependiendo del número de parejas participando en competencia</li>
+                                    <li>Asignación de puntos por niveles: Tier 1 - 8/6/4/2/1 puntos, Tier 2 - 10/8/6/4/2 puntos, Tier 3 - 12/10/8/6/4 puntos por colocaciones</li>
+                                    <li>División All Star: primera vez mencionada como división rastreada separada (recomendado mínimo 40 puntos Advanced para acceso)</li>
+                                    <li>Reglas de avance: en Novice puede permanecer hasta 20 puntos + primer lugar; en Intermediate hasta 25 puntos + primer lugar</li>
+                                    <li>Aparece término "número masivo de eventos" para describir competidores activos</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Introducción del sistema Tier se convirtió en base para la estructura moderna de puntos. Aparición de All-Star como división separada creó nivel intermedio entre Advanced y Champions.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2007.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2007 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2004 -->
+                        <div class="timeline-item" data-year="2004" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2004</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2004">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Aclaraciones sin reformas estructurales: FAQ y detalles de escenarios</span>
+                            </button>
+                            <div class="timeline-details" id="details-2004">
+                                <ul class="timeline-changes">
+                                    <li>Agregada sección FAQ con escenarios detallados: competencias solo con final (solo finales), divisiones combinadas</li>
+                                    <li>Restricciones: si división tiene menos de 5 parejas, puntos no otorgados</li>
+                                    <li>Recomendaciones para bailarines: permanecer en división hasta obtener 20 puntos y conseguir primer lugar</li>
+                                    <li>Sistema de rangos de puntos mantenido para divisiones: Beginner/Newcomer (1-10), Novice (1-19), Intermediate (20-29), Advanced (30+)</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Aclaraciones del sistema existente sin cambios radicales. Recomendación de "20 puntos" se convirtió en estándar para los años siguientes.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-2004.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2004 (PDF)</a>
+                            </div>
+                        </div>
+
+                        <!-- 2002 -->
+                        <div class="timeline-item" data-year="2002" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2002</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2002">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Formación de principios básicos: inicio del sistema moderno</span>
+                            </button>
+                            <div class="timeline-details" id="details-2002">
+                                <ul class="timeline-changes">
+                                    <li>Establecido sistema básico de rangos de puntos para divisiones: Beginner/Newcomer (1-10), Novice (1-19), Intermediate (20-29), Advanced (30+)</li>
+                                    <li>Sistema simple de asignación de puntos: escala fija 10/6/4/3/2/1 para lugares 1-6, todos los finalistas reciben 1 punto</li>
+                                    <li>División Champions: creada solo a discreción del organizador del evento, no es obligatoria</li>
+                                    <li>Registro de puntos (Points Registry) mantenido por WSDC desde 1993 para seguimiento de resultados de competidores</li>
+                                    <li>Recomendación para bailarines: permanecer en división hasta conseguir primer lugar antes de pasar a siguiente</li>
+                                </ul>
+                                <div class="timeline-context">
+                                    Primer documento disponible de reglas WSDC. Establece estructura básica de divisiones y sistema de puntos. Points Registry comenzó en 1993, significando 9 años de historia antes de este documento.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-2002.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Descargar versión 2002 (PDF)</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+        <footer class="article-footer">
+            <div class="data-note">
+                <p><strong>Fuentes de datos:</strong> Documentos oficiales WSDC del archivo de reglas (2002-2026). Análisis basado en textos de documentos y metadatos de versiones.</p>
+                <p><strong>Metodología:</strong> Cambios identificados mediante comparación de estructura de documentos, versionado y contenido de reglas. Criticidad de cambios evaluada por impacto en estructura del sistema y comunidad.</p>
+                <p><strong>Nota:</strong> Algunos años (2012-2014, 2016-2017, 2021-2022) faltan en el archivo. Si tienes acceso a estos documentos, por favor contáctanos.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Twemoji для флагов
+        if (typeof twemoji !== 'undefined') {
+            twemoji.parse(document.body);
+        }
+
+        // Timeline accordion functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize default-expanded items
+            const defaultExpanded = document.querySelectorAll('.timeline-item.default-expanded');
+            defaultExpanded.forEach(item => {
+                const toggle = item.querySelector('.timeline-toggle');
+                const icon = toggle.querySelector('.timeline-toggle-icon');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'true');
+                    icon.style.transform = 'rotate(90deg)';
+                }
+            });
+
+            const toggleButtons = document.querySelectorAll('.timeline-toggle');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const item = this.closest('.timeline-item');
+                    const isExpanded = item.classList.contains('expanded') || item.classList.contains('default-expanded');
+                    const details = item.querySelector('.timeline-details');
+                    const icon = this.querySelector('.timeline-toggle-icon');
+                    
+                    if (isExpanded && !item.classList.contains('default-expanded')) {
+                        // Collapse
+                        item.classList.remove('expanded');
+                        details.style.maxHeight = '0';
+                        details.style.padding = '0';
+                        details.style.opacity = '0';
+                        details.style.overflow = 'hidden';
+                        this.setAttribute('aria-expanded', 'false');
+                        icon.style.transform = 'rotate(0deg)';
+                    } else if (!isExpanded) {
+                        // Expand
+                        item.classList.add('expanded');
+                        // Calculate proper height including all content
+                        const tempHeight = details.scrollHeight;
+                        details.style.maxHeight = Math.max(tempHeight + 100, 5000) + 'px';
+                        details.style.padding = '20px 0';
+                        details.style.opacity = '1';
+                        details.style.overflow = 'visible';
+                        this.setAttribute('aria-expanded', 'true');
+                        icon.style.transform = 'rotate(90deg)';
+                        
+                        // Smooth scroll to item
+                        setTimeout(() => {
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                    }
+                });
+            });
+
+            // Highlight active year on scroll
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px',
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    const item = entry.target.closest('.timeline-item');
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.timeline-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>
