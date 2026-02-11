@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dancer Profile - профиль танцора WSDC">
+    <title>Dancer Profile | WSDC Analytics</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LMLCY5PE8Z');
+    </script>
+    <style>
+        :root {
+            --color-primary: #2d3748;
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: #e5e5e5;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            flex-shrink: 0;
+            padding: 12px 24px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .back-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .viz-viewport {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+        .viz-scaled {
+            transform-origin: center center;
+        }
+        .viz-scaled .tableauPlaceholder {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="header">
+            <a href="index.html" class="back-link">← На главную</a>
+            <h1>Dancer Profile</h1>
+        </header>
+
+        <div class="viz-viewport" id="vizViewport">
+            <div class="viz-scaled" id="vizScaled">
+                <div class='tableauPlaceholder' id='viz1770822899800' style='position: relative'>
+                    <noscript>
+                        <a href='#'>
+                            <img alt='Dashboard Dark ' src='https://public.tableau.com/static/images/Da/DancerProfile/DashboardDark/1_rss.png' style='border: none' />
+                        </a>
+                    </noscript>
+                    <object class='tableauViz' style='display:none;'>
+                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+                        <param name='embed_code_version' value='3' />
+                        <param name='site_root' value='' />
+                        <param name='name' value='DancerProfile&#47;DashboardDark' />
+                        <param name='tabs' value='no' />
+                        <param name='toolbar' value='yes' />
+                        <param name='static_image' value='https://public.tableau.com/static/images/Da/DancerProfile/DashboardDark/1.png' />
+                        <param name='animate_transition' value='yes' />
+                        <param name='display_static_image' value='yes' />
+                        <param name='display_spinner' value='yes' />
+                        <param name='display_overlay' value='yes' />
+                        <param name='display_count' value='yes' />
+                        <param name='language' value='en-US' />
+                    </object>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+        var VIZ_WIDTH = 1500;
+        var VIZ_HEIGHT = 1027;
+
+        function fitViz() {
+            var viewport = document.getElementById('vizViewport');
+            var scaled = document.getElementById('vizScaled');
+            var availableW = viewport.clientWidth;
+            var availableH = viewport.clientHeight;
+            var scale = Math.min(availableW / VIZ_WIDTH, availableH / VIZ_HEIGHT);
+            scale = Math.min(scale, 1);
+            scaled.style.transform = 'scale(' + scale + ')';
+        }
+
+        var divElement = document.getElementById('viz1770822899800');
+        var vizElement = divElement.getElementsByTagName('object')[0];
+        vizElement.style.width = VIZ_WIDTH + 'px';
+        vizElement.style.height = VIZ_HEIGHT + 'px';
+
+        var scriptElement = document.createElement('script');
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);
+
+        scriptElement.onload = function() {
+            fitViz();
+            var iframe = divElement.querySelector('iframe');
+            if (iframe) {
+                iframe.style.width = VIZ_WIDTH + 'px';
+                iframe.style.height = VIZ_HEIGHT + 'px';
+            }
+        };
+
+        window.addEventListener('resize', fitViz);
+    </script>
+</body>
+</html>
