@@ -140,6 +140,8 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            width: 208px;
+            justify-content: flex-end;
         }
 
         .language-switcher button {
@@ -274,11 +276,193 @@
             display: none;
         }
 
+        /* Dashboards dropdown */
+        .dashboards-nav {
+            position: absolute;
+            top: 0;
+            left: -1cm;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 208px;
+            justify-content: flex-start;
+        }
+
+        .dashboards-nav .dropdown-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dashboards-nav .dropdown-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 8px 16px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            min-height: 36px;
+        }
+
+        .dashboards-nav .dropdown-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .dashboards-nav .dropdown-btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .dashboards-nav .dropdown-btn svg {
+            transition: transform var(--transition-base);
+        }
+
+        .dashboards-nav .dropdown-wrapper.open .dropdown-btn svg {
+            transform: rotate(180deg);
+        }
+
+        .dashboards-nav .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 240px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 6px;
+            list-style: none;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+        }
+
+        .dashboards-nav .dropdown-wrapper.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dashboards-nav .dropdown-menu a {
+            display: block;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background var(--transition-fast);
+        }
+
+        .dashboards-nav .dropdown-menu a:hover {
+            background: var(--bg-tertiary);
+            color: var(--color-primary);
+        }
+
+        .dashboards-nav .info-icon {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            min-height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-tertiary);
+            font-size: 14px;
+            font-weight: 600;
+            font-style: italic;
+            cursor: help;
+            position: relative;
+            transition: all var(--transition-base);
+        }
+
+        .dashboards-nav .info-icon:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .dashboards-nav .info-tooltip {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 10px;
+            padding: 8px 12px;
+            background: var(--color-primary);
+            color: white;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.4;
+            border-radius: 6px;
+            white-space: nowrap;
+            max-width: 280px;
+            white-space: normal;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition-base), visibility var(--transition-base);
+            z-index: 101;
+        }
+
+        .dashboards-nav .info-icon:hover .info-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 768px) {
+            .language-switcher {
+                width: auto;
+            }
+
+            .dashboards-nav {
+                position: static;
+                width: auto;
+                justify-content: center;
+                margin-bottom: 16px;
+            }
+
+            .dashboards-nav .dropdown-wrapper {
+                flex: 0 1 auto;
+                min-width: 140px;
+            }
+
+            .dashboards-nav .info-tooltip {
+                left: 50%;
+                top: 100%;
+                transform: translate(-50%, 8px);
+                margin-left: 0;
+            }
+        }
+
         .articles-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 32px;
             margin-top: 60px;
+        }
+
+        .articles-section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
         }
 
         .article-card {
@@ -395,6 +579,24 @@
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     <div class="container">
         <header>
+            <nav class="dashboards-nav" aria-label="Навигация по дашбордам">
+                <span class="info-icon" role="img" aria-label="Информация о дашбордах">
+                    <span aria-hidden="true">i</span>
+                    <span class="info-tooltip" id="dashboardsTooltip">Информационные дашборды WSDC</span>
+                </span>
+                <div class="dropdown-wrapper" id="dashboardsDropdown">
+                    <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
+                        <span id="dashboardsBtnText">Dashboards</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
+                        <li role="none"><a href="dashboard.html" role="menuitem" data-dash-href="dashboard.html">Metrics</a></li>
+                        <li role="none"><a href="navigator.html" role="menuitem" data-dash-href="navigator.html">Events Navigator</a></li>
+                        <li role="none"><a href="rankings.html" role="menuitem" data-dash-href="rankings.html">Dancer's Ranking</a></li>
+                        <li role="none"><a href="dancer-profile.html" role="menuitem" data-dash-href="dancer-profile.html">Dancer Profile</a></li>
+                    </ul>
+                </div>
+            </nav>
             <div class="language-switcher" role="group" aria-label="Выбор языка">
                 <button data-lang="ru" class="lang-btn" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
                 <button data-lang="en" class="lang-btn" aria-label="Switch to English" aria-pressed="false">EN</button>
@@ -424,6 +626,7 @@
                 <div class="search-results hidden" id="searchResults" role="region" aria-live="polite" aria-label="Результаты поиска"></div>
             </div>
 
+            <h2 class="articles-section-title" id="articles-heading">Статьи</h2>
             <div class="articles-grid" id="articlesGrid" role="list">
                 <!-- Статьи загружаются динамически через JavaScript -->
             </div>
@@ -431,7 +634,6 @@
 
         <footer>
             <p>Data source: <a href="https://www.worldsdc.com/registry-points/" target="_blank" rel="noopener noreferrer" style="color: #2d3748; text-decoration: underline;">World Swing Dance Council (WSDC) Database</a></p>
-            <p style="margin-top: 8px;">Dashboards: <a href="dashboard.html" style="color: #2d3748; text-decoration: underline;">KPI Metrics</a>, <a href="navigator.html" style="color: #2d3748; text-decoration: underline;">WSDC Navigator</a>, <a href="rankings.html" style="color: #2d3748; text-decoration: underline;">Dancer's Rankings Combinator</a>, <a href="dancer-profile.html" style="color: #2d3748; text-decoration: underline;">Dancer Profile</a></p>
         </footer>
     </div>
 
@@ -534,6 +736,37 @@
                 subtitleElement.textContent = subtitles[lang] || subtitles.en;
             }
 
+            // Кнопка Dashboards и tooltip
+            const dashboardsBtnText = document.getElementById('dashboardsBtnText');
+            if (dashboardsBtnText) {
+                const btnLabels = { ru: 'Дашборды', en: 'Dashboards', es: 'Paneles' };
+                dashboardsBtnText.textContent = btnLabels[lang] || btnLabels.en;
+            }
+            const dashboardsTooltip = document.getElementById('dashboardsTooltip');
+            if (dashboardsTooltip) {
+                const tooltips = {
+                    ru: 'Информационные дашборды WSDC',
+                    en: 'WSDC informational dashboards',
+                    es: 'Paneles informativos WSDC'
+                };
+                dashboardsTooltip.textContent = tooltips[lang] || tooltips.en;
+            }
+            document.querySelectorAll('[data-dash-href]').forEach(a => {
+                const base = a.dataset.dashHref || a.getAttribute('href');
+                a.href = base.includes('?') ? base.replace(/\?.*/, '') + '?lang=' + lang : base + '?lang=' + lang;
+            });
+
+            // Заголовок раздела статей
+            const articlesSectionTitles = {
+                ru: 'Статьи',
+                en: 'Articles',
+                es: 'Artículos'
+            };
+            const articlesHeading = document.getElementById('articles-heading');
+            if (articlesHeading) {
+                articlesHeading.textContent = articlesSectionTitles[lang] || articlesSectionTitles.en;
+            }
+
             // Фильтрация и отображение статей
             const articles = articlesByLang[lang] || [];
             displayArticles(articles, lang);
@@ -616,6 +849,21 @@
                 }
             });
         });
+
+        // Dashboards dropdown
+        const dashboardsDropdown = document.getElementById('dashboardsDropdown');
+        const dashboardsBtn = document.getElementById('dashboardsBtn');
+        if (dashboardsBtn && dashboardsDropdown) {
+            dashboardsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dashboardsDropdown.classList.toggle('open');
+                dashboardsBtn.setAttribute('aria-expanded', dashboardsDropdown.classList.contains('open'));
+            });
+            document.addEventListener('click', () => {
+                dashboardsDropdown.classList.remove('open');
+                dashboardsBtn.setAttribute('aria-expanded', 'false');
+            });
+        }
 
         function normalizeText(text) {
             return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
