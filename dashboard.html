@@ -56,10 +56,18 @@
         .back-link:hover {
             text-decoration: underline;
         }
-        .header h1 {
-            font-size: 20px;
-            font-weight: 700;
+        .dashboard-select {
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 32px 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-primary);
             color: var(--text-primary);
+            cursor: pointer;
+        }
+        .dashboard-select:hover {
+            border-color: var(--color-primary);
         }
         .viz-viewport {
             flex: 1;
@@ -82,7 +90,12 @@
     <div class="page">
         <header class="header">
             <a href="index.html" class="back-link">← На главную</a>
-            <h1>WSDC KPI Dashboard</h1>
+            <select class="dashboard-select" id="dashboardNav" aria-label="Выбор дашборда">
+                <option value="dashboard.html" selected>KPI Metrics</option>
+                <option value="navigator.html">WSDC Navigator</option>
+                <option value="rankings.html">Dancer's Rankings Combinator</option>
+                <option value="dancer-profile.html">Dancer Profile</option>
+            </select>
         </header>
 
         <div class="viz-viewport" id="vizViewport">
@@ -146,6 +159,10 @@
         };
 
         window.addEventListener('resize', fitViz);
+
+        document.getElementById('dashboardNav').addEventListener('change', function() {
+            window.location.href = this.value;
+        });
     </script>
 </body>
 </html>
