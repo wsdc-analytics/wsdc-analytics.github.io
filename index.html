@@ -645,7 +645,7 @@
         <div>
             <nav class="top-bar" aria-label="Главная навигация">
                 <div class="top-bar-left">
-                    <a href="https://www.worldsdc.com/" class="logo-block" id="logoLink" title="Сайт WSDC" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.worldsdc.com/registry-points/" class="logo-block" id="logoLink" title="Основной источник данных" target="_blank" rel="noopener noreferrer">
                         <span class="logo-img-wrap">
                             <img src="https://www.worldsdc.com/wp-content/uploads/2019/10/WSDC_WHITE.gif" alt="WSDC" height="36" loading="eager">
                         </span>
@@ -711,9 +711,6 @@
             </div>
         </main>
 
-        <footer>
-            <p>Data source: <a href="https://www.worldsdc.com/registry-points/" target="_blank" rel="noopener noreferrer" style="color: #2d3748; text-decoration: underline;">World Swing Dance Council (WSDC) Database</a></p>
-        </footer>
     </div>
 
     <script>
@@ -818,7 +815,7 @@
             // Кнопка Dashboards и tooltip
             const logoLink = document.getElementById('logoLink');
             if (logoLink) {
-                const logoTitles = { ru: 'Сайт WSDC', en: 'WSDC site', es: 'Sitio WSDC' };
+                const logoTitles = { ru: 'Основной источник данных', en: 'Main data source', es: 'Fuente principal de datos' };
                 logoLink.title = logoTitles[lang] || logoTitles.en;
             }
             const dashboardsBtnText = document.getElementById('dashboardsBtnText');
