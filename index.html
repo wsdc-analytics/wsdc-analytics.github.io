@@ -67,7 +67,7 @@
             
             /* Фоны */
             --bg-primary: #ffffff;
-            --bg-secondary: #F3F4F6;
+            --bg-secondary: #FFFFFF;
             --bg-tertiary: #f7fafc;
             
             /* Текст */
@@ -207,44 +207,42 @@
 
         header {
             text-align: center;
+            margin-top: 32px;
             margin-bottom: 80px;
         }
 
         .language-switcher {
             display: flex;
-            gap: 8px;
+            gap: 16px;
             align-items: center;
         }
 
         .language-switcher button {
-            padding: 8px 16px;
-            background: transparent;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
+            padding: 4px 0;
+            background: none;
+            border: none;
+            border-radius: 0;
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: #888B92;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: color 0.2s ease, transform 0.2s ease;
             font-family: inherit;
-            min-height: 36px; /* Touch-friendly */
         }
 
         .language-switcher button:hover {
-            border-color: var(--color-primary);
             color: var(--color-primary);
-            transform: translateY(-1px);
         }
 
         .language-switcher button:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
+            outline: none;
         }
 
         .language-switcher button.active {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-            color: white;
+            color: #212529;
+            border-bottom: 2px solid #212529;
+            padding-bottom: 2px;
+            transform: translateY(-1px);
         }
 
         @media (max-width: 768px) {

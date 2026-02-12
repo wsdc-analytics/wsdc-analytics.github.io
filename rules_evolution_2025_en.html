@@ -46,6 +46,9 @@
     </script>
     <!-- Resource hints для оптимизации производительности -->
     <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="dns-prefetch" href="https://unpkg.com">
     
     <!-- Подключаем Twemoji для гарантированного отображения флагов на Windows -->
@@ -59,7 +62,7 @@
             
             /* Фоны */
             --bg-primary: #ffffff;
-            --bg-secondary: #fafafa;
+            --bg-secondary: #FFFFFF;
             --bg-tertiary: #f7fafc;
             
             /* Текст - улучшенный контраст */
@@ -89,7 +92,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
             line-height: 1.7;
             color: var(--text-primary);
             background-color: var(--bg-primary);
@@ -141,41 +144,35 @@
             margin-bottom: 24px;
         }
 
-        .language-switcher-article {
+        .language-switcher {
             display: flex;
-            gap: 8px;
+            gap: 16px;
             align-items: center;
         }
 
-        .language-switcher-article button {
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            font-size: 13px;
+        .language-switcher button {
+            padding: 4px 0;
+            background: none;
+            border: none;
+            font-size: 14px;
             font-weight: 500;
-            color: white;
+            color: rgba(255, 255, 255, 0.65);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: color 0.2s ease, transform 0.2s ease;
             font-family: inherit;
-            min-height: 32px;
         }
 
-        .language-switcher-article button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+        .language-switcher button:hover { color: rgba(255, 255, 255, 0.9); }
+
+        .language-switcher button:focus {
+            outline: none;
+        }
+
+        .language-switcher button.active {
+            color: white;
+            border-bottom: 2px solid white;
+            padding-bottom: 2px;
             transform: translateY(-1px);
-        }
-
-        .language-switcher-article button:focus {
-            outline: 2px solid white;
-            outline-offset: 2px;
-        }
-
-        .language-switcher-article button.active {
-            background: white;
-            border-color: white;
-            color: var(--color-primary);
         }
 
         .back-link {
@@ -608,7 +605,7 @@
                 gap: 16px;
             }
             
-            .language-switcher-article {
+            .language-switcher {
                 align-self: flex-end;
             }
         }
@@ -620,10 +617,10 @@
         <header class="article-header">
             <div class="article-header-top">
                 <a href="index.html" class="back-link">← Back to home</a>
-                <div class="language-switcher-article" role="group" aria-label="Language selection">
-                    <button onclick="window.location.href='rules_evolution_2025.html'" aria-pressed="false" aria-label="Русский язык">RU</button>
-                    <button onclick="window.location.href='rules_evolution_2025_en.html'" class="active" aria-pressed="true" aria-label="English language">EN</button>
-                    <button onclick="window.location.href='rules_evolution_2025_es.html'" aria-pressed="false" aria-label="Español">ES</button>
+                <div class="language-switcher" role="group" aria-label="Language selection">
+                    <button class="lang-btn" data-lang="ru" aria-label="Русский язык" aria-pressed="false">RU</button>
+                    <button class="lang-btn active" data-lang="en" aria-label="English language" aria-pressed="true">EN</button>
+                    <button class="lang-btn" data-lang="es" aria-label="Español" aria-pressed="false">ES</button>
                 </div>
             </div>
             <h1 class="article-title">WSDC Rules Evolution: 24 Years of Development</h1>
@@ -983,6 +980,20 @@
         if (typeof twemoji !== 'undefined') {
             twemoji.parse(document.body);
         }
+
+        // Language switcher
+        (function() {
+            const currentLang = 'en';
+            const langButtons = document.querySelectorAll('.lang-btn');
+            function setLanguage(lang) {
+                localStorage.setItem('wsdc-lang', lang);
+                const urls = { ru: 'rules_evolution_2025.html', en: 'rules_evolution_2025_en.html', es: 'rules_evolution_2025_es.html' };
+                if (lang !== currentLang) window.location.href = (urls[lang] || urls.en) + '?lang=' + lang;
+            }
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', () => { if (btn.dataset.lang !== currentLang) setLanguage(btn.dataset.lang); });
+            });
+        })();
 
         // Timeline accordion functionality
         document.addEventListener('DOMContentLoaded', function() {

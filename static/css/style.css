@@ -6,12 +6,13 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.7;
     color: #2d3748;
-    background-color: #fafafa;
+    background-color: #FFFFFF;
     font-size: 17px;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Styles for Twemoji */
@@ -286,36 +287,46 @@ footer {
     margin-bottom: 24px;
 }
 
+.language-switcher,
 .language-switcher-article {
     display: flex;
-    gap: 8px;
+    gap: 16px;
     align-items: center;
 }
 
+.language-switcher button,
 .language-switcher-article button {
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    font-size: 13px;
+    padding: 4px 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    font-size: 14px;
     font-weight: 500;
-    color: white;
+    color: rgba(255, 255, 255, 0.65);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
     font-family: inherit;
 }
 
+.language-switcher button:hover,
 .language-switcher-article button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.9);
 }
 
+.language-switcher button:focus,
+.language-switcher-article button:focus {
+    outline: none;
+}
+
+.language-switcher button.active,
 .language-switcher-article button.active {
-    background: white;
-    border-color: white;
-    color: #2d3748;
+    color: white;
+    border-bottom: 2px solid white;
+    padding-bottom: 2px;
+    transform: translateY(-1px);
 }
 
+.language-switcher button:disabled,
 .language-switcher-article button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
@@ -720,7 +731,7 @@ p {
 
 /* Footer */
 .article-footer {
-    background-color: #fafafa;
+    background-color: #FFFFFF;
     padding: 48px 80px;
     border-top: 2px solid #2d3748;
     margin-top: 0;
@@ -746,7 +757,8 @@ p {
     .comments-tabs { flex-wrap: wrap; }
     .comments-tab { padding: 10px 16px; font-size: 14px; }
     .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .language-switcher-article { align-self: flex-end; }
+    .language-switcher,
+.language-switcher-article { align-self: flex-end; }
     
     .section { margin: 32px 0; }
     .section-title { font-size: 24px; }

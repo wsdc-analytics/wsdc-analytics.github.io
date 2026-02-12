@@ -11,6 +11,9 @@
     <link rel="preload" href="events_background.png" as="image" fetchpriority="high">
 
     <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
 <!-- Open Graph / Facebook -->
 <meta content="article" property="og:type"/>
@@ -72,7 +75,7 @@
             
             /* Фоны */
             --bg-primary: #ffffff;
-            --bg-secondary: #fafafa;
+            --bg-secondary: #FFFFFF;
             --bg-tertiary: #f7fafc;
             
             /* Текст - улучшенный контраст */
@@ -130,7 +133,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.7;
             color: var(--text-primary);
             background-color: var(--bg-primary);
@@ -179,37 +182,38 @@
             margin-bottom: 24px;
         }
 
-        .language-switcher-article {
+        .language-switcher {
             display: flex;
-            gap: 8px;
+            gap: 16px;
             align-items: center;
         }
 
-        .language-switcher-article button {
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            font-size: 13px;
+        .language-switcher button {
+            padding: 4px 0;
+            background: none;
+            border: none;
+            font-size: 14px;
             font-weight: 500;
-            color: white;
+            color: rgba(255, 255, 255, 0.65);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: color 0.2s ease, transform 0.2s ease;
             font-family: inherit;
         }
 
-        .language-switcher-article button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+        .language-switcher button:hover { color: rgba(255, 255, 255, 0.9); }
+
+        .language-switcher button:focus {
+            outline: none;
         }
 
-        .language-switcher-article button.active {
-            background: white;
-            border-color: white;
-            color: var(--text-primary);
+        .language-switcher button.active {
+            color: white;
+            border-bottom: 2px solid white;
+            padding-bottom: 2px;
+            transform: translateY(-1px);
         }
 
-        .language-switcher-article button:disabled {
+        .language-switcher button:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
@@ -639,7 +643,7 @@
             .comments-tabs { flex-wrap: wrap; }
             .comments-tab { padding: 10px 16px; font-size: 14px; }
             .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .language-switcher-article { align-self: flex-end; }
+            .language-switcher { align-self: flex-end; }
             
             .section { margin: 32px 0; }
             .section-title { font-size: 24px; }
@@ -671,10 +675,10 @@
 <header class="article-header">
 <div class="article-header-top">
 <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;">Back to home</a>
-<div class="language-switcher-article" role="group" aria-label="Выбор языка">
-<button class="lang-btn-article" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
-<button class="lang-btn-article" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
-<button class="lang-btn-article" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
+<div class="language-switcher" role="group" aria-label="Выбор языка">
+<button class="lang-btn" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
+<button class="lang-btn" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
+<button class="lang-btn" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
 </div>
 </div>
 <h1 class="article-title">WSDC 2025: Events</h1>
@@ -1529,7 +1533,7 @@
         updateBackLink();
 
         // Обработчики переключения языка
-        const langButtons = document.querySelectorAll('.lang-btn-article');
+        const langButtons = document.querySelectorAll('.lang-btn');
         langButtons.forEach(btn => {
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
