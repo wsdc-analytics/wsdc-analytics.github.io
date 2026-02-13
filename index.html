@@ -208,7 +208,7 @@
         header {
             text-align: center;
             margin-top: 80px;
-            margin-bottom: 80px;
+            margin-bottom: 48px;
         }
 
         .language-switcher {
@@ -269,45 +269,76 @@
             margin: 0 auto;
         }
 
-        .search-container {
-            max-width: 600px;
-            margin: 40px auto 60px;
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5cm;
         }
 
-        .search-box {
+        /* Compact search in top bar */
+        .top-bar-search {
+            flex: 0 1 auto;
+            min-width: 140px;
+            max-width: 220px;
             position: relative;
         }
 
-        .search-input {
+        .search-box-inline {
+            position: relative;
+        }
+
+        .search-input-inline {
             width: 100%;
-            padding: 16px 50px 16px 20px;
-            font-size: 16px;
+            padding: 8px 36px 8px 12px;
+            font-size: 14px;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-primary);
-            box-shadow: var(--shadow-soft);
-            transition: border-color var(--transition-base), box-shadow var(--transition-base);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            transition: border-color var(--transition-base), background var(--transition-base);
             font-family: inherit;
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: var(--shadow-md), 0 0 0 3px rgba(45, 55, 72, 0.08);
+        .search-input-inline::placeholder {
+            color: var(--text-tertiary);
         }
 
-        .search-icon {
+        .search-input-inline:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: var(--bg-primary);
+        }
+
+        .search-icon-inline {
             position: absolute;
-            right: 16px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
             pointer-events: none;
         }
 
-        .search-results {
-            margin-top: 24px;
-            padding: 0;
+        .search-results-inline {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 8px;
+            z-index: 100;
+        }
+
+        .search-results-inline .search-result-item {
+            margin-bottom: 8px;
+            padding: 12px 14px;
+        }
+
+        .search-results-inline .search-result-item:last-child {
+            margin-bottom: 0;
         }
 
         .search-result-item {
@@ -509,6 +540,15 @@
                 display: none;
             }
 
+            .top-bar-right {
+                gap: 1.5cm;
+            }
+
+            .top-bar-search {
+                max-width: none;
+                min-width: 100px;
+            }
+
             .container {
                 padding: 100px 24px 60px;
             }
@@ -518,15 +558,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 32px;
-            margin-top: 60px;
-        }
-
-        .articles-section-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 24px;
-            letter-spacing: -0.5px;
+            margin-top: 0;
         }
 
         .article-card {
@@ -670,10 +702,30 @@
                         </div>
                     </nav>
                 </div>
-                <div class="language-switcher" role="group" aria-label="Выбор языка">
+                <div class="top-bar-right">
+                <div class="top-bar-search">
+                    <div class="search-box-inline">
+                        <label for="searchInput" class="visually-hidden">Поиск статей</label>
+                        <input 
+                            type="text" 
+                            class="search-input-inline" 
+                            id="searchInput" 
+                            placeholder="Search articles..." 
+                            autocomplete="off"
+                            aria-label="Поиск статей"
+                            aria-expanded="false"
+                            aria-controls="searchResults">
+                        <svg class="search-icon-inline" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="search-results-inline hidden" id="searchResults" role="region" aria-live="polite" aria-label="Результаты поиска"></div>
+                </div>
+                    <div class="language-switcher" role="group" aria-label="Выбор языка">
                     <button data-lang="ru" class="lang-btn" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
                     <button data-lang="en" class="lang-btn" aria-label="Switch to English" aria-pressed="false">EN</button>
                     <button data-lang="es" class="lang-btn" aria-label="Cambiar a español" aria-pressed="false">ES</button>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -686,26 +738,6 @@
         </header>
 
         <main id="main-content">
-            <div class="search-container">
-                <div class="search-box">
-                    <label for="searchInput" class="visually-hidden">Поиск статей</label>
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        id="searchInput" 
-                        placeholder="Search articles..." 
-                        autocomplete="off"
-                        aria-label="Поиск статей"
-                        aria-expanded="false"
-                        aria-controls="searchResults">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="search-results hidden" id="searchResults" role="region" aria-live="polite" aria-label="Результаты поиска"></div>
-            </div>
-
-            <h2 class="articles-section-title" id="articles-heading">Статьи</h2>
             <div class="articles-grid" id="articlesGrid" role="list">
                 <!-- Статьи загружаются динамически через JavaScript -->
             </div>
@@ -836,17 +868,6 @@
                 const base = a.dataset.dashHref || a.getAttribute('href');
                 a.href = base.includes('?') ? base.replace(/\?.*/, '') + '?lang=' + lang : base + '?lang=' + lang;
             });
-
-            // Заголовок раздела статей
-            const articlesSectionTitles = {
-                ru: 'Статьи',
-                en: 'Articles',
-                es: 'Artículos'
-            };
-            const articlesHeading = document.getElementById('articles-heading');
-            if (articlesHeading) {
-                articlesHeading.textContent = articlesSectionTitles[lang] || articlesSectionTitles.en;
-            }
 
             // Фильтрация и отображение статей
             const articles = articlesByLang[lang] || [];
