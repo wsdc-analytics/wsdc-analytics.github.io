@@ -7,7 +7,7 @@
     <title>Points Summary | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
@@ -18,22 +18,31 @@
     </script>
     <style>
         :root {
-            --color-primary: #2d3748;
-            --color-primary-dark: #0B1221;
+            --color-primary: #1a1d24;
+            --color-primary-dark: #0f1115;
             --color-accent: #2563eb;
+            --color-accent-soft: rgba(37, 99, 235, 0.08);
+            --medal-gold: #c9a227;
+            --medal-silver: #8e8e8e;
+            --medal-bronze: #a67c52;
             --bg-primary: #ffffff;
-            --bg-secondary: #FFFFFF;
-            --bg-tertiary: #f7fafc;
-            --text-primary: #0B1221;
-            --text-secondary: #4a5568;
-            --text-tertiary: #6B7280;
-            --border-color: #e5e7eb;
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-card-hover: #fafbfc;
+            --text-primary: #1a1d24;
+            --text-secondary: #5a6578;
+            --text-tertiary: #8b95a5;
+            --border-color: #e2e8f0;
+            --shadow-soft: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+            --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --transition: 0.2s ease;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-secondary);
             color: var(--text-primary);
             line-height: 1.6;
@@ -42,93 +51,137 @@
         .header {
             background: var(--bg-primary);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 24px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
             gap: 16px;
         }
         .back-link {
-            color: var(--color-primary);
+            color: var(--color-accent);
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
+            transition: color var(--transition);
         }
-        .back-link:hover { text-decoration: underline; }
+        .back-link:hover { color: #1d4ed8; }
         .container {
-            max-width: 900px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 40px 24px 80px;
+            padding: 48px 24px 80px;
         }
         h1 {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700;
+            letter-spacing: -0.02em;
             margin-bottom: 8px;
+            color: var(--color-primary-dark);
         }
         .subtitle {
             color: var(--text-secondary);
             font-size: 16px;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
         }
         .summary-date {
-            font-size: 18px;
+            font-size: 13px;
             font-weight: 600;
-            color: var(--color-primary);
-            margin: 32px 0 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--border-color);
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin: 40px 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
         .summary-date:first-of-type { margin-top: 0; }
         .event-card {
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 16px;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
             overflow: hidden;
-            box-shadow: var(--shadow-soft);
+            box-shadow: var(--shadow-card);
+            transition: box-shadow var(--transition), border-color var(--transition);
         }
+        .event-card:hover { box-shadow: var(--shadow-card-hover); border-color: #cbd5e1; }
+        .event-card.expanded { border-color: #cbd5e1; box-shadow: var(--shadow-card-hover); }
+        .event-card { scroll-margin-top: 20px; }
         .event-header {
-            padding: 16px 20px;
+            padding: 18px 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            transition: background var(--transition);
         }
-        .event-header:hover { background: var(--bg-tertiary); }
-        .event-name { font-weight: 600; font-size: 17px; }
-        .event-meta { color: var(--text-secondary); font-size: 14px; }
+        .event-header:hover { background: var(--bg-card-hover); }
+        .event-header .chevron {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--text-tertiary);
+            transition: transform var(--transition), color var(--transition);
+        }
+        .event-card.expanded .event-header .chevron { transform: rotate(180deg); color: var(--color-accent); }
+        .event-name { font-weight: 600; font-size: 17px; letter-spacing: -0.01em; }
+        .event-meta { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
         .event-body {
-            padding: 0 20px 20px;
+            padding: 0 22px 24px;
             border-top: 1px solid var(--border-color);
+            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
         }
         .event-body.collapsed { display: none; }
-        .division-block {
-            margin-top: 20px;
+        .event-body:not(.collapsed) { animation: fadeSlide 0.25s ease; }
+        @keyframes fadeSlide {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
         }
-        .division-block:first-child { margin-top: 20px; }
+        .divisions-grid {
+            display: grid;
+            gap: 20px;
+            padding-top: 20px;
+        }
+        .division-block {
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            border-left: 4px solid var(--color-accent);
+            box-shadow: var(--shadow-soft);
+        }
+        .division-block.champions { border-left-color: var(--medal-gold); }
+        .division-block.allstars { border-left-color: var(--medal-silver); }
+        .division-block.advanced { border-left-color: #3b82f6; }
         .division-title {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 8px;
-            color: var(--color-primary);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
         }
         .place-row {
-            padding: 6px 0;
+            padding: 8px 0;
             font-size: 15px;
             line-height: 1.5;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            align-items: baseline;
         }
-        .place-label { font-weight: 500; margin-right: 8px; }
-        .telegraph-link {
-            display: inline-block;
-            margin-top: 12px;
-            color: var(--color-accent);
-            text-decoration: none;
+        .place-row.place-1 { padding-left: 14px; border-left: 3px solid var(--medal-gold); }
+        .place-row.place-2 { padding-left: 14px; border-left: 3px solid var(--medal-silver); }
+        .place-row.place-3 { padding-left: 14px; border-left: 3px solid var(--medal-bronze); }
+        .place-label {
+            font-weight: 600;
             font-size: 14px;
+            min-width: 100px;
+            color: var(--text-secondary);
         }
-        .telegraph-link:hover { text-decoration: underline; }
+        .place-content { flex: 1; min-width: 0; }
         .loading, .empty, .error {
             text-align: center;
-            padding: 48px 24px;
+            padding: 64px 24px;
             color: var(--text-secondary);
             font-size: 16px;
         }
@@ -165,8 +218,10 @@
                 catalog.innerHTML = summaries.map(s => renderSummary(s)).join('');
                 document.querySelectorAll('.event-header').forEach(el => {
                     el.addEventListener('click', () => {
+                        const card = el.closest('.event-card');
                         const body = el.nextElementSibling;
                         body.classList.toggle('collapsed');
+                        card.classList.toggle('expanded', !body.classList.contains('collapsed'));
                     });
                 });
                 const hash = window.location.hash.slice(1);
@@ -175,6 +230,7 @@
                     if (target) {
                         const body = target.querySelector('.event-body');
                         if (body) body.classList.remove('collapsed');
+                        target.classList.add('expanded');
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 }
@@ -209,24 +265,38 @@
             return slug ? `${datePart}-${slug}` : datePart;
         }
 
+        function divClass(division) {
+            const n = (division || '').toLowerCase();
+            if (n.includes('champion')) return 'champions';
+            if (n.includes('all-star')) return 'allstars';
+            if (n.includes('advanced')) return 'advanced';
+            return '';
+        }
+        function placeClass(place) {
+            if (place === '1') return 'place-1';
+            if (place === '2') return 'place-2';
+            if (place === '3') return 'place-3';
+            return '';
+        }
         function renderEvent(ev, postDate) {
             const slug = ev.slug || makeEventSlug(ev.name, postDate);
             let divs = '';
             (ev.divisions || []).forEach(d => {
                 let placesHtml = '';
                 (d.places || []).forEach(p => {
+                    const pc = placeClass(p.place);
                     if (p.leader && p.follower) {
-                        placesHtml += `<div class="place-row"><span class="place-label">${p.place_label}:</span> ${escapeHtml(p.leader)} & ${escapeHtml(p.follower)}</div>`;
+                        placesHtml += `<div class="place-row ${pc}"><span class="place-label">${p.place_label}:</span><span class="place-content">${escapeHtml(p.leader)} & ${escapeHtml(p.follower)}</span></div>`;
                     } else if (p.leaders && p.leaders.length) {
                         const label = (p.place === 'F' && p.points_leader) ? `Finalists Leaders (+${p.points_leader}):` : (p.place_label || '');
-                        placesHtml += `<div class="place-row"><span class="place-label">${label}</span> ${escapeHtml(p.leaders.join(', '))}</div>`;
+                        placesHtml += `<div class="place-row ${pc}"><span class="place-label">${label}</span><span class="place-content">${escapeHtml(p.leaders.join(', '))}</span></div>`;
                     }
                     if (p.followers && p.followers.length) {
                         const label = (p.place === 'F' && p.points_follower) ? `Finalists Followers (+${p.points_follower}):` : (p.place_label || '');
-                        placesHtml += `<div class="place-row"><span class="place-label">${label}</span> ${escapeHtml(p.followers.join(', '))}</div>`;
+                        placesHtml += `<div class="place-row ${pc}"><span class="place-label">${label}</span><span class="place-content">${escapeHtml(p.followers.join(', '))}</span></div>`;
                     }
                 });
-                divs += `<div class="division-block"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
+                divs += `<div class="division-block ${divClass(d.division)}"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
             });
             return `
                 <div class="event-card" id="event-${slug || ''}">
@@ -235,9 +305,10 @@
                             <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>
                             <div class="event-meta">${escapeHtml(ev.location)} &middot; ${escapeHtml(ev.dates)}</div>
                         </div>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                     <div class="event-body collapsed">
-                        ${divs}
+                        <div class="divisions-grid">${divs}</div>
                     </div>
                 </div>`;
         }
