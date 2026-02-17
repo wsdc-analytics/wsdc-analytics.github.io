@@ -135,6 +135,39 @@
             border-bottom: 1px solid var(--border-color);
         }
         .summary-date:first-of-type { margin-top: 0; }
+        .year-section {
+            margin-bottom: 24px;
+        }
+        .year-header {
+            padding: 14px 20px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            transition: background var(--transition);
+        }
+        .year-header:hover { background: var(--bg-tertiary); }
+        .year-header .chevron {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--text-tertiary);
+            transition: transform var(--transition);
+        }
+        .year-section.expanded .year-header .chevron { transform: rotate(180deg); }
+        .year-body {
+            padding-left: 0;
+        }
+        .year-body.collapsed { display: none; }
         .event-card {
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
@@ -324,6 +357,12 @@
                 }
             }
             if (!target) return;
+            const yearSection = target.closest('.year-section');
+            if (yearSection) {
+                yearSection.classList.add('expanded');
+                const yearBody = yearSection.querySelector('.year-body');
+                if (yearBody) yearBody.classList.remove('collapsed');
+            }
             const body = target.querySelector('.event-body');
             if (body) body.classList.remove('collapsed');
             target.classList.add('expanded');
@@ -346,7 +385,16 @@
                     catalog.innerHTML = '<div class="empty">No summaries yet. Data is populated when the results bot runs.</div>';
                     return;
                 }
-                catalog.innerHTML = summaries.map(s => renderSummary(s)).join('');
+                const currentYear = new Date().getFullYear();
+                catalog.innerHTML = renderByYear(summaries, currentYear);
+                document.querySelectorAll('.year-header').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const section = el.closest('.year-section');
+                        const body = section.querySelector('.year-body');
+                        body.classList.toggle('collapsed');
+                        section.classList.toggle('expanded', !body.classList.contains('collapsed'));
+                    });
+                });
                 document.querySelectorAll('.event-header').forEach(el => {
                     el.addEventListener('click', () => {
                         const card = el.closest('.event-card');
@@ -362,6 +410,31 @@
             .catch(() => {
                 catalog.innerHTML = '<div class="error">Could not load data. Open the page through a web server.</div>';
             });
+
+        function renderByYear(summaries, currentYear) {
+            const byYear = {};
+            summaries.forEach(s => {
+                const parts = (s.post_date || '').split('-');
+                const year = parts.length === 3 ? parts[2] : new Date().getFullYear();
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(s);
+            });
+            const years = Object.keys(byYear).sort((a, b) => parseInt(b, 10) - parseInt(a, 10));
+            return years.map(year => {
+                const yearSummaries = byYear[year];
+                const expanded = year === String(currentYear);
+                return `
+                <div class="year-section ${expanded ? 'expanded' : ''}" data-year="${year}">
+                    <div class="year-header">
+                        <span>Points summary ${year}</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="year-body ${expanded ? '' : 'collapsed'}">
+                        ${yearSummaries.map(s => renderSummary(s)).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
 
         function renderSummary(s) {
             const eventsByContinent = {};
