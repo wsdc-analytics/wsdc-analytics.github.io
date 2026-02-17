@@ -192,6 +192,27 @@
             color: var(--text-secondary);
             font-size: 16px;
         }
+
+        @media (max-width: 640px) {
+            .container { padding: 24px 16px 48px; }
+            .event-header { padding: 14px 16px; }
+            .event-body { padding: 0 16px 20px; }
+            .divisions-grid { gap: 16px; padding-top: 16px; }
+            .division-block { padding: 12px 14px; }
+            .place-row {
+                flex-wrap: wrap;
+                padding: 8px 0;
+            }
+            .place-row .place-medal,
+            .place-row .place-label { flex-shrink: 0; }
+            .place-row .place-label { width: auto; min-width: 0; }
+            .place-row .place-content {
+                flex-basis: 100%;
+                min-width: 0;
+                padding-left: 1.5em;
+                margin-top: 2px;
+            }
+        }
     </style>
 </head>
 <body>
