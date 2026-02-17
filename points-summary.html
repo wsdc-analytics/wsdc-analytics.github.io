@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WSDC Points Summary - Full event reports catalog. WSDC Registry points by event, division, and placement.">
+    <title>Points Summary | WSDC Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LMLCY5PE8Z');
+    </script>
+    <style>
+        :root {
+            --color-primary: #2d3748;
+            --color-primary-dark: #0B1221;
+            --color-accent: #2563eb;
+            --bg-primary: #ffffff;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #f7fafc;
+            --text-primary: #0B1221;
+            --text-secondary: #4a5568;
+            --text-tertiary: #6B7280;
+            --border-color: #e5e7eb;
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .back-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+        .summary-date {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin: 32px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .summary-date:first-of-type { margin-top: 0; }
+        .event-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+        .event-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .event-header:hover { background: var(--bg-tertiary); }
+        .event-name { font-weight: 600; font-size: 17px; }
+        .event-meta { color: var(--text-secondary); font-size: 14px; }
+        .event-body {
+            padding: 0 20px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .event-body.collapsed { display: none; }
+        .division-block {
+            margin-top: 20px;
+        }
+        .division-block:first-child { margin-top: 20px; }
+        .division-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+        }
+        .place-row {
+            padding: 6px 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .place-label { font-weight: 500; margin-right: 8px; }
+        .telegraph-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .telegraph-link:hover { text-decoration: underline; }
+        .loading, .empty, .error {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="back-link">&larr; Home</a>
+        <span style="color: var(--text-tertiary);">|</span>
+        <span style="font-size: 14px;">Points Summary</span>
+    </header>
+
+    <div class="container">
+        <h1>WSDC Points Summary</h1>
+        <p class="subtitle">Full event reports catalog. Registry points by event, division, and placement.</p>
+        <main id="catalog"></main>
+    </div>
+
+    <script>
+        const catalog = document.getElementById('catalog');
+        catalog.innerHTML = '<div class="loading">Loading...</div>';
+
+        fetch('static/data/points_summaries.json')
+            .then(r => {
+                if (!r.ok) throw new Error('Failed to fetch');
+                return r.json();
+            })
+            .then(data => {
+                const summaries = data.summaries || [];
+                if (summaries.length === 0) {
+                    catalog.innerHTML = '<div class="empty">No summaries yet. Data is populated when the results bot runs.</div>';
+                    return;
+                }
+                catalog.innerHTML = summaries.map(s => renderSummary(s)).join('');
+                document.querySelectorAll('.event-header').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const body = el.nextElementSibling;
+                        body.classList.toggle('collapsed');
+                    });
+                });
+                const hash = window.location.hash.slice(1);
+                if (hash && hash.startsWith('event-')) {
+                    const target = document.getElementById(hash);
+                    if (target) {
+                        const body = target.querySelector('.event-body');
+                        if (body) body.classList.remove('collapsed');
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            })
+            .catch(() => {
+                catalog.innerHTML = '<div class="error">Could not load data. Open the page through a web server.</div>';
+            });
+
+        function renderSummary(s) {
+            const eventsByContinent = {};
+            (s.events || []).forEach(ev => {
+                const c = ev.continent || 'Other';
+                if (!eventsByContinent[c]) eventsByContinent[c] = [];
+                eventsByContinent[c].push(ev);
+            });
+            const order = ['Europe', 'America', 'Australia', 'Asia', 'South America', 'Africa', 'Other'];
+            let html = `<div class="summary-date">${s.post_date} &mdash; ${s.events_count} event${s.events_count !== 1 ? 's' : ''}</div>`;
+            for (const c of order) {
+                if (!eventsByContinent[c]) continue;
+                for (const ev of eventsByContinent[c]) {
+                    html += renderEvent(ev, s.post_date);
+                }
+            }
+            return html;
+        }
+
+        function makeEventSlug(name, postDate) {
+            if (!name || !postDate) return '';
+            const parts = postDate.trim().split('-');
+            const datePart = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : postDate.replace(/-/g, '');
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            return slug ? `${datePart}-${slug}` : datePart;
+        }
+
+        function renderEvent(ev, postDate) {
+            const slug = ev.slug || makeEventSlug(ev.name, postDate);
+            let divs = '';
+            (ev.divisions || []).forEach(d => {
+                let placesHtml = '';
+                (d.places || []).forEach(p => {
+                    if (p.leader && p.follower) {
+                        placesHtml += `<div class="place-row"><span class="place-label">${p.place_label}:</span> ${escapeHtml(p.leader)} & ${escapeHtml(p.follower)}</div>`;
+                    } else if (p.leaders && p.leaders.length) {
+                        const label = (p.place === 'F' && p.points_leader) ? `Finalists Leaders (+${p.points_leader}):` : (p.place_label || '');
+                        placesHtml += `<div class="place-row"><span class="place-label">${label}</span> ${escapeHtml(p.leaders.join(', '))}</div>`;
+                    }
+                    if (p.followers && p.followers.length) {
+                        const label = (p.place === 'F' && p.points_follower) ? `Finalists Followers (+${p.points_follower}):` : (p.place_label || '');
+                        placesHtml += `<div class="place-row"><span class="place-label">${label}</span> ${escapeHtml(p.followers.join(', '))}</div>`;
+                    }
+                });
+                divs += `<div class="division-block"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
+            });
+            return `
+                <div class="event-card" id="event-${slug || ''}">
+                    <div class="event-header">
+                        <div>
+                            <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>
+                            <div class="event-meta">${escapeHtml(ev.location)} &middot; ${escapeHtml(ev.dates)}</div>
+                        </div>
+                    </div>
+                    <div class="event-body collapsed">
+                        ${divs}
+                    </div>
+                </div>`;
+        }
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
