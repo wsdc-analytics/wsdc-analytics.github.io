@@ -161,7 +161,7 @@
             border-bottom: 1px solid var(--border-color);
         }
         .place-row {
-            padding: 8px 0;
+            padding: 6px 0;
             font-size: 15px;
             line-height: 1.5;
             display: flex;
@@ -169,13 +169,14 @@
             gap: 6px 12px;
             align-items: baseline;
         }
-        .place-row.place-1 { padding-left: 14px; border-left: 3px solid var(--medal-gold); }
-        .place-row.place-2 { padding-left: 14px; border-left: 3px solid var(--medal-silver); }
-        .place-row.place-3 { padding-left: 14px; border-left: 3px solid var(--medal-bronze); }
+        .place-row.place-final-header { margin-top: 4px; padding-bottom: 2px; }
+        .place-row.place-sub { padding-left: 0; }
         .place-label {
             font-weight: 600;
             font-size: 14px;
-            min-width: 100px;
+            width: 115px;
+            min-width: 115px;
+            flex-shrink: 0;
             color: var(--text-secondary);
         }
         .place-content { flex: 1; min-width: 0; }
@@ -272,28 +273,31 @@
             if (n.includes('advanced')) return 'advanced';
             return '';
         }
-        function placeClass(place) {
-            if (place === '1') return 'place-1';
-            if (place === '2') return 'place-2';
-            if (place === '3') return 'place-3';
-            return '';
-        }
         function renderEvent(ev, postDate) {
             const slug = ev.slug || makeEventSlug(ev.name, postDate);
             let divs = '';
             (ev.divisions || []).forEach(d => {
                 let placesHtml = '';
                 (d.places || []).forEach(p => {
-                    const pc = placeClass(p.place);
-                    if (p.leader && p.follower) {
-                        placesHtml += `<div class="place-row ${pc}"><span class="place-label">${p.place_label}:</span><span class="place-content">${escapeHtml(p.leader)} & ${escapeHtml(p.follower)}</span></div>`;
+                    if (p.place === 'F' && (p.leaders?.length || p.followers?.length)) {
+                        placesHtml += `<div class="place-row place-final-header"><span class="place-label">Final</span></div>`;
+                        if (p.leaders?.length) {
+                            const pts = p.points_leader != null ? ` (+${p.points_leader})` : '';
+                            placesHtml += `<div class="place-row place-sub"><span class="place-label">Leaders${pts}:</span><span class="place-content">${escapeHtml(p.leaders.join(', '))}</span></div>`;
+                        }
+                        if (p.followers?.length) {
+                            const pts = p.points_follower != null ? ` (+${p.points_follower})` : '';
+                            placesHtml += `<div class="place-row place-sub"><span class="place-label">Followers${pts}:</span><span class="place-content">${escapeHtml(p.followers.join(', '))}</span></div>`;
+                        }
+                    } else if (p.leader && p.follower) {
+                        placesHtml += `<div class="place-row"><span class="place-label">${p.place_label}:</span><span class="place-content">${escapeHtml(p.leader)} & ${escapeHtml(p.follower)}</span></div>`;
                     } else if (p.leaders && p.leaders.length) {
-                        const label = (p.place === 'F' && p.points_leader) ? `Finalists Leaders (+${p.points_leader}):` : (p.place_label || '');
-                        placesHtml += `<div class="place-row ${pc}"><span class="place-label">${label}</span><span class="place-content">${escapeHtml(p.leaders.join(', '))}</span></div>`;
+                        const label = p.place_label || '';
+                        placesHtml += `<div class="place-row"><span class="place-label">${label}:</span><span class="place-content">${escapeHtml(p.leaders.join(', '))}</span></div>`;
                     }
-                    if (p.followers && p.followers.length) {
-                        const label = (p.place === 'F' && p.points_follower) ? `Finalists Followers (+${p.points_follower}):` : (p.place_label || '');
-                        placesHtml += `<div class="place-row ${pc}"><span class="place-label">${label}</span><span class="place-content">${escapeHtml(p.followers.join(', '))}</span></div>`;
+                    if (p.place !== 'F' && p.followers && p.followers.length) {
+                        const label = p.place_label || '';
+                        placesHtml += `<div class="place-row"><span class="place-label">${label}:</span><span class="place-content">${escapeHtml(p.followers.join(', '))}</span></div>`;
                     }
                 });
                 divs += `<div class="division-block ${divClass(d.division)}"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
