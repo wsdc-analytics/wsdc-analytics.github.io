@@ -310,7 +310,19 @@
         function expandAndScrollToHash() {
             const hash = window.location.hash.slice(1);
             if (!hash || !hash.startsWith('event-')) return;
-            const target = document.getElementById(hash);
+            let target = document.getElementById(hash);
+            if (!target) {
+                const namePart = hash.replace(/^event-\d{4}-\d{2}-\d{2}-/, '');
+                if (namePart) {
+                    const cards = document.querySelectorAll('.event-card[id^="event-"]');
+                    for (const c of cards) {
+                        if (c.id.endsWith('-' + namePart) || c.id === 'event-' + namePart) {
+                            target = c;
+                            break;
+                        }
+                    }
+                }
+            }
             if (!target) return;
             const body = target.querySelector('.event-body');
             if (body) body.classList.remove('collapsed');
@@ -344,6 +356,7 @@
                     });
                 });
                 expandAndScrollToHash();
+                setTimeout(expandAndScrollToHash, 200);
                 window.addEventListener('hashchange', expandAndScrollToHash);
             })
             .catch(() => {
