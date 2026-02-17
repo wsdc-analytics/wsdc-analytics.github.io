@@ -282,8 +282,9 @@
         function placeMedal(place) {
             return place === '1' ? '🥇' : place === '2' ? '🥈' : place === '3' ? '🥉' : '';
         }
-        function stripMedal(label) {
-            return (label || '').replace(/^[🥇🥈🥉]\s*/, '').trim() || label || '';
+        function placeLabel(p) {
+            if (p.place && /^[1-5]$/.test(p.place)) return p.place + ' place';
+            return (p.place_label || '').replace(/^[^\d\w]+/, '').trim() || p.place_label || '';
         }
         function placeRow(medal, label, content) {
             return `<div class="place-row"><span class="place-medal">${medal}</span><span class="place-label">${label}</span><span class="place-content">${content}</span></div>`;
@@ -295,7 +296,7 @@
                 let placesHtml = '';
                 (d.places || []).forEach(p => {
                     if (p.place === 'F' && (p.leaders?.length || p.followers?.length)) {
-                        placesHtml += `<div class="place-row place-final-header"><span class="place-medal"></span><span class="place-label">Final</span></div>`;
+                        placesHtml += `<div class="place-row place-final-header"><span class="place-medal"></span><span class="place-label">Finalists</span></div>`;
                         if (p.leaders?.length) {
                             const pts = p.points_leader != null ? ` (+${p.points_leader})` : '';
                             placesHtml += placeRow('', `Leaders${pts}:`, escapeHtml(p.leaders.join(', ')));
@@ -305,14 +306,14 @@
                             placesHtml += placeRow('', `Followers${pts}:`, escapeHtml(p.followers.join(', ')));
                         }
                     } else if (p.leader && p.follower) {
-                        const lbl = stripMedal(p.place_label || '') + ':';
+                        const lbl = placeLabel(p) + ':';
                         placesHtml += placeRow(placeMedal(p.place), lbl, escapeHtml(p.leader) + ' & ' + escapeHtml(p.follower));
                     } else if (p.leaders && p.leaders.length) {
-                        const lbl = stripMedal(p.place_label || '') + ':';
+                        const lbl = placeLabel(p) + ':';
                         placesHtml += placeRow(placeMedal(p.place), lbl, escapeHtml(p.leaders.join(', ')));
                     }
                     if (p.place !== 'F' && p.followers && p.followers.length) {
-                        const lbl = stripMedal(p.place_label || '') + ':';
+                        const lbl = placeLabel(p) + ':';
                         placesHtml += placeRow('', lbl, escapeHtml(p.followers.join(', ')));
                     }
                 });
