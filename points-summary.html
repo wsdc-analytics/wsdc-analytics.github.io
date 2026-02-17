@@ -231,6 +231,9 @@
     <script>
         const catalog = document.getElementById('catalog');
         catalog.innerHTML = '<div class="loading">Loading...</div>';
+        if (window.location.hash && window.history.scrollRestoration) {
+            window.history.scrollRestoration = 'manual';
+        }
 
         function expandAndScrollToHash() {
             const hash = window.location.hash.slice(1);
@@ -240,7 +243,12 @@
             const body = target.querySelector('.event-body');
             if (body) body.classList.remove('collapsed');
             target.classList.add('expanded');
-            setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+            void body?.offsetHeight;
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    target.scrollIntoView({ behavior: 'auto', block: 'start' });
+                });
+            });
         }
 
         fetch('static/data/points_summaries.json')
