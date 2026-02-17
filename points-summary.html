@@ -232,6 +232,17 @@
         const catalog = document.getElementById('catalog');
         catalog.innerHTML = '<div class="loading">Loading...</div>';
 
+        function expandAndScrollToHash() {
+            const hash = window.location.hash.slice(1);
+            if (!hash || !hash.startsWith('event-')) return;
+            const target = document.getElementById(hash);
+            if (!target) return;
+            const body = target.querySelector('.event-body');
+            if (body) body.classList.remove('collapsed');
+            target.classList.add('expanded');
+            setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+        }
+
         fetch('static/data/points_summaries.json')
             .then(r => {
                 if (!r.ok) throw new Error('Failed to fetch');
@@ -252,16 +263,8 @@
                         card.classList.toggle('expanded', !body.classList.contains('collapsed'));
                     });
                 });
-                const hash = window.location.hash.slice(1);
-                if (hash && hash.startsWith('event-')) {
-                    const target = document.getElementById(hash);
-                    if (target) {
-                        const body = target.querySelector('.event-body');
-                        if (body) body.classList.remove('collapsed');
-                        target.classList.add('expanded');
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
+                expandAndScrollToHash();
+                window.addEventListener('hashchange', expandAndScrollToHash);
             })
             .catch(() => {
                 catalog.innerHTML = '<div class="error">Could not load data. Open the page through a web server.</div>';
