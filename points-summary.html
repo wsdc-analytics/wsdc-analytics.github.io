@@ -435,7 +435,7 @@
 
                 const searchInput = document.getElementById('search-input');
                 const noResults = document.getElementById('search-no-results');
-                searchInput.addEventListener('input', () => {
+                function applySearch() {
                     const q = searchInput.value.trim().toLowerCase();
                     noResults.classList.remove('visible');
                     let anyVisible = false;
@@ -450,9 +450,27 @@
                             if (match) { anyVisible = true; yearHasVisible = true; }
                         });
                         sec.style.display = yearHasVisible ? '' : 'none';
+                        if (yearHasVisible && q) {
+                            sec.classList.add('expanded');
+                            const yearBody = sec.querySelector('.year-body');
+                            if (yearBody) yearBody.classList.remove('collapsed');
+                        }
+                        sec.querySelectorAll('.summary-date').forEach(dateEl => {
+                            let hasVisible = false;
+                            let el = dateEl.nextElementSibling;
+                            while (el && !el.classList.contains('summary-date')) {
+                                if (el.classList.contains('event-card') && el.style.display !== 'none') {
+                                    hasVisible = true;
+                                    break;
+                                }
+                                el = el.nextElementSibling;
+                            }
+                            dateEl.style.display = hasVisible ? '' : 'none';
+                        });
                     });
                     if (q && !anyVisible) noResults.classList.add('visible');
-                });
+                }
+                searchInput.addEventListener('input', applySearch);
             })
             .catch(() => {
                 catalog.innerHTML = '<div class="error">Could not load data. Open the page through a web server.</div>';
