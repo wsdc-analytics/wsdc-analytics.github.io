@@ -82,22 +82,46 @@
             margin-bottom: 24px;
         }
         .how-to-read {
-            background: var(--bg-tertiary);
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 18px 22px;
+            border-radius: var(--radius);
             margin-bottom: 32px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+        .how-to-read.expanded { border-color: #cbd5e1; }
+        .how-to-read-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            transition: background var(--transition);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .how-to-read-header:hover { background: var(--bg-tertiary); }
+        .how-to-read-header .chevron {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            color: var(--text-tertiary);
+            transition: transform var(--transition);
+        }
+        .how-to-read.expanded .how-to-read-header .chevron { transform: rotate(180deg); }
+        .how-to-read-body {
+            padding: 0 22px 20px;
             font-size: 14px;
             color: var(--text-secondary);
             line-height: 1.65;
         }
-        .how-to-read strong {
-            color: var(--text-primary);
+        .how-to-read-body.collapsed { display: none; }
+        .how-to-read-body ul {
+            margin: 0 0 0 18px;
         }
-        .how-to-read ul {
-            margin: 10px 0 0 18px;
-        }
-        .how-to-read li {
+        .how-to-read-body li {
             margin-bottom: 6px;
         }
         .summary-date {
@@ -214,7 +238,8 @@
 
         @media (max-width: 640px) {
             .container { padding: 24px 16px 48px; }
-            .how-to-read { padding: 14px 16px; font-size: 13px; }
+            .how-to-read-header { padding: 14px 16px; }
+            .how-to-read-body { padding: 0 16px 16px; font-size: 13px; }
             .event-header { padding: 14px 16px; }
             .event-body { padding: 0 16px 20px; }
             .divisions-grid { gap: 16px; padding-top: 16px; }
@@ -245,15 +270,23 @@
     <div class="container">
         <h1>WSDC Points Summary</h1>
         <p class="subtitle">Full event reports catalog. Registry points by event, division, and placement.</p>
-        <div class="how-to-read">
-            <strong>How to read this page</strong>
-            <ul>
-                <li><strong>Events</strong> are grouped by the date results were posted.</li>
-                <li><strong>Click an event</strong> to expand and see divisions (Champions, All-Star, Advanced).</li>
-                <li><strong>Placements</strong> show Leaders & Followers; medals (🥇🥈🥉) mark 1st, 2nd, 3rd.</li>
-                <li><strong>Finalists</strong> — couples in the final without a specific placement.</li>
-                <li><strong>(+X)</strong> — Registry points awarded for that placement.</li>
-            </ul>
+        <div class="how-to-read" id="how-to-read">
+            <div class="how-to-read-header">
+                <span>How to read this page</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="how-to-read-body collapsed">
+                <ul>
+                    <li><strong>Events</strong> are grouped by the date results were posted.</li>
+                    <li><strong>Click an event</strong> to expand and see divisions (Champions, All-Star, Advanced).</li>
+                    <li><strong>Placements</strong> show Leaders &amp; Followers; medals (🥇🥈🥉) mark 1st, 2nd, 3rd.</li>
+                    <li><strong>Finalists</strong> — couples in the final without a specific placement.</li>
+                    <li><strong>(+X)</strong> — Registry points awarded for that placement.</li>
+                    <li><strong>[N]</strong> — WSDC Registry rank of the dancer.</li>
+                    <li><strong>🟡</strong> — reached ALLOWED threshold (dancer can now compete in the next division).</li>
+                    <li><strong>🟢</strong> — reached REQUIRED threshold (dancer must now compete in the next division) or earned first points in Intermediate/Advanced/All-Stars.</li>
+                </ul>
+            </div>
         </div>
         <main id="catalog"></main>
     </div>
@@ -264,6 +297,14 @@
         if (window.location.hash && window.history.scrollRestoration) {
             window.history.scrollRestoration = 'manual';
         }
+
+        document.getElementById('how-to-read')?.addEventListener('click', function(e) {
+            if (e.target.closest('.how-to-read-header')) {
+                const body = this.querySelector('.how-to-read-body');
+                body.classList.toggle('collapsed');
+                this.classList.toggle('expanded', !body.classList.contains('collapsed'));
+            }
+        });
 
         function expandAndScrollToHash() {
             const hash = window.location.hash.slice(1);
