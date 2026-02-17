@@ -18,21 +18,21 @@
     </script>
     <style>
         :root {
-            --color-primary: #1a1d24;
-            --color-primary-dark: #0f1115;
+            --color-primary: #2d3748;
+            --color-primary-dark: #0B1221;
             --color-accent: #2563eb;
             --color-accent-soft: rgba(37, 99, 235, 0.08);
             --medal-gold: #c9a227;
             --medal-silver: #8e8e8e;
             --medal-bronze: #a67c52;
             --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #f7fafc;
             --bg-card-hover: #fafbfc;
-            --text-primary: #1a1d24;
-            --text-secondary: #5a6578;
-            --text-tertiary: #8b95a5;
-            --border-color: #e2e8f0;
+            --text-primary: #0B1221;
+            --text-secondary: #4a5568;
+            --text-tertiary: #6B7280;
+            --border-color: #e5e7eb;
             --shadow-soft: 0 1px 3px rgba(0,0,0,0.04);
             --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
             --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
@@ -79,7 +79,26 @@
         .subtitle {
             color: var(--text-secondary);
             font-size: 16px;
-            margin-bottom: 40px;
+            margin-bottom: 24px;
+        }
+        .how-to-read {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 18px 22px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+        .how-to-read strong {
+            color: var(--text-primary);
+        }
+        .how-to-read ul {
+            margin: 10px 0 0 18px;
+        }
+        .how-to-read li {
+            margin-bottom: 6px;
         }
         .summary-date {
             font-size: 13px;
@@ -195,6 +214,7 @@
 
         @media (max-width: 640px) {
             .container { padding: 24px 16px 48px; }
+            .how-to-read { padding: 14px 16px; font-size: 13px; }
             .event-header { padding: 14px 16px; }
             .event-body { padding: 0 16px 20px; }
             .divisions-grid { gap: 16px; padding-top: 16px; }
@@ -225,6 +245,16 @@
     <div class="container">
         <h1>WSDC Points Summary</h1>
         <p class="subtitle">Full event reports catalog. Registry points by event, division, and placement.</p>
+        <div class="how-to-read">
+            <strong>How to read this page</strong>
+            <ul>
+                <li><strong>Events</strong> are grouped by the date results were posted.</li>
+                <li><strong>Click an event</strong> to expand and see divisions (Champions, All-Star, Advanced).</li>
+                <li><strong>Placements</strong> show Leaders & Followers; medals (🥇🥈🥉) mark 1st, 2nd, 3rd.</li>
+                <li><strong>Finalists</strong> — couples in the final without a specific placement.</li>
+                <li><strong>(+X)</strong> — Registry points awarded for that placement.</li>
+            </ul>
+        </div>
         <main id="catalog"></main>
     </div>
 
