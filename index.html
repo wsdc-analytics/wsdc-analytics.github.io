@@ -391,7 +391,8 @@
         }
 
         .dashboards-nav .dropdown-btn,
-        .points-summary-nav .nav-link-btn {
+        .points-summary-nav .nav-link-btn,
+        .mobile-summary-btn .nav-link-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -416,13 +417,15 @@
         }
 
         .dashboards-nav .dropdown-btn:hover,
-        .points-summary-nav .nav-link-btn:hover {
+        .points-summary-nav .nav-link-btn:hover,
+        .mobile-summary-btn .nav-link-btn:hover {
             border-color: var(--color-primary);
             color: var(--color-primary);
         }
 
         .dashboards-nav .dropdown-btn:focus,
-        .points-summary-nav .nav-link-btn:focus {
+        .points-summary-nav .nav-link-btn:focus,
+        .mobile-summary-btn .nav-link-btn:focus {
             outline: 2px solid var(--color-primary);
             outline-offset: 2px;
         }
@@ -538,8 +541,13 @@
             align-items: center;
             gap: 8px;
         }
-        .points-summary-nav .nav-link-btn {
+        .points-summary-nav .nav-link-btn,
+        .mobile-summary-btn .nav-link-btn {
             text-decoration: none;
+        }
+
+        .mobile-summary-btn {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -548,9 +556,20 @@
                 padding: 0 16px;
             }
 
+            .top-bar-wrapper > div {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
             .top-bar {
                 padding: 12px 16px;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+
+            .top-bar-right {
+                align-self: center;
             }
 
             .top-bar-separator {
@@ -569,8 +588,22 @@
                 display: none;
             }
 
+            .mobile-summary-btn {
+                display: flex;
+                justify-content: center;
+            }
+
+            .mobile-summary-btn .nav-link-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+
             .container {
-                padding: 100px 24px 60px;
+                padding: 140px 24px 60px;
+            }
+
+            .article-card h2 {
+                font-size: 18px;
             }
         }
 
@@ -756,6 +789,9 @@
                     </div>
                 </div>
             </nav>
+            <div class="mobile-summary-btn">
+                <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtnMobile">Summary Points</a>
+            </div>
         </div>
     </div>
 
@@ -892,10 +928,10 @@
                 };
                 dashboardsTooltip.textContent = tooltips[lang] || tooltips.en;
             }
-            const pointsSummaryBtn = document.getElementById('pointsSummaryBtn');
-            if (pointsSummaryBtn) {
-                pointsSummaryBtn.href = 'points-summary.html' + (lang && lang !== 'en' ? '?lang=' + lang : '');
-            }
+            const ptsHref = 'points-summary.html' + (lang && lang !== 'en' ? '?lang=' + lang : '');
+            document.querySelectorAll('#pointsSummaryBtn, #pointsSummaryBtnMobile').forEach(el => {
+                if (el) el.href = ptsHref;
+            });
             const pointsSummaryTooltip = document.getElementById('pointsSummaryTooltip');
             if (pointsSummaryTooltip) {
                 const ptsTooltips = {
