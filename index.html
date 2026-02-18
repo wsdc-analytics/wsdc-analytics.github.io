@@ -478,7 +478,8 @@
         }
 
         .dashboards-nav .info-icon,
-        .points-summary-nav .info-icon {
+        .points-summary-nav .info-icon,
+        .mobile-summary-btn .info-icon {
             flex-shrink: 0;
             display: inline-flex;
             align-items: center;
@@ -499,12 +500,14 @@
             transition: all var(--transition-base);
         }
         .dashboards-nav .info-icon:hover,
-        .points-summary-nav .info-icon:hover {
+        .points-summary-nav .info-icon:hover,
+        .mobile-summary-btn .info-icon:hover {
             color: var(--color-primary);
             border-color: var(--color-primary);
         }
         .dashboards-nav .info-tooltip,
-        .points-summary-nav .info-tooltip {
+        .points-summary-nav .info-tooltip,
+        .mobile-summary-btn .info-tooltip {
             position: absolute;
             left: 100%;
             top: 50%;
@@ -530,7 +533,8 @@
             z-index: 101;
         }
         .dashboards-nav .info-icon:hover .info-tooltip,
-        .points-summary-nav .info-icon:hover .info-tooltip {
+        .points-summary-nav .info-icon:hover .info-tooltip,
+        .mobile-summary-btn .info-icon:hover .info-tooltip {
             opacity: 1;
             visibility: visible;
         }
@@ -565,11 +569,14 @@
             .top-bar {
                 padding: 12px 16px;
                 flex-wrap: nowrap;
-                align-items: center;
+                align-items: stretch;
+                min-height: 56px;
             }
 
+            .top-bar-left,
             .top-bar-right {
-                align-self: center;
+                display: flex;
+                align-items: center;
             }
 
             .top-bar-separator {
@@ -590,11 +597,17 @@
 
             .mobile-summary-btn {
                 display: flex;
+                align-items: center;
                 justify-content: center;
+                gap: 8px;
+            }
+
+            .mobile-summary-btn .info-icon {
+                flex-shrink: 0;
             }
 
             .mobile-summary-btn .nav-link-btn {
-                width: 100%;
+                flex: 1;
                 max-width: 200px;
             }
 
@@ -790,6 +803,10 @@
                 </div>
             </nav>
             <div class="mobile-summary-btn">
+                <span class="info-icon" role="img" aria-label="Information">
+                    <span aria-hidden="true">i</span>
+                    <span class="info-tooltip" id="pointsSummaryTooltipMobile">Points awarded by event</span>
+                </span>
                 <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtnMobile">Summary Points</a>
             </div>
         </div>
@@ -932,15 +949,15 @@
             document.querySelectorAll('#pointsSummaryBtn, #pointsSummaryBtnMobile').forEach(el => {
                 if (el) el.href = ptsHref;
             });
-            const pointsSummaryTooltip = document.getElementById('pointsSummaryTooltip');
-            if (pointsSummaryTooltip) {
-                const ptsTooltips = {
-                    ru: 'Очки, начисленные по ивентам',
-                    en: 'Points awarded by event',
-                    es: 'Puntos otorgados por evento'
-                };
-                pointsSummaryTooltip.textContent = ptsTooltips[lang] || ptsTooltips.en;
-            }
+            const ptsTooltips = {
+                ru: 'Очки, начисленные по ивентам',
+                en: 'Points awarded by event',
+                es: 'Puntos otorgados por evento'
+            };
+            const ptsTooltipText = ptsTooltips[lang] || ptsTooltips.en;
+            document.querySelectorAll('#pointsSummaryTooltip, #pointsSummaryTooltipMobile').forEach(el => {
+                if (el) el.textContent = ptsTooltipText;
+            });
             document.querySelectorAll('[data-dash-href]').forEach(a => {
                 const base = a.dataset.dashHref || a.getAttribute('href');
                 a.href = base.includes('?') ? base.replace(/\?.*/, '') + '?lang=' + lang : base + '?lang=' + lang;
