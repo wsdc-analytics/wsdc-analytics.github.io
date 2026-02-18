@@ -59,6 +59,18 @@
             flex-wrap: wrap;
         }
         .header-left { display: flex; align-items: center; gap: 16px; }
+        .header-separator { color: var(--text-tertiary); font-size: 14px; }
+        .header-section-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--bg-primary);
+        }
         .header-search {
             flex: 1;
             min-width: 180px;
@@ -369,9 +381,9 @@
 <body>
     <header class="header">
         <div class="header-left">
-            <a href="index.html" class="back-link">&larr; Home</a>
-            <span style="color: var(--text-tertiary);">|</span>
-            <span style="font-size: 14px;">Points Summary</span>
+            <a href="index.html" class="back-link">&larr; На главную</a>
+            <span class="header-separator" aria-hidden="true">|</span>
+            <span class="header-section-badge">Summary Points</span>
         </div>
         <div class="header-search">
             <input type="search" class="search-input" id="search-input" placeholder="Search by event name or city..." autocomplete="off">

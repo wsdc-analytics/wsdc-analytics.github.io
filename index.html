@@ -43,7 +43,7 @@
     <!-- Resource hints для оптимизации производительности -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://www.worldsdc.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
@@ -98,7 +98,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.7;
             color: var(--text-primary);
             background-color: var(--bg-secondary);
@@ -380,7 +380,8 @@
         }
 
         /* Dashboards dropdown (inside top bar) */
-        .dashboards-nav {
+        .dashboards-nav,
+        .points-summary-nav {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -539,12 +540,7 @@
             visibility: visible;
         }
 
-        /* Points Summary section (link button, symmetrical to Dashboards) */
-        .points-summary-nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        /* Points Summary — same block style as Dashboards */
         .points-summary-nav .nav-link-btn,
         .mobile-summary-btn .nav-link-btn {
             text-decoration: none;

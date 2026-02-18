@@ -7,7 +7,7 @@
     <title>WSDC Navigator | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <!-- Google tag (gtag.js) -->
@@ -33,7 +33,7 @@
             height: 100%;
         }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-secondary);
             color: var(--text-primary);
             line-height: 1.6;
@@ -51,26 +51,28 @@
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
         }
         .back-link {
-            color: var(--color-primary);
+            color: #2563eb;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 500;
         }
-        .back-link:hover {
-            text-decoration: underline;
-        }
+        .back-link:hover { color: #1d4ed8; }
+        .header-separator { color: var(--text-secondary); opacity: 0.6; font-size: 14px; }
         .dashboard-select {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: inherit;
             font-size: 14px;
             font-weight: 500;
-            padding: 8px 32px 8px 12px;
+            padding: 8px 32px 8px 16px;
+            height: 36px;
             border: 2px solid var(--border-color);
             border-radius: 6px;
             background: var(--bg-primary);
-            color: var(--text-primary);
+            color: var(--text-secondary);
             cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
         }
         .dashboard-select:hover {
             border-color: var(--color-primary);
@@ -96,6 +98,7 @@
     <div class="page">
         <header class="header">
             <a href="index.html" class="back-link">← На главную</a>
+            <span class="header-separator" aria-hidden="true">|</span>
             <select class="dashboard-select" id="dashboardNav" aria-label="Выбор дашборда">
                 <option value="dashboard.html">Metrics</option>
                 <option value="navigator.html" selected>Events Navigator</option>
