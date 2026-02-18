@@ -521,6 +521,89 @@
             visibility: visible;
         }
 
+        /* Points Summary section (link button, symmetrical to Dashboards) */
+        .points-summary-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .points-summary-nav .info-icon {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            min-height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-tertiary);
+            font-size: 14px;
+            font-weight: 600;
+            font-style: italic;
+            cursor: help;
+            position: relative;
+            transition: all var(--transition-base);
+        }
+        .points-summary-nav .info-icon:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .points-summary-nav .info-tooltip {
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-right: 10px;
+            padding: 8px 12px;
+            background: var(--color-primary);
+            color: white;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.4;
+            border-radius: 6px;
+            white-space: normal;
+            max-width: 280px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition-base), visibility var(--transition-base);
+            z-index: 101;
+        }
+        .points-summary-nav .info-icon:hover .info-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        .points-summary-nav .nav-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            min-height: 36px;
+        }
+        .points-summary-nav .nav-link-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+        .points-summary-nav .nav-link-btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
         @media (max-width: 768px) {
             .top-bar-wrapper {
                 top: 16px;
@@ -537,6 +620,10 @@
             }
 
             .dashboards-nav {
+                display: none;
+            }
+
+            .points-summary-nav {
                 display: none;
             }
 
@@ -698,6 +785,14 @@
                     </nav>
                 </div>
                 <div class="top-bar-right">
+                <span class="top-bar-separator" aria-hidden="true"></span>
+                <nav class="points-summary-nav" aria-label="Points Summary">
+                    <span class="info-icon" role="img" aria-label="About Points Summary">
+                        <span aria-hidden="true">i</span>
+                        <span class="info-tooltip" id="pointsSummaryTooltip">Registry points awarded by event and division</span>
+                    </span>
+                    <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Points Summary</a>
+                </nav>
                 <div class="top-bar-search">
                     <div class="search-box-inline">
                         <label for="searchInput" class="visually-hidden">Поиск статей</label>
@@ -858,6 +953,21 @@
                     es: 'Paneles informativos WSDC'
                 };
                 dashboardsTooltip.textContent = tooltips[lang] || tooltips.en;
+            }
+            const pointsSummaryBtn = document.getElementById('pointsSummaryBtn');
+            if (pointsSummaryBtn) {
+                const ptsLabels = { ru: 'Саммари очков', en: 'Points Summary', es: 'Resumen puntos' };
+                pointsSummaryBtn.textContent = ptsLabels[lang] || ptsLabels.en;
+                pointsSummaryBtn.href = 'points-summary.html' + (lang && lang !== 'en' ? '?lang=' + lang : '');
+            }
+            const pointsSummaryTooltip = document.getElementById('pointsSummaryTooltip');
+            if (pointsSummaryTooltip) {
+                const ptsTooltips = {
+                    ru: 'Registry points по ивентам и дивизионам. Откроется страница с саммари очков.',
+                    en: 'Registry points awarded by event and division. Opens the Points Summary page.',
+                    es: 'Registry points por evento y división. Abre la página Points Summary.'
+                };
+                pointsSummaryTooltip.textContent = ptsTooltips[lang] || ptsTooltips.en;
             }
             document.querySelectorAll('[data-dash-href]').forEach(a => {
                 const base = a.dataset.dashHref || a.getAttribute('href');
