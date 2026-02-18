@@ -396,9 +396,10 @@
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            width: 150px;
+            width: 160px;
             height: 36px;
             padding: 0 16px;
+            white-space: nowrap;
             background: transparent;
             border: 2px solid var(--border-color);
             border-radius: 6px;
@@ -473,12 +474,39 @@
             color: var(--color-primary);
         }
 
-        .dropdown-wrapper .btn-tooltip,
-        .nav-link-wrap .btn-tooltip {
+        .dashboards-nav .info-icon,
+        .points-summary-nav .info-icon {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            min-height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-tertiary);
+            font-size: 13px;
+            font-weight: 600;
+            font-style: normal;
+            cursor: help;
+            position: relative;
+            transition: all var(--transition-base);
+        }
+        .dashboards-nav .info-icon:hover,
+        .points-summary-nav .info-icon:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .dashboards-nav .info-tooltip,
+        .points-summary-nav .info-tooltip {
             position: absolute;
-            left: 50%;
-            bottom: calc(100% + 8px);
-            transform: translateX(-50%);
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 10px;
             padding: 8px 12px;
             background: var(--color-primary);
             color: white;
@@ -488,7 +516,6 @@
             border-radius: 6px;
             white-space: normal;
             max-width: 200px;
-            text-align: center;
             box-shadow: var(--shadow-md);
             opacity: 0;
             visibility: hidden;
@@ -496,8 +523,8 @@
             transition: opacity var(--transition-base), visibility var(--transition-base);
             z-index: 101;
         }
-        .dropdown-wrapper:hover .btn-tooltip,
-        .nav-link-wrap:hover .btn-tooltip {
+        .dashboards-nav .info-icon:hover .info-tooltip,
+        .points-summary-nav .info-icon:hover .info-tooltip {
             opacity: 1;
             visibility: visible;
         }
@@ -506,11 +533,7 @@
         .points-summary-nav {
             display: flex;
             align-items: center;
-            gap: 0;
-        }
-        .nav-link-wrap {
-            position: relative;
-            display: inline-flex;
+            gap: 8px;
         }
         .points-summary-nav .nav-link-btn {
             text-decoration: none;
@@ -678,12 +701,15 @@
                     </a>
                     <span class="top-bar-separator" aria-hidden="true"></span>
                     <nav class="dashboards-nav" aria-label="Дашборды">
+                        <span class="info-icon" role="img" aria-label="Information">
+                            <span aria-hidden="true">i</span>
+                            <span class="info-tooltip" id="dashboardsTooltip">Информационные дашборды WSDC</span>
+                        </span>
                         <div class="dropdown-wrapper" id="dashboardsDropdown">
                             <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
                                 <span id="dashboardsBtnText">Dashboards</span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                             </button>
-                            <span class="btn-tooltip" id="dashboardsTooltip">Информационные дашборды WSDC</span>
                             <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
                                 <li role="none"><a href="dashboard.html" role="menuitem" data-dash-href="dashboard.html">Metrics</a></li>
                                 <li role="none"><a href="navigator.html" role="menuitem" data-dash-href="navigator.html">Events Navigator</a></li>
@@ -693,11 +719,12 @@
                         </div>
                     </nav>
                     <span class="top-bar-separator" aria-hidden="true"></span>
-                    <nav class="points-summary-nav" aria-label="Points Summary">
-                        <span class="nav-link-wrap">
-                            <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Points Summary</a>
-                            <span class="btn-tooltip" id="pointsSummaryTooltip">Points awarded by event</span>
+                    <nav class="points-summary-nav" aria-label="Summary Points">
+                        <span class="info-icon" role="img" aria-label="Information">
+                            <span aria-hidden="true">i</span>
+                            <span class="info-tooltip" id="pointsSummaryTooltip">Points awarded by event</span>
                         </span>
+                        <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Summary Points</a>
                     </nav>
                 </div>
                 <div class="top-bar-right">
@@ -864,8 +891,6 @@
             }
             const pointsSummaryBtn = document.getElementById('pointsSummaryBtn');
             if (pointsSummaryBtn) {
-                const ptsLabels = { ru: 'Саммари поинтов', en: 'Points Summary', es: 'Resumen puntos' };
-                pointsSummaryBtn.textContent = ptsLabels[lang] || ptsLabels.en;
                 pointsSummaryBtn.href = 'points-summary.html' + (lang && lang !== 'en' ? '?lang=' + lang : '');
             }
             const pointsSummaryTooltip = document.getElementById('pointsSummaryTooltip');
