@@ -395,7 +395,8 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            min-width: 120px;
+            width: 150px;
+            min-width: 150px;
             padding: 8px 16px;
             background: transparent;
             border: 2px solid var(--border-color);
@@ -492,7 +493,8 @@
             border-color: var(--color-primary);
         }
 
-        .dashboards-nav .info-tooltip {
+        .dashboards-nav .info-tooltip,
+        .points-summary-nav .info-tooltip {
             position: absolute;
             left: 100%;
             top: 50%;
@@ -505,9 +507,8 @@
             font-weight: 400;
             line-height: 1.4;
             border-radius: 6px;
-            white-space: nowrap;
-            max-width: 280px;
             white-space: normal;
+            max-width: 200px;
             box-shadow: var(--shadow-md);
             opacity: 0;
             visibility: hidden;
@@ -551,27 +552,6 @@
             color: var(--color-primary);
             border-color: var(--color-primary);
         }
-        .points-summary-nav .info-tooltip {
-            position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            margin-left: 10px;
-            padding: 8px 12px;
-            background: var(--color-primary);
-            color: white;
-            font-size: 12px;
-            font-weight: 400;
-            line-height: 1.4;
-            border-radius: 6px;
-            white-space: nowrap;
-            box-shadow: var(--shadow-md);
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity var(--transition-base), visibility var(--transition-base);
-            z-index: 101;
-        }
         .points-summary-nav .info-icon:hover .info-tooltip {
             opacity: 1;
             visibility: visible;
@@ -580,7 +560,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 120px;
+            width: 150px;
+            min-width: 150px;
             padding: 8px 16px;
             background: transparent;
             border: 2px solid var(--border-color);
@@ -786,7 +767,7 @@
                     <nav class="points-summary-nav" aria-label="Points Summary">
                         <span class="info-icon" role="img" aria-label="About Points Summary">
                             <span aria-hidden="true">i</span>
-                            <span class="info-tooltip" id="pointsSummaryTooltip">Registry points by event</span>
+                            <span class="info-tooltip" id="pointsSummaryTooltip">Points awarded by event</span>
                         </span>
                         <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Points Summary</a>
                     </nav>
@@ -962,9 +943,9 @@
             const pointsSummaryTooltip = document.getElementById('pointsSummaryTooltip');
             if (pointsSummaryTooltip) {
                 const ptsTooltips = {
-                    ru: 'Очки по ивентам',
-                    en: 'Registry points by event',
-                    es: 'Puntos por evento'
+                    ru: 'Очки, начисленные по ивентам',
+                    en: 'Points awarded by event',
+                    es: 'Puntos otorgados por evento'
                 };
                 pointsSummaryTooltip.textContent = ptsTooltips[lang] || ptsTooltips.en;
             }
