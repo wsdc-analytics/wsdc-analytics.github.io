@@ -390,32 +390,38 @@
             position: relative;
         }
 
-        .dashboards-nav .dropdown-btn {
-            display: flex;
+        .dashboards-nav .dropdown-btn,
+        .points-summary-nav .nav-link-btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            box-sizing: border-box;
             width: 150px;
-            min-width: 150px;
-            padding: 8px 16px;
+            height: 36px;
+            padding: 0 16px;
             background: transparent;
             border: 2px solid var(--border-color);
             border-radius: 6px;
             font-size: 14px;
             font-weight: 500;
+            line-height: 1;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-base);
             font-family: inherit;
-            min-height: 36px;
+        }
+        .dashboards-nav .dropdown-btn {
+            gap: 6px;
         }
 
-        .dashboards-nav .dropdown-btn:hover {
+        .dashboards-nav .dropdown-btn:hover,
+        .points-summary-nav .nav-link-btn:hover {
             border-color: var(--color-primary);
             color: var(--color-primary);
         }
 
-        .dashboards-nav .dropdown-btn:focus {
+        .dashboards-nav .dropdown-btn:focus,
+        .points-summary-nav .nav-link-btn:focus {
             outline: 2px solid var(--color-primary);
             outline-offset: 2px;
         }
@@ -467,39 +473,12 @@
             color: var(--color-primary);
         }
 
-        .dashboards-nav .info-icon {
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            min-width: 28px;
-            min-height: 28px;
-            border-radius: 50%;
-            border: 2px solid var(--border-color);
-            background: transparent;
-            color: var(--text-tertiary);
-            font-size: 14px;
-            font-weight: 600;
-            font-style: italic;
-            cursor: help;
-            position: relative;
-            transition: all var(--transition-base);
-        }
-
-        .dashboards-nav .info-icon:hover {
-            color: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-
-        .dashboards-nav .info-tooltip,
-        .points-summary-nav .info-tooltip {
+        .dropdown-wrapper .btn-tooltip,
+        .nav-link-wrap .btn-tooltip {
             position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            margin-left: 10px;
+            left: 50%;
+            bottom: calc(100% + 8px);
+            transform: translateX(-50%);
             padding: 8px 12px;
             background: var(--color-primary);
             color: white;
@@ -509,6 +488,7 @@
             border-radius: 6px;
             white-space: normal;
             max-width: 200px;
+            text-align: center;
             box-shadow: var(--shadow-md);
             opacity: 0;
             visibility: hidden;
@@ -516,8 +496,8 @@
             transition: opacity var(--transition-base), visibility var(--transition-base);
             z-index: 101;
         }
-
-        .dashboards-nav .info-icon:hover .info-tooltip {
+        .dropdown-wrapper:hover .btn-tooltip,
+        .nav-link-wrap:hover .btn-tooltip {
             opacity: 1;
             visibility: visible;
         }
@@ -526,62 +506,14 @@
         .points-summary-nav {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0;
         }
-        .points-summary-nav .info-icon {
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            min-width: 28px;
-            min-height: 28px;
-            border-radius: 50%;
-            border: 2px solid var(--border-color);
-            background: transparent;
-            color: var(--text-tertiary);
-            font-size: 14px;
-            font-weight: 600;
-            font-style: italic;
-            cursor: help;
+        .nav-link-wrap {
             position: relative;
-            transition: all var(--transition-base);
-        }
-        .points-summary-nav .info-icon:hover {
-            color: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-        .points-summary-nav .info-icon:hover .info-tooltip {
-            opacity: 1;
-            visibility: visible;
+            display: inline-flex;
         }
         .points-summary-nav .nav-link-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 150px;
-            min-width: 150px;
-            padding: 8px 16px;
-            background: transparent;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
             text-decoration: none;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            font-family: inherit;
-            min-height: 36px;
-        }
-        .points-summary-nav .nav-link-btn:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-        }
-        .points-summary-nav .nav-link-btn:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
         }
 
         @media (max-width: 768px) {
@@ -746,15 +678,12 @@
                     </a>
                     <span class="top-bar-separator" aria-hidden="true"></span>
                     <nav class="dashboards-nav" aria-label="Дашборды">
-                        <span class="info-icon" role="img" aria-label="Информация о дашбордах">
-                            <span aria-hidden="true">i</span>
-                            <span class="info-tooltip" id="dashboardsTooltip">Информационные дашборды WSDC</span>
-                        </span>
                         <div class="dropdown-wrapper" id="dashboardsDropdown">
                             <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
                                 <span id="dashboardsBtnText">Dashboards</span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                             </button>
+                            <span class="btn-tooltip" id="dashboardsTooltip">Информационные дашборды WSDC</span>
                             <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
                                 <li role="none"><a href="dashboard.html" role="menuitem" data-dash-href="dashboard.html">Metrics</a></li>
                                 <li role="none"><a href="navigator.html" role="menuitem" data-dash-href="navigator.html">Events Navigator</a></li>
@@ -765,11 +694,10 @@
                     </nav>
                     <span class="top-bar-separator" aria-hidden="true"></span>
                     <nav class="points-summary-nav" aria-label="Points Summary">
-                        <span class="info-icon" role="img" aria-label="About Points Summary">
-                            <span aria-hidden="true">i</span>
-                            <span class="info-tooltip" id="pointsSummaryTooltip">Points awarded by event</span>
+                        <span class="nav-link-wrap">
+                            <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Points Summary</a>
+                            <span class="btn-tooltip" id="pointsSummaryTooltip">Points awarded by event</span>
                         </span>
-                        <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Points Summary</a>
                     </nav>
                 </div>
                 <div class="top-bar-right">
@@ -936,7 +864,7 @@
             }
             const pointsSummaryBtn = document.getElementById('pointsSummaryBtn');
             if (pointsSummaryBtn) {
-                const ptsLabels = { ru: 'Саммари очков', en: 'Points Summary', es: 'Resumen puntos' };
+                const ptsLabels = { ru: 'Саммари поинтов', en: 'Points Summary', es: 'Resumen puntos' };
                 pointsSummaryBtn.textContent = ptsLabels[lang] || ptsLabels.en;
                 pointsSummaryBtn.href = 'points-summary.html' + (lang && lang !== 'en' ? '?lang=' + lang : '');
             }
