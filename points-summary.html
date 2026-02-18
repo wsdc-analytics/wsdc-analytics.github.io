@@ -580,23 +580,30 @@
         }
         function formatDancerWithPills(s) {
             if (s == null) return '';
-            const g = '\u{1F7E2}';
-            const y = '\u{1F7E1}';
+            const greenPill = /\u{1F7E2}\s*$/u;
+            const yellowPill = /\u{1F7E1}\s*$/u;
             function wrapOne(part) {
                 part = part.trim();
-                if (part.endsWith(g) || part.endsWith(y)) {
-                    const clean = part.slice(0, -1).trim();
-                    const cls = part.endsWith(g) ? 'pill-green' : 'pill-yellow';
+                let cls = '';
+                let clean = part;
+                if (greenPill.test(part)) {
+                    cls = 'pill-green';
+                    clean = part.replace(greenPill, '').trim();
+                } else if (yellowPill.test(part)) {
+                    cls = 'pill-yellow';
+                    clean = part.replace(yellowPill, '').trim();
+                }
+                if (cls) {
                     const m = clean.match(/^(.+?)\s*((?:\(\+\d+\)\s*)?\[\d+\])$/);
                     if (m) {
                         return escapeHtml(m[1]) + ' <span class="pill-indicator ' + cls + '">' + escapeHtml(m[2].replace(/\s+/g, ' ').trim()) + '</span>';
                     }
-                    return escapeHtml(clean);
                 }
-                return escapeHtml(part);
+                return escapeHtml(part.replace(greenPill, '').replace(yellowPill, '').trim());
             }
-            const sep = s.includes(' & ') ? ' & ' : ', ';
-            return s.split(sep).map(wrapOne).join(sep);
+            const parts = s.includes(' & ') ? s.split(/\s+&\s+/) : s.split(/\s*,\s*/);
+            const joinSep = s.includes(' & ') ? ' & ' : ', ';
+            return parts.map(wrapOne).join(joinSep);
         }
         function placeLabel(p) {
             if (p.place && /^[1-5]$/.test(p.place)) return p.place + ' place';
