@@ -560,7 +560,7 @@
             opacity: 0.7;
         }
 
-        /* Responsive: мобильная верстка — максимум ширины для текста, минимальная полоса */
+        /* Responsive: мобильная верстка — карточки без полосы, контент на всю ширину */
         @media (max-width: 768px) {
             .article-content {
                 padding: 40px 16px 48px;
@@ -593,75 +593,117 @@
                 font-size: 28px;
             }
 
-            /* Таймлайн на мобильном: тонкая полоса у края, контент почти на всю ширину */
+            /* Таймлайн на мобильном: карточки, без вертикальной полосы и кружков */
             .timeline-container {
-                padding: 16px 0;
-                margin: 40px 0;
+                padding: 0;
+                margin: 32px 0;
             }
 
-            .timeline-line {
-                left: 0;
-                width: 2px;
+            .timeline-line,
+            .timeline-year-marker {
+                display: none;
             }
 
             .timeline-item {
-                padding-left: 20px;
+                padding: 0;
+                margin-bottom: 20px;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
+                transition: transform var(--transition-fast);
             }
 
-            .timeline-year-marker {
-                left: 0;
-                top: 6px;
-                width: 14px;
-                height: 14px;
-                border-width: 2px;
+            .timeline-item:hover {
+                transform: none;
             }
 
-            .timeline-item.critical .timeline-year-marker {
-                width: 16px;
-                height: 16px;
-                left: 0;
-                top: 5px;
-            }
-
-            .timeline-year {
-                font-size: 24px;
-            }
-
-            .timeline-item.critical .timeline-year {
-                font-size: 26px;
+            .timeline-item:last-child {
+                margin-bottom: 0;
             }
 
             .timeline-year-header {
-                gap: 8px;
-                margin-bottom: 8px;
+                display: block;
+                padding: 12px 16px 0;
+                margin-bottom: 4px;
+            }
+
+            .timeline-year {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text-tertiary);
+                letter-spacing: 0.3px;
+            }
+
+            .timeline-item.critical .timeline-year {
+                font-size: 15px;
+                color: var(--color-primary);
+            }
+
+            .timeline-version {
+                font-size: 13px;
+                color: var(--text-tertiary);
+                font-weight: 500;
+                text-transform: none;
+            }
+
+            .timeline-year-header .timeline-version::before {
+                content: ' · ';
+                color: var(--text-tertiary);
+            }
+
+            .timeline-criticality {
+                display: none;
             }
 
             .timeline-toggle {
-                padding: 12px 14px;
+                padding: 14px 16px 18px;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .timeline-toggle:hover {
+                background: var(--bg-tertiary);
             }
 
             .timeline-summary {
                 font-size: 16px;
+                font-weight: 600;
+                line-height: 1.4;
+            }
+
+            .timeline-details {
+                padding: 0 16px 16px !important;
+            }
+
+            .timeline-item.expanded .timeline-details,
+            .timeline-item.default-expanded .timeline-details {
+                padding: 0 16px 20px !important;
+            }
+
+            .timeline-context {
+                font-size: 16px;
+                line-height: 1.7;
             }
 
             .timeline-item.critical {
-                padding-left: 20px;
+                background: var(--bg-secondary);
+                border-left: 4px solid var(--color-primary);
+                padding: 0;
                 margin-left: 0;
-                padding-top: 20px;
-                padding-bottom: 20px;
-                border-left-width: 3px;
+                box-shadow: var(--shadow-sm);
             }
 
             .timeline-item.critical::before {
-                width: 3px;
+                display: none;
             }
 
             .timeline-item.important {
-                padding-left: 20px;
-            }
-
-            .timeline-criticality .star {
-                font-size: 14px;
+                border-left: 3px solid var(--color-primary-light);
+                padding: 0;
             }
 
             .article-footer {
