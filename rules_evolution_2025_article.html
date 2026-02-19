@@ -560,14 +560,14 @@
             opacity: 0.7;
         }
 
-        /* Responsive */
+        /* Responsive: мобильная верстка — максимум ширины для текста, минимальная полоса */
         @media (max-width: 768px) {
             .article-content {
-                padding: 48px 32px;
+                padding: 40px 16px 48px;
             }
 
             .article-header {
-                padding: 64px 32px 48px;
+                padding: 64px 20px 48px;
             }
 
             .article-title {
@@ -581,7 +581,8 @@
 
             .intro {
                 font-size: 19px;
-                padding-left: 24px;
+                padding-left: 16px;
+                border-left-width: 2px;
             }
 
             .section-content {
@@ -592,35 +593,79 @@
                 font-size: 28px;
             }
 
+            /* Таймлайн на мобильном: тонкая полоса у края, контент почти на всю ширину */
             .timeline-container {
-                padding: 20px 0;
+                padding: 16px 0;
+                margin: 40px 0;
             }
 
             .timeline-line {
-                left: 20px;
+                left: 0;
+                width: 2px;
             }
 
             .timeline-item {
-                padding-left: 60px;
+                padding-left: 20px;
             }
 
             .timeline-year-marker {
-                left: 8px;
-                width: 20px;
-                height: 20px;
+                left: 0;
+                top: 6px;
+                width: 14px;
+                height: 14px;
+                border-width: 2px;
+            }
+
+            .timeline-item.critical .timeline-year-marker {
+                width: 16px;
+                height: 16px;
+                left: 0;
+                top: 5px;
             }
 
             .timeline-year {
-                font-size: 28px;
+                font-size: 24px;
+            }
+
+            .timeline-item.critical .timeline-year {
+                font-size: 26px;
+            }
+
+            .timeline-year-header {
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+
+            .timeline-toggle {
+                padding: 12px 14px;
+            }
+
+            .timeline-summary {
+                font-size: 16px;
             }
 
             .timeline-item.critical {
-                padding-left: 80px;
-                margin-left: -20px;
+                padding-left: 20px;
+                margin-left: 0;
+                padding-top: 20px;
+                padding-bottom: 20px;
+                border-left-width: 3px;
+            }
+
+            .timeline-item.critical::before {
+                width: 3px;
+            }
+
+            .timeline-item.important {
+                padding-left: 20px;
+            }
+
+            .timeline-criticality .star {
+                font-size: 14px;
             }
 
             .article-footer {
-                padding: 32px 32px;
+                padding: 32px 16px;
             }
 
             .article-header-top {
@@ -628,7 +673,7 @@
                 align-items: flex-start;
                 gap: 16px;
             }
-            
+
             .language-switcher {
                 align-self: flex-end;
             }
