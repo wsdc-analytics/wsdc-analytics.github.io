@@ -560,7 +560,36 @@
             opacity: 0.7;
         }
 
-        /* Responsive: мобильная верстка — карточки без полосы, контент на всю ширину */
+        /* Мобильный выбор года — скрыт на десктопе */
+        .timeline-mobile-select-wrap {
+            display: none;
+        }
+
+        .timeline-mobile-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .timeline-mobile-select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 16px;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        /* Responsive: мобильная верстка — выпадающий список, без линии, значимость бейджем */
         @media (max-width: 768px) {
             .article-content {
                 padding: 40px 16px 48px;
@@ -593,95 +622,76 @@
                 font-size: 28px;
             }
 
-            /* Таймлайн на мобильном: карточки, без вертикальной полосы и кружков */
+            /* На мобильном показываем выпадающий список */
+            .timeline-mobile-select-wrap {
+                display: block;
+                margin-bottom: 20px;
+            }
+
+            /* Таймлайн: линия и заголовки скрыты, виден только контент выбранного года */
             .timeline-container {
                 padding: 0;
-                margin: 32px 0;
+                margin: 0 0 24px 0;
             }
 
             .timeline-line,
-            .timeline-year-marker {
-                display: none;
+            .timeline-year-marker,
+            .timeline-year-header,
+            .timeline-toggle {
+                display: none !important;
             }
 
             .timeline-item {
                 padding: 0;
-                margin-bottom: 20px;
-                background: var(--bg-secondary);
-                border: 1px solid var(--border-color);
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: var(--shadow-sm);
-                transition: transform var(--transition-fast);
+                margin-bottom: 0;
+                background: transparent;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
             }
 
             .timeline-item:hover {
                 transform: none;
             }
 
-            .timeline-item:last-child {
-                margin-bottom: 0;
+            /* По умолчанию контент года скрыт */
+            .timeline-item .timeline-details {
+                display: none !important;
+                max-height: none !important;
+                padding: 0 !important;
+                opacity: 1 !important;
+                overflow: visible !important;
             }
 
-            .timeline-year-header {
-                display: block;
-                padding: 12px 16px 0;
-                margin-bottom: 4px;
+            /* Показываем только у выбранного (класс добавляет JS) */
+            .timeline-item.mobile-selected .timeline-details {
+                display: block !important;
+                padding: 16px 0 0 !important;
             }
 
-            .timeline-year {
-                font-size: 15px;
+            /* Бейдж значимости вместо полосы */
+            .timeline-item.critical.mobile-selected .timeline-details::before {
+                content: 'Ключевое изменение';
+                display: inline-block;
+                font-size: 12px;
                 font-weight: 600;
-                color: var(--text-tertiary);
-                letter-spacing: 0.3px;
+                color: white;
+                background: var(--color-primary);
+                padding: 4px 10px;
+                border-radius: 6px;
+                margin-bottom: 14px;
             }
 
-            .timeline-item.critical .timeline-year {
-                font-size: 15px;
+            .timeline-item.important.mobile-selected .timeline-details::before {
+                content: 'Важное изменение';
+                display: inline-block;
+                font-size: 12px;
+                font-weight: 600;
                 color: var(--color-primary);
-            }
-
-            .timeline-version {
-                font-size: 13px;
-                color: var(--text-tertiary);
-                font-weight: 500;
-                text-transform: none;
-            }
-
-            .timeline-year-header .timeline-version::before {
-                content: ' · ';
-                color: var(--text-tertiary);
-            }
-
-            .timeline-criticality {
-                display: none;
-            }
-
-            .timeline-toggle {
-                padding: 14px 16px 18px;
-                border: none;
-                border-radius: 0;
-                box-shadow: none;
-                background: transparent;
-            }
-
-            .timeline-toggle:hover {
-                background: var(--bg-tertiary);
-            }
-
-            .timeline-summary {
-                font-size: 16px;
-                font-weight: 600;
-                line-height: 1.4;
-            }
-
-            .timeline-details {
-                padding: 0 16px 16px !important;
-            }
-
-            .timeline-item.expanded .timeline-details,
-            .timeline-item.default-expanded .timeline-details {
-                padding: 0 16px 20px !important;
+                background: rgba(59, 130, 246, 0.15);
+                padding: 4px 10px;
+                border-radius: 6px;
+                margin-bottom: 14px;
             }
 
             .timeline-context {
@@ -689,21 +699,8 @@
                 line-height: 1.7;
             }
 
-            .timeline-item.critical {
-                background: var(--bg-secondary);
-                border-left: 4px solid var(--color-primary);
-                padding: 0;
-                margin-left: 0;
-                box-shadow: var(--shadow-sm);
-            }
-
             .timeline-item.critical::before {
                 display: none;
-            }
-
-            .timeline-item.important {
-                border-left: 3px solid var(--color-primary-light);
-                padding: 0;
             }
 
             .article-footer {
@@ -747,6 +744,11 @@
                     <h2 class="section-title">Временная шкала изменений</h2>
                     <div class="section-content">
                         <p>Нажмите на год, чтобы увидеть детали изменений. Хронологический порядок от 2002 к 2026. Первый год (2002) раскрыт по умолчанию.</p>
+                    </div>
+
+                    <div class="timeline-mobile-select-wrap" id="timeline-mobile-wrap" aria-hidden="true">
+                        <label for="timeline-year-select" class="timeline-mobile-label">Год изменений</label>
+                        <select id="timeline-year-select" class="timeline-mobile-select" aria-label="Выберите год"></select>
                     </div>
 
                     <div class="timeline-container">
@@ -1063,16 +1065,47 @@
             });
         })();
 
-        // Timeline accordion functionality
+        // Timeline accordion functionality + mobile dropdown
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize default-expanded items
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const mobileSelect = document.getElementById('timeline-year-select');
+            const isMobile = function() { return window.innerWidth <= 768; };
+
+            // Заполняем выпадающий список на мобильном
+            if (mobileSelect && timelineItems.length) {
+                timelineItems.forEach(item => {
+                    const year = item.getAttribute('data-year');
+                    const summaryEl = item.querySelector('.timeline-summary');
+                    const label = summaryEl ? (year + ' — ' + summaryEl.textContent.trim()) : year;
+                    const opt = document.createElement('option');
+                    opt.value = year;
+                    opt.textContent = label;
+                    mobileSelect.appendChild(opt);
+                });
+                // По умолчанию первый (2002)
+                mobileSelect.value = timelineItems[0].getAttribute('data-year');
+                function setMobileSelected(value) {
+                    timelineItems.forEach(function(it) {
+                        it.classList.toggle('mobile-selected', it.getAttribute('data-year') === value);
+                    });
+                }
+                setMobileSelected(mobileSelect.value);
+                mobileSelect.addEventListener('change', function() {
+                    setMobileSelected(this.value);
+                });
+                window.addEventListener('resize', function() {
+                    if (isMobile()) setMobileSelected(mobileSelect.value);
+                });
+            }
+
+            // Initialize default-expanded items (desktop)
             const defaultExpanded = document.querySelectorAll('.timeline-item.default-expanded');
             defaultExpanded.forEach(item => {
                 const toggle = item.querySelector('.timeline-toggle');
-                const icon = toggle.querySelector('.timeline-toggle-icon');
                 if (toggle) {
+                    const icon = toggle.querySelector('.timeline-toggle-icon');
                     toggle.setAttribute('aria-expanded', 'true');
-                    icon.style.transform = 'rotate(90deg)';
+                    if (icon) icon.style.transform = 'rotate(90deg)';
                 }
             });
 
