@@ -26,6 +26,10 @@
             --text-primary: #2d3748;
             --text-secondary: #4a5568;
             --border-color: #e5e5e5;
+            --border-color-hover: #cbd5e0;
+            --bg-tertiary: #f7fafc;
+            --transition-base: 0.2s ease;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -78,6 +82,90 @@
         .dashboard-select:hover {
             border-color: var(--color-primary);
         }
+        /* Dashboards dropdown — как на главной */
+        .dashboards-nav { display: flex; align-items: center; }
+        .dashboards-nav .dropdown-wrapper { position: relative; }
+        .dashboards-nav .dropdown-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-sizing: border-box;
+            min-width: 200px;
+            height: 36px;
+            padding: 0 16px;
+            white-space: nowrap;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+        }
+        .dashboards-nav .dropdown-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+        .dashboards-nav .dropdown-btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+        .dashboards-nav .dropdown-btn svg {
+            transition: transform var(--transition-base);
+        }
+        .dashboards-nav .dropdown-wrapper.open .dropdown-btn svg {
+            transform: rotate(180deg);
+        }
+        .dashboards-nav .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 240px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 6px;
+            list-style: none;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+        }
+        .dashboards-nav .dropdown-wrapper.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .dashboards-nav .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background var(--transition-base);
+        }
+        .dashboards-nav .dropdown-menu a:hover {
+            background: var(--bg-tertiary);
+            color: var(--color-primary);
+        }
+        .dashboards-nav .dropdown-menu a.current {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        .dashboards-nav .dropdown-menu a.current::before {
+            content: '✓';
+            font-size: 14px;
+            color: var(--color-primary);
+        }
         .viz-viewport {
             flex: 1;
             min-height: 0;
@@ -100,12 +188,20 @@
         <header class="header">
             <a href="index.html" class="back-link">← Back to home</a>
             <span class="header-separator" aria-hidden="true">|</span>
-            <select class="dashboard-select" id="dashboardNav" aria-label="Select dashboard">
-                <option value="dashboard.html">Metrics</option>
-                <option value="navigator.html">Events Navigator</option>
-                <option value="rankings.html" selected>Dancer's Ranking</option>
-                <option value="dancer-profile.html">Dancer Profile</option>
-            </select>
+            <nav class="dashboards-nav" aria-label="Дашборды">
+                <div class="dropdown-wrapper" id="dashboardsDropdown">
+                    <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
+                        <span id="dashboardsBtnText">Dancer's Ranking</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
+                        <li role="none"><a href="dashboard.html" role="menuitem" data-dash="dashboard.html">Metrics</a></li>
+                        <li role="none"><a href="navigator.html" role="menuitem" data-dash="navigator.html">Events Navigator</a></li>
+                        <li role="none"><a href="rankings.html" role="menuitem" data-dash="rankings.html">Dancer's Ranking</a></li>
+                        <li role="none"><a href="dancer-profile.html" role="menuitem" data-dash="dancer-profile.html">Dancer Profile</a></li>
+                    </ul>
+                </div>
+            </nav>
         </header>
 
         <div class="viz-viewport" id="vizViewport">
@@ -170,9 +266,21 @@
 
         window.addEventListener('resize', fitViz);
 
-        document.getElementById('dashboardNav').addEventListener('change', function() {
-            window.location.href = this.value;
-        });
+        (function() {
+            var currentPage = document.location.pathname.split('/').pop() || 'dashboard.html';
+            var labels = { 'dashboard.html': 'Metrics', 'navigator.html': 'Events Navigator', 'rankings.html': "Dancer's Ranking", 'dancer-profile.html': 'Dancer Profile' };
+            var btn = document.getElementById('dashboardsBtn');
+            var btnText = document.getElementById('dashboardsBtnText');
+            var wrap = document.getElementById('dashboardsDropdown');
+            if (btnText) btnText.textContent = labels[currentPage] || 'Metrics';
+            document.querySelectorAll('.dashboards-nav .dropdown-menu a[data-dash]').forEach(function(a) {
+                if (a.getAttribute('data-dash') === currentPage) a.classList.add('current');
+            });
+            if (btn && wrap) {
+                btn.addEventListener('click', function(e) { e.stopPropagation(); wrap.classList.toggle('open'); btn.setAttribute('aria-expanded', wrap.classList.contains('open')); });
+                document.addEventListener('click', function() { wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); });
+            }
+        })();
     </script>
 </body>
 </html>
