@@ -1062,7 +1062,7 @@
             const langButtons = document.querySelectorAll('.lang-btn');
             function setLanguage(lang) {
                 localStorage.setItem('wsdc-lang', lang);
-                const urls = { ru: 'rules_evolution_2025.html', en: 'rules_evolution_2025_en.html', es: 'rules_evolution_2025_es.html' };
+                const urls = { ru: 'rules_evolution_2025_article.html', en: 'rules_evolution_2025_en.html', es: 'rules_evolution_2025_es.html' };
                 if (lang !== currentLang) window.location.href = (urls[lang] || urls.ru) + '?lang=' + lang;
             }
             langButtons.forEach(btn => {
