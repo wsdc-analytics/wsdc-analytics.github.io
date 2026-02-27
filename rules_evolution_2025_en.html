@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta content="How WSDC rules have changed since 2002: from two pages to a comprehensive set covering finance and judge certification. A living history of evolution — the article is updated when new editions appear." name="description"/>
+    <meta content="Chronology of WSDC rule editions since 2002 and key milestones that shaped today's WSDC event system. From two pages to a rulebook covering finance and judge certification." name="description"/>
     <meta content="WSDC, rules, evolution, history, changes, Points Registry, Event Rules" name="keywords"/>
     <!-- Open Graph / Facebook -->
     <meta content="article" property="og:type"/>
     <meta content="https://wsdc-analytics.github.io/rules_evolution_2025_en.html" property="og:url"/>
     <meta content="Rules Evolution: From Simple to Complex" property="og:title"/>
-    <meta content="How WSDC rules have changed since 2002" property="og:description"/>
+    <meta content="Chronology of WSDC rule editions since 2002 and key milestones that shaped today's WSDC event system" property="og:description"/>
     <!-- Twitter -->
     <meta content="summary_large_image" property="twitter:card"/>
     <meta content="https://wsdc-analytics.github.io/rules_evolution_2025_en.html" property="twitter:url"/>
     <meta content="Rules Evolution: From Simple to Complex" property="twitter:title"/>
-    <meta content="How WSDC rules have changed since 2002" property="twitter:description"/>
+    <meta content="Chronology of WSDC rule editions since 2002 and key milestones that shaped today's WSDC event system" property="twitter:description"/>
     <title>Rules Evolution: From Simple to Complex</title>
     <!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
@@ -22,7 +22,7 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Rules Evolution: From Simple to Complex",
-      "description": "How WSDC rules have changed since 2002",
+      "description": "Chronology of WSDC rule editions since 2002 and key milestones that shaped today's WSDC event system",
       "url": "https://wsdc-analytics.github.io/rules_evolution_2025_en.html",
       "datePublished": "2026-01-28",
       "dateModified": "2026-01-28",
@@ -745,6 +745,78 @@
                 align-self: flex-end;
             }
         }
+
+        /* Comments section */
+        .comments-container {
+            background-color: #ffffff;
+            padding: 60px 80px;
+            margin-top: 0;
+            border-top: 1px solid #e5e5e5;
+        }
+        .comments-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+        .comments-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .comments-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            padding: 8px 16px;
+        }
+        .comments-tab:hover {
+            color: var(--color-primary);
+            background: var(--bg-tertiary);
+        }
+        .comments-tab:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+        .comments-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            font-weight: 600;
+        }
+        .comments-content {
+            min-height: 200px;
+        }
+        .comments-panel {
+            display: none;
+        }
+        .comments-panel.active {
+            display: block;
+        }
+        .comments-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+        .comments-info a {
+            color: var(--color-primary);
+            text-decoration: underline;
+            transition: opacity var(--transition-base);
+        }
+        .comments-info a:hover {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -765,7 +837,7 @@
         <main id="main-content">
             <article class="article-content">
                 <div class="intro">
-                    WSDC rules have evolved from a simple points-range system to a detailed threshold model with strict requirements—and from a two-page document to a thirty-page rulebook. This article outlines the key milestones and turning points that shaped today’s West Coast Swing competition system.
+                    WSDC rules have evolved from a simple points-range system to a detailed threshold model with strict requirements—and from a two-page document to a thirty-page rulebook. This article outlines the key milestones and turning points that shaped today’s WSDC event system.
                 </div>
 
                 <section class="section">
@@ -1057,6 +1129,30 @@
                         </div>
                     </div>
                 </section>
+
+            <!-- Comments section -->
+            <section class="comments-container">
+                <h2 class="comments-title">Comments</h2>
+                <div class="comments-tabs" role="tablist" aria-label="Comments system selection">
+                    <button class="comments-tab active" data-tab="giscus" role="tab" aria-selected="true" aria-controls="giscus-panel" id="giscus-tab">GitHub (Giscus)</button>
+                    <button class="comments-tab" data-tab="cusdis" role="tab" aria-selected="false" aria-controls="cusdis-panel" id="cusdis-tab">Cusdis (no registration)</button>
+                </div>
+                <div class="comments-info" id="giscus-info">
+                    A GitHub account is required to comment. <a href="https://github.com/signup" rel="noopener noreferrer" target="_blank">Create a free account</a>
+                </div>
+                <div class="comments-info" id="cusdis-info" style="display: none;">
+                    You can comment anonymously (with name and email) or via GitHub. Free, no ads.
+                </div>
+                <div class="comments-content">
+                    <div class="comments-panel active" id="giscus-panel" role="tabpanel" aria-labelledby="giscus-tab">
+                        <script async crossorigin="anonymous" data-category="General" data-category-id="DIC_kwDOQyQ1M84C0e-Q" data-emit-metadata="0" data-input-position="bottom" data-lang="en" data-mapping="pathname" data-reactions-enabled="1" data-repo="wsdc-analytics/wsdc-analytics.github.io" data-repo-id="R_kgDOQyQ1Mw" data-strict="0" data-theme="light" src="https://giscus.app/client.js"></script>
+                    </div>
+                    <div class="comments-panel" id="cusdis-panel" role="tabpanel" aria-labelledby="cusdis-tab" hidden>
+                        <div data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-host="https://cusdis.com" data-page-id="rules_evolution_2025_en" data-page-title="Rules Evolution: From Simple to Complex" data-page-url="https://wsdc-analytics.github.io/rules_evolution_2025_en.html" id="cusdis_thread"></div>
+                        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+                    </div>
+                </div>
+            </section>
             </article>
         </main>
         <footer class="article-footer">
@@ -1155,6 +1251,26 @@
                 observer.observe(item);
             });
         });
+
+        // Comments tabs switching
+        (function() {
+            const tabs = document.querySelectorAll('.comments-tab');
+            const panels = document.querySelectorAll('.comments-panel');
+            const infos = document.querySelectorAll('.comments-info');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                    this.classList.add('active'); this.setAttribute('aria-selected', 'true');
+                    panels.forEach(p => { p.classList.remove('active'); p.setAttribute('hidden', ''); });
+                    const activePanel = document.getElementById(targetTab + '-panel');
+                    if (activePanel) { activePanel.classList.add('active'); activePanel.removeAttribute('hidden'); }
+                    infos.forEach(i => i.style.display = 'none');
+                    const infoEl = document.getElementById(targetTab + '-info');
+                    if (infoEl) infoEl.style.display = 'block';
+                });
+            });
+        })();
     </script>
 </body>
 </html>
