@@ -820,6 +820,34 @@
         .comments-info a:hover {
             opacity: 0.7;
         }
+
+        .article-reactions {
+            margin: 28px 0 0;
+            padding-top: 20px;
+            text-align: right;
+            max-width: 700px;
+        }
+        .article-reactions-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; }
+        .article-reactions-buttons { display: flex; flex-wrap: wrap; gap: 20px; justify-content: flex-end; align-items: flex-start; }
+        .article-reaction-item { display: inline-flex; align-items: center; gap: 6px; }
+        .article-reaction-trigger {
+            position: relative; display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; border: none; background: none; padding: 4px; font-size: inherit; line-height: 1;
+            min-width: 2.5rem; min-height: 2.5rem; border-radius: 6px;
+        }
+        .article-reaction-trigger:hover { background: rgba(255,255,255,0.08); }
+        .article-reaction-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .article-reaction-emoji { font-size: 1.5rem; line-height: 1; pointer-events: none; font-weight: 600; font-family: inherit; }
+        .article-reaction-item.reaction-approve .article-reaction-emoji { color: #16a34a; }
+        .article-reaction-item.reaction-neutral .article-reaction-emoji { color: #6b7280; }
+        .article-reaction-item.reaction-disapprove .article-reaction-emoji { color: #dc2626; }
+        .article-reaction-trigger .lyket-overlay { position: absolute; inset: 0; opacity: 0; overflow: hidden; pointer-events: auto; }
+        .article-reaction-trigger .lyket-overlay > * {
+            width: 100% !important; height: 100% !important; min-width: 0 !important; min-height: 0 !important;
+            margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important;
+            font-size: 0 !important; line-height: 0 !important;
+        }
+        .article-reaction-count { font-size: 0.95rem; color: var(--text-secondary); min-width: 1.2em; text-align: left; }
     </style>
 </head>
 <body>
@@ -1133,6 +1161,33 @@
                     </div>
                 </section>
 
+            <section class="article-reactions">
+                <div class="article-reactions-label">Оцените статью:</div>
+                <div class="article-reactions-buttons">
+                    <div class="article-reaction-item reaction-approve">
+                        <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Одобряю статью">
+                            <span class="article-reaction-emoji" aria-hidden="true">✓</span>
+                            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_ru_positive"></div>
+                        </div>
+                        <span class="article-reaction-count" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_ru_positive">—</span>
+                    </div>
+                    <div class="article-reaction-item reaction-neutral">
+                        <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Нейтральное отношение">
+                            <span class="article-reaction-emoji" aria-hidden="true">○</span>
+                            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_ru_neutral"></div>
+                        </div>
+                        <span class="article-reaction-count" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_ru_neutral">—</span>
+                    </div>
+                    <div class="article-reaction-item reaction-disapprove">
+                        <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Не одобряю статью">
+                            <span class="article-reaction-emoji" aria-hidden="true">✗</span>
+                            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_ru_negative"></div>
+                        </div>
+                        <span class="article-reaction-count" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_ru_negative">—</span>
+                    </div>
+                </div>
+            </section>
+
             <!-- Comments section removed: feedback will be redesigned -->
             </article>
         </main>
@@ -1259,5 +1314,38 @@
             });
         })();
     </script>
+<script src="https://unpkg.com/@lyket/widget@latest/dist/lyket.js?apiKey=pt_37d4f2c27f8e66a91978e52fd07ce0"></script>
+<script>
+(function() {
+    var LYKET_API = 'https://api.lyket.dev/v1/like-buttons';
+    var LYKET_KEY = 'pt_37d4f2c27f8e66a91978e52fd07ce0';
+    function updateCount(el, n) { if (!el) return; el.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
+    function fetchCounts() {
+        document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
+            var ns = span.getAttribute('data-lyket-namespace'); var id = span.getAttribute('data-lyket-id');
+            if (!ns || !id) return;
+            fetch(LYKET_API + '/' + encodeURIComponent(ns) + '/' + encodeURIComponent(id), { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + LYKET_KEY } })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var n = (data && data.data && data.data.attributes && (data.data.attributes.total_points != null ? data.data.attributes.total_points : data.data.attributes.count)) || 0;
+                updateCount(span, n);
+            }).catch(function() { updateCount(span, null); });
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); setTimeout(fetchCounts, 2500); setTimeout(fetchCounts, 6000); initReactionKeys(); });
+    else { fetchCounts(); setTimeout(fetchCounts, 2500); setTimeout(fetchCounts, 6000); initReactionKeys(); }
+    function initReactionKeys() {
+        document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+            trigger.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault();
+                var overlay = trigger.querySelector('.lyket-overlay');
+                var btn = overlay && (overlay.querySelector('button') || overlay.querySelector('[role="button"]') || overlay.firstElementChild);
+                if (btn) btn.click(); else trigger.click();
+            });
+        });
+    }
+})();
+</script>
 </body>
 </html>
