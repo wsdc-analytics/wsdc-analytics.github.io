@@ -12,7 +12,7 @@
 
     <link rel="dns-prefetch" href="https://unpkg.com">
     
-<!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook -->
     <meta content="article" property="og:type" />
     <meta content="https://wsdc-analytics.github.io/overview_2025_es.html" property="og:url" />
     <meta content="WSDC 2025: diferencias continentales en la dinámica de desarrollo" property="og:title" />
@@ -52,7 +52,7 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
+        window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-LMLCY5PE8Z');
@@ -905,6 +905,12 @@
             color: var(--text-primary);
             text-decoration: underline;
         }
+
+        @media (max-width: 768px) {
+            .comments-container {
+                padding: 32px 16px;
+            }
+        }
     </style>
 </head>
 
@@ -1441,16 +1447,16 @@
             // Обработчики переключения языка
             const langButtons = document.querySelectorAll('.lang-btn');
             langButtons.forEach(btn => {
-            if (btn.dataset.lang === currentLang) {
-                btn.classList.add('active');
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
                 btn.setAttribute('aria-pressed', 'true');
-            } else {
-                btn.disabled = false;
+                } else {
+                    btn.disabled = false;
                 btn.setAttribute('aria-pressed', 'false');
-            }
-            btn.addEventListener('click', () => {
-                if (!btn.disabled) {
-                    setLanguage(btn.dataset.lang);
+                }
+                btn.addEventListener('click', () => {
+                    if (!btn.disabled) {
+                        setLanguage(btn.dataset.lang);
                 }
             });
             });
