@@ -550,6 +550,14 @@
             max-width: 700px;
         }
 
+        .data-note p {
+            margin-bottom: 16px;
+        }
+
+        .data-note p:last-child {
+            margin-bottom: 0;
+        }
+
         .data-note a {
             color: var(--color-primary);
             text-decoration: underline;
@@ -562,14 +570,14 @@
             opacity: 0.7;
         }
 
-        /* Responsive */
+        /* Responsive: мобильная верстка - карточки-аккордеоны без линии, значимость рамкой */
         @media (max-width: 768px) {
             .article-content {
-                padding: 48px 32px;
+                padding: 40px 16px 48px;
             }
 
             .article-header {
-                padding: 64px 32px 48px;
+                padding: 64px 20px 48px;
             }
 
             .article-title {
@@ -583,7 +591,8 @@
 
             .intro {
                 font-size: 19px;
-                padding-left: 24px;
+                padding-left: 16px;
+                border-left-width: 2px;
             }
 
             .section-content {
@@ -594,35 +603,120 @@
                 font-size: 28px;
             }
 
+            /* Без временной шкалы: только карточки */
             .timeline-container {
-                padding: 20px 0;
+                padding: 0;
+                margin: 32px 0;
             }
 
-            .timeline-line {
-                left: 20px;
+            .timeline-line,
+            .timeline-year-marker {
+                display: none;
             }
 
             .timeline-item {
-                padding-left: 60px;
+                padding: 0;
+                margin-bottom: 16px;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
             }
 
-            .timeline-year-marker {
-                left: 8px;
-                width: 20px;
-                height: 20px;
+            .timeline-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .timeline-item:hover {
+                transform: none;
+            }
+
+            /* Важность - только обводка карточки, без плашек */
+            .timeline-item.critical {
+                border: 2px solid var(--color-primary);
+                padding: 0;
+                margin-left: 0;
+            }
+
+            .timeline-item.critical::before {
+                display: none;
+            }
+
+            .timeline-item.important {
+                border: 2px solid var(--color-primary-light);
+                padding: 0;
+            }
+
+            .timeline-year-header {
+                display: block;
+                padding: 12px 16px 0;
+                margin-bottom: 2px;
             }
 
             .timeline-year {
-                font-size: 28px;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-tertiary);
             }
 
-            .timeline-item.critical {
-                padding-left: 80px;
-                margin-left: -20px;
+            .timeline-item.critical .timeline-year {
+                color: var(--color-primary);
+            }
+
+            .timeline-version {
+                font-size: 13px;
+                color: var(--text-tertiary);
+                text-transform: none;
+            }
+
+            .timeline-year-header .timeline-version::before {
+                content: ' · ';
+                color: var(--text-tertiary);
+            }
+
+            .timeline-criticality {
+                display: none;
+            }
+
+            .timeline-toggle {
+                padding: 14px 16px 18px;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .timeline-toggle:hover {
+                background: var(--bg-tertiary);
+            }
+
+            .timeline-toggle:focus {
+                outline: none;
+            }
+
+            .timeline-summary {
+                font-size: 16px;
+                font-weight: 600;
+                line-height: 1.4;
+            }
+
+            .timeline-details {
+                padding: 0 16px 16px !important;
+            }
+
+            .timeline-item.expanded .timeline-details,
+            .timeline-item.default-expanded .timeline-details {
+                padding: 0 16px 20px !important;
+            }
+
+            .timeline-context {
+                font-size: 16px;
+                line-height: 1.7;
             }
 
             .article-footer {
-                padding: 32px 32px;
+                padding: 32px 16px;
             }
 
             .article-header-top {
@@ -630,7 +724,7 @@
                 align-items: flex-start;
                 gap: 16px;
             }
-            
+
             .language-switcher {
                 align-self: flex-end;
             }
