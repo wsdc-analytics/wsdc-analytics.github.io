@@ -52,7 +52,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="dns-prefetch" href="https://unpkg.com">
-    
+    <!-- Preload critical header background image -->
+    <link rel="preload" href="rules_header_bg.png" as="image" fetchpriority="high">
     <!-- Twemoji for consistent flag display on Windows -->
     <script crossorigin="anonymous" src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
     <style>
@@ -135,11 +136,30 @@
 
         /* Header */
         .article-header {
-            background: var(--color-primary);
+            background: var(--color-primary) url('rules_header_bg.png') center center / cover no-repeat;
+            background-attachment: scroll;
             color: white;
             padding: 100px 80px 80px;
             border-bottom: 1px solid var(--border-color);
             position: relative;
+            will-change: transform;
+        }
+
+        .article-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-primary);
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        .article-header > * {
+            position: relative;
+            z-index: 1;
         }
 
         .article-header-top {
