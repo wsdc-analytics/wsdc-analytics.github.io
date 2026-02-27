@@ -1403,48 +1403,7 @@
                 </div>
             </section>
 
-            <!-- Comments section -->
-            <section class="comments-container">
-                <h2 class="comments-title">Comentarios</h2>
-                <div class="comments-tabs">
-                    <button class="comments-tab active" data-tab="giscus">GitHub (Giscus)</button>
-                    <button class="comments-tab" data-tab="cusdis">Cusdis (sin registro)</button>
-                </div>
-                <div class="comments-info" id="giscus-info">
-                    Se requiere una cuenta de GitHub para comentar. <a href="https://github.com/signup"
-                        rel="noopener noreferrer" target="_blank">Crear una cuenta gratuita</a>
-                </div>
-                <div class="comments-info" id="cusdis-info" style="display: none;">
-                    Puedes comentar de forma anónima (proporcionando nombre y email) o a través de GitHub. Completamente gratis, sin anuncios.
-                </div>
-                <div class="comments-content">
-                    <!-- Giscus comments -->
-                    <div class="comments-panel active" id="giscus-panel">
-                        <script async crossorigin="anonymous" data-category="General"
-                            data-category-id="DIC_kwDOQyQ1M84C0e-Q" data-emit-metadata="0" data-input-position="bottom"
-                            data-lang="es" data-mapping="pathname" data-reactions-enabled="1"
-                            data-repo="wsdc-analytics/wsdc-analytics.github.io" data-repo-id="R_kgDOQyQ1Mw"
-                            data-strict="0" data-theme="light" src="https://giscus.app/client.js">
-                            </script>
-                    </div>
-                    <!-- Cusdis comments -->
-                    <div class="comments-panel" id="cusdis-panel">
-                        <div data-app-id="8c1aab22-1401-4387-b9af-8eddef722b85" data-host="https://cusdis.com"
-                            data-page-id="overview_2025_es" data-page-title="WSDC 2025: diferencias continentales en la dinámica de desarrollo"
-                            data-page-url="https://wsdc-analytics.github.io/overview_2025_es.html" id="cusdis_thread"></div>
-                        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-                    </div>
-                </div>
-                <div class="feedback-banner">
-                    <div class="feedback-banner-title">Comentario anónimo en Telegram</div>
-                    <p class="feedback-banner-text">
-                        Si no quieres iniciar sesión con GitHub, puedes enviar tus comentarios de forma anónima a través de Telegram. Los leeremos personalmente, pero no se publicarán en la web.
-                    </p>
-                    <a class="feedback-banner-button" href="https://t.me/wsdc_analytics_feedback_bot" target="_blank" rel="noopener noreferrer">
-                        Enviar comentario anónimo en Telegram
-                    </a>
-                </div>
-            </section>
+            <!-- Comments section temporarily disabled -->
         </article>
 
         <!-- Article Footer -->
@@ -1517,34 +1476,7 @@
             });
         })();
 
-        // Comments tabs switching
-        (function() {
-            const tabs = document.querySelectorAll('.comments-tab');
-            const panels = document.querySelectorAll('.comments-panel');
-            const infos = document.querySelectorAll('.comments-info');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const targetTab = this.getAttribute('data-tab');
-
-                    // Update tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // Update panels
-                    panels.forEach(p => p.classList.remove('active'));
-                    document.getElementById(targetTab + '-panel').classList.add('active');
-
-                    // Update info
-                    infos.forEach(i => i.style.display = 'none');
-                    const infoId = targetTab + '-info';
-                    const infoElement = document.getElementById(infoId);
-                    if (infoElement) {
-                        infoElement.style.display = 'block';
-                    }
-                });
-            });
-        })();
+        // Comments disabled
     </script>
 </body>
 
