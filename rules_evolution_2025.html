@@ -494,7 +494,7 @@
 
         /* Critical item styling */
         .timeline-item.critical {
-            background: linear-gradient(to right, var(--bg-terтиary) 0%, var(--bg-primary) 100%);
+            background: linear-gradient(to right, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
             padding: 28px 24px;
             border-radius: 8px;
             border-left: 4px solid var(--color-primary);
@@ -536,7 +536,7 @@
         .article-footer {
             background-color: var(--bg-secondary);
             padding: 48px 80px;
-            border-top: 2px солид var(--color-primary);
+            border-top: 2px solid var(--color-primary);
             margin-top: 80px;
         }
 
@@ -601,6 +601,7 @@
                 font-size: 28px;
             }
 
+            /* Без временной шкалы: только карточки */
             .timeline-container {
                 padding: 0;
                 margin: 32px 0;
@@ -629,6 +630,7 @@
                 transform: none;
             }
 
+            /* Важность - только обводка карточки, без плашек */
             .timeline-item.critical {
                 border: 2px solid var(--color-primary);
                 padding: 0;
@@ -754,7 +756,287 @@
                     <div class="timeline-container">
                         <div class="timeline-line"></div>
 
-                        <!-- Здесь следует полный таймлайн, как в доработанном варианте статьи (с детализированными блоками 2002–2026). -->
+                        <!-- 2002 -->
+                        <div class="timeline-item" data-year="2002" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2002</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2002">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Формирование базовых принципов</span>
+                            </button>
+                            <div class="timeline-details" id="details-2002">
+                                <div class="timeline-context">
+                                    Сложно сказать, как до 2002 года WSDC регулировало проведение рейтинговых ивентов, возможно были какие то общие рекомендации или каждый организатор ивента определял правила на свое усмотрение, но единая регламентирующая база отсутствовала, что вносило некоторую неопределенность и препятствовало развитию танцевального направления.<br><br>
+                                    В 2002 году появляется первый регламентирующий документ - WSDC Points Registry. Компактный, около 2 страниц. В нём закреплена простая система начисления поинтов: 10 очков за первое место, 6 за второе, 4 за третье, 3 за четвёртое, 2 за пятое. Все остальные финалисты получают по 1 очку. Данная логика с некоторыми трансформациями останется на долгие годы.<br><br>
+                                    Создается система дивизионов: Beginner/Newcomer (1–10), Novice (1–19), Intermediate (20–29), Advanced (30+). Champions при этом сознательно остаётся вне общей структуры - определение участников таких номинаций отдаётся на усмотрение организаторов ивентов.<br><br>
+                                    В документе предусматривалась рекомендация: оставаться в дивизионе до получения первого места, прежде чем переходить в следующий. Для спорных случаев был предусмотрен специальный комитет, который принимал решение о повышении дивизиона танцора на основании его прошлых выступлений. Так в 2002 году закладываются принципы, по которым WSDC работает по сей день.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-2002.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2004 -->
+                        <div class="timeline-item" data-year="2004" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2004</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2004">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Небольшие корректировки и разъяснения</span>
+                            </button>
+                            <div class="timeline-details" id="details-2004">
+                                <div class="timeline-context">
+                                    Через два года WSDC возвращается к правилам с карандашом в руках. Масштабных изменений нет, скорее заделываются прорехи, которые выявила практика.<br><br>
+                                    Уточняется, кому именно начислять поинты: только финалистам, занявшим места не ниже десятого. Если в номинации сразу финал без отборов - только парам в топ-5. Меньше пяти пар? Тогда поинты за эту номинацию не начисляются вообще.<br><br>
+                                    Появляются правила для неоднозначных ситуаций. Смешанная номинация Novice/Intermediate? Поинты идут в меньшую из номинаций. Одна общая номинация для всех? Засчитывается как Advanced. Танцор занял несколько мест в финале? Учитывается только лучшее для начисления поинтов.<br><br>
+                                    И важное ограничение: для определения уровня танцора организатором ивентов предлагалось учитывать только результаты за последние 5 лет. Система правил, предложенная в 2002 году, была скорректирована и начала лучше учитывать реальность соревнований.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-2004.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2007 -->
+                        <div class="timeline-item" data-year="2007" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2007</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2007">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Введение системы Тиров и дивизиона All-Star</span>
+                            </button>
+                            <div class="timeline-details" id="details-2007">
+                                <div class="timeline-context">
+                                    К 2007 году ивентов становится больше, при этом на разных ивентах может быть кардинально разное количество участников и встает резонный вопрос, что победа в номинации на десять пар и победа в номинации из пятидесяти пар - это не одно и то же. Рождается система Тиров: размер номинации начинает влиять на количество получаемых поинтов.<br><br>
+                                    Три уровня - Tier 1, 2 и 3. Чем больше пар (по меньшему из числа лидеров или фолловеров), тем выше тир и тем больше поинтов за место. Tier 1 даёт 8/6/4/2/1 за топ-5, Tier 2 - 10/8/6/4/2, Tier 3 - 12/10/8/6/4. Логика простая: в большой номинации конкуренция выше, и победа должна цениться выше.<br><br>
+                                    В этом же году в правилах появляется дивизион All Star - для танцоров с минимум 40 поинтами в Advanced. Правила продвижения уточняются: в Novice можно оставаться до 20 поинтов и первого места, в Intermediate - до 25 поинтов и первого места. Петиция на переход действует только на тот ивент, где её подали, и не переносится на следующие. Система обретает новые измерения.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2007.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2009 -->
+                        <div class="timeline-item" data-year="2009" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2009</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2009">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Переход от рекомендательного характера правил к директивному</span>
+                            </button>
+                            <div class="timeline-details" id="details-2009">
+                                <div class="timeline-context">
+                                    Редакция 2009 года не сильно меняет систему правил, но задает им другой оттенок. То, что раньше звучало как рекомендация, становится требованием.<br><br>
+                                    Чётко определено: для перехода между дивизионами считаются только поинты полученные в Novice, Intermediate и Advanced. Всё остальное - Newcomer, Juniors, Masters, All-Star, Champions - просто фиксируется в реестре, но не влияет на определение уровня танцора. Проведена граница между «основной траекторией» и «остальными» номинациями.<br><br>
+                                    Немного меняются цифры: в Tier 1 награды снижаются (5/4/3/2/1 вместо 8/6/4/2/1), в Tier 3 - растут (15/12/10/8/6 вместо 12/10/8/6/4). Но главное - формулировка условий перехода в старшую номинацию. «Должны оставаться» (should stay) сменяется на «обязаны оставаться» (must stay) до выполнения определенных условий. Рекомендации превращаются в директивы.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2009.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2011 -->
+                        <div class="timeline-item" data-year="2011" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2011</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2011">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Разделение Tier по ролям</span>
+                            </button>
+                            <div class="timeline-details" id="details-2011">
+                                <div class="timeline-context">
+                                    До 2011 года тир номинации определялся по слабому звену: брали меньшее из количеств лидеров или фолловеров. Логика была такая: «пар столько, сколько в меньшей группе». Но на практике фолловеров могло быть 30, а лидеров - 15. Получалось, что фолловеры конкурировали в условном Tier 2, а награждались как за Tier 1.<br><br>
+                                    Редакция 2011 года признаёт очевидное: тир должен считаться раздельно для каждой роли. В одной номинации лидеры могут получать поинты по одной таблице, фолловеры - по другой. Справедливее некуда. Ограничение одно: минимум 5 лидеров и 5 фолловеров, иначе номинация не засчитывается для начисления поинтов. Небольшое, но важное изменение, сохраняющее свою силу по сей день.
+                                </div>
+                                <a href="static/rules/WSDC Points Registry Document_2011.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2015 -->
+                        <div class="timeline-item" data-year="2015" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2015</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2015">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Переход к пороговой модели: от диапазонов к минимальным значениям</span>
+                            </button>
+                            <div class="timeline-details" id="details-2015">
+                                <div class="timeline-context">
+                                    К 2015 году правила обретают форму, которая сохраняется и сегодня. Две категории номинаций: Skill Level (от Newcomer до Champions) и Age-Based (Juniors, Masters). Skill Level выстраивается в единую иерархию - Champions по-прежнему на усмотрении организаторов, но остальная лестница определена.<br><br>
+                                    Меняются пороги переходов в старшие номинации: Novice → Intermediate теперь при 15 поинтах (было 20), Intermediate → Advanced при 30 (было 25), Advanced → All-Star при 45 (было 40). Для All-Star вводят «окно»: учитываются только Advanced-поинты за последние 3 года. На одном ивенте участник может участвовать только в одной Skill Level номинации; поинты за лидера и фолловера суммируются при переходе. Если участвовал по петиции и набрал поинты, то остаешься в этом дивизионе.<br><br>
+                                    Впервые в документах появляется финансовая сторона: организаторы ивентов обязаны перечислять денежную надбавку за внесение результатов в базу WSDC. Система становится не только спортивной, но и начинает задумываться о финансовом благополучии.
+                                </div>
+                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2018 -->
+                        <div class="timeline-item critical" data-year="2018" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2018</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2018">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Структурная революция: разделение единого документа на два специализированных</span>
+                            </button>
+                            <div class="timeline-details" id="details-2018">
+                                <div class="timeline-context">
+                                    2018 год - год структурной революции. Кардинальное изменение структуры и объёма документации. Единый документ разделён на два специализированных: правила для танцоров и правила для организаторов. Объём правил резко вырос (9 страниц против 2–4 ранее).<br><br>
+                                    Для танцоров - масштабирование системы Тиров, их становится шесть вместо трёх. При 130+ участниках за победу можно получить 25 поинтов. Вводится логика перехода в старшие номинации «разрешено/обязательно»: Novice 16/30, Intermediate 30/45, Advanced 45/60 за последние 36 месяцев, All-Star со своей системой сохранения места. Champions по-прежнему на усмотрении организаторов. К каждому тиру жёстко привязано количество отборочных туров - никакой импровизации.<br><br>
+                                    Для организаторов - целый свод: обязанности, условия получения статуса рейтингового ивента, структура соревнований, требования к участникам, штрафы за нарушения. То, что раньше жило в устных договорённостях, оказывается на бумаге.
+                                </div>
+                                <a href="static/rules/2018-WSDC-Registry-Event-Rules-Combined.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2019 -->
+                        <div class="timeline-item important" data-year="2019" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2019</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2019">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Обязательные раунды и закрепление системы</span>
+                            </button>
+                            <div class="timeline-details" id="details-2019">
+                                <div class="timeline-context">
+                                    Точечные корректировки предыдущей версии правил. Снижается возраст для Juniors с 18 до 17 лет, а также в базу начинают записываться поинты полученные в Age-based номинациях. Участникам разрешено выступать на ивенте только в одной роли; продолжаются эксперименты с правилами сохранения места в дивизионе All-Stars.<br><br>
+                                    Для новых организаторов вместо термина Non-Registry Event предлагается Trial Event, а также правила и требования к его проведению. Продолжается поиск баланса в проведении локально близких ивентов и недопущения их проведения в соседние даты, а также вводятся новые штрафы и система наказаний за нарушение правил организаторами.<br><br>
+                                    Система обретает стабильность.
+                                </div>
+                                <a href="static/rules/2019-WSDC-Registry-Event-Rules-Combined.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2020 -->
+                        <div class="timeline-item" data-year="2020" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2020</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2020">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Первая попытка регламентировать порог участия в Champions</span>
+                            </button>
+                            <div class="timeline-details" id="details-2020">
+                                <div class="timeline-context">
+                                    После долгих лет WSDC впервые решило урегулировать вопрос с тем, кого из танцоров можно допускать для участия в дивизион Champions, тогда как ранее это всегда было привилегией организаторов ивентов. В качестве ориентира было разрешено пускать туда танцоров, имеющих 150+ поинтов в All-Stars. Это закреплялось как право, а не обязанность.<br><br>
+                                    Также важным моментом этой редакции правил был отказ от принципа 1 ивент = 1 роль: теперь разрешалось участвовать в 1 Skill Level номинации в одной роли и в Age Based или других номинациях за вторую роль. Этими правилами также стандартизировалась система оценок в отборочных турах (Yes, No, Alts).
+                                </div>
+                                <a href="static/rules/2020-WSDC-Registry-Event-Rules-Combined.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2020 май - Дополнение -->
+                        <div class="timeline-item critical" data-year="2020-may" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">Май 2020</span>
+                                <span class="timeline-version" style="text-transform: none;">Дополнение</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2020-may">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Адаптирование правил к условиям пандемии</span>
+                            </button>
+                            <div class="timeline-details" id="details-2020-may">
+                                <div class="timeline-context">
+                                    Пандемия COVID-19 заставляет WSDC впервые в истории менять правила из-за глобального кризиса. В мае 2020 года выходит дополнение (addendum), которое позволило индустрии сохранить проведение ивентов в новых условиях.<br><br>
+                                    Революция в правилах в части танцевания за обе роли: теперь для перехода на новый уровень поинты по ролям в одном дивизионе не суммируются как раньше, а считаются отдельно для каждой роли. Также разрешено на одном ивенте танцевать за обе роли, но в разных Skill Level номинациях.<br><br>
+                                    Заморожено правило «3-летнего окна» для Advanced и All Star: из-за отмены ивентов танцоры не должны терять статус. Временное снижение минимума участников для сохранения статуса рейтингового ивента до 60 на 2021 год и другие послабления для поддержки организаторов в нестабильный период. И принципиальное решение: запрет на виртуальное судейство. Очные соревнования остаются очными.<br><br>
+                                    Адаптация правил к экстренным условиям показала гибкость WSDC и способность реагировать на внешние вызовы, не ломая основу системы.
+                                </div>
+                                <a href="static/rules/2020-May-Addendum.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2023 -->
+                        <div class="timeline-item important" data-year="2023" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2023</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2023">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Новые стандарты качества и строгие требования к площадкам</span>
+                            </button>
+                            <div class="timeline-details" id="details-2023">
+                                <div class="timeline-context">
+                                    Накопленный опыт после COVID и рост сообщества потребовали детализации стандартов. Документ для организаторов значительно расширен - до 14 страниц, что на 75% больше предыдущей версии. Объём правил растёт вместе с амбициями сообщества и стремлением к высоким стандартам проведения рейтинговых ивентов.<br><br>
+                                    Новые требования к площадкам: минимум 150 кв.м танцевальной площади в главном зале, стандарты размещения и обслуживания участников. WSDC отказывается от «3-летнего окна» для Advanced и All Star. Усилены ограничения для не основной роли: танцор может выступать в другой роли максимум на один уровень ниже основного дивизиона. Для развивающихся регионов введена альтернатива - минимум 80 участников и 100 посетителей вместо 120, что облегчало организацию новых ивентов.<br><br>
+                                    Полный пересмотр структуры Event Rules. Правила перестают быть просто рекомендациями - они становятся измеримым стандартом качества.
+                                </div>
+                                <a href="static/rules/2023-Registry-Event-Rules_vFinal3b-2023.1D.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2024 -->
+                        <div class="timeline-item important" data-year="2024" data-critical="important">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2024</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2024">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Определение целей и миссии</span>
+                            </button>
+                            <div class="timeline-details" id="details-2024">
+                                <div class="timeline-context">
+                                    В 2024 году в правилах WSDC появляются самоопределение, миссия и структура органов управления. В течение года выходят 4 редакции правил, WSDC активизирует деятельность для компенсации ковидного спада в развитии направления.<br><br>
+                                    Новые пороги Champions: разрешено (Allowed) при 1 поинте Champions или 150 All Star; обязательно (Required) при 10 Champions или 225 All Star. Меняется правило петиций: при принятии решения о повышении уровня танцора этот уровень сохраняется 6 месяцев.<br><br>
+                                    Для Европы и остального мира вводятся разные требования о проведении близких ивентов. Усилены требования по членству, штрафам и предотвращению конфликтов интересов. Правила становятся не только регламентом, но и инструментом управления сообществом.
+                                </div>
+                                <a href="static/rules/2024-Registry-Event-Rules_v2024.2B.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2025 -->
+                        <div class="timeline-item critical" data-year="2025" data-critical="critical">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2025</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2025">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Формирование экономического фундамента</span>
+                            </button>
+                            <div class="timeline-details" id="details-2025">
+                                <div class="timeline-context">
+                                    В этом году смещается фокус на финансы и интеграцию. Появляется ежегодный членский взнос для организаторов ивентов - $200 за каждый официальный ивент WSDC, а также плата с заявки участника - $1, с запланированным ростом до $2 с начала 2026. WSDC открыто говорит о том, что содержание реестра и координация стоят денег.<br><br>
+                                    В правилах введены определения основной и не основной роли и логика их определения, а также правила выбора дивизионов для выступления по не основной роли.<br><br>
+                                    Революционное решение о начислении рейтинговых поинтов с первого же Trial Event. Введено требование о наличии сертифицированного главного судьи на ивенте. Повышен минимум участников для официальных ивентов - 120 заявок (80 для развивающихся регионов). Регламентирован новый процесс для случаев нарушения правил организаторами - от рекомендации к структурированной процедуре.<br><br>
+                                    Финансовая модель WSDC обретает очертания. Правила перестают быть только техническим регламентом - они описывают экономику сообщества.
+                                </div>
+                                <a href="static/rules/wsdcrules.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
+
+                        <!-- 2026 -->
+                        <div class="timeline-item" data-year="2026" data-critical="false">
+                            <div class="timeline-year-marker"></div>
+                            <div class="timeline-year-header">
+                                <span class="timeline-year">2026</span>
+                            </div>
+                            <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2026">
+                                <span class="timeline-toggle-icon">▶</span>
+                                <span class="timeline-summary">Анонсирование сертификации судей</span>
+                            </button>
+                            <div class="timeline-details" id="details-2026">
+                                <div class="timeline-context">
+                                    Плата за участника ивента с 1 января 2026 достигает запланированных $2 за заявку - финансовый курс, заданный в 2025, выполнен. Объём документа уже превышает 35 страниц: от двух страниц в 2002 году до полноценного свода правил.<br><br>
+                                    В документах появляется новый раздел - программа сертификации судей WSDC, действующая с 1 января 2027. Первый шаг к формальной профессионализации судейства: не только правила, но и квалификация тех, кто их применяет. Гибкость в структуре раундов: разрешено пропустить один раунд, если превышение лимита Tier не более 10%. Уточнены правила петиций, вторичных ролей и структуры соревнований.
+                                </div>
+                                <a href="static/rules/WSDC-Registry-Event-Rules-Jan-17-2026.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Посмотреть документ</a>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </article>
@@ -790,6 +1072,7 @@
 
         // Timeline accordion functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize default-expanded items
             const defaultExpanded = document.querySelectorAll('.timeline-item.default-expanded');
             defaultExpanded.forEach(item => {
                 const toggle = item.querySelector('.timeline-toggle');
@@ -810,6 +1093,7 @@
                     const icon = this.querySelector('.timeline-toggle-icon');
                     
                     if (isExpanded) {
+                        // Collapse (including default-expanded items)
                         item.classList.remove('expanded');
                         item.classList.remove('default-expanded');
                         details.style.maxHeight = '0';
@@ -819,7 +1103,9 @@
                         this.setAttribute('aria-expanded', 'false');
                         icon.style.transform = 'rotate(0deg)';
                     } else {
+                        // Expand
                         item.classList.add('expanded');
+                        // Calculate proper height including all content
                         const tempHeight = details.scrollHeight;
                         details.style.maxHeight = Math.max(tempHeight + 100, 5000) + 'px';
                         details.style.padding = '20px 0';
@@ -828,6 +1114,7 @@
                         this.setAttribute('aria-expanded', 'true');
                         icon.style.transform = 'rotate(90deg)';
                         
+                        // Smooth scroll to item
                         setTimeout(() => {
                             item.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 100);
@@ -835,6 +1122,7 @@
                 });
             });
 
+            // Highlight active year on scroll
             const observerOptions = {
                 root: null,
                 rootMargin: '-20% 0px -60% 0px',
