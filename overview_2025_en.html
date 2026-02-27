@@ -908,6 +908,58 @@
             color: var(--text-primary);
             text-decoration: underline;
         }
+
+        .feedback-banner {
+            margin-top: 24px;
+            padding: 16px 18px;
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+        }
+
+        .feedback-banner-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .feedback-banner-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .feedback-banner-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background-color: #0088cc;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+        }
+
+        .feedback-banner-button:hover {
+            background-color: #0074aa;
+        }
+
+        .feedback-banner-button:focus {
+            outline: 2px solid #0074aa;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .comments-container {
+                padding: 32px 16px;
+            }
+            .feedback-banner-button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1377,6 +1429,15 @@
                             data-page-url="https://wsdc-analytics.github.io/overview_2025_en.html" id="cusdis_thread"></div>
                         <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
                     </div>
+                </div>
+                <div class="feedback-banner">
+                    <div class="feedback-banner-title">Anonymous feedback in Telegram</div>
+                    <p class="feedback-banner-text">
+                        If you prefer not to sign in with GitHub, you can send anonymous feedback via Telegram. We will read it personally, but it will not be published on the site.
+                    </p>
+                    <a class="feedback-banner-button" href="https://t.me/wsdc_analytics_feedback_bot" target="_blank" rel="noopener noreferrer">
+                        Send anonymous feedback in Telegram
+                    </a>
                 </div>
             </section>
         </article>
