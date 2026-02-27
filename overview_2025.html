@@ -1014,6 +1014,18 @@
         .comments-info a:hover {
             opacity: 0.7;
         }
+
+        .article-reactions {
+            margin: 40px 0 0;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .article-reactions-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
@@ -1450,7 +1462,14 @@
                 </div>
             </section>
 
-            <!-- Comments section temporarily disabled -->
+            <section class="article-reactions">
+                <div class="article-reactions-label">Если статья была полезной, можно оставить реакцию:</div>
+                <div
+                  data-lyket-type="clap"
+                  data-lyket-namespace="articles-2025"
+                  data-lyket-id="overview_2025_ru"
+                ></div>
+            </section>
         </article>
         </main>
 
@@ -1530,6 +1549,7 @@
 
     // Comments disabled
 </script>
+<script src="https://unpkg.com/@lyket/widget@latest/dist/lyket.js?apiKey=pt_37d4f2c27f8e66a91978e52fd07ce0"></script>
 
 </body>
 </html>
