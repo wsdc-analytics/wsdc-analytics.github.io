@@ -1016,15 +1016,35 @@
         }
 
         .article-reactions {
-            margin: 40px 0 0;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
+            margin: 28px 0 0;
+            padding-top: 20px;
+            text-align: right;
         }
 
         .article-reactions-label {
             font-size: 14px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .article-reactions-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-end;
+            align-items: flex-start;
+        }
+
+        .article-reaction-item {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .article-reaction-emoji {
+            font-size: 1.5rem;
+            line-height: 1;
         }
     </style>
 </head>
@@ -1463,12 +1483,21 @@
             </section>
 
             <section class="article-reactions">
-                <div class="article-reactions-label">Если статья была полезной, можно оставить реакцию:</div>
-                <div
-                  data-lyket-type="clap"
-                  data-lyket-namespace="articles-2025"
-                  data-lyket-id="overview_2025_ru"
-                ></div>
+                <div class="article-reactions-label">Оцените статью:</div>
+                <div class="article-reactions-buttons">
+                    <div class="article-reaction-item">
+                        <span class="article-reaction-emoji" aria-hidden="true">😀</span>
+                        <div data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="overview_2025_ru_positive"></div>
+                    </div>
+                    <div class="article-reaction-item">
+                        <span class="article-reaction-emoji" aria-hidden="true">😐</span>
+                        <div data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="overview_2025_ru_neutral"></div>
+                    </div>
+                    <div class="article-reaction-item">
+                        <span class="article-reaction-emoji" aria-hidden="true">😞</span>
+                        <div data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="overview_2025_ru_negative"></div>
+                    </div>
+                </div>
             </section>
         </article>
         </main>
