@@ -496,11 +496,24 @@
                 return r.json();
             })
             .then(data => {
-                const summaries = data.summaries || [];
-                if (summaries.length === 0) {
+                const allSummaries = data.summaries || [];
+                if (allSummaries.length === 0) {
                     catalog.innerHTML = '<div class="empty">No summaries yet. Data is populated when the results bot runs.</div>';
                     return;
                 }
+
+                // Remove duplicates (same post_date + same events)
+                const seenKeys = new Set();
+                const summaries = allSummaries.filter(s => {
+                    const key = [
+                        s.post_date || '',
+                        ...(s.events || []).map(ev => ev.slug || ev.name || '')
+                    ].join('|');
+                    if (seenKeys.has(key)) return false;
+                    seenKeys.add(key);
+                    return true;
+                });
+
                 const currentYear = new Date().getFullYear();
                 catalog.innerHTML = renderByYear(summaries, currentYear);
                 document.querySelectorAll('.year-header').forEach(el => {
