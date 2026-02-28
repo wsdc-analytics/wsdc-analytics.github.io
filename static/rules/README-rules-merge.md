@@ -1,6 +1,6 @@
-# Объединённые правила 2018–2020
+# Объединённые правила 2015, 2018–2020
 
-**Примечание:** Разделение на два документа (Points Registry Rules и Registry Event Rules) произошло в **2007** году (в шапке документа 2015 года указано «As of January 1, 2007» и перечислены обновления 2009, 2010, 2012, 2015). Ниже описаны объединённые PDF за 2018–2020.
+**Примечание:** Разделение на два документа (Points Registry Rules и Registry Event Rules) произошло в **2007** году (в шапке документа 2015 года указано «As of January 1, 2007» и перечислены обновления 2009, 2010, 2012, 2015). Ниже описаны объединённые PDF за 2015 и 2018–2020.
 
 С 2018 по 2020 год WSDC публиковал правила в двух документах:
 - **Points Registry Rules** — для участников
@@ -22,6 +22,7 @@ Event Rules уже есть в `static/rules/`.
 ```
 
 Скрипт автоматически находит Points Registry в `rules_extracted/Правила WSDC/` (если репозиторий WSDC Rules Analysis находится рядом) и создаёт:
+- `2015-WSDC-Registry-Event-Rules-Combined.pdf` — Points Registry 7/1/2015 + Registry Event Requirements 7/1/2015 из `static/rules/`
 - `2018-WSDC-Registry-Event-Rules-Combined.pdf`
 - `2019-WSDC-Registry-Event-Rules-Combined.pdf`
 - `2020-WSDC-Registry-Event-Rules-Combined.pdf` — только базовая редакция (без addendum)
