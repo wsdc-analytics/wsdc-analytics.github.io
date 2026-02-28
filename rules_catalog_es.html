@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="Catálogo de documentos de reglas: cronología de ediciones con enlaces a PDF." name="description"/>
+    <meta content="reglas, catálogo, documentos, PDF, reglamento, Registry Event Rules, Points Registry" name="keywords"/>
+    <title>Catálogo de documentos de reglas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2d3748;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: #e5e5e5;
+            --bg-primary: #ffffff;
+            --color-link-accent: #2563eb;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-size: 17px;
+        }
+        .magazine-container { max-width: 980px; margin: 0 auto; }
+        .article-header {
+            background: var(--color-primary) url('rules_header_bg.png') center center / cover no-repeat;
+            color: white;
+            padding: 100px 80px 80px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .article-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--color-primary);
+            opacity: 0.7;
+            z-index: 0;
+        }
+        .article-header > * { position: relative; z-index: 1; }
+        .article-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .back-link { color: white; text-decoration: none; font-size: 14px; opacity: 0.9; }
+        .back-link:hover { opacity: 1; }
+        .language-switcher { display: flex; gap: 16px; align-items: center; }
+        .language-switcher button {
+            padding: 4px 0;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.65);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .language-switcher button:hover { color: rgba(255,255,255,0.9); }
+        .language-switcher button.active { color: white; border-bottom: 2px solid white; padding-bottom: 2px; }
+        .article-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .article-subtitle { font-size: 1.1rem; opacity: 0.9; }
+        main { padding: 48px 80px 64px; }
+        .intro { margin-bottom: 32px; color: var(--text-secondary); max-width: 700px; }
+        .catalog-list {
+            list-style: none;
+            counter-reset: doc;
+        }
+        .catalog-list li {
+            counter-increment: doc;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 12px;
+        }
+        .catalog-list li:first-child { padding-top: 0; }
+        .catalog-list li::before {
+            content: counter(doc) ".";
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 2.5em;
+        }
+        .catalog-doc-title { font-weight: 500; }
+        .catalog-doc-badge { font-size: 0.75rem; color: var(--text-secondary); background: #f7fafc; padding: 2px 8px; border-radius: 4px; margin-left: 6px; }
+        .catalog-doc-link {
+            color: var(--color-link-accent);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .catalog-doc-link:hover { text-decoration: underline; }
+        .catalog-doc-link::after { content: " →"; }
+        .article-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 24px 80px 48px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .article-footer p { margin-bottom: 8px; }
+        .article-footer p:last-child { margin-bottom: 0; }
+        @media (max-width: 768px) {
+            .article-header, main { padding-left: 24px; padding-right: 24px; }
+            .article-footer { padding-left: 24px; padding-right: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="magazine-container">
+        <header class="article-header">
+            <div class="article-header-top">
+                <a href="index.html" class="back-link">← Back to home</a>
+                <div class="language-switcher" role="group" aria-label="Idioma">
+                    <button class="lang-btn" data-lang="ru" aria-pressed="false">RU</button>
+                    <button class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                    <button class="lang-btn active" data-lang="es" aria-pressed="true">ES</button>
+                </div>
+            </div>
+            <h1 class="article-title">Catálogo de documentos de reglas</h1>
+            <p class="article-subtitle">Cronología de ediciones con enlaces a PDF</p>
+        </header>
+        <main>
+            <p class="intro">A continuación se listan todos los documentos de reglas disponibles en orden cronológico: ediciones por año, documentos combinados (Points Registry + Event Rules en un solo PDF) y addenda. Use los enlaces para abrir la versión correcta en PDF.</p>
+            <ol class="catalog-list">
+                <li>
+                    <span class="catalog-doc-title">Points Registry Rules — 2002</span>
+                    <a href="static/rules/WSDC-Points-Registry-2002.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Points Registry Rules — 2004</span>
+                    <a href="static/rules/WSDC-Points-Registry-2004.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Points Registry Rules — 2007</span>
+                    <a href="static/rules/WSDC%20Points%20Registry%20Document_2007.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Points Registry Rules — 2009</span>
+                    <a href="static/rules/WSDC%20Points%20Registry%20Document_2009.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Points Registry Rules — 2011</span>
+                    <a href="static/rules/WSDC%20Points%20Registry%20Document_2011.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Points Registry Rules — 2015</span>
+                    <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2015</span>
+                    <a href="static/rules/WSDC_Registry_Event_Requirements.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules + Points Registry Rules — 2018</span>
+                    <span class="catalog-doc-badge">Combined</span>
+                    <a href="static/rules/2018-WSDC-Registry-Event-Rules-Combined.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules + Points Registry Rules — 2019</span>
+                    <span class="catalog-doc-badge">Combined</span>
+                    <a href="static/rules/2019-WSDC-Registry-Event-Rules-Combined.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules + Points Registry Rules — 2020</span>
+                    <span class="catalog-doc-badge">Combined</span>
+                    <a href="static/rules/2020-WSDC-Registry-Event-Rules-Combined.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Suplemento de mayo de 2020</span>
+                    <span class="catalog-doc-badge">Addendum</span>
+                    <a href="static/rules/2020-May-Addendum.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2023.1B</span>
+                    <a href="static/rules/2023-Registry-Event-Rules_vFinal2-2023.1B.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2023.1D</span>
+                    <a href="static/rules/2023-Registry-Event-Rules_vFinal3b-2023.1D.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2024.1A</span>
+                    <a href="static/rules/2024-Registry-Event-Rules_vFRER-Version-2024.1A.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2024.1B</span>
+                    <a href="static/rules/2024-Registry-Event-Rules_v2024.1B.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2024.2A</span>
+                    <a href="static/rules/2024-Registry-Event-Rules_v2024.2A.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2024.2B</span>
+                    <a href="static/rules/2024-Registry-Event-Rules_v2024.2B.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules + Points Registry Rules — 2025.1A</span>
+                    <span class="catalog-doc-badge">Current</span>
+                    <a href="static/rules/wsdcrules.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+                <li>
+                    <span class="catalog-doc-title">Registry Event Rules — 2026</span>
+                    <a href="static/rules/WSDC-Registry-Event-Rules-Jan-17-2026.pdf" target="_blank" rel="noopener noreferrer" class="catalog-doc-link">PDF</a>
+                </li>
+            </ol>
+            <p style="margin-top: 24px;"><a href="rules_evolution_2025_es.html">← Evolución de las reglas</a></p>
+        </main>
+        <footer class="article-footer">
+            <p><strong>Fuentes:</strong> El catálogo no incluye todos los documentos publicados, sino solo los encontrados en acceso abierto. Se actualiza cuando se publican nuevas ediciones.</p>
+        </footer>
+    </div>
+    <script>
+        (function() {
+            const currentLang = 'es';
+            const urls = { ru: 'rules_catalog.html', en: 'rules_catalog_en.html', es: 'rules_catalog_es.html' };
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.dataset.lang !== currentLang) {
+                        localStorage.setItem('wsdc-lang', this.dataset.lang);
+                        window.location.href = urls[this.dataset.lang] || urls.ru;
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

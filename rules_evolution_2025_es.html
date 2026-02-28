@@ -804,6 +804,30 @@
             opacity: 0.7;
         }
 
+        .catalog-cta {
+            margin-top: 32px;
+            margin-bottom: 8px;
+        }
+        .catalog-cta-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: opacity 0.2s ease, transform 0.15s ease;
+        }
+        .catalog-cta-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .catalog-cta-btn:focus-visible {
+            outline: 2px solid var(--color-link-accent);
+            outline-offset: 2px;
+        }
+
         .article-reactions {
             margin: 28px 0 0;
             padding-top: 20px;
@@ -851,7 +875,7 @@
         <main id="main-content">
             <article class="article-content">
                 <div class="intro">
-                    Las reglas WSDC han pasado de un sistema sencillo de rangos de puntos a un modelo de umbrales con requisitos detallados, y de un documento de dos páginas a un cuerpo normativo amplio. En este artículo se resumen los hitos y los momentos clave que han dado forma al sistema actual de eventos WSDC.
+                    Las reglas WSDC han pasado de un sistema sencillo de rangos de puntos a un modelo de umbrales con requisitos detallados, y de un documento de dos páginas a un cuerpo normativo amplio. En los documentos a los que tenemos acceso se ve también un cambio de estructura: primero un solo documento (Points Registry), desde 2007 dos (Points Registry Rules y Registry Event Rules), y en los ejemplares desde aproximadamente 2023 el documento separado de puntos ya no aparece: ese contenido está en Registry Event Rules como sección propia; no sabemos con certeza qué ediciones podrían faltar en el acceso abierto. En el artículo, la cronología de las ediciones que hemos encontrado y los momentos clave.
                 </div>
 
                 <section class="section">
@@ -910,13 +934,14 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2007">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Sistema de Tier y división All-Star</span>
+                                <span class="timeline-summary">Sistema Tier, división All-Star y aparición de Registry Event Rules</span>
                             </button>
                             <div class="timeline-details" id="details-2007">
                                 <div class="timeline-context">
                                     En 2007 había más eventos y el número de participantes variaba mucho. Quedó claro que ganar una división de diez parejas no era lo mismo que ganar una de cincuenta. Nace el sistema de Tier (en los documentos WSDC: Tier 1, Tier 2, Tier 3 según el tamaño de la división; en este artículo usamos Tier): el tamaño de la división empezó a influir en los puntos otorgados.<br><br>
                                     Tres niveles: Tier 1, 2 y 3. Cuantas más parejas (por el menor de líderes o seguidores), mayor el Tier y más puntos por plaza. Tier 1 daba 8/6/4/2/1 para el top 5, Tier 2 daba 10/8/6/4/2, Tier 3 daba 12/10/8/6/4. La lógica era simple: divisiones grandes, más competencia; la victoria debía valer más.<br><br>
-                                    El mismo año aparece la división All-Star, para bailarines con al menos 40 puntos en Advanced. Se precisaron las reglas de ascenso: se podía permanecer en Novice hasta 20 puntos y primer lugar, en Intermediate hasta 25 puntos y primer lugar. La petición de ascenso solo valía para el evento donde se presentaba. El sistema ganó nuevas dimensiones.
+                                    El mismo año aparece la división All-Star, para bailarines con al menos 40 puntos en Advanced. Se precisaron las reglas de ascenso: se podía permanecer en Novice hasta 20 puntos y primer lugar, en Intermediate hasta 25 puntos y primer lugar. La petición de ascenso solo valía para el evento donde se presentaba. El sistema ganó nuevas dimensiones.<br><br>
+                                    Desde 2007 existen dos tipos de documentos: Points Registry (para bailarines) y Registry Event Rules / Requirements (para organizadores). En el ejemplar conservado de Registry Event Rules de 2015, el encabezado indica “As of January 1, 2007” y enumera actualizaciones de 2009, 2010, 2012 y 2015; es decir, la estructura de dos documentos data de 2007; no tenemos en el archivo los ejemplares de 2007–2012.
                                 </div>
                                 <a href="static/rules/WSDC Points Registry Document_2007.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Ver documento</a>
                             </div>
@@ -969,15 +994,16 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2015">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Modelo de umbrales: de rangos a mínimos</span>
+                                <span class="timeline-summary">Umbrales de ascenso, financiación; ambos documentos en el archivo</span>
                             </button>
                             <div class="timeline-details" id="details-2015">
                                 <div class="timeline-context">
-                                    En 2015 las reglas adoptaron una forma que en gran parte perdura. Dos categorías: Skill Level (de Newcomer a Champions) y Age-Based (Juniors, Masters). Skill Level formaba una sola escalera; Champions seguía a criterio de los organizadores, el resto definido.<br><br>
+                                    En el archivo tenemos ambos documentos de 2015. El encabezado de Registry Event Rules indica que los requisitos para organizadores están en vigor desde el 1 de enero de 2007 (actualizaciones 2009, 2010, 2012, 2015); la estructura de dos documentos data pues de 2007. En 2015 las reglas adoptaron una forma que en gran parte perdura. Dos categorías: Skill Level (de Newcomer a Champions) y Age-Based (Juniors, Masters). Skill Level formaba una sola escalera; Champions seguía a criterio de los organizadores, el resto definido.<br><br>
                                     Cambiaron los umbrales de ascenso: Novice → Intermediate a 15 puntos (antes 20), Intermediate → Advanced a 30 (antes 25), Advanced → All-Star a 45 (antes 40). Para All-Star se introdujo una “ventana”: solo contaban los puntos Advanced de los últimos 3 años. En un mismo evento solo se podía competir en una división Skill Level; los puntos de líder y seguidor se sumaban para el ascenso. Si competías por petición y sumabas puntos, te quedabas en esa división.<br><br>
                                     Por primera vez los documentos abordaron el dinero: los organizadores debían pagar una tasa a WSDC por incluir resultados en la base de datos. El sistema dejó de ser solo competitivo y empezó a plantear su financiación.
                                 </div>
-                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Ver documento</a>
+                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Points Registry Rules</a>
+                                <a href="static/rules/WSDC_Registry_Event_Requirements.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Registry Event Rules</a>
                             </div>
                         </div>
 
@@ -989,11 +1015,11 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2018">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Reestructuración: un documento en dos</span>
+                                <span class="timeline-summary">Escalado del sistema Tier y ampliación del cuerpo para organizadores</span>
                             </button>
                             <div class="timeline-details" id="details-2018">
                                 <div class="timeline-context">
-                                    2018 fue el año del cambio estructural. El documento único se dividió en dos: reglas para bailarines y reglas para organizadores. El volumen creció (9 páginas frente a 2–4 antes).<br><br>
+                                    2018 fue el año de una ampliación importante de ambos documentos. La estructura ya estaba dividida desde 2007; ahora crecieron el volumen y el detalle (9 páginas frente a 2–4 antes).<br><br>
                                     Para bailarines: el sistema de Tier pasó de tres a seis niveles. Con 130+ competidores, el primer lugar podía dar 25 puntos. Se introdujo la lógica “permitido/obligatorio” de ascenso: Novice 16/30, Intermediate 30/45, Advanced 45/60 en los últimos 36 meses, All-Star con sus propias reglas de permanencia. Champions seguía a criterio de los organizadores. Cada Tier quedó ligado a un número fijo de rondas preliminares.<br><br>
                                     Para organizadores: obligaciones, cómo obtener el estatus de Registry Event, estructura de competición, requisitos de participantes y sanciones por incumplimiento. Lo que antes eran acuerdos informales pasó al papel.
                                 </div>
@@ -1070,13 +1096,13 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2023">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Estándares de calidad y requisitos de sede más estrictos</span>
+                                <span class="timeline-summary">En el conjunto disponible, un solo documento; nuevos estándares de calidad</span>
                             </button>
                             <div class="timeline-details" id="details-2023">
                                 <div class="timeline-context">
+                                    En los ejemplares disponibles en acceso abierto, desde aproximadamente 2023 el Points Registry Rules separado ya no aparece en el conjunto: lo que antes contenía está en Registry Event Rules como sección propia; con los documentos que tenemos resulta un solo cuerpo normativo para eventos y puntos. No puede descartarse que alguna edición o versión de transición simplemente no nos haya llegado.<br><br>
                                     La experiencia tras la COVID y el crecimiento de la comunidad exigieron estándares más claros. El documento para organizadores creció hasta 14 páginas, un 75% más que la versión anterior. Las reglas crecieron con las ambiciones de la comunidad y la búsqueda de eventos Registry de calidad.<br><br>
-                                    Nuevos requisitos de sede: al menos 150 m² de pista en el salón principal, estándares de alojamiento y servicio. WSDC eliminó la “ventana de 3 años” para Advanced y All-Star. Límites más estrictos para el rol no principal: un bailarín podía competir en el otro rol como máximo un nivel por debajo de su división principal. Para regiones en desarrollo se introdujo una alternativa: mínimo 80 competidores y 100 asistentes en lugar de 120, facilitando nuevos eventos.<br><br>
-                                    Se revisó por completo la estructura de Event Rules. Las reglas dejaron de ser solo recomendaciones y pasaron a ser un estándar de calidad medible.
+                                    Nuevos requisitos de sede: al menos 150 m² de pista en el salón principal, estándares de alojamiento y servicio. WSDC eliminó la “ventana de 3 años” para Advanced y All-Star. Límites más estrictos para el rol no principal: un bailarín podía competir en el otro rol como máximo un nivel por debajo de su división principal. Para regiones en desarrollo se introdujo una alternativa: mínimo 80 competidores y 100 asistentes en lugar de 120. Se revisó por completo la estructura de Event Rules: las reglas pasaron a ser un estándar de calidad medible.
                                 </div>
                                 <a href="static/rules/2023-Registry-Event-Rules_vFinal3b-2023.1D.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Ver documento</a>
                             </div>
@@ -1144,6 +1170,10 @@
                     </div>
                 </section>
 
+            <section class="catalog-cta">
+                <a href="rules_catalog_es.html" class="catalog-cta-btn">Ver todos los documentos</a>
+            </section>
+
             <!-- Comments section removed: feedback will be redesigned -->
             <section class="article-reactions">
                 <div class="article-reactions-label">Valora el artículo:</div>
@@ -1175,7 +1205,7 @@
         </main>
         <footer class="article-footer">
             <div class="data-note">
-                <p><strong>Fuentes de datos:</strong> Documentos oficiales WSDC del archivo de reglas (desde 2002). El análisis se basa en los textos de los documentos. El artículo se actualizará cuando se publiquen nuevas ediciones.</p>
+                <p><strong>Fuentes de datos:</strong> El artículo no se basa en el conjunto completo de documentos WSDC, sino solo en los encontrados en acceso abierto durante la investigación. Se utilizaron documentos oficiales del archivo de reglas (desde 2002). El análisis se basa en los textos de esos documentos. El artículo se actualizará cuando se publiquen nuevas ediciones.</p>
                 <p><strong>Metodología:</strong> Los cambios se identificaron comparando estructura de documentos, versionado y contenido de las reglas. La importancia de los cambios se valoró de forma subjetiva según el impacto en el sistema y la comunidad.</p>
                 <p><strong>Nota:</strong> Si tienes acceso a otros documentos o sugerencias de corrección, contacta con nosotros.</p>
             </div>

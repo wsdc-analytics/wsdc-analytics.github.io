@@ -818,6 +818,30 @@
             opacity: 0.7;
         }
 
+        .catalog-cta {
+            margin-top: 32px;
+            margin-bottom: 8px;
+        }
+        .catalog-cta-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: opacity 0.2s ease, transform 0.15s ease;
+        }
+        .catalog-cta-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .catalog-cta-btn:focus-visible {
+            outline: 2px solid var(--color-link-accent);
+            outline-offset: 2px;
+        }
+
         .article-reactions {
             margin: 28px 0 0;
             padding-top: 20px;
@@ -865,7 +889,7 @@
         <main id="main-content">
             <article class="article-content">
                 <div class="intro">
-                    WSDC rules have evolved from a simple points-range system to a detailed threshold model with strict requirements—and from a two-page document to a comprehensive rulebook. This article outlines the key milestones and turning points that shaped today’s WSDC event system.
+                    WSDC rules have evolved from a simple points-range system to a detailed threshold model with strict requirements—and from a two-page document to a comprehensive rulebook. In the documents available to us, the structure also shifts: first a single document (Points Registry), from 2007 two (Points Registry Rules and Registry Event Rules), and in copies from around 2023 the separate points document no longer appears—that content appears in Registry Event Rules as a dedicated section; we do not know exactly which editions may be missing from the public record. This article presents the chronology of the editions we have found and the key turning points.
                 </div>
 
                 <section class="section">
@@ -924,13 +948,14 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2007">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Tier system and All-Star division introduced</span>
+                                <span class="timeline-summary">Tier system, All-Star division, and the emergence of Registry Event Rules</span>
                             </button>
                             <div class="timeline-details" id="details-2007">
                                 <div class="timeline-context">
                                     By 2007 there were more events, and entry numbers varied widely. It became clear that winning a division of ten couples was not the same as winning one of fifty. The Tier system was born (in WSDC documents: Tier 1, Tier 2, Tier 3 by division size; this article uses the term Tier throughout): division size started to affect how many points were awarded.<br><br>
                                     Three levels—Tier 1, 2 and 3. The more couples (by the smaller of leaders or followers), the higher the Tier and the more points per placement. Tier 1 gave 8/6/4/2/1 for top 5, Tier 2 gave 10/8/6/4/2, Tier 3 gave 12/10/8/6/4. The logic was simple: bigger divisions meant stiffer competition, so wins should count for more.<br><br>
-                                    The same year the All-Star division appeared—for dancers with at least 40 points in Advanced. Advancement rules were clarified: dancers could stay in Novice until 20 points and first place, in Intermediate until 25 points and first place. A petition to move up applied only to the event where it was submitted, not to future events. The system gained new dimensions.
+                                    The same year the All-Star division appeared—for dancers with at least 40 points in Advanced. Advancement rules were clarified: dancers could stay in Novice until 20 points and first place, in Intermediate until 25 points and first place. A petition to move up applied only to the event where it was submitted, not to future events. The system gained new dimensions.<br><br>
+                                    From 2007 onward there were two document types: Points Registry (for dancers) and Registry Event Rules / Requirements (for organisers). The 2015 copy of Registry Event Rules states in its header “As of January 1, 2007” and lists updates for 2009, 2010, 2012 and 2015—so the two-document structure dates from 2007; we simply do not have the 2007–2012 versions in the archive.
                                 </div>
                                 <a href="static/rules/WSDC Points Registry Document_2007.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">View document</a>
                             </div>
@@ -983,15 +1008,16 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2015">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Threshold model: from ranges to minimums</span>
+                                <span class="timeline-summary">Advancement thresholds, funding; both documents in the archive</span>
                             </button>
                             <div class="timeline-details" id="details-2015">
                                 <div class="timeline-context">
-                                    By 2015 the rules took a form that largely persists today. Two categories of divisions: Skill Level (from Newcomer to Champions) and Age-Based (Juniors, Masters). Skill Level formed a single ladder—Champions remained at organisers’ discretion, but the rest was defined.<br><br>
+                                    We have both documents from 2015 in the archive. The Registry Event Rules header states that organiser requirements have been in force since 1 January 2007 (updates 2009, 2010, 2012, 2015)—so the two-document structure dates from 2007. By 2015 the rules took a form that largely persists today. Two categories of divisions: Skill Level (from Newcomer to Champions) and Age-Based (Juniors, Masters). Skill Level formed a single ladder—Champions remained at organisers’ discretion, but the rest was defined.<br><br>
                                     Advancement thresholds changed: Novice → Intermediate at 15 points (was 20), Intermediate → Advanced at 30 (was 25), Advanced → All-Star at 45 (was 40). For All-Star a “window” was introduced: only Advanced points from the last 3 years counted. At one event a dancer could compete in only one Skill Level division; leader and follower points were combined when moving up. If you competed by petition and earned points, you stayed in that division.<br><br>
                                     For the first time the documents addressed money: event organisers were required to pay a fee to WSDC for having results entered into the database. The system became not only competitive but also began to address its own funding.
                                 </div>
-                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">View document</a>
+                                <a href="static/rules/WSDC-Points-Registry-Document-7-1-2015.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Points Registry Rules</a>
+                                <a href="static/rules/WSDC_Registry_Event_Requirements.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">Registry Event Rules</a>
                             </div>
                         </div>
 
@@ -1003,11 +1029,11 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2018">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Structural overhaul: one document split into two</span>
+                                <span class="timeline-summary">Scaling of the Tier system and expansion of the organiser rulebook</span>
                             </button>
                             <div class="timeline-details" id="details-2018">
                                 <div class="timeline-context">
-                                    2018 was a year of structural change. The single document was split into two: rules for dancers and rules for event organisers. The total length jumped (9 pages vs 2–4 before).<br><br>
+                                    2018 was a year of major expansion of both documents. The structure had already been split since 2007; now the volume and detail grew sharply (9 pages vs 2–4 before).<br><br>
                                     For dancers: the Tier system was expanded from three to six levels. With 130+ competitors, first place could earn 25 points. “Allowed/required” advancement logic was introduced: Novice 16/30, Intermediate 30/45, Advanced 45/60 over the last 36 months, All-Star with its own retention rules. Champions still at organisers’ discretion. Each Tier was tied to a fixed number of preliminary rounds.<br><br>
                                     For organisers: a full set of obligations, how to get Registry Event status, competition structure, participant requirements, and penalties for non-compliance. What had lived in informal agreements was now on paper.
                                 </div>
@@ -1084,13 +1110,13 @@
                             </div>
                             <button class="timeline-toggle" aria-expanded="false" aria-controls="details-2023">
                                 <span class="timeline-toggle-icon">▶</span>
-                                <span class="timeline-summary">Quality standards and stricter venue requirements</span>
+                                <span class="timeline-summary">In the available set, one consolidated document; new quality standards</span>
                             </button>
                             <div class="timeline-details" id="details-2023">
                                 <div class="timeline-context">
+                                    In the copies available in the public domain, from around 2023 the separate Points Registry Rules no longer appears in the set—what it used to contain is now in Registry Event Rules as a dedicated section; based on the documents we have, there is effectively one consolidated document for both events and points. We cannot rule out that some editions or transitional versions simply did not reach us.<br><br>
                                     Experience after COVID and community growth called for clearer standards. The organiser document grew significantly—to 14 pages, about 75% longer than the previous version. The rules grew along with the community’s ambitions and the push for high-quality Registry events.<br><br>
-                                    New venue requirements: at least 150 m² of dance floor in the main hall, standards for participant accommodation and service. WSDC dropped the “3-year window” for Advanced and All-Star. Stricter limits for the non-primary role: a dancer could compete in the other role at most one level below their main division. For developing regions, an alternative was introduced: minimum 80 competitors and 100 attendees instead of 120, making it easier to run new events.<br><br>
-                                    The Event Rules structure was fully revised. The rules ceased to be mere recommendations and became a measurable quality standard.
+                                    New venue requirements: at least 150 m² of dance floor in the main hall, standards for participant accommodation and service. WSDC dropped the “3-year window” for Advanced and All-Star. Stricter limits for the non-primary role: a dancer could compete in the other role at most one level below their main division. For developing regions, an alternative was introduced: minimum 80 competitors and 100 attendees instead of 120. The Event Rules structure was fully revised: the rules became a measurable quality standard.
                                 </div>
                                 <a href="static/rules/2023-Registry-Event-Rules_vFinal3b-2023.1D.pdf" target="_blank" rel="noopener noreferrer" class="timeline-link">View document</a>
                             </div>
@@ -1158,6 +1184,10 @@
                     </div>
                 </section>
 
+            <section class="catalog-cta">
+                <a href="rules_catalog_en.html" class="catalog-cta-btn">View all documents</a>
+            </section>
+
             <section class="article-reactions">
                 <div class="article-reactions-label">Rate this article:</div>
                 <div class="article-reactions-buttons">
@@ -1190,7 +1220,7 @@
         </main>
         <footer class="article-footer">
             <div class="data-note">
-                <p><strong>Data sources:</strong> Official WSDC documents from the rules archive (from 2002 onward). The analysis is based on the document texts. The article will be updated when new editions are published.</p>
+                <p><strong>Data sources:</strong> This article is based not on a complete set of WSDC documents but only on those found in the public domain during research. Official documents from the rules archive (from 2002 onward) were used. The analysis is based on the document texts. The article will be updated when new editions are published.</p>
                 <p><strong>Methodology:</strong> Changes were identified by comparing document structure, versioning and rule content. The importance of changes was assessed subjectively based on impact on the system and the community.</p>
                 <p><strong>Note:</strong> If you have access to other documents or suggestions for corrections, please contact us.</p>
             </div>
