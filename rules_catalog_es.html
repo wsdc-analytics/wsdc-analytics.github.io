@@ -106,8 +106,34 @@
         .article-footer p { margin-bottom: 8px; }
         .article-footer p:last-child { margin-bottom: 0; }
         @media (max-width: 768px) {
-            .article-header, main { padding-left: 24px; padding-right: 24px; }
+            .article-header { padding: 64px 24px 48px; }
+            main { padding: 32px 24px 48px; }
             .article-footer { padding-left: 24px; padding-right: 24px; }
+            .article-title { font-size: 1.5rem; }
+
+            .catalog-list li {
+                flex-direction: column;
+                gap: 4px;
+                padding: 16px 0;
+            }
+
+            .catalog-list li::before {
+                display: none;
+            }
+
+            .catalog-doc-title {
+                font-size: 15px;
+                line-height: 1.4;
+            }
+
+            .catalog-doc-badge {
+                align-self: flex-start;
+            }
+
+            .catalog-doc-link {
+                align-self: flex-start;
+                margin-top: 4px;
+            }
         }
     </style>
 </head>
