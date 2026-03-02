@@ -1575,33 +1575,43 @@
 
     // Comments disabled
 </script>
-<script src="https://unpkg.com/@lyket/widget@latest/dist/lyket.js?apiKey=pt_37d4f2c27f8e66a91978e52fd07ce0"></script>
 <script>
 (function() {
     var LYKET_API = 'https://api.lyket.dev/v1/like-buttons';
     var LYKET_KEY = 'pt_37d4f2c27f8e66a91978e52fd07ce0';
-    function updateCount(el, n) { if (!el) return; el.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
+    var STORAGE_KEY = 'wsdc_reaction_';
+    function getLocalCount(ns, id) { try { return parseInt(sessionStorage.getItem(STORAGE_KEY + ns + '_' + id) || '0', 10); } catch (e) { return 0; } }
+    function toggleLocalCount(ns, id) { try { var k = STORAGE_KEY + ns + '_' + id; var n = getLocalCount(ns, id) ? 0 : 1; sessionStorage.setItem(k, String(n)); return n; } catch (e) { return 0; } }
+    function updateCount(el, serverN, localN) {
+        if (!el) return;
+        var n = (typeof serverN === 'number' && serverN >= 0 ? serverN : 0) + (localN || 0);
+        el.textContent = n >= 0 ? n : '—';
+    }
     function fetchCounts() {
         document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
             var ns = span.getAttribute('data-lyket-namespace'); var id = span.getAttribute('data-lyket-id');
             if (!ns || !id) return;
+            var localN = getLocalCount(ns, id);
             fetch(LYKET_API + '/' + encodeURIComponent(ns) + '/' + encodeURIComponent(id), { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + LYKET_KEY } })
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                var n = (data && data.data && data.data.attributes && (data.data.attributes.total_points != null ? data.data.attributes.total_points : data.data.attributes.count)) || 0;
-                updateCount(span, n);
-            }).catch(function() { updateCount(span, null); });
+                var serverN = (data && data.data && data.data.attributes && (data.data.attributes.total_points != null ? data.data.attributes.total_points : data.data.attributes.count)) || 0;
+                updateCount(span, serverN, localN);
+            }).catch(function() { updateCount(span, null, localN); });
         });
     }
     function voteReaction(namespace, id, countSpan) {
         if (!namespace || !id || !countSpan) return;
         countSpan.setAttribute('aria-busy', 'true');
         countSpan.textContent = '…';
+        var localN = toggleLocalCount(namespace, id);
+        updateCount(countSpan, null, localN);
         fetch(LYKET_API + '/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(id), {
             method: 'POST',
             headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + LYKET_KEY },
-            credentials: 'omit'
-        }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
+            credentials: 'omit',
+            mode: 'cors'
+        }).then(function() { fetchCounts(); }).catch(function(err) { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
     }
     function initReactionClicks() {
         document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
@@ -1625,9 +1635,7 @@
             trigger.addEventListener('keydown', function(e) {
                 if (e.key !== 'Enter' && e.key !== ' ') return;
                 e.preventDefault();
-                var overlay = trigger.querySelector('.lyket-overlay');
-                var btn = overlay && (overlay.querySelector('button') || overlay.querySelector('[role="button"]') || overlay.firstElementChild);
-                if (btn) btn.click(); else trigger.click();
+                trigger.click();
             });
         });
     }
