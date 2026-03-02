@@ -593,6 +593,87 @@
             font-size: 0 !important; line-height: 0 !important;
         }
         .article-reaction-count { font-size: 0.95rem; color: var(--text-secondary); min-width: 1.2em; text-align: left; }
+
+        .article-feedback {
+            margin-top: 32px;
+            padding: 24px 24px 20px;
+            border-radius: 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            max-width: 700px;
+            text-align: left;
+        }
+
+        .article-feedback-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .article-feedback-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .article-feedback-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .article-feedback-input {
+            width: 100%;
+            margin-top: 4px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            background: var(--bg-primary);
+        }
+
+        .article-feedback-input:focus {
+            outline: 2px solid var(--color-link-accent);
+            outline-offset: 2px;
+            border-color: var(--color-link-accent);
+        }
+
+        .article-feedback-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            background: var(--color-link-accent);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+        }
+
+        .article-feedback-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .article-feedback-button[disabled] {
+            opacity: 0.6;
+            cursor: default;
+            transform: none;
+        }
+
+        .article-feedback-status {
+            font-size: 13px;
+            margin-top: 8px;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -1114,6 +1195,39 @@
 </div>
 </section>
 
+<section class="article-feedback">
+    <h2 class="article-feedback-title">Обратная связь по статье</h2>
+    <p class="article-feedback-text">
+        Если вы заметили неточность, хотите предложить идею для улучшения или просто что-то написать, заполните форму ниже.
+    </p>
+    <form class="article-feedback-form" id="articleFeedbackForm">
+        <label class="article-feedback-label" for="articleFeedbackMessage">
+            Сообщение *
+        </label>
+        <textarea
+            id="articleFeedbackMessage"
+            class="article-feedback-input"
+            rows="4"
+            required
+        ></textarea>
+
+        <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">
+            Email (необязательно)
+        </label>
+        <input
+            type="email"
+            id="articleFeedbackEmail"
+            class="article-feedback-input"
+            placeholder="you@example.com"
+        />
+
+        <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">
+            Отправить
+        </button>
+        <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
+    </form>
+</section>
+
 </article>
         </main>
 <footer class="article-footer">
@@ -1284,6 +1398,81 @@
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
     else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
+})();
+</script>
+<script>
+(function() {
+    var FORM_ID = 'articleFeedbackForm';
+    var MESSAGE_ID = 'articleFeedbackMessage';
+    var EMAIL_ID = 'articleFeedbackEmail';
+    var SUBMIT_ID = 'articleFeedbackSubmit';
+    var STATUS_ID = 'articleFeedbackStatus';
+    var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
+    var ARTICLE_ID = 'geo_2025_ru';
+    var TXT = { sending: 'Отправляем...', ok: 'Спасибо! Сообщение отправлено.', error: 'Не удалось отправить. Попробуйте ещё раз позже.', validation: 'Пожалуйста, напишите чуть подробнее (минимум 5 символов).' };
+
+    function $(id) { return document.getElementById(id); }
+
+    function setStatus(text, isError) {
+        var el = $(STATUS_ID);
+        if (!el) return;
+        el.textContent = text || '';
+        el.style.color = isError ? '#dc2626' : 'var(--text-secondary)';
+    }
+
+    function onSubmit(e) {
+        e.preventDefault();
+        var form = $(FORM_ID);
+        var msgEl = $(MESSAGE_ID);
+        var emailEl = $(EMAIL_ID);
+        var btn = $(SUBMIT_ID);
+
+        if (!form || !msgEl || !btn) return;
+
+        var message = msgEl.value.trim();
+        var email = emailEl && emailEl.value.trim();
+
+        if (!message || message.length < 5) {
+            setStatus(TXT.validation, true);
+            return;
+        }
+
+        btn.disabled = true;
+        setStatus(TXT.sending, false);
+
+        fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'omit',
+            body: JSON.stringify({
+                articleId: ARTICLE_ID,
+                articleUrl: window.location.href,
+                message: message,
+                email: email
+            })
+        }).then(function(r) {
+            if (!r.ok) throw new Error('Request failed');
+            return r.json().catch(function() { return {}; });
+        }).then(function() {
+            setStatus(TXT.ok, false);
+            msgEl.value = '';
+        }).catch(function() {
+            setStatus(TXT.error, true);
+        }).finally(function() {
+            btn.disabled = false;
+        });
+    }
+
+    function init() {
+        var form = $(FORM_ID);
+        if (form) form.addEventListener('submit', onSubmit);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
 </script>
 </body>
