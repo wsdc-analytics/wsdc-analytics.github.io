@@ -2034,6 +2034,7 @@
     function voteReaction(namespace, id, countSpan) {
         if (!namespace || !id || !countSpan) return;
         countSpan.setAttribute('aria-busy', 'true');
+        countSpan.textContent = '…';
         fetch(LYKET_API + '/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(id), {
             method: 'POST',
             headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + LYKET_KEY },
@@ -2041,17 +2042,17 @@
         }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
     }
     function initReactionClicks() {
-        document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
-            var overlay = trigger.querySelector('.lyket-overlay');
-            var ns = overlay && overlay.getAttribute('data-lyket-namespace');
-            var id = overlay && overlay.getAttribute('data-lyket-id');
-            var item = trigger.closest('.article-reaction-item');
+        document.querySelectorAll('.article-reaction-trigger .lyket-overlay').forEach(function(overlay) {
+            var ns = overlay.getAttribute('data-lyket-namespace');
+            var id = overlay.getAttribute('data-lyket-id');
+            var item = overlay.closest('.article-reaction-item');
             var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
             if (!ns || !id || !countSpan) return;
-            trigger.addEventListener('click', function(e) {
+            overlay.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 voteReaction(ns, id, countSpan);
-            });
+            }, true);
         });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); setTimeout(fetchCounts, 2500); setTimeout(fetchCounts, 6000); initReactionClicks(); initReactionKeys(); });
