@@ -504,13 +504,22 @@
 
                 // Remove duplicates (same post_date + same events)
                 const seenKeys = new Set();
-                const summaries = allSummaries.filter(s => {
+                let summaries = allSummaries.filter(s => {
                     const key = [
                         s.post_date || '',
                         ...(s.events || []).map(ev => ev.slug || ev.name || '')
                     ].join('|');
                     if (seenKeys.has(key)) return false;
                     seenKeys.add(key);
+                    return true;
+                });
+                // Remove erroneous summary: 01-03-2026 (or 1-03-2026) with only Swing Crush (duplicate of 22-02-2026)
+                summaries = summaries.filter(s => {
+                    const pd = (s.post_date || '').replace(/\s/g, '');
+                    if (pd !== '01-03-2026' && pd !== '1-03-2026') return true;
+                    const events = s.events || [];
+                    if (events.length !== 1) return true;
+                    if ((events[0].name || '').trim() === 'Swing Crush') return false;
                     return true;
                 });
 
