@@ -523,6 +523,24 @@
                     return true;
                 });
 
+                // If there are multiple summaries for the same date, keep only the fullest one.
+                // This protects against transient duplicates (e.g. 4 events vs 5 events for one post_date).
+                const bestByDate = new Map();
+                summaries.forEach(s => {
+                    const pd = (s.post_date || '').trim();
+                    const currentSize = (s.events || []).length;
+                    if (!bestByDate.has(pd)) {
+                        bestByDate.set(pd, s);
+                        return;
+                    }
+                    const prev = bestByDate.get(pd);
+                    const prevSize = (prev.events || []).length;
+                    if (currentSize > prevSize) {
+                        bestByDate.set(pd, s);
+                    }
+                });
+                summaries = Array.from(bestByDate.values());
+
                 const currentYear = new Date().getFullYear();
                 catalog.innerHTML = renderByYear(summaries, currentYear);
                 document.querySelectorAll('.year-header').forEach(el => {
