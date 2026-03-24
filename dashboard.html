@@ -228,15 +228,8 @@
             var scaled = document.getElementById('vizScaled');
             var availableW = viewport.clientWidth;
             var availableH = viewport.clientHeight;
-            if (!availableW || !availableH) {
-                window.requestAnimationFrame(fitViz);
-                return;
-            }
             var scale = Math.min(availableW / VIZ_WIDTH, availableH / VIZ_HEIGHT);
             scale = Math.min(scale, 1); // не увеличивать больше оригинала
-            if (!isFinite(scale) || scale <= 0) {
-                scale = 1;
-            }
             scaled.style.transform = 'scale(' + scale + ')';
         }
 
@@ -245,9 +238,6 @@
         iframeElement.style.width = VIZ_WIDTH + 'px';
         iframeElement.style.height = VIZ_HEIGHT + 'px';
         fitViz();
-        iframeElement.addEventListener('load', fitViz);
-        window.addEventListener('load', fitViz);
-        window.setTimeout(fitViz, 200);
 
         window.addEventListener('resize', fitViz);
 
