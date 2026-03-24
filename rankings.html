@@ -207,13 +207,26 @@
         <div class="viz-viewport" id="vizViewport">
             <div class="viz-scaled" id="vizScaled">
                 <div class='tableauPlaceholder' id='viz1770822851756' style='position: relative'>
-                    <iframe
-                        title='WSDC Dancer Rankings'
-                        src='https://public.tableau.com/views/WSDCRankingsDancers/RankingWSDCDancers?:showVizHome=no'
-                        style='border: 0; display: block;'
-                        loading='lazy'
-                        allowfullscreen>
-                    </iframe>
+                    <noscript>
+                        <a href='#'>
+                            <img alt='Ranking WSDC Dancers ' src='https://public.tableau.com/static/images/WS/WSDCRankingsDancers/RankingWSDCDancers/1_rss.png' style='border: none' />
+                        </a>
+                    </noscript>
+                    <object class='tableauViz' style='display:none;'>
+                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+                        <param name='embed_code_version' value='3' />
+                        <param name='site_root' value='' />
+                        <param name='name' value='WSDCRankingsDancers&#47;RankingWSDCDancers' />
+                        <param name='tabs' value='no' />
+                        <param name='toolbar' value='yes' />
+                        <param name='static_image' value='https://public.tableau.com/static/images/WS/WSDCRankingsDancers/RankingWSDCDancers/1.png' />
+                        <param name='animate_transition' value='yes' />
+                        <param name='display_static_image' value='yes' />
+                        <param name='display_spinner' value='yes' />
+                        <param name='display_overlay' value='yes' />
+                        <param name='display_count' value='yes' />
+                        <param name='language' value='en-US' />
+                    </object>
                 </div>
             </div>
         </div>
@@ -234,10 +247,22 @@
         }
 
         var divElement = document.getElementById('viz1770822851756');
-        var iframeElement = divElement.querySelector('iframe');
-        iframeElement.style.width = VIZ_WIDTH + 'px';
-        iframeElement.style.height = VIZ_HEIGHT + 'px';
-        fitViz();
+        var vizElement = divElement.getElementsByTagName('object')[0];
+        vizElement.style.width = VIZ_WIDTH + 'px';
+        vizElement.style.height = VIZ_HEIGHT + 'px';
+
+        var scriptElement = document.createElement('script');
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);
+
+        scriptElement.onload = function() {
+            fitViz();
+            var iframe = divElement.querySelector('iframe');
+            if (iframe) {
+                iframe.style.width = VIZ_WIDTH + 'px';
+                iframe.style.height = VIZ_HEIGHT + 'px';
+            }
+        };
 
         window.addEventListener('resize', fitViz);
 
