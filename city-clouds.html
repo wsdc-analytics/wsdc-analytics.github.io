@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="WSDC KPI Dashboard - интерактивная аналитика West Coast Swing">
-    <title>WSDC KPI Dashboard | WSDC Analytics</title>
+    <meta name="description" content="WSDC City Clouds - city-level WCS analytics">
+    <title>WSDC City Clouds | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -26,16 +25,12 @@
             --text-primary: #2d3748;
             --text-secondary: #4a5568;
             --border-color: #e5e5e5;
-            --border-color-hover: #cbd5e0;
             --bg-tertiary: #f7fafc;
             --transition-base: 0.2s ease;
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-        }
+        html, body { overflow: hidden; height: 100%; }
         body {
             font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-secondary);
@@ -65,24 +60,6 @@
         }
         .back-link:hover { color: #1d4ed8; }
         .header-separator { color: var(--text-secondary); opacity: 0.6; font-size: 14px; }
-        .dashboard-select {
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 32px 8px 16px;
-            height: 36px;
-            min-width: 200px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .dashboard-select:hover {
-            border-color: var(--color-primary);
-        }
-        /* Dashboards dropdown — как на главной */
         .dashboards-nav { display: flex; align-items: center; }
         .dashboards-nav .dropdown-wrapper { position: relative; }
         .dashboards-nav .dropdown-btn {
@@ -114,12 +91,8 @@
             outline: 2px solid var(--color-primary);
             outline-offset: 2px;
         }
-        .dashboards-nav .dropdown-btn svg {
-            transition: transform var(--transition-base);
-        }
-        .dashboards-nav .dropdown-wrapper.open .dropdown-btn svg {
-            transform: rotate(180deg);
-        }
+        .dashboards-nav .dropdown-btn svg { transition: transform var(--transition-base); }
+        .dashboards-nav .dropdown-wrapper.open .dropdown-btn svg { transform: rotate(180deg); }
         .dashboards-nav .dropdown-menu {
             position: absolute;
             top: calc(100% + 6px);
@@ -175,12 +148,8 @@
             justify-content: center;
             padding: 8px;
         }
-        .viz-scaled {
-            transform-origin: center center;
-        }
-        .viz-scaled .tableauPlaceholder {
-            display: inline-block;
-        }
+        .viz-scaled { transform-origin: center center; }
+        .viz-scaled .tableauPlaceholder { display: inline-block; }
     </style>
 </head>
 <body>
@@ -191,7 +160,7 @@
             <nav class="dashboards-nav" aria-label="Дашборды">
                 <div class="dropdown-wrapper" id="dashboardsDropdown">
                     <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
-                        <span id="dashboardsBtnText">Metrics</span>
+                        <span id="dashboardsBtnText">Cities Cloud</span>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     </button>
                     <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
@@ -207,20 +176,16 @@
 
         <div class="viz-viewport" id="vizViewport">
             <div class="viz-scaled" id="vizScaled">
-                <div class='tableauPlaceholder' id='viz1770821220405' style='position: relative'>
-                    <noscript>
-                        <a href='#'>
-                            <img alt='KPIsDashboard ' src='https://public.tableau.com/static/images/WS/WSDCnew/KPIsDashboard/1_rss.png' style='border: none' />
-                        </a>
-                    </noscript>
+                <div class='tableauPlaceholder' id='viz1774461906109' style='position: relative'>
+                    <noscript><a href='#'><img alt='WSDC City Clouds ' src='https://public.tableau.com/static/images/WS/WSDCCityClouds/WSDCCityClouds/1_rss.png' style='border: none' /></a></noscript>
                     <object class='tableauViz' style='display:none;'>
                         <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
                         <param name='embed_code_version' value='3' />
                         <param name='site_root' value='' />
-                        <param name='name' value='WSDCnew&#47;KPIsDashboard' />
+                        <param name='name' value='WSDCCityClouds/WSDCCityClouds' />
                         <param name='tabs' value='no' />
                         <param name='toolbar' value='yes' />
-                        <param name='static_image' value='https://public.tableau.com/static/images/WS/WSDCnew/KPIsDashboard/1.png' />
+                        <param name='static_image' value='https://public.tableau.com/static/images/WS/WSDCCityClouds/WSDCCityClouds/1.png' />
                         <param name='animate_transition' value='yes' />
                         <param name='display_static_image' value='yes' />
                         <param name='display_spinner' value='yes' />
@@ -234,8 +199,8 @@
     </div>
 
     <script type='text/javascript'>
-        var VIZ_WIDTH = 1600;
-        var VIZ_HEIGHT = 1127;
+        var VIZ_WIDTH = 1620;
+        var VIZ_HEIGHT = 987;
 
         function fitViz() {
             var viewport = document.getElementById('vizViewport');
@@ -243,11 +208,11 @@
             var availableW = viewport.clientWidth;
             var availableH = viewport.clientHeight;
             var scale = Math.min(availableW / VIZ_WIDTH, availableH / VIZ_HEIGHT);
-            scale = Math.min(scale, 1); // не увеличивать больше оригинала
+            scale = Math.min(scale, 1);
             scaled.style.transform = 'scale(' + scale + ')';
         }
 
-        var divElement = document.getElementById('viz1770821220405');
+        var divElement = document.getElementById('viz1774461906109');
         var vizElement = divElement.getElementsByTagName('object')[0];
         vizElement.style.width = VIZ_WIDTH + 'px';
         vizElement.style.height = VIZ_HEIGHT + 'px';
@@ -269,7 +234,13 @@
 
         (function() {
             var currentPage = document.location.pathname.split('/').pop() || 'dashboard.html';
-            var labels = { 'dashboard.html': 'Metrics', 'navigator.html': 'Events Navigator', 'rankings.html': "Dancer's Ranking", 'dancer-profile.html': 'Dancer Profile', 'city-clouds.html': 'Cities Cloud' };
+            var labels = {
+                'dashboard.html': 'Metrics',
+                'navigator.html': 'Events Navigator',
+                'rankings.html': "Dancer's Ranking",
+                'dancer-profile.html': 'Dancer Profile',
+                'city-clouds.html': 'Cities Cloud'
+            };
             var btn = document.getElementById('dashboardsBtn');
             var btnText = document.getElementById('dashboardsBtnText');
             var wrap = document.getElementById('dashboardsDropdown');
