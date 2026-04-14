@@ -81,15 +81,24 @@
       overflow: visible;
     }
     @media (max-width: 760px) { .controls { grid-template-columns: 1fr; gap: 10px; } }
+    .metric-note {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #5b6063;
+      line-height: 1.4;
+      padding: 0 2px;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="controls">
       <div class="control"><label>Номинация:</label><div class="static-box">Intermediate Leader</div></div>
-      <div class="control"><label>Модель:</label><div class="static-box">Факт + центральный тренд + коридор</div></div>
+      <div class="control"><label>Модель:</label><div class="static-box">Факт + прогноз (3 сценария)</div></div>
     </div>
     <div class="chart-wrap">
+      <p class="metric-note">Ось: доля <strong>поинтов</strong> secondary-лидеров в сумме лидерских поинтов за год (места весят по таблице WSDC). Доля <strong>людей</strong> с второй ролью среди набравших лидерский поинт — другой показатель; здесь не показан.</p>
       <div class="legend">
         <span class="legend-item"><span class="legend-line fact"></span>Факт (2021-2026)</span>
         <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
@@ -142,7 +151,7 @@
         },
         scales: {
           y: {
-            title: { display: true, text: "Доля, %", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
+            title: { display: true, text: "Доля поинтов, %", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
             ticks: { color: "rgba(55, 65, 81, 0.55)", font: { size: 9, weight: 500 }, maxTicksLimit: 5 },
             grid: { color: "rgba(15, 23, 42, 0.06)", drawBorder: false },
             border: { display: true, color: "rgba(15, 23, 42, 0.12)", width: 1 },
