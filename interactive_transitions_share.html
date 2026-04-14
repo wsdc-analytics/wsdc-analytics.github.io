@@ -48,15 +48,14 @@
     }
     .controls-left {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 10px;
       width: 100%;
       align-items: flex-end;
     }
     .control {
-      flex: 1 1 300px;
-      min-width: min(100%, 260px);
-      max-width: 100%;
+      flex: 1 1 0;
+      min-width: 0;
     }
     .control label {
       display: block;
@@ -213,10 +212,8 @@
       font-weight: 700;
       text-align: right;
     }
-    /* В iframe статьи ширина часто <760px — не переводим селекты в колонку. */
     @media (max-width: 760px) {
       .chart-wrap { padding: 12px 12px 10px; border-radius: 20px; }
-      .control { flex: 1 1 100%; min-width: 0; }
     }
   </style>
 </head>
