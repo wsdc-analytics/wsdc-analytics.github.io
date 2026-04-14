@@ -16,6 +16,11 @@
       --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       --radius-outer: 30px;
       --radius-md: 12px;
+      /* Резерв интерактивов: #6366f1 (Leader), #14b8a6 (Follower) — здесь только дивизионы */
+      --div-novice: #7c3aed;
+      --div-intermediate: #ea580c;
+      --div-advanced: #0891b2;
+      --div-allstars: #be185d;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; }
@@ -25,7 +30,22 @@
       color: var(--text);
     }
     .card { padding: 4px 2px 8px; }
-    .controls { display: grid; grid-template-columns: 1.25fr 1fr; gap: 10px; margin-bottom: 8px; }
+    .chart-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-outer);
+      background: var(--surface-card);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      overflow: visible;
+    }
+    .chart-top {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .chart-controls { width: 100%; min-width: 0; }
     .control label {
       display: block;
       font-size: 9px;
@@ -46,15 +66,14 @@
       font-weight: 600;
       line-height: 1.4;
     }
-    .chart-wrap {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-outer);
-      background: var(--surface-card);
-      box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
-      overflow: visible;
+    .chart-legend { width: 100%; }
+    .legend {
+      display: flex;
+      gap: 8px;
+      margin: 0;
+      flex-wrap: wrap;
+      justify-content: flex-start;
     }
-    .legend { display: flex; gap: 8px; margin: 0 0 6px; flex-wrap: wrap; justify-content: flex-start; }
     .legend-item {
       display: inline-flex;
       align-items: center;
@@ -69,87 +88,190 @@
       border-radius: 999px;
       padding: 4px 8px;
     }
-    .legend-line { width: 10px; height: 2px; background: transparent; display: inline-block; box-sizing: border-box; }
-    .legend-line.novice { border-top: 2px solid #2563eb; }
-    .legend-line.intermediate { border-top: 2px solid #a33c29; }
-    .legend-line.advanced { border-top: 2px dashed #475569; }
-    .legend-line.allstars { border-top: 2px dashed #0f766e; }
+    .legend-line {
+      width: 10px;
+      height: 2px;
+      background: transparent;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+    .legend-line.novice { border-top: 2px solid var(--div-novice); }
+    .legend-line.intermediate { border-top: 2px solid var(--div-intermediate); }
+    .legend-line.advanced { border-top: 2px dashed var(--div-advanced); }
+    .legend-line.allstars { border-top: 2px dashed var(--div-allstars); }
     .chart-canvas-box {
       margin: 6px 0 0;
       padding: 10px 6px 12px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
+      position: relative;
+      width: 100%;
+      height: 280px;
+      min-height: 280px;
+      box-sizing: border-box;
     }
-    @media (max-width: 760px) { .controls { grid-template-columns: 1fr; gap: 10px; } }
+    .chartjs-ext-tooltip {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(117, 119, 120, 0.24);
+      border-radius: 12px;
+      padding: 10px 12px;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      min-width: 168px;
+      max-width: min(320px, 92vw);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      z-index: 10;
+    }
+    .chartjs-ext-tooltip .tt-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2c2f30;
+      margin: 0 0 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .chartjs-ext-tooltip .tt-meta {
+      font-size: 10px;
+      font-weight: 500;
+      color: #5b6063;
+      line-height: 1.35;
+      margin: 0 0 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(117, 119, 120, 0.12);
+    }
+    .chartjs-ext-tooltip .tt-meta p { margin: 0 0 4px; }
+    .chartjs-ext-tooltip .tt-meta p:last-child { margin-bottom: 0; }
+    .chartjs-ext-tooltip .tt-foot {
+      font-size: 10px;
+      font-weight: 600;
+      color: #64748b;
+      margin: 6px 0 0;
+    }
+    .chartjs-ext-tooltip .tt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 12px;
+      line-height: 1.35;
+      margin: 2px 0;
+    }
+    .chartjs-ext-tooltip .tt-label { color: #2c2f30; font-weight: 600; }
+    .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="controls">
-      <div class="control">
-        <label>Метрика:</label>
-        <div class="static-box">Лидеров на 100 фолловеров (только primary-переходы)</div>
-      </div>
-      <div class="control">
-        <label>Срез:</label>
-        <div class="static-box">Novice, Intermediate, Advanced, All-Stars</div>
-      </div>
-    </div>
     <div class="chart-wrap">
-      <div class="legend">
-        <span class="legend-item"><span class="legend-line novice"></span>Novice</span>
-        <span class="legend-item"><span class="legend-line intermediate"></span>Intermediate</span>
-        <span class="legend-item"><span class="legend-line advanced"></span>Advanced</span>
-        <span class="legend-item"><span class="legend-line allstars"></span>All-Stars</span>
+      <div class="chart-top">
+        <div class="chart-controls">
+          <div class="control">
+            <label>Показатель</label>
+            <div class="static-box">Лидеров на 100 фолловеров по переходам в основной роли (primary-переходы в дивизион).</div>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <div class="legend">
+            <span class="legend-item"><span class="legend-line novice"></span>Novice</span>
+            <span class="legend-item"><span class="legend-line intermediate"></span>Intermediate</span>
+            <span class="legend-item"><span class="legend-line advanced"></span>Advanced</span>
+            <span class="legend-item"><span class="legend-line allstars"></span>All-Stars</span>
+          </div>
+        </div>
       </div>
       <div class="chart-canvas-box">
-        <canvas id="chart" height="240"></canvas>
+        <canvas id="chart"></canvas>
       </div>
     </div>
   </div>
   <script>
+    const MEASURE_TOOLTIP = "Лидеров на 100 фолловеров по primary-переходам";
+    const NOMINATION_TOOLTIP = "Баланс primary-переходов Leader / Follower по дивизионам";
+    const SLICE_TOOLTIP = "дивизион (каждая линия — Novice … All-Stars)";
     const YEARS = ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"];
     const NOVICE = [88.37, 82.77, 82.72, 87.21, 94.94, 75.23, 61.61, 70.09, 68.48, 78.13, 68.74, 79.11];
     const INTERMEDIATE = [74.48, 100.51, 86.59, 90.68, 79.67, 62.71, 97.44, 82.86, 85.24, 69.29, 78.62, 92.06];
     const ADVANCED = [89.01, 77.98, 87.39, 89.22, 84.82, 95.65, 106.67, 104.84, 93.0, 90.65, 83.9, 110.81];
     const ALL_STARS = [96.67, 138.89, 75.51, 126.47, 85.71, 80.0, 83.33, 81.82, 91.67, 85.71, 102.56, 64.29];
-    new Chart(document.getElementById("chart"), {
+
+    function getOrCreateTooltip(chart) {
+      let tooltipEl = chart.canvas.parentNode.querySelector(".chartjs-ext-tooltip");
+      if (!tooltipEl) {
+        tooltipEl = document.createElement("div");
+        tooltipEl.className = "chartjs-ext-tooltip";
+        chart.canvas.parentNode.style.position = "relative";
+        chart.canvas.parentNode.appendChild(tooltipEl);
+      }
+      return tooltipEl;
+    }
+
+    function yearFootnote(yearStr) {
+      const y = Number(yearStr);
+      if (y === 2019) return "База сравнения в статье: 2018–2019";
+      if (y === 2025) return "Текущий период в статье: 2023–2025";
+      return "";
+    }
+
+    const ctx = document.getElementById("chart");
+    new Chart(ctx, {
       type: "line",
       data: {
         labels: YEARS,
         datasets: [
-          { label: "Novice", data: NOVICE, borderColor: "#2563eb", backgroundColor: "#2563eb", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
-          { label: "Intermediate", data: INTERMEDIATE, borderColor: "#a33c29", backgroundColor: "#a33c29", borderWidth: 2.5, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
-          { label: "Advanced", data: ADVANCED, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 2.0, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
-          { label: "All-Stars", data: ALL_STARS, borderColor: "#0f766e", backgroundColor: "#0f766e", borderWidth: 2.0, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 }
+          { label: "Novice", data: NOVICE, borderColor: "#7c3aed", backgroundColor: "#7c3aed", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#7c3aed", pointBorderWidth: 1.2 },
+          { label: "Intermediate", data: INTERMEDIATE, borderColor: "#ea580c", backgroundColor: "#ea580c", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#ea580c", pointBorderWidth: 1.2 },
+          { label: "Advanced", data: ADVANCED, borderColor: "#0891b2", backgroundColor: "#0891b2", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#0891b2", pointBorderWidth: 1.2 },
+          { label: "All-Stars", data: ALL_STARS, borderColor: "#be185d", backgroundColor: "#be185d", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#be185d", pointBorderWidth: 1.2 }
         ]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 2.6,
-        layout: { padding: { top: 10, right: 12, bottom: 20, left: 4 } },
+        maintainAspectRatio: false,
+        layout: { padding: { top: 8, right: 10, bottom: 22, left: 4 } },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "rgba(26, 32, 44, 0.92)",
-            titleFont: { size: 12, weight: 600 },
-            bodyFont: { size: 12 },
-            displayColors: true,
-            callbacks: {
-              afterTitle: (items) => {
-                const year = Number(items?.[0]?.label || 0);
-                if (year === 2019) return "База сравнения: 2018-2019";
-                if (year === 2025) return "Текущий период: 2023-2025";
-                return "";
-              },
-              label: (ctx) => {
-                const v = ctx.parsed.y;
-                if (v == null || Number.isNaN(v)) return `${ctx.dataset.label}: —`;
-                return `${ctx.dataset.label}: ${Number(v).toFixed(1)} лидеров на 100 фолловеров`;
+            enabled: false,
+            external: ({ chart, tooltip }) => {
+              const tooltipEl = getOrCreateTooltip(chart);
+              if (tooltip.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                tooltipEl.style.transform = "";
+                return;
               }
+              const year = tooltip.title && tooltip.title.length ? tooltip.title[0] : "";
+              const foot = yearFootnote(year);
+              const rows = (tooltip.dataPoints || []).map((dp) => {
+                const v = dp.parsed.y;
+                const value = (v == null || Number.isNaN(v)) ? "—" : Number(v).toFixed(1);
+                return `<div class="tt-row"><span class="tt-label">${dp.dataset.label}</span><span class="tt-value" style="color:${dp.dataset.borderColor}">${value}</span></div>`;
+              }).join("");
+              const footHtml = foot ? `<div class="tt-foot">${foot}</div>` : "";
+              tooltipEl.innerHTML = `<div class="tt-title">${year}</div><div class="tt-meta"><p><strong>Номинация:</strong> ${NOMINATION_TOOLTIP}</p><p><strong>Показатель:</strong> ${MEASURE_TOOLTIP}</p><p><strong>Срез:</strong> ${SLICE_TOOLTIP}</p></div>${rows}${footHtml}`;
+              const canvas = chart.canvas;
+              const parent = canvas.parentNode;
+              const pad = 10;
+              const cx = canvas.offsetLeft + tooltip.caretX;
+              const cy = canvas.offsetTop + tooltip.caretY;
+              tooltipEl.style.opacity = 1;
+              tooltipEl.style.left = `${cx}px`;
+              tooltipEl.style.top = `${cy}px`;
+              requestAnimationFrame(() => {
+                const tw = tooltipEl.offsetWidth;
+                const pw = parent.clientWidth;
+                if (!tw || !pw) {
+                  tooltipEl.style.transform = "translate(-50%, calc(-100% - 8px))";
+                  return;
+                }
+                let dx = -tw / 2;
+                if (cx + dx < pad) dx = pad - cx;
+                if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
+                tooltipEl.style.transform = `translate(${dx}px, calc(-100% - 8px))`;
+              });
             }
           }
         },

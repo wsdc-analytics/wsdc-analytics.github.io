@@ -16,6 +16,10 @@
       --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       --radius-outer: 30px;
       --radius-md: 12px;
+      --fact-line: #d97706;
+      --fact-fill: rgba(217, 119, 6, 0.12);
+      --fact-fill-border: rgba(217, 119, 6, 0.24);
+      --central-line: #475569;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; }
@@ -25,7 +29,22 @@
       color: var(--text);
     }
     .card { padding: 4px 2px 8px; }
-    .controls { display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; margin-bottom: 8px; }
+    .chart-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-outer);
+      background: var(--surface-card);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      overflow: visible;
+    }
+    .chart-top {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .chart-controls { width: 100%; min-width: 0; }
     .control label {
       display: block;
       font-size: 9px;
@@ -46,15 +65,14 @@
       font-weight: 600;
       line-height: 1.4;
     }
-    .chart-wrap {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-outer);
-      background: var(--surface-card);
-      box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
-      overflow: visible;
+    .chart-legend { width: 100%; }
+    .legend {
+      display: flex;
+      gap: 8px;
+      margin: 0;
+      flex-wrap: wrap;
+      justify-content: flex-start;
     }
-    .legend { display: flex; gap: 8px; margin: 0 0 6px; flex-wrap: wrap; justify-content: flex-start; }
     .legend-item {
       display: inline-flex;
       align-items: center;
@@ -69,80 +87,199 @@
       border-radius: 999px;
       padding: 4px 8px;
     }
-    .legend-line { width: 10px; height: 2px; background: transparent; display: inline-block; box-sizing: border-box; }
-    .legend-line.fact { border-top: 2px solid #2563eb; }
-    .legend-line.central { border-top: 2px dashed #4b5563; }
-    .legend-line.band { height: 8px; width: 12px; border-radius: 2px; background: rgba(37,99,235,0.12); border: 1px solid rgba(37,99,235,0.18); }
+    .legend-line {
+      width: 10px;
+      height: 2px;
+      background: transparent;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+    .legend-line.fact { border-top: 2px solid var(--fact-line); }
+    .legend-line.central { border-top: 2px dashed var(--central-line); }
+    .legend-line.band {
+      height: 8px;
+      width: 12px;
+      border-radius: 2px;
+      background: var(--fact-fill);
+      border: 1px solid var(--fact-fill-border);
+    }
     .chart-canvas-box {
       margin: 6px 0 0;
       padding: 10px 6px 12px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
+      position: relative;
+      width: 100%;
+      height: 280px;
+      min-height: 280px;
+      box-sizing: border-box;
     }
-    @media (max-width: 760px) { .controls { grid-template-columns: 1fr; gap: 10px; } }
+    .chartjs-ext-tooltip {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(117, 119, 120, 0.24);
+      border-radius: 12px;
+      padding: 10px 12px;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      min-width: 168px;
+      max-width: min(340px, 92vw);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      z-index: 10;
+    }
+    .chartjs-ext-tooltip .tt-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2c2f30;
+      margin: 0 0 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .chartjs-ext-tooltip .tt-meta {
+      font-size: 10px;
+      font-weight: 500;
+      color: #5b6063;
+      line-height: 1.35;
+      margin: 0 0 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(117, 119, 120, 0.12);
+    }
+    .chartjs-ext-tooltip .tt-meta p { margin: 0 0 4px; }
+    .chartjs-ext-tooltip .tt-meta p:last-child { margin-bottom: 0; }
+    .chartjs-ext-tooltip .tt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 12px;
+      line-height: 1.35;
+      margin: 2px 0;
+    }
+    .chartjs-ext-tooltip .tt-label { color: #2c2f30; font-weight: 600; }
+    .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="controls">
-      <div class="control"><label>Номинация:</label><div class="static-box">Intermediate Leader</div></div>
-      <div class="control"><label>Модель:</label><div class="static-box">Факт + центральный тренд + коридор</div></div>
-    </div>
     <div class="chart-wrap">
-      <div class="legend">
-        <span class="legend-item"><span class="legend-line fact"></span>Факт (2021-2026)</span>
-        <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
-        <span class="legend-item"><span class="legend-line band"></span>Коридор прогноза (3 модели)</span>
+      <div class="chart-top">
+        <div class="chart-controls">
+          <div class="control">
+            <label>Показатель</label>
+            <div class="static-box">Intermediate Leader — доля secondary-поинтов в сумме лидерских поинтов за год, % (факт 2021–2026 и сценарный коридор).</div>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <div class="legend">
+            <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
+            <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
+            <span class="legend-item"><span class="legend-line band"></span>Коридор прогноза (3 модели)</span>
+          </div>
+        </div>
       </div>
-      <div class="chart-canvas-box"><canvas id="chart" height="240"></canvas></div>
+      <div class="chart-canvas-box">
+        <canvas id="chart"></canvas>
+      </div>
     </div>
   </div>
   <script>
+    const NOMINATION = "Intermediate Leader";
+    const MEASURE_TOOLTIP = "Доля secondary-поинтов в сумме лидерских поинтов за год, %";
+    const SLICE_TOOLTIP = "факт и три сценария прогноза на оси времени";
+
+    function getOrCreateTooltip(chart) {
+      let tooltipEl = chart.canvas.parentNode.querySelector(".chartjs-ext-tooltip");
+      if (!tooltipEl) {
+        tooltipEl = document.createElement("div");
+        tooltipEl.className = "chartjs-ext-tooltip";
+        chart.canvas.parentNode.style.position = "relative";
+        chart.canvas.parentNode.appendChild(tooltipEl);
+      }
+      return tooltipEl;
+    }
+
     const YEARS = ["2021","2022","2023","2024","2025","2026","2027","2028","2029","2030","2031","2032","2033","2034","2035","2036"];
     const FACT = [1.49,3.38,5.42,8.09,11.21,15.85,null,null,null,null,null,null,null,null,null,null];
     const CENTRAL = [null,null,null,null,null,14.57,17.37,20.16,22.96,25.76,28.56,31.36,34.15,36.95,39.75,42.55];
     const LOW = [null,null,null,null,null,14.57,17.25,18.65,20.05,21.45,22.84,24.24,25.64,27.04,28.44,29.84];
     const HIGH = [null,null,null,null,null,15.85,18.23,20.96,24.1,27.72,31.88,36.66,42.16,48.48,55.75,64.12];
-    new Chart(document.getElementById("chart"), {
+
+    const ctx = document.getElementById("chart");
+    new Chart(ctx, {
       type: "line",
       data: {
         labels: YEARS,
         datasets: [
-          { label: "Факт", data: FACT, borderColor: "#2563eb", backgroundColor: "#2563eb", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4, pointBackgroundColor: "#ffffff", pointBorderColor: "#3525cd", pointBorderWidth: 1.4 },
-          { label: "Центральный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 2.0, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
-          { label: "Нижняя граница", data: LOW, borderColor: "rgba(37,99,235,0)", backgroundColor: "rgba(37,99,235,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
-          { label: "Верхняя граница", data: HIGH, borderColor: "rgba(37,99,235,0)", backgroundColor: "rgba(37,99,235,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
+          { label: "Факт", data: FACT, borderColor: "#d97706", backgroundColor: "#d97706", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#b45309", pointBorderWidth: 1.2 },
+          { label: "Центральный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
+          { label: "Нижняя граница", data: LOW, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
+          { label: "Верхняя граница", data: HIGH, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
         ]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 2.6,
-        layout: { padding: { top: 10, right: 12, bottom: 20, left: 4 } },
+        maintainAspectRatio: false,
+        layout: { padding: { top: 8, right: 10, bottom: 22, left: 4 } },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "rgba(26, 32, 44, 0.92)",
-            titleFont: { size: 12, weight: 600 },
-            bodyFont: { size: 12 },
-            displayColors: true,
-            filter: (item) => item.datasetIndex <= 3,
-            callbacks: {
-              label: (ctx) => {
-                const v = ctx.parsed.y;
-                if (v == null || Number.isNaN(v)) return `${ctx.dataset.label}: —`;
-                if (ctx.datasetIndex === 2) return `Нижняя граница: ${Number(v).toFixed(1)}%`;
-                if (ctx.datasetIndex === 3) return `Верхняя граница: ${Number(v).toFixed(1)}%`;
-                return `${ctx.dataset.label}: ${Number(v).toFixed(1)}%`;
+            enabled: false,
+            external: ({ chart, tooltip }) => {
+              const tooltipEl = getOrCreateTooltip(chart);
+              if (tooltip.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                tooltipEl.style.transform = "";
+                return;
               }
+              const year = tooltip.title && tooltip.title.length ? tooltip.title[0] : "";
+              const dps = tooltip.dataPoints || [];
+              const byIdx = Object.fromEntries(dps.map((dp) => [dp.datasetIndex, dp]));
+              const parts = [];
+              if (byIdx[0]) {
+                const v = byIdx[0].parsed.y;
+                const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
+                parts.push(`<div class="tt-row"><span class="tt-label">Факт</span><span class="tt-value" style="color:#d97706">${t}</span></div>`);
+              }
+              if (byIdx[1]) {
+                const v = byIdx[1].parsed.y;
+                const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
+                parts.push(`<div class="tt-row"><span class="tt-label">Центральный тренд</span><span class="tt-value" style="color:#475569">${t}</span></div>`);
+              }
+              const lo = byIdx[2]?.parsed?.y;
+              const hi = byIdx[3]?.parsed?.y;
+              if (lo != null && hi != null && !Number.isNaN(lo) && !Number.isNaN(hi)) {
+                parts.push(`<div class="tt-row"><span class="tt-label">Коридор (3 мод.)</span><span class="tt-value" style="color:#b45309">${Number(lo).toFixed(1)}–${Number(hi).toFixed(1)}%</span></div>`);
+              }
+              tooltipEl.innerHTML = `<div class="tt-title">${year}</div><div class="tt-meta"><p><strong>Номинация:</strong> ${NOMINATION}</p><p><strong>Показатель:</strong> ${MEASURE_TOOLTIP}</p><p><strong>Срез:</strong> ${SLICE_TOOLTIP}</p></div>${parts.join("")}`;
+              const canvas = chart.canvas;
+              const parent = canvas.parentNode;
+              const pad = 10;
+              const cx = canvas.offsetLeft + tooltip.caretX;
+              const cy = canvas.offsetTop + tooltip.caretY;
+              tooltipEl.style.opacity = 1;
+              tooltipEl.style.left = `${cx}px`;
+              tooltipEl.style.top = `${cy}px`;
+              requestAnimationFrame(() => {
+                const tw = tooltipEl.offsetWidth;
+                const pw = parent.clientWidth;
+                if (!tw || !pw) {
+                  tooltipEl.style.transform = "translate(-50%, calc(-100% - 8px))";
+                  return;
+                }
+                let dx = -tw / 2;
+                if (cx + dx < pad) dx = pad - cx;
+                if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
+                tooltipEl.style.transform = `translate(${dx}px, calc(-100% - 8px))`;
+              });
             }
           }
         },
         scales: {
           y: {
-            title: { display: true, text: "Доля, %", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
+            title: { display: true, text: "Доля поинтов, %", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
             ticks: { color: "rgba(55, 65, 81, 0.55)", font: { size: 9, weight: 500 }, maxTicksLimit: 5 },
             grid: { color: "rgba(15, 23, 42, 0.06)", drawBorder: false },
             border: { display: true, color: "rgba(15, 23, 42, 0.12)", width: 1 },
