@@ -178,7 +178,8 @@
       border-radius: 12px;
       padding: 10px 12px;
       pointer-events: none;
-      transform: translate(-50%, calc(-100% - 8px));
+      left: 0;
+      top: 0;
       min-width: 148px;
       box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
       z-index: 10;
@@ -305,6 +306,7 @@
               const tooltipEl = getOrCreateTooltip(chart);
               if (tooltip.opacity === 0) {
                 tooltipEl.style.opacity = 0;
+                tooltipEl.style.transform = "";
                 return;
               }
               const rows = (tooltip.dataPoints || []).map((dp) => {
@@ -320,10 +322,26 @@
               }).join("");
               const year = tooltip.title && tooltip.title.length ? tooltip.title[0] : "";
               tooltipEl.innerHTML = `<div class="tt-title">${year}</div>${rows}`;
-              const { offsetLeft: x, offsetTop: y } = chart.canvas;
+              const canvas = chart.canvas;
+              const parent = canvas.parentNode;
+              const pad = 10;
+              const cx = canvas.offsetLeft + tooltip.caretX;
+              const cy = canvas.offsetTop + tooltip.caretY;
               tooltipEl.style.opacity = 1;
-              tooltipEl.style.left = `${x + tooltip.caretX}px`;
-              tooltipEl.style.top = `${y + tooltip.caretY}px`;
+              tooltipEl.style.left = `${cx}px`;
+              tooltipEl.style.top = `${cy}px`;
+              requestAnimationFrame(() => {
+                const tw = tooltipEl.offsetWidth;
+                const pw = parent.clientWidth;
+                if (!tw || !pw) {
+                  tooltipEl.style.transform = "translate(-50%, calc(-100% - 8px))";
+                  return;
+                }
+                let dx = -tw / 2;
+                if (cx + dx < pad) dx = pad - cx;
+                if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
+                tooltipEl.style.transform = `translate(${dx}px, calc(-100% - 8px))`;
+              });
             }
           }
         },
