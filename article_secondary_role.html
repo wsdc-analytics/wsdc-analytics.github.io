@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secondary role в WSDC: универсализация или средство удержания | WSDC Analytics</title>
+  <style>
+    :root {
+      --color-primary: #2d3748;
+      --color-primary-dark: #1a202c;
+      --color-primary-light: #4a5568;
+      --bg-primary: #ffffff;
+      --bg-secondary: #FFFFFF;
+      --bg-tertiary: #f7fafc;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --border-color: #e5e5e5;
+      --border-color-hover: #cbd5e0;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition-fast: 0.15s ease;
+      --transition-base: 0.2s ease;
+      --chart-surface: #ffffff;
+      --chart-page-bg: #fafcfd;
+      --chart-border: #e4e9f0;
+      --chart-radius-outer: 16px;
+      --chart-radius-inner: 12px;
+      --chart-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+      --chart-padding: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--color-primary);
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+      border-radius: 0 0 4px 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .skip-link:focus {
+      top: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .magazine-container {
+      max-width: 980px;
+      margin: 0 auto;
+      background-color: var(--bg-primary);
+    }
+    .article-header {
+      background: var(--color-primary);
+      color: white;
+      padding: 100px 80px 80px;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+    .article-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .back-link {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity var(--transition-base);
+    }
+    .back-link:hover { opacity: 0.8; }
+    .article-title {
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 24px 0;
+      letter-spacing: -1.5px;
+      max-width: 800px;
+    }
+    .article-subtitle {
+      font-size: 21px;
+      font-weight: 400;
+      opacity: 0.9;
+      line-height: 1.5;
+      max-width: 700px;
+      color: #e8e8e8;
+    }
+    .article-content {
+      padding: 80px 80px;
+    }
+    .intro {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      margin: 0 0 24px 0;
+      font-weight: 400;
+      max-width: 700px;
+      text-align: justify;
+    }
+    .intro p { margin: 0 0 20px 0; }
+    .intro p:last-child { margin-bottom: 0; }
+    .article-disclaimer {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 0 28px 0;
+      text-align: justify;
+    }
+    .article-disclaimer em { font-style: italic; }
+    .terms-note {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      max-width: 700px;
+      margin: 0 0 56px 0;
+      text-align: justify;
+    }
+    .section {
+      margin: 80px 0;
+    }
+    .section-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 32px 0;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+    .section-content {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      max-width: 700px;
+      text-align: justify;
+    }
+    .section-content p { margin-bottom: 24px; }
+    .section-content h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 2rem 0 1rem;
+      letter-spacing: -0.3px;
+    }
+    .section-content ul {
+      margin: 0 0 24px;
+      padding-left: 1.5rem;
+    }
+    .section-content li { margin-bottom: 0.5rem; }
+    .pull-quote {
+      font-size: 20px;
+      font-style: normal;
+      color: var(--text-primary);
+      text-align: justify;
+      margin: 32px 0;
+      border-left: 4px solid var(--color-primary);
+      padding-left: 32px;
+      line-height: 1.6;
+      max-width: 700px;
+      font-weight: 500;
+      background: var(--bg-tertiary);
+      padding: 20px 20px 20px 32px;
+      border-radius: 0 8px 8px 0;
+    }
+    .glossary {
+      background: #f0f4f8;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin: 32px 0 48px;
+      max-width: 700px;
+    }
+    .glossary h4 {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      margin: 0 0 12px;
+    }
+    .glossary dl {
+      margin: 0;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 16px;
+    }
+    .glossary dt {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 15px;
+    }
+    .glossary dd {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .timeline {
+      max-width: 700px;
+      margin: 32px 0;
+      padding-left: 28px;
+      border-left: 2px solid var(--border-color);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -35px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      border: 2px solid white;
+    }
+    .timeline-year {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .timeline-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+    .discussion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 32px 0;
+      max-width: 700px;
+    }
+    .discussion-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .discussion-card h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: var(--text-primary);
+    }
+    .discussion-card p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+    @media (max-width: 768px) {
+      .discussion-grid { grid-template-columns: 1fr; }
+      .glossary dl { grid-template-columns: 1fr; }
+    }
+    .image-container {
+      margin: 40px 0;
+      text-align: center;
+      max-width: 700px;
+    }
+    .dashboard-image {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+      border-radius: 8px;
+    }
+    .image-container--chart {
+      margin: 40px 0;
+      text-align: left;
+    }
+    .image-container--chart .chart-static-card {
+      background: var(--chart-surface);
+      border: 1px solid var(--chart-border);
+      border-radius: var(--chart-radius-outer);
+      box-shadow: var(--chart-shadow);
+      padding: var(--chart-padding);
+      max-width: 100%;
+    }
+    .image-container--chart .dashboard-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: none;
+      box-shadow: none;
+      border-radius: var(--chart-radius-inner);
+      vertical-align: middle;
+    }
+    .image-container--chart .image-caption {
+      margin-top: 14px;
+      color: #4b5563;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .image-container iframe.chart-iframe {
+      max-width: 100%;
+      height: auto;
+      min-height: 500px;
+      border: 1px solid var(--chart-border);
+      border-radius: var(--chart-radius-outer);
+      box-shadow: var(--chart-shadow);
+      display: block;
+      background: var(--chart-page-bg);
+    }
+    .image-container--main {
+      margin: 48px 0;
+    }
+    .image-container--main iframe.chart-iframe {
+      border: 1px solid var(--chart-border);
+      border-radius: var(--chart-radius-outer);
+      background: var(--chart-page-bg);
+      box-shadow: var(--chart-shadow);
+      min-height: 520px;
+    }
+    .image-container--main .image-caption {
+      margin-top: 14px;
+      color: #4b5563;
+      font-size: 15px;
+    }
+    .image-caption {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-style: normal;
+      margin-top: 16px;
+      padding: 0;
+      line-height: 1.6;
+      text-align: left;
+    }
+    .takeaway {
+      background: var(--bg-tertiary);
+      padding: 32px 32px;
+      margin: 48px 0;
+      border-left: 4px solid var(--color-primary);
+      border-radius: 0 8px 8px 0;
+      max-width: 700px;
+    }
+    .takeaway h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      color: var(--text-primary);
+    }
+    .takeaway ul { margin: 0; padding-left: 1.5rem; }
+    .takeaway li { margin-bottom: 8px; }
+    .article-footer {
+      background-color: var(--bg-secondary);
+      padding: 48px 80px;
+      border-top: 2px solid var(--color-primary);
+      margin-top: 80px;
+    }
+    .data-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+    .data-note a {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .data-note a:hover { opacity: 0.8; }
+    @media (max-width: 768px) {
+      .article-header { padding: 50px 20px 48px; }
+      .article-content { padding: 40px 16px 48px; }
+      .article-title { font-size: 32px; letter-spacing: -1px; }
+      .article-subtitle { font-size: 18px; }
+      .intro { font-size: 16px; margin-bottom: 24px; }
+      .section { margin: 48px 0; }
+      .section-title { font-size: 26px; }
+      .section-content { font-size: 16px; }
+      .section-content h3 { font-size: 20px; }
+      .pull-quote { font-size: 17px; padding-left: 20px; }
+      .image-container { margin: 32px 0; }
+      .image-container--main iframe.chart-iframe { min-height: 480px; border-radius: var(--chart-radius-outer); }
+      .image-container--chart .chart-static-card { padding: 12px; }
+      .takeaway { padding: 24px 20px; }
+      .article-footer { padding: 32px 16px; }
+      .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+  <div class="magazine-container">
+    <header class="article-header">
+      <div class="article-header-top">
+        <a href="https://wsdc-analytics.github.io/" class="back-link">← К главной</a>
+      </div>
+      <h1 class="article-title">Secondary role в WSDC: универсализация или средство удержания</h1>
+      <p class="article-subtitle">Как переосмысление этого положения правил повлияло на танец</p>
+    </header>
+
+    <main id="main-content" class="article-content">
+      <div class="intro">
+        <p>С 2021 года на одном ивенте WSDC можно выступать в двух ролях в <strong>разных</strong> Skill Level номинациях — поинты считаются отдельно по каждой роли. С 2025 года вторую роль разрешили танцевать <strong>на два уровня ниже</strong> основной (например, при уровне Advanced по основной роли доступен Novice во второй). Для WSDC это не просто формальность: больший выбор номинаций для одного танцора означает больше конкурсных танцев на ивенте и, как следствие, сильнее мотивацию для танцоров ездить и выступать на ивентах.</p>
+        <p>Изменения правил о танцевании на ивентах за вторую роль заметно повлияли на современный WCS и представление о традиционности ролей в танце. Но кто успешнее пользуется этой возможностью и как это может повлиять на дальнейшее развитие WCS? Попробуем разобраться на основании базы WSDC Registry Points.</p>
+      </div>
+
+      <p class="article-disclaimer"><em><strong>Основная роль</strong> — та, в которой у танцора больше поинтов в более старшей номинации. <strong>Вторая роль</strong>, соответственно, та, в которой поинтов меньше.</em></p>
+
+      <section class="section">
+        <h2 class="section-title">Как менялись правила о второй роли</h2>
+        <div class="section-content">
+          <p>Сама возможность танцевать в разных ролях существовала давно, но до 2020 года в рамках Skill Level действовал принцип «одна роль — один ивент». Далее правила участия за вторую роль менялись поэтапно и прошли через три ключевые волны. Понимание этого контекста важно для интерпретации графиков и цифр дальше по статье.</p>
+
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-year">2020</div>
+              <div class="timeline-text">Первый шаг: разрешено участвовать в одной Skill Level номинации в основной роли и в других категориях (Age-Based) за вторую. Отменён принцип «один ивент = одна роль».</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">Май 2021 — пандемийное дополнение</div>
+              <div class="timeline-text"><strong>Ключевой момент.</strong> Очки за роли в одном дивизионе перестают суммироваться — считаются отдельно для каждой роли. Разрешено танцевать обе роли на одном ивенте в разных Skill Level номинациях. COVID-19 ускорил принятие изменений, которые обсуждались давно.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2023</div>
+              <div class="timeline-text">Правила из дополнения 2021 года закрепляются в основном документе. Вторая роль — официальная часть системы.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2025</div>
+              <div class="timeline-text">Послабление: вторую роль можно танцевать на <strong>два</strong> уровня ниже основной (было — один). Например, Advanced по основной роли → Novice во второй.</div>
+            </div>
+          </div>
+
+          <p>Пандемия 2020–2021 годов не только ускорила эволюцию правил о второй роли, но и сама по себе резко изменила картину участия: количество ивентов и танцоров временно упало в несколько раз. На графиках ниже 2020–2021 годы стоит интерпретировать осторожно - это аномальные годы по всем метрикам. Восстановление до предпандемийного уровня произошло к 2023 году, а трансформация второй роли наложилась на этот восстановительный тренд.</p>
+          <p>Подробнее об эволюции правил WSDC — в отдельном <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru" style="color: var(--color-primary); text-decoration: underline; text-underline-offset: 2px;">исследовании</a>.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Что изменилось в масштабе второй роли</h2>
+
+        <div class="section-content">
+          <h3>Главный вывод этого блока</h3>
+          <p>До 2021 года доля поинтов, полученных именно за выступления во второй роли, была около 1% от общего количества начисляемых поинтов. После 2021 года она резко выросла и к 2025 году составляет около <strong>9%</strong> от всех начисленных поинтов. Вторая роль из редкости превратилась в неотъемлемую часть развития танца.</p>
+          <p>При этом на долю фолловеров по основной роли приходится более <strong>14%</strong> поинтов, в то время как на долю лидеров — только <strong>4%</strong>. Это позволяет сделать однозначный вывод о том, что фолловеры по основной роли более успешны в освоении второй роли.</p>
+          <p><strong>Что показывает график:</strong> как быстро росла вторая роль по годам и где именно рост самый заметный. Если не хотите разбираться в деталях, смотрите сначала режим <strong>«Доля поинтов, %»</strong> и номинацию <strong>Total</strong>.</p>
+          <div class="image-container image-container--main">
+            <iframe class="chart-iframe" src="interactive_secondary_by_division.html" title="Динамика Leader и Follower по номинации и показателю" width="100%" height="520" scrolling="no"></iframe>
+            <p class="image-caption"><strong>Вопрос:</strong> насколько большой стала вторая роль? <strong>Ответ:</strong> после 2021 рост резкий, к 2025 это заметная часть системы. <strong>Вывод:</strong> это уже не редкость.</p>
+          </div>
+
+          <h3>Где изменения максимальные</h3>
+          <p>Доля очков от второй роли выше всего в <strong>нижних</strong> дивизионах и в номинациях <strong>Leader</strong>. В Novice Leader и Intermediate Leader в последние годы до 17–19% очков приносят танцоры, для которых эта роль вторая (то есть по основной роли они фолловеры). В номинациях Follower доля второй роли меньше, но тоже выросла. В Advanced и All-Stars вторая роль по-прежнему редкость — туда в основном идут «своей» ролью.</p>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Кто и как переходит между дивизионами</h2>
+
+        <div class="section-content">
+          <p>Здесь ключевой вопрос такой: мешает ли вторая роль обычному продвижению по основной роли? По данным — <strong>нет</strong>. Вторая роль растёт как дополнительный канал притока, а не как замена основному.</p>
+
+          <p><strong>Переход</strong> — это первый раз, когда человек набрал очки в паре «дивизион + роль». Это показатель реального притока в номинацию.</p>
+
+          <div class="image-container image-container--main">
+            <iframe class="chart-iframe" src="interactive_transitions_share.html" title="Доля и количество переходов по основной и второй роли" width="100%" height="520" scrolling="no"></iframe>
+            <p class="image-caption"><strong>Единый интерактив по переходам:</strong> переключайте показатель (доля / переходы во второй роли / переходы по основной роли) и номинацию. Линии показывают группы по основной роли: Leader, Follower и Total.</p>
+          </div>
+
+          <ul>
+            <li><strong>Доля переходов во второй роли, %:</strong> фолловеры по основной роли чаще заходят во вторую роль, чем лидеры.</li>
+            <li><strong>Переходы по основной роли (Total):</strong> абсолютное число primary-переходов после 2021 не падает, а растёт.</li>
+            <li><strong>Переходы во второй роли:</strong> это добавочный поток, а не «переток» из основной роли.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Риск 1: баланс партнёров и партнёрш внизу</h2>
+        <div class="section-content">
+          <p>Этот риск считаем по <strong>primary-переходам</strong>: сколько новых лидеров и фолловеров реально заходит в дивизион по своей основной роли. Метрика — <strong>лидеров на 100 фолловеров</strong>.</p>
+
+          <div class="image-container image-container--main">
+            <iframe class="chart-iframe" src="risk1_role_balance_card.html" title="Баланс ролей в primary-переходах для Novice, Intermediate, Advanced и All-Stars" width="100%" height="520" scrolling="no"></iframe>
+            <p class="image-caption"><strong>Как читать:</strong> если значение падает, это значит, что на каждые 100 новых фолловеров в дивизион заходит меньше новых лидеров, чем раньше.</p>
+          </div>
+
+          <h3>Как считали метрику</h3>
+          <ul>
+            <li><strong>Базовая единица:</strong> первичный переход (<code>n_primary</code>) в конкретный дивизион и роль.</li>
+            <li><strong>Формула:</strong> <code>баланс = (число primary-переходов Leader / число primary-переходов Follower) * 100</code>.</li>
+            <li><strong>Сравнение периодов:</strong> база — 2018-2019, текущий период — 2023-2025 (чтобы сгладить шум отдельных лет).</li>
+          </ul>
+
+          <p>По этой методике получаем:</p>
+          <ul>
+            <li><strong>Novice:</strong> <strong>91.1 → 71.8</strong> лидеров на 100 фолловеров.</li>
+            <li><strong>Intermediate:</strong> <strong>85.2 → 77.7</strong> лидеров на 100 фолловеров.</li>
+          </ul>
+
+          <p>Для контекста на график добавлены также верхние дивизионы:</p>
+          <ul>
+            <li><strong>Advanced:</strong> <strong>87.0 → 89.2</strong> (существенного ухудшения не видно).</li>
+            <li><strong>All-Stars:</strong> <strong>106.1 → 93.3</strong> (волатильно из-за меньшего объёма переходов).</li>
+          </ul>
+
+          <p>Это означает, что в нижних дивизионах приток по основной роли становится более асимметричным: относительный дефицит новых лидеров растёт.</p>
+          <div class="pull-quote">Вторая роль расширяет систему, но одновременно усиливает нагрузку на ролевой баланс в нижних дивизионах.</div>
+          <p>Это не аргумент против второй роли. Это аргумент за отдельный мониторинг баланса: если тренд сохранится, фолловерам внизу может становиться сложнее находить партнёров.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Риск 2: кто получает поинты во второй роли (прогноз)</h2>
+        <div class="section-content">
+          <p>Для этого риска берём самый чувствительный срез: <strong>Leader в Novice и Intermediate</strong>. Метрика — доля поинтов, которые в этих лидерских номинациях получают primary-фолловеры (то есть танцоры во второй роли).</p>
+
+          <div class="image-container image-container--main">
+            <iframe class="chart-iframe" src="forecast_novice_leader_card.html" title="Прогноз доли поинтов во второй роли в Novice Leader" width="100%" height="520" scrolling="no"></iframe>
+            <p class="image-caption"><strong>Novice Leader:</strong> диапазон трёх сценариев даёт ориентир <strong>25.6-39.3%</strong> через 5 лет и <strong>31.7-79.0%</strong> через 10 лет (центральный линейный сценарий: 33.6% и 45.8%).</p>
+          </div>
+
+          <div class="image-container image-container--main">
+            <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html" title="Прогноз доли поинтов во второй роли в Intermediate Leader" width="100%" height="520" scrolling="no"></iframe>
+            <p class="image-caption"><strong>Intermediate Leader:</strong> диапазон сценариев — <strong>22.8-31.9%</strong> через 5 лет и <strong>29.8-64.1%</strong> через 10 лет (центральный линейный сценарий: 28.6% и 42.5%).</p>
+          </div>
+
+          <h3>Как считали прогноз (коротко)</h3>
+          <ul>
+            <li><strong>Что прогнозируем:</strong> долю secondary-поинтов в Leader-номинации (Novice и Intermediate), то есть долю очков, которые получают primary-фолловеры.</li>
+            <li><strong>База факта:</strong> годовые значения за 2021-2026 (после ключевых изменений правил по второй роли).</li>
+            <li><strong>Сценарии:</strong> линейный тренд, инерционный рост (CAGR по факту, с ограничением годового темпа), и консервативный сценарий (50% линейного темпа).</li>
+            <li><strong>Подача результата:</strong> на графике показан коридор значений (min-max по 3 сценариям) и центральный ориентир (линейный сценарий) для +5 и +10 лет.</li>
+            <li><strong>Что это означает:</strong> это не «предсказание», а стресс-тест тренда — он показывает масштаб риска, если текущая динамика не будет компенсирована.</li>
+          </ul>
+
+          <p>Это не «предсказание будущего», а сценарный ориентир: если тренд не замедлится, доля очков во второй роли в лидерских дивизионах может стать сопоставимой с долей очков по основной роли.</p>
+        </div>
+      </section>
+
+      <section class="takeaway">
+        <h3>Коротко по сути</h3>
+        <ul>
+          <li><strong>9% всех поинтов</strong> в WSDC сейчас набирают танцоры во второй роли (было ~1% до 2021). В нижних лидерских дивизионах — до 17–19%.</li>
+          <li><strong>Переходы по основной роли растут</strong> — вторая роль добавляется к ним, а не подменяет.</li>
+          <li><strong>Риск 1:</strong> лидеров на 100 фолловеров стало меньше в Novice (91→72) и Intermediate (85→77).</li>
+          <li><strong>Риск 2:</strong> по диапазону из трёх моделей коридор на 5 лет уже ~26-39% (Novice) и ~23-32% (Intermediate), на 10 лет — ~32-79% и ~30-64%.</li>
+        </ul>
+        <p style="margin-top: 20px; font-size: 16px; color: var(--text-secondary);"><strong>Если материал оказался полезным</strong> — поделитесь им в своём комьюнити. Это поможет обсуждать правила и баланс ролей на основе данных, а не только ощущений.</p>
+      </section>
+    </main>
+
+    <footer class="article-footer">
+      <div class="data-note">
+        <p><strong>Данные.</strong> Все расчёты выполнены по данным WSDC Points Registry: <code>dancer_role_info</code> (основная роль каждого танцора) и <code>dancers_results_info</code> (результаты выступлений). Данные обновляются ежегодно и доступны через <a href="https://points.worldsdc.com/">WSDC Points</a>.</p>
+
+        <p><strong>Методика.</strong> «Основная роль» (dominate_role) — та, в которой у танцора больше очков на более высоком уровне. «Вторая роль» — выступление в номинации, где роль не совпадает с dominate_role. Учитываются дивизионы Skill Level: Newcomer, Novice, Intermediate, Advanced, All-Stars. Переход (приток) — первый раз, когда танцор набрал хотя бы одно очко в паре «дивизион + роль»; включает как продвижение по основной роли, так и первый выход во второй роли в любом дивизионе. Размер дивизиона — все уникальные танцоры, набравшие очки в дивизионе в данном году. L/F баланс в риск-блоке 1 считается по primary-переходам: <code>n_primary(Leader) / n_primary(Follower) * 100</code>, сравнение периодов 2018–2019 и 2023–2025. Прогнозный риск-блок 2 для Novice/Intermediate Leader рассчитан по факту 2021–2026 в трёх сценариях (линейный, инерционный CAGR с ограничением темпа, консервативный 50% линейного тренда); в тексте показан диапазон min-max и центральный линейный ориентир на горизонтах +5 и +10 лет.</p>
+
+        <p><strong>Оговорки.</strong> Поинты WSDC начисляются только за попадание в финал и занятие определённого места — это не факт участия в ивенте, а показатель конкурентоспособности. Данные 2020–2021 годов отражают влияние пандемии COVID-19 (резкое сокращение ивентов и участников). Данные 2025–2026 годов могут быть неполными (сезон в процессе). Скрипты расчётов доступны в репозитории проекта.</p>
+
+        <p><strong>Связанные материалы.</strong> <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru">Эволюция правил WSDC</a> · <a href="https://wsdc-analytics.github.io/">WSDC Analytics</a></p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

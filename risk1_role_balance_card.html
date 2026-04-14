@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Role balance risk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:#fafcfd; --surface-card:#ffffff; --text:#111418; --muted:#5c6570; --border:#e4e9f0;
+      --primary:#3525cd; --secondary:#b03d28; --shadow:0 4px 20px rgba(15, 23, 42, 0.05);
+      --radius-lg:16px; --radius-md:10px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .card { padding: 12px 4px 20px; }
+    .controls { display: grid; grid-template-columns: 1.25fr 1fr; gap: 14px; margin-bottom: 10px; }
+    .control label {
+      display: block; font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 6px 2px;
+    }
+    .static-box {
+      width: 100%; border: 1px solid var(--border); border-radius: var(--radius-md); background: #fff;
+      color: var(--text); padding: 10px 14px; font-size: 15px; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chart-wrap {
+      border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-card);
+      box-shadow: var(--shadow); padding: 16px 16px 22px; overflow: visible;
+    }
+    .legend { display: flex; gap: 8px; margin: 0 0 10px; flex-wrap: wrap; }
+    .legend-item {
+      display: inline-flex; align-items: center; gap: 6px; color: #374151; font-size: 11px;
+      font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; background: #f3f5f9;
+      border: 1px solid #e8ecf3; border-radius: 999px; padding: 6px 10px;
+    }
+    .legend-line { width: 14px; height: 2px; background: transparent; display: inline-block; }
+    .legend-line.novice { border-top: 2px solid #2563eb; }
+    .legend-line.intermediate { border-top: 2px solid #a33c29; }
+    .legend-line.advanced { border-top: 2px dashed #475569; }
+    .legend-line.allstars { border-top: 2px dashed #0f766e; }
+    .chart-canvas-box { margin: 4px 0 0; padding: 6px 4px 10px; border-radius: 12px; background: #ffffff; overflow: visible; }
+    @media (max-width: 760px) { .controls { grid-template-columns: 1fr; gap: 10px; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="controls">
+      <div class="control">
+        <label>Метрика:</label>
+        <div class="static-box">Лидеров на 100 фолловеров (только primary-переходы)</div>
+      </div>
+      <div class="control">
+        <label>Срез:</label>
+        <div class="static-box">Novice, Intermediate, Advanced, All-Stars</div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-line novice"></span>Novice</span>
+        <span class="legend-item"><span class="legend-line intermediate"></span>Intermediate</span>
+        <span class="legend-item"><span class="legend-line advanced"></span>Advanced</span>
+        <span class="legend-item"><span class="legend-line allstars"></span>All-Stars</span>
+      </div>
+      <div class="chart-canvas-box">
+        <canvas id="chart" height="240"></canvas>
+      </div>
+    </div>
+  </div>
+  <script>
+    const YEARS = ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"];
+    const NOVICE = [88.37, 82.77, 82.72, 87.21, 94.94, 75.23, 61.61, 70.09, 68.48, 78.13, 68.74, 79.11];
+    const INTERMEDIATE = [74.48, 100.51, 86.59, 90.68, 79.67, 62.71, 97.44, 82.86, 85.24, 69.29, 78.62, 92.06];
+    const ADVANCED = [89.01, 77.98, 87.39, 89.22, 84.82, 95.65, 106.67, 104.84, 93.0, 90.65, 83.9, 110.81];
+    const ALL_STARS = [96.67, 138.89, 75.51, 126.47, 85.71, 80.0, 83.33, 81.82, 91.67, 85.71, 102.56, 64.29];
+    new Chart(document.getElementById("chart"), {
+      type: "line",
+      data: {
+        labels: YEARS,
+        datasets: [
+          { label: "Novice", data: NOVICE, borderColor: "#2563eb", backgroundColor: "#2563eb", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
+          { label: "Intermediate", data: INTERMEDIATE, borderColor: "#a33c29", backgroundColor: "#a33c29", borderWidth: 2.5, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
+          { label: "Advanced", data: ADVANCED, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 2.0, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
+          { label: "All-Stars", data: ALL_STARS, borderColor: "#0f766e", backgroundColor: "#0f766e", borderWidth: 2.0, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2.6,
+        layout: { padding: { top: 10, right: 12, bottom: 20, left: 4 } },
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(26, 32, 44, 0.92)",
+            titleFont: { size: 12, weight: 600 },
+            bodyFont: { size: 12 },
+            displayColors: true,
+            callbacks: {
+              afterTitle: (items) => {
+                const year = Number(items?.[0]?.label || 0);
+                if (year === 2019) return "База сравнения: 2018-2019";
+                if (year === 2025) return "Текущий период: 2023-2025";
+                return "";
+              },
+              label: (ctx) => {
+                const v = ctx.parsed.y;
+                if (v == null || Number.isNaN(v)) return `${ctx.dataset.label}: —`;
+                return `${ctx.dataset.label}: ${Number(v).toFixed(1)} лидеров на 100 фолловеров`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: "Лидеров на 100 фолловеров", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
+            ticks: { color: "rgba(55, 65, 81, 0.55)", font: { size: 9, weight: 500 }, maxTicksLimit: 5 },
+            grid: { color: "rgba(15, 23, 42, 0.06)", drawBorder: false },
+            border: { display: true, color: "rgba(15, 23, 42, 0.12)", width: 1 },
+            beginAtZero: true,
+            min: 0
+          },
+          x: {
+            ticks: {
+              color: "rgba(55, 65, 81, 0.55)",
+              font: { size: 9, weight: 500 },
+              maxRotation: 0,
+              autoSkip: false,
+              padding: 8,
+              callback: function(value) {
+                const label = this.getLabelForValue(value);
+                return (label === "2015" || label === "2018" || label === "2021" || label === "2023" || label === "2025" || label === "2026") ? label : "";
+              }
+            },
+            grid: { display: false, drawBorder: true, drawTicks: false },
+            border: { display: true, color: "rgba(15, 23, 42, 0.14)", width: 1 }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

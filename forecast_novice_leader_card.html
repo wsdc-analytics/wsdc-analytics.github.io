@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novice forecast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:#fafcfd; --surface-card:#ffffff; --text:#111418; --muted:#5c6570; --border:#e4e9f0;
+      --primary:#3525cd; --secondary:#b03d28; --shadow:0 4px 20px rgba(15, 23, 42, 0.05);
+      --radius-lg:16px; --radius-md:10px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'DM Sans', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .card { padding: 12px 4px 20px; }
+    .controls { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; margin-bottom: 10px; }
+    .control label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 6px 2px; }
+    .static-box { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-md); background: #fff; color: var(--text); padding: 10px 14px; font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chart-wrap { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow); padding: 16px 16px 22px; overflow: visible; }
+    .legend { display: flex; gap: 8px; margin: 0 0 10px; flex-wrap: wrap; }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; color: #374151; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; background: #f3f5f9; border: 1px solid #e8ecf3; border-radius: 999px; padding: 6px 10px; }
+    .legend-line { width: 14px; height: 2px; background: transparent; display: inline-block; }
+    .legend-line.fact { border-top: 2px solid #2563eb; }
+    .legend-line.central { border-top: 2px dashed #4b5563; }
+    .legend-line.band { height: 8px; width: 12px; border-radius: 2px; background: rgba(37,99,235,0.12); border: 1px solid rgba(37,99,235,0.18); }
+    .chart-canvas-box { margin: 4px 0 0; padding: 6px 4px 10px; border-radius: 12px; background: #ffffff; overflow: visible; }
+    @media (max-width: 760px) { .controls { grid-template-columns: 1fr; gap: 10px; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="controls">
+      <div class="control"><label>Номинация:</label><div class="static-box">Novice Leader</div></div>
+      <div class="control"><label>Модель:</label><div class="static-box">Факт + центральный тренд + коридор</div></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-line fact"></span>Факт (2021-2026)</span>
+        <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
+        <span class="legend-item"><span class="legend-line band"></span>Коридор прогноза (3 модели)</span>
+      </div>
+      <div class="chart-canvas-box"><canvas id="chart" height="240"></canvas></div>
+    </div>
+  </div>
+  <script>
+    const YEARS = ["2021","2022","2023","2024","2025","2026","2027","2028","2029","2030","2031","2032","2033","2034","2035","2036"];
+    const FACT = [9.02,10.25,15.47,17.52,20.48,19.52,null,null,null,null,null,null,null,null,null,null];
+    const CENTRAL = [null,null,null,null,null,21.46,23.9,26.34,28.77,31.21,33.64,36.08,38.51,40.95,43.38,45.82];
+    const LOW = [null,null,null,null,null,19.52,20.74,21.95,23.17,24.39,25.61,26.83,28.04,29.26,30.48,31.7];
+    const HIGH = [null,null,null,null,null,21.46,23.9,26.34,29.69,34.14,39.26,45.15,51.92,59.71,68.66,78.96];
+    new Chart(document.getElementById("chart"), {
+      type: "line",
+      data: {
+        labels: YEARS,
+        datasets: [
+          { label: "Факт", data: FACT, borderColor: "#2563eb", backgroundColor: "#2563eb", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4, pointBackgroundColor: "#ffffff", pointBorderColor: "#3525cd", pointBorderWidth: 1.4 },
+          { label: "Центральный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 2.0, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4 },
+          { label: "Нижняя граница", data: LOW, borderColor: "rgba(37,99,235,0)", backgroundColor: "rgba(37,99,235,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
+          { label: "Верхняя граница", data: HIGH, borderColor: "rgba(37,99,235,0)", backgroundColor: "rgba(37,99,235,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2.6,
+        layout: { padding: { top: 10, right: 12, bottom: 20, left: 4 } },
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(26, 32, 44, 0.92)",
+            titleFont: { size: 12, weight: 600 },
+            bodyFont: { size: 12 },
+            displayColors: true,
+            filter: (item) => item.datasetIndex <= 3,
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed.y;
+                if (v == null || Number.isNaN(v)) return `${ctx.dataset.label}: —`;
+                if (ctx.datasetIndex === 2) return `Нижняя граница: ${Number(v).toFixed(1)}%`;
+                if (ctx.datasetIndex === 3) return `Верхняя граница: ${Number(v).toFixed(1)}%`;
+                return `${ctx.dataset.label}: ${Number(v).toFixed(1)}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: "Доля, %", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
+            ticks: { color: "rgba(55, 65, 81, 0.55)", font: { size: 9, weight: 500 }, maxTicksLimit: 5 },
+            grid: { color: "rgba(15, 23, 42, 0.06)", drawBorder: false },
+            border: { display: true, color: "rgba(15, 23, 42, 0.12)", width: 1 },
+            beginAtZero: true,
+            min: 0
+          },
+          x: {
+            ticks: {
+              color: "rgba(55, 65, 81, 0.55)",
+              font: { size: 9, weight: 500 },
+              maxRotation: 0,
+              autoSkip: false,
+              padding: 8,
+              callback: function(value) {
+                const label = this.getLabelForValue(value);
+                return (label === "2021" || label === "2023" || label === "2026" || label === "2031" || label === "2036") ? label : "";
+              }
+            },
+            grid: { display: false, drawBorder: true, drawTicks: false },
+            border: { display: true, color: "rgba(15, 23, 42, 0.14)", width: 1 }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
