@@ -48,12 +48,16 @@
     }
     .controls-left {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 10px;
-      min-width: min(100%, 500px);
+      width: 100%;
       align-items: flex-end;
     }
-    .control { flex: 0 0 220px; }
+    .control {
+      flex: 1 1 300px;
+      min-width: min(100%, 260px);
+      max-width: 100%;
+    }
     .control label {
       display: block;
       font-size: 9px;
@@ -111,7 +115,7 @@
       gap: 8px;
       margin: 0;
       flex-wrap: wrap;
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
     .legend-item {
       display: inline-flex;
@@ -148,17 +152,18 @@
     }
     .chart-top {
       display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 10px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
       margin-bottom: 8px;
-      flex-wrap: nowrap;
     }
     .chart-controls {
-      flex: 1 1 auto;
+      width: 100%;
       min-width: 0;
     }
-    .chart-legend { flex: 0 0 auto; }
+    .chart-legend {
+      width: 100%;
+    }
     .chart-canvas-box {
       margin: 6px 0 0;
       padding: 10px 6px 12px;
@@ -213,10 +218,7 @@
     /* В iframe статьи ширина часто <760px — не переводим селекты в колонку. */
     @media (max-width: 760px) {
       .chart-wrap { padding: 12px 12px 10px; border-radius: 20px; }
-      .chart-top { align-items: flex-end; flex-wrap: wrap; }
-      .legend { justify-content: flex-start; }
-      .controls-left { min-width: 0; }
-      .control { flex: 1 1 0; min-width: 0; max-width: 220px; }
+      .control { flex: 1 1 100%; min-width: 0; }
     }
   </style>
 </head>
@@ -255,8 +257,8 @@
         </div>
         <div class="chart-legend">
           <div class="legend">
-            <span class="legend-item"><span class="legend-line leader"></span>Leader</span>
-            <span class="legend-item"><span class="legend-line follower"></span>Follower</span>
+            <span class="legend-item"><span class="legend-line leader"></span>Leader (основная роль)</span>
+            <span class="legend-item"><span class="legend-line follower"></span>Follower (основная роль)</span>
             <span class="legend-item"><span class="legend-line total"></span>Total</span>
           </div>
         </div>
@@ -288,8 +290,8 @@
       data: {
         labels: years,
         datasets: [
-          { label: "Leader", data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.2 },
-          { label: "Follower", data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.2 },
+          { label: "Leader (основная роль)", data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.2 },
+          { label: "Follower (основная роль)", data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.2 },
           { label: "Total", data: [], borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 }
         ]
       },
