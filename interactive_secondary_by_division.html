@@ -24,10 +24,13 @@
       --radius-md: 12px;
     }
     * { box-sizing: border-box; }
-    body {
+    html, body {
+      height: 100%;
       margin: 0;
+    }
+    body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
+      background: var(--surface-card);
       color: var(--text);
     }
     .material-symbols-outlined {
@@ -49,7 +52,9 @@
       border-radius: 0;
       background: transparent;
       box-shadow: none;
-      padding: 8px 4px 16px;
+      padding: 4px 2px 4px;
+      box-sizing: border-box;
+      min-height: 100%;
     }
     .controls-left {
       display: flex;
@@ -166,10 +171,15 @@
     .chart-legend { flex: 0 0 auto; }
     .chart-canvas-box {
       margin: 6px 0 0;
-      padding: 10px 6px 18px;
+      padding: 10px 6px 12px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
+      position: relative;
+      width: 100%;
+      height: 280px;
+      min-height: 280px;
+      box-sizing: border-box;
     }
     .chartjs-ext-tooltip {
       position: absolute;
@@ -262,7 +272,7 @@
         </div>
       </div>
       <div class="chart-canvas-box">
-        <canvas id="chart" height="240"></canvas>
+        <canvas id="chart"></canvas>
       </div>
     </div>
   </div>
@@ -296,9 +306,8 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 2.45,
-        layout: { padding: { top: 8, right: 10, bottom: 30, left: 4 } },
+        maintainAspectRatio: false,
+        layout: { padding: { top: 8, right: 10, bottom: 22, left: 4 } },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
@@ -375,6 +384,17 @@
     metricSel.addEventListener("change", updateChart);
     divisionSel.addEventListener("change", updateChart);
     updateChart();
+    function nudgeResize() {
+      chart.resize();
+    }
+    window.addEventListener("resize", nudgeResize);
+    if (document.readyState === "complete") {
+      requestAnimationFrame(nudgeResize);
+    } else {
+      window.addEventListener("load", function () {
+        requestAnimationFrame(nudgeResize);
+      });
+    }
   </script>
 </body>
 </html>
