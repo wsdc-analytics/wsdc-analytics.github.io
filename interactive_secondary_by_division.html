@@ -209,12 +209,13 @@
       font-weight: 700;
       text-align: right;
     }
+    /* В iframe статьи ширина часто <760px — не переводим селекты в колонку. */
     @media (max-width: 760px) {
-      .controls-left { display: grid; grid-template-columns: 1fr; min-width: 0; }
-      .control { flex: 1 1 auto; }
       .chart-wrap { padding: 12px 12px 10px; border-radius: 20px; }
-      .chart-top { align-items: stretch; flex-wrap: wrap; }
+      .chart-top { align-items: flex-end; flex-wrap: wrap; }
       .legend { justify-content: flex-start; }
+      .controls-left { min-width: 0; }
+      .control { flex: 1 1 0; min-width: 0; max-width: 220px; }
     }
   </style>
 </head>
