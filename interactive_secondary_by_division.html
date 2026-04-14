@@ -51,52 +51,20 @@
       box-shadow: none;
       padding: 8px 4px 16px;
     }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
-    }
     .controls-left {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      min-width: min(100%, 560px);
-    }
-    .controls-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .action-btn {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      background: #fff;
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .action-btn.primary {
-      background: var(--primary);
-      color: #fff;
-      border-color: transparent;
+      gap: 10px;
+      min-width: min(100%, 500px);
     }
     .control label {
       display: block;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       color: var(--muted-soft);
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin: 0 0 7px 2px;
+      margin: 0 0 5px 2px;
       font-family: 'Inter', sans-serif;
     }
     .select-wrap {
@@ -109,18 +77,18 @@
       top: 50%;
       transform: translateY(-50%);
       pointer-events: none;
-      font-size: 18px;
+      font-size: 15px;
     }
     .select-icon.metric { color: var(--primary); }
     .select-icon.division { color: var(--secondary); }
     .select-caret {
       position: absolute;
-      right: 11px;
+      right: 9px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--muted-soft);
       pointer-events: none;
-      font-size: 18px;
+      font-size: 15px;
     }
     .control select {
       width: 100%;
@@ -128,9 +96,9 @@
       border-radius: var(--radius-md);
       background: #fff;
       color: var(--text);
-      padding: 11px 34px 11px 38px;
+      padding: 8px 28px 8px 32px;
       font-family: 'Inter', sans-serif;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 600;
       appearance: none;
       -webkit-appearance: none;
@@ -143,26 +111,27 @@
     }
     .legend {
       display: flex;
-      gap: 12px;
-      margin: 6px 0 10px;
+      gap: 8px;
+      margin: 0;
       flex-wrap: wrap;
+      justify-content: flex-end;
     }
     .legend-item {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       color: #5b6063;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       background: #f7f8f9;
       border: 1px solid rgba(117, 119, 120, 0.14);
       border-radius: 999px;
-      padding: 6px 12px;
+      padding: 4px 8px;
     }
     .legend-line {
-      width: 12px;
+      width: 10px;
       height: 2px;
       background: transparent;
       display: inline-block;
@@ -176,97 +145,78 @@
       border-radius: var(--radius-outer);
       background: var(--surface-card);
       box-shadow: var(--shadow);
-      padding: 30px 28px 28px;
+      padding: 16px 16px 14px;
       margin-bottom: 0;
       overflow: visible;
     }
-    .chart-header {
+    .chart-top {
       display: flex;
-      align-items: flex-start;
+      align-items: flex-end;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
     }
-    .chart-title {
-      font-family: 'Manrope', sans-serif;
-      font-size: 28px;
-      line-height: 1.1;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin: 0;
+    .chart-controls {
+      flex: 1 1 420px;
     }
-    .chart-subtitle {
-      margin-top: 6px;
-      font-size: 13px;
-      line-height: 1.45;
-      color: #6b7176;
-      max-width: 520px;
-    }
+    .chart-legend { flex: 0 1 auto; }
     .chart-canvas-box {
-      margin: 8px 0 0;
-      padding: 10px 4px 10px;
+      margin: 6px 0 0;
+      padding: 10px 6px 18px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
     }
     @media (max-width: 760px) {
-      .controls { display: grid; grid-template-columns: 1fr; }
       .controls-left { grid-template-columns: 1fr; min-width: 0; }
-      .controls-actions { display: none; }
-      .chart-wrap { padding: 22px 18px 18px; border-radius: 24px; }
-      .chart-title { font-size: 22px; }
-      .chart-subtitle { font-size: 12px; }
+      .chart-wrap { padding: 12px 12px 10px; border-radius: 20px; }
+      .chart-top { align-items: stretch; }
+      .legend { justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="controls">
-      <div class="controls-left">
-        <div class="control">
-          <label for="metric">Показатель</label>
-          <div class="select-wrap">
-            <span class="material-symbols-outlined select-icon metric">analytics</span>
-            <select id="metric">
-              <option value="percent">Доля поинтов, %</option>
-              <option value="absolute">Количество поинтов</option>
-            </select>
-            <span class="material-symbols-outlined select-caret">expand_more</span>
-          </div>
-        </div>
-        <div class="control">
-          <label for="division">Номинация</label>
-          <div class="select-wrap">
-            <span class="material-symbols-outlined select-icon division">trophy</span>
-            <select id="division">
-              <option value="Total">Все номинации</option>
-              <option value="Newcomer">Newcomer</option>
-              <option value="Novice">Novice</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-              <option value="All-Stars">All-Stars</option>
-            </select>
-            <span class="material-symbols-outlined select-caret">expand_more</span>
-          </div>
-        </div>
-      </div>
-      <div class="controls-actions">
-        <button class="action-btn"><span class="material-symbols-outlined">filter_list</span>Фильтры</button>
-        <button class="action-btn primary"><span class="material-symbols-outlined">download</span>Экспорт</button>
-      </div>
-    </div>
-
     <div class="chart-wrap">
-      <div class="chart-header">
-        <div>
-          <h2 class="chart-title">Динамика второй роли 2010-2026</h2>
-          <p class="chart-subtitle">Сравнение Leader / Follower / Total по доле и абсолюту поинтов, с переключением по номинациям.</p>
+      <div class="chart-top">
+        <div class="chart-controls">
+          <div class="controls-left">
+            <div class="control">
+              <label for="metric">Показатель</label>
+              <div class="select-wrap">
+                <span class="material-symbols-outlined select-icon metric">analytics</span>
+                <select id="metric">
+                  <option value="percent">Доля поинтов, %</option>
+                  <option value="absolute">Количество поинтов</option>
+                </select>
+                <span class="material-symbols-outlined select-caret">expand_more</span>
+              </div>
+            </div>
+            <div class="control">
+              <label for="division">Номинация</label>
+              <div class="select-wrap">
+                <span class="material-symbols-outlined select-icon division">trophy</span>
+                <select id="division">
+                  <option value="Total">Все номинации</option>
+                  <option value="Newcomer">Newcomer</option>
+                  <option value="Novice">Novice</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                  <option value="All-Stars">All-Stars</option>
+                </select>
+                <span class="material-symbols-outlined select-caret">expand_more</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="legend">
-        <span class="legend-item"><span class="legend-line leader"></span>Leader</span>
-        <span class="legend-item"><span class="legend-line follower"></span>Follower</span>
-        <span class="legend-item"><span class="legend-line total"></span>Total</span>
+        <div class="chart-legend">
+          <div class="legend">
+            <span class="legend-item"><span class="legend-line leader"></span>Leader</span>
+            <span class="legend-item"><span class="legend-line follower"></span>Follower</span>
+            <span class="legend-item"><span class="legend-line total"></span>Total</span>
+          </div>
+        </div>
       </div>
       <div class="chart-canvas-box">
         <canvas id="chart" height="240"></canvas>
@@ -285,16 +235,16 @@
       data: {
         labels: years,
         datasets: [
-          { label: "Leader", data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.5 },
-          { label: "Follower", data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 2.5, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 5, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.5 },
-          { label: "Total", data: [], borderColor: "#475569", backgroundColor: "#475569", borderWidth: 2, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 5, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.5 }
+          { label: "Leader", data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.2 },
+          { label: "Follower", data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.2 },
+          { label: "Total", data: [], borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        aspectRatio: 2.6,
-        layout: { padding: { top: 10, right: 12, bottom: 20, left: 4 } },
+        aspectRatio: 2.45,
+        layout: { padding: { top: 8, right: 10, bottom: 30, left: 4 } },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
