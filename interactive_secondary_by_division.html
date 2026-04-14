@@ -5,58 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Динамика второй роли</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #fafcfd;
-      --surface: #ffffff;
+      --bg: #f5f6f7;
       --surface-card: #ffffff;
-      --surface-control: #f1f4f8;
-      --text: #111418;
-      --muted: #5c6570;
-      --border: #e4e9f0;
-      --primary: #3525cd;
-      --secondary: #b03d28;
-      --total: #4b5563;
-      --shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+      --text: #2c2f30;
+      --muted: #757778;
+      --muted-soft: #abadae;
+      --border: rgba(117, 119, 120, 0.16);
+      --primary: #6366f1;
+      --secondary: #2dd4bf;
+      --total: #475569;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius-outer: 30px;
       --radius-lg: 16px;
-      --radius-md: 10px;
+      --radius-md: 12px;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'DM Sans', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
+    }
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
     }
     .card {
       border: 0;
       border-radius: 0;
       background: transparent;
       box-shadow: none;
-      padding: 12px 4px 20px;
+      padding: 8px 4px 16px;
     }
     .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .controls-left {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 14px;
-      margin-bottom: 10px;
+      min-width: min(100%, 560px);
     }
-    .control {
-      display: block;
+    .controls-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
-    .select-wrap {
-      display: block;
+    .action-btn {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      background: #fff;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-btn.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: transparent;
     }
     .control label {
       display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 0.1em;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted-soft);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin: 0 0 6px 2px;
+      margin: 0 0 7px 2px;
+      font-family: 'Inter', sans-serif;
+    }
+    .select-wrap {
+      position: relative;
+      display: block;
+    }
+    .select-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 18px;
+    }
+    .select-icon.metric { color: var(--primary); }
+    .select-icon.division { color: var(--secondary); }
+    .select-caret {
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted-soft);
+      pointer-events: none;
+      font-size: 18px;
     }
     .control select {
       width: 100%;
@@ -64,10 +128,10 @@
       border-radius: var(--radius-md);
       background: #fff;
       color: var(--text);
-      padding: 10px 14px 10px 14px;
-      font-family: 'DM Sans', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      font-size: 15px;
-      font-weight: 500;
+      padding: 11px 34px 11px 38px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
       appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -79,27 +143,26 @@
     }
     .legend {
       display: flex;
-      justify-content: flex-start;
-      gap: 8px;
-      margin: 0 0 10px;
+      gap: 12px;
+      margin: 6px 0 10px;
       flex-wrap: wrap;
     }
     .legend-item {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: #374151;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
+      color: #5b6063;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      background: #f3f5f9;
-      border: 1px solid #e8ecf3;
+      background: #f7f8f9;
+      border: 1px solid rgba(117, 119, 120, 0.14);
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: 6px 12px;
     }
     .legend-line {
-      width: 14px;
+      width: 12px;
       height: 2px;
       background: transparent;
       display: inline-block;
@@ -110,54 +173,96 @@
     .legend-line.total { border-top: 2px dashed var(--total); }
     .chart-wrap {
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-outer);
       background: var(--surface-card);
       box-shadow: var(--shadow);
-      padding: 16px 16px 22px;
+      padding: 30px 28px 28px;
       margin-bottom: 0;
       overflow: visible;
     }
+    .chart-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .chart-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .chart-subtitle {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #6b7176;
+      max-width: 520px;
+    }
     .chart-canvas-box {
-      margin: 4px 0 0;
-      padding: 6px 4px 10px;
+      margin: 8px 0 0;
+      padding: 10px 4px 10px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
     }
     @media (max-width: 760px) {
-      .controls { grid-template-columns: 1fr; gap: 10px; }
-      .control label { font-size: 12px; color: var(--muted); }
+      .controls { display: grid; grid-template-columns: 1fr; }
+      .controls-left { grid-template-columns: 1fr; min-width: 0; }
+      .controls-actions { display: none; }
+      .chart-wrap { padding: 22px 18px 18px; border-radius: 24px; }
+      .chart-title { font-size: 22px; }
+      .chart-subtitle { font-size: 12px; }
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="controls">
-      <div class="control">
-        <label for="metric">Показатель:</label>
-        <div class="select-wrap">
-          <select id="metric">
-            <option value="percent">Доля поинтов, %</option>
-            <option value="absolute">Количество поинтов</option>
-          </select>
+      <div class="controls-left">
+        <div class="control">
+          <label for="metric">Показатель</label>
+          <div class="select-wrap">
+            <span class="material-symbols-outlined select-icon metric">analytics</span>
+            <select id="metric">
+              <option value="percent">Доля поинтов, %</option>
+              <option value="absolute">Количество поинтов</option>
+            </select>
+            <span class="material-symbols-outlined select-caret">expand_more</span>
+          </div>
+        </div>
+        <div class="control">
+          <label for="division">Номинация</label>
+          <div class="select-wrap">
+            <span class="material-symbols-outlined select-icon division">trophy</span>
+            <select id="division">
+              <option value="Total">Все номинации</option>
+              <option value="Newcomer">Newcomer</option>
+              <option value="Novice">Novice</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="All-Stars">All-Stars</option>
+            </select>
+            <span class="material-symbols-outlined select-caret">expand_more</span>
+          </div>
         </div>
       </div>
-      <div class="control">
-        <label for="division">Номинация:</label>
-        <div class="select-wrap">
-          <select id="division">
-            <option value="Total">Все номинации</option>
-            <option value="Newcomer">Newcomer</option>
-            <option value="Novice">Novice</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-            <option value="All-Stars">All-Stars</option>
-          </select>
-        </div>
+      <div class="controls-actions">
+        <button class="action-btn"><span class="material-symbols-outlined">filter_list</span>Фильтры</button>
+        <button class="action-btn primary"><span class="material-symbols-outlined">download</span>Экспорт</button>
       </div>
     </div>
 
     <div class="chart-wrap">
+      <div class="chart-header">
+        <div>
+          <h2 class="chart-title">Динамика второй роли 2010-2026</h2>
+          <p class="chart-subtitle">Сравнение Leader / Follower / Total по доле и абсолюту поинтов, с переключением по номинациям.</p>
+        </div>
+      </div>
       <div class="legend">
         <span class="legend-item"><span class="legend-line leader"></span>Leader</span>
         <span class="legend-item"><span class="legend-line follower"></span>Follower</span>
@@ -180,8 +285,8 @@
       data: {
         labels: years,
         datasets: [
-          { label: "Leader", data: [], borderColor: "#2563eb", backgroundColor: "#2563eb", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4, pointBackgroundColor: "#ffffff", pointBorderColor: "#3525cd", pointBorderWidth: 1.5 },
-          { label: "Follower", data: [], borderColor: "#a33c29", backgroundColor: "#a33c29", borderWidth: 2.5, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 5, pointBackgroundColor: "#ffffff", pointBorderColor: "#a33c29", pointBorderWidth: 1.5 },
+          { label: "Leader", data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 2.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 4, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.5 },
+          { label: "Follower", data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 2.5, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 5, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.5 },
           { label: "Total", data: [], borderColor: "#475569", backgroundColor: "#475569", borderWidth: 2, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 5, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.5 }
         ]
       },
@@ -194,9 +299,13 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "rgba(26, 32, 44, 0.92)",
-            titleFont: { size: 12, weight: 600 },
-            bodyFont: { size: 12 },
+            backgroundColor: "rgba(255, 255, 255, 0.96)",
+            titleColor: "#2c2f30",
+            bodyColor: "#2c2f30",
+            borderColor: "rgba(117, 119, 120, 0.24)",
+            borderWidth: 1,
+            titleFont: { size: 11, weight: 700 },
+            bodyFont: { size: 12, weight: 600 },
             displayColors: true,
             callbacks: {
               label: (ctx) => {
