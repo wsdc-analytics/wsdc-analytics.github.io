@@ -137,17 +137,6 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-    .chartjs-ext-tooltip .tt-meta {
-      font-size: 10px;
-      font-weight: 500;
-      color: #5b6063;
-      line-height: 1.35;
-      margin: 0 0 6px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(117, 119, 120, 0.12);
-    }
-    .chartjs-ext-tooltip .tt-meta p { margin: 0 0 4px; }
-    .chartjs-ext-tooltip .tt-meta p:last-child { margin-bottom: 0; }
     .chartjs-ext-tooltip .tt-row {
       display: flex;
       justify-content: space-between;
@@ -157,7 +146,7 @@
       line-height: 1.35;
       margin: 2px 0;
     }
-    .chartjs-ext-tooltip .tt-label { color: #2c2f30; font-weight: 600; }
+    .chartjs-ext-tooltip .tt-label { font-weight: 600; }
     .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; }
   </style>
 </head>
@@ -185,10 +174,6 @@
     </div>
   </div>
   <script>
-    const NOMINATION = "Intermediate Leader";
-    const MEASURE_TOOLTIP = "Доля secondary-поинтов в сумме лидерских поинтов за год, %";
-    const SLICE_TOOLTIP = "факт и три сценария прогноза на оси времени";
-
     function getOrCreateTooltip(chart) {
       let tooltipEl = chart.canvas.parentNode.querySelector(".chartjs-ext-tooltip");
       if (!tooltipEl) {
@@ -241,19 +226,19 @@
               if (byIdx[0]) {
                 const v = byIdx[0].parsed.y;
                 const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
-                parts.push(`<div class="tt-row"><span class="tt-label">Факт</span><span class="tt-value" style="color:#d97706">${t}</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#d97706"><span class="tt-label">Факт</span><span class="tt-value">${t}</span></div>`);
               }
               if (byIdx[1]) {
                 const v = byIdx[1].parsed.y;
                 const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
-                parts.push(`<div class="tt-row"><span class="tt-label">Центральный тренд</span><span class="tt-value" style="color:#475569">${t}</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">Центральный тренд</span><span class="tt-value">${t}</span></div>`);
               }
               const lo = byIdx[2]?.parsed?.y;
               const hi = byIdx[3]?.parsed?.y;
               if (lo != null && hi != null && !Number.isNaN(lo) && !Number.isNaN(hi)) {
-                parts.push(`<div class="tt-row"><span class="tt-label">Коридор (3 мод.)</span><span class="tt-value" style="color:#b45309">${Number(lo).toFixed(1)}–${Number(hi).toFixed(1)}%</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#b45309"><span class="tt-label">Коридор (3 мод.)</span><span class="tt-value">${Number(lo).toFixed(1)}–${Number(hi).toFixed(1)}%</span></div>`);
               }
-              tooltipEl.innerHTML = `<div class="tt-title">${year}</div><div class="tt-meta"><p><strong>Номинация:</strong> ${NOMINATION}</p><p><strong>Показатель:</strong> ${MEASURE_TOOLTIP}</p><p><strong>Срез:</strong> ${SLICE_TOOLTIP}</p></div>${parts.join("")}`;
+              tooltipEl.innerHTML = `<div class="tt-title">${year}</div>${parts.join("")}`;
               const canvas = chart.canvas;
               const parent = canvas.parentNode;
               const pad = 10;

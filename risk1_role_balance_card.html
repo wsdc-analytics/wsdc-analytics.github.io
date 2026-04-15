@@ -133,23 +133,6 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-    .chartjs-ext-tooltip .tt-meta {
-      font-size: 10px;
-      font-weight: 500;
-      color: #5b6063;
-      line-height: 1.35;
-      margin: 0 0 6px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(117, 119, 120, 0.12);
-    }
-    .chartjs-ext-tooltip .tt-meta p { margin: 0 0 4px; }
-    .chartjs-ext-tooltip .tt-meta p:last-child { margin-bottom: 0; }
-    .chartjs-ext-tooltip .tt-foot {
-      font-size: 10px;
-      font-weight: 600;
-      color: #64748b;
-      margin: 6px 0 0;
-    }
     .chartjs-ext-tooltip .tt-row {
       display: flex;
       justify-content: space-between;
@@ -159,7 +142,7 @@
       line-height: 1.35;
       margin: 2px 0;
     }
-    .chartjs-ext-tooltip .tt-label { color: #2c2f30; font-weight: 600; }
+    .chartjs-ext-tooltip .tt-label { font-weight: 600; }
     .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; }
   </style>
 </head>
@@ -188,9 +171,6 @@
     </div>
   </div>
   <script>
-    const MEASURE_TOOLTIP = "Лидеров на 100 фолловеров по primary-переходам";
-    const NOMINATION_TOOLTIP = "Баланс primary-переходов Leader / Follower по дивизионам";
-    const SLICE_TOOLTIP = "дивизион (каждая линия — Novice … All-Stars)";
     const YEARS = ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"];
     const NOVICE = [88.37, 82.77, 82.72, 87.21, 94.94, 75.23, 61.61, 70.09, 68.48, 78.13, 68.74, 79.11];
     const INTERMEDIATE = [74.48, 100.51, 86.59, 90.68, 79.67, 62.71, 97.44, 82.86, 85.24, 69.29, 78.62, 92.06];
@@ -206,13 +186,6 @@
         chart.canvas.parentNode.appendChild(tooltipEl);
       }
       return tooltipEl;
-    }
-
-    function yearFootnote(yearStr) {
-      const y = Number(yearStr);
-      if (y === 2019) return "База сравнения в статье: 2018–2019";
-      if (y === 2025) return "Текущий период в статье: 2023–2025";
-      return "";
     }
 
     const ctx = document.getElementById("chart");
@@ -244,14 +217,13 @@
                 return;
               }
               const year = tooltip.title && tooltip.title.length ? tooltip.title[0] : "";
-              const foot = yearFootnote(year);
               const rows = (tooltip.dataPoints || []).map((dp) => {
                 const v = dp.parsed.y;
                 const value = (v == null || Number.isNaN(v)) ? "—" : Number(v).toFixed(1);
-                return `<div class="tt-row"><span class="tt-label">${dp.dataset.label}</span><span class="tt-value" style="color:${dp.dataset.borderColor}">${value}</span></div>`;
+                const c = dp.dataset.borderColor;
+                return `<div class="tt-row" style="color:${c}"><span class="tt-label">${dp.dataset.label}</span><span class="tt-value">${value}</span></div>`;
               }).join("");
-              const footHtml = foot ? `<div class="tt-foot">${foot}</div>` : "";
-              tooltipEl.innerHTML = `<div class="tt-title">${year}</div><div class="tt-meta"><p><strong>Номинация:</strong> ${NOMINATION_TOOLTIP}</p><p><strong>Показатель:</strong> ${MEASURE_TOOLTIP}</p><p><strong>Срез:</strong> ${SLICE_TOOLTIP}</p></div>${rows}${footHtml}`;
+              tooltipEl.innerHTML = `<div class="tt-title">${year}</div>${rows}`;
               const canvas = chart.canvas;
               const parent = canvas.parentNode;
               const pad = 10;
