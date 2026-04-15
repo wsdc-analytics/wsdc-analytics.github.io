@@ -324,6 +324,9 @@
     .image-container--main {
       margin: 48px 0;
     }
+    .image-container--main.image-container--compact {
+      margin: 24px 0 28px;
+    }
     .image-container--main iframe.chart-iframe {
       border: 1px solid var(--chart-border);
       border-radius: var(--chart-radius-outer);
@@ -463,13 +466,12 @@
         <h2 class="section-title">Что изменилось в масштабе второй роли</h2>
 
         <div class="section-content">
-          <h3>Главный вывод этого блока</h3>
+          <h3>Что по поинтам</h3>
           <p>До 2021 года доля поинтов, полученных именно за выступления во второй роли, была около 1% от общего количества начисляемых поинтов. После 2021 года она резко выросла и к 2025 году составляет около <strong>9%</strong> от всех начисленных поинтов. Вторая роль из редкости превратилась в неотъемлемую часть развития танца.</p>
-          <p>При этом на долю фолловеров по основной роли приходится более <strong>14%</strong> поинтов, в то время как на долю лидеров — только <strong>4%</strong>. Это позволяет сделать однозначный вывод о том, что фолловеры по основной роли более успешны в освоении второй роли.</p>
-          <p><strong>Что показывает график:</strong> как быстро росла вторая роль по годам и где именно рост самый заметный. Если не хотите разбираться в деталях, смотрите сначала режим <strong>«Доля поинтов, %»</strong> и номинацию <strong>Total</strong>.</p>
-          <div class="image-container image-container--main image-container--chart-embed">
+          <p>Стоить отметить, что в 2025 году на долю фолловеров по основной роли пришлось более <strong>14%</strong> поинтов, начисленных всем лидерам, в то время как на долю лидеров — только <strong>4%</strong> поинтов, начисленных всем фолловерам. Это позволяет сделать однозначный вывод о том, что фолловеры по основной роли более успешны, выступая в роли лидера.</p>
+          <p>Ниже представлен интерактивный график, показывающий изменение год к году доли поинтов, полученных танцорами за выступление во второй роли. Можно также посмотреть отдельно по всем дивизионам и в абсолютных значениях.</p>
+          <div class="image-container image-container--main image-container--chart-embed image-container--compact">
             <iframe class="chart-iframe" src="interactive_secondary_by_division.html?v=20260414-controlsrow" title="Динамика Leader и Follower по номинации и показателю" width="100%" height="500" scrolling="no"></iframe>
-            <p class="image-caption"><strong>Вопрос:</strong> насколько большой стала вторая роль? <strong>Ответ:</strong> после 2021 рост резкий, к 2025 это заметная часть системы. <strong>Вывод:</strong> это уже не редкость.</p>
           </div>
 
           <h3>Где изменения максимальные</h3>
@@ -505,7 +507,7 @@
           <p>Этот риск считаем по <strong>primary-переходам</strong>: сколько новых лидеров и фолловеров реально заходит в дивизион по своей основной роли. Метрика — <strong>лидеров на 100 фолловеров</strong>.</p>
 
           <div class="image-container image-container--main">
-            <iframe class="chart-iframe" src="risk1_role_balance_card.html?v=20260415-staticviz" title="Баланс ролей в primary-переходах для Novice, Intermediate, Advanced и All-Stars" width="100%" height="520" scrolling="no"></iframe>
+            <iframe class="chart-iframe" src="risk1_role_balance_card.html?v=20260415-tooltipmin" title="Баланс ролей в primary-переходах для Novice, Intermediate, Advanced и All-Stars" width="100%" height="520" scrolling="no"></iframe>
             <p class="image-caption"><strong>Как читать:</strong> если значение падает, это значит, что на каждые 100 новых фолловеров в дивизион заходит меньше новых лидеров, чем раньше.</p>
           </div>
 
@@ -540,12 +542,12 @@
           <p>Для этого риска берём самый чувствительный срез: <strong>Leader в Novice и Intermediate</strong>. Метрика — доля поинтов, которые в этих лидерских номинациях получают primary-фолловеры (то есть танцоры во второй роли).</p>
 
           <div class="image-container image-container--main">
-            <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260415-staticviz" title="Прогноз доли поинтов во второй роли в Novice Leader" width="100%" height="520" scrolling="no"></iframe>
+            <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260415-tooltipmin" title="Прогноз доли поинтов во второй роли в Novice Leader" width="100%" height="520" scrolling="no"></iframe>
             <p class="image-caption"><strong>Novice Leader:</strong> диапазон трёх сценариев даёт ориентир <strong>25.6-39.3%</strong> через 5 лет и <strong>31.7-79.0%</strong> через 10 лет (центральный линейный сценарий: 33.6% и 45.8%).</p>
           </div>
 
           <div class="image-container image-container--main">
-            <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260415-staticviz" title="Прогноз доли поинтов во второй роли в Intermediate Leader" width="100%" height="520" scrolling="no"></iframe>
+            <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260415-tooltipmin" title="Прогноз доли поинтов во второй роли в Intermediate Leader" width="100%" height="520" scrolling="no"></iframe>
             <p class="image-caption"><strong>Intermediate Leader:</strong> диапазон сценариев — <strong>22.8-31.9%</strong> через 5 лет и <strong>29.8-64.1%</strong> через 10 лет (центральный линейный сценарий: 28.6% и 42.5%).</p>
           </div>
 
