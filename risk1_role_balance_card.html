@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Баланс L/F в primary-переходах</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
@@ -29,80 +29,34 @@
       background: var(--surface-card);
       color: var(--text);
     }
-    .material-symbols-outlined {
-      font-family: 'Material Symbols Outlined';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 18px;
-      line-height: 1;
-      display: inline-block;
-      -webkit-font-smoothing: antialiased;
-    }
     .chart-wrap {
       border: 1px solid var(--border);
       border-radius: var(--radius-outer);
       background: var(--surface-card);
       box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
+      padding: 14px 14px 12px;
       overflow: visible;
     }
-    .chart-top {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .chart-controls { width: 100%; min-width: 0; }
-    .controls-row {
+    .chart-toolbar {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      width: 100%;
-      align-items: flex-end;
+      align-items: center;
+      gap: 8px 10px;
+      margin-bottom: 10px;
     }
-    .control { flex: 1 1 220px; min-width: 0; }
-    .control label {
-      display: block;
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--muted-soft);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      margin: 0 0 5px 2px;
-    }
-    .static-box {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      background: #fff;
-      color: var(--text);
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-    .compare-panel {
-      flex: 1 1 100%;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      background: #fafbfc;
-      padding: 10px 12px 12px;
-    }
-    .compare-panel > .compare-title {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--muted-soft);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin: 0 0 8px 2px;
-    }
-    .compare-hint {
+    .total-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
-      font-weight: 500;
-      color: #64748b;
-      margin: 0 0 10px;
-      line-height: 1.35;
+      font-weight: 700;
+      color: #475569;
+      user-select: none;
+    }
+    .total-tag .swatch {
+      width: 14px;
+      height: 0;
+      border-top: 2px dashed var(--total-line);
     }
     .toggle-row {
       display: flex;
@@ -140,50 +94,16 @@
       background: #f1f5f9;
       border-color: rgba(51, 65, 85, 0.35);
     }
-    .chart-legend { width: 100%; }
-    .legend {
-      display: flex;
-      gap: 8px;
-      margin: 0;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #5b6063;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: #f7f8f9;
-      border: 1px solid rgba(117, 119, 120, 0.14);
-      border-radius: 999px;
-      padding: 4px 8px;
-    }
-    .legend-line {
-      width: 10px;
-      height: 2px;
-      background: transparent;
-      display: inline-block;
-      box-sizing: border-box;
-    }
-    .legend-line.total { border-top: 2px dashed var(--total-line); }
-    .legend-line.novice { border-top: 2px solid var(--div-novice); }
-    .legend-line.intermediate { border-top: 2px solid var(--div-intermediate); }
-    .legend-line.advanced { border-top: 2px dashed var(--div-advanced); }
-    .legend-line.allstars { border-top: 2px dashed var(--div-allstars); }
     .chart-canvas-box {
-      margin: 6px 0 0;
-      padding: 10px 6px 12px;
+      margin: 0;
+      padding: 8px 4px 10px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
       position: relative;
       width: 100%;
-      height: 280px;
-      min-height: 280px;
+      height: 320px;
+      min-height: 320px;
       box-sizing: border-box;
     }
     .chartjs-ext-tooltip {
@@ -219,40 +139,17 @@
     }
     .chartjs-ext-tooltip .tt-label { font-weight: 600; }
     .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; }
-    @media (max-width: 760px) {
-      .controls-row { flex-direction: column; align-items: stretch; }
-    }
   </style>
 </head>
 <body>
   <div class="chart-wrap">
-    <div class="chart-top">
-      <div class="chart-controls">
-        <div class="controls-row">
-          <div class="control">
-            <label>Показатель</label>
-            <div class="static-box">Лидеров на 100 фолловеров по primary-переходам (вход в дивизион в роли лидера / вход в роли фолловера × 100).</div>
-          </div>
-          <div class="compare-panel">
-            <div class="compare-title">Сравнение</div>
-            <p class="compare-hint">Линия <strong>Total</strong> — по всем четырём дивизионам сразу (сумма лидерских переходов / сумма фолловерских × 100). Отметьте дивизионы, чтобы положить их рядом с Total.</p>
-            <div class="toggle-row" id="division-toggles">
-              <label class="toggle on" data-key="Novice"><input type="checkbox" checked data-key="Novice" /><span class="dot" style="background:var(--div-novice)"></span>Novice</label>
-              <label class="toggle on" data-key="Intermediate"><input type="checkbox" checked data-key="Intermediate" /><span class="dot" style="background:var(--div-intermediate)"></span>Intermediate</label>
-              <label class="toggle on" data-key="Advanced"><input type="checkbox" checked data-key="Advanced" /><span class="dot" style="background:var(--div-advanced)"></span>Advanced</label>
-              <label class="toggle on" data-key="All-Stars"><input type="checkbox" checked data-key="All-Stars" /><span class="dot" style="background:var(--div-allstars)"></span>All-Stars</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="chart-legend">
-        <div class="legend" id="static-legend">
-          <span class="legend-item"><span class="legend-line total"></span>Total (4 дивизиона)</span>
-          <span class="legend-item"><span class="legend-line novice"></span>Novice</span>
-          <span class="legend-item"><span class="legend-line intermediate"></span>Intermediate</span>
-          <span class="legend-item"><span class="legend-line advanced"></span>Advanced</span>
-          <span class="legend-item"><span class="legend-line allstars"></span>All-Stars</span>
-        </div>
+    <div class="chart-toolbar">
+      <span class="total-tag" title="Сводная линия по четырём дивизионам"><span class="swatch" aria-hidden="true"></span>Total</span>
+      <div class="toggle-row" id="division-toggles">
+        <label class="toggle on" data-key="Novice"><input type="checkbox" checked data-key="Novice" /><span class="dot" style="background:var(--div-novice)"></span>Novice</label>
+        <label class="toggle on" data-key="Intermediate"><input type="checkbox" checked data-key="Intermediate" /><span class="dot" style="background:var(--div-intermediate)"></span>Intermediate</label>
+        <label class="toggle on" data-key="Advanced"><input type="checkbox" checked data-key="Advanced" /><span class="dot" style="background:var(--div-advanced)"></span>Advanced</label>
+        <label class="toggle on" data-key="All-Stars"><input type="checkbox" checked data-key="All-Stars" /><span class="dot" style="background:var(--div-allstars)"></span>All-Stars</label>
       </div>
     </div>
     <div class="chart-canvas-box">
@@ -300,7 +197,6 @@
 
     function syncToggleStyles() {
       document.querySelectorAll("#division-toggles .toggle").forEach((el) => {
-        const key = el.getAttribute("data-key");
         const input = el.querySelector("input");
         if (input && input.checked) el.classList.add("on");
         else el.classList.remove("on");
