@@ -151,10 +151,52 @@
     .section-content p { margin-bottom: 24px; }
     .metric-formula-note {
       font-size: 14px;
-      line-height: 1.55;
-      color: var(--text-tertiary);
+      line-height: 1.5;
+      color: var(--text-secondary);
       margin: -4px 0 24px 0;
       text-align: left;
+    }
+    .metric-formula-note .formula-label {
+      display: block;
+      font-style: normal;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .metric-formula-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+    .metric-formula-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+      max-width: 100%;
+      line-height: 1.35;
+    }
+    .metric-formula-fraction .num,
+    .metric-formula-fraction .den {
+      padding: 4px 6px;
+    }
+    .metric-formula-fraction hr.bar {
+      width: 100%;
+      border: none;
+      border-top: 1px solid var(--text-primary);
+      margin: 0;
+      height: 0;
+      opacity: 0.85;
+    }
+    .metric-formula-times {
+      font-style: italic;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 16px;
     }
     .section-content h3 {
       font-size: 22px;
@@ -515,12 +557,22 @@
         <div class="section-content">
           <p>Как мы уже выяснили, на количестве переходов введение правил второй роли почти не отразилось. Другой вопрос — баланс переходов по основным ролям относительно друг друга: сколько новых лидеров приходится на каждые сто новых фолловеров, если смотреть именно переходы по основной роли. Нам было интересно сравнить этот показатель в динамике по годам и по дивизионам.</p>
 
-          <p class="metric-formula-note"><em>Все значения ниже — по одной и той же схеме: число primary-переходов в роли лидера разделить на число primary-переходов в роли фолловера и умножить на 100 (лидеров на 100 фолловеров).</em></p>
+          <div class="metric-formula-note">
+            <span class="formula-label">Формула расчёта метрики:</span>
+            <div class="metric-formula-row" role="math" aria-label="Число переходов лидеров по основной роли, делённое на число переходов фолловеров по основной роли, умноженное на сто">
+              <div class="metric-formula-fraction">
+                <span class="num">число переходов лидеров по основной роли</span>
+                <hr class="bar" />
+                <span class="den">число переходов фолловеров по основной роли</span>
+              </div>
+              <span class="metric-formula-times">× 100</span>
+            </div>
+          </div>
 
           <p>Здесь уже прослеживается устойчивое снижение сводного показателя. Если в 2018–2019 на сто переходов фолловеров по всем дивизионам приходилось порядка 90 переходов лидеров, то после 2021 года отношение просело примерно на 16% и в последние годы держится около 75 лидеров на сто фолловеров.</p>
 
           <div class="image-container image-container--main image-container--chart-embed image-container--compact image-container--risk1-balance">
-            <iframe class="chart-iframe" src="risk1_role_balance_card.html?v=20260418-formula-note" title="Баланс ролей в primary-переходах: Total и дивизионы" width="100%" height="460" scrolling="no"></iframe>
+            <iframe class="chart-iframe" src="risk1_role_balance_card.html?v=20260418-formula-display" title="Баланс ролей в primary-переходах: Total и дивизионы" width="100%" height="460" scrolling="no"></iframe>
           </div>
 
           <p>Если смотреть по дивизионам, картина неоднородна. Наиболее заметное падение — в Novice: в 2018–2019 баланс был около 90, после изменений правил второй роли он опустился ниже 70. В Intermediate просадка менее резкая, но тоже заметна. В старших номинациях (Advanced и All-Stars) динамика другая: там меньше объём переходов и в целом нельзя сказать, что тот же сдвиг повторяется так же выражено, как внизу — скорее стабильность или отдельные колебания, а не тот же устойчивый тренд, что в Novice.</p>
