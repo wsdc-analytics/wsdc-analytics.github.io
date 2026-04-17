@@ -203,10 +203,7 @@
       line-height: 1.35;
       margin: 2px 0;
     }
-    .chartjs-ext-tooltip .tt-label {
-      color: #2c2f30;
-      font-weight: 600;
-    }
+    .chartjs-ext-tooltip .tt-label { font-weight: 600; }
     .chartjs-ext-tooltip .tt-value {
       margin-left: auto;
       font-weight: 700;
@@ -329,7 +326,8 @@
                 var value = (v == null || Number.isNaN(v))
                   ? "—"
                   : (metricSel.value === "share" ? Number(v).toFixed(1) + "%" : String(Math.round(v)));
-                return '<div class="tt-row"><span class="tt-label">' + label + '</span><span class="tt-value" style="color:' + dp.dataset.borderColor + '">' + value + '</span></div>';
+                var c = dp.dataset.borderColor;
+                return '<div class="tt-row" style="color:' + c + '"><span class="tt-label">' + label + '</span><span class="tt-value">' + value + '</span></div>';
               }).join("");
               var year = (tooltip.title && tooltip.title.length) ? tooltip.title[0] : "";
               tooltipEl.innerHTML = '<div class="tt-title">' + year + '</div>' + rows;

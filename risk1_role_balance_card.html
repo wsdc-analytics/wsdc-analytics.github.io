@@ -147,9 +147,9 @@
       <span class="total-tag" title="Сводная линия по четырём дивизионам"><span class="swatch" aria-hidden="true"></span>Total</span>
       <div class="toggle-row" id="division-toggles">
         <label class="toggle on" data-key="Novice"><input type="checkbox" checked data-key="Novice" /><span class="dot" style="background:var(--div-novice)"></span>Novice</label>
-        <label class="toggle on" data-key="Intermediate"><input type="checkbox" checked data-key="Intermediate" /><span class="dot" style="background:var(--div-intermediate)"></span>Intermediate</label>
-        <label class="toggle on" data-key="Advanced"><input type="checkbox" checked data-key="Advanced" /><span class="dot" style="background:var(--div-advanced)"></span>Advanced</label>
-        <label class="toggle on" data-key="All-Stars"><input type="checkbox" checked data-key="All-Stars" /><span class="dot" style="background:var(--div-allstars)"></span>All-Stars</label>
+        <label class="toggle" data-key="Intermediate"><input type="checkbox" data-key="Intermediate" /><span class="dot" style="background:var(--div-intermediate)"></span>Intermediate</label>
+        <label class="toggle" data-key="Advanced"><input type="checkbox" data-key="Advanced" /><span class="dot" style="background:var(--div-advanced)"></span>Advanced</label>
+        <label class="toggle" data-key="All-Stars"><input type="checkbox" data-key="All-Stars" /><span class="dot" style="background:var(--div-allstars)"></span>All-Stars</label>
       </div>
     </div>
     <div class="chart-canvas-box">
@@ -172,11 +172,12 @@
       Advanced: ADVANCED,
       "All-Stars": ALL_STARS
     };
+    /* Только Total — пунктир; дивизионы сплошные, чтобы не путать с Total */
     const DIVISION_STYLE = {
       Novice: { color: "#7c3aed", dash: [] },
       Intermediate: { color: "#ea580c", dash: [] },
-      Advanced: { color: "#0891b2", dash: [5, 4] },
-      "All-Stars": { color: "#be185d", dash: [5, 4] }
+      Advanced: { color: "#0891b2", dash: [] },
+      "All-Stars": { color: "#be185d", dash: [] }
     };
 
     function getOrCreateTooltip(chart) {
@@ -229,7 +230,7 @@
           data: DIVISION_DATA[key],
           borderColor: st.color,
           backgroundColor: st.color,
-          borderWidth: key === "Novice" || key === "Intermediate" ? 1.8 : 1.5,
+          borderWidth: 1.8,
           borderDash: st.dash.length ? st.dash : [],
           tension: 0.35,
           cubicInterpolationMode: "monotone",
