@@ -149,11 +149,20 @@
       text-align: justify;
     }
     .section-content p { margin-bottom: 24px; }
-    .metric-formula-note {
+    /* Референс: формула и срез дивизионов — не часть основного абзаца */
+    .formula-reference-callout {
+      background: var(--bg-tertiary);
+      border-left: 4px solid var(--color-primary-light);
+      border-radius: 0 10px 10px 0;
+      padding: 20px 22px 20px 24px;
+      margin: 0 0 28px 0;
+      max-width: 700px;
+    }
+    .formula-reference-callout .metric-formula-note {
       font-size: 14px;
       line-height: 1.5;
       color: var(--text-secondary);
-      margin: -4px 0 24px 0;
+      margin: 0;
       text-align: left;
     }
     .metric-formula-note .formula-label {
@@ -204,6 +213,9 @@
       color: var(--text-secondary);
       margin: 0 0 24px 0;
       text-align: left;
+    }
+    .formula-reference-callout .metric-formula-scope {
+      margin: 14px 0 0 0;
     }
     .chart-section-note {
       font-size: 14px;
@@ -471,6 +483,7 @@
       .section-content { font-size: 16px; }
       .section-content h3 { font-size: 20px; }
       .pull-quote { font-size: 17px; padding-left: 20px; }
+      .formula-reference-callout { padding: 16px 14px 16px 18px; }
       .image-container { margin: 32px 0; }
       .image-container--main iframe.chart-iframe { min-height: 480px; border-radius: var(--chart-radius-outer); }
       .image-container--main.image-container--chart-embed iframe.chart-iframe {
@@ -573,19 +586,20 @@
         <div class="section-content">
           <p>Как мы уже выяснили, на количестве переходов введение правил второй роли почти не отразилось. Другой вопрос — баланс переходов по основным ролям относительно друг друга: сколько новых лидеров приходится на каждые сто новых фолловеров, если смотреть именно переходы по основной роли. Нам было интересно сравнить этот показатель в динамике по годам и по дивизионам.</p>
 
-          <div class="metric-formula-note">
-            <span class="formula-label">Формула расчёта метрики:</span>
-            <div class="metric-formula-row" role="math" aria-label="Число переходов лидеров по основной роли, делённое на число переходов фолловеров по основной роли, умноженное на сто">
-              <div class="metric-formula-fraction">
-                <span class="num">число переходов лидеров по основной роли</span>
-                <hr class="bar" />
-                <span class="den">число переходов фолловеров по основной роли</span>
+          <aside class="formula-reference-callout" aria-label="Формула метрики и срез дивизионов">
+            <div class="metric-formula-note">
+              <span class="formula-label">Формула расчёта метрики:</span>
+              <div class="metric-formula-row" role="math" aria-label="Число переходов лидеров по основной роли, делённое на число переходов фолловеров по основной роли, умноженное на сто">
+                <div class="metric-formula-fraction">
+                  <span class="num">число переходов лидеров по основной роли</span>
+                  <hr class="bar" />
+                  <span class="den">число переходов фолловеров по основной роли</span>
+                </div>
+                <span class="metric-formula-times">× 100</span>
               </div>
-              <span class="metric-formula-times">× 100</span>
             </div>
-          </div>
-
-          <p class="metric-formula-scope"><strong>Срез дивизионов.</strong> В числителе и знаменателе — только primary-переходы в дивизионах Novice, Intermediate, Advanced и All-Stars. Newcomer и Champions сюда не входят: в Newcomer смешаны вводная логика входа и большой шум, в Champions — слишком мало первичных переходов, чтобы тащить их в этот баланс. Поэтому суммы primary-переходов здесь и на предыдущем графике (где в «Все переходы» фигурируют все skill level) могут не совпадать дословно — это ожидаемо и как раз связывает оба интерактива.</p>
+            <p class="metric-formula-scope"><strong>Срез дивизионов.</strong> В числителе и знаменателе — только primary-переходы в дивизионах Novice, Intermediate, Advanced и All-Stars. Newcomer и Champions сюда не входят: в Newcomer смешаны вводная логика входа и большой шум, в Champions — слишком мало первичных переходов, чтобы тащить их в этот баланс. Поэтому суммы primary-переходов здесь и на предыдущем графике (где в «Все переходы» фигурируют все skill level) могут не совпадать дословно — это ожидаемо и как раз связывает оба интерактива.</p>
+          </aside>
 
           <p>Здесь уже прослеживается устойчивое снижение сводного показателя. Если в 2018–2019 на сто переходов фолловеров по всем дивизионам приходилось порядка 90 переходов лидеров, то после 2021 года отношение просело примерно на 16% и в последние годы держится около 75 лидеров на сто фолловеров.</p>
 
