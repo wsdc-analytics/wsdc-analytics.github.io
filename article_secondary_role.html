@@ -227,6 +227,44 @@
     .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
       height: 404px;
     }
+    .forecast-methodology-disclosure {
+      margin: 0 0 22px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: var(--bg-tertiary);
+      max-width: 700px;
+    }
+    .forecast-methodology-summary {
+      cursor: pointer;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-primary);
+      list-style: none;
+      user-select: none;
+    }
+    .forecast-methodology-summary:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+    .forecast-methodology-summary::-webkit-details-marker { display: none; }
+    .forecast-methodology-summary::after {
+      content: " ▼";
+      font-size: 11px;
+      opacity: 0.65;
+      font-weight: 700;
+    }
+    .forecast-methodology-disclosure[open] .forecast-methodology-summary::after {
+      content: " ▲";
+    }
+    .forecast-methodology-body {
+      padding: 0 18px 16px 18px;
+      border-top: 1px solid rgba(45, 55, 72, 0.08);
+    }
+    .forecast-methodology-body ul {
+      margin-bottom: 0;
+    }
     .section-content h3 {
       font-size: 22px;
       font-weight: 700;
@@ -616,27 +654,31 @@
 
           <p>Ниже представлены прогнозные модели до 2036 года: какую долю поинтов в Novice и Intermediate будут составлять поинты, набранные лидерами, для которых эта роль является второй, если сохранится текущая логика правил.</p>
 
+          <details class="forecast-methodology-disclosure">
+            <summary class="forecast-methodology-summary">Здесь можно ознакомиться с методикой прогноза</summary>
+            <div class="forecast-methodology-body">
+              <ul>
+                <li><strong>База факта:</strong> фактические значения за 2021–2026.</li>
+                <li><strong>Прогнозные сценарии:</strong>
+                  <ul>
+                    <li>линейный тренд;</li>
+                    <li>инерционный рост (совокупный среднегодовой темп роста (CAGR) по фактическим значениям, с ограничением годового темпа);</li>
+                    <li>консервативный сценарий (50% линейного тренда).</li>
+                  </ul>
+                </li>
+                <li><strong>Подача результата:</strong> на графиках показаны коридоры значений (min-max по 3 сценариям) и центральный ориентир (линейный тренд).</li>
+              </ul>
+            </div>
+          </details>
+
           <div class="forecast-chart-stack">
             <div class="image-container image-container--main image-container--chart-embed image-container--compact">
-              <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260420-embed" title="Прогноз: доля secondary-поинтов в Novice Leader" width="100%" height="404" scrolling="no"></iframe>
+              <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260420-details" title="Прогноз: доля secondary-поинтов в Novice Leader" width="100%" height="404" scrolling="no"></iframe>
             </div>
             <div class="image-container image-container--main image-container--chart-embed image-container--compact">
-              <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260420-embed" title="Прогноз: доля secondary-поинтов в Intermediate Leader" width="100%" height="404" scrolling="no"></iframe>
+              <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260420-details" title="Прогноз: доля secondary-поинтов в Intermediate Leader" width="100%" height="404" scrolling="no"></iframe>
             </div>
           </div>
-
-          <h3>Методика прогноза</h3>
-          <ul>
-            <li><strong>База факта:</strong> фактические значения за 2021–2026.</li>
-            <li><strong>Прогнозные сценарии:</strong>
-              <ul>
-                <li>линейный тренд;</li>
-                <li>инерционный рост (совокупный среднегодовой темп роста (CAGR) по фактическим значениям, с ограничением годового темпа);</li>
-                <li>консервативный сценарий (50% линейного тренда).</li>
-              </ul>
-            </li>
-            <li><strong>Подача результата:</strong> на графиках показаны коридоры значений (min-max по 3 сценариям) и центральный ориентир (линейный тренд).</li>
-          </ul>
 
           <p>Как мы видим на графиках, к 2036 году возможны варианты, что в номинации Novice до 80% поинтов будут набирать фолловеры из более старших дивизионов, в номинации Intermediate этот показатель может подняться до 65%. Эти цифры говорят о том, что со временем WCS может столкнуться с ситуацией, когда танцоры, для которых лидер — основная роль, с большим трудом будут набирать поинты для перехода в следующую номинацию. Сейчас это выглядит не очень реалистично, но такая тенденция может ещё больше изменить танец, привычные паттерны и шаблоны.</p>
         </div>
