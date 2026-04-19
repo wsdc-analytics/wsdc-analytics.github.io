@@ -655,7 +655,7 @@
           <p>Ниже представлены прогнозные модели до 2036 года: какую долю поинтов в Novice и Intermediate будут составлять поинты, набранные лидерами, для которых эта роль является второй, если сохранится текущая логика правил.</p>
 
           <details class="forecast-methodology-disclosure">
-            <summary class="forecast-methodology-summary">Здесь можно ознакомиться с методикой прогноза</summary>
+            <summary class="forecast-methodology-summary">Методика прогноза</summary>
             <div class="forecast-methodology-body">
               <ul>
                 <li><strong>База факта:</strong> фактические значения за 2021–2026.</li>
@@ -666,17 +666,17 @@
                     <li>консервативный сценарий (50% линейного тренда).</li>
                   </ul>
                 </li>
-                <li><strong>Подача результата:</strong> на графиках показаны коридоры значений (min-max по 3 сценариям) и центральный ориентир (линейный тренд).</li>
+                <li><strong>Подача результата:</strong> на графиках — линейный тренд и диапазон прогноза по минимуму и максимуму по трём сценариям (без отдельного отображения каждой модели).</li>
               </ul>
             </div>
           </details>
 
           <div class="forecast-chart-stack">
             <div class="image-container image-container--main image-container--chart-embed image-container--compact">
-              <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260420-details" title="Прогноз: доля secondary-поинтов в Novice Leader" width="100%" height="404" scrolling="no"></iframe>
+              <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260421-tooltip" title="Прогноз: доля secondary-поинтов в Novice Leader" width="100%" height="404" scrolling="no"></iframe>
             </div>
             <div class="image-container image-container--main image-container--chart-embed image-container--compact">
-              <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260420-details" title="Прогноз: доля secondary-поинтов в Intermediate Leader" width="100%" height="404" scrolling="no"></iframe>
+              <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260421-tooltip" title="Прогноз: доля secondary-поинтов в Intermediate Leader" width="100%" height="404" scrolling="no"></iframe>
             </div>
           </div>
 
@@ -700,7 +700,7 @@
       <div class="data-note">
         <p><strong>Данные.</strong> Все расчёты выполнены по данным WSDC Points Registry: <code>dancer_role_info</code> (основная роль каждого танцора) и <code>dancers_results_info</code> (результаты выступлений). Данные обновляются ежегодно и доступны через <a href="https://points.worldsdc.com/">WSDC Points</a>.</p>
 
-        <p><strong>Методика.</strong> «Основная роль» (dominate_role) — та, в которой у танцора больше очков на более высоком уровне. «Вторая роль» — выступление в номинации, где роль не совпадает с dominate_role. Учитываются дивизионы Skill Level: Newcomer, Novice, Intermediate, Advanced, All-Stars. Переход (приток) — первый раз, когда танцор набрал хотя бы одно очко в паре «дивизион + роль»; включает как продвижение по основной роли, так и первый выход во второй роли в любом дивизионе. Размер дивизиона — все уникальные танцоры, набравшие очки в дивизионе в данном году. L/F баланс в соответствующем разделе статьи считается по primary-переходам: <code>n_primary(Leader) / n_primary(Follower) * 100</code>, сравнение периодов 2018–2019 и 2023–2025. Прогноз до 2036 года для Novice и Intermediate Leader рассчитан по факту 2021–2026 в трёх сценариях (линейный, инерционный CAGR с ограничением темпа, консервативный 50% линейного тренда); на графиках — коридор min-max по сценариям и центральный линейный ориентир.</p>
+        <p><strong>Методика.</strong> «Основная роль» (dominate_role) — та, в которой у танцора больше очков на более высоком уровне. «Вторая роль» — выступление в номинации, где роль не совпадает с dominate_role. Учитываются дивизионы Skill Level: Newcomer, Novice, Intermediate, Advanced, All-Stars. Переход (приток) — первый раз, когда танцор набрал хотя бы одно очко в паре «дивизион + роль»; включает как продвижение по основной роли, так и первый выход во второй роли в любом дивизионе. Размер дивизиона — все уникальные танцоры, набравшие очки в дивизионе в данном году. L/F баланс в соответствующем разделе статьи считается по primary-переходам: <code>n_primary(Leader) / n_primary(Follower) * 100</code>, сравнение периодов 2018–2019 и 2023–2025. Прогноз до 2036 года для Novice и Intermediate Leader рассчитан по факту 2021–2026 в трёх сценариях (линейный, инерционный CAGR с ограничением темпа, консервативный 50% линейного тренда); на графиках — линейный тренд и минимум/максимум прогноза по годам (агрегат по сценариям).</p>
 
         <p><strong>Оговорки.</strong> Поинты WSDC начисляются только за попадание в финал и занятие определённого места — это не факт участия в ивенте, а показатель конкурентоспособности. Данные 2020–2021 годов отражают влияние пандемии COVID-19 (резкое сокращение ивентов и участников). Данные 2025–2026 годов могут быть неполными (сезон в процессе). Скрипты расчётов доступны в репозитории проекта.</p>
 

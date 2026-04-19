@@ -133,8 +133,8 @@
     <div class="chart-legend">
       <div class="legend">
         <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
-        <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
-        <span class="legend-item"><span class="legend-line band"></span>Коридор (3 модели)</span>
+        <span class="legend-item"><span class="legend-line central"></span>Линейный тренд</span>
+        <span class="legend-item"><span class="legend-line band"></span>Минимум и максимум прогноза</span>
       </div>
     </div>
     <div class="chart-canvas-box">
@@ -166,9 +166,9 @@
         labels: YEARS,
         datasets: [
           { label: "Факт", data: FACT, borderColor: "#d97706", backgroundColor: "#d97706", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#b45309", pointBorderWidth: 1.2 },
-          { label: "Центральный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
-          { label: "Нижняя граница", data: LOW, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
-          { label: "Верхняя граница", data: HIGH, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
+          { label: "Линейный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
+          { label: "Минимум прогноза", data: LOW, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
+          { label: "Максимум прогноза", data: HIGH, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
         ]
       },
       options: {
@@ -199,12 +199,15 @@
               if (byIdx[1]) {
                 const v = byIdx[1].parsed.y;
                 const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
-                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">Центральный тренд</span><span class="tt-value">${t}</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">Линейный тренд</span><span class="tt-value">${t}</span></div>`);
               }
               const lo = byIdx[2]?.parsed?.y;
               const hi = byIdx[3]?.parsed?.y;
-              if (lo != null && hi != null && !Number.isNaN(lo) && !Number.isNaN(hi)) {
-                parts.push(`<div class="tt-row" style="color:#b45309"><span class="tt-label">Коридор (3 мод.)</span><span class="tt-value">${Number(lo).toFixed(1)}–${Number(hi).toFixed(1)}%</span></div>`);
+              if (lo != null && !Number.isNaN(lo)) {
+                parts.push(`<div class="tt-row" style="color:#92400e"><span class="tt-label">Минимум прогноза</span><span class="tt-value">${Number(lo).toFixed(1)}%</span></div>`);
+              }
+              if (hi != null && !Number.isNaN(hi)) {
+                parts.push(`<div class="tt-row" style="color:#b45309"><span class="tt-label">Максимум прогноза</span><span class="tt-value">${Number(hi).toFixed(1)}%</span></div>`);
               }
               tooltipEl.innerHTML = `<div class="tt-title">${year}</div>${parts.join("")}`;
               const canvas = chart.canvas;
