@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Novice Leader — прогноз доли secondary-поинтов</title>
+  <title>Novice Leader — secondary-role share forecast</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -140,9 +140,9 @@
     <div class="chart-embed-title">Novice Leader</div>
     <div class="chart-legend">
       <div class="legend">
-        <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
-        <span class="legend-item"><span class="legend-line central"></span>Линейный тренд</span>
-        <span class="legend-item"><span class="legend-line band"></span>Прогнозный диапазон</span>
+        <span class="legend-item"><span class="legend-line fact"></span><span data-i18n="legFact">Факт (2021–2026)</span></span>
+        <span class="legend-item"><span class="legend-line central"></span><span data-i18n="legTrend">Линейный тренд</span></span>
+        <span class="legend-item"><span class="legend-line band"></span><span data-i18n="legBand">Прогнозный диапазон</span></span>
       </div>
     </div>
     <div class="chart-canvas-box">
@@ -150,6 +150,22 @@
     </div>
   </div>
   <script>
+    const I18N = {
+      ru: { legFact: "Факт (2021–2026)", legTrend: "Линейный тренд", legBand: "Прогнозный диапазон", ttFact: "Факт", ttTrend: "Тренд", ttMin: "Минимум", ttMax: "Максимум", yAxis: "Доля поинтов, %" },
+      en: { legFact: "Actual (2021–2026)", legTrend: "Linear trend", legBand: "Forecast range", ttFact: "Actual", ttTrend: "Trend", ttMin: "Minimum", ttMax: "Maximum", yAxis: "Share of points, %" },
+      es: { legFact: "Datos reales (2021–2026)", legTrend: "Tendencia lineal", legBand: "Rango de previsión", ttFact: "Real", ttTrend: "Tendencia", ttMin: "Mínimo", ttMax: "Máximo", yAxis: "Cuota de puntos, %" }
+    };
+    function getLang() {
+      var p = new URLSearchParams(window.location.search).get("lang");
+      if (p && I18N[p]) return p;
+      return "ru";
+    }
+    const LANG = getLang();
+    const T = I18N[LANG];
+    document.querySelectorAll("[data-i18n]").forEach(function(el) {
+      var k = el.getAttribute("data-i18n");
+      if (T[k]) el.textContent = T[k];
+    });
     function getOrCreateTooltip(chart) {
       let tooltipEl = chart.canvas.parentNode.querySelector(".chartjs-ext-tooltip");
       if (!tooltipEl) {
@@ -173,10 +189,10 @@
       data: {
         labels: YEARS,
         datasets: [
-          { label: "Факт", data: FACT, borderColor: "#0ea5e9", backgroundColor: "#0ea5e9", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#0284c7", pointBorderWidth: 1.2 },
-          { label: "Тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
-          { label: "Минимум", data: LOW, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
-          { label: "Максимум", data: HIGH, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
+          { label: T.ttFact, data: FACT, borderColor: "#0ea5e9", backgroundColor: "#0ea5e9", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#0284c7", pointBorderWidth: 1.2 },
+          { label: T.ttTrend, data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
+          { label: T.ttMin, data: LOW, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
+          { label: T.ttMax, data: HIGH, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
         ]
       },
       options: {
@@ -202,20 +218,20 @@
               if (byIdx[0]) {
                 const v = byIdx[0].parsed.y;
                 const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
-                parts.push(`<div class="tt-row" style="color:#0ea5e9"><span class="tt-label">Факт</span><span class="tt-value">${t}</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#0ea5e9"><span class="tt-label">${T.ttFact}</span><span class="tt-value">${t}</span></div>`);
               }
               if (byIdx[1]) {
                 const v = byIdx[1].parsed.y;
                 const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
-                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">Тренд</span><span class="tt-value">${t}</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">${T.ttTrend}</span><span class="tt-value">${t}</span></div>`);
               }
               const lo = byIdx[2]?.parsed?.y;
               const hi = byIdx[3]?.parsed?.y;
               if (lo != null && !Number.isNaN(lo)) {
-                parts.push(`<div class="tt-row" style="color:#0369a1"><span class="tt-label">Минимум</span><span class="tt-value">${Number(lo).toFixed(1)}%</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#0369a1"><span class="tt-label">${T.ttMin}</span><span class="tt-value">${Number(lo).toFixed(1)}%</span></div>`);
               }
               if (hi != null && !Number.isNaN(hi)) {
-                parts.push(`<div class="tt-row" style="color:#0284c7"><span class="tt-label">Максимум</span><span class="tt-value">${Number(hi).toFixed(1)}%</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#0284c7"><span class="tt-label">${T.ttMax}</span><span class="tt-value">${Number(hi).toFixed(1)}%</span></div>`);
               }
               tooltipEl.innerHTML = `<div class="tt-title">${year}</div>${parts.join("")}`;
               const canvas = chart.canvas;
@@ -243,7 +259,7 @@
         },
         scales: {
           y: {
-            title: { display: true, text: "Доля поинтов, %", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
+            title: { display: true, text: T.yAxis, color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
             ticks: { color: "rgba(55, 65, 81, 0.55)", font: { size: 9, weight: 500 }, maxTicksLimit: 5 },
             grid: { color: "rgba(15, 23, 42, 0.06)", drawBorder: false },
             border: { display: true, color: "rgba(15, 23, 42, 0.12)", width: 1 },

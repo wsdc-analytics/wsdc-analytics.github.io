@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Динамика второй роли</title>
+  <title>Second role dynamics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -224,22 +224,22 @@
         <div class="chart-controls">
           <div class="controls-left">
             <div class="control">
-              <label for="metric">Показатель</label>
+              <label for="metric" data-i18n="metricLabel">Показатель</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon metric">analytics</span>
                 <select id="metric">
-                  <option value="percent">Доля поинтов, %</option>
-                  <option value="absolute">Количество поинтов</option>
+                  <option value="percent" data-i18n="optPercent">Доля поинтов, %</option>
+                  <option value="absolute" data-i18n="optAbsolute">Количество поинтов</option>
                 </select>
                 <span class="material-symbols-outlined select-caret">expand_more</span>
               </div>
             </div>
             <div class="control">
-              <label for="division">Номинация</label>
+              <label for="division" data-i18n="divisionLabel">Номинация</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon division">trophy</span>
                 <select id="division">
-                  <option value="Total">Все номинации</option>
+                  <option value="Total" data-i18n="optTotal">Все номинации</option>
                   <option value="Newcomer">Newcomer</option>
                   <option value="Novice">Novice</option>
                   <option value="Intermediate">Intermediate</option>
@@ -265,6 +265,22 @@
     </div>
 
   <script>
+    const I18N = {
+      ru: { metricLabel: "Показатель", optPercent: "Доля поинтов, %", optAbsolute: "Количество поинтов", divisionLabel: "Номинация", optTotal: "Все номинации", leaderLabel: "Leader (основная роль)", followerLabel: "Follower (основная роль)", yShare: "Доля, %", yPoints: "Поинтов" },
+      en: { metricLabel: "Metric", optPercent: "Share of points, %", optAbsolute: "Number of points", divisionLabel: "Division", optTotal: "All divisions", leaderLabel: "Leader (primary role)", followerLabel: "Follower (primary role)", yShare: "Share, %", yPoints: "Points" },
+      es: { metricLabel: "Métrica", optPercent: "Cuota de puntos, %", optAbsolute: "Cantidad de puntos", divisionLabel: "División", optTotal: "Todas las divisiones", leaderLabel: "Leader (rol principal)", followerLabel: "Follower (rol principal)", yShare: "Cuota, %", yPoints: "Puntos" }
+    };
+    function getLang() {
+      var p = new URLSearchParams(window.location.search).get("lang");
+      if (p && I18N[p]) return p;
+      return "ru";
+    }
+    const LANG = getLang();
+    const T = I18N[LANG];
+    document.querySelectorAll("[data-i18n]").forEach(function(el) {
+      var k = el.getAttribute("data-i18n");
+      if (T[k]) el.textContent = T[k];
+    });
     const years = ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"];
     const DATA = {"percent":{"Newcomer":{"leader":[0.0,0.12,0.7,1.47,0.55,1.66,1.61,1.98,2.24,2.77,0.0,18.39,30.65,27.47,27.91,25.46],"follower":[0.15,1.95,0.0,0.15,1.4,0.66,1.5,0.4,1.56,1.24,0.3,8.81,7.54,7.85,8.89,7.39]},"Novice":{"leader":[0.03,0.47,0.74,0.51,0.8,0.69,0.5,0.79,2.07,2.15,0.31,9.02,10.25,15.47,17.52,20.48],"follower":[0.99,0.0,0.02,0.39,0.21,0.14,0.03,0.46,0.42,0.78,1.27,1.26,5.3,5.67,4.23,3.72]},"Intermediate":{"leader":[0.0,0.0,0.0,1.03,0.26,0.87,0.55,0.91,0.62,1.48,0.4,1.49,3.38,5.42,8.09,11.21],"follower":[1.12,0.56,0.71,0.14,0.72,0.02,0.02,0.04,0.87,0.06,0.0,1.44,0.92,1.98,2.4,3.85]},"Advanced":{"leader":[0.07,0.0,0.0,0.95,1.43,0.27,0.44,0.57,1.18,0.83,0.89,2.28,5.11,2.55,1.73,4.9],"follower":[0.0,0.76,1.2,0.58,0.0,0.71,0.53,0.97,0.0,0.63,0.0,0.0,1.89,2.01,1.36,4.94]},"All-Stars":{"leader":[0.16,0.0,0.0,0.0,0.48,0.0,0.0,0.09,0.89,0.85,0.39,2.88,1.89,0.86,2.96,1.36],"follower":[0.0,0.0,0.0,0.0,0.0,0.0,0.71,0.53,1.01,0.3,0.43,0.78,0.47,0.21,0.41,0.94]},"Total":{"leader":[0.04,0.2,0.35,0.76,0.72,0.7,0.56,0.8,1.4,1.63,0.42,5.63,8.09,10.19,12.05,14.42],"follower":[0.66,0.48,0.38,0.3,0.43,0.25,0.34,0.43,0.63,0.55,0.53,1.54,3.3,3.84,3.6,4.22]}},"absolute":{"Newcomer":{"leader":[0,1,6,15,7,23,25,30,25,33,0,32,274,501,689,890],"follower":[1,22,0,2,23,12,30,9,27,22,1,17,91,188,297,331]},"Novice":{"leader":[1,16,28,23,39,36,27,48,124,140,4,89,425,906,1290,1996],"follower":[29,0,1,21,12,8,2,33,32,61,20,17,259,397,369,417]},"Intermediate":{"leader":[0,0,0,33,9,34,23,44,27,69,4,12,111,249,424,703],"follower":[18,12,19,5,27,1,1,2,44,3,0,13,32,100,141,281]},"Advanced":{"leader":[1,0,0,20,33,7,13,19,33,25,6,10,104,73,65,211],"follower":[0,12,22,13,0,19,16,34,0,20,0,0,41,65,55,242]},"All-Stars":{"leader":[1,0,0,0,5,0,0,2,16,18,2,8,23,17,65,38],"follower":[0,0,0,0,0,0,11,11,18,6,2,2,6,4,9,27]},"Total":{"leader":[3,17,34,91,93,100,88,143,225,285,16,151,937,1746,2533,3838],"follower":[48,46,42,41,62,40,60,89,121,112,23,49,429,754,871,1298]}}};
     function getOrCreateTooltip(chart) {
@@ -286,8 +302,8 @@
       data: {
         labels: years,
         datasets: [
-          { label: "Leader (основная роль)", data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.2 },
-          { label: "Follower (основная роль)", data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.2 },
+          { label: T.leaderLabel, data: [], borderColor: "#6366f1", backgroundColor: "#6366f1", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#6366f1", pointBorderWidth: 1.2 },
+          { label: T.followerLabel, data: [], borderColor: "#14b8a6", backgroundColor: "#14b8a6", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#14b8a6", pointBorderWidth: 1.2 },
           { label: "Total", data: [], borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 }
         ]
       },
@@ -346,7 +362,7 @@
         },
         scales: {
           y: {
-            title: { display: true, text: metricSel.value === "percent" ? "Доля, %" : "Поинтов", color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
+            title: { display: true, text: metricSel.value === "percent" ? T.yShare : T.yPoints, color: "rgba(55, 65, 81, 0.75)", font: { size: 11, weight: 600 } },
             ticks: { color: "rgba(55, 65, 81, 0.55)", font: { size: 9, weight: 500 }, maxTicksLimit: 4 },
             grid: { color: "rgba(15, 23, 42, 0.06)", drawBorder: false },
             border: { display: true, color: "rgba(15, 23, 42, 0.12)", width: 1 },
@@ -380,7 +396,7 @@
       chart.data.datasets[0].data = d.leader;
       chart.data.datasets[1].data = d.follower;
       chart.data.datasets[2].data = totalDerived;
-      chart.options.scales.y.title.text = metric === "percent" ? "Доля, %" : "Поинтов";
+      chart.options.scales.y.title.text = metric === "percent" ? T.yShare : T.yPoints;
       chart.options.scales.y.min = 0;
       chart.options.scales.y.max = undefined;
       chart.update();

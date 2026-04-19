@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The second role in WSDC: share of points and transitions across divisions, leader/follower balance, and a forecast for Novice and Intermediate Leader. Analysis based on the WSDC Points Registry.">
+  <meta name="keywords" content="WSDC, West Coast Swing, second role, Skill Level, points, statistics, analysis">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="article_secondary_role_header.png" as="image" fetchpriority="high">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/article_secondary_role_en.html">
+  <meta property="og:title" content="Second role: trends and forecasts">
+  <meta property="og:description" content="How WSDC rule changes around the second role are reshaping the dance. Analysis of points, transitions and role balance.">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/article_secondary_role_header.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://wsdc-analytics.github.io/article_secondary_role_en.html">
+  <meta name="twitter:title" content="Second role: trends and forecasts">
+  <meta name="twitter:description" content="How WSDC rule changes around the second role are reshaping the dance. Analysis of points, transitions and role balance.">
+  <meta name="twitter:image" content="https://wsdc-analytics.github.io/article_secondary_role_header.png">
+  <title>Second role: trends and forecasts | WSDC Analytics</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Second role: trends and forecasts",
+    "description": "How WSDC rule changes around the second role are reshaping the dance",
+    "url": "https://wsdc-analytics.github.io/article_secondary_role_en.html",
+    "image": "https://wsdc-analytics.github.io/article_secondary_role_header.png",
+    "datePublished": "2026-04-19",
+    "dateModified": "2026-04-19",
+    "author": { "@type": "Organization", "name": "WSDC Analytics" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "WSDC Analytics",
+      "logo": { "@type": "ImageObject", "url": "https://wsdc-analytics.github.io/events_background.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://wsdc-analytics.github.io/article_secondary_role_en.html" }
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LMLCY5PE8Z');
+  </script>
+  <style>
+    :root {
+      --color-primary: #2d3748;
+      --color-link-accent: #2563eb;
+      --accent: #6366f1;
+      --color-primary-dark: #1a202c;
+      --color-primary-light: #4a5568;
+      --bg-primary: #ffffff;
+      --bg-secondary: #FFFFFF;
+      --bg-tertiary: #f7fafc;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --border-color: #e5e5e5;
+      --border-color-hover: #cbd5e0;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition-fast: 0.15s ease;
+      --transition-base: 0.2s ease;
+      --chart-surface: #ffffff;
+      --chart-page-bg: #ffffff;
+      --chart-border: #e4e9f0;
+      --chart-radius-outer: 16px;
+      --chart-radius-inner: 12px;
+      --chart-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+      --chart-padding: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--color-primary);
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+      border-radius: 0 0 4px 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .skip-link:focus {
+      top: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .magazine-container {
+      max-width: 980px;
+      margin: 0 auto;
+      background-color: var(--bg-primary);
+    }
+    .article-header {
+      background: var(--color-primary) url("article_secondary_role_header.png") center center / cover no-repeat;
+      color: white;
+      padding: 100px 80px 80px;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      will-change: transform;
+      background-attachment: scroll;
+    }
+    .article-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-primary);
+      opacity: 0.5;
+      z-index: 0;
+    }
+    .article-header > * {
+      position: relative;
+      z-index: 1;
+    }
+    .article-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .back-link {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity var(--transition-base);
+    }
+    .back-link:hover { opacity: 0.8; }
+    .language-switcher {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .language-switcher button {
+      padding: 4px 0;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.65);
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s ease;
+      font-family: inherit;
+    }
+    .language-switcher button:hover { color: rgba(255, 255, 255, 0.9); }
+    .language-switcher button:focus { outline: none; }
+    .language-switcher button.active {
+      color: white;
+      border-bottom: 2px solid white;
+      padding-bottom: 2px;
+      transform: translateY(-1px);
+    }
+    .language-switcher button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .article-title {
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 24px 0;
+      letter-spacing: -1.5px;
+      max-width: 800px;
+    }
+    .article-subtitle {
+      font-size: 21px;
+      font-weight: 400;
+      opacity: 0.9;
+      line-height: 1.5;
+      max-width: 700px;
+      color: #e8e8e8;
+    }
+    .article-content {
+      padding: 80px 80px;
+    }
+    .intro {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      margin: 0 0 24px 0;
+      font-weight: 400;
+      max-width: 700px;
+      text-align: justify;
+    }
+    .intro p { margin: 0 0 20px 0; }
+    .intro p:last-child { margin-bottom: 0; }
+    .article-disclaimer {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 0 28px 0;
+      text-align: justify;
+    }
+    .article-disclaimer em { font-style: italic; }
+    .terms-note {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      max-width: 700px;
+      margin: 0 0 56px 0;
+      text-align: justify;
+    }
+    .section { margin: 80px 0; }
+    .section-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 32px 0;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+    .section-content {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      max-width: 700px;
+      text-align: justify;
+    }
+    .section-content p { margin-bottom: 24px; }
+    .metric-formula-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+    .metric-formula-disclosure .metric-formula-note {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin: 0;
+      text-align: left;
+    }
+    .metric-formula-disclosure .metric-formula-row {
+      justify-content: center;
+      width: 100%;
+    }
+    .metric-formula-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+      max-width: 100%;
+      line-height: 1.35;
+    }
+    .metric-formula-fraction .num,
+    .metric-formula-fraction .den {
+      padding: 4px 6px;
+    }
+    .metric-formula-fraction hr.bar {
+      width: 100%;
+      border: none;
+      border-top: 1px solid var(--text-primary);
+      margin: 0;
+      height: 0;
+      opacity: 0.85;
+    }
+    .metric-formula-times {
+      font-style: italic;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+    .chart-section-note {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin: 0 0 24px 0;
+      text-align: left;
+    }
+    .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact {
+      margin: 10px 0;
+    }
+    .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact:first-child {
+      margin-top: 4px;
+    }
+    .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
+      height: 404px;
+    }
+    .forecast-methodology-disclosure,
+    .metric-formula-disclosure {
+      margin: 0 0 22px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: var(--bg-tertiary);
+      max-width: 700px;
+    }
+    .forecast-methodology-summary {
+      cursor: pointer;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-primary);
+      list-style: none;
+      user-select: none;
+    }
+    .forecast-methodology-summary:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+    .forecast-methodology-summary::-webkit-details-marker { display: none; }
+    .forecast-methodology-summary::after {
+      content: " ▼";
+      font-size: 11px;
+      opacity: 0.65;
+      font-weight: 700;
+    }
+    .forecast-methodology-disclosure[open] .forecast-methodology-summary::after,
+    .metric-formula-disclosure[open] .forecast-methodology-summary::after {
+      content: " ▲";
+    }
+    .forecast-methodology-body {
+      padding: 0 18px 16px 18px;
+      border-top: 1px solid rgba(45, 55, 72, 0.08);
+    }
+    .forecast-methodology-body ul { margin-bottom: 0; }
+    .section-content h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 2rem 0 1rem;
+      letter-spacing: -0.3px;
+    }
+    .section-content ul {
+      margin: 0 0 24px;
+      padding-left: 1.5rem;
+    }
+    .section-content ul ul {
+      margin: 8px 0 12px;
+      padding-left: 1.25rem;
+    }
+    .section-content li { margin-bottom: 0.5rem; }
+    .timeline {
+      max-width: 700px;
+      margin: 32px 0;
+      padding-left: 28px;
+      border-left: 2px solid var(--border-color);
+    }
+    .timeline-item { position: relative; margin-bottom: 28px; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -35px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      border: 2px solid white;
+    }
+    .timeline-year {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .timeline-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+    @media (max-width: 768px) {
+      .glossary dl { grid-template-columns: 1fr; }
+    }
+    .image-container {
+      margin: 40px 0;
+      text-align: center;
+      max-width: 700px;
+    }
+    .image-container iframe.chart-iframe {
+      max-width: 100%;
+      height: auto;
+      min-height: 500px;
+      border: 1px solid var(--chart-border);
+      border-radius: var(--chart-radius-outer);
+      box-shadow: var(--chart-shadow);
+      display: block;
+      background: var(--chart-page-bg);
+    }
+    .image-container--main { margin: 48px 0; }
+    .image-container--main.image-container--compact { margin: 24px 0 28px; }
+    .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
+      height: 420px;
+    }
+    .image-container--main.image-container--chart-embed.image-container--compact.image-container--risk1-balance iframe.chart-iframe {
+      height: 460px;
+    }
+    .image-container--main iframe.chart-iframe {
+      border: 1px solid var(--chart-border);
+      border-radius: var(--chart-radius-outer);
+      background: var(--chart-page-bg);
+      box-shadow: var(--chart-shadow);
+      min-height: 520px;
+    }
+    .image-container--main.image-container--chart-embed iframe.chart-iframe {
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      min-height: 0;
+      height: 500px;
+    }
+    .image-container--main .image-caption {
+      margin-top: 14px;
+      color: #4b5563;
+      font-size: 15px;
+    }
+    .takeaway {
+      background: var(--bg-tertiary);
+      padding: 32px 32px;
+      margin: 48px 0;
+      border-left: 4px solid var(--color-primary);
+      border-radius: 0 8px 8px 0;
+      max-width: 700px;
+    }
+    .takeaway h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      color: var(--text-primary);
+    }
+    .takeaway ul { margin: 0; padding-left: 1.5rem; }
+    .takeaway li { margin-bottom: 8px; }
+    @media (max-width: 768px) {
+      .language-switcher { align-self: flex-end; }
+      .article-header { padding: 50px 20px 48px; }
+      .article-content { padding: 40px 16px 48px; }
+      .article-title { font-size: 32px; letter-spacing: -1px; }
+      .article-subtitle { font-size: 18px; }
+      .intro { font-size: 16px; margin-bottom: 24px; }
+      .section { margin: 48px 0; }
+      .section-title { font-size: 26px; }
+      .section-content { font-size: 16px; }
+      .section-content h3 { font-size: 20px; }
+      .metric-formula-disclosure .forecast-methodology-body { padding: 0 14px 14px 14px; }
+      .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
+        height: 420px;
+      }
+      .image-container { margin: 32px 0; }
+      .image-container--main iframe.chart-iframe { min-height: 480px; border-radius: var(--chart-radius-outer); }
+      .image-container--main.image-container--chart-embed iframe.chart-iframe {
+        min-height: 0;
+        height: 480px;
+      }
+      .takeaway { padding: 24px 20px; }
+      .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .article-footer { padding: 32px 16px; }
+      .article-reactions { text-align: left; }
+    }
+
+    .article-reactions {
+      margin: 40px 0 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      text-align: right;
+      max-width: 700px;
+    }
+    .article-reactions-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; }
+    .article-reactions-buttons { display: flex; flex-wrap: wrap; gap: 20px; justify-content: flex-end; align-items: flex-start; }
+    .article-reaction-item { display: inline-flex; align-items: center; gap: 6px; }
+    .article-reaction-trigger {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none; background: none; padding: 4px; font-size: inherit; line-height: 1;
+      min-width: 2.5rem; min-height: 2.5rem; border-radius: 6px;
+    }
+    .article-reaction-trigger:hover { background: rgba(45, 55, 72, 0.06); }
+    .article-reaction-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .article-reaction-emoji { font-size: 1.5rem; line-height: 1; pointer-events: none; font-weight: 600; font-family: inherit; }
+    .article-reaction-item.reaction-approve .article-reaction-emoji { color: #16a34a; }
+    .article-reaction-item.reaction-neutral .article-reaction-emoji { color: #6b7280; }
+    .article-reaction-item.reaction-disapprove .article-reaction-emoji { color: #dc2626; }
+    .article-reaction-trigger .lyket-overlay { position: absolute; inset: 0; opacity: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .article-reaction-trigger .lyket-overlay > * {
+      width: 100% !important; height: 100% !important; min-width: 0 !important; min-height: 0 !important;
+      margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important;
+      font-size: 0 !important; line-height: 0 !important;
+    }
+    .article-reaction-count { font-size: 0.95rem; color: var(--text-secondary); min-width: 1.2em; text-align: left; }
+
+    .article-feedback {
+      margin-top: 32px;
+      padding: 24px 24px 20px;
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      max-width: 700px;
+      text-align: left;
+    }
+    .article-feedback-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .article-feedback-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .article-feedback-label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .article-feedback-input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      background: var(--bg-primary);
+    }
+    .article-feedback-input:focus {
+      outline: 2px solid var(--color-link-accent);
+      outline-offset: 2px;
+      border-color: var(--color-link-accent);
+    }
+    .article-feedback-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--color-link-accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+    }
+    .article-feedback-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .article-feedback-button[disabled] {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+    }
+    .article-feedback-status {
+      font-size: 13px;
+      margin-top: 8px;
+      color: var(--text-secondary);
+    }
+
+    .article-footer {
+      background-color: var(--bg-secondary);
+      padding: 48px 80px;
+      border-top: 2px solid var(--color-primary);
+      margin-top: 0;
+    }
+    .article-footer .data-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+    .article-footer .data-note p { margin: 0 0 14px 0; }
+    .article-footer .data-note p:last-child { margin-bottom: 0; }
+    .article-footer .data-note a {
+      color: var(--color-primary);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .article-footer .data-note a:hover { opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="magazine-container">
+    <header class="article-header">
+      <div class="article-header-top">
+        <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;">← Back to home</a>
+        <div class="language-switcher" role="group" aria-label="Language selector">
+          <button class="lang-btn" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
+          <button class="lang-btn active" data-lang="en" aria-label="Switch to English" aria-pressed="true">EN</button>
+          <button class="lang-btn" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
+        </div>
+      </div>
+      <h1 class="article-title">Second role: trends and forecasts</h1>
+      <p class="article-subtitle">How WSDC rule changes around the second role are reshaping the dance</p>
+    </header>
+
+    <main id="main-content" class="article-content">
+      <div class="intro">
+        <p>Since 2021, a dancer can compete in both roles at the same WSDC event as long as the two roles are entered in <strong>different</strong> Skill Level divisions — points are counted separately for each role. Since 2025, the second role can be danced up to <strong>two levels below</strong> the primary (for example, if your primary role is Advanced, you can enter Novice as your second role). For WSDC this is more than a formality: more divisions available per dancer means more competitive dances per event and, consequently, stronger motivation for dancers to travel and compete.</p>
+        <p>Before 2021, around <strong>1%</strong> of all Skill Level points came from the second role; today it's about <strong>9%</strong>. In Novice Leader in 2025, one out of every five points was earned by dancers whose primary role is follower. The second role is no longer an exotic exception and it visibly reshapes the balance in the junior divisions.</p>
+        <p>The second-role rule changes have clearly reshaped modern WCS and the very idea of "traditional" roles in the dance. But who is using this opportunity more successfully, and what does it mean for the future of WCS? Let's look at the numbers in the WSDC Points Registry.</p>
+      </div>
+
+      <p class="article-disclaimer"><em><strong>Primary role</strong> — the one in which a dancer holds more points in a higher division. <strong>Second role</strong>, correspondingly, is the one with fewer points.</em></p>
+
+      <section class="section">
+        <h2 class="section-title">How the rules about the second role have evolved</h2>
+        <div class="section-content">
+          <p>The ability to dance both roles has long existed, but until 2020 the Skill Level rules enforced a strict "one role, one event" principle. After 2020 the second-role rules evolved in three key waves. Understanding this context matters for reading the charts and numbers below.</p>
+
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-year">2020</div>
+              <div class="timeline-text">First step: a dancer could compete in one Skill Level division in the primary role and enter other categories (Age-Based) in the second role. The "one event = one role" principle was removed.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">May 2021 — pandemic addendum</div>
+              <div class="timeline-text"><strong>Key moment.</strong> Points earned in two roles in the same division are no longer combined — they are scored separately for each role. Dancing both roles at the same event in different Skill Level divisions is now allowed. COVID-19 accelerated a change that had been discussed for years.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2023</div>
+              <div class="timeline-text">The rules from the 2021 addendum are incorporated into the main WSDC rulebook. The second role is now an official part of the system.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2025</div>
+              <div class="timeline-text">Easing: the second role can now be danced up to <strong>two</strong> levels below the primary (previously one). For example, Advanced in the primary role → Novice in the second.</div>
+            </div>
+          </div>
+
+          <p>The 2020–2021 pandemic didn't only accelerate the evolution of the second-role rules; it dramatically changed participation itself — event and dancer counts fell by several multiples. Readers should treat 2020–2021 in the charts below with caution: those years are anomalous across every metric. Recovery to pre-pandemic levels happened by 2023, and the second-role transformation overlaps with that recovery.</p>
+          <p>For a broader view of how WSDC rules have changed over time, see our <a href="https://wsdc-analytics.github.io/rules_evolution_2025_en.html?lang=en" style="color: var(--color-primary); text-decoration: underline; text-underline-offset: 2px;">dedicated article</a>.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">How the rules changed the distribution of points</h2>
+
+        <div class="section-content">
+          <p>Before 2021, the share of points earned in the second role never exceeded <strong>1%</strong> of all Skill Level points (Newcomer, Novice, Intermediate, Advanced, All-Stars). After 2021 it spiked and by 2025 it reached about <strong>9%</strong>. The second role moved from rarity to a meaningful share of the points system.</p>
+          <p>Key asymmetry: in 2025, dancers whose primary role is follower earned more than <strong>14%</strong> of the points awarded in leader divisions, while primary-role leaders earned only <strong>4%</strong> of the points awarded in follower divisions. Primary-role followers do notably better as leaders than primary-role leaders do as followers.</p>
+          <p>Below is an interactive chart showing the year-over-year change in the share of points earned as second role. You can also filter by division and switch between relative share and absolute counts.</p>
+          <div class="image-container image-container--main image-container--chart-embed image-container--compact">
+            <iframe class="chart-iframe" src="interactive_secondary_by_division.html?v=20260419-i18n&lang=en" title="Leader and Follower dynamics by division and metric" width="100%" height="420" scrolling="no"></iframe>
+          </div>
+
+          <p>The share of points earned as second role is highest in the junior divisions and in the leader competitions. In Newcomer Leader, a quarter of all 2025 points went to dancers whose primary role is follower. In Novice Leader and Intermediate Leader this figure is 20% and 11% respectively. In the follower competitions at the same division levels the second-role share is smaller, but has also grown to 4–8%. In Advanced and All-Stars the second role remains rare — those divisions are still entered mainly by primary-role dancers.</p>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">How the rules changed transitions between divisions</h2>
+
+        <div class="section-content">
+          <p>For this article, a "transition between divisions" means the moment when a dancer earns their first points in a given "division + role" pair. It's a debatable working definition, but it captures the actual inflow into each division.</p>
+
+          <p>The overall picture is similar: before 2021, the share of transitions happening as second role was 1–2%, but by 2022 it had already jumped to 13% and has stayed around that level through 2025 with minor fluctuations.</p>
+
+          <p>Below is an interactive chart showing the year-over-year change in the share of second-role transitions out of the total. You can also view the data by division and in absolute counts, for both the second and the primary role.</p>
+
+          <div class="image-container image-container--main image-container--chart-embed image-container--compact">
+            <iframe class="chart-iframe" src="interactive_transitions_share.html?v=20260419-i18n&lang=en" title="Share and count of primary- and secondary-role transitions" width="100%" height="420" scrolling="no"></iframe>
+          </div>
+
+          <p>One might expect that more experienced followers joining leader divisions would "squeeze out" primary-role leader transitions. The data does not show that: the number of primary-role leader transitions has grown steadily after 2021 (from 634 in 2022 to 1600 in 2025). The second role is being added to the system, not replacing it.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">What about the balance of primary-role transitions</h2>
+        <div class="section-content">
+          <p>As we've seen, the overall volume of transitions was not really affected by the second-role rules. A different question is the balance of primary roles relative to one another: how many new leaders transition for every hundred new followers, looking only at primary-role transitions. It's informative to track this metric year over year across Novice, Intermediate, Advanced and All-Stars.</p>
+
+          <details class="metric-formula-disclosure">
+            <summary class="forecast-methodology-summary">Metric formula</summary>
+            <div class="forecast-methodology-body">
+              <div class="metric-formula-note">
+                <div class="metric-formula-row" role="math" aria-label="Number of primary-role leader transitions, divided by the number of primary-role follower transitions, multiplied by one hundred">
+                  <div class="metric-formula-fraction">
+                    <span class="num">primary-role leader transitions</span>
+                    <hr class="bar" />
+                    <span class="den">primary-role follower transitions</span>
+                  </div>
+                  <span class="metric-formula-times">× 100</span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <p>A steady decline is visible here. In 2018–2019, across all divisions combined, there were about 90 leader transitions for every 100 follower transitions; after 2021 the ratio dropped by roughly 16% and has stayed around 75 leaders per 100 followers in recent years.</p>
+
+          <div class="image-container image-container--main image-container--chart-embed image-container--compact image-container--risk1-balance">
+            <iframe class="chart-iframe" src="risk1_role_balance_card.html?v=20260419-i18n&lang=en" title="Primary-role transitions balance: Total and divisions" width="100%" height="460" scrolling="no"></iframe>
+          </div>
+
+          <p>By division the picture is uneven. The sharpest decline is in Novice: from about 90 in 2018–2019 to below 70 after the rule change. Intermediate also dropped, though less abruptly. In the senior divisions (Advanced and All-Stars) the dynamic is different: transition volumes there are lower, and the same shift does not repeat as clearly as in the junior divisions — the picture looks more like stability or local fluctuation than a steady trend.</p>
+
+          <p>Attributing this shift directly and only to the second-role rules would be premature: the ratio is also influenced by the composition of newcomers, the event calendar and regional shifts.</p>
+
+          <p>Overall, this trend is <strong>tentatively</strong> explained by the fact that primary-role leaders find it harder to compete for finals against second-role leaders — the latter are already seasoned dancers who don't need to relearn the fundamentals of the dance.</p>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Where could we be in 10 years</h2>
+        <div class="section-content">
+          <p>As we've seen, the largest impact of the second-role rule change has been on leaders in Novice and Intermediate, so it's worth asking where the current trend leads if it continues.</p>
+
+          <p>Below are forecast models through 2036 for the share of points in Novice Leader and Intermediate Leader that would be earned by dancers whose primary role is follower — assuming today's rules logic is preserved.</p>
+
+          <details class="forecast-methodology-disclosure">
+            <summary class="forecast-methodology-summary">Forecast methodology</summary>
+            <div class="forecast-methodology-body">
+              <ul>
+                <li><strong>Fact base:</strong> actual values for 2021–2026. The 2026 value is incomplete (the season is in progress), which increases upper-scenario uncertainty.</li>
+                <li><strong>Forecast scenarios:</strong>
+                  <ul>
+                    <li>linear trend;</li>
+                    <li>inertial growth (compound annual growth rate, CAGR, on the actual values, capped at 15% per year);</li>
+                    <li>conservative scenario (50% of the linear trend).</li>
+                  </ul>
+                </li>
+                <li><strong>Presentation:</strong> each chart shows the linear trend and a forecast range defined by the minimum and maximum across the three scenarios (individual scenarios are not plotted). The upper bound of the range is the model ceiling at the maximum allowed pace, not a central estimate.</li>
+              </ul>
+            </div>
+          </details>
+
+          <div class="forecast-chart-stack">
+            <div class="image-container image-container--main image-container--chart-embed image-container--compact">
+              <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260419-i18n&lang=en" title="Forecast: share of second-role points in Novice Leader" width="100%" height="404" scrolling="no"></iframe>
+            </div>
+            <div class="image-container image-container--main image-container--chart-embed image-container--compact">
+              <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260419-i18n&lang=en" title="Forecast: share of second-role points in Intermediate Leader" width="100%" height="404" scrolling="no"></iframe>
+            </div>
+          </div>
+
+          <p>In the central (linear) scenario, by 2036 the share of points earned as second role reaches <strong>~46%</strong> in Novice Leader and <strong>~43%</strong> in Intermediate Leader. In the upper-bound scenario (inertial growth capped at 15% per year) it reaches <strong>~79%</strong> and <strong>~64%</strong> respectively; this is not a central estimate, it's a stress test of the current pace. In the conservative lower bound it's about 32% and 30%.</p>
+          <p>Even the central scenario — in which almost half of the points in the junior leader divisions come from primary-role followers — noticeably shifts the familiar patterns of dancing and teaching. This is not a prediction, it's a reminder: if the current pace holds, in ten years the junior leader divisions may no longer be what they were designed to be — an "entry point" for aspiring leaders.</p>
+        </div>
+      </section>
+
+      <section class="takeaway">
+        <h3>Key takeaways</h3>
+
+        <p style="margin:0 0 20px; font-size:17px;">
+          Second-role dancing is no longer an exotic exception. It is embedded into the system and is reshaping the leader/follower balance in the junior divisions — the very place where new dancers enter the scene.
+        </p>
+
+        <ul>
+          <li><strong>1% → 9%.</strong> That's the share of Skill Level points now earned as second role (vs. about 1% before 2021).</li>
+          <li><strong>14% vs. 4%.</strong> In 2025, primary-role followers earned 14% of all points awarded in leader divisions — they perform visibly better as leaders than primary-role leaders do as followers (4%).</li>
+          <li><strong>90 → 75.</strong> Per 100 new followers in Novice–All-Stars, there were around 90 new leaders in 2018–2019 and about 75 today. The sharpest drop is in Novice: 91 → 72.</li>
+          <li><strong>Primary-role transitions haven't fallen.</strong> The second role adds to the system without replacing it: the number of new primary-role leaders has been growing after 2021.</li>
+          <li><strong>Ten-year horizon.</strong> In the central scenario, by 2036 the share of points earned as second role reaches ~46% in Novice Leader and ~43% in Intermediate Leader. Upper-bound scenarios go to 79% and 64% — not a "prediction", but a stress test of today's pace.</li>
+        </ul>
+      </section>
+
+      <section class="article-reactions" aria-label="Rate article">
+        <div class="article-reactions-label">Rate this article:</div>
+        <div class="article-reactions-buttons">
+          <div class="article-reaction-item reaction-approve">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="I approve this article">
+              <span class="article-reaction-emoji" aria-hidden="true">✓</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_en_positive"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_en_positive">—</span>
+          </div>
+          <div class="article-reaction-item reaction-neutral">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Neutral reaction">
+              <span class="article-reaction-emoji" aria-hidden="true">○</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_en_neutral"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_en_neutral">—</span>
+          </div>
+          <div class="article-reaction-item reaction-disapprove">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="I don't approve this article">
+              <span class="article-reaction-emoji" aria-hidden="true">✗</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_en_negative"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_en_negative">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-feedback" aria-labelledby="feedback-heading">
+        <h2 class="article-feedback-title" id="feedback-heading">Article feedback</h2>
+        <p class="article-feedback-text">
+          If you noticed an inaccuracy, want to suggest an improvement, or just want to say something, fill out the form below.
+        </p>
+        <form class="article-feedback-form" id="articleFeedbackForm">
+          <label class="article-feedback-label" for="articleFeedbackMessage">Message *</label>
+          <textarea id="articleFeedbackMessage" class="article-feedback-input" rows="4" required></textarea>
+          <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">Email (optional)</label>
+          <input type="email" id="articleFeedbackEmail" class="article-feedback-input" placeholder="you@example.com" autocomplete="email" />
+          <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">Send</button>
+          <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="article-footer">
+      <div class="data-note">
+        <p><strong>Data source:</strong> Analysis of the <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a> database</p>
+        <p><strong>Related:</strong> <a href="https://wsdc-analytics.github.io/rules_evolution_2025_en.html?lang=en">Evolution of WSDC rules</a></p>
+      </div>
+    </footer>
+  </div>
+  <script>
+(function() {
+  var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
+  function getCountsUrl() { return REACTIONS_API ? (REACTIONS_API.replace(/\/$/, '') + '/api/reactions') : 'static/data/reactions.json'; }
+  function applyCount(span, n) { if (span) span.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
+  function fetchCounts() {
+    var url = getCountsUrl();
+    fetch(url, { credentials: 'omit' }).then(function(r) { return r.ok ? r.json() : {}; }).then(function(data) {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
+        var id = span.getAttribute('data-lyket-id');
+        if (id) applyCount(span, (data && typeof data[id] === 'number') ? data[id] : 0);
+      });
+    }).catch(function() {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) { applyCount(span, 0); });
+    });
+  }
+  function voteReaction(id, countSpan) {
+    if (!id || !countSpan || !REACTIONS_API) return;
+    countSpan.setAttribute('aria-busy', 'true');
+    countSpan.textContent = '…';
+    var base = REACTIONS_API.replace(/\/$/, '');
+    fetch(base + '/api/reactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({ id: id })
+    }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
+  }
+  function initReactionClicks() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      var overlay = trigger.querySelector('.lyket-overlay');
+      var id = overlay && overlay.getAttribute('data-lyket-id');
+      var item = trigger.closest('.article-reaction-item');
+      var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
+      if (!id || !countSpan) return;
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        voteReaction(id, countSpan);
+      });
+    });
+  }
+  function initReactionKeys() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      trigger.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        trigger.click();
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
+  else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
+})();
+  </script>
+  <script>
+(function() {
+  var FORM_ID = 'articleFeedbackForm';
+  var MESSAGE_ID = 'articleFeedbackMessage';
+  var EMAIL_ID = 'articleFeedbackEmail';
+  var SUBMIT_ID = 'articleFeedbackSubmit';
+  var STATUS_ID = 'articleFeedbackStatus';
+  var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
+  var ARTICLE_ID = 'article_secondary_role_en';
+  var TXT = { sending: 'Sending...', ok: 'Thanks! Your message has been sent.', error: 'Could not send. Please try again later.', validation: 'Please write a bit more (at least 5 characters).' };
+
+  function $(id) { return document.getElementById(id); }
+
+  function setStatus(text, isError) {
+    var el = $(STATUS_ID);
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = isError ? '#dc2626' : 'var(--text-secondary)';
+  }
+
+  function onSubmit(e) {
+    e.preventDefault();
+    var form = $(FORM_ID);
+    var msgEl = $(MESSAGE_ID);
+    var emailEl = $(EMAIL_ID);
+    var btn = $(SUBMIT_ID);
+
+    if (!form || !msgEl || !btn) return;
+
+    var message = msgEl.value.trim();
+    var email = emailEl && emailEl.value.trim();
+
+    if (!message || message.length < 5) {
+      setStatus(TXT.validation, true);
+      return;
+    }
+
+    btn.disabled = true;
+    setStatus(TXT.sending, false);
+
+    fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({
+        articleId: ARTICLE_ID,
+        articleUrl: window.location.href,
+        message: message,
+        email: email
+      })
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Request failed');
+      return r.json().catch(function() { return {}; });
+    }).then(function() {
+      setStatus(TXT.ok, false);
+      msgEl.value = '';
+    }).catch(function() {
+      setStatus(TXT.error, true);
+    }).finally(function() {
+      btn.disabled = false;
+    });
+  }
+
+  function init() {
+    var form = $(FORM_ID);
+    if (form) form.addEventListener('submit', onSubmit);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+  </script>
+  <script>
+    (function() {
+      function getCurrentLanguage() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlLang = urlParams.get('lang');
+        if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) return urlLang;
+        var storedLang = localStorage.getItem('wsdc-lang');
+        if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) return storedLang;
+        return 'en';
+      }
+      function setLanguage(lang) {
+        localStorage.setItem('wsdc-lang', lang);
+        if (lang === 'ru') window.location.href = 'article_secondary_role.html?lang=ru';
+        else if (lang === 'en') window.location.href = 'article_secondary_role_en.html?lang=en';
+        else if (lang === 'es') window.location.href = 'article_secondary_role_es.html?lang=es';
+      }
+      function updateBackLink() {
+        var lang = getCurrentLanguage();
+        var backLink = document.getElementById('backLink');
+        if (backLink) backLink.href = '/?lang=' + lang;
+      }
+      var currentLang = getCurrentLanguage();
+      updateBackLink();
+      var langButtons = document.querySelectorAll('.lang-btn');
+      langButtons.forEach(function(btn) {
+        if (btn.dataset.lang === currentLang) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-pressed', 'true');
+        } else {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-pressed', 'false');
+        }
+        btn.addEventListener('click', function() {
+          if (!btn.disabled) setLanguage(btn.dataset.lang);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
