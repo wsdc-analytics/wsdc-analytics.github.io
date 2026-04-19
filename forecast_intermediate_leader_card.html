@@ -118,13 +118,14 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 12px;
+      gap: 10px;
       font-size: 12px;
-      line-height: 1.35;
-      margin: 2px 0;
+      line-height: 1.25;
+      margin: 1px 0;
+      white-space: nowrap;
     }
-    .chartjs-ext-tooltip .tt-label { font-weight: 600; }
-    .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; }
+    .chartjs-ext-tooltip .tt-label { font-weight: 600; flex-shrink: 0; }
+    .chartjs-ext-tooltip .tt-value { margin-left: auto; font-weight: 700; text-align: right; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -134,7 +135,7 @@
       <div class="legend">
         <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
         <span class="legend-item"><span class="legend-line central"></span>Линейный тренд</span>
-        <span class="legend-item"><span class="legend-line band"></span>Минимум и максимум</span>
+        <span class="legend-item"><span class="legend-line band"></span>Прогнозный диапазон</span>
       </div>
     </div>
     <div class="chart-canvas-box">
@@ -166,7 +167,7 @@
         labels: YEARS,
         datasets: [
           { label: "Факт", data: FACT, borderColor: "#d97706", backgroundColor: "#d97706", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#b45309", pointBorderWidth: 1.2 },
-          { label: "Линейный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
+          { label: "Тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
           { label: "Минимум", data: LOW, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
           { label: "Максимум", data: HIGH, borderColor: "rgba(217,119,6,0)", backgroundColor: "rgba(217,119,6,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
         ]
@@ -199,7 +200,7 @@
               if (byIdx[1]) {
                 const v = byIdx[1].parsed.y;
                 const t = (v == null || Number.isNaN(v)) ? "—" : `${Number(v).toFixed(1)}%`;
-                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">Линейный тренд</span><span class="tt-value">${t}</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#475569"><span class="tt-label">Тренд</span><span class="tt-value">${t}</span></div>`);
               }
               const lo = byIdx[2]?.parsed?.y;
               const hi = byIdx[3]?.parsed?.y;
