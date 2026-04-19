@@ -3,10 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Secondary role в WSDC: универсализация или средство удержания | WSDC Analytics</title>
+  <meta name="description" content="Вторая роль в WSDC: доля поинтов и переходы по дивизионам, баланс лидеров и фолловеров, прогноз по Novice и Intermediate Leader. Анализ WSDC Registry Points.">
+  <meta name="keywords" content="WSDC, West Coast Swing, вторая роль, Skill Level, поинты, статистика, анализ">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/article_secondary_role.html">
+  <meta property="og:title" content="Вторая роль: Тенденции и прогнозы">
+  <meta property="og:description" content="Как изменения правил о второй роли на ивентах WSDC меняют танец. Анализ поинтов, переходов и баланса ролей.">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://wsdc-analytics.github.io/article_secondary_role.html">
+  <meta name="twitter:title" content="Вторая роль: Тенденции и прогнозы">
+  <meta name="twitter:description" content="Как изменения правил о второй роли на ивентах WSDC меняют танец. Анализ поинтов, переходов и баланса ролей.">
+  <meta name="twitter:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <title>Вторая роль: Тенденции и прогнозы | WSDC Analytics</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Вторая роль: Тенденции и прогнозы",
+    "description": "Как изменения правил о второй роли на ивентах WSDC меняют танец",
+    "url": "https://wsdc-analytics.github.io/article_secondary_role.html",
+    "datePublished": "2026-04-19",
+    "dateModified": "2026-04-19",
+    "author": { "@type": "Organization", "name": "WSDC Analytics" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "WSDC Analytics",
+      "logo": { "@type": "ImageObject", "url": "https://wsdc-analytics.github.io/events_background.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://wsdc-analytics.github.io/article_secondary_role.html" }
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LMLCY5PE8Z');
+  </script>
   <style>
     :root {
       --color-primary: #2d3748;
+      --color-link-accent: #2563eb;
+      --accent: #6366f1;
       --color-primary-dark: #1a202c;
       --color-primary-light: #4a5568;
       --bg-primary: #ffffff;
@@ -492,7 +536,133 @@
       .image-container--chart .chart-static-card { padding: 12px; }
       .takeaway { padding: 24px 20px; }
       .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .article-footer { padding: 32px 16px; }
+      .article-reactions { text-align: left; }
     }
+
+    .article-reactions {
+      margin: 40px 0 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      text-align: right;
+      max-width: 700px;
+    }
+    .article-reactions-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; }
+    .article-reactions-buttons { display: flex; flex-wrap: wrap; gap: 20px; justify-content: flex-end; align-items: flex-start; }
+    .article-reaction-item { display: inline-flex; align-items: center; gap: 6px; }
+    .article-reaction-trigger {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none; background: none; padding: 4px; font-size: inherit; line-height: 1;
+      min-width: 2.5rem; min-height: 2.5rem; border-radius: 6px;
+    }
+    .article-reaction-trigger:hover { background: rgba(45, 55, 72, 0.06); }
+    .article-reaction-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .article-reaction-emoji { font-size: 1.5rem; line-height: 1; pointer-events: none; font-weight: 600; font-family: inherit; }
+    .article-reaction-item.reaction-approve .article-reaction-emoji { color: #16a34a; }
+    .article-reaction-item.reaction-neutral .article-reaction-emoji { color: #6b7280; }
+    .article-reaction-item.reaction-disapprove .article-reaction-emoji { color: #dc2626; }
+    .article-reaction-trigger .lyket-overlay { position: absolute; inset: 0; opacity: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .article-reaction-trigger .lyket-overlay > * {
+      width: 100% !important; height: 100% !important; min-width: 0 !important; min-height: 0 !important;
+      margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important;
+      font-size: 0 !important; line-height: 0 !important;
+    }
+    .article-reaction-count { font-size: 0.95rem; color: var(--text-secondary); min-width: 1.2em; text-align: left; }
+
+    .article-feedback {
+      margin-top: 32px;
+      padding: 24px 24px 20px;
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      max-width: 700px;
+      text-align: left;
+    }
+    .article-feedback-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .article-feedback-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .article-feedback-label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .article-feedback-input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      background: var(--bg-primary);
+    }
+    .article-feedback-input:focus {
+      outline: 2px solid var(--color-link-accent);
+      outline-offset: 2px;
+      border-color: var(--color-link-accent);
+    }
+    .article-feedback-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--color-link-accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+    }
+    .article-feedback-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .article-feedback-button[disabled] {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+    }
+    .article-feedback-status {
+      font-size: 13px;
+      margin-top: 8px;
+      color: var(--text-secondary);
+    }
+
+    .article-footer {
+      background-color: var(--bg-secondary);
+      padding: 48px 80px;
+      border-top: 2px solid var(--color-primary);
+      margin-top: 0;
+    }
+    .article-footer .data-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+    .article-footer .data-note p { margin: 0 0 14px 0; }
+    .article-footer .data-note p:last-child { margin-bottom: 0; }
+    .article-footer .data-note a {
+      color: var(--color-primary);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .article-footer .data-note a:hover { opacity: 0.85; }
+    .article-footer .data-note code { font-size: 0.92em; }
   </style>
 </head>
 <body>
@@ -502,8 +672,8 @@
       <div class="article-header-top">
         <a href="https://wsdc-analytics.github.io/" class="back-link">← К главной</a>
       </div>
-      <h1 class="article-title">Secondary role в WSDC: универсализация или средство удержания</h1>
-      <p class="article-subtitle">Как переосмысление этого положения правил повлияло на танец</p>
+      <h1 class="article-title">Вторая роль: Тенденции и прогнозы</h1>
+      <p class="article-subtitle">Как изменения правил о второй роли на ивентах WSDC меняют танец</p>
     </header>
 
     <main id="main-content" class="article-content">
@@ -671,7 +841,188 @@
           <li><strong>Горизонт 10 лет.</strong> В центральном сценарии к 2036 году доля поинтов за вторую роль в Novice Leader выходит на ~46%, в Intermediate Leader — ~43%. Верхняя граница сценариев — 79% и 64%; это не «предсказание», а стресс-тест текущего темпа.</li>
         </ul>
       </section>
+
+      <section class="article-reactions" aria-label="Оценка статьи">
+        <div class="article-reactions-label">Оцените статью:</div>
+        <div class="article-reactions-buttons">
+          <div class="article-reaction-item reaction-approve">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Одобряю статью">
+              <span class="article-reaction-emoji" aria-hidden="true">✓</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_ru_positive"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_ru_positive">—</span>
+          </div>
+          <div class="article-reaction-item reaction-neutral">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Нейтральное отношение">
+              <span class="article-reaction-emoji" aria-hidden="true">○</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_ru_neutral"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_ru_neutral">—</span>
+          </div>
+          <div class="article-reaction-item reaction-disapprove">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Не одобряю статью">
+              <span class="article-reaction-emoji" aria-hidden="true">✗</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_ru_negative"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-secondary-role" data-lyket-id="article_secondary_role_ru_negative">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-feedback" aria-labelledby="feedback-heading">
+        <h2 class="article-feedback-title" id="feedback-heading">Обратная связь по статье</h2>
+        <p class="article-feedback-text">
+          Если вы заметили неточность, хотите предложить идею для улучшения или просто что-то написать, заполните форму ниже.
+        </p>
+        <form class="article-feedback-form" id="articleFeedbackForm">
+          <label class="article-feedback-label" for="articleFeedbackMessage">Сообщение *</label>
+          <textarea id="articleFeedbackMessage" class="article-feedback-input" rows="4" required></textarea>
+          <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">Email (необязательно)</label>
+          <input type="email" id="articleFeedbackEmail" class="article-feedback-input" placeholder="you@example.com" autocomplete="email" />
+          <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">Отправить</button>
+          <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
+        </form>
+      </section>
     </main>
+
+    <footer class="article-footer">
+      <div class="data-note">
+        <p><strong>Источник данных.</strong> Расчёты по <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a> (в т.ч. таблицы <code>dancer_role_info</code>, <code>dancers_results_info</code>). Поинты отражают попадание в финалы Skill Level, а не каждое участие в джек-н-джиллах.</p>
+        <p><strong>Методика в статье.</strong> Основная и вторая роли — по большей сумме поинтов в более старшей номинации; переход — первые поинты в паре «дивизион + роль»; прогноз — три сценария по факту 2021–2026 (см. раскрывающийся блок «Методика прогноза»).</p>
+        <p><strong>Оговорки.</strong> 2020–2021 годы искажены пандемией; данные текущего сезона могут быть неполными. Прогнозы — модельные сценарии, не позиция WSDC.</p>
+        <p><strong>Связанные материалы.</strong> <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru">Эволюция правил WSDC</a> · <a href="https://wsdc-analytics.github.io/">WSDC Analytics</a></p>
+      </div>
+    </footer>
   </div>
+  <script>
+(function() {
+  var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
+  function getCountsUrl() { return REACTIONS_API ? (REACTIONS_API.replace(/\/$/, '') + '/api/reactions') : 'static/data/reactions.json'; }
+  function applyCount(span, n) { if (span) span.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
+  function fetchCounts() {
+    var url = getCountsUrl();
+    fetch(url, { credentials: 'omit' }).then(function(r) { return r.ok ? r.json() : {}; }).then(function(data) {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
+        var id = span.getAttribute('data-lyket-id');
+        if (id) applyCount(span, (data && typeof data[id] === 'number') ? data[id] : 0);
+      });
+    }).catch(function() {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) { applyCount(span, 0); });
+    });
+  }
+  function voteReaction(id, countSpan) {
+    if (!id || !countSpan || !REACTIONS_API) return;
+    countSpan.setAttribute('aria-busy', 'true');
+    countSpan.textContent = '…';
+    var base = REACTIONS_API.replace(/\/$/, '');
+    fetch(base + '/api/reactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({ id: id })
+    }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
+  }
+  function initReactionClicks() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      var overlay = trigger.querySelector('.lyket-overlay');
+      var id = overlay && overlay.getAttribute('data-lyket-id');
+      var item = trigger.closest('.article-reaction-item');
+      var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
+      if (!id || !countSpan) return;
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        voteReaction(id, countSpan);
+      });
+    });
+  }
+  function initReactionKeys() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      trigger.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        trigger.click();
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
+  else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
+})();
+  </script>
+  <script>
+(function() {
+  var FORM_ID = 'articleFeedbackForm';
+  var MESSAGE_ID = 'articleFeedbackMessage';
+  var EMAIL_ID = 'articleFeedbackEmail';
+  var SUBMIT_ID = 'articleFeedbackSubmit';
+  var STATUS_ID = 'articleFeedbackStatus';
+  var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
+  var ARTICLE_ID = 'article_secondary_role_ru';
+  var TXT = { sending: 'Отправляем...', ok: 'Спасибо! Сообщение отправлено.', error: 'Не удалось отправить. Попробуйте ещё раз позже.', validation: 'Пожалуйста, напишите чуть подробнее (минимум 5 символов).' };
+
+  function $(id) { return document.getElementById(id); }
+
+  function setStatus(text, isError) {
+    var el = $(STATUS_ID);
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = isError ? '#dc2626' : 'var(--text-secondary)';
+  }
+
+  function onSubmit(e) {
+    e.preventDefault();
+    var form = $(FORM_ID);
+    var msgEl = $(MESSAGE_ID);
+    var emailEl = $(EMAIL_ID);
+    var btn = $(SUBMIT_ID);
+
+    if (!form || !msgEl || !btn) return;
+
+    var message = msgEl.value.trim();
+    var email = emailEl && emailEl.value.trim();
+
+    if (!message || message.length < 5) {
+      setStatus(TXT.validation, true);
+      return;
+    }
+
+    btn.disabled = true;
+    setStatus(TXT.sending, false);
+
+    fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({
+        articleId: ARTICLE_ID,
+        articleUrl: window.location.href,
+        message: message,
+        email: email
+      })
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Request failed');
+      return r.json().catch(function() { return {}; });
+    }).then(function() {
+      setStatus(TXT.ok, false);
+      msgEl.value = '';
+    }).catch(function() {
+      setStatus(TXT.error, true);
+    }).finally(function() {
+      btn.disabled = false;
+    });
+  }
+
+  function init() {
+    var form = $(FORM_ID);
+    if (form) form.addEventListener('submit', onSubmit);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+  </script>
 </body>
 </html>
