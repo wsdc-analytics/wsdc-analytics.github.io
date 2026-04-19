@@ -149,30 +149,6 @@
       text-align: justify;
     }
     .section-content p { margin-bottom: 24px; }
-    /* Референс: формула и срез дивизионов — не часть основного абзаца */
-    .formula-reference-callout {
-      background: var(--bg-tertiary);
-      border-left: 4px solid var(--color-primary-light);
-      border-radius: 0 10px 10px 0;
-      padding: 20px 22px 20px 24px;
-      margin: 0 0 28px 0;
-      max-width: 700px;
-    }
-    .formula-reference-callout .metric-formula-note {
-      font-size: 14px;
-      line-height: 1.5;
-      color: var(--text-secondary);
-      margin: 0;
-      text-align: left;
-    }
-    .metric-formula-note .formula-label {
-      display: block;
-      font-style: normal;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 10px;
-      font-size: 15px;
-    }
     .metric-formula-row {
       display: flex;
       flex-wrap: wrap;
@@ -181,7 +157,14 @@
       font-style: italic;
       color: var(--text-secondary);
     }
-    .formula-reference-callout .metric-formula-row {
+    .metric-formula-disclosure .metric-formula-note {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin: 0;
+      text-align: left;
+    }
+    .metric-formula-disclosure .metric-formula-row {
       justify-content: center;
       width: 100%;
     }
@@ -227,7 +210,8 @@
     .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
       height: 404px;
     }
-    .forecast-methodology-disclosure {
+    .forecast-methodology-disclosure,
+    .metric-formula-disclosure {
       margin: 0 0 22px 0;
       border: 1px solid var(--border-color);
       border-radius: 10px;
@@ -255,7 +239,8 @@
       opacity: 0.65;
       font-weight: 700;
     }
-    .forecast-methodology-disclosure[open] .forecast-methodology-summary::after {
+    .forecast-methodology-disclosure[open] .forecast-methodology-summary::after,
+    .metric-formula-disclosure[open] .forecast-methodology-summary::after {
       content: " ▲";
     }
     .forecast-methodology-body {
@@ -512,7 +497,7 @@
       .section-title { font-size: 26px; }
       .section-content { font-size: 16px; }
       .section-content h3 { font-size: 20px; }
-      .formula-reference-callout { padding: 16px 14px 16px 18px; }
+      .metric-formula-disclosure .forecast-methodology-body { padding: 0 14px 14px 14px; }
       .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
         height: 420px;
       }
@@ -618,19 +603,21 @@
         <div class="section-content">
           <p>Как мы уже выяснили, на количестве переходов введение правил второй роли почти не отразилось. Другой вопрос — баланс переходов по основным ролям относительно друг друга: сколько новых лидеров приходится на каждые сто новых фолловеров, если смотреть именно переходы по основной роли. Нам было интересно сравнить этот показатель в динамике по годам и по дивизионам: Novice, Intermediate, Advanced, All-Stars.</p>
 
-          <aside class="formula-reference-callout" aria-label="Формула расчёта метрики">
-            <div class="metric-formula-note">
-              <span class="formula-label">Формула расчёта метрики:</span>
-              <div class="metric-formula-row" role="math" aria-label="Число переходов лидеров по основной роли, делённое на число переходов фолловеров по основной роли, умноженное на сто">
-                <div class="metric-formula-fraction">
-                  <span class="num">число переходов лидеров по основной роли</span>
-                  <hr class="bar" />
-                  <span class="den">число переходов фолловеров по основной роли</span>
+          <details class="metric-formula-disclosure">
+            <summary class="forecast-methodology-summary">Формула расчёта метрики</summary>
+            <div class="forecast-methodology-body">
+              <div class="metric-formula-note">
+                <div class="metric-formula-row" role="math" aria-label="Число переходов лидеров по основной роли, делённое на число переходов фолловеров по основной роли, умноженное на сто">
+                  <div class="metric-formula-fraction">
+                    <span class="num">число переходов лидеров по основной роли</span>
+                    <hr class="bar" />
+                    <span class="den">число переходов фолловеров по основной роли</span>
+                  </div>
+                  <span class="metric-formula-times">× 100</span>
                 </div>
-                <span class="metric-formula-times">× 100</span>
               </div>
             </div>
-          </aside>
+          </details>
 
           <p>Здесь уже прослеживается устойчивое снижение сводного показателя. Если в 2018–2019 на сто переходов фолловеров по всем дивизионам приходилось порядка 90 переходов лидеров, то после 2021 года отношение просело примерно на 16% и в последние годы держится около 75 лидеров на сто фолловеров.</p>
 
