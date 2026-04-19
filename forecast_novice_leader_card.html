@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Novice forecast</title>
+  <title>Novice Leader — прогноз доли secondary-поинтов</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -15,58 +15,34 @@
       --border: rgba(117, 119, 120, 0.16);
       --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       --radius-outer: 30px;
-      --radius-md: 12px;
-      /* Факт: не резервируем интерактивные Leader/Follower цвета */
       --fact-line: #0ea5e9;
       --fact-fill: rgba(14, 165, 233, 0.12);
       --fact-fill-border: rgba(14, 165, 233, 0.22);
       --central-line: #475569;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; }
+    html, body { margin: 0; background: transparent; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--surface-card);
       color: var(--text);
     }
-    .card { padding: 4px 2px 8px; }
     .chart-wrap {
       border: 1px solid var(--border);
       border-radius: var(--radius-outer);
       background: var(--surface-card);
       box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
+      padding: 12px 14px 12px;
       overflow: visible;
     }
-    .chart-top {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .chart-controls { width: 100%; min-width: 0; }
-    .control label {
-      display: block;
-      font-size: 9px;
+    .chart-embed-title {
+      font-size: 10px;
       font-weight: 800;
       color: var(--muted-soft);
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      margin: 0 0 5px 2px;
+      margin: 0 0 8px 2px;
     }
-    .static-box {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      background: #fff;
-      color: var(--text);
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-    .chart-legend { width: 100%; }
+    .chart-legend { width: 100%; margin-bottom: 4px; }
     .legend {
       display: flex;
       gap: 8px;
@@ -105,15 +81,15 @@
       border: 1px solid var(--fact-fill-border);
     }
     .chart-canvas-box {
-      margin: 6px 0 0;
-      padding: 10px 6px 12px;
+      margin: 4px 0 0;
+      padding: 6px 4px 8px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
       position: relative;
       width: 100%;
-      height: 280px;
-      min-height: 280px;
+      height: 252px;
+      min-height: 252px;
       box-sizing: border-box;
     }
     .chartjs-ext-tooltip {
@@ -152,26 +128,17 @@
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="chart-wrap">
-      <div class="chart-top">
-        <div class="chart-controls">
-          <div class="control">
-            <label>Показатель</label>
-            <div class="static-box">Novice Leader — доля secondary-поинтов в сумме лидерских поинтов за год, % (факт 2021–2026 и сценарный коридор).</div>
-          </div>
-        </div>
-        <div class="chart-legend">
-          <div class="legend">
-            <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
-            <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
-            <span class="legend-item"><span class="legend-line band"></span>Коридор прогноза (3 модели)</span>
-          </div>
-        </div>
+  <div class="chart-wrap">
+    <div class="chart-embed-title">Novice Leader</div>
+    <div class="chart-legend">
+      <div class="legend">
+        <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
+        <span class="legend-item"><span class="legend-line central"></span>Центральный тренд</span>
+        <span class="legend-item"><span class="legend-line band"></span>Коридор (3 модели)</span>
       </div>
-      <div class="chart-canvas-box">
-        <canvas id="chart"></canvas>
-      </div>
+    </div>
+    <div class="chart-canvas-box">
+      <canvas id="chart"></canvas>
     </div>
   </div>
   <script>
@@ -207,7 +174,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        layout: { padding: { top: 8, right: 10, bottom: 22, left: 4 } },
+        layout: { padding: { top: 6, right: 8, bottom: 18, left: 2 } },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },

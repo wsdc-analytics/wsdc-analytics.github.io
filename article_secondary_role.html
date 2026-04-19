@@ -218,6 +218,15 @@
       margin: 0 0 24px 0;
       text-align: left;
     }
+    .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact {
+      margin: 10px 0;
+    }
+    .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact:first-child {
+      margin-top: 4px;
+    }
+    .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
+      height: 404px;
+    }
     .section-content h3 {
       font-size: 22px;
       font-weight: 700;
@@ -228,6 +237,10 @@
     .section-content ul {
       margin: 0 0 24px;
       padding-left: 1.5rem;
+    }
+    .section-content ul ul {
+      margin: 8px 0 12px;
+      padding-left: 1.25rem;
     }
     .section-content li { margin-bottom: 0.5rem; }
     .glossary {
@@ -462,6 +475,9 @@
       .section-content { font-size: 16px; }
       .section-content h3 { font-size: 20px; }
       .formula-reference-callout { padding: 16px 14px 16px 18px; }
+      .forecast-chart-stack .image-container--main.image-container--chart-embed.image-container--compact iframe.chart-iframe {
+        height: 420px;
+      }
       .image-container { margin: 32px 0; }
       .image-container--main iframe.chart-iframe { min-height: 480px; border-radius: var(--chart-radius-outer); }
       .image-container--main.image-container--chart-embed iframe.chart-iframe {
@@ -594,30 +610,35 @@
       </section>
 
       <section class="section">
-        <h2 class="section-title">Риск 2: кто получает поинты во второй роли (прогноз)</h2>
+        <h2 class="section-title">Что нас может ждать через 10 лет</h2>
         <div class="section-content">
-          <p>Для этого риска берём самый чувствительный срез: <strong>Leader в Novice и Intermediate</strong>. Метрика — доля поинтов, которые в этих лидерских номинациях получают primary-фолловеры (то есть танцоры во второй роли).</p>
+          <p>Как мы выяснили выше, наибольшее влияние изменение правил второй роли оказало на лидеров в Novice и Intermediate, поэтому было бы интересно посмотреть, к чему приведёт сохранение имеющегося тренда.</p>
 
-          <div class="image-container image-container--main">
-            <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260415-tooltipmin" title="Прогноз доли поинтов во второй роли в Novice Leader" width="100%" height="520" scrolling="no"></iframe>
-            <p class="image-caption"><strong>Novice Leader:</strong> диапазон трёх сценариев даёт ориентир <strong>25.6-39.3%</strong> через 5 лет и <strong>31.7-79.0%</strong> через 10 лет (центральный линейный сценарий: 33.6% и 45.8%).</p>
+          <p>Ниже представлены прогнозные модели до 2036 года: какую долю поинтов в Novice и Intermediate будут составлять поинты, набранные лидерами, для которых эта роль является второй, если сохранится текущая логика правил.</p>
+
+          <div class="forecast-chart-stack">
+            <div class="image-container image-container--main image-container--chart-embed image-container--compact">
+              <iframe class="chart-iframe" src="forecast_novice_leader_card.html?v=20260420-embed" title="Прогноз: доля secondary-поинтов в Novice Leader" width="100%" height="404" scrolling="no"></iframe>
+            </div>
+            <div class="image-container image-container--main image-container--chart-embed image-container--compact">
+              <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260420-embed" title="Прогноз: доля secondary-поинтов в Intermediate Leader" width="100%" height="404" scrolling="no"></iframe>
+            </div>
           </div>
 
-          <div class="image-container image-container--main">
-            <iframe class="chart-iframe" src="forecast_intermediate_leader_card.html?v=20260415-tooltipmin" title="Прогноз доли поинтов во второй роли в Intermediate Leader" width="100%" height="520" scrolling="no"></iframe>
-            <p class="image-caption"><strong>Intermediate Leader:</strong> диапазон сценариев — <strong>22.8-31.9%</strong> через 5 лет и <strong>29.8-64.1%</strong> через 10 лет (центральный линейный сценарий: 28.6% и 42.5%).</p>
-          </div>
-
-          <h3>Как считали прогноз (коротко)</h3>
+          <h3>Методика прогноза</h3>
           <ul>
-            <li><strong>Что прогнозируем:</strong> долю secondary-поинтов в Leader-номинации (Novice и Intermediate), то есть долю очков, которые получают primary-фолловеры.</li>
-            <li><strong>База факта:</strong> годовые значения за 2021-2026 (после ключевых изменений правил по второй роли).</li>
-            <li><strong>Сценарии:</strong> линейный тренд, инерционный рост (CAGR по факту, с ограничением годового темпа), и консервативный сценарий (50% линейного темпа).</li>
-            <li><strong>Подача результата:</strong> на графике показан коридор значений (min-max по 3 сценариям) и центральный ориентир (линейный сценарий) для +5 и +10 лет.</li>
-            <li><strong>Что это означает:</strong> это не «предсказание», а стресс-тест тренда — он показывает масштаб риска, если текущая динамика не будет компенсирована.</li>
+            <li><strong>База факта:</strong> фактические значения за 2021–2026.</li>
+            <li><strong>Прогнозные сценарии:</strong>
+              <ul>
+                <li>линейный тренд;</li>
+                <li>инерционный рост (совокупный среднегодовой темп роста (CAGR) по фактическим значениям, с ограничением годового темпа);</li>
+                <li>консервативный сценарий (50% линейного тренда).</li>
+              </ul>
+            </li>
+            <li><strong>Подача результата:</strong> на графиках показаны коридоры значений (min-max по 3 сценариям) и центральный ориентир (линейный тренд).</li>
           </ul>
 
-          <p>Это не «предсказание будущего», а сценарный ориентир: если тренд не замедлится, доля очков во второй роли в лидерских дивизионах может стать сопоставимой с долей очков по основной роли.</p>
+          <p>Как мы видим на графиках, к 2036 году возможны варианты, что в номинации Novice до 80% поинтов будут набирать фолловеры из более старших дивизионов, в номинации Intermediate этот показатель может подняться до 65%. Эти цифры говорят о том, что со временем WCS может столкнуться с ситуацией, когда танцоры, для которых лидер — основная роль, с большим трудом будут набирать поинты для перехода в следующую номинацию. Сейчас это выглядит не очень реалистично, но такая тенденция может ещё больше изменить танец, привычные паттерны и шаблоны.</p>
         </div>
       </section>
 
@@ -627,7 +648,7 @@
           <li><strong>9% всех поинтов</strong> в WSDC сейчас набирают танцоры во второй роли (было ~1% до 2021). В младших лидерских номинациях доля выше: в Newcomer Leader (2025) около четверти поинтов, в Novice и Intermediate Leader — порядка 20% и 11%.</li>
           <li><strong>Переходы по основной роли растут</strong> — вторая роль добавляется к ним, а не подменяет.</li>
           <li><strong>Баланс primary L/F:</strong> лидеров на 100 фолловеров стало меньше в Novice (91→72) и Intermediate (85→77).</li>
-          <li><strong>Риск 2:</strong> по диапазону из трёх моделей коридор на 5 лет уже ~26-39% (Novice) и ~23-32% (Intermediate), на 10 лет — ~32-79% и ~30-64%.</li>
+          <li><strong>Прогноз до 2036:</strong> при сохранении тренда в сценариях возможны очень высокие доли secondary-поинтов в Novice и Intermediate Leader (см. графики в соответствующем разделе).</li>
         </ul>
         <p style="margin-top: 20px; font-size: 16px; color: var(--text-secondary);"><strong>Если материал оказался полезным</strong> — поделитесь им в своём комьюнити. Это поможет обсуждать правила и баланс ролей на основе данных, а не только ощущений.</p>
       </section>
@@ -637,7 +658,7 @@
       <div class="data-note">
         <p><strong>Данные.</strong> Все расчёты выполнены по данным WSDC Points Registry: <code>dancer_role_info</code> (основная роль каждого танцора) и <code>dancers_results_info</code> (результаты выступлений). Данные обновляются ежегодно и доступны через <a href="https://points.worldsdc.com/">WSDC Points</a>.</p>
 
-        <p><strong>Методика.</strong> «Основная роль» (dominate_role) — та, в которой у танцора больше очков на более высоком уровне. «Вторая роль» — выступление в номинации, где роль не совпадает с dominate_role. Учитываются дивизионы Skill Level: Newcomer, Novice, Intermediate, Advanced, All-Stars. Переход (приток) — первый раз, когда танцор набрал хотя бы одно очко в паре «дивизион + роль»; включает как продвижение по основной роли, так и первый выход во второй роли в любом дивизионе. Размер дивизиона — все уникальные танцоры, набравшие очки в дивизионе в данном году. L/F баланс в риск-блоке 1 считается по primary-переходам: <code>n_primary(Leader) / n_primary(Follower) * 100</code>, сравнение периодов 2018–2019 и 2023–2025. Прогнозный риск-блок 2 для Novice/Intermediate Leader рассчитан по факту 2021–2026 в трёх сценариях (линейный, инерционный CAGR с ограничением темпа, консервативный 50% линейного тренда); в тексте показан диапазон min-max и центральный линейный ориентир на горизонтах +5 и +10 лет.</p>
+        <p><strong>Методика.</strong> «Основная роль» (dominate_role) — та, в которой у танцора больше очков на более высоком уровне. «Вторая роль» — выступление в номинации, где роль не совпадает с dominate_role. Учитываются дивизионы Skill Level: Newcomer, Novice, Intermediate, Advanced, All-Stars. Переход (приток) — первый раз, когда танцор набрал хотя бы одно очко в паре «дивизион + роль»; включает как продвижение по основной роли, так и первый выход во второй роли в любом дивизионе. Размер дивизиона — все уникальные танцоры, набравшие очки в дивизионе в данном году. L/F баланс в соответствующем разделе статьи считается по primary-переходам: <code>n_primary(Leader) / n_primary(Follower) * 100</code>, сравнение периодов 2018–2019 и 2023–2025. Прогноз до 2036 года для Novice и Intermediate Leader рассчитан по факту 2021–2026 в трёх сценариях (линейный, инерционный CAGR с ограничением темпа, консервативный 50% линейного тренда); на графиках — коридор min-max по сценариям и центральный линейный ориентир.</p>
 
         <p><strong>Оговорки.</strong> Поинты WSDC начисляются только за попадание в финал и занятие определённого места — это не факт участия в ивенте, а показатель конкурентоспособности. Данные 2020–2021 годов отражают влияние пандемии COVID-19 (резкое сокращение ивентов и участников). Данные 2025–2026 годов могут быть неполными (сезон в процессе). Скрипты расчётов доступны в репозитории проекта.</p>
 
