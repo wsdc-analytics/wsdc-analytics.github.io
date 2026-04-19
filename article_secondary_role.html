@@ -10,16 +10,17 @@
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <link rel="dns-prefetch" href="https://www.googletagmanager.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="article_secondary_role_header.png" as="image" fetchpriority="high">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://wsdc-analytics.github.io/article_secondary_role.html">
   <meta property="og:title" content="Вторая роль: Тенденции и прогнозы">
   <meta property="og:description" content="Как изменения правил о второй роли на ивентах WSDC меняют танец. Анализ поинтов, переходов и баланса ролей.">
-  <meta property="og:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/article_secondary_role_header.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://wsdc-analytics.github.io/article_secondary_role.html">
   <meta name="twitter:title" content="Вторая роль: Тенденции и прогнозы">
   <meta name="twitter:description" content="Как изменения правил о второй роли на ивентах WSDC меняют танец. Анализ поинтов, переходов и баланса ролей.">
-  <meta name="twitter:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <meta name="twitter:image" content="https://wsdc-analytics.github.io/article_secondary_role_header.png">
   <title>Вторая роль: Тенденции и прогнозы | WSDC Analytics</title>
   <script type="application/ld+json">
   {
@@ -28,6 +29,7 @@
     "headline": "Вторая роль: Тенденции и прогнозы",
     "description": "Как изменения правил о второй роли на ивентах WSDC меняют танец",
     "url": "https://wsdc-analytics.github.io/article_secondary_role.html",
+    "image": "https://wsdc-analytics.github.io/article_secondary_role_header.png",
     "datePublished": "2026-04-19",
     "dateModified": "2026-04-19",
     "author": { "@type": "Organization", "name": "WSDC Analytics" },
@@ -108,11 +110,25 @@
       background-color: var(--bg-primary);
     }
     .article-header {
-      background: var(--color-primary);
+      background: var(--color-primary) url("article_secondary_role_header.png") center bottom / 100% 100% no-repeat;
       color: white;
       padding: 100px 80px 80px;
       border-bottom: 1px solid var(--border-color);
       position: relative;
+      will-change: transform;
+      background-attachment: scroll;
+    }
+    .article-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-primary);
+      opacity: 0.82;
+      z-index: 0;
+    }
+    .article-header > * {
+      position: relative;
+      z-index: 1;
     }
     .article-header-top {
       display: flex;
