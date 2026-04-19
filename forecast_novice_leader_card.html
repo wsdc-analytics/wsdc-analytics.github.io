@@ -134,7 +134,7 @@
       <div class="legend">
         <span class="legend-item"><span class="legend-line fact"></span>Факт (2021–2026)</span>
         <span class="legend-item"><span class="legend-line central"></span>Линейный тренд</span>
-        <span class="legend-item"><span class="legend-line band"></span>Минимум и максимум прогноза</span>
+        <span class="legend-item"><span class="legend-line band"></span>Минимум и максимум</span>
       </div>
     </div>
     <div class="chart-canvas-box">
@@ -167,8 +167,8 @@
         datasets: [
           { label: "Факт", data: FACT, borderColor: "#0ea5e9", backgroundColor: "#0ea5e9", borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#0284c7", pointBorderWidth: 1.2 },
           { label: "Линейный тренд", data: CENTRAL, borderColor: "#475569", backgroundColor: "#475569", borderWidth: 1.5, borderDash: [5, 4], tension: 0.35, cubicInterpolationMode: "monotone", pointRadius: 0, pointHoverRadius: 3, pointBackgroundColor: "#ffffff", pointBorderColor: "#475569", pointBorderWidth: 1.2 },
-          { label: "Минимум прогноза", data: LOW, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
-          { label: "Максимум прогноза", data: HIGH, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
+          { label: "Минимум", data: LOW, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0)", borderWidth: 0, pointRadius: 0, tension: 0.35, cubicInterpolationMode: "monotone" },
+          { label: "Максимум", data: HIGH, borderColor: "rgba(14,165,233,0)", backgroundColor: "rgba(14,165,233,0.12)", borderWidth: 0, pointRadius: 0, fill: "-1", tension: 0.35, cubicInterpolationMode: "monotone" }
         ]
       },
       options: {
@@ -204,10 +204,10 @@
               const lo = byIdx[2]?.parsed?.y;
               const hi = byIdx[3]?.parsed?.y;
               if (lo != null && !Number.isNaN(lo)) {
-                parts.push(`<div class="tt-row" style="color:#0369a1"><span class="tt-label">Минимум прогноза</span><span class="tt-value">${Number(lo).toFixed(1)}%</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#0369a1"><span class="tt-label">Минимум</span><span class="tt-value">${Number(lo).toFixed(1)}%</span></div>`);
               }
               if (hi != null && !Number.isNaN(hi)) {
-                parts.push(`<div class="tt-row" style="color:#0284c7"><span class="tt-label">Максимум прогноза</span><span class="tt-value">${Number(hi).toFixed(1)}%</span></div>`);
+                parts.push(`<div class="tt-row" style="color:#0284c7"><span class="tt-label">Максимум</span><span class="tt-value">${Number(hi).toFixed(1)}%</span></div>`);
               }
               tooltipEl.innerHTML = `<div class="tt-title">${year}</div>${parts.join("")}`;
               const canvas = chart.canvas;
