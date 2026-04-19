@@ -1242,31 +1242,33 @@
 </footer>
 </div>
 <script>
-    twemoji.parse(document.body);
+    if (window.twemoji && typeof window.twemoji.parse === "function") {
+        window.twemoji.parse(document.body);
+    }
     
     // Языковой переключатель для статей
     (function() {
         function getCurrentLanguage() {
-            // Определяем язык по имени файла
-            const pathname = window.location.pathname;
-            if (pathname.includes('_en.html')) return 'en';
-            if (pathname.includes('_es.html')) return 'es';
-            if (pathname.includes('geo_2025.html')) return 'ru';
-            
-            // Проверяем параметр URL
+            // Сначала проверяем параметр URL (самый приоритетный источник)
             const urlParams = new URLSearchParams(window.location.search);
             const urlLang = urlParams.get('lang');
             if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
                 return urlLang;
             }
-            
-            // Проверяем localStorage
+
+            // Затем определяем язык по имени файла
+            const pathname = window.location.pathname;
+            if (pathname.includes('_en.html')) return 'en';
+            if (pathname.includes('_es.html')) return 'es';
+            if (pathname.includes('geo_2025.html')) return 'ru';
+
+            // Затем проверяем localStorage
             const storedLang = localStorage.getItem('wsdc-lang');
             if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) {
                 return storedLang;
             }
-            
-            return 'ru'; // По умолчанию для русской статьи
+
+            return 'ru';
         }
 
         function setLanguage(lang) {

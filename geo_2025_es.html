@@ -1242,7 +1242,9 @@
 </footer>
 </div>
 <script>
-    twemoji.parse(document.body);
+    if (window.twemoji && typeof window.twemoji.parse === "function") {
+        window.twemoji.parse(document.body);
+    }
     
     // Language switcher for articles
     (function() {

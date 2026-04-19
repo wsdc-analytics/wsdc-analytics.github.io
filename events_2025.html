@@ -1423,7 +1423,9 @@
 </div>
 <script>
     // Запускаем Twemoji для замены системных эмодзи на SVG
-    twemoji.parse(document.body);
+    if (window.twemoji && typeof window.twemoji.parse === "function") {
+        window.twemoji.parse(document.body);
+    }
 
     // Удаление всех ограничений высоты в Cusdis виджете
     function removeCusdisHeightRestrictions() {

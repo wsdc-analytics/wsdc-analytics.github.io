@@ -1572,7 +1572,9 @@
 </div>
 <script>
     // Initialize Twemoji to replace system emojis with SVGs
-    twemoji.parse(document.body);
+    if (window.twemoji && typeof window.twemoji.parse === "function") {
+        window.twemoji.parse(document.body);
+    }
 
     // Remove all height restrictions in Cusdis widget
     function removeCusdisHeightRestrictions() {
