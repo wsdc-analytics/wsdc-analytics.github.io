@@ -1,0 +1,23 @@
+# PDF merge script venv
+.venv-pdf/
+.venv/
+.venv*/
+venv/
+
+# Extracted rules for diff
+temp_rules_extract/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Local OS/editor noise
+.DS_Store
+*.swp
+*.swo
+
+# Local environment/config
+.env
+.env.*

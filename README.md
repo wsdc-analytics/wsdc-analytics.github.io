@@ -16,6 +16,11 @@ All data is based on analysis of the World Swing Dance Council (WSDC) database.
 
 [WSDC KPI Dashboard](https://public.tableau.com/app/profile/denisbalakin/viz/WSDCnew/KPIsDashboard)
 
+## Repository Operations
+
+- Repository practices: [docs/REPO_PRACTICES.md](docs/REPO_PRACTICES.md)
+- Content and reuse map: [docs/CONTENT_MAP.md](docs/CONTENT_MAP.md)
+
 ## License
 
 Content and analysis © 2025. Data sourced from WSDC Database.

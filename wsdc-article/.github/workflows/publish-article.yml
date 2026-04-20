@@ -1,0 +1,52 @@
+name: Publish Article Teaser
+
+on:
+  workflow_dispatch:
+    inputs:
+      article_file:
+        description: 'File with teaser (e.g. article_draft.md)'
+        required: true
+        default: 'article_draft.md'
+        type: string
+      article_url:
+        description: 'Full Article URL (e.g. https://.../page.html)'
+        required: true
+        default: 'https://zlat1109.github.io/wsdc-article/events_2025.html'
+        type: string
+      link_text:
+        description: 'Text for the link'
+        required: true
+        default: 'Читать статью'
+        type: string
+      telegram_chat_id:
+        description: 'Telegram Chat ID'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Article Publisher Bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          echo "🚀 Publishing teaser from ${{ inputs.article_file }}"
+          python3 publish_article_bot.py \
+            --file "${{ inputs.article_file }}" \
+            --chat-id "${{ inputs.telegram_chat_id }}" \
+            --url "${{ inputs.article_url }}" \
+            --link-text "${{ inputs.link_text }}"
