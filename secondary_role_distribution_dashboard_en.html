@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dashboard for secondary-role points distribution by year and country." />
+  <title>Secondary-Role Points Distribution | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #2d3748;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7fafc;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --border-color: #e5e7eb;
+      --accent: #2563eb;
+      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "DM Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 18px 28px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .back-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .title {
+      font-size: 30px;
+      line-height: 1.15;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .lead {
+      color: var(--text-secondary);
+      font-size: 16px;
+      max-width: 920px;
+      margin-bottom: 10px;
+    }
+    .data-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .viz-card {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .viz-frame {
+      display: block;
+      width: 100%;
+      height: 860px;
+      border: none;
+      background: #fff;
+    }
+    @media (max-width: 900px) {
+      .title { font-size: 24px; }
+      .lead { font-size: 15px; }
+      .viz-frame { height: 960px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a href="index.html" class="back-link">← Back to home</a>
+    </div>
+
+    <h1 class="title">Secondary-Role Points Distribution by Year and Country</h1>
+    <p class="lead">
+      This dashboard shows how points earned while dancing in a secondary role are distributed across countries and years.
+      Use filters to compare role and division slices, identify where secondary-role contribution is strongest, and track the year-to-year dynamic.
+    </p>
+    <p class="data-note">Data coverage: fixed snapshots for 2023-2025, plus a live 2026 partial slice (as of 2026-04-21).</p>
+
+    <section class="viz-card" aria-label="Secondary-role country distribution dashboard">
+      <iframe
+        class="viz-frame"
+        src="interactive_secondary_country_bubble.html"
+        title="Secondary-role points distribution by year and country"
+        loading="lazy">
+      </iframe>
+    </section>
+  </main>
+</body>
+</html>

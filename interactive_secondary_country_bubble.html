@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>География второй роли: страны</title>
+  <title>Secondary-role points distribution by country</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -26,7 +26,7 @@
       background: var(--surface-card);
       color: var(--text);
     }
-    /* Не на всю ширину вьюпорта: компактнее для встраивания и просмотра */
+    /* Slightly narrower than full viewport for embedding readability */
     .viz-shell {
       max-width: 880px;
       margin: 0 auto;
@@ -358,29 +358,30 @@
   <div class="chart-wrap">
       <div class="head">
         <div>
-          <h1 class="title">География второй роли: распределение по странам</h1>
+          <h1 class="title">Secondary-role points distribution by country</h1>
           <p class="subtitle">
-            X: доля поинтов, % · Y: количество поинтов · Размер пузыря: количество танцоров
+            Explore how points earned in a secondary role are distributed across countries and years. X: share of points, % · Y: points · Bubble size: number of dancers.
           </p>
         </div>
         <div class="controls">
           <div class="control">
-            <label for="yearSel">Год</label>
+            <label for="yearSel">Year</label>
             <div class="select-wrap">
               <span class="material-symbols-outlined select-icon year">calendar_month</span>
-              <select id="yearSel" class="filter-select" aria-label="Фильтр по году">
+              <select id="yearSel" class="filter-select" aria-label="Filter by year">
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
                 <option value="2025" selected>2025</option>
+                <option value="2026">2026 (partial, as of 2026-04-21)</option>
               </select>
               <span class="material-symbols-outlined select-caret">expand_more</span>
             </div>
           </div>
           <div class="control">
-            <label for="groupSel">Роль</label>
+            <label for="groupSel">Role</label>
             <div class="select-wrap">
               <span class="material-symbols-outlined select-icon role">groups</span>
-              <select id="groupSel" class="filter-select" aria-label="Фильтр по роли">
+              <select id="groupSel" class="filter-select" aria-label="Filter by role">
                 <option value="Total">Total</option>
                 <option value="Leader">Leader</option>
                 <option value="Follower">Follower</option>
@@ -389,10 +390,10 @@
             </div>
           </div>
           <div class="control">
-            <label for="divisionSel">Дивизион</label>
+            <label for="divisionSel">Division</label>
             <div class="select-wrap">
               <span class="material-symbols-outlined select-icon division">trophy</span>
-              <select id="divisionSel" class="filter-select" aria-label="Фильтр по дивизиону">
+              <select id="divisionSel" class="filter-select" aria-label="Filter by division">
                 <option value="Total">Total</option>
                 <option value="Newcomer">Newcomer</option>
                 <option value="Novice">Novice</option>
@@ -404,20 +405,20 @@
             </div>
           </div>
           <div class="control toggle-control">
-            <label class="toggle"><input type="checkbox" id="hideUsa" /> Убрать USA</label>
+            <label class="toggle"><input type="checkbox" id="hideUsa" /> Hide USA</label>
           </div>
         </div>
         <div class="reference-meta">
-          <span id="meanSharePill" class="reference-pill">Средняя доля: —</span>
-          <span id="meanPointsPill" class="reference-pill">Среднее количество поинтов: —</span>
+          <span id="meanSharePill" class="reference-pill">Average share: —</span>
+          <span id="meanPointsPill" class="reference-pill">Average points: —</span>
         </div>
       </div>
       <div class="chart-box">
         <canvas id="geoBubble"></canvas>
         <div id="dancerDrawer" class="dancer-drawer" hidden>
           <div class="dancer-drawer__head">
-            <p id="dancerDrawerTitle" class="dancer-drawer__title">Танцоры</p>
-            <button id="dancerDrawerClose" class="dancer-drawer__close" aria-label="Закрыть">×</button>
+            <p id="dancerDrawerTitle" class="dancer-drawer__title">Dancers</p>
+            <button id="dancerDrawerClose" class="dancer-drawer__close" aria-label="Close">×</button>
           </div>
           <div id="dancerDrawerBody" class="dancer-drawer__body"></div>
         </div>
@@ -639,12 +640,12 @@
     async function openDancerDrawer(point) {
       drawerEl.hidden = false;
       drawerTitleEl.textContent = `${point.country} · ${activeYear} · ${activeGroup} · ${activeDivision}`;
-      drawerBodyEl.innerHTML = "<p class=\"drawer-muted\">Загрузка списка танцоров...</p>";
+      drawerBodyEl.innerHTML = "<p class=\"drawer-muted\">Loading dancers...</p>";
       try {
         const data = await ensureUnifiedData();
         const rows = getDancerRowsFromData(data, activeYear, activeGroup, activeDivision, point.country);
         if (!rows.length) {
-          drawerBodyEl.innerHTML = "<p class=\"drawer-muted\">Для этого среза нет танцоров с поинтами второй роли.</p>";
+          drawerBodyEl.innerHTML = "<p class=\"drawer-muted\">No dancers with secondary-role points for this slice.</p>";
           return;
         }
         const tableRows = rows.map((row) => (
@@ -652,12 +653,12 @@
         )).join("");
         drawerBodyEl.innerHTML = [
           `<table class="dancer-table">`,
-          `<thead><tr><th>Танцор</th><th>Поинты</th></tr></thead>`,
+          `<thead><tr><th>Dancer</th><th>Points</th></tr></thead>`,
           `<tbody>${tableRows}</tbody>`,
           `</table>`
         ].join("");
       } catch (err) {
-        drawerBodyEl.innerHTML = `<p class="drawer-muted">Не удалось загрузить список танцоров.</p>`;
+        drawerBodyEl.innerHTML = `<p class="drawer-muted">Unable to load dancers list.</p>`;
       }
     }
 
@@ -670,9 +671,9 @@
       const shareStr =
         share == null || Number.isNaN(share) ? "—" : `${share.toFixed(1)}%`;
       const rows = [
-        { label: "Всего поинтов", value: intOrDash(total) },
-        { label: "Поинты второй роли", value: intOrDash(secPts) },
-        { label: "Доля второй роли", value: shareStr }
+        { label: "Total points", value: intOrDash(total) },
+        { label: "Secondary-role points", value: intOrDash(secPts) },
+        { label: "Secondary-role share", value: shareStr }
       ];
       const metricsHtml = rows
         .map(
@@ -680,7 +681,7 @@
             `<div class="tt-row"><span class="tt-label">${r.label}</span><span class="tt-value">${r.value}</span></div>`
         )
         .join("");
-      const actionHtml = `<div class="tt-action-row"><button class="tt-action" data-action="show-dancers">Посмотреть танцоров</button></div>`;
+      const actionHtml = `<div class="tt-action-row"><button class="tt-action" data-action="show-dancers">View dancers</button></div>`;
       return metricsHtml + actionHtml;
     }
 
@@ -713,12 +714,12 @@
     function setReferencePills(meanX, meanY) {
       if (!meanSharePillEl || !meanPointsPillEl) return;
       if (!Number.isFinite(meanX) || !Number.isFinite(meanY)) {
-        meanSharePillEl.textContent = "Средняя доля: —";
-        meanPointsPillEl.textContent = "Среднее количество поинтов: —";
+        meanSharePillEl.textContent = "Average share: —";
+        meanPointsPillEl.textContent = "Average points: —";
         return;
       }
-      meanSharePillEl.textContent = `Средняя доля: ${meanX.toFixed(1)}%`;
-      meanPointsPillEl.textContent = `Среднее количество поинтов: ${meanY.toFixed(0)}`;
+      meanSharePillEl.textContent = `Average share: ${meanX.toFixed(1)}%`;
+      meanPointsPillEl.textContent = `Average points: ${meanY.toFixed(0)}`;
     }
 
     const referenceMeanLinesPlugin = {
@@ -727,7 +728,10 @@
         const dataset = chart.data && chart.data.datasets && chart.data.datasets[0];
         const points = (dataset && dataset.data) ? dataset.data : [];
         const valid = points.filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
-        if (!valid.length) return;
+        if (!valid.length) {
+          setReferencePills(Number.NaN, Number.NaN);
+          return;
+        }
 
         const meanX = valid.reduce((s, p) => s + p.x, 0) / valid.length;
         const meanY = valid.reduce((s, p) => s + p.y, 0) / valid.length;
@@ -818,7 +822,7 @@
       plugins: [referenceMeanLinesPlugin, flagBubblePlugin],
       data: {
         datasets: [{
-          label: "Страны",
+          label: "Countries",
           data: getPoints(activeYear, activeGroup, activeDivision, false),
           borderColor: "rgba(0,0,0,0)",
           backgroundColor: "rgba(0,0,0,0)",
@@ -901,7 +905,7 @@
         },
         scales: {
           x: {
-            title: { display: true, text: "Доля поинтов, %" },
+            title: { display: true, text: "Share of points, %" },
             ticks: {
               callback: function(value) {
                 const n = Number(this.getLabelForValue(value));
@@ -912,7 +916,7 @@
           },
           y: {
             beginAtZero: true,
-            title: { display: true, text: "Количество поинтов" },
+            title: { display: true, text: "Points" },
             ticks: {
               callback: function(value) {
                 const n = Number(this.getLabelForValue(value));
