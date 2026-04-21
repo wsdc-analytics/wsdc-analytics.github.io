@@ -20,7 +20,11 @@
       --radius-md: 12px;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+    }
     body {
       font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: var(--surface-card);
@@ -30,8 +34,10 @@
     .viz-shell {
       max-width: 880px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 8px 12px;
       width: 100%;
+      height: 100vh;
+      overflow: hidden;
     }
     .material-symbols-outlined {
       font-family: "Material Symbols Outlined";
@@ -52,15 +58,19 @@
       border-radius: var(--radius-outer);
       background: var(--surface-card);
       box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
+      padding: 12px 12px 10px;
       overflow: visible;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     .head {
       display: flex;
       flex-direction: column;
       align-items: stretch;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      flex: 0 0 auto;
     }
     .title {
       margin: 0;
@@ -171,14 +181,14 @@
     }
     .chart-box {
       position: relative;
-      margin: 6px 0 0;
-      padding: 10px 6px 12px;
+      margin: 4px 0 0;
+      padding: 8px 4px 8px;
       border-radius: 12px;
       background: #ffffff;
       overflow: visible;
       width: 100%;
-      height: 520px;
-      min-height: 520px;
+      flex: 1 1 auto;
+      min-height: 260px;
     }
     .chartjs-ext-tooltip {
       position: absolute;
@@ -323,7 +333,7 @@
     }
     @media (max-width: 700px) {
       .chart-wrap {
-        padding: 12px 12px 10px;
+        padding: 10px 10px 8px;
         border-radius: 20px;
       }
       .controls {
@@ -339,8 +349,7 @@
         margin-top: 4px;
       }
       .chart-box {
-        height: 460px;
-        min-height: 460px;
+        min-height: 220px;
       }
       .dancer-drawer {
         width: calc(100% - 20px);
