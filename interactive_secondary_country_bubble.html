@@ -411,6 +411,9 @@
           </div>
         </div>
         <div class="reference-meta">
+          <span id="totalPointsPill" class="reference-pill">Total points: —</span>
+          <span id="secondaryPointsPill" class="reference-pill">Secondary-role points: —</span>
+          <span id="secondarySharePill" class="reference-pill">Secondary-role share: —</span>
           <span id="meanSharePill" class="reference-pill">Average share: —</span>
           <span id="meanPointsPill" class="reference-pill">Average points: —</span>
         </div>
@@ -523,7 +526,7 @@
       img.onload = function () {
         onReady();
       };
-      img.src = `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
+      img.src = `./static/flags/w80/${code.toLowerCase()}.png`;
       flagImageCache[code] = img;
       return img;
     }
@@ -564,6 +567,9 @@
     const drawerTitleEl = document.getElementById("dancerDrawerTitle");
     const drawerBodyEl = document.getElementById("dancerDrawerBody");
     const drawerCloseEl = document.getElementById("dancerDrawerClose");
+    const totalPointsPillEl = document.getElementById("totalPointsPill");
+    const secondaryPointsPillEl = document.getElementById("secondaryPointsPill");
+    const secondarySharePillEl = document.getElementById("secondarySharePill");
     const meanSharePillEl = document.getElementById("meanSharePill");
     const meanPointsPillEl = document.getElementById("meanPointsPill");
     let activeYear = "2025";
@@ -713,15 +719,28 @@
       });
     }
 
-    function setReferencePills(meanX, meanY) {
-      if (!meanSharePillEl || !meanPointsPillEl) return;
-      if (!Number.isFinite(meanX) || !Number.isFinite(meanY)) {
-        meanSharePillEl.textContent = "Average share: —";
-        meanPointsPillEl.textContent = "Average points: —";
+    function setSummaryPills(points) {
+      const valid = (points || []).filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
+      if (!valid.length) {
+        if (totalPointsPillEl) totalPointsPillEl.textContent = "Total points: —";
+        if (secondaryPointsPillEl) secondaryPointsPillEl.textContent = "Secondary-role points: —";
+        if (secondarySharePillEl) secondarySharePillEl.textContent = "Secondary-role share: —";
+        if (meanSharePillEl) meanSharePillEl.textContent = "Average share: —";
+        if (meanPointsPillEl) meanPointsPillEl.textContent = "Average points: —";
         return;
       }
-      meanSharePillEl.textContent = `Average share: ${meanX.toFixed(1)}%`;
-      meanPointsPillEl.textContent = `Average points: ${meanY.toFixed(0)}`;
+
+      const totalPoints = valid.reduce((s, p) => s + (Number(p.total) || 0), 0);
+      const secondaryPoints = valid.reduce((s, p) => s + (Number(p.y) || 0), 0);
+      const secondaryShare = totalPoints > 0 ? (secondaryPoints / totalPoints) * 100 : 0;
+      const meanX = valid.reduce((s, p) => s + p.x, 0) / valid.length;
+      const meanY = valid.reduce((s, p) => s + p.y, 0) / valid.length;
+
+      if (totalPointsPillEl) totalPointsPillEl.textContent = `Total points: ${Math.round(totalPoints)}`;
+      if (secondaryPointsPillEl) secondaryPointsPillEl.textContent = `Secondary-role points: ${Math.round(secondaryPoints)}`;
+      if (secondarySharePillEl) secondarySharePillEl.textContent = `Secondary-role share: ${secondaryShare.toFixed(1)}%`;
+      if (meanSharePillEl) meanSharePillEl.textContent = `Average share: ${meanX.toFixed(1)}%`;
+      if (meanPointsPillEl) meanPointsPillEl.textContent = `Average points: ${meanY.toFixed(0)}`;
     }
 
     const referenceMeanLinesPlugin = {
@@ -730,14 +749,10 @@
         const dataset = chart.data && chart.data.datasets && chart.data.datasets[0];
         const points = (dataset && dataset.data) ? dataset.data : [];
         const valid = points.filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
-        if (!valid.length) {
-          setReferencePills(Number.NaN, Number.NaN);
-          return;
-        }
+        if (!valid.length) return;
 
         const meanX = valid.reduce((s, p) => s + p.x, 0) / valid.length;
         const meanY = valid.reduce((s, p) => s + p.y, 0) / valid.length;
-        setReferencePills(meanX, meanY);
 
         const xScale = chart.scales.x;
         const yScale = chart.scales.y;
@@ -826,9 +841,9 @@
         datasets: [{
           label: "Countries",
           data: getPoints(activeYear, activeGroup, activeDivision, false),
-          borderColor: "rgba(0,0,0,0)",
-          backgroundColor: "rgba(0,0,0,0)",
-          borderWidth: 0
+          borderColor: "rgba(55,65,81,0.45)",
+          backgroundColor: "rgba(59,130,246,0.18)",
+          borderWidth: 0.8
         }]
       },
       options: {
@@ -937,6 +952,7 @@
 
     function updateChart() {
       const points = getPoints(activeYear, activeGroup, activeDivision, hideUsaEl.checked);
+      setSummaryPills(points);
       chart.data.datasets[0].data = points;
       clearPin(chart);
       closeDancerDrawer();
