@@ -411,9 +411,6 @@
           </div>
         </div>
         <div class="reference-meta">
-          <span id="totalPointsPill" class="reference-pill">Total points: —</span>
-          <span id="secondaryPointsPill" class="reference-pill">Secondary-role points: —</span>
-          <span id="secondarySharePill" class="reference-pill">Secondary-role share: —</span>
           <span id="meanSharePill" class="reference-pill">Average share: —</span>
           <span id="meanPointsPill" class="reference-pill">Average points: —</span>
         </div>
@@ -567,9 +564,6 @@
     const drawerTitleEl = document.getElementById("dancerDrawerTitle");
     const drawerBodyEl = document.getElementById("dancerDrawerBody");
     const drawerCloseEl = document.getElementById("dancerDrawerClose");
-    const totalPointsPillEl = document.getElementById("totalPointsPill");
-    const secondaryPointsPillEl = document.getElementById("secondaryPointsPill");
-    const secondarySharePillEl = document.getElementById("secondarySharePill");
     const meanSharePillEl = document.getElementById("meanSharePill");
     const meanPointsPillEl = document.getElementById("meanPointsPill");
     let activeYear = "2025";
@@ -719,40 +713,15 @@
       });
     }
 
-    function setReferencePills(metrics) {
-      const {
-        totalPointsSum,
-        secondaryPointsSum,
-        secondarySharePct,
-        meanSharePct,
-        meanSecondaryPoints
-      } = metrics || {};
-
-      if (totalPointsPillEl) {
-        totalPointsPillEl.textContent = Number.isFinite(totalPointsSum)
-          ? `Total points: ${Math.round(totalPointsSum)}`
-          : "Total points: —";
+    function setReferencePills(meanX, meanY) {
+      if (!meanSharePillEl || !meanPointsPillEl) return;
+      if (!Number.isFinite(meanX) || !Number.isFinite(meanY)) {
+        meanSharePillEl.textContent = "Average share: —";
+        meanPointsPillEl.textContent = "Average points: —";
+        return;
       }
-      if (secondaryPointsPillEl) {
-        secondaryPointsPillEl.textContent = Number.isFinite(secondaryPointsSum)
-          ? `Secondary-role points: ${Math.round(secondaryPointsSum)}`
-          : "Secondary-role points: —";
-      }
-      if (secondarySharePillEl) {
-        secondarySharePillEl.textContent = Number.isFinite(secondarySharePct)
-          ? `Secondary-role share: ${secondarySharePct.toFixed(1)}%`
-          : "Secondary-role share: —";
-      }
-      if (meanSharePillEl) {
-        meanSharePillEl.textContent = Number.isFinite(meanSharePct)
-          ? `Average share: ${meanSharePct.toFixed(1)}%`
-          : "Average share: —";
-      }
-      if (meanPointsPillEl) {
-        meanPointsPillEl.textContent = Number.isFinite(meanSecondaryPoints)
-          ? `Average points: ${meanSecondaryPoints.toFixed(0)}`
-          : "Average points: —";
-      }
+      meanSharePillEl.textContent = `Average share: ${meanX.toFixed(1)}%`;
+      meanPointsPillEl.textContent = `Average points: ${meanY.toFixed(0)}`;
     }
 
     const referenceMeanLinesPlugin = {
@@ -762,23 +731,13 @@
         const points = (dataset && dataset.data) ? dataset.data : [];
         const valid = points.filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
         if (!valid.length) {
-          setReferencePills(null);
+          setReferencePills(Number.NaN, Number.NaN);
           return;
         }
 
-        const totalPointsSum = valid.reduce((s, p) => s + (Number(p.total) || 0), 0);
-        const secondaryPointsSum = valid.reduce((s, p) => s + (Number(p.y) || 0), 0);
-        const secondarySharePct = totalPointsSum > 0 ? (secondaryPointsSum / totalPointsSum) * 100 : 0;
-        const meanSharePct = valid.reduce((s, p) => s + p.x, 0) / valid.length;
-        const meanSecondaryPoints = valid.reduce((s, p) => s + p.y, 0) / valid.length;
-
-        setReferencePills({
-          totalPointsSum,
-          secondaryPointsSum,
-          secondarySharePct,
-          meanSharePct,
-          meanSecondaryPoints
-        });
+        const meanX = valid.reduce((s, p) => s + p.x, 0) / valid.length;
+        const meanY = valid.reduce((s, p) => s + p.y, 0) / valid.length;
+        setReferencePills(meanX, meanY);
 
         const xScale = chart.scales.x;
         const yScale = chart.scales.y;
