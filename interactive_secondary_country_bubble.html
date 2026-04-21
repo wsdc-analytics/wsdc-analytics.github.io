@@ -32,9 +32,9 @@
     }
     /* Slightly narrower than full viewport for embedding readability */
     .viz-shell {
-      max-width: 880px;
+      max-width: none;
       margin: 0 auto;
-      padding: 8px 12px;
+      padding: 0;
       width: 100%;
       height: 100vh;
       overflow: hidden;
@@ -54,11 +54,11 @@
       -webkit-font-smoothing: antialiased;
     }
     .chart-wrap {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-outer);
-      background: var(--surface-card);
-      box-shadow: var(--shadow);
-      padding: 12px 12px 10px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      padding: 10px 10px 8px;
       overflow: visible;
       height: 100%;
       display: flex;
@@ -333,8 +333,7 @@
     }
     @media (max-width: 700px) {
       .chart-wrap {
-        padding: 10px 10px 8px;
-        border-radius: 20px;
+        padding: 8px 8px 6px;
       }
       .controls {
         flex-wrap: wrap;
@@ -915,10 +914,12 @@
         scales: {
           x: {
             title: { display: true, text: "Share of points, %" },
+            min: 0,
             ticks: {
+              stepSize: 5,
               callback: function(value) {
                 const n = Number(this.getLabelForValue(value));
-                return Number.isFinite(n) ? n.toFixed(1) : "";
+                return Number.isFinite(n) ? Math.round(n) : "";
               }
             },
             grid: { display: false, drawBorder: true, drawTicks: false }
