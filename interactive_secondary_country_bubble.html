@@ -407,36 +407,39 @@
 
     function buildAdaptiveRadiusMap(rows) {
       const counts = rows.map((r) => Math.max(0, Number(r.dancers_count) || 0));
-      const maxCount = Math.max(1, ...counts);
-      const avgCount = counts.length
-        ? counts.reduce((s, v) => s + v, 0) / counts.length
-        : 0;
       const positives = counts.filter((v) => v > 0);
-      const minPositive = positives.length ? Math.min(...positives) : 1;
+      if (!positives.length) {
+        return rows.map(() => 0);
+      }
 
-      // For low-count slices (1..4 dancers), enlarge bubbles noticeably.
-      // For medium/high slices, keep area ~ proportional to dancers_count
-      // (radius ~ sqrt(count)) so differences like 59 vs 87 are visible.
-      const minR = avgCount <= 2 ? 14 : avgCount <= 4 ? 11 : 7;
-      const maxR = avgCount <= 2 ? 40 : avgCount <= 4 ? 34 : 32;
+      const minPositive = Math.min(...positives);
+      const maxCount = Math.max(...positives);
 
-      const sqrtMin = Math.sqrt(minPositive);
-      const sqrtMax = Math.sqrt(maxCount);
-      const sqrtSpan = Math.max(1e-9, sqrtMax - sqrtMin);
+      // Keep 1-2 dancers visually small (not dominant), but still clickable.
+      // Scale by current slice to preserve differentiation across filters.
+      let minR = 5.5;
+      let maxR = 30;
+      if (maxCount <= 3) {
+        minR = 6;
+        maxR = 20;
+      } else if (maxCount <= 8) {
+        minR = 6;
+        maxR = 23;
+      } else if (maxCount <= 25) {
+        minR = 5.5;
+        maxR = 26;
+      }
 
       return rows.map((r) => {
         const c = Math.max(0, Number(r.dancers_count) || 0);
         if (c <= 0) return 0;
-
-        // Tiny slices: extra boost so 1-2 dancers are still readable.
-        if (avgCount <= 4) {
-          const t = Math.log1p(c) / Math.log1p(maxCount);
-          return Math.max(minR, minR + t * (maxR - minR));
+        if (maxCount === minPositive) {
+          return minR;
         }
-
-        // Default: sqrt scaling (area perception-friendly).
-        const t = (Math.sqrt(c) - sqrtMin) / sqrtSpan; // 0..1
-        return Math.max(minR, minR + t * (maxR - minR));
+        // Perception-friendly area scaling + slight easing for mid-range spread.
+        const tRaw = (Math.sqrt(c) - Math.sqrt(minPositive)) / (Math.sqrt(maxCount) - Math.sqrt(minPositive));
+        const t = Math.pow(Math.min(1, Math.max(0, tRaw)), 0.9);
+        return minR + t * (maxR - minR);
       });
     }
 
