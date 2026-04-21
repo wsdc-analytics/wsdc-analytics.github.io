@@ -812,19 +812,15 @@
     const flagBubblePlugin = {
       id: "flagBubblePlugin",
       afterDatasetsDraw(chart) {
-        const dataset = chart.data && chart.data.datasets ? chart.data.datasets[0] : null;
-        const points = (dataset && dataset.data) ? dataset.data : [];
+        const meta = chart.getDatasetMeta(0);
+        const points = chart.data.datasets[0].data || [];
         const ctx = chart.ctx;
-        const xScale = chart.scales.x;
-        const yScale = chart.scales.y;
-        if (!xScale || !yScale) return;
         ctx.save();
-        points.forEach((d) => {
+        meta.data.forEach((el, i) => {
+          const d = points[i];
           if (!d) return;
-          if (!Number.isFinite(d.x) || !Number.isFinite(d.y)) return;
-          const x = xScale.getPixelForValue(d.x);
-          const y = yScale.getPixelForValue(d.y);
-          if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+          const x = el.x;
+          const y = el.y;
           const r = Math.max(3, d.r || 8);
           const code = d.code || "";
           const img = getFlagImage(code, () => chart.update("none"));
