@@ -526,9 +526,6 @@
       img.onload = function () {
         onReady();
       };
-      img.onerror = function () {
-        onReady();
-      };
       img.src = `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
       flagImageCache[code] = img;
       return img;
@@ -815,7 +812,6 @@
     const flagBubblePlugin = {
       id: "flagBubblePlugin",
       afterDatasetsDraw(chart) {
-        const meta = chart.getDatasetMeta(0);
         const dataset = chart.data && chart.data.datasets ? chart.data.datasets[0] : null;
         const points = (dataset && dataset.data) ? dataset.data : [];
         const ctx = chart.ctx;
@@ -823,18 +819,11 @@
         const yScale = chart.scales.y;
         if (!xScale || !yScale) return;
         ctx.save();
-        points.forEach((d, i) => {
+        points.forEach((d) => {
           if (!d) return;
-          let x = Number.NaN;
-          let y = Number.NaN;
-          const el = meta && meta.data ? meta.data[i] : null;
-          if (el && Number.isFinite(el.x) && Number.isFinite(el.y)) {
-            x = el.x;
-            y = el.y;
-          } else if (Number.isFinite(d.x) && Number.isFinite(d.y)) {
-            x = xScale.getPixelForValue(d.x);
-            y = yScale.getPixelForValue(d.y);
-          }
+          if (!Number.isFinite(d.x) || !Number.isFinite(d.y)) return;
+          const x = xScale.getPixelForValue(d.x);
+          const y = yScale.getPixelForValue(d.y);
           if (!Number.isFinite(x) || !Number.isFinite(y)) return;
           const r = Math.max(3, d.r || 8);
           const code = d.code || "";
@@ -858,17 +847,8 @@
             ctx.drawImage(img, sx, sy, srcSize, srcSize, x - r, y - r, side, side);
             ctx.globalAlpha = 1;
           } else {
-            // robust fallback when image fails to load: still render visible bubble
-            ctx.fillStyle = "rgba(59,130,246,0.28)";
+            ctx.fillStyle = "rgba(37,99,235,0.35)";
             ctx.fill();
-            const emoji = d.flag || "";
-            if (emoji) {
-              ctx.font = `${Math.max(10, Math.round(r * 1.25))}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
-              ctx.textAlign = "center";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "rgba(17,24,39,0.9)";
-              ctx.fillText(emoji, x, y + 0.5);
-            }
           }
           ctx.restore();
 
@@ -891,9 +871,9 @@
         datasets: [{
           label: "Countries",
           data: getPoints(activeYear, activeGroup, activeDivision, false),
-          borderColor: "rgba(107,114,128,0.25)",
-          backgroundColor: "rgba(59,130,246,0.10)",
-          borderWidth: 0.6
+          borderColor: "rgba(0,0,0,0)",
+          backgroundColor: "rgba(0,0,0,0)",
+          borderWidth: 0
         }]
       },
       options: {
