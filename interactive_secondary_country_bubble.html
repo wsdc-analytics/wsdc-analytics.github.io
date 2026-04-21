@@ -73,6 +73,25 @@
       font-size: 12px;
       line-height: 1.4;
     }
+    .reference-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .reference-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #4b5563;
+      background: #f8fafc;
+      border: 1px solid rgba(117, 119, 120, 0.2);
+      border-radius: 999px;
+      padding: 4px 9px;
+      white-space: nowrap;
+    }
     .controls {
       display: flex;
       flex-wrap: nowrap;
@@ -341,7 +360,7 @@
         <div>
           <h1 class="title">География второй роли: распределение по странам</h1>
           <p class="subtitle">
-            X: доля второй роли, % · Y: поинты за вторую роль · Размер пузыря: количество танцоров
+            X: доля поинтов, % · Y: количество поинтов · Размер пузыря: количество танцоров
           </p>
         </div>
         <div class="controls">
@@ -387,6 +406,10 @@
           <div class="control toggle-control">
             <label class="toggle"><input type="checkbox" id="hideUsa" /> Убрать USA</label>
           </div>
+        </div>
+        <div class="reference-meta">
+          <span id="meanSharePill" class="reference-pill">Средняя доля: —</span>
+          <span id="meanPointsPill" class="reference-pill">Среднее количество поинтов: —</span>
         </div>
       </div>
       <div class="chart-box">
@@ -538,6 +561,8 @@
     const drawerTitleEl = document.getElementById("dancerDrawerTitle");
     const drawerBodyEl = document.getElementById("dancerDrawerBody");
     const drawerCloseEl = document.getElementById("dancerDrawerClose");
+    const meanSharePillEl = document.getElementById("meanSharePill");
+    const meanPointsPillEl = document.getElementById("meanPointsPill");
     let activeYear = "2025";
     let activeGroup = "Total";
     let activeDivision = "Total";
@@ -685,6 +710,17 @@
       });
     }
 
+    function setReferencePills(meanX, meanY) {
+      if (!meanSharePillEl || !meanPointsPillEl) return;
+      if (!Number.isFinite(meanX) || !Number.isFinite(meanY)) {
+        meanSharePillEl.textContent = "Средняя доля: —";
+        meanPointsPillEl.textContent = "Среднее количество поинтов: —";
+        return;
+      }
+      meanSharePillEl.textContent = `Средняя доля: ${meanX.toFixed(1)}%`;
+      meanPointsPillEl.textContent = `Среднее количество поинтов: ${meanY.toFixed(0)}`;
+    }
+
     const referenceMeanLinesPlugin = {
       id: "referenceMeanLinesPlugin",
       beforeDatasetsDraw(chart) {
@@ -695,6 +731,7 @@
 
         const meanX = valid.reduce((s, p) => s + p.x, 0) / valid.length;
         const meanY = valid.reduce((s, p) => s + p.y, 0) / valid.length;
+        setReferencePills(meanX, meanY);
 
         const xScale = chart.scales.x;
         const yScale = chart.scales.y;
@@ -721,40 +758,6 @@
         ctx.lineTo(area.right, yPx);
         ctx.stroke();
 
-        // labels for reference lines (kept near borders to avoid covering bubbles)
-        ctx.setLineDash([]);
-        ctx.font = "600 10px Inter, sans-serif";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = "rgba(55, 65, 81, 0.9)";
-
-        const xLabel = `Средняя доля: ${meanX.toFixed(1)}%`;
-        const xTextW = ctx.measureText(xLabel).width;
-        const xPad = 5;
-        const xRectW = xTextW + xPad * 2;
-        const xRectH = 16;
-        const xLabelX = Math.min(Math.max(xPx - xRectW / 2, area.left + 2), area.right - xRectW - 2);
-        const xLabelY = area.top + 4;
-        ctx.fillStyle = "rgba(255,255,255,0.92)";
-        ctx.fillRect(xLabelX, xLabelY, xRectW, xRectH);
-        ctx.strokeStyle = "rgba(107, 114, 128, 0.35)";
-        ctx.lineWidth = 0.8;
-        ctx.strokeRect(xLabelX, xLabelY, xRectW, xRectH);
-        ctx.fillStyle = "rgba(55, 65, 81, 0.9)";
-        ctx.fillText(xLabel, xLabelX + xPad, xLabelY + xRectH / 2);
-
-        const yLabel = `Средние поинты: ${meanY.toFixed(0)}`;
-        const yTextW = ctx.measureText(yLabel).width;
-        const yRectW = yTextW + xPad * 2;
-        const yRectH = 16;
-        const yLabelX = area.right - yRectW - 4;
-        const yLabelY = Math.min(Math.max(yPx - yRectH / 2, area.top + 2), area.bottom - yRectH - 2);
-        ctx.fillStyle = "rgba(255,255,255,0.92)";
-        ctx.fillRect(yLabelX, yLabelY, yRectW, yRectH);
-        ctx.strokeStyle = "rgba(107, 114, 128, 0.35)";
-        ctx.lineWidth = 0.8;
-        ctx.strokeRect(yLabelX, yLabelY, yRectW, yRectH);
-        ctx.fillStyle = "rgba(55, 65, 81, 0.9)";
-        ctx.fillText(yLabel, yLabelX + xPad, yLabelY + yRectH / 2);
         ctx.restore();
       }
     };
@@ -898,12 +901,26 @@
         },
         scales: {
           x: {
-            title: { display: true, text: "Доля второй роли, %" },
+            title: { display: true, text: "Доля поинтов, %" },
+            ticks: {
+              callback: function(value) {
+                const n = Number(this.getLabelForValue(value));
+                return Number.isFinite(n) ? n.toFixed(1) : "";
+              }
+            },
             grid: { display: false, drawBorder: true, drawTicks: false }
           },
           y: {
             beginAtZero: true,
-            title: { display: true, text: "Поинты, набранные за вторую роль" },
+            title: { display: true, text: "Количество поинтов" },
+            ticks: {
+              callback: function(value) {
+                const n = Number(this.getLabelForValue(value));
+                if (!Number.isFinite(n)) return "";
+                if (Math.abs(n) < 1e-9) return "";
+                return Math.round(n);
+              }
+            },
             grid: { display: false, drawBorder: true, drawTicks: false }
           }
         }
