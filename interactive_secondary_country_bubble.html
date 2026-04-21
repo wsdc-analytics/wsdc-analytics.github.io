@@ -522,14 +522,13 @@
       if (!code) return null;
       if (flagImageCache[code]) return flagImageCache[code];
       const img = new Image();
-      img.crossOrigin = "anonymous";
       img.onload = function () {
         onReady();
       };
       img.onerror = function () {
         onReady();
       };
-      img.src = `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
+      img.src = `./static/flags/w80/${code.toLowerCase()}.png`;
       flagImageCache[code] = img;
       return img;
     }
@@ -859,7 +858,7 @@
             ctx.globalAlpha = 1;
           } else {
             // robust fallback when image fails to load: still render visible bubble
-            ctx.fillStyle = "rgba(59,130,246,0.28)";
+            ctx.fillStyle = "rgba(59,130,246,0.55)";
             ctx.fill();
             const emoji = d.flag || "";
             if (emoji) {
@@ -891,9 +890,9 @@
         datasets: [{
           label: "Countries",
           data: getPoints(activeYear, activeGroup, activeDivision, false),
-          borderColor: "rgba(107,114,128,0.25)",
-          backgroundColor: "rgba(59,130,246,0.10)",
-          borderWidth: 0.6
+          borderColor: "rgba(55,65,81,0.75)",
+          backgroundColor: "rgba(59,130,246,0.38)",
+          borderWidth: 1.1
         }]
       },
       options: {
