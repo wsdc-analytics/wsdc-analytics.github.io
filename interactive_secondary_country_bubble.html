@@ -499,8 +499,15 @@
       return img;
     }
 
+    function getSourceRows(year, group, division) {
+      if (unifiedData) {
+        return ((((unifiedData || {})[year] || {})[group] || {})[division]) || [];
+      }
+      return (((DATA[year] || {})[group] || {})[division]) || [];
+    }
+
     function getPoints(year, group, division, hideUsa) {
-      const rows = (((DATA[year] || {})[group] || {})[division]) || [];
+      const rows = getSourceRows(year, group, division);
       const filteredRows = rows
         .filter((r) => r.transitions > 0)
         .filter((r) => !hideUsa || r.country !== "United States");
@@ -532,9 +539,9 @@
     let activeGroup = "Total";
     let activeDivision = "Total";
     const pinState = { active: false, point: null, x: 0, y: 0 };
-    const DRILLDOWN_URL = "./static/data/secondary_country_dancer_breakdown.json";
-    let drilldownData = null;
-    let drilldownLoadPromise = null;
+    const UNIFIED_URL = "./static/data/secondary_country_unified.json";
+    let unifiedData = null;
+    let unifiedLoadPromise = null;
 
     function getOrCreateTooltip(chart) {
       let tooltipEl = chart.canvas.parentNode.querySelector(".chartjs-ext-tooltip");
@@ -563,24 +570,26 @@
         .replaceAll("'", "&#39;");
     }
 
-    async function ensureDrilldownData() {
-      if (drilldownData) return drilldownData;
-      if (!drilldownLoadPromise) {
-        drilldownLoadPromise = fetch(DRILLDOWN_URL)
+    async function ensureUnifiedData() {
+      if (unifiedData) return unifiedData;
+      if (!unifiedLoadPromise) {
+        unifiedLoadPromise = fetch(UNIFIED_URL)
           .then((res) => {
-            if (!res.ok) throw new Error(`Failed to load drilldown data: ${res.status}`);
+            if (!res.ok) throw new Error(`Failed to load unified data: ${res.status}`);
             return res.json();
           })
           .then((json) => {
-            drilldownData = json;
-            return drilldownData;
+            unifiedData = json;
+            return unifiedData;
           });
       }
-      return drilldownLoadPromise;
+      return unifiedLoadPromise;
     }
 
     function getDancerRowsFromData(data, year, group, division, country) {
-      return ((((data || {})[year] || {})[group] || {})[division] || {})[country] || [];
+      const rows = ((((data || {})[year] || {})[group] || {})[division]) || [];
+      const match = rows.find((r) => r.country === country);
+      return (match && Array.isArray(match.dancers)) ? match.dancers : [];
     }
 
     function closeDancerDrawer() {
@@ -604,7 +613,7 @@
       drawerTitleEl.textContent = `${point.country} · ${activeYear} · ${activeGroup} · ${activeDivision}`;
       drawerBodyEl.innerHTML = "<p class=\"drawer-muted\">Загрузка списка танцоров...</p>";
       try {
-        const data = await ensureDrilldownData();
+        const data = await ensureUnifiedData();
         const rows = getDancerRowsFromData(data, activeYear, activeGroup, activeDivision, point.country);
         if (!rows.length) {
           drawerBodyEl.innerHTML = "<p class=\"drawer-muted\">Для этого среза нет танцоров с поинтами второй роли.</p>";
@@ -708,6 +717,41 @@
         ctx.moveTo(area.left, yPx);
         ctx.lineTo(area.right, yPx);
         ctx.stroke();
+
+        // labels for reference lines (kept near borders to avoid covering bubbles)
+        ctx.setLineDash([]);
+        ctx.font = "600 10px Inter, sans-serif";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "rgba(55, 65, 81, 0.9)";
+
+        const xLabel = `Средняя доля: ${meanX.toFixed(1)}%`;
+        const xTextW = ctx.measureText(xLabel).width;
+        const xPad = 5;
+        const xRectW = xTextW + xPad * 2;
+        const xRectH = 16;
+        const xLabelX = Math.min(Math.max(xPx - xRectW / 2, area.left + 2), area.right - xRectW - 2);
+        const xLabelY = area.top + 4;
+        ctx.fillStyle = "rgba(255,255,255,0.92)";
+        ctx.fillRect(xLabelX, xLabelY, xRectW, xRectH);
+        ctx.strokeStyle = "rgba(107, 114, 128, 0.35)";
+        ctx.lineWidth = 0.8;
+        ctx.strokeRect(xLabelX, xLabelY, xRectW, xRectH);
+        ctx.fillStyle = "rgba(55, 65, 81, 0.9)";
+        ctx.fillText(xLabel, xLabelX + xPad, xLabelY + xRectH / 2);
+
+        const yLabel = `Средние поинты: ${meanY.toFixed(0)}`;
+        const yTextW = ctx.measureText(yLabel).width;
+        const yRectW = yTextW + xPad * 2;
+        const yRectH = 16;
+        const yLabelX = area.right - yRectW - 4;
+        const yLabelY = Math.min(Math.max(yPx - yRectH / 2, area.top + 2), area.bottom - yRectH - 2);
+        ctx.fillStyle = "rgba(255,255,255,0.92)";
+        ctx.fillRect(yLabelX, yLabelY, yRectW, yRectH);
+        ctx.strokeStyle = "rgba(107, 114, 128, 0.35)";
+        ctx.lineWidth = 0.8;
+        ctx.strokeRect(yLabelX, yLabelY, yRectW, yRectH);
+        ctx.fillStyle = "rgba(55, 65, 81, 0.9)";
+        ctx.fillText(yLabel, yLabelX + xPad, yLabelY + yRectH / 2);
         ctx.restore();
       }
     };
@@ -887,6 +931,12 @@
     drawerCloseEl.addEventListener("click", () => {
       closeDancerDrawer();
     });
+
+    ensureUnifiedData()
+      .then(() => updateChart())
+      .catch(() => {
+        // keep legacy embedded DATA as fallback
+      });
   </script>
 </body>
 </html>
