@@ -517,6 +517,7 @@
       return codeToFlag(COUNTRY_TO_CODE[country] || "");
     }
 
+    const ASSET_VERSION = "20260421-r2";
     const flagImageCache = {};
     function getFlagImage(code, onReady) {
       if (!code) return null;
@@ -528,7 +529,7 @@
       img.onerror = function () {
         onReady();
       };
-      img.src = `./static/flags/w80/${code.toLowerCase()}.png`;
+      img.src = `./static/flags/w80/${code.toLowerCase()}.png?v=${ASSET_VERSION}`;
       flagImageCache[code] = img;
       return img;
     }
@@ -578,7 +579,7 @@
     let activeGroup = "Total";
     let activeDivision = "Total";
     const pinState = { active: false, point: null, x: 0, y: 0 };
-    const UNIFIED_URL = "./static/data/secondary_country_unified.json";
+    const UNIFIED_URL = `./static/data/secondary_country_unified.json?v=${ASSET_VERSION}`;
     let unifiedData = null;
     let unifiedLoadPromise = null;
 
@@ -890,9 +891,9 @@
         datasets: [{
           label: "Countries",
           data: getPoints(activeYear, activeGroup, activeDivision, false),
-          borderColor: "rgba(55,65,81,0.75)",
-          backgroundColor: "rgba(59,130,246,0.38)",
-          borderWidth: 1.1
+          borderColor: "rgba(17,24,39,0.95)",
+          backgroundColor: "rgba(31,41,55,0.88)",
+          borderWidth: 1.4
         }]
       },
       options: {
