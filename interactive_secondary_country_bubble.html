@@ -546,7 +546,7 @@
         .filter((r) => r.transitions > 0)
         .filter((r) => !hideUsa || r.country !== "United States");
       const radii = buildAdaptiveRadiusMap(filteredRows);
-      return filteredRows.map((r, i) => ({
+      const points = filteredRows.map((r, i) => ({
           x: r.secondary_share * 100,
           y: r.secondary_points,
           r: radii[i],
@@ -558,6 +558,9 @@
           share: r.secondary_share,
           total: r.total_points
         }));
+      // Draw large bubbles first so small ones stay clickable on top.
+      points.sort((a, b) => (Number(b.r) || 0) - (Number(a.r) || 0));
+      return points;
     }
 
     const ctx = document.getElementById("geoBubble");
