@@ -691,7 +691,8 @@
             `<div class="tt-row"><span class="tt-label">${r.label}</span><span class="tt-value">${r.value}</span></div>`
         )
         .join("");
-      const actionHtml = `<div class="tt-action-row"><button class="tt-action" data-action="show-dancers">View dancers</button></div>`;
+      const dancersInList = Number.isFinite(Number(d.transitions)) ? Math.max(0, Math.round(Number(d.transitions))) : 0;
+      const actionHtml = `<div class="tt-action-row"><button class="tt-action" data-action="show-dancers">View dancers (${dancersInList})</button></div>`;
       return metricsHtml + actionHtml;
     }
 
