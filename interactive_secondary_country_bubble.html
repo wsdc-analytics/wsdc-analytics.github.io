@@ -540,16 +540,35 @@
       return (((DATA[year] || {})[group] || {})[division]) || [];
     }
 
+    function isMobileViewport() {
+      return window.matchMedia("(max-width: 900px)").matches;
+    }
+
+    function getBubbleScaleFactor() {
+      if (!isMobileViewport()) return 1;
+      if (window.matchMedia("(max-width: 480px)").matches) return 0.64;
+      return 0.74;
+    }
+
+    function getDensityScale(pointCount) {
+      if (!isMobileViewport()) return 1;
+      if (pointCount >= 28) return 0.76;
+      if (pointCount >= 20) return 0.84;
+      if (pointCount >= 14) return 0.92;
+      return 1;
+    }
+
     function getPoints(year, group, division, hideUsa) {
       const rows = getSourceRows(year, group, division);
       const filteredRows = rows
         .filter((r) => r.transitions > 0)
         .filter((r) => !hideUsa || r.country !== "United States");
       const radii = buildAdaptiveRadiusMap(filteredRows);
+      const bubbleScale = getBubbleScaleFactor() * getDensityScale(filteredRows.length);
       const points = filteredRows.map((r, i) => ({
           x: r.secondary_share * 100,
           y: r.secondary_points,
-          r: radii[i],
+          r: Math.max(2.4, (Number(radii[i]) || 0) * bubbleScale),
           country: r.country,
           code: COUNTRY_TO_CODE[r.country] || "",
           flag: getCountryFlag(r.country),
@@ -561,6 +580,28 @@
       // Draw large bubbles first so small ones stay clickable on top.
       points.sort((a, b) => (Number(b.r) || 0) - (Number(a.r) || 0));
       return points;
+    }
+
+    function applyDynamicAxisPadding(points) {
+      const xScale = chart.options.scales.x;
+      const yScale = chart.options.scales.y;
+      if (!points || !points.length) {
+        xScale.min = 0;
+        xScale.max = undefined;
+        yScale.beginAtZero = true;
+        yScale.max = undefined;
+        return;
+      }
+      const maxX = points.reduce((m, p) => Math.max(m, Number(p.x) || 0), 0);
+      const maxY = points.reduce((m, p) => Math.max(m, Number(p.y) || 0), 0);
+      const maxR = points.reduce((m, p) => Math.max(m, Number(p.r) || 0), 0);
+      const xPad = Math.min(3.6, Math.max(1.2, maxR * 0.12));
+      const yPad = Math.max(6, maxR * 1.45);
+      const xMax = Math.max(5, maxX + xPad);
+      xScale.min = 0;
+      xScale.max = Math.ceil(xMax / 5) * 5;
+      yScale.beginAtZero = true;
+      yScale.max = Math.ceil((maxY + yPad) / 5) * 5;
     }
 
     const ctx = document.getElementById("geoBubble");
@@ -956,14 +997,29 @@
       }
     });
 
+    function applyResponsiveChartTypography() {
+      const tiny = window.matchMedia("(max-width: 480px)").matches;
+      const mobile = isMobileViewport();
+      const tickSize = mobile ? (tiny ? 9 : 10) : 12;
+      const titleSize = mobile ? (tiny ? 10 : 11) : 13;
+      chart.options.scales.x.ticks.font = { size: tickSize };
+      chart.options.scales.y.ticks.font = { size: tickSize };
+      chart.options.scales.x.title.font = { size: titleSize, weight: "600" };
+      chart.options.scales.y.title.font = { size: titleSize, weight: "600" };
+    }
+
     function updateChart() {
+      applyResponsiveChartTypography();
       const points = getPoints(activeYear, activeGroup, activeDivision, hideUsaEl.checked);
+      applyDynamicAxisPadding(points);
       setSummaryPills(points);
       chart.data.datasets[0].data = points;
       clearPin(chart);
       closeDancerDrawer();
       chart.update();
     }
+
+    window.addEventListener("resize", updateChart);
 
     yearSelEl.addEventListener("change", function () {
       activeYear = this.value;

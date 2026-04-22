@@ -164,6 +164,25 @@
       color: var(--text-secondary);
       margin-bottom: 2px;
     }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .size-note {
+      display: inline-flex;
+      align-items: center;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
     .viz-card {
       border: 1px solid var(--border-color);
       border-radius: 14px;
@@ -210,8 +229,12 @@
       }
       .data-note {
         display: block;
-        width: 100%;
         border-radius: 10px;
+      }
+      .meta-row { gap: 6px; }
+      .size-note {
+        border-radius: 10px;
+        white-space: normal;
       }
       .viz-card {
         flex: 0 0 auto;
@@ -253,7 +276,10 @@
       This dashboard shows how points earned while dancing in a secondary role are distributed across countries and years.
       Use filters to compare role and division slices, identify where secondary-role contribution is strongest, and track the year-to-year dynamic.
     </p>
-    <p class="data-note">Data coverage: fixed snapshots for 2023-2025, plus a live 2026 partial slice (as of 2026-04-21).</p>
+    <div class="meta-row">
+      <p class="data-note">Data coverage: fixed snapshots for 2023-2025, plus a live 2026 partial slice (as of 2026-04-21).</p>
+      <p class="size-note">Size: dancers in selected slice</p>
+    </div>
 
     <section class="viz-card" aria-label="Secondary-role country distribution dashboard">
       <iframe
