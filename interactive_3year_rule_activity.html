@@ -52,6 +52,33 @@
       flex-direction: column;
       gap: 8px;
     }
+    .wide { grid-column: 1 / -1; }
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .risk-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .risk-table th,
+    .risk-table td {
+      padding: 6px 7px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    .risk-table th {
+      color: var(--muted);
+      font-weight: 700;
+      background: #f9fafb;
+    }
+    .risk-table td:nth-child(2),
+    .risk-table td:nth-child(3) {
+      white-space: nowrap;
+    }
     .title {
       margin: 0;
       font-size: 14px;
@@ -72,6 +99,7 @@
     canvas { width: 100%; height: 100%; }
     @media (max-width: 900px) {
       .grid { grid-template-columns: 1fr; }
+      .risk-grid { grid-template-columns: 1fr; }
       .card { min-height: 270px; }
       .title { font-size: 13px; }
       .subtitle { font-size: 11px; }
@@ -101,6 +129,11 @@
         <h3 class="title">4) Доступность дивизионов по ивентам</h3>
         <p class="subtitle">Число уникальных ивентов с All-Stars / Champions</p>
         <div class="canvas-wrap"><canvas id="coverageChart"></canvas></div>
+      </article>
+      <article class="card wide">
+        <h3 class="title">5) Кто попадает в риск-группу при пороге &lt;3 points</h3>
+        <p class="subtitle">Первые строки отсортированы по recent points, затем по историческим points в дивизионе. Это не “список на понижение”, а оценка по текущей рабочей гипотезе правила.</p>
+        <div class="risk-grid" id="riskLists"></div>
       </article>
     </section>
   </main>
@@ -209,6 +242,31 @@
       });
     }
 
+    function renderRiskLists(data) {
+      const root = document.getElementById("riskLists");
+      const renderOne = (division) => {
+        const rows = ((data.risk_lists_under_three || {})[division] || []).slice(0, 12);
+        const body = rows.map((r) => `
+          <tr>
+            <td>${r.name}</td>
+            <td>${tiny(r.recent_points)}</td>
+            <td>${tiny(r.lifetime_points_in_division)}</td>
+            <td>${r.last_point_year || "—"}</td>
+          </tr>
+        `).join("");
+        return `
+          <div>
+            <h4 class="title">${division}: первые 12 из ${tiny(((data.risk_lists_under_three || {})[division] || []).length)}</h4>
+            <table class="risk-table">
+              <thead><tr><th>Танцор</th><th>2024–26</th><th>Всего</th><th>Последний год</th></tr></thead>
+              <tbody>${body}</tbody>
+            </table>
+          </div>
+        `;
+      };
+      root.innerHTML = renderOne("All-Stars") + renderOne("Champions");
+    }
+
     async function init() {
       const meta = document.getElementById("metaInfo");
       try {
@@ -218,12 +276,13 @@
         const as = data.buckets_36m["All-Stars"];
         const ch = data.buckets_36m["Champions"];
         meta.textContent = `Окно: ${data.window_definition}  |  Порог: ${data.rule_threshold_points} points.  ` +
-          `Риск-группа (<3 points): All-Stars ${tiny(as.risk_group_under_three)} из ${tiny(as.total_dancers)} (${as.risk_share_under_three}%), ` +
-          `Champions ${tiny(ch.risk_group_under_three)} из ${tiny(ch.total_dancers)} (${ch.risk_share_under_three}%).`;
+          `Риск-группа (<3 points): All-Stars ${tiny(as.risk_group_under_three)} из ${tiny(as.current_required_dancers)} (${as.risk_share_under_three}%), ` +
+          `Champions ${tiny(ch.risk_group_under_three)} из ${tiny(ch.current_required_dancers)} (${ch.risk_share_under_three}%).`;
         renderBucket(data);
         renderTrend(data);
         renderConcentration(data);
         renderCoverage(data);
+        renderRiskLists(data);
       } catch (e) {
         meta.textContent = "Не удалось загрузить метрики. Обновите страницу.";
       }

@@ -1,7 +1,7 @@
 {
-  "source": "WSDC Points Registry (dancers_results_info.csv)",
-  "generated_from_file": "/Users/ania/.cursor/projects/tableau/My-Tableau-Projects/WSDC/WSDC Points/dancers_results_info.csv",
-  "window_definition": "Current rolling 36 months approximated as 2024-2026 in this dataset snapshot.",
+  "source": "WSDC Points Registry (dancers_results_info.csv + dancer_role_info.csv)",
+  "window_definition": "2024-2026 whole-year approximation of a rolling 36-month activity window.",
+  "scope_definition": "Current required status from dancer_role_info.dominate_required: All Star or Champion.",
   "rule_threshold_points": 3,
   "divisions": [
     "All-Stars",
@@ -9,177 +9,5888 @@
   ],
   "buckets_36m": {
     "All-Stars": {
-      "total_dancers": 535,
-      "zero_points": 0,
-      "one_to_two": 104,
-      "three_plus": 431,
-      "three_plus_share": 80.6,
-      "risk_group_under_three": 104,
-      "risk_share_under_three": 19.4
+      "current_required_dancers": 1083,
+      "zero_points": 602,
+      "one_to_two": 97,
+      "three_plus": 384,
+      "risk_group_under_three": 699,
+      "risk_share_under_three": 64.5,
+      "three_plus_share": 35.5
     },
     "Champions": {
-      "total_dancers": 104,
-      "zero_points": 0,
-      "one_to_two": 24,
-      "three_plus": 80,
-      "three_plus_share": 76.9,
-      "risk_group_under_three": 24,
-      "risk_share_under_three": 23.1
+      "current_required_dancers": 184,
+      "zero_points": 105,
+      "one_to_two": 11,
+      "three_plus": 68,
+      "risk_group_under_three": 116,
+      "risk_share_under_three": 63.0,
+      "three_plus_share": 37.0
     }
+  },
+  "risk_lists_under_three": {
+    "All-Stars": [
+      {
+        "dancer_id": "9512",
+        "name": "Lia Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 210.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "7637",
+        "name": "Nicole Zwerlein",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 207.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5211",
+        "name": "Jb Brodie",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 173.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "6948",
+        "name": "Beverly Brunerie",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 159.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "6744",
+        "name": "Eric Byers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 147.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9775",
+        "name": "Samir Zutshi",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 145.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "7536",
+        "name": "Coleen Man",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 140.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "2588",
+        "name": "Sheli Schroeder",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 138.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4097",
+        "name": "Joshua Sturgeon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 126.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "4201",
+        "name": "Alfred Lee",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 119.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "2731",
+        "name": "Yuna Davtyan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 115.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2988",
+        "name": "Rachele Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 113.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "9235",
+        "name": "Stephen Weltz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 110.0,
+        "last_point_year": 2021
+      },
+      {
+        "dancer_id": "8098",
+        "name": "Forrest Hanson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 106.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "11908",
+        "name": "Hailee Vaughan Hargis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 106.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "6209",
+        "name": "Hannah Clonch",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 104.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6704",
+        "name": "Anyssa Olivares",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 98.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "10867",
+        "name": "Philippe Berne",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 97.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "7897",
+        "name": "Steven Van Nguyen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 95.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "2368",
+        "name": "Angie Cameron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 94.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3724",
+        "name": "Brian Faust",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 90.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "7425",
+        "name": "Heather Fronczak",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 90.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6863",
+        "name": "Arnaud Perga",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 89.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "2211",
+        "name": "Scott Mason",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 88.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "6635",
+        "name": "Rob Glover",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 86.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "7854",
+        "name": "Heather Powers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 85.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "1420",
+        "name": "Gary Ulaner",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 80.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5113",
+        "name": "Connor Goodmanson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 79.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "6601",
+        "name": "Hieu Le",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 79.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "3039",
+        "name": "Laura Christopherson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 79.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "5817",
+        "name": "Matthew Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 78.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "320",
+        "name": "Carlos Garcia",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 77.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "10199",
+        "name": "Ksenia Nomberg",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 77.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8144",
+        "name": "Jacqueline Joyner",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 74.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "2029",
+        "name": "Edwin Li",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 73.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "1759",
+        "name": "Ann Fleming",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 72.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "9969",
+        "name": "Ian O'Gorman",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 72.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "3467",
+        "name": "Joe Mahoney",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 71.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "5265",
+        "name": "Kyle Patel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 69.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "3393",
+        "name": "Eric Jacobson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 68.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "11344",
+        "name": "Matilda Tuomela",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 67.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "1629",
+        "name": "Erik Novoa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 64.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5626",
+        "name": "Abi Jennings",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 63.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "6681",
+        "name": "David Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 62.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "2302",
+        "name": "Heidi Mongeau",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 62.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "5729",
+        "name": "Christopher Lo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 61.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "7310",
+        "name": "Marine Fabre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 60.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "6459",
+        "name": "Natalie Gorg",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 60.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "7980",
+        "name": "Akil Boatwright",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 58.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "5461",
+        "name": "Stacy Chiang",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 55.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "7895",
+        "name": "Edson Modesto Jr.",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 54.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "5810",
+        "name": "Robert Jackson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 54.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "8393",
+        "name": "Olga Malafeevskaya",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 53.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "8785",
+        "name": "Tze Yi Wee",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 53.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "13556",
+        "name": "Lannie Sullivan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 52.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8943",
+        "name": "Eszter Moricz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 51.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "13122",
+        "name": "Fae Ashley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 51.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "3332",
+        "name": "Chevy Slater",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 49.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "216",
+        "name": "Jeanne Degeyter",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 49.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "10570",
+        "name": "Maria Elizarova",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 49.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4606",
+        "name": "Melissa Rollins",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 48.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "8676",
+        "name": "Sonya Dessureault",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 48.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "11490",
+        "name": "Tess Minnick",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 48.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3930",
+        "name": "Willow Colson Wall",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 48.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2314",
+        "name": "Jennifer Lyons",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 47.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "8501",
+        "name": "Mikaila Finley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 47.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "8049",
+        "name": "Ani Fuller",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 46.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5388",
+        "name": "Maria Ford",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 46.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "16222",
+        "name": "Emma Kenny",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 45.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "2430",
+        "name": "Jesse Dickson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 45.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "2688",
+        "name": "Melanie Wong Jennings",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 45.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "2834",
+        "name": "Sheena Shirley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 45.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "10423",
+        "name": "Austin Scharnhorst",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 44.0,
+        "last_point_year": 2021
+      },
+      {
+        "dancer_id": "6130",
+        "name": "Cody Anzelone",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 44.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "3109",
+        "name": "Eric Cudmore",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 44.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "7014",
+        "name": "Clint Glasgow",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 43.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "6649",
+        "name": "Jason Travis Taylor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 43.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "7594",
+        "name": "Monica Garcia",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 43.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "1718",
+        "name": "Denise Jordan-Williams",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "5686",
+        "name": "John Piper",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2868",
+        "name": "Nino Digiulio",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "3989",
+        "name": "Solomon Krebs",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "7235",
+        "name": "Ashley Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 41.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "5463",
+        "name": "Caitlin Lawson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 41.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "6282",
+        "name": "Tori Ellington",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 41.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "3035",
+        "name": "Kim Filippo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 40.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "8447",
+        "name": "Madelyn Finley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 39.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "6377",
+        "name": "Carlus Reed",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 38.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9937",
+        "name": "Chris Vartuli",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 38.0,
+        "last_point_year": 2021
+      },
+      {
+        "dancer_id": "2846",
+        "name": "Kelly Hull",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 38.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "5362",
+        "name": "Bob Tucker",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 36.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8851",
+        "name": "Matthew Leszczenski",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 36.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "10569",
+        "name": "Sergey Khakhlev",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 36.0,
+        "last_point_year": 2021
+      },
+      {
+        "dancer_id": "6271",
+        "name": "Steven Hunt",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 36.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4350",
+        "name": "Jennifer Diener",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 35.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "3697",
+        "name": "Will Carlton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 35.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "8395",
+        "name": "Camille Lange",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "10263",
+        "name": "Kali Casas",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "9069",
+        "name": "Lindsey Nastos",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3328",
+        "name": "Rome Slater",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "8627",
+        "name": "Sandrine Tarea",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "1023",
+        "name": "Nathan Miller",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 33.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "5095",
+        "name": "Shane Gomes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 33.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "7023",
+        "name": "Alexandre Biesse",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "6353",
+        "name": "Linda Cuccio",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2514",
+        "name": "Melissa Greene",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "645",
+        "name": "Eric Myers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "7922",
+        "name": "Frank Blakemore",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "7693",
+        "name": "Malena Eckenrod",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "4312",
+        "name": "Melissa Moy",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "6526",
+        "name": "Shannon Tobin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "7873",
+        "name": "Taylor Bechtold",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "11793",
+        "name": "John Mark Penu",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 30.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "1745",
+        "name": "Michael Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 30.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "9009",
+        "name": "Andrew Shellard",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "2601",
+        "name": "Bryan Jordan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "4730",
+        "name": "Dave Damon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "5365",
+        "name": "Michael Miller",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7201",
+        "name": "Steven Guido",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "7348",
+        "name": "Whitney Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "709",
+        "name": "Jim Rabins",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 28.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "6688",
+        "name": "Marina Moeller",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 28.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6311",
+        "name": "Rachel Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 28.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "5268",
+        "name": "Renee Lipman",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 28.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "6658",
+        "name": "Abby Stone",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1822",
+        "name": "Anthony Derosa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "2182",
+        "name": "Corey Caron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "4880",
+        "name": "Dana Simonetti",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "7533",
+        "name": "Grigory Lebedev",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "8185",
+        "name": "Iryna Polikovska",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "7446",
+        "name": "Jason Sun",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "6826",
+        "name": "Julien Vallier",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "4877",
+        "name": "Keith Stremmel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "3725",
+        "name": "Kelly Faust",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "7025",
+        "name": "Ludovic Franc",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "8971",
+        "name": "Marc Carter",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "8330",
+        "name": "Paloma Ponce",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "4441",
+        "name": "Patrick Toepel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "5549",
+        "name": "Trent Haynes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 27.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3088",
+        "name": "John Snyder",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 26.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "7257",
+        "name": "Brian Bennett",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4915",
+        "name": "Cassy Olson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "10113",
+        "name": "Chelsea Palmer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "5314",
+        "name": "Chris Van Houten",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2138",
+        "name": "Dustin Anderson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "4194",
+        "name": "Josh Clark",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "2191",
+        "name": "Ligaya Fish",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "9320",
+        "name": "Rosiee Thormahlen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "3856",
+        "name": "Stevie Blakely",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "8522",
+        "name": "Tommy Brodie",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "8384",
+        "name": "Browly Adjavon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2216",
+        "name": "Catriona Wiles",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "2931",
+        "name": "Deb Martinez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "7679",
+        "name": "Izabella Kowalska",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "5653",
+        "name": "Kat Carstensen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "2498",
+        "name": "Lynne Anderson Grubb",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "9556",
+        "name": "Marta Nita",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "16370",
+        "name": "Samantha Boice",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "8589",
+        "name": "Travis DeVoid",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2604",
+        "name": "Damon D'amico",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "5232",
+        "name": "Dawn Sgarlata",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9677",
+        "name": "Inga Kurcisa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "1368",
+        "name": "Lauren Davis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "1277",
+        "name": "Nancy Tuzzolino",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6809",
+        "name": "Nicki Silton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "640",
+        "name": "Patti Thompson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "1795",
+        "name": "Tami Harris Krok",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "11181",
+        "name": "Tessa Antolini",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "5539",
+        "name": "Byron Calix",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 22.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2564",
+        "name": "Csilla Madocsai",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 22.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "4233",
+        "name": "Victor Loveira",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 22.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4196",
+        "name": "Amber Ripley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "8023",
+        "name": "Irina Avdeyeva",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2448",
+        "name": "Kelly Dye",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "999",
+        "name": "Larry Mongeau",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "7652",
+        "name": "Stephane Schneider",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6173",
+        "name": "Taylor Harrell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "1211",
+        "name": "Adrian Trejo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "8182",
+        "name": "Aleksey Grigoriev",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9075",
+        "name": "Alpha Vo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "7707",
+        "name": "Bret Navarre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "5156",
+        "name": "Connie Gauthier",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "6578",
+        "name": "Fabienne Easton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "5008",
+        "name": "Haider Khan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "11165",
+        "name": "Lance Armstrong",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1127",
+        "name": "Maren Oslac",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "9074",
+        "name": "Allison Strong",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "7229",
+        "name": "Alyssa Kling",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "13521",
+        "name": "Carl Boije",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "5604",
+        "name": "Demery Leyva",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "3971",
+        "name": "Kevin Fitzhugh",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "7246",
+        "name": "Naomi Holbert",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "3178",
+        "name": "Ricky Andrade",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "3098",
+        "name": "Stephanie Mchenry",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "7432",
+        "name": "Jc Bryant",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1037",
+        "name": "Jim Minty",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "4491",
+        "name": "Kevin Balcom",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "7826",
+        "name": "Mariel Manzone",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "5520",
+        "name": "Michael O'connor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "1485",
+        "name": "Peggy Allen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "11774",
+        "name": "Taylor Taylor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "1194",
+        "name": "Troy Reed",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "12954",
+        "name": "Xi Duennhoff",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "12360",
+        "name": "Andrew Mitchell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "2576",
+        "name": "Dawne Haight",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "7212",
+        "name": "Lauren Hubbard",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "10536",
+        "name": "Leah Doxakis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7893",
+        "name": "Liza Hillman",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "7296",
+        "name": "Michelle Josey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "14674",
+        "name": "Oliver Monroy",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "6449",
+        "name": "Sarah Wheeler",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6522",
+        "name": "Sebastian Cadet",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "6020",
+        "name": "Zena Knight",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "7824",
+        "name": "Caroline Reilhac",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "3869",
+        "name": "Hannah Wenzel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "11929",
+        "name": "Jennie Davidsson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "974",
+        "name": "Maira Pineda",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "4904",
+        "name": "Xavier Young",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "12725",
+        "name": "Brittany Lapointe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6169",
+        "name": "Chris Kempainen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "4479",
+        "name": "Georgina Newbold",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "3962",
+        "name": "Hareesh Kapoor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "14092",
+        "name": "Joel Jimenez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "9239",
+        "name": "Marie Remigereau",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "3045",
+        "name": "Michael Stephens",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3911",
+        "name": "Susan Seaman",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "7853",
+        "name": "Anya Crane",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "9068",
+        "name": "Benjamin Lofton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2764",
+        "name": "Brian Feehan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "6763",
+        "name": "Dominique Martin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5302",
+        "name": "Eddie Valdez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "14467",
+        "name": "Felicia Li",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "8146",
+        "name": "Jesse Vos",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "1572",
+        "name": "John Koster",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "7877",
+        "name": "Kevin Town",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8131",
+        "name": "Myat Nyunt",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "8145",
+        "name": "Olga Usmanova",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6256",
+        "name": "Sabrina Paxmann",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "1412",
+        "name": "Terra Guthre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "8097",
+        "name": "Terra Summers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "2844",
+        "name": "Tom Jennings",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "1901",
+        "name": "Tricia Finley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "1735",
+        "name": "Amanda Warren",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "7164",
+        "name": "Anna Balcom",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "3894",
+        "name": "Autumn Bear",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "2363",
+        "name": "Jenica Krolicki",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "7029",
+        "name": "Jerome Louis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "643",
+        "name": "Jimmy Mulligan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "6065",
+        "name": "Jody Moscaritolo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "10077",
+        "name": "Marina Korzun",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9369",
+        "name": "Romero Royster",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6238",
+        "name": "Samantha Fernandez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "1928",
+        "name": "Valerie Perry",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "7038",
+        "name": "Andy Vanosdale",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "5837",
+        "name": "Angie Jones",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "15778",
+        "name": "Aubrey Rosso",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "9963",
+        "name": "Courtney Mayer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5239",
+        "name": "Don Herron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "4689",
+        "name": "Joe Broderick",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "10361",
+        "name": "Marylou Starr",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "10741",
+        "name": "Maxwell Libbrecht",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "3442",
+        "name": "Paul Fritzler",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3604",
+        "name": "Susan Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "4036",
+        "name": "Tamara Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "1659",
+        "name": "Warren Pino",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "2865",
+        "name": "Angie Bryan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "2004",
+        "name": "Austin Murrey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "6015",
+        "name": "Daria Mikloukhina",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5537",
+        "name": "David Simpson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "2555",
+        "name": "Fred Price",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3964",
+        "name": "Helen Tocco",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "4645",
+        "name": "Jimmy Ho",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "6413",
+        "name": "Josh Williamson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "2375",
+        "name": "Kristen Jeanes Moody",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "5100",
+        "name": "Mark Pablo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8974",
+        "name": "Melissa Pylant",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "7874",
+        "name": "Nick De Vore",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6067",
+        "name": "Niko Salgado",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6090",
+        "name": "Sammy Powers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5535",
+        "name": "Tiffany Goodall",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "11128",
+        "name": "Tim He",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "5473",
+        "name": "Trey Ellington",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2797",
+        "name": "Adam Sheltz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "3939",
+        "name": "Alisa Winkler-Kostoff",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "5436",
+        "name": "Andrew Slac",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "10839",
+        "name": "Bruno Motta",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "1820",
+        "name": "Carpio Robles",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "7598",
+        "name": "Chris Joseph Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3546",
+        "name": "Cindy Meyer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "4517",
+        "name": "Faith Ernest",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "5733",
+        "name": "Gabe Toepel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "13545",
+        "name": "Jia Lu",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "7578",
+        "name": "Joelle Navarre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "14766",
+        "name": "Jordan Daniel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "3477",
+        "name": "Laura Manis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "4353",
+        "name": "Lauren Adams",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "618",
+        "name": "Marina Gutsch",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2003
+      },
+      {
+        "dancer_id": "1819",
+        "name": "Mike Topel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "12000",
+        "name": "Sarah Berens",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "4718",
+        "name": "Sascha Newberg",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "3391",
+        "name": "Tybaldt Ulrich",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "9936",
+        "name": "Allison Atteberry",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3765",
+        "name": "Anastasia Tsimbidis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "9550",
+        "name": "Benedikte Ostbo Sorensen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8165",
+        "name": "Brandon Manning",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "6514",
+        "name": "Brianne Cline",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "7757",
+        "name": "James Cook",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9002",
+        "name": "Nicole Szulc",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7262",
+        "name": "Pamela Bennett",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "8700",
+        "name": "Raine Salo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "5725",
+        "name": "Shane Mcintyre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "10426",
+        "name": "Shay Patel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 9.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6306",
+        "name": "Aisha Lodjic",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "7100",
+        "name": "Amandine Principe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "1121",
+        "name": "Andrew Knight",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "325",
+        "name": "Brandon Gautreaux",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1369",
+        "name": "Candace Cravalho",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "7692",
+        "name": "Chris Singley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "10597",
+        "name": "Dustin Wheeler",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1974",
+        "name": "Erin Caron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "10608",
+        "name": "Julian Lange",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "7268",
+        "name": "Kate Hall",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1054",
+        "name": "Kathryn Mongeau",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "3488",
+        "name": "Kelly Mcbreen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "9141",
+        "name": "Kelly Reis",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "5704",
+        "name": "Khrystyna Cusimano",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "10714",
+        "name": "Marc Heldt",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "5644",
+        "name": "Mark Jackson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "14456",
+        "name": "Markus Scherer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "1128",
+        "name": "Martin Casillas",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "5548",
+        "name": "Michelle Haynes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "4616",
+        "name": "Nikki Wardell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "8888",
+        "name": "Sylvain Pele",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "1878",
+        "name": "Tamra Phillips",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "3966",
+        "name": "Vanessa Duhon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2840",
+        "name": "Alex Samuel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "9933",
+        "name": "Allen Ulbricht",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "2301",
+        "name": "Ann Marie Mccabe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "136",
+        "name": "Bill Cameron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "2445",
+        "name": "Billy Smuck",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "2677",
+        "name": "Cassie Eads",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "6694",
+        "name": "Jennifer Vergara Pasetes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "797",
+        "name": "Kurt Senser",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "8541",
+        "name": "Laura Conforti-Roussel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5457",
+        "name": "Lee Easton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "2373",
+        "name": "Leslie Daniell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2971",
+        "name": "Lisa Brink",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "10930",
+        "name": "Lukas Koelbener",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "2802",
+        "name": "Marc Levetin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "3644",
+        "name": "Marcus Schwarz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2442",
+        "name": "Rachel Mcenaney",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "7710",
+        "name": "Skye Lapointe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3900",
+        "name": "Tatianna Bourget",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "4888",
+        "name": "Braden O'dell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "8838",
+        "name": "Christopher Muise",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2021
+      },
+      {
+        "dancer_id": "7837",
+        "name": "Ellyn Brady",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "10015",
+        "name": "Emma Cormie",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "8749",
+        "name": "Faith Musko",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "11645",
+        "name": "Helen Chao",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "14035",
+        "name": "Isabella Bierezowiec",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5812",
+        "name": "James H",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3979",
+        "name": "Jeffrey Munson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "7647",
+        "name": "Laura Deshano",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "1477",
+        "name": "Mark Blume",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "7461",
+        "name": "Melanie Zeltner",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "340",
+        "name": "Nancy Heaverlo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "8566",
+        "name": "Raquel Nielsen Reynolds",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "9244",
+        "name": "Shelbie McCree",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "3527",
+        "name": "Stephanie Ciaglo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "190",
+        "name": "Terry Dale",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "10941",
+        "name": "Trine Nordkvelle",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "173",
+        "name": "Trish Connery",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "3975",
+        "name": "Whitney Brooks",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "5289",
+        "name": "Adair Mccune",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "2596",
+        "name": "Andrea Scott",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "6051",
+        "name": "Bradley Wheeler",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "7565",
+        "name": "Celine Sully",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "160",
+        "name": "Cher Peadon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "4148",
+        "name": "Chris Gardner",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "440",
+        "name": "Chris Jones",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "3588",
+        "name": "Darian Barrett",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "7030",
+        "name": "Elsa Drai",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "2605",
+        "name": "Eric Allen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "692",
+        "name": "Ginger Pickerel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2508",
+        "name": "Heidi Batdorf",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "9091",
+        "name": "Jacqueline Lo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4459",
+        "name": "Jennifer Robinson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2213",
+        "name": "Jeremy Bryan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "2944",
+        "name": "Jill Popovich",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "11864",
+        "name": "Joe Miller",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6381",
+        "name": "Joselyn Reed",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "5567",
+        "name": "Kelli Rainey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "4110",
+        "name": "Keri Mclean",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "9764",
+        "name": "Kirsten Hird",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "14976",
+        "name": "Lindsay Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "255",
+        "name": "Louise Bretz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "4214",
+        "name": "Mana Parisi",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "4747",
+        "name": "Max Pitruzzella",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "14485",
+        "name": "Pato Lankenau",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "1627",
+        "name": "Robin Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "7490",
+        "name": "Stephane Roy",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "1739",
+        "name": "Tina Marie Price",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "11155",
+        "name": "Tommaso Piemontese",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "5606",
+        "name": "Tommy Gibbs",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "11624",
+        "name": "Verena Guschal",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8654",
+        "name": "Adam Sanborn",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "11199",
+        "name": "Anna DmiTRieva",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "6563",
+        "name": "Ashley Yorek",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "4231",
+        "name": "Audrey Schoen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "439",
+        "name": "Barry Jones",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "6989",
+        "name": "Carson Brand",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "1473",
+        "name": "Christopher Desjardins",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "12709",
+        "name": "Damien Lasson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "6988",
+        "name": "Daniel Guido",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "12953",
+        "name": "Gillian Kespohl",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "10097",
+        "name": "Hanna Ojanaho",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "12359",
+        "name": "Jacob Albritton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "3687",
+        "name": "Jamie Callahan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "7447",
+        "name": "Jason Bryan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "4446",
+        "name": "Keri Ann Amedeo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "6624",
+        "name": "Koichi Tsunoda",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "13931",
+        "name": "Lane Schiro",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "165",
+        "name": "Melody Cochran",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "1064",
+        "name": "Michael Krause",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "8823",
+        "name": "Mike Anderson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5816",
+        "name": "Orion Hall",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "10511",
+        "name": "Rebecca Tasetano",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8089",
+        "name": "Renee Fields",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "1808",
+        "name": "Richard Lundin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2002
+      },
+      {
+        "dancer_id": "7336",
+        "name": "Thomas Falletta",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "1085",
+        "name": "Tina Price",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2003
+      },
+      {
+        "dancer_id": "1391",
+        "name": "Trisha Berlanga",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "9424",
+        "name": "Tyler Jones",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "12128",
+        "name": "Amit Kazmirsky",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "9525",
+        "name": "Anastasiia Leonenko",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9900",
+        "name": "Anthony Truong",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "13633",
+        "name": "Brittany Barbarisi",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "4612",
+        "name": "Charity Lebron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "6656",
+        "name": "Chris Mack",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "4325",
+        "name": "Darren Shepard",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "9483",
+        "name": "David Young",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "96",
+        "name": "Dawn Blorstad",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "7567",
+        "name": "Gabe Munoz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5170",
+        "name": "Gary Thompson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "3183",
+        "name": "Honey Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "7243",
+        "name": "Hrafnkell Palsson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "3974",
+        "name": "Jason Phillips",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "10357",
+        "name": "Jason Toy",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6729",
+        "name": "Jay Tsai",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "8852",
+        "name": "Jessica Wrape",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6001",
+        "name": "Katie Slater",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "13912",
+        "name": "Kelly PonceDeLeon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "9740",
+        "name": "Kirsten Earl",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "4552",
+        "name": "Matt Nicholls",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "1119",
+        "name": "Michael Lemoine",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "176",
+        "name": "Mike Corbett",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "2928",
+        "name": "Nicola Royston",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "1843",
+        "name": "Niki Kontoulas",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "9238",
+        "name": "Olga Hermann",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "2247",
+        "name": "Paolo Piselli",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2003
+      },
+      {
+        "dancer_id": "8511",
+        "name": "Sean Gao",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "12364",
+        "name": "Stacia Wilson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "624",
+        "name": "Toby Munroe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "6777",
+        "name": "Victoria Andromalos-Dale",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "7882",
+        "name": "Aggie Town",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7591",
+        "name": "Ajay Ranipeta",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "2283",
+        "name": "Bill Caffy",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "10808",
+        "name": "Chad Maness",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8876",
+        "name": "Corey Flowers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8889",
+        "name": "Cynthia Grosbois",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "9397",
+        "name": "David Clavilier",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "11738",
+        "name": "Dayne Darden",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "7298",
+        "name": "Dean Garrish",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "3184",
+        "name": "Frankie Jimenez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "6182",
+        "name": "Heather Mcpherson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "14821",
+        "name": "Jennifer Perfect",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7625",
+        "name": "Jeramy Govert",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2021
+      },
+      {
+        "dancer_id": "11464",
+        "name": "Juliane Wogram",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "606",
+        "name": "Julie Myers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2003
+      },
+      {
+        "dancer_id": "6861",
+        "name": "Katia Grigoriants",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "578",
+        "name": "Ken Mcallister",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2002
+      },
+      {
+        "dancer_id": "8899",
+        "name": "Kevin Rafter",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7393",
+        "name": "Kim Leung",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "4828",
+        "name": "Krista Aguirre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "3918",
+        "name": "Kumar Ningashetty",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "241",
+        "name": "Linda Drake",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "13641",
+        "name": "Maya Tydykov",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "4273",
+        "name": "Michael Diener",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "3050",
+        "name": "Michael Robinson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "8121",
+        "name": "Molly King",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "7208",
+        "name": "Patrick Plagens",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "5067",
+        "name": "Rhoni Blankenhorn",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "2506",
+        "name": "Robin Anne Powers",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "11263",
+        "name": "Shawn Mahmood",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "3234",
+        "name": "Shelley Saxena",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3304",
+        "name": "Simone Andrade",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "3781",
+        "name": "Valerie Menard",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "13135",
+        "name": "Adriana Liggins",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "1179",
+        "name": "Alan Lee",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "16823",
+        "name": "Alexandra McCarthey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "4559",
+        "name": "Alysia Bonvino",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "7065",
+        "name": "Brandy Richey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "526",
+        "name": "Bryan Linker",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "11506",
+        "name": "Caitlin Massart",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "8067",
+        "name": "Chris Bojovic",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "18340",
+        "name": "Chris Uza",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "8788",
+        "name": "Cintia Fiaschi",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "3675",
+        "name": "David Gottlieb",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "3021",
+        "name": "David Graybill",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "12251",
+        "name": "Dwight Clark",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "8781",
+        "name": "Dylan Bushe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "1117",
+        "name": "Elizabeth La Gue",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2003
+      },
+      {
+        "dancer_id": "8893",
+        "name": "Emilie Nativel-Fontaine",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "12073",
+        "name": "Eric Chisholm",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "64",
+        "name": "Erica Balkee",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "12955",
+        "name": "Gina Rolike",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "12631",
+        "name": "Gwendoline Lasson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "2780",
+        "name": "Ian Kirkconnell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "16097",
+        "name": "JP Walker",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "3688",
+        "name": "Janet Labarre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2006
+      },
+      {
+        "dancer_id": "7845",
+        "name": "Jason Donaldson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "4613",
+        "name": "Joshua Ogle",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "8056",
+        "name": "Kate McGregor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2771",
+        "name": "Kevin Finley",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "5724",
+        "name": "Kim Levin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "854",
+        "name": "Lawrence Tang",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "452",
+        "name": "Lisa Kay Harwin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "4232",
+        "name": "Margaret Floyd",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "10024",
+        "name": "Marine Guillard",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "8273",
+        "name": "Matthew Lietzke",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "2912",
+        "name": "Michaela Giles",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "8365",
+        "name": "Mickael Boissard",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "13850",
+        "name": "Nir David",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "3512",
+        "name": "Pamela Podmoroff",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2768",
+        "name": "Rachel Baumgardner",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "8728",
+        "name": "Rehanna Loncar",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "886",
+        "name": "Robin McBride",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "1022",
+        "name": "Sarah Burrows",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "11727",
+        "name": "Sasha Drebitko",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "6265",
+        "name": "Scott Stuart",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2003",
+        "name": "Stacy Mcbreen Zellner",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3437",
+        "name": "Tiffany Lorenzen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "5064",
+        "name": "Tina Ferris",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "7844",
+        "name": "Tommy Schwegmann",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "11858",
+        "name": "Vincent van Mierlo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "6867",
+        "name": "Virginie Massart",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "12334",
+        "name": "Yevgeniy Ivanov",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "7564",
+        "name": "Yu Sun",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "1193",
+        "name": "Aaron Lorenzen",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1217",
+        "name": "Aleko Souliotes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "212",
+        "name": "Andrea Deaton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "4547",
+        "name": "Andrew Sinclair",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2656",
+        "name": "Andy Reid",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "359",
+        "name": "Atlas Griffith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "236",
+        "name": "Barry Douglas",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3658",
+        "name": "Beth Bukoski",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "100",
+        "name": "Bill Borgida",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2000",
+        "name": "Caitlin George",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "495",
+        "name": "Camille Lane",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "22160",
+        "name": "Corinne Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2709",
+        "name": "Dan Amores",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "142",
+        "name": "Dani Canziani",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "4182",
+        "name": "Erica Lyons",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3128",
+        "name": "Erin Sweeney",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "117",
+        "name": "Gina Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3450",
+        "name": "Giselle Anguizola",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1540",
+        "name": "Glen Cravalho",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "510",
+        "name": "Greg Pisano",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "6676",
+        "name": "Henriette Koefoed",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "519",
+        "name": "James Leyva",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "882",
+        "name": "Jeannie Tucker",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1380",
+        "name": "Jo Thompson Szymanski",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3449",
+        "name": "Joe Palmer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "18976",
+        "name": "Julian Lee",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1315",
+        "name": "Katherine Krok",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "88",
+        "name": "Katie Berardino",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "4649",
+        "name": "Keith Gussoni",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "748",
+        "name": "Ken Roesel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "188",
+        "name": "Kevin Cruz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2330",
+        "name": "Kevin St. Laurent",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2708",
+        "name": "Laura Dabby",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "8784",
+        "name": "LeAnn Best Norris",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2710",
+        "name": "Lindy Greer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1247",
+        "name": "Lisa Austin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2654",
+        "name": "Maggie Moon",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "18610",
+        "name": "Marcin Kowalczyk",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2324",
+        "name": "Mark Eckstein",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "741",
+        "name": "Melanie Dawson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3570",
+        "name": "Michael Mandel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "5474",
+        "name": "Mitchell From",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2332",
+        "name": "Robin Coleman",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1538",
+        "name": "Rodger Taylor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "140",
+        "name": "Rosie Campos",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3613",
+        "name": "Ruth Cnaany",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "2706",
+        "name": "Sara Spence",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3215",
+        "name": "Simone Cox",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "921",
+        "name": "Sonny Watson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "425",
+        "name": "Stan Jaquish",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "652",
+        "name": "Steve Neeren",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "327",
+        "name": "Tera Vitale",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "3114",
+        "name": "Tracey Melin",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1631",
+        "name": "Wesley Boz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "8631",
+        "name": "Thomas Carter",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 175.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7627",
+        "name": "Estelle Bonnaire",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 151.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "6731",
+        "name": "Stephanie Risser",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 99.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "7856",
+        "name": "Shantala Davis",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 91.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "5378",
+        "name": "Chelsea Loomis Spika",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 72.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "3941",
+        "name": "Mike Konkel",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 58.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "6946",
+        "name": "Stephane Dominguez",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 55.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "6277",
+        "name": "Elise Herman",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "2501",
+        "name": "Ryan Dobbins",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 40.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "7532",
+        "name": "Nicolas Bourgeais",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 38.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "9934",
+        "name": "Victor Hernandez",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 38.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "3945",
+        "name": "Stacy Cramer",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "8524",
+        "name": "Byron Bellew",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "5528",
+        "name": "Tammy Duke",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "5671",
+        "name": "Regina Shpigel",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 31.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "8624",
+        "name": "Anna Kondakova",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 22.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "3771",
+        "name": "Bruce Baker",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "7342",
+        "name": "Keith Little",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "6832",
+        "name": "Michelle Fletcher",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16096",
+        "name": "Elizabeth Ferreira",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "6436",
+        "name": "Peter Fradley",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "9067",
+        "name": "Ann Wood",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "12028",
+        "name": "Joe Wang",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16584",
+        "name": "Marie Soldevilla",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "13357",
+        "name": "Antoine Duvocelle",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "13636",
+        "name": "Frank Moda",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "9398",
+        "name": "Vivien Meublat",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "11268",
+        "name": "D'Leene DeBoer",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "13822",
+        "name": "Michael Milgrom",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16963",
+        "name": "Margaret Moreno",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "13999",
+        "name": "David Carrington",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "13000",
+        "name": "Jonathan Prichard",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "986",
+        "name": "Alan Aly",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "12410",
+        "name": "Aleksandra Lukomska",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16722",
+        "name": "Alexa Partos",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "15858",
+        "name": "Alexandre Panazol",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "10576",
+        "name": "Artem Dmitriev",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "18006",
+        "name": "Ashley Broussard",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "15985",
+        "name": "Ats Nisov",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "20187",
+        "name": "Chaz Frankenberry",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "20842",
+        "name": "Clara Deiters",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "17275",
+        "name": "Edwin Aw",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "21146",
+        "name": "Elise Renwick",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "7791",
+        "name": "Jean Christophe Saville",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "21422",
+        "name": "Jeren Kutcher",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "20186",
+        "name": "Joe Mendence",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16969",
+        "name": "Laetitia Lung",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "8411",
+        "name": "Marie-Charlotte Pelletier-De Koninck",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "20835",
+        "name": "Ngoc Anh Walter",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "14746",
+        "name": "Pauline Charbogne",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16297",
+        "name": "Rachel Holdren",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "11965",
+        "name": "Roselynn Erickson",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "14455",
+        "name": "Santolina Savannet",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "20830",
+        "name": "Sierra Burford",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "22932",
+        "name": "Tatiana Doldonova",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "8472",
+        "name": "Jenna Shimek",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 158.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "12344",
+        "name": "Keith Penu",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 78.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "8129",
+        "name": "Kendra Zara",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 63.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "6416",
+        "name": "Brandon Parker",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 59.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "9072",
+        "name": "Jen Malcolm",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 48.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7431",
+        "name": "Jeff Mumford",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7260",
+        "name": "Whitney Bartlett",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 42.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "3438",
+        "name": "Trevor Spika",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 35.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "6239",
+        "name": "Rebecca Savoca",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "14049",
+        "name": "Joshu Creel",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7663",
+        "name": "Sean Ryan",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 22.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "14090",
+        "name": "Judith Asem",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "12720",
+        "name": "Abigail Vogels",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7597",
+        "name": "Libby Collins",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "14321",
+        "name": "Charlotte Mennetrey",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 8.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "11098",
+        "name": "Harrison Ramsey",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "8053",
+        "name": "Kylie Davey",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "6035",
+        "name": "Olivia Luke",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "8725",
+        "name": "Thomas Bachmann",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 7.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7020",
+        "name": "Brady Stanton",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "9202",
+        "name": "David Miller",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 6.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "12891",
+        "name": "Lucie Renaud",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "9052",
+        "name": "Nam Lim Kim",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "6616",
+        "name": "Adela Su",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "8595",
+        "name": "Catherine Miu",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "16892",
+        "name": "Felipa Mendez",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "10171",
+        "name": "Barry Goh",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "15598",
+        "name": "Chris Wasko",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "14433",
+        "name": "Cliff Pereira",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "19456",
+        "name": "Florian Hintermaier",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "15902",
+        "name": "Grzegorz Bielecki",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "14305",
+        "name": "Izabela Szewczyk",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "21834",
+        "name": "Joseph Conroy",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "23245",
+        "name": "Macie Sandlin",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "18546",
+        "name": "Marine Moinault",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "20078",
+        "name": "Matthew Mueller",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "11020",
+        "name": "Mikhalina Malinovskaya",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "19982",
+        "name": "Olga Aziattseva",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "14313",
+        "name": "Paulina Górka",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "16896",
+        "name": "Philip Wang",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "12739",
+        "name": "Teemu Lujala",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "21302",
+        "name": "Valerio La Pietra",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2025
+      }
+    ],
+    "Champions": [
+      {
+        "dancer_id": "1123",
+        "name": "Deborah Szekely",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 415.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "1584",
+        "name": "Jessica Cox",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 268.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "660",
+        "name": "Mary Ann Nunez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 181.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3148",
+        "name": "Tessa Cunningham Munroe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 179.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "2727",
+        "name": "Luis Crespo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 159.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "211",
+        "name": "Parker Dearborn",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 157.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "2979",
+        "name": "Melina Ramirez",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 141.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "904",
+        "name": "Patty Vo",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 141.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "2766",
+        "name": "Jason Wayne",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 130.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "178",
+        "name": "Robert Cordoba",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 126.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "237",
+        "name": "Kellese Key",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 116.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "2356",
+        "name": "Courtney Adair",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 115.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "61",
+        "name": "Laureen Baldovi",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 82.0,
+        "last_point_year": 2023
+      },
+      {
+        "dancer_id": "1567",
+        "name": "Myles Munroe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 73.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "785",
+        "name": "Mark Scheuffele",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 70.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "290",
+        "name": "Angel Figueroa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 63.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2300",
+        "name": "Jill DeMarco",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 61.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "4832",
+        "name": "Yenni Setiawan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 55.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "6006",
+        "name": "Taletha Jouzdani",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 53.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2323",
+        "name": "Katrina Branson",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 52.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "102",
+        "name": "Sharlot Bott",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 52.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "2241",
+        "name": "Katie Schneider",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 51.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "967",
+        "name": "Chuck Brown",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 48.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "1956",
+        "name": "Yvonne Wayne",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 47.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "260",
+        "name": "Michael Eads",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 46.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "1644",
+        "name": "Brent Key",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 45.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "5062",
+        "name": "Joanna Meinl",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 44.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "3151",
+        "name": "Stephanie Batista",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 44.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "851",
+        "name": "Sylvia Sykes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 43.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "7587",
+        "name": "Diego Borges",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 41.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "3510",
+        "name": "Pete Green",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 41.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "1141",
+        "name": "Jason Miklic",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 40.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "1095",
+        "name": "Jason Barnes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 39.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "457",
+        "name": "Michael Kiehm",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 39.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "1047",
+        "name": "Demetre Souliotes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 37.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "902",
+        "name": "Manny Viarrial",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 37.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "2814",
+        "name": "Ryan Crutcher",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 36.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "1668",
+        "name": "Giovanna Dottore",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 34.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "6360",
+        "name": "Bonnie Jean Cannon Subey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "87",
+        "name": "Debbie Figueroa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3984",
+        "name": "Miguel De Sousa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 30.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "740",
+        "name": "Mario Robau",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "677",
+        "name": "Martin Parker",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 29.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "3587",
+        "name": "Nick Jay",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 28.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "3639",
+        "name": "Kristin Sorci",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 26.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "3752",
+        "name": "Lacey Schwimmer",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 25.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "2547",
+        "name": "Crystal Lambert",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "3602",
+        "name": "Erica Berg",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "971",
+        "name": "Michael Norris",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "273",
+        "name": "Patti Jobst",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "103",
+        "name": "Wayne Bott",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 24.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "468",
+        "name": "Michelle Kinkaid",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "421",
+        "name": "Rob Ingenthron",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 23.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "408",
+        "name": "Beata Howe",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "2447",
+        "name": "Heidi Groskreutz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 21.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "617",
+        "name": "Deanna Mollmann",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "8297",
+        "name": "Jessica Pacheco",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 20.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "2917",
+        "name": "Libbat Shaham",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2007
+      },
+      {
+        "dancer_id": "3270",
+        "name": "Lisa D'amico",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 19.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "394",
+        "name": "Blake Hobby Dowling",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "5151",
+        "name": "Deonna Ball",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "7678",
+        "name": "Jerome Subey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "281",
+        "name": "Lisa Fay",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "5826",
+        "name": "Lisa Schaupp",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "3780",
+        "name": "Shawn Tobias",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 18.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "170",
+        "name": "Jason Colacino",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2004
+      },
+      {
+        "dancer_id": "214",
+        "name": "Ronnie De Benedetta",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 17.0,
+        "last_point_year": 2013
+      },
+      {
+        "dancer_id": "1537",
+        "name": "Gary Mcintyre",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 16.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "3993",
+        "name": "Alyssa Alden",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "2986",
+        "name": "Brad Whelan",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2067",
+        "name": "Christopher Hussey",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2011
+      },
+      {
+        "dancer_id": "3337",
+        "name": "Doug Rousar",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "5339",
+        "name": "Jake Haning",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "5730",
+        "name": "Stephen White",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 15.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "2970",
+        "name": "Doug Silton",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "596",
+        "name": "Hazel Mede Ulrich",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3121",
+        "name": "Jason Marker",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "7",
+        "name": "Phil Adams",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "5424",
+        "name": "Reina Ludwick",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 14.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "454",
+        "name": "Richard Kear",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "2294",
+        "name": "Shawn Moody",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2012
+      },
+      {
+        "dancer_id": "2929",
+        "name": "Sophy Kdep",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2022
+      },
+      {
+        "dancer_id": "7353",
+        "name": "Tony Schubert",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 13.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "6144",
+        "name": "Ben Hooten",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2016
+      },
+      {
+        "dancer_id": "1676",
+        "name": "Julie Ringquist",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "6284",
+        "name": "Kara Frenzel",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 12.0,
+        "last_point_year": 2018
+      },
+      {
+        "dancer_id": "714",
+        "name": "Debbie Ramsey Boz",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "144",
+        "name": "Donald Carl",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2017
+      },
+      {
+        "dancer_id": "432",
+        "name": "Gary Jobst",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3246",
+        "name": "John Kirkconnell",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2019
+      },
+      {
+        "dancer_id": "2566",
+        "name": "Tara Steinke",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2008
+      },
+      {
+        "dancer_id": "758",
+        "name": "Terry Roseborough",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 11.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "3485",
+        "name": "Annick Paquet",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "6860",
+        "name": "Blandine Iche",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2020
+      },
+      {
+        "dancer_id": "433",
+        "name": "Christopher Joe Schaupp",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2010
+      },
+      {
+        "dancer_id": "818",
+        "name": "Jack Smith",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "284",
+        "name": "John Festa",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2015
+      },
+      {
+        "dancer_id": "969",
+        "name": "Katie Boyle",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "2515",
+        "name": "Kay Newhouse",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2014
+      },
+      {
+        "dancer_id": "599",
+        "name": "Melissa Taylor",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2005
+      },
+      {
+        "dancer_id": "6",
+        "name": "Michele Adams",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 1999
+      },
+      {
+        "dancer_id": "2737",
+        "name": "Wendy Miller",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 10.0,
+        "last_point_year": 2009
+      },
+      {
+        "dancer_id": "7124",
+        "name": "Aidan Keith Hynes",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "8123",
+        "name": "Margaret Tuttle",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "11267",
+        "name": "Za Thomaier",
+        "recent_points": 0.0,
+        "lifetime_points_in_division": 0.0,
+        "last_point_year": null
+      },
+      {
+        "dancer_id": "1010",
+        "name": "John Lindo",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 247.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "5807",
+        "name": "Kris Swearingen",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 50.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "2761",
+        "name": "Samantha Buckwalter",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 46.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "3827",
+        "name": "Annmarie Marker",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 32.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "7202",
+        "name": "Janelle Guido",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 3.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "11262",
+        "name": "Anna Wallace",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "12089",
+        "name": "Fernanda Dubiel",
+        "recent_points": 1.0,
+        "lifetime_points_in_division": 1.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "3138",
+        "name": "Melissa Rutz",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 548.0,
+        "last_point_year": 2024
+      },
+      {
+        "dancer_id": "7258",
+        "name": "Sheven Kekoolani",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 5.0,
+        "last_point_year": 2026
+      },
+      {
+        "dancer_id": "7391",
+        "name": "Kevin Kane",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 4.0,
+        "last_point_year": 2025
+      },
+      {
+        "dancer_id": "20700",
+        "name": "Mackenzie Keister",
+        "recent_points": 2.0,
+        "lifetime_points_in_division": 2.0,
+        "last_point_year": 2026
+      }
+    ]
   },
   "trend_rolling_3y": [
     {
       "window_end_year": 2018,
       "division": "All-Stars",
-      "active_share_three_plus": 85.7,
-      "active_count_three_plus": 442,
-      "total_dancers": 516
+      "active_share_three_plus": 33.2,
+      "active_count_three_plus": 360,
+      "total_current_required_dancers": 1083
     },
     {
       "window_end_year": 2018,
       "division": "Champions",
-      "active_share_three_plus": 85.7,
-      "active_count_three_plus": 90,
-      "total_dancers": 105
-    },
-    {
-      "window_end_year": 2019,
-      "division": "All-Stars",
-      "active_share_three_plus": 83.2,
-      "active_count_three_plus": 456,
-      "total_dancers": 548
-    },
-    {
-      "window_end_year": 2019,
-      "division": "Champions",
-      "active_share_three_plus": 77.5,
+      "active_share_three_plus": 42.9,
       "active_count_three_plus": 79,
-      "total_dancers": 102
+      "total_current_required_dancers": 184
+    },
+    {
+      "window_end_year": 2019,
+      "division": "All-Stars",
+      "active_share_three_plus": 34.7,
+      "active_count_three_plus": 376,
+      "total_current_required_dancers": 1083
+    },
+    {
+      "window_end_year": 2019,
+      "division": "Champions",
+      "active_share_three_plus": 39.1,
+      "active_count_three_plus": 72,
+      "total_current_required_dancers": 184
     },
     {
       "window_end_year": 2020,
       "division": "All-Stars",
-      "active_share_three_plus": 80.5,
-      "active_count_three_plus": 391,
-      "total_dancers": 486
-    },
-    {
-      "window_end_year": 2020,
-      "division": "Champions",
-      "active_share_three_plus": 74.2,
-      "active_count_three_plus": 69,
-      "total_dancers": 93
-    },
-    {
-      "window_end_year": 2021,
-      "division": "All-Stars",
-      "active_share_three_plus": 74.6,
-      "active_count_three_plus": 314,
-      "total_dancers": 421
-    },
-    {
-      "window_end_year": 2021,
-      "division": "Champions",
-      "active_share_three_plus": 70.1,
-      "active_count_three_plus": 54,
-      "total_dancers": 77
-    },
-    {
-      "window_end_year": 2022,
-      "division": "All-Stars",
-      "active_share_three_plus": 70.1,
-      "active_count_three_plus": 241,
-      "total_dancers": 344
-    },
-    {
-      "window_end_year": 2022,
-      "division": "Champions",
-      "active_share_three_plus": 71.0,
-      "active_count_three_plus": 44,
-      "total_dancers": 62
-    },
-    {
-      "window_end_year": 2023,
-      "division": "All-Stars",
-      "active_share_three_plus": 76.1,
+      "active_share_three_plus": 29.6,
       "active_count_three_plus": 321,
-      "total_dancers": 422
+      "total_current_required_dancers": 1083
+    },
+    {
+      "window_end_year": 2020,
+      "division": "Champions",
+      "active_share_three_plus": 35.3,
+      "active_count_three_plus": 65,
+      "total_current_required_dancers": 184
+    },
+    {
+      "window_end_year": 2021,
+      "division": "All-Stars",
+      "active_share_three_plus": 23.5,
+      "active_count_three_plus": 254,
+      "total_current_required_dancers": 1083
+    },
+    {
+      "window_end_year": 2021,
+      "division": "Champions",
+      "active_share_three_plus": 27.2,
+      "active_count_three_plus": 50,
+      "total_current_required_dancers": 184
+    },
+    {
+      "window_end_year": 2022,
+      "division": "All-Stars",
+      "active_share_three_plus": 18.3,
+      "active_count_three_plus": 198,
+      "total_current_required_dancers": 1083
+    },
+    {
+      "window_end_year": 2022,
+      "division": "Champions",
+      "active_share_three_plus": 22.8,
+      "active_count_three_plus": 42,
+      "total_current_required_dancers": 184
+    },
+    {
+      "window_end_year": 2023,
+      "division": "All-Stars",
+      "active_share_three_plus": 24.6,
+      "active_count_three_plus": 266,
+      "total_current_required_dancers": 1083
     },
     {
       "window_end_year": 2023,
       "division": "Champions",
-      "active_share_three_plus": 70.4,
-      "active_count_three_plus": 50,
-      "total_dancers": 71
+      "active_share_three_plus": 26.6,
+      "active_count_three_plus": 49,
+      "total_current_required_dancers": 184
     },
     {
       "window_end_year": 2024,
       "division": "All-Stars",
-      "active_share_three_plus": 79.1,
-      "active_count_three_plus": 394,
-      "total_dancers": 498
+      "active_share_three_plus": 30.4,
+      "active_count_three_plus": 329,
+      "total_current_required_dancers": 1083
     },
     {
       "window_end_year": 2024,
       "division": "Champions",
-      "active_share_three_plus": 75.0,
-      "active_count_three_plus": 66,
-      "total_dancers": 88
+      "active_share_three_plus": 33.7,
+      "active_count_three_plus": 62,
+      "total_current_required_dancers": 184
     },
     {
       "window_end_year": 2025,
       "division": "All-Stars",
-      "active_share_three_plus": 79.9,
-      "active_count_three_plus": 441,
-      "total_dancers": 552
+      "active_share_three_plus": 35.5,
+      "active_count_three_plus": 385,
+      "total_current_required_dancers": 1083
     },
     {
       "window_end_year": 2025,
       "division": "Champions",
-      "active_share_three_plus": 86.2,
-      "active_count_three_plus": 81,
-      "total_dancers": 94
+      "active_share_three_plus": 37.0,
+      "active_count_three_plus": 68,
+      "total_current_required_dancers": 184
     },
     {
       "window_end_year": 2026,
       "division": "All-Stars",
-      "active_share_three_plus": 80.6,
-      "active_count_three_plus": 431,
-      "total_dancers": 535
+      "active_share_three_plus": 35.5,
+      "active_count_three_plus": 384,
+      "total_current_required_dancers": 1083
     },
     {
       "window_end_year": 2026,
       "division": "Champions",
-      "active_share_three_plus": 76.9,
-      "active_count_three_plus": 80,
-      "total_dancers": 104
+      "active_share_three_plus": 37.0,
+      "active_count_three_plus": 68,
+      "total_current_required_dancers": 184
     }
   ],
   "concentration_36m": {
     "All-Stars": {
-      "total_positive_points": 12187.0,
+      "total_positive_points": 10135.0,
       "top_share_percent": {
-        "5": 8.2,
-        "10": 14.5,
-        "20": 25.9,
-        "30": 34.9
+        "5": 8.3,
+        "10": 15.4,
+        "20": 27.2,
+        "30": 36.5
       }
     },
     "Champions": {
-      "total_positive_points": 2001.0,
+      "total_positive_points": 1929.0,
       "top_share_percent": {
-        "5": 25.7,
-        "10": 40.9,
-        "20": 63.1,
-        "30": 76.9
+        "5": 26.6,
+        "10": 42.5,
+        "20": 65.4,
+        "30": 79.8
       }
     }
   },
   "coverage_events": [
     {
       "year": 2023,
-      "all_stars_events": 100,
-      "champions_events": 20
+      "all_stars_events": 0,
+      "champions_events": 0
     },
     {
       "year": 2024,
@@ -198,8 +5909,8 @@
     }
   ],
   "limitations": [
-    "Dataset does not directly encode local community contribution, teaching impact, or social-dance activity.",
-    "Procedural fairness claims (e.g., prelim cuts, partner randomization mechanics) are not directly observable in this table.",
-    "Window uses whole years; exact day-based 36-month cutoff may differ from official implementation details."
+    "Whole-year window approximates the exact 36-month cutoff.",
+    "Registry points do not capture teaching, local-community work, judging, staffing, or social-dance contribution.",
+    "The calculation uses current required status as observable proxy for who may be affected; final rule language could define scope differently."
   ]
 }

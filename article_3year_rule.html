@@ -8,82 +8,167 @@
   <meta property="og:description" content="Разбор дискуссии о 3-Year Rule: масштаб влияния, доступ к Champions points, концентрация конкуренции и ограничения данных." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://wsdc-analytics.github.io/article_3year_rule.html" />
-  <title>WSDC 3-Year Rule: что показывают данные | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Статус или активность: что проверяет 3-Year Rule? | WSDC Analytics</title>
   <style>
     :root {
-      --bg: #f7fafc;
-      --card: #fff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --accent: #2563eb;
-      --border: #e5e7eb;
+      --color-primary: #2d3748;
+      --color-primary-dark: #1a202c;
+      --color-primary-light: #4a5568;
+      --color-link-accent: #2563eb;
+      --bg-primary: #ffffff;
+      --bg-tertiary: #f7fafc;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --border-color: #e5e5e5;
+      --chart-border: #e4e9f0;
+      --chart-radius-outer: 16px;
+      --chart-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: "DM Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.65; }
-    .container { max-width: 980px; margin: 0 auto; padding: 18px 14px 24px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      padding: 0;
+    }
     .header {
-      background: linear-gradient(135deg, #1f3b77, #3150a4);
-      border-radius: 14px;
-      padding: 24px 20px;
+      background:
+        linear-gradient(135deg, rgba(26, 32, 44, .90), rgba(45, 55, 72, .78)),
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, .55), transparent 32%),
+        radial-gradient(circle at 80% 80%, rgba(37, 99, 235, .42), transparent 30%),
+        var(--color-primary);
       color: #fff;
+      padding: 100px 80px 80px;
+      border-bottom: 1px solid var(--border-color);
     }
-    .back-link { color: #dbeafe; text-decoration: none; font-size: 14px; font-weight: 600; }
-    .title { margin: 12px 0 8px; font-size: 38px; line-height: 1.05; letter-spacing: -0.02em; }
-    .subtitle { margin: 0; font-size: 19px; color: #dbeafe; }
-    .article { margin-top: 12px; display: grid; gap: 12px; }
+    .back-link {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 28px;
+      opacity: .95;
+    }
+    .back-link:hover { opacity: .78; }
+    .title {
+      margin: 0 0 18px;
+      font-size: 46px;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      font-weight: 700;
+      max-width: 820px;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, .9);
+      max-width: 780px;
+    }
+    .article {
+      padding: 64px 80px 72px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
     .section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 14px;
+      margin-bottom: 56px;
     }
-    h2 { margin: 0 0 10px; font-size: 24px; line-height: 1.2; }
-    h3 { margin: 12px 0 6px; font-size: 18px; line-height: 1.3; }
-    p { margin: 0 0 10px; }
+    .section:last-child { margin-bottom: 0; }
+    h2 {
+      margin: 0 0 24px;
+      font-size: 32px;
+      line-height: 1.25;
+      letter-spacing: -0.6px;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      padding-left: 18px;
+      border-left: 4px solid var(--color-primary);
+    }
+    h3 {
+      margin: 28px 0 12px;
+      font-size: 20px;
+      line-height: 1.35;
+      color: var(--color-primary-dark);
+      font-weight: 700;
+    }
+    p {
+      margin: 0 0 18px;
+      color: var(--text-secondary);
+    }
+    strong { color: var(--text-primary); }
     .note {
       background: #eff6ff;
-      border-left: 3px solid var(--accent);
-      padding: 10px 11px;
-      border-radius: 8px;
-      font-size: 14px;
+      border-left: 4px solid var(--color-link-accent);
+      padding: 16px 18px;
+      border-radius: 12px;
+      font-size: 16px;
       color: #1e3a8a;
+      margin: 24px 0 0;
     }
     .warning {
       background: #fff7ed;
-      border-left: 3px solid #f97316;
-      padding: 10px 11px;
-      border-radius: 8px;
-      font-size: 14px;
+      border-left: 4px solid #f97316;
+      padding: 16px 18px;
+      border-radius: 12px;
+      font-size: 16px;
       color: #9a3412;
+      margin: 20px 0 24px;
     }
-    ul { margin: 8px 0 0 18px; padding: 0; }
-    li { margin-bottom: 6px; }
+    ul { margin: 10px 0 0 24px; padding: 0; color: var(--text-secondary); }
+    li { margin-bottom: 10px; }
     .kpi {
       display: grid;
       grid-template-columns: repeat(4, minmax(120px, 1fr));
-      gap: 8px;
-      margin-top: 10px;
+      gap: 12px;
+      margin: 28px 0 18px;
     }
     .kpi-item {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px;
-      background: #fafafa;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 18px 16px;
+      background: var(--bg-tertiary);
     }
-    .kpi-value { display: block; font-size: 21px; font-weight: 700; line-height: 1.1; }
-    .kpi-label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .kpi-value {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--color-primary-dark);
+    }
+    .kpi-label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      line-height: 1.35;
+    }
     .iframe-wrap {
-      margin-top: 10px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      margin: 30px 0 0;
+      border: 1px solid var(--chart-border);
+      border-radius: var(--chart-radius-outer);
       overflow: hidden;
       background: #fff;
+      box-shadow: var(--chart-shadow);
     }
     .chart-iframe {
       width: 100%;
       border: 0;
       display: block;
-      height: 1280px;
+      height: 1600px;
     }
     .reactions {
       display: flex;
@@ -96,25 +181,42 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-color);
       border-radius: 999px;
       background: #fff;
-      padding: 6px 12px;
+      padding: 8px 14px;
       cursor: pointer;
       font-size: 14px;
+      color: var(--text-primary);
     }
+    .react-btn:hover { background: var(--bg-tertiary); }
     .footer {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 14px;
+      padding: 18px 20px;
+      font-size: 14px;
+      color: var(--text-tertiary);
+      margin-top: 24px;
     }
-    .footer a { color: var(--accent); }
+    .footer a {
+      color: var(--color-link-accent);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
     @media (max-width: 900px) {
-      .title { font-size: 30px; }
-      .subtitle { font-size: 17px; }
-      h2 { font-size: 21px; }
+      body { font-size: 16px; }
+      .header { padding: 50px 20px 48px; }
+      .article { padding: 40px 16px 48px; }
+      .title { font-size: 32px; letter-spacing: -1px; }
+      .subtitle { font-size: 18px; }
+      h2 { font-size: 26px; }
       .kpi { grid-template-columns: 1fr 1fr; }
-      .chart-iframe { height: 1460px; }
+      .chart-iframe { height: 1900px; }
+    }
+    @media (max-width: 560px) {
+      .kpi { grid-template-columns: 1fr; }
+      .chart-iframe { height: 2100px; }
     }
   </style>
 </head>
@@ -122,82 +224,91 @@
   <main class="container">
     <header class="header">
       <a class="back-link" href="/?lang=ru">← К главной</a>
-      <h1 class="title">WSDC 3-Year Rule: что показывают данные</h1>
-      <p class="subtitle">Нейтральный разбор дискуссии о подтверждении статуса All-Stars и Champions по активности за 36 месяцев</p>
+      <h1 class="title">Статус или активность: что проверяет 3-Year Rule?</h1>
+      <p class="subtitle">Почему спор о подтверждении All-Star и Champion — это спор о смысле верхних дивизионов WSDC</p>
     </header>
 
     <article class="article">
       <section class="section">
-        <h2>Почему эта тема сейчас острая</h2>
-        <p>В сообществе активно обсуждается инициатива вернуть правило регулярного подтверждения статуса для верхних дивизионов. Параллельно остаются вопросы о целях правила, справедливости применения и реальном эффекте для развития сцены.</p>
-        <p>Ниже мы разбираем это в формате: <strong>вопрос сообщества → проверяемый факт в данных → ограничение интерпретации</strong>. Это не позиционный текст “за” или “против”, а попытка зафиксировать наблюдаемую картину в цифрах.</p>
+        <h2>All-Star по подписке?</h2>
+        <p>Главный вопрос в споре о 3-Year Rule не в том, много или мало нужно набрать за 36 месяцев. Вопрос глубже: <strong>All-Star и Champion — это признание достигнутого уровня или текущая соревновательная лицензия, которую нужно регулярно продлевать?</strong></p>
+        <p>Если WSDC хочет проверять текущую активность, это можно обсуждать. Но тогда сначала нужно честно назвать проблему: система переполнена? качество дивизиона падает? верхний статус потерял дефицитность? новые Champions отнимают видимость у старой элиты? Для разных целей нужны разные метрики и разные инструменты.</p>
+        <div class="note">Тезис статьи: WSDC предлагает санкционный механизм, но пока не формулирует достаточно ясно, какую именно проблему он должен решить.</div>
       </section>
 
       <section class="section">
-        <h2>Что подтверждено, а что пока рабочая формулировка</h2>
+        <h2>Что именно обсуждается</h2>
         <div class="warning">
           На момент публикации у нас нет верифицированного публичного текста окончательной редакции правила в официальном rulebook-формате. Часть формулировок циркулирует в обсуждениях и опросных материалах.
         </div>
-        <h3>Подтверждено в текущем публичном обсуждении</h3>
+        <h3>Что видно из текущего публичного обсуждения</h3>
         <ul>
           <li>Идет обсуждение 3-year rule для верхних дивизионов (All-Stars и Champions).</li>
           <li>Ключевая идея дискуссии: порог активности за последние 36 месяцев и последствия при невыполнении.</li>
-          <li>В сообществе есть существенные вопросы к цели, срокам и механике применения.</li>
+          <li>В сообществе есть существенные вопросы не только к порогу, но и к самой цели правила.</li>
         </ul>
         <h3>Что считаем рабочей гипотезой для расчета</h3>
         <ul>
           <li>Порог: 3 points за 36 месяцев.</li>
           <li>Группы анализа: 0 points / 1–2.99 points / 3+ points.</li>
           <li>Окно в текущем срезе базы: 2024–2026 (приближение rolling 36 months по годам).</li>
+          <li>Scope для оценки риска: текущий required-status из базы (`All Star` или `Champion`).</li>
         </ul>
       </section>
 
       <section class="section">
-        <h2>Блок A: масштаб влияния</h2>
-        <p>Если смотреть на окно 2024–2026, потенциально затрагиваемая группа (&lt;3 points) заметна в обоих дивизионах, но особенно чувствительна для Champions из-за малого размера пула.</p>
+        <h2>Гипотеза 1: правило нужно для контроля качества</h2>
+        <p>Это самая понятная публичная версия: если человек давно не получает поинты, возможно, его текущий соревновательный уровень уже не соответствует статусу. Но здесь есть методологическая проблема: WSDC Registry видит только результаты соревнований, а не текущий танцевальный уровень.</p>
+        <p>Отсутствие points за последние 36 месяцев может означать спад формы. Но оно может означать и другое: человек преподает, судит, строит локальную сцену, редко ездит на circuit или живет в регионе с ограниченным доступом к нужным дивизионам.</p>
+      </section>
+
+      <section class="section">
+        <h2>Гипотеза 2: правило должно стимулировать активность</h2>
+        <p>Если статус становится “подпиской”, логика проста: хочешь оставаться All-Star или Champion — продолжай соревноваться. Но тогда правило меняет сам смысл статуса. Это уже не только отметка о достигнутом уровне, а подтверждение текущего участия в соревновательной системе.</p>
+        <p>В текущем срезе эффект такого подхода был бы масштабным. Если использовать рабочий порог &lt;3 points за 2024–2026 и текущий required-status, в риск-группу попадают не единицы.</p>
         <div class="kpi">
-          <div class="kpi-item"><span class="kpi-value">535</span><span class="kpi-label">All-Stars в окне 36 мес.</span></div>
-          <div class="kpi-item"><span class="kpi-value">104</span><span class="kpi-label">Champions в окне 36 мес.</span></div>
-          <div class="kpi-item"><span class="kpi-value">104</span><span class="kpi-label">All-Stars с 1–2.99 points</span></div>
-          <div class="kpi-item"><span class="kpi-value">24</span><span class="kpi-label">Champions с 1–2.99 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">699</span><span class="kpi-label">All-Stars ниже 3 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">116</span><span class="kpi-label">Champions ниже 3 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">64.5%</span><span class="kpi-label">All-Stars в риск-группе</span></div>
+          <div class="kpi-item"><span class="kpi-value">63.0%</span><span class="kpi-label">Champions в риск-группе</span></div>
         </div>
-        <div class="note">По текущему срезу данных риск-группа (&lt;3 points): около 19.4% в All-Stars и 23.1% в Champions.</div>
+        <div class="warning">Это не прогноз официального решения: финальная формулировка правила может иначе определять scope и точное 36-месячное окно. Но как stress test эта оценка показывает масштаб возможного вмешательства.</div>
       </section>
 
       <section class="section">
-        <h2>Блоки B–D: доступ к поинтам, концентрация и экосистема</h2>
-        <ul>
-          <li><strong>Доступность:</strong> Champions-division предлагается заметно реже, чем All-Stars, что прямо влияет на доступ к набору points.</li>
-          <li><strong>Концентрация:</strong> в Champions top-10 участников собирают около 40.9% positive points в окне 36 месяцев — это выше, чем в All-Stars (14.5%).</li>
-          <li><strong>Экосистемный эффект:</strong> при малом абсолютном числе активных Champions любое “сжатие” пула заметнее влияет на поля ивентов.</li>
-          <li><strong>Ограничение:</strong> вклад в локальные сообщества, преподавание и social-dance активность не отражается напрямую в WSDC points registry.</li>
-        </ul>
+        <h2>Гипотеза 3: верхние дивизионы стали слишком большими</h2>
+        <p>Это более неудобная, но важная гипотеза. После появления понятного пути в Champions через All-Star points верхний статус стал более достижимым. Это было логично: если Champions — вершина Skill Level ladder, у нее должен быть путь достижения.</p>
+        <p>Но достижимость меняет экономику статуса. Чем больше людей формально имеют право называться Champion, тем слабее дефицитность этого статуса: меньше эксклюзивность, сложнее распределение видимости, приглашений, teaching value и символического капитала. Об этом редко говорят напрямую, но такой слой почти наверняка присутствует в конфликте.</p>
+        <p>Если проблема именно в дефицитности элиты, то понижение за неактивность — не единственный и не самый честный инструмент. Возможно, честнее разделить <strong>достигнутый статус</strong> и <strong>текущее право выступать в элитном формате</strong>, либо вынести часть Champion/Open/Invitational логики за пределы Skill Level ladder.</p>
       </section>
 
       <section class="section">
-        <h2>4 графика для дискуссии (light-набор)</h2>
-        <p>Ниже собран компактный dashboard по ключевым метрикам: риск-группа по порогу, rolling-тренд активных, концентрация points и доступность дивизионов по ивентам.</p>
+        <h2>Что говорят данные</h2>
+        <p>Данные здесь нужны не для того, чтобы “доказать правоту” одной стороны, а чтобы понять масштаб. Ниже: риск-группы по текущей рабочей гипотезе, rolling-тренд активности, концентрация points и доступность дивизионов по ивентам. В конце интерактива есть первые строки списка танцоров, которые попадают под риск по расчету &lt;3 points.</p>
         <div class="iframe-wrap">
-          <iframe class="chart-iframe" src="interactive_3year_rule_activity.html?v=20260428-r1" title="WSDC 3-Year Rule metrics"></iframe>
+          <iframe class="chart-iframe" src="interactive_3year_rule_activity.html?v=20260428-r2" title="WSDC 3-Year Rule metrics"></iframe>
         </div>
       </section>
 
       <section class="section">
-        <h2>Короткие сценарии последствий</h2>
-        <h3>Сценарий 1: правило без переходного окна</h3>
-        <p>Быстрый эффект на статистику активности, но выше риск резкого сокращения полей в верхних дивизионах, особенно при ограниченной доступности Champion divisions.</p>
-        <h3>Сценарий 2: правило с переходным периодом и исключениями</h3>
-        <p>Смягчает краткосрочные потери и дает время адаптироваться тем, кто не регулярно ездит по глобальному circuit.</p>
-        <h3>Сценарий 3: мягкий режим (signal-first)</h3>
-        <p>Сначала прозрачный мониторинг и публикация метрик активности, затем поэтапное включение жестких последствий. Это снижает шок для экосистемы и повышает предсказуемость.</p>
+        <h2>Главная проблема: не порог, а цель</h2>
+        <p>Правило в стиле “3 points за 36 месяцев” может быть разумным, если WSDC ясно говорит: мы регулируем именно текущую соревновательную eligibility, а не отбираем признание прошлых достижений. Но если такой ясности нет, правило выглядит как санкция без диагноза.</p>
+        <p>До обсуждения цифр WSDC стоит ответить на базовые вопросы:</p>
+        <ul>
+          <li>Статус All-Star/Champion — это достигнутый уровень или текущая лицензия на участие?</li>
+          <li>Какая проблема решается: качество, размер полей, активность, дефицитность статуса или экономика верхнего дивизиона?</li>
+          <li>Почему правило применяется только к All-Stars и Champions, а не ко всей Skill Level ladder?</li>
+          <li>Как учитывается неравный доступ к Champion divisions и глобальному circuit?</li>
+        </ul>
       </section>
 
       <section class="section">
         <h2>Вывод</h2>
         <ul>
-          <li>Дискуссия о 3-year rule имеет измеряемое основание: в обоих дивизионах есть заметная группа участников ниже порога 3 points за 36 месяцев.</li>
-          <li>У Champions ситуация чувствительнее из-за малого числа активных участников и более высокой концентрации поинтов у узкого ядра.</li>
-          <li>Часть ключевых опасений сообщества не может быть закрыта только реестром points: нужны дополнительные прозрачные правила и пояснения по процедурам.</li>
+          <li>3-Year Rule — это не техническая правка, а попытка переопределить смысл верхнего статуса.</li>
+          <li>Если цель — активность, нужно отделить eligibility от achieved status.</li>
+          <li>Если цель — защитить элитность Champions, нужно честно обсуждать дизайн верхнего формата, а не только “снимать” людей за неактивность.</li>
+          <li>До обсуждения порога WSDC должна публично ответить: какую именно проблему решает правило?</li>
         </ul>
       </section>
 
