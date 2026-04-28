@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WSDC 3-Year Rule: статистика активности</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "DM Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 10px 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .meta {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 290px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #111827;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .canvas-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 215px;
+    }
+    canvas { width: 100%; height: 100%; }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .card { min-height: 270px; }
+      .title { font-size: 13px; }
+      .subtitle { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="meta" id="metaInfo">Загрузка метрик...</section>
+    <section class="grid">
+      <article class="card">
+        <h3 class="title">1) Риск-группа по порогу 3 points (окно 36 месяцев)</h3>
+        <p class="subtitle">Распределение участников по группам: 0, 1–2.99, 3+</p>
+        <div class="canvas-wrap"><canvas id="bucketChart"></canvas></div>
+      </article>
+      <article class="card">
+        <h3 class="title">2) Тренд активных (3+) в rolling 3-year окне</h3>
+        <p class="subtitle">Доля активных по годам закрытия окна</p>
+        <div class="canvas-wrap"><canvas id="trendChart"></canvas></div>
+      </article>
+      <article class="card">
+        <h3 class="title">3) Концентрация поинтов</h3>
+        <p class="subtitle">Какую долю positive points собирает top-N</p>
+        <div class="canvas-wrap"><canvas id="concentrationChart"></canvas></div>
+      </article>
+      <article class="card">
+        <h3 class="title">4) Доступность дивизионов по ивентам</h3>
+        <p class="subtitle">Число уникальных ивентов с All-Stars / Champions</p>
+        <div class="canvas-wrap"><canvas id="coverageChart"></canvas></div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const JSON_URL = "./static/data/three_year_rule_metrics.json?v=20260428-r1";
+
+    function tiny(v) { return Number(v || 0).toLocaleString("ru-RU"); }
+
+    function baseOptions() {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { boxWidth: 12, boxHeight: 12, font: { size: 11 } } },
+          tooltip: { bodyFont: { size: 11 }, titleFont: { size: 11 } }
+        },
+        scales: {
+          x: { ticks: { font: { size: 11 } }, grid: { display: false } },
+          y: { ticks: { font: { size: 11 } }, grid: { color: "rgba(229,231,235,.7)" } }
+        }
+      };
+    }
+
+    function renderBucket(data) {
+      const labels = ["All-Stars", "Champions"];
+      const as = data.buckets_36m["All-Stars"];
+      const ch = data.buckets_36m["Champions"];
+      const opts = baseOptions();
+      opts.scales.y.stacked = true;
+      opts.scales.x.stacked = true;
+      opts.scales.y.title = { display: true, text: "Количество танцоров", font: { size: 11 } };
+      new Chart(document.getElementById("bucketChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            { label: "0 points", data: [as.zero_points, ch.zero_points], backgroundColor: "rgba(156,163,175,.75)" },
+            { label: "1–2.99 points", data: [as.one_to_two, ch.one_to_two], backgroundColor: "rgba(251,146,60,.8)" },
+            { label: "3+ points", data: [as.three_plus, ch.three_plus], backgroundColor: "rgba(59,130,246,.85)" }
+          ]
+        },
+        options: opts
+      });
+    }
+
+    function renderTrend(data) {
+      const rows = data.trend_rolling_3y || [];
+      const years = [...new Set(rows.map(r => r.window_end_year))].sort((a, b) => a - b);
+      const series = (div) => years.map(y => {
+        const row = rows.find(r => r.division === div && r.window_end_year === y);
+        return row ? row.active_share_three_plus : null;
+      });
+      const opts = baseOptions();
+      opts.scales.y.min = 0;
+      opts.scales.y.max = 100;
+      opts.scales.y.title = { display: true, text: "Доля активных (3+), %", font: { size: 11 } };
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+          labels: years,
+          datasets: [
+            { label: "All-Stars", data: series("All-Stars"), borderColor: "rgba(37,99,235,.95)", backgroundColor: "rgba(37,99,235,.2)", tension: .25, pointRadius: 2.8 },
+            { label: "Champions", data: series("Champions"), borderColor: "rgba(220,38,38,.95)", backgroundColor: "rgba(220,38,38,.2)", tension: .25, pointRadius: 2.8 }
+          ]
+        },
+        options: opts
+      });
+    }
+
+    function renderConcentration(data) {
+      const as = data.concentration_36m["All-Stars"].top_share_percent;
+      const ch = data.concentration_36m["Champions"].top_share_percent;
+      const labels = ["Top-5", "Top-10", "Top-20", "Top-30"];
+      const opts = baseOptions();
+      opts.scales.y.min = 0;
+      opts.scales.y.max = 100;
+      opts.scales.y.title = { display: true, text: "Доля positive points, %", font: { size: 11 } };
+      new Chart(document.getElementById("concentrationChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            { label: "All-Stars", data: [as["5"], as["10"], as["20"], as["30"]], backgroundColor: "rgba(37,99,235,.8)" },
+            { label: "Champions", data: [ch["5"], ch["10"], ch["20"], ch["30"]], backgroundColor: "rgba(220,38,38,.8)" }
+          ]
+        },
+        options: opts
+      });
+    }
+
+    function renderCoverage(data) {
+      const rows = (data.coverage_events || []).slice().sort((a, b) => a.year - b.year);
+      const opts = baseOptions();
+      opts.scales.y.title = { display: true, text: "Уникальные ивенты", font: { size: 11 } };
+      new Chart(document.getElementById("coverageChart"), {
+        type: "line",
+        data: {
+          labels: rows.map(r => r.year),
+          datasets: [
+            { label: "All-Stars", data: rows.map(r => r.all_stars_events), borderColor: "rgba(37,99,235,.95)", backgroundColor: "rgba(37,99,235,.15)", tension: .25, pointRadius: 3 },
+            { label: "Champions", data: rows.map(r => r.champions_events), borderColor: "rgba(16,185,129,.95)", backgroundColor: "rgba(16,185,129,.15)", tension: .25, pointRadius: 3 }
+          ]
+        },
+        options: opts
+      });
+    }
+
+    async function init() {
+      const meta = document.getElementById("metaInfo");
+      try {
+        const r = await fetch(JSON_URL, { cache: "no-store" });
+        if (!r.ok) throw new Error("Failed to load metrics");
+        const data = await r.json();
+        const as = data.buckets_36m["All-Stars"];
+        const ch = data.buckets_36m["Champions"];
+        meta.textContent = `Окно: ${data.window_definition}  |  Порог: ${data.rule_threshold_points} points.  ` +
+          `Риск-группа (<3 points): All-Stars ${tiny(as.risk_group_under_three)} из ${tiny(as.total_dancers)} (${as.risk_share_under_three}%), ` +
+          `Champions ${tiny(ch.risk_group_under_three)} из ${tiny(ch.total_dancers)} (${ch.risk_share_under_three}%).`;
+        renderBucket(data);
+        renderTrend(data);
+        renderConcentration(data);
+        renderCoverage(data);
+      } catch (e) {
+        meta.textContent = "Не удалось загрузить метрики. Обновите страницу.";
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

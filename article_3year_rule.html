@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="WSDC 3-Year Rule: нейтральный статистический разбор инициативы по подтверждению статуса All-Stars и Champions каждые 36 месяцев." />
+  <meta property="og:title" content="WSDC 3-Year Rule: что показывают данные" />
+  <meta property="og:description" content="Разбор дискуссии о 3-Year Rule: масштаб влияния, доступ к Champions points, концентрация конкуренции и ограничения данных." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://wsdc-analytics.github.io/article_3year_rule.html" />
+  <title>WSDC 3-Year Rule: что показывают данные | WSDC Analytics</title>
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --card: #fff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: "DM Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.65; }
+    .container { max-width: 980px; margin: 0 auto; padding: 18px 14px 24px; }
+    .header {
+      background: linear-gradient(135deg, #1f3b77, #3150a4);
+      border-radius: 14px;
+      padding: 24px 20px;
+      color: #fff;
+    }
+    .back-link { color: #dbeafe; text-decoration: none; font-size: 14px; font-weight: 600; }
+    .title { margin: 12px 0 8px; font-size: 38px; line-height: 1.05; letter-spacing: -0.02em; }
+    .subtitle { margin: 0; font-size: 19px; color: #dbeafe; }
+    .article { margin-top: 12px; display: grid; gap: 12px; }
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px;
+    }
+    h2 { margin: 0 0 10px; font-size: 24px; line-height: 1.2; }
+    h3 { margin: 12px 0 6px; font-size: 18px; line-height: 1.3; }
+    p { margin: 0 0 10px; }
+    .note {
+      background: #eff6ff;
+      border-left: 3px solid var(--accent);
+      padding: 10px 11px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #1e3a8a;
+    }
+    .warning {
+      background: #fff7ed;
+      border-left: 3px solid #f97316;
+      padding: 10px 11px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #9a3412;
+    }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    li { margin-bottom: 6px; }
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .kpi-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fafafa;
+    }
+    .kpi-value { display: block; font-size: 21px; font-weight: 700; line-height: 1.1; }
+    .kpi-label { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .iframe-wrap {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .chart-iframe {
+      width: 100%;
+      border: 0;
+      display: block;
+      height: 1280px;
+    }
+    .reactions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .react-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .footer {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .footer a { color: var(--accent); }
+    @media (max-width: 900px) {
+      .title { font-size: 30px; }
+      .subtitle { font-size: 17px; }
+      h2 { font-size: 21px; }
+      .kpi { grid-template-columns: 1fr 1fr; }
+      .chart-iframe { height: 1460px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <a class="back-link" href="/?lang=ru">← К главной</a>
+      <h1 class="title">WSDC 3-Year Rule: что показывают данные</h1>
+      <p class="subtitle">Нейтральный разбор дискуссии о подтверждении статуса All-Stars и Champions по активности за 36 месяцев</p>
+    </header>
+
+    <article class="article">
+      <section class="section">
+        <h2>Почему эта тема сейчас острая</h2>
+        <p>В сообществе активно обсуждается инициатива вернуть правило регулярного подтверждения статуса для верхних дивизионов. Параллельно остаются вопросы о целях правила, справедливости применения и реальном эффекте для развития сцены.</p>
+        <p>Ниже мы разбираем это в формате: <strong>вопрос сообщества → проверяемый факт в данных → ограничение интерпретации</strong>. Это не позиционный текст “за” или “против”, а попытка зафиксировать наблюдаемую картину в цифрах.</p>
+      </section>
+
+      <section class="section">
+        <h2>Что подтверждено, а что пока рабочая формулировка</h2>
+        <div class="warning">
+          На момент публикации у нас нет верифицированного публичного текста окончательной редакции правила в официальном rulebook-формате. Часть формулировок циркулирует в обсуждениях и опросных материалах.
+        </div>
+        <h3>Подтверждено в текущем публичном обсуждении</h3>
+        <ul>
+          <li>Идет обсуждение 3-year rule для верхних дивизионов (All-Stars и Champions).</li>
+          <li>Ключевая идея дискуссии: порог активности за последние 36 месяцев и последствия при невыполнении.</li>
+          <li>В сообществе есть существенные вопросы к цели, срокам и механике применения.</li>
+        </ul>
+        <h3>Что считаем рабочей гипотезой для расчета</h3>
+        <ul>
+          <li>Порог: 3 points за 36 месяцев.</li>
+          <li>Группы анализа: 0 points / 1–2.99 points / 3+ points.</li>
+          <li>Окно в текущем срезе базы: 2024–2026 (приближение rolling 36 months по годам).</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Блок A: масштаб влияния</h2>
+        <p>Если смотреть на окно 2024–2026, потенциально затрагиваемая группа (&lt;3 points) заметна в обоих дивизионах, но особенно чувствительна для Champions из-за малого размера пула.</p>
+        <div class="kpi">
+          <div class="kpi-item"><span class="kpi-value">535</span><span class="kpi-label">All-Stars в окне 36 мес.</span></div>
+          <div class="kpi-item"><span class="kpi-value">104</span><span class="kpi-label">Champions в окне 36 мес.</span></div>
+          <div class="kpi-item"><span class="kpi-value">104</span><span class="kpi-label">All-Stars с 1–2.99 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">24</span><span class="kpi-label">Champions с 1–2.99 points</span></div>
+        </div>
+        <div class="note">По текущему срезу данных риск-группа (&lt;3 points): около 19.4% в All-Stars и 23.1% в Champions.</div>
+      </section>
+
+      <section class="section">
+        <h2>Блоки B–D: доступ к поинтам, концентрация и экосистема</h2>
+        <ul>
+          <li><strong>Доступность:</strong> Champions-division предлагается заметно реже, чем All-Stars, что прямо влияет на доступ к набору points.</li>
+          <li><strong>Концентрация:</strong> в Champions top-10 участников собирают около 40.9% positive points в окне 36 месяцев — это выше, чем в All-Stars (14.5%).</li>
+          <li><strong>Экосистемный эффект:</strong> при малом абсолютном числе активных Champions любое “сжатие” пула заметнее влияет на поля ивентов.</li>
+          <li><strong>Ограничение:</strong> вклад в локальные сообщества, преподавание и social-dance активность не отражается напрямую в WSDC points registry.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>4 графика для дискуссии (light-набор)</h2>
+        <p>Ниже собран компактный dashboard по ключевым метрикам: риск-группа по порогу, rolling-тренд активных, концентрация points и доступность дивизионов по ивентам.</p>
+        <div class="iframe-wrap">
+          <iframe class="chart-iframe" src="interactive_3year_rule_activity.html?v=20260428-r1" title="WSDC 3-Year Rule metrics"></iframe>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Короткие сценарии последствий</h2>
+        <h3>Сценарий 1: правило без переходного окна</h3>
+        <p>Быстрый эффект на статистику активности, но выше риск резкого сокращения полей в верхних дивизионах, особенно при ограниченной доступности Champion divisions.</p>
+        <h3>Сценарий 2: правило с переходным периодом и исключениями</h3>
+        <p>Смягчает краткосрочные потери и дает время адаптироваться тем, кто не регулярно ездит по глобальному circuit.</p>
+        <h3>Сценарий 3: мягкий режим (signal-first)</h3>
+        <p>Сначала прозрачный мониторинг и публикация метрик активности, затем поэтапное включение жестких последствий. Это снижает шок для экосистемы и повышает предсказуемость.</p>
+      </section>
+
+      <section class="section">
+        <h2>Вывод</h2>
+        <ul>
+          <li>Дискуссия о 3-year rule имеет измеряемое основание: в обоих дивизионах есть заметная группа участников ниже порога 3 points за 36 месяцев.</li>
+          <li>У Champions ситуация чувствительнее из-за малого числа активных участников и более высокой концентрации поинтов у узкого ядра.</li>
+          <li>Часть ключевых опасений сообщества не может быть закрыта только реестром points: нужны дополнительные прозрачные правила и пояснения по процедурам.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2 style="margin-bottom:8px;">Оцените статью</h2>
+        <div class="reactions">
+          <button class="react-btn" data-id="article_3year_rule_ru_positive">✓ Поддерживаю <span data-count="article_3year_rule_ru_positive">0</span></button>
+          <button class="react-btn" data-id="article_3year_rule_ru_neutral">○ Нейтрально <span data-count="article_3year_rule_ru_neutral">0</span></button>
+          <button class="react-btn" data-id="article_3year_rule_ru_negative">✗ Не согласен <span data-count="article_3year_rule_ru_negative">0</span></button>
+        </div>
+        <p class="footer">
+          Источник данных: <a href="https://points.worldsdc.com/" target="_blank" rel="noopener noreferrer">WSDC Points Registry</a>. Связанные материалы: <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru">Эволюция правил</a> · <a href="https://wsdc-analytics.github.io/article_secondary_role.html?lang=ru">Вторая роль</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <script>
+    (function () {
+      var API = "https://wsdc-analytics-github-io.vercel.app";
+      function countsUrl() { return API.replace(/\/$/, "") + "/api/reactions"; }
+      function setCount(id, value) {
+        var el = document.querySelector("[data-count='" + id + "']");
+        if (el) el.textContent = typeof value === "number" ? value : 0;
+      }
+      function loadCounts() {
+        fetch(countsUrl(), { credentials: "omit" })
+          .then(function (r) { return r.ok ? r.json() : {}; })
+          .then(function (data) {
+            ["article_3year_rule_ru_positive", "article_3year_rule_ru_neutral", "article_3year_rule_ru_negative"]
+              .forEach(function (id) { setCount(id, data[id]); });
+          })
+          .catch(function () {});
+      }
+      function vote(id) {
+        fetch(countsUrl(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "omit",
+          body: JSON.stringify({ id: id })
+        }).then(loadCounts).catch(loadCounts);
+      }
+      document.querySelectorAll(".react-btn[data-id]").forEach(function (btn) {
+        btn.addEventListener("click", function () { vote(btn.getAttribute("data-id")); });
+      });
+      loadCounts();
+    })();
+  </script>
+</body>
+</html>
