@@ -139,7 +139,7 @@
   </main>
 
   <script>
-    const JSON_URL = "./static/data/three_year_rule_metrics.json?v=20260429-r1";
+    const JSON_URL = "./static/data/three_year_rule_metrics.json?v=20260429-r2";
 
     function tiny(v) { return Number(v || 0).toLocaleString("ru-RU"); }
 
@@ -258,7 +258,7 @@
           <div>
             <h4 class="title">${division}: первые 12 из ${tiny(((data.risk_lists_under_three || {})[division] || []).length)}</h4>
             <table class="risk-table">
-            <thead><tr><th>Танцор</th><th>2023–25</th><th>Всего</th><th>Последний год</th></tr></thead>
+            <thead><tr><th>Танцор</th><th>36 мес.</th><th>Всего</th><th>Последний год</th></tr></thead>
               <tbody>${body}</tbody>
             </table>
           </div>
