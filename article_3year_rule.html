@@ -189,13 +189,13 @@
       vertical-align: top;
     }
     .risk-table th:first-child,
-    .risk-table th:nth-child(3),
     .risk-table th:nth-child(4),
     .risk-table th:nth-child(5),
+    .risk-table th:nth-child(6),
     .risk-table td:first-child,
-    .risk-table td:nth-child(3),
     .risk-table td:nth-child(4),
-    .risk-table td:nth-child(5) {
+    .risk-table td:nth-child(5),
+    .risk-table td:nth-child(6) {
       text-align: right;
     }
     .risk-table th {
@@ -206,9 +206,9 @@
       letter-spacing: .03em;
     }
     .risk-table td:first-child,
-    .risk-table td:nth-child(3),
     .risk-table td:nth-child(4),
-    .risk-table td:nth-child(5) {
+    .risk-table td:nth-child(5),
+    .risk-table td:nth-child(6) {
       white-space: nowrap;
     }
     .iframe-wrap {
@@ -313,7 +313,7 @@
         <h2>Что произошло</h2>
         <p>WSDC вынесла на публичное обсуждение инициативу о возвращении правила регулярного подтверждения статуса для All-Stars и Champions. В рабочей формулировке речь идет о пороге в 3 points за последние 36 месяцев: если танцор его не выполняет, он может быть понижен на один уровень.</p>
         <p>Это не просто техническая правка. Если правило будет введено дословно, оно затронет людей, которые уже заработали Champion-статус внутри системы WSDC. Поэтому главный вопрос статьи не в том, много или мало 3 points. Главный вопрос: <strong>какую проблему WSDC пытается решить, и является ли понижение уже заработанного статуса правильным инструментом?</strong></p>
-        <div class="note">Мы пока рассматриваем только Champions: для All-Stars группа риска существенно больше, и ее лучше анализировать отдельно.</div>
+        <div class="note">Мы пока подробно рассматриваем только Champions: для All-Stars группа риска существенно больше, и ее лучше анализировать отдельно.</div>
       </section>
 
       <section class="section">
@@ -333,17 +333,18 @@
           <li>Порог: 3 points за 36 месяцев.</li>
           <li>Группы анализа: 0 points / 1–2.99 points / 3+ points.</li>
           <li>Окно в текущем срезе базы: апрель 2023 — март 2026, последние 36 завершенных месяцев.</li>
-          <li>Scope для оценки риска: текущий required-status из базы (`All Star` или `Champion`).</li>
+          <li>Scope для оценки риска: required или allowed статус из базы (`All Star` или `Champion`).</li>
         </ul>
       </section>
 
       <section class="section">
         <h2>Кто попадает под правило при дословном применении</h2>
-        <p>Если буквально применить рабочую формулировку «3 Champion points за последние 36 месяцев» и взять последние <strong>36 завершенных месяцев</strong> — с <strong>апреля 2023</strong> по <strong>март 2026</strong> включительно, то под порог попадают <strong>115 действующих Champions</strong> из текущего required-status в базе. Ниже список отсортирован по всем исторически набранным Champion points.</p>
-        <p>Мы делим его на две части: сначала те, кто получал Champion points после 2021 года и поэтому явно не исчез из соревновательной системы полностью; затем те, чьи последние Champion points относятся к 2020 году или раньше.</p>
+        <p>Если буквально применить рабочую формулировку «3 Champion points за последние 36 месяцев» и взять последние <strong>36 завершенных месяцев</strong> — с <strong>апреля 2023</strong> по <strong>март 2026</strong> включительно, то под порог попадают <strong>303 Champions</strong> из <strong>386</strong> танцоров, для которых Champion указан как required или allowed в базе. Ниже список отсортирован по всем исторически набранным Champion points.</p>
+        <p>Мы делим список на четыре части: отдельно required и allowed Champions, а внутри каждого scope — те, кто получал Champion points после 2021 года, и те, чьи последние Champion points относятся к 2020 году или раньше (или отсутствуют в базе Champion points).</p>
+        <div class="note">В этом расчете под правило попадают 115 required Champions и 188 allowed-only Champions. Такое разделение важно: required — это текущий обязательный уровень, allowed — право выступать в Champions при текущей позиции в системе.</div>
 
         <details class="risk-disclosure">
-          <summary>Champions с последними points после 2021 года (17 человек)</summary>
+          <summary>Required Champions с последними points после 2021 года (17 человек)</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
@@ -371,9 +372,33 @@
             </table>
           </div>
         </details>
-
         <details class="risk-disclosure">
-          <summary>Champions с последними points до 2021 года (98 человек)</summary>
+          <summary>Allowed Champions с последними points после 2021 года (13 человек)</summary>
+          <div class="table-scroll">
+            <table class="risk-table">
+              <thead>
+                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+              </thead>
+              <tbody>
+<tr><td>1</td><td>Sonya Dessureault</td><td>1</td><td>8</td><td>2026</td></tr>
+<tr><td>2</td><td>Philippe Berne</td><td>2</td><td>8</td><td>2026</td></tr>
+<tr><td>3</td><td>Fabienne Easton</td><td>1</td><td>5</td><td>2025</td></tr>
+<tr><td>4</td><td>Lia Brown</td><td>0</td><td>3</td><td>2022</td></tr>
+<tr><td>5</td><td>Lisa Picard</td><td>1</td><td>2</td><td>2024</td></tr>
+<tr><td>6</td><td>Tze Yi Wee</td><td>1</td><td>2</td><td>2023</td></tr>
+<tr><td>7</td><td>Kristen Wallace</td><td>2</td><td>2</td><td>2026</td></tr>
+<tr><td>8</td><td>Lindsay Mistretta</td><td>2</td><td>2</td><td>2026</td></tr>
+<tr><td>9</td><td>Anastasiia Babakhan</td><td>0</td><td>1</td><td>2026</td></tr>
+<tr><td>10</td><td>Karla Anita Catana</td><td>1</td><td>1</td><td>2025</td></tr>
+<tr><td>11</td><td>Ksenia Nomberg</td><td>1</td><td>1</td><td>2024</td></tr>
+<tr><td>12</td><td>Neil Joshi</td><td>1</td><td>1</td><td>2026</td></tr>
+<tr><td>13</td><td>Nicole Zwerlein</td><td>1</td><td>1</td><td>2024</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+        <details class="risk-disclosure">
+          <summary>Required Champions с последними points до 2021 года (или без Champion points) (98 человек)</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
@@ -388,7 +413,7 @@
 <tr><td>6</td><td>Melina Ramirez</td><td>0</td><td>141</td><td>2012</td></tr>
 <tr><td>7</td><td>Patty Vo</td><td>0</td><td>141</td><td>2020</td></tr>
 <tr><td>8</td><td>Jason Wayne</td><td>0</td><td>130</td><td>2019</td></tr>
-<tr><td>9</td><td>Kellese Key</td><td>0</td><td>115</td><td>2018</td></tr>
+<tr><td>9</td><td>Kellese Key</td><td>0</td><td>116</td><td>2018</td></tr>
 <tr><td>10</td><td>Courtney Adair</td><td>0</td><td>115</td><td>2020</td></tr>
 <tr><td>11</td><td>Myles Munroe</td><td>0</td><td>73</td><td>2019</td></tr>
 <tr><td>12</td><td>Mark Scheuffele</td><td>0</td><td>70</td><td>2012</td></tr>
@@ -482,6 +507,193 @@
             </table>
           </div>
         </details>
+        <details class="risk-disclosure">
+          <summary>Allowed Champions с последними points до 2021 года (или без Champion points) (175 человек)</summary>
+          <div class="table-scroll">
+            <table class="risk-table">
+              <thead>
+                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+              </thead>
+              <tbody>
+<tr><td>1</td><td>Kevin St. Laurent</td><td>0</td><td>28</td><td>2006</td></tr>
+<tr><td>2</td><td>Andrea Deaton</td><td>0</td><td>9</td><td>2004</td></tr>
+<tr><td>3</td><td>Bob Tucker</td><td>0</td><td>9</td><td>2010</td></tr>
+<tr><td>4</td><td>Connor Goodmanson</td><td>0</td><td>9</td><td>2016</td></tr>
+<tr><td>5</td><td>Jennifer Lyons</td><td>0</td><td>9</td><td>2012</td></tr>
+<tr><td>6</td><td>Rachele Smith</td><td>0</td><td>9</td><td>2013</td></tr>
+<tr><td>7</td><td>Scott Stuart</td><td>0</td><td>9</td><td>2013</td></tr>
+<tr><td>8</td><td>Tamara Brown</td><td>0</td><td>9</td><td>2014</td></tr>
+<tr><td>9</td><td>Barry Jones</td><td>0</td><td>8</td><td>2013</td></tr>
+<tr><td>10</td><td>Camille Lane</td><td>0</td><td>8</td><td>2010</td></tr>
+<tr><td>11</td><td>Dawn Blorstad</td><td>0</td><td>8</td><td>2012</td></tr>
+<tr><td>12</td><td>Glen Cravalho</td><td>0</td><td>8</td><td>2008</td></tr>
+<tr><td>13</td><td>Jimmy Mulligan</td><td>0</td><td>8</td><td>2007</td></tr>
+<tr><td>14</td><td>Kristen Jeanes Moody</td><td>0</td><td>8</td><td>2012</td></tr>
+<tr><td>15</td><td>Rome Slater</td><td>0</td><td>8</td><td>2014</td></tr>
+<tr><td>16</td><td>Stephanie Mchenry</td><td>0</td><td>8</td><td>2015</td></tr>
+<tr><td>17</td><td>Carlus Reed</td><td>0</td><td>7</td><td>2015</td></tr>
+<tr><td>18</td><td>Csilla Madocsai</td><td>0</td><td>7</td><td>2009</td></tr>
+<tr><td>19</td><td>Edwin Li</td><td>0</td><td>7</td><td>2010</td></tr>
+<tr><td>20</td><td>Jim Minty</td><td>0</td><td>7</td><td>2009</td></tr>
+<tr><td>21</td><td>Kristen Parker</td><td>0</td><td>7</td><td>2019</td></tr>
+<tr><td>22</td><td>Tybaldt Ulrich</td><td>0</td><td>7</td><td>2014</td></tr>
+<tr><td>23</td><td>Andrew Sinclair</td><td>0</td><td>6</td><td>2006</td></tr>
+<tr><td>24</td><td>Beth Bukoski</td><td>0</td><td>6</td><td>2008</td></tr>
+<tr><td>25</td><td>Dean Garrish</td><td>0</td><td>6</td><td>2010</td></tr>
+<tr><td>26</td><td>Delancey Von Langendoerfer</td><td>0</td><td>6</td><td>2017</td></tr>
+<tr><td>27</td><td>Denise Jordan-Williams</td><td>0</td><td>6</td><td>2003</td></tr>
+<tr><td>28</td><td>Erin Sweeney</td><td>0</td><td>6</td><td>2008</td></tr>
+<tr><td>29</td><td>Izabella Kowalska</td><td>0</td><td>6</td><td>2017</td></tr>
+<tr><td>30</td><td>Jeannie Tucker</td><td>0</td><td>6</td><td>2010</td></tr>
+<tr><td>31</td><td>Josh Clark</td><td>0</td><td>6</td><td>2009</td></tr>
+<tr><td>32</td><td>Joshua Sturgeon</td><td>0</td><td>6</td><td>2016</td></tr>
+<tr><td>33</td><td>Kelly Dye</td><td>0</td><td>6</td><td>2003</td></tr>
+<tr><td>34</td><td>Lauren Davis</td><td>0</td><td>6</td><td>2008</td></tr>
+<tr><td>35</td><td>Melanie Dawson</td><td>0</td><td>6</td><td>2004</td></tr>
+<tr><td>36</td><td>Sheena Shirley</td><td>0</td><td>6</td><td>2007</td></tr>
+<tr><td>37</td><td>Tatianna Bourget</td><td>0</td><td>6</td><td>2008</td></tr>
+<tr><td>38</td><td>Anyssa Olivares</td><td>0</td><td>5</td><td>2019</td></tr>
+<tr><td>39</td><td>Arthur Uspensky</td><td>0</td><td>5</td><td>2013</td></tr>
+<tr><td>40</td><td>Candace Cravalho</td><td>0</td><td>5</td><td>2008</td></tr>
+<tr><td>41</td><td>Dustin Anderson</td><td>0</td><td>5</td><td>2008</td></tr>
+<tr><td>42</td><td>Eric Myers</td><td>0</td><td>5</td><td>2006</td></tr>
+<tr><td>43</td><td>Gina Brown</td><td>0</td><td>5</td><td>2011</td></tr>
+<tr><td>44</td><td>Kevin Fitzhugh</td><td>0</td><td>5</td><td>2011</td></tr>
+<tr><td>45</td><td>Maira Pineda</td><td>0</td><td>5</td><td>2007</td></tr>
+<tr><td>46</td><td>Nathan Miller</td><td>0</td><td>5</td><td>2006</td></tr>
+<tr><td>47</td><td>Nicola Royston</td><td>0</td><td>5</td><td>2015</td></tr>
+<tr><td>48</td><td>Robert Jackson</td><td>0</td><td>5</td><td>2010</td></tr>
+<tr><td>49</td><td>Samir Zutshi</td><td>0</td><td>5</td><td>2017</td></tr>
+<tr><td>50</td><td>Stevie Blakely</td><td>0</td><td>5</td><td>2014</td></tr>
+<tr><td>51</td><td>Tori Ellington</td><td>0</td><td>5</td><td>2012</td></tr>
+<tr><td>52</td><td>Trevor Spika</td><td>0</td><td>5</td><td>2013</td></tr>
+<tr><td>53</td><td>Agnieszka Maslanka</td><td>0</td><td>4</td><td>2015</td></tr>
+<tr><td>54</td><td>Andrew Knight</td><td>0</td><td>4</td><td>2003</td></tr>
+<tr><td>55</td><td>Atlas Griffith</td><td>0</td><td>4</td><td>2003</td></tr>
+<tr><td>56</td><td>Beverly Brunerie</td><td>0</td><td>4</td><td>2016</td></tr>
+<tr><td>57</td><td>Brian Feehan</td><td>0</td><td>4</td><td>2003</td></tr>
+<tr><td>58</td><td>Browly Adjavon</td><td>0</td><td>4</td><td>2017</td></tr>
+<tr><td>59</td><td>Damon D&#x27;amico</td><td>0</td><td>4</td><td>2013</td></tr>
+<tr><td>60</td><td>Daniel Guido</td><td>0</td><td>4</td><td>2011</td></tr>
+<tr><td>61</td><td>Greg Pisano</td><td>0</td><td>4</td><td>2007</td></tr>
+<tr><td>62</td><td>Katherine Krok</td><td>0</td><td>4</td><td>2007</td></tr>
+<tr><td>63</td><td>Kevin Cruz</td><td>0</td><td>4</td><td>2003</td></tr>
+<tr><td>64</td><td>LeAnn Best Norris</td><td>0</td><td>4</td><td>2012</td></tr>
+<tr><td>65</td><td>Lindsey Nastos</td><td>0</td><td>4</td><td>2014</td></tr>
+<tr><td>66</td><td>Peggy Allen</td><td>0</td><td>4</td><td>2009</td></tr>
+<tr><td>67</td><td>Rosie Campos</td><td>0</td><td>4</td><td>1999</td></tr>
+<tr><td>68</td><td>Sarah Breck</td><td>0</td><td>4</td><td>2009</td></tr>
+<tr><td>69</td><td>Scott Mason</td><td>0</td><td>4</td><td>2009</td></tr>
+<tr><td>70</td><td>Will Carlton</td><td>0</td><td>4</td><td>2014</td></tr>
+<tr><td>71</td><td>Amber Ripley</td><td>0</td><td>3</td><td>2009</td></tr>
+<tr><td>72</td><td>Arnaud Perga</td><td>0</td><td>3</td><td>2016</td></tr>
+<tr><td>73</td><td>Bryan Jordan</td><td>0</td><td>3</td><td>2012</td></tr>
+<tr><td>74</td><td>Christopher Desjardins</td><td>0</td><td>3</td><td>2002</td></tr>
+<tr><td>75</td><td>Dani Canziani</td><td>0</td><td>3</td><td>2009</td></tr>
+<tr><td>76</td><td>Eric Byers</td><td>0</td><td>3</td><td>2020</td></tr>
+<tr><td>77</td><td>Henriette Koefoed</td><td>0</td><td>3</td><td>2012</td></tr>
+<tr><td>78</td><td>Jb Brodie</td><td>0</td><td>3</td><td>2016</td></tr>
+<tr><td>79</td><td>Louise Bretz</td><td>0</td><td>3</td><td>2003</td></tr>
+<tr><td>80</td><td>Mark Eckstein</td><td>0</td><td>3</td><td>2004</td></tr>
+<tr><td>81</td><td>Melanie Wong Jennings</td><td>0</td><td>3</td><td>2009</td></tr>
+<tr><td>82</td><td>Michael Krause</td><td>0</td><td>3</td><td>2002</td></tr>
+<tr><td>83</td><td>Nancy Heaverlo</td><td>0</td><td>3</td><td>2002</td></tr>
+<tr><td>84</td><td>Olivia Luke</td><td>0</td><td>3</td><td>2010</td></tr>
+<tr><td>85</td><td>Renee Lipman</td><td>0</td><td>3</td><td>2019</td></tr>
+<tr><td>86</td><td>Richard Lundin</td><td>0</td><td>3</td><td>2003</td></tr>
+<tr><td>87</td><td>Ruth Cnaany</td><td>0</td><td>3</td><td>2006</td></tr>
+<tr><td>88</td><td>Steve Neeren</td><td>0</td><td>3</td><td>2009</td></tr>
+<tr><td>89</td><td>Bill Cameron</td><td>0</td><td>2</td><td>2008</td></tr>
+<tr><td>90</td><td>Brandon Gautreaux</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>91</td><td>Cassy Olson</td><td>0</td><td>2</td><td>2011</td></tr>
+<tr><td>92</td><td>Cher Peadon</td><td>0</td><td>2</td><td>2013</td></tr>
+<tr><td>93</td><td>David Simpson</td><td>0</td><td>2</td><td>2012</td></tr>
+<tr><td>94</td><td>Don Herron</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>95</td><td>Estelle Bonnaire</td><td>0</td><td>2</td><td>2019</td></tr>
+<tr><td>96</td><td>Fred Price</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>97</td><td>Hannah Clonch</td><td>0</td><td>2</td><td>2015</td></tr>
+<tr><td>98</td><td>Jeremy Bryan</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>99</td><td>Katie Berardino</td><td>0</td><td>2</td><td>2002</td></tr>
+<tr><td>100</td><td>Ken Roesel</td><td>0</td><td>2</td><td>2010</td></tr>
+<tr><td>101</td><td>Lee Easton</td><td>0</td><td>2</td><td>2016</td></tr>
+<tr><td>102</td><td>Lindy Greer</td><td>0</td><td>2</td><td>2003</td></tr>
+<tr><td>103</td><td>Mana Parisi</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>104</td><td>Mark Blume</td><td>0</td><td>2</td><td>2008</td></tr>
+<tr><td>105</td><td>Mike Topel</td><td>0</td><td>2</td><td>2012</td></tr>
+<tr><td>106</td><td>Nicki Silton</td><td>0</td><td>2</td><td>2015</td></tr>
+<tr><td>107</td><td>Pamela Podmoroff</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>108</td><td>Piotr Lenart</td><td>0</td><td>2</td><td>2019</td></tr>
+<tr><td>109</td><td>Rodger Taylor</td><td>0</td><td>2</td><td>2005</td></tr>
+<tr><td>110</td><td>Sonny Watson</td><td>0</td><td>2</td><td>2004</td></tr>
+<tr><td>111</td><td>Stan Jaquish</td><td>0</td><td>2</td><td>2003</td></tr>
+<tr><td>112</td><td>Tera Vitale</td><td>0</td><td>2</td><td>2009</td></tr>
+<tr><td>113</td><td>Tracey Melin</td><td>0</td><td>2</td><td>2010</td></tr>
+<tr><td>114</td><td>Wesley Boz</td><td>0</td><td>2</td><td>2003</td></tr>
+<tr><td>115</td><td>Aaron Lorenzen</td><td>0</td><td>1</td><td>2009</td></tr>
+<tr><td>116</td><td>Andy Reid</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>117</td><td>Bill Borgida</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>118</td><td>Caitlin George</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>119</td><td>Cameron Crook</td><td>0</td><td>1</td><td>2013</td></tr>
+<tr><td>120</td><td>Chelsea Loomis Spika</td><td>0</td><td>1</td><td>2010</td></tr>
+<tr><td>121</td><td>Dan Amores</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>122</td><td>Darian Barrett</td><td>0</td><td>1</td><td>2007</td></tr>
+<tr><td>123</td><td>Eddie Valdez</td><td>0</td><td>1</td><td>2011</td></tr>
+<tr><td>124</td><td>Giselle Anguizola</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>125</td><td>James Leyva</td><td>0</td><td>1</td><td>2012</td></tr>
+<tr><td>126</td><td>Jesse Dickson</td><td>0</td><td>1</td><td>2019</td></tr>
+<tr><td>127</td><td>Jesse Vos</td><td>0</td><td>1</td><td>2013</td></tr>
+<tr><td>128</td><td>Jo Thompson Szymanski</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>129</td><td>Joe Palmer</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>130</td><td>John Piper</td><td>0</td><td>1</td><td>2015</td></tr>
+<tr><td>131</td><td>John Snyder</td><td>0</td><td>1</td><td>2005</td></tr>
+<tr><td>132</td><td>Keith Gussoni</td><td>0</td><td>1</td><td>2008</td></tr>
+<tr><td>133</td><td>Laura Dabby</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>134</td><td>Lauren Adams</td><td>0</td><td>1</td><td>2009</td></tr>
+<tr><td>135</td><td>Lisa Austin</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>136</td><td>Maggie Moon</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>137</td><td>Michael Mandel</td><td>0</td><td>1</td><td>2008</td></tr>
+<tr><td>138</td><td>Mitchell From</td><td>0</td><td>1</td><td>2009</td></tr>
+<tr><td>139</td><td>Robin Coleman</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>140</td><td>Robin Smith</td><td>0</td><td>1</td><td>2010</td></tr>
+<tr><td>141</td><td>Sara Spence</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>142</td><td>Sheli Schroeder</td><td>0</td><td>1</td><td>2007</td></tr>
+<tr><td>143</td><td>Simone Cox</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>144</td><td>Tami Harris Krok</td><td>0</td><td>1</td><td>2002</td></tr>
+<tr><td>145</td><td>Trish Connery</td><td>0</td><td>1</td><td>2005</td></tr>
+<tr><td>146</td><td>Zena Knight</td><td>0</td><td>1</td><td>2011</td></tr>
+<tr><td>147</td><td>Alexandra Branco</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>148</td><td>Alexandre Peducasse</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>149</td><td>Alyssa Lundgren</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>150</td><td>Brooklyn Lanham</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>151</td><td>Erica Smith</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>152</td><td>Hannah Guttman</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>153</td><td>Jeffrey Wingo</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>154</td><td>Jenna Shimek</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>155</td><td>Joseph Tong</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>156</td><td>Jung Choe</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>157</td><td>Khayree Jones</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>158</td><td>Kristen Shaw</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>159</td><td>Ludovic Pelegrin</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>160</td><td>Maria Bileychik</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>161</td><td>Marina Motronenko</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>162</td><td>Matt Richey</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>163</td><td>Mia Pastor</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>164</td><td>Mike Carringer</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>165</td><td>Philippe Amar</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>166</td><td>Rachel Shook</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>167</td><td>Roberto Corporan</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>168</td><td>Sam Vaden</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>169</td><td>Sayaka Suzaki</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>170</td><td>Sebastian Quinones</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>171</td><td>Sharon Her</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>172</td><td>Shayla Bouise</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>173</td><td>Stefanie Tschom</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>174</td><td>Tien Khieu</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>175</td><td>Zachary Skinner</td><td>0</td><td>0</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
       </section>
 
       <section class="section">
@@ -497,10 +709,10 @@
         <p>Но если это цель, стоит честно спросить, сработает ли такой стимул. Часть людей не соревнуется не потому, что им не хватает мотивации, а потому что изменилась жизнь, география, роль в сообществе или доступ к ивентам. Понижение может не вернуть их в competition, а просто перевести из категории “неактивный Champion” в категорию “бывший Champion”.</p>
         <p>В текущем срезе эффект такого подхода был бы масштабным. Если использовать рабочий порог &lt;3 points за последние 36 завершенных месяцев и текущий required-status, в риск-группу попадают не единицы.</p>
         <div class="kpi">
-          <div class="kpi-item"><span class="kpi-value">677</span><span class="kpi-label">All-Stars ниже 3 points</span></div>
-          <div class="kpi-item"><span class="kpi-value">115</span><span class="kpi-label">Champions ниже 3 points</span></div>
-          <div class="kpi-item"><span class="kpi-value">62.5%</span><span class="kpi-label">All-Stars в риск-группе</span></div>
-          <div class="kpi-item"><span class="kpi-value">62.5%</span><span class="kpi-label">Champions в риск-группе</span></div>
+          <div class="kpi-item"><span class="kpi-value">798</span><span class="kpi-label">All-Stars ниже 3 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">303</span><span class="kpi-label">Champions ниже 3 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">66.3%</span><span class="kpi-label">All-Stars в риск-группе</span></div>
+          <div class="kpi-item"><span class="kpi-value">78.5%</span><span class="kpi-label">Champions в риск-группе</span></div>
         </div>
         <div class="warning">Это не прогноз официального решения: финальная формулировка правила может иначе определять scope и точное 36-месячное окно. Но как stress test эта оценка показывает масштаб возможного вмешательства.</div>
       </section>
