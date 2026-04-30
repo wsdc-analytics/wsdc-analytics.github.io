@@ -320,14 +320,15 @@
         <div class="note">Для целей этой статьи мы подробно рассмотрим только дивизион Champions, как вершину Skill Level иерархии WSDC.</div>
       </section>
 
-            <section class="section">
-        <h2>Кто попадает под правило при дословном применении</h2>
-        <p>Если буквально применить рабочую формулировку «3 Champion points за последние 36 месяцев» и взять окно <strong>с апреля 2023 по апрель 2026</strong> включительно, то под порог попадают <strong>301</strong> Champions из <strong>386</strong> танцоров, для которых Champion указан как required или allowed в базе. Ниже список отсортирован по всем исторически набранным Champion points.</p>
-        <p>Мы делим список на несколько частей: отдельно новые Champions внутри текущего окна, затем required и allowed Champions с недавней активностью, затем группы с более ранними последними points или без Champion points.</p>
-        <div class="note">В этом расчете под правило попадают 113 required Champions и 188 allowed-only Champions. Отдельно выделены 9 newly eligible Champions: они уже находятся в зоне риска по moving window, но у них еще не было полного 36-месячного периода после входа в Champions.</div>
+                  <section class="section">
+        <h2>Кто попадает в группу риска</h2>
+        <p>При попытке определить группу риска возникает еще один вопрос: в текущей системе перехода между дивизионами есть двухуровневая логика allowed/required. В Champions разрешено выступать танцорам, которые набрали 225 All-Star points или 10 Champion points (required), а также танцорам, которые набрали 150 All-Star points или 1 Champion point (allowed). Отдельно стоит выделить танцоров, которые имеют право выступать в Champions, но пока не набрали ни одного Champion point.</p>
+        <p>Поскольку механизм применения нормы пока не до конца понятен, ниже группа риска разложена по всем основным сегментам, которые могут быть затронуты при буквальном применении правила.</p>
 
-        <details class="risk-disclosure">
-          <summary>Required Champions с последними points после 2021 года (12 человек)</summary>
+        <h3>1. Required Champions</h3>
+        <p>В группе риска 110 танцоров: 12 получали Champion points за последние 5 лет, но за последние 36 месяцев не набрали 3 и более points; еще 98 последний раз получали Champion points более 5 лет назад.</p>
+<details class="risk-disclosure">
+          <summary>Список: 12 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
@@ -350,26 +351,8 @@
             </table>
           </div>
         </details>
-        <details class="risk-disclosure">
-          <summary>Allowed Champions с последними points после 2021 года (6 человек)</summary>
-          <div class="table-scroll">
-            <table class="risk-table">
-              <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
-              </thead>
-              <tbody>
-<tr><td>1</td><td>Philippe Berne</td><td>2</td><td>8</td><td>2026</td></tr>
-<tr><td>2</td><td>Sonya Dessureault</td><td>1</td><td>8</td><td>2026</td></tr>
-<tr><td>3</td><td>Fabienne Easton</td><td>1</td><td>5</td><td>2025</td></tr>
-<tr><td>4</td><td>Lia Brown</td><td>0</td><td>3</td><td>2022</td></tr>
-<tr><td>5</td><td>Lisa Picard</td><td>1</td><td>2</td><td>2024</td></tr>
-<tr><td>6</td><td>Tze Yi Wee</td><td>1</td><td>2</td><td>2023</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </details>
-        <details class="risk-disclosure">
-          <summary>Required Champions с последними points до 2021 года (или без Champion points) (98 человек)</summary>
+<details class="risk-disclosure">
+          <summary>Список: 98 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
@@ -478,8 +461,29 @@
             </table>
           </div>
         </details>
-        <details class="risk-disclosure">
-          <summary>Allowed Champions с последними points до 2021 года (146 человек)</summary>
+
+        <h3>2. Allowed Champions со статусом более 36 месяцев</h3>
+        <p>В этой группе 152 танцора: 6 получали Champion points за последние 5 лет, но за последние 36 месяцев не набрали 3 и более points; еще 146 последний раз получали Champion points более 5 лет назад.</p>
+<details class="risk-disclosure">
+          <summary>Список: 6 человек</summary>
+          <div class="table-scroll">
+            <table class="risk-table">
+              <thead>
+                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+              </thead>
+              <tbody>
+<tr><td>1</td><td>Philippe Berne</td><td>2</td><td>8</td><td>2026</td></tr>
+<tr><td>2</td><td>Sonya Dessureault</td><td>1</td><td>8</td><td>2026</td></tr>
+<tr><td>3</td><td>Fabienne Easton</td><td>1</td><td>5</td><td>2025</td></tr>
+<tr><td>4</td><td>Lia Brown</td><td>0</td><td>3</td><td>2022</td></tr>
+<tr><td>5</td><td>Lisa Picard</td><td>1</td><td>2</td><td>2024</td></tr>
+<tr><td>6</td><td>Tze Yi Wee</td><td>1</td><td>2</td><td>2023</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+<details class="risk-disclosure">
+          <summary>Список: 146 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
@@ -636,49 +640,11 @@
             </table>
           </div>
         </details>
-        <details class="risk-disclosure">
-          <summary>Allowed Champions без Champion points (29 человек)</summary>
-          <div class="table-scroll">
-            <table class="risk-table">
-              <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
-              </thead>
-              <tbody>
-<tr><td>1</td><td>Alexandra Branco</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>2</td><td>Alexandre Peducasse</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>3</td><td>Alyssa Lundgren</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>4</td><td>Brooklyn Lanham</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>5</td><td>Erica Smith</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>6</td><td>Hannah Guttman</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>7</td><td>Jeffrey Wingo</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>8</td><td>Jenna Shimek</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>9</td><td>Joseph Tong</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>10</td><td>Jung Choe</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>11</td><td>Khayree Jones</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>12</td><td>Kristen Shaw</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>13</td><td>Ludovic Pelegrin</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>14</td><td>Maria Bileychik</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>15</td><td>Marina Motronenko</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>16</td><td>Matt Richey</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>17</td><td>Mia Pastor</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>18</td><td>Mike Carringer</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>19</td><td>Philippe Amar</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>20</td><td>Rachel Shook</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>21</td><td>Roberto Corporan</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>22</td><td>Sam Vaden</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>23</td><td>Sayaka Suzaki</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>24</td><td>Sebastian Quinones</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>25</td><td>Sharon Her</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>26</td><td>Shayla Bouise</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>27</td><td>Stefanie Tschom</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>28</td><td>Tien Khieu</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>29</td><td>Zachary Skinner</td><td>0</td><td>0</td><td>—</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </details>
-        <details class="risk-disclosure">
-          <summary>Newly eligible Champions внутри текущего окна (9 человек)</summary>
+
+        <h3>3. Allowed Champions со статусом менее 36 месяцев</h3>
+        <p>Отдельно стоит отметить эту группу: 9 танцоров уже получили первые Champion points внутри текущего окна, но пока не набрали 3 и более points за 36 месяцев; еще 29 танцоров имеют право выступать в Champions, но пока не получили ни одного Champion point. Именно для этой группы особенно неясно, чего именно танцор может лишиться при применении правила: текущего права выступать в Champions, статуса allowed или чего-то другого.</p>
+<details class="risk-disclosure">
+          <summary>Список: 9 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
@@ -693,6 +659,47 @@
 <tr><td>7</td><td>Ksenia Nomberg</td><td>1</td><td>1</td><td>2024-01</td><td>2024</td></tr>
 <tr><td>8</td><td>Neil Joshi</td><td>1</td><td>1</td><td>2026-01</td><td>2026</td></tr>
 <tr><td>9</td><td>Nicole Zwerlein</td><td>1</td><td>1</td><td>2024-01</td><td>2024</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+<details class="risk-disclosure">
+          <summary>Список: 29 человек</summary>
+          <div class="table-scroll">
+            <table class="risk-table">
+              <thead>
+                <tr><th>#</th><th>Танцор</th></tr>
+              </thead>
+              <tbody>
+<tr><td>1</td><td>Alexandra Branco</td></tr>
+<tr><td>2</td><td>Alexandre Peducasse</td></tr>
+<tr><td>3</td><td>Alyssa Lundgren</td></tr>
+<tr><td>4</td><td>Brooklyn Lanham</td></tr>
+<tr><td>5</td><td>Erica Smith</td></tr>
+<tr><td>6</td><td>Hannah Guttman</td></tr>
+<tr><td>7</td><td>Jeffrey Wingo</td></tr>
+<tr><td>8</td><td>Jenna Shimek</td></tr>
+<tr><td>9</td><td>Joseph Tong</td></tr>
+<tr><td>10</td><td>Jung Choe</td></tr>
+<tr><td>11</td><td>Khayree Jones</td></tr>
+<tr><td>12</td><td>Kristen Shaw</td></tr>
+<tr><td>13</td><td>Ludovic Pelegrin</td></tr>
+<tr><td>14</td><td>Maria Bileychik</td></tr>
+<tr><td>15</td><td>Marina Motronenko</td></tr>
+<tr><td>16</td><td>Matt Richey</td></tr>
+<tr><td>17</td><td>Mia Pastor</td></tr>
+<tr><td>18</td><td>Mike Carringer</td></tr>
+<tr><td>19</td><td>Philippe Amar</td></tr>
+<tr><td>20</td><td>Rachel Shook</td></tr>
+<tr><td>21</td><td>Roberto Corporan</td></tr>
+<tr><td>22</td><td>Sam Vaden</td></tr>
+<tr><td>23</td><td>Sayaka Suzaki</td></tr>
+<tr><td>24</td><td>Sebastian Quinones</td></tr>
+<tr><td>25</td><td>Sharon Her</td></tr>
+<tr><td>26</td><td>Shayla Bouise</td></tr>
+<tr><td>27</td><td>Stefanie Tschom</td></tr>
+<tr><td>28</td><td>Tien Khieu</td></tr>
+<tr><td>29</td><td>Zachary Skinner</td></tr>
+              </tbody>
             </table>
           </div>
         </details>
