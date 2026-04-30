@@ -189,15 +189,9 @@
       vertical-align: top;
     }
     .risk-table th:first-child,
-    .risk-table th:nth-child(4),
-    .risk-table th:nth-child(5),
-    .risk-table th:nth-child(6),
-    .risk-table th:nth-child(7),
+    .risk-table th:nth-child(n+3),
     .risk-table td:first-child,
-    .risk-table td:nth-child(4),
-    .risk-table td:nth-child(5),
-    .risk-table td:nth-child(6),
-    .risk-table td:nth-child(7) {
+    .risk-table td:nth-child(n+3) {
       text-align: right;
     }
     .risk-table th {
@@ -208,10 +202,7 @@
       letter-spacing: .03em;
     }
     .risk-table td:first-child,
-    .risk-table td:nth-child(4),
-    .risk-table td:nth-child(5),
-    .risk-table td:nth-child(6),
-    .risk-table td:nth-child(7) {
+    .risk-table td:nth-child(n+3) {
       white-space: nowrap;
     }
     .iframe-wrap {
@@ -322,17 +313,17 @@
 
                   <section class="section">
         <h2>Кто попадает в группу риска</h2>
-        <p>При попытке определить группу риска возникает еще один вопрос: в текущей системе перехода между дивизионами есть двухуровневая логика allowed/required. В Champions разрешено выступать танцорам, которые набрали 225 All-Star points или 10 Champion points (required), а также танцорам, которые набрали 150 All-Star points или 1 Champion point (allowed). Отдельно стоит выделить танцоров, которые имеют право выступать в Champions, но пока не набрали ни одного Champion point.</p>
+        <p>При попытке определить группу риска возникает еще один вопрос: в текущей системе перехода между дивизионами есть двухуровневая логика allowed/required. В Champions разрешено выступать танцорам, которые набрали 225 All-Star-поинтов или 10 Champion-поинтов (required), а также танцорам, которые набрали 150 All-Star-поинтов или 1 Champion-поинт (allowed). Отдельно стоит выделить танцоров, которые имеют право выступать в Champions, но пока не набрали ни одного Champion-поинта.</p>
         <p>Поскольку механизм применения нормы пока не до конца понятен, ниже группа риска разложена по всем основным сегментам, которые могут быть затронуты при буквальном применении правила.</p>
 
         <h3>1. Required Champions</h3>
-        <p>В группе риска 110 танцоров: 12 получали Champion points за последние 5 лет, но за последние 36 месяцев не набрали 3 и более points; еще 98 последний раз получали Champion points более 5 лет назад.</p>
+        <p>В группе риска 110 танцоров: 12 получали Champion-поинты за последние 5 лет, но за последние 36 месяцев не набрали 3 и более поинтов; еще 98 последний раз получали Champion-поинты более 5 лет назад.</p>
 <details class="risk-disclosure">
           <summary>Список: 12 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+                <tr><th>#</th><th>Танцор</th><th>Поинты за 36 мес.</th><th>Всего поинтов</th><th>Последний год</th></tr>
               </thead>
               <tbody>
 <tr><td>1</td><td>Tessa Cunningham Munroe</td><td>0</td><td>179</td><td>2022</td></tr>
@@ -356,7 +347,7 @@
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+                <tr><th>#</th><th>Танцор</th><th>Поинты за 36 мес.</th><th>Всего поинтов</th><th>Последний год</th></tr>
               </thead>
               <tbody>
 <tr><td>1</td><td>Deborah Szekely</td><td>0</td><td>415</td><td>2019</td></tr>
@@ -463,13 +454,13 @@
         </details>
 
         <h3>2. Allowed Champions со статусом более 36 месяцев</h3>
-        <p>В этой группе 152 танцора: 6 получали Champion points за последние 5 лет, но за последние 36 месяцев не набрали 3 и более points; еще 146 последний раз получали Champion points более 5 лет назад.</p>
+        <p>В этой группе 152 танцора: 6 получали Champion-поинты за последние 5 лет, но за последние 36 месяцев не набрали 3 и более поинтов; еще 146 последний раз получали Champion-поинты более 5 лет назад.</p>
 <details class="risk-disclosure">
           <summary>Список: 6 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+                <tr><th>#</th><th>Танцор</th><th>Поинты за 36 мес.</th><th>Всего поинтов</th><th>Последний год</th></tr>
               </thead>
               <tbody>
 <tr><td>1</td><td>Philippe Berne</td><td>2</td><td>8</td><td>2026</td></tr>
@@ -487,7 +478,7 @@
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Последний год</th></tr>
+                <tr><th>#</th><th>Танцор</th><th>Поинты за 36 мес.</th><th>Всего поинтов</th><th>Последний год</th></tr>
               </thead>
               <tbody>
 <tr><td>1</td><td>Kevin St. Laurent</td><td>0</td><td>28</td><td>2006</td></tr>
@@ -641,24 +632,24 @@
           </div>
         </details>
 
-        <h3>3. Allowed Champions со статусом менее 36 месяцев</h3>
-        <p>Отдельно стоит отметить эту группу: 9 танцоров уже получили первые Champion points внутри текущего окна, но пока не набрали 3 и более points за 36 месяцев; еще 29 танцоров имеют право выступать в Champions, но пока не получили ни одного Champion point. Именно для этой группы особенно неясно, чего именно танцор может лишиться при применении правила: текущего права выступать в Champions, статуса allowed или чего-то другого.</p>
+        <h3>3. Allowed Champions: новые и без Champion-поинтов</h3>
+        <p>Отдельно стоит отметить эту группу: 9 танцоров уже получили первые Champion-поинты внутри текущего окна, но пока не набрали 3 и более поинтов за 36 месяцев; еще 29 танцоров имеют право выступать в Champions, но пока не получили ни одного Champion-поинта. Для последнего списка указан месяц, когда танцор достиг порога 150 All-Star-поинтов и получил allowed-право на Champions. Именно для этой группы особенно неясно, чего танцор может лишиться при применении правила: текущего права выступать в Champions, статуса allowed или чего-то другого.</p>
 <details class="risk-disclosure">
           <summary>Список: 9 человек</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
-                <tr><th>#</th><th>Танцор</th><th>Points за 36 мес.</th><th>Total points</th><th>Первый Champion point</th><th>Последний год</th></tr>
+                <tr><th>#</th><th>Танцор</th><th>Поинты за 36 мес.</th><th>Всего поинтов</th><th>Последний год</th></tr>
               </thead>
-              <tbody><tr><td>1</td><td>Kristen Wallace</td><td>2</td><td>2</td><td>2026-01</td><td>2026</td></tr>
-<tr><td>2</td><td>Lindsay Mistretta</td><td>2</td><td>2</td><td>2026-01</td><td>2026</td></tr>
-<tr><td>3</td><td>Mackenzie Keister</td><td>2</td><td>2</td><td>2026-03</td><td>2026</td></tr>
-<tr><td>4</td><td>Anna Wallace</td><td>1</td><td>1</td><td>2024-11</td><td>2024</td></tr>
-<tr><td>5</td><td>Fernanda Dubiel</td><td>1</td><td>1</td><td>2025-08</td><td>2025</td></tr>
-<tr><td>6</td><td>Karla Anita Catana</td><td>1</td><td>1</td><td>2025-01</td><td>2025</td></tr>
-<tr><td>7</td><td>Ksenia Nomberg</td><td>1</td><td>1</td><td>2024-01</td><td>2024</td></tr>
-<tr><td>8</td><td>Neil Joshi</td><td>1</td><td>1</td><td>2026-01</td><td>2026</td></tr>
-<tr><td>9</td><td>Nicole Zwerlein</td><td>1</td><td>1</td><td>2024-01</td><td>2024</td></tr></tbody>
+              <tbody><tr><td>1</td><td>Kristen Wallace</td><td>2</td><td>2</td><td>2026</td></tr>
+<tr><td>2</td><td>Lindsay Mistretta</td><td>2</td><td>2</td><td>2026</td></tr>
+<tr><td>3</td><td>Mackenzie Keister</td><td>2</td><td>2</td><td>2026</td></tr>
+<tr><td>4</td><td>Anna Wallace</td><td>1</td><td>1</td><td>2024</td></tr>
+<tr><td>5</td><td>Fernanda Dubiel</td><td>1</td><td>1</td><td>2025</td></tr>
+<tr><td>6</td><td>Karla Anita Catana</td><td>1</td><td>1</td><td>2025</td></tr>
+<tr><td>7</td><td>Ksenia Nomberg</td><td>1</td><td>1</td><td>2024</td></tr>
+<tr><td>8</td><td>Neil Joshi</td><td>1</td><td>1</td><td>2026</td></tr>
+<tr><td>9</td><td>Nicole Zwerlein</td><td>1</td><td>1</td><td>2024</td></tr></tbody>
             </table>
           </div>
         </details>
@@ -667,38 +658,38 @@
           <div class="table-scroll">
             <table class="risk-table">
               <thead>
-                <tr><th>#</th><th>Танцор</th></tr>
+                <tr><th>#</th><th>Танцор</th><th>Статус с</th></tr>
               </thead>
               <tbody>
-<tr><td>1</td><td>Alexandra Branco</td></tr>
-<tr><td>2</td><td>Alexandre Peducasse</td></tr>
-<tr><td>3</td><td>Alyssa Lundgren</td></tr>
-<tr><td>4</td><td>Brooklyn Lanham</td></tr>
-<tr><td>5</td><td>Erica Smith</td></tr>
-<tr><td>6</td><td>Hannah Guttman</td></tr>
-<tr><td>7</td><td>Jeffrey Wingo</td></tr>
-<tr><td>8</td><td>Jenna Shimek</td></tr>
-<tr><td>9</td><td>Joseph Tong</td></tr>
-<tr><td>10</td><td>Jung Choe</td></tr>
-<tr><td>11</td><td>Khayree Jones</td></tr>
-<tr><td>12</td><td>Kristen Shaw</td></tr>
-<tr><td>13</td><td>Ludovic Pelegrin</td></tr>
-<tr><td>14</td><td>Maria Bileychik</td></tr>
-<tr><td>15</td><td>Marina Motronenko</td></tr>
-<tr><td>16</td><td>Matt Richey</td></tr>
-<tr><td>17</td><td>Mia Pastor</td></tr>
-<tr><td>18</td><td>Mike Carringer</td></tr>
-<tr><td>19</td><td>Philippe Amar</td></tr>
-<tr><td>20</td><td>Rachel Shook</td></tr>
-<tr><td>21</td><td>Roberto Corporan</td></tr>
-<tr><td>22</td><td>Sam Vaden</td></tr>
-<tr><td>23</td><td>Sayaka Suzaki</td></tr>
-<tr><td>24</td><td>Sebastian Quinones</td></tr>
-<tr><td>25</td><td>Sharon Her</td></tr>
-<tr><td>26</td><td>Shayla Bouise</td></tr>
-<tr><td>27</td><td>Stefanie Tschom</td></tr>
-<tr><td>28</td><td>Tien Khieu</td></tr>
-<tr><td>29</td><td>Zachary Skinner</td></tr>
+<tr><td>1</td><td>Alexandra Branco</td><td>2026-03</td></tr>
+<tr><td>2</td><td>Alexandre Peducasse</td><td>2023-05</td></tr>
+<tr><td>3</td><td>Alyssa Lundgren</td><td>2025-02</td></tr>
+<tr><td>4</td><td>Brooklyn Lanham</td><td>2024-10</td></tr>
+<tr><td>5</td><td>Erica Smith</td><td>2022-08</td></tr>
+<tr><td>6</td><td>Hannah Guttman</td><td>2025-09</td></tr>
+<tr><td>7</td><td>Jeffrey Wingo</td><td>2026-01</td></tr>
+<tr><td>8</td><td>Jenna Shimek</td><td>2023-05</td></tr>
+<tr><td>9</td><td>Joseph Tong</td><td>2026-04</td></tr>
+<tr><td>10</td><td>Jung Choe</td><td>2023-07</td></tr>
+<tr><td>11</td><td>Khayree Jones</td><td>2024-04</td></tr>
+<tr><td>12</td><td>Kristen Shaw</td><td>2023-05</td></tr>
+<tr><td>13</td><td>Ludovic Pelegrin</td><td>2025-03</td></tr>
+<tr><td>14</td><td>Maria Bileychik</td><td>2026-03</td></tr>
+<tr><td>15</td><td>Marina Motronenko</td><td>2025-09</td></tr>
+<tr><td>16</td><td>Matt Richey</td><td>2023-04</td></tr>
+<tr><td>17</td><td>Mia Pastor</td><td>2025-10</td></tr>
+<tr><td>18</td><td>Mike Carringer</td><td>2026-04</td></tr>
+<tr><td>19</td><td>Philippe Amar</td><td>2026-03</td></tr>
+<tr><td>20</td><td>Rachel Shook</td><td>2025-09</td></tr>
+<tr><td>21</td><td>Roberto Corporan</td><td>2024-02</td></tr>
+<tr><td>22</td><td>Sam Vaden</td><td>2026-01</td></tr>
+<tr><td>23</td><td>Sayaka Suzaki</td><td>2024-01</td></tr>
+<tr><td>24</td><td>Sebastian Quinones</td><td>2025-05</td></tr>
+<tr><td>25</td><td>Sharon Her</td><td>2025-07</td></tr>
+<tr><td>26</td><td>Shayla Bouise</td><td>2026-01</td></tr>
+<tr><td>27</td><td>Stefanie Tschom</td><td>2026-04</td></tr>
+<tr><td>28</td><td>Tien Khieu</td><td>2023-03</td></tr>
+<tr><td>29</td><td>Zachary Skinner</td><td>2025-04</td></tr>
               </tbody>
             </table>
           </div>
@@ -708,18 +699,18 @@
       <section class="section">
         <h2>Гипотеза 1: контроль актуального уровня</h2>
         <p>Возможная цель правила — поддержать качество верхнего дивизиона: Champion должен быть не только исторически сильным танцором, но и человеком, чей уровень подтверждается текущими результатами.</p>
-        <p>Проблема в том, что WSDC Registry измеряет не уровень танца, а участие и результат в конкретных соревнованиях. Отсутствие points за 36 месяцев может означать спад формы, но может означать и другое: человек преподает, судит, строит локальную сцену, редко ездит на circuit или живет в регионе с ограниченным доступом к Champion divisions.</p>
-        <p>Если цель — именно quality control, то понижение статуса через points выглядит грубым proxy: оно наказывает не только за снижение уровня, но и за снижение соревновательной активности.</p>
+        <p>Проблема в том, что WSDC Registry измеряет не уровень танца, а участие и результат в конкретных соревнованиях. Отсутствие поинтов за 36 месяцев может означать спад формы, но может означать и другое: человек преподает, судит, строит локальную сцену, редко ездит на circuit или живет в регионе с ограниченным доступом к Champion divisions.</p>
+        <p>Если цель — именно quality control, то понижение статуса через поинты выглядит грубым proxy: оно наказывает не только за снижение уровня, но и за снижение соревновательной активности.</p>
       </section>
 
       <section class="section">
         <h2>Гипотеза 2: вернуть Champions в соревнования</h2>
         <p>Вторая возможная цель — стимулировать неактивных Champions снова ездить на ивенты. Тогда правило работает как давление: хочешь сохранить статус — возвращайся в соревновательный circuit.</p>
         <p>Но если это цель, стоит честно спросить, сработает ли такой стимул. Часть людей не соревнуется не потому, что им не хватает мотивации, а потому что изменилась жизнь, география, роль в сообществе или доступ к ивентам. Понижение может не вернуть их в competition, а просто перевести из категории “неактивный Champion” в категорию “бывший Champion”.</p>
-        <p>В текущем срезе эффект такого подхода был бы масштабным. Если использовать рабочий порог &lt;3 points в окне с апреля 2023 по апрель 2026 и текущий required-status, в риск-группу попадают не единицы.</p>
+        <p>В текущем срезе эффект такого подхода был бы масштабным. Если использовать рабочий порог &lt;3 поинтов в окне с апреля 2023 по апрель 2026 и текущий required-status, в риск-группу попадают не единицы.</p>
         <div class="kpi">
-          <div class="kpi-item"><span class="kpi-value">787</span><span class="kpi-label">All-Stars ниже 3 points</span></div>
-          <div class="kpi-item"><span class="kpi-value">301</span><span class="kpi-label">Champions ниже 3 points</span></div>
+          <div class="kpi-item"><span class="kpi-value">787</span><span class="kpi-label">All-Stars ниже 3 поинтов</span></div>
+          <div class="kpi-item"><span class="kpi-value">301</span><span class="kpi-label">Champions ниже 3 поинтов</span></div>
           <div class="kpi-item"><span class="kpi-value">65.4%</span><span class="kpi-label">All-Stars в риск-группе</span></div>
           <div class="kpi-item"><span class="kpi-value">78.0%</span><span class="kpi-label">Champions в риск-группе</span></div>
         </div>
@@ -728,14 +719,14 @@
 
       <section class="section">
         <h2>Гипотеза 3: сохранить ценность верхнего статуса</h2>
-        <p>Третья гипотеза — самая неудобная, но, возможно, самая важная. После появления понятного пути в Champions через All-Star points верхний статус стал более достижимым. Это было логично: если Champions — вершина Skill Level ladder, у нее должен быть достижимый путь.</p>
+        <p>Третья гипотеза — самая неудобная, но, возможно, самая важная. После появления понятного пути в Champions через All-Star-поинты верхний статус стал более достижимым. Это было логично: если Champions — вершина Skill Level ladder, у нее должен быть достижимый путь.</p>
         <p>Но достижимость меняет экономику статуса. Чем больше людей формально имеют право называться Champion, тем слабее дефицитность этого статуса: меньше эксклюзивность, сложнее распределение видимости, приглашений, teaching value и символического капитала. Об этом редко говорят напрямую, но такой слой почти наверняка присутствует в конфликте.</p>
         <p>Если проблема именно в дефицитности элиты, то понижение за неактивность — не единственный и не самый честный инструмент. Возможно, честнее разделить <strong>достигнутый статус</strong> и <strong>текущее право выступать в элитном формате</strong>, либо вынести часть Champion/Open/Invitational логики за пределы Skill Level ladder.</p>
       </section>
 
       <section class="section">
         <h2>Что говорят данные</h2>
-        <p>Данные здесь нужны не для того, чтобы “доказать правоту” одной стороны, а чтобы понять масштаб. Ниже: риск-группы по текущей рабочей гипотезе, rolling-тренд активности, концентрация points и доступность дивизионов по ивентам. В конце интерактива есть первые строки списка танцоров, которые попадают под риск по расчету &lt;3 points.</p>
+        <p>Данные здесь нужны не для того, чтобы “доказать правоту” одной стороны, а чтобы понять масштаб. Ниже: риск-группы по текущей рабочей гипотезе, rolling-тренд активности, концентрация поинтов и доступность дивизионов по ивентам. В конце интерактива есть первые строки списка танцоров, которые попадают под риск по расчету &lt;3 поинтов.</p>
         <div class="iframe-wrap">
           <iframe class="chart-iframe" src="interactive_3year_rule_activity.html?v=20260428-r2" title="WSDC 3-Year Rule metrics"></iframe>
         </div>
