@@ -8,24 +8,80 @@
   <meta property="og:description" content="Разбор публичной дискуссии WSDC о возврате 3-Year Rule: кого это затрагивает и является ли понижение статуса корректным инструментом." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://wsdc-analytics.github.io/article_3year_rule.html" />
+  <meta property="og:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <meta name="keywords" content="WSDC, West Coast Swing, правило 3 лет, Champions, All-Star, Skill Level, поинты, анализ">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://wsdc-analytics.github.io/article_3year_rule.html">
+  <meta name="twitter:title" content="Возвращение правила 3 лет: Необходимость или недоразумение?">
+  <meta name="twitter:description" content="Разбор публичной дискуссии WSDC о возврате 3-Year Rule: кого это затрагивает и является ли понижение статуса корректным инструментом.">
+  <meta name="twitter:image" content="https://wsdc-analytics.github.io/events_background.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>Возвращение правила 3 лет: Необходимость или недоразумение? | WSDC Analytics</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Возвращение правила 3 лет: Необходимость или недоразумение?",
+    "description": "Разбор публичной инициативы WSDC о возврате правила 3 лет и последствий для All-Stars и Champions",
+    "url": "https://wsdc-analytics.github.io/article_3year_rule.html",
+    "image": "https://wsdc-analytics.github.io/events_background.png",
+    "datePublished": "2026-05-01",
+    "dateModified": "2026-05-03",
+    "author": { "@type": "Organization", "name": "WSDC Analytics" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "WSDC Analytics",
+      "logo": { "@type": "ImageObject", "url": "https://wsdc-analytics.github.io/events_background.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://wsdc-analytics.github.io/article_3year_rule.html" }
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LMLCY5PE8Z');
+  </script>
   <style>
     :root {
       --color-primary: #2d3748;
       --color-primary-dark: #1a202c;
       --color-primary-light: #4a5568;
       --color-link-accent: #2563eb;
+      --accent: #6366f1;
       --bg-primary: #ffffff;
+      --bg-secondary: #ffffff;
       --bg-tertiary: #f7fafc;
       --text-primary: #2d3748;
       --text-secondary: #4a5568;
       --text-tertiary: #718096;
       --border-color: #e5e5e5;
+      --transition-fast: 0.15s ease;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--color-primary);
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+      border-radius: 0 0 4px 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .skip-link:focus {
+      top: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
     body {
       font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       line-height: 1.7;
@@ -35,7 +91,7 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-    .container {
+    .magazine-container {
       max-width: 980px;
       margin: 0 auto;
       background: var(--bg-primary);
@@ -76,10 +132,26 @@
       color: rgba(255, 255, 255, .9);
       max-width: 780px;
     }
-    .article {
+    .article-content {
       padding: 64px 80px 72px;
-      max-width: 900px;
       margin: 0 auto;
+    }
+    .section p {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+    .section h2,
+    .section h3 {
+      text-align: left;
+    }
+    .risk-disclosure summary {
+      text-align: left;
+    }
+    .section .note,
+    .section .warning {
+      text-align: left;
     }
     .section {
       margin-bottom: 56px;
@@ -206,44 +278,133 @@
     .risk-table.status-table td:nth-child(3) {
       text-align: center;
     }
-    .reactions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 4px;
+    .article-reactions {
+      margin: 40px 0 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      text-align: right;
+      max-width: 100%;
     }
-    .react-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .article-reactions-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; }
+    .article-reactions-buttons { display: flex; flex-wrap: wrap; gap: 20px; justify-content: flex-end; align-items: flex-start; }
+    .article-reaction-item { display: inline-flex; align-items: center; gap: 6px; }
+    .article-reaction-trigger {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none; background: none; padding: 4px; font-size: inherit; line-height: 1;
+      min-width: 2.5rem; min-height: 2.5rem; border-radius: 6px;
+    }
+    .article-reaction-trigger:hover { background: rgba(45, 55, 72, 0.06); }
+    .article-reaction-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .article-reaction-emoji { font-size: 1.5rem; line-height: 1; pointer-events: none; font-weight: 600; font-family: inherit; }
+    .article-reaction-item.reaction-approve .article-reaction-emoji { color: #16a34a; }
+    .article-reaction-item.reaction-neutral .article-reaction-emoji { color: #6b7280; }
+    .article-reaction-item.reaction-disapprove .article-reaction-emoji { color: #dc2626; }
+    .article-reaction-trigger .lyket-overlay { position: absolute; inset: 0; opacity: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .article-reaction-trigger .lyket-overlay > * {
+      width: 100% !important; height: 100% !important; min-width: 0 !important; min-height: 0 !important;
+      margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important;
+      font-size: 0 !important; line-height: 0 !important;
+    }
+    .article-reaction-count { font-size: 0.95rem; color: var(--text-secondary); min-width: 1.2em; text-align: left; }
+
+    .article-feedback {
+      margin-top: 32px;
+      padding: 24px 24px 20px;
+      border-radius: 12px;
+      background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
-      border-radius: 999px;
-      background: #fff;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 14px;
+      max-width: 100%;
+      text-align: left;
+    }
+    .article-feedback-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
       color: var(--text-primary);
     }
-    .react-btn:hover { background: var(--bg-tertiary); }
-    .footer {
-      background: var(--bg-tertiary);
-      border-radius: 14px;
-      padding: 18px 20px;
+    .article-feedback-text {
       font-size: 14px;
-      color: var(--text-tertiary);
-      margin-top: 24px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
     }
-    .footer a {
-      color: var(--color-link-accent);
+    .article-feedback-label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .article-feedback-input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      background: var(--bg-primary);
+    }
+    .article-feedback-input:focus {
+      outline: 2px solid var(--color-link-accent);
+      outline-offset: 2px;
+      border-color: var(--color-link-accent);
+    }
+    .article-feedback-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--color-link-accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+    }
+    .article-feedback-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .article-feedback-button[disabled] {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+    }
+    .article-feedback-status {
+      font-size: 13px;
+      margin-top: 8px;
+      color: var(--text-secondary);
+    }
+
+    .article-footer {
+      background-color: var(--bg-secondary);
+      padding: 48px 80px;
+      border-top: 2px solid var(--color-primary);
+      margin-top: 0;
+    }
+    .article-footer .data-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 100%;
+    }
+    .article-footer .data-note p { margin: 0; }
+    .article-footer .data-note a {
+      color: var(--color-primary);
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 2px;
     }
+    .article-footer .data-note a:hover { opacity: 0.85; }
     @media (max-width: 900px) {
       body { font-size: 16px; }
       .header { padding: 50px 20px 48px; }
-      .article { padding: 40px 16px 48px; }
+      .article-content { padding: 40px 16px 48px; }
+      .article-footer { padding: 32px 16px; }
+      .article-reactions { text-align: left; }
       .title { font-size: 32px; letter-spacing: -1px; }
       .subtitle { font-size: 18px; }
       h2 { font-size: 26px; }
@@ -280,14 +441,15 @@
   </style>
 </head>
 <body>
-  <main class="container">
+  <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+  <div class="magazine-container">
     <header class="header">
       <a class="back-link" href="/?lang=ru">← К главной</a>
       <h1 class="title">Возвращение правила 3 лет: Необходимость или недоразумение?</h1>
       <p class="subtitle">WSDC инициировал публичную дискуссию о возвращении правила 3 лет</p>
     </header>
 
-    <article class="article">
+    <main id="main-content" class="article-content">
       <section class="section">
         <h2>Что произошло</h2>
         <p>23 апреля 2026 года WSDC на своей странице <a href="https://www.facebook.com/share/p/1CkdPUizLK/" target="_blank" rel="noopener noreferrer">Facebook</a> обратилось с опросом к танцорам уровня All-Star и Champion о возможности возвращения правила регулярного подтверждения статуса для дивизионов All-Stars и Champions. Формулировка используется следующая: чтобы оставаться в этих дивизионах, нужно набрать минимум 3 поинта за последние 36 месяцев; при невыполнении порога танцор может быть понижен на один уровень. Для возвращения танцорам необходимо набрать 10 поинтов за 12 месяцев.</p>
@@ -717,50 +879,185 @@
         <h3>2) Аспект реализуемости</h3>
         <p>При введении данного правила в текущей редакции дивизионы рискуют остаться без 2/3 составляющих их танцоров. С учётом того, что ивенты проводятся в разных регионах мира, значительным образом снизится возможность собрать номинацию Champions на ивенте, а как следствие это может привести к ослаблению потенциала по дальнейшему развитию WCS в локальных сообществах.</p>
       </section>
-      <section class="section">
-        <h2 style="margin-bottom:8px;">Оцените статью</h2>
-        <div class="reactions">
-          <button class="react-btn" data-id="article_3year_rule_ru_positive">✓ Поддерживаю <span data-count="article_3year_rule_ru_positive">0</span></button>
-          <button class="react-btn" data-id="article_3year_rule_ru_neutral">○ Нейтрально <span data-count="article_3year_rule_ru_neutral">0</span></button>
-          <button class="react-btn" data-id="article_3year_rule_ru_negative">✗ Не согласен <span data-count="article_3year_rule_ru_negative">0</span></button>
+      <section class="article-reactions" aria-label="Оценка статьи">
+        <div class="article-reactions-label">Оцените статью:</div>
+        <div class="article-reactions-buttons">
+          <div class="article-reaction-item reaction-approve">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Одобряю статью">
+              <span class="article-reaction-emoji" aria-hidden="true">✓</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-3year-rule" data-lyket-id="article_3year_rule_ru_positive"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-3year-rule" data-lyket-id="article_3year_rule_ru_positive">—</span>
+          </div>
+          <div class="article-reaction-item reaction-neutral">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Нейтральное отношение">
+              <span class="article-reaction-emoji" aria-hidden="true">○</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-3year-rule" data-lyket-id="article_3year_rule_ru_neutral"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-3year-rule" data-lyket-id="article_3year_rule_ru_neutral">—</span>
+          </div>
+          <div class="article-reaction-item reaction-disapprove">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Не одобряю статью">
+              <span class="article-reaction-emoji" aria-hidden="true">✗</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-3year-rule" data-lyket-id="article_3year_rule_ru_negative"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-3year-rule" data-lyket-id="article_3year_rule_ru_negative">—</span>
+          </div>
         </div>
-        <p class="footer">
-          Источник данных: <a href="https://points.worldsdc.com/" target="_blank" rel="noopener noreferrer">WSDC Points Registry</a>. Связанные материалы: <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru">Эволюция правил</a> · <a href="https://wsdc-analytics.github.io/article_secondary_role.html?lang=ru">Вторая роль</a>.
-        </p>
       </section>
-    </article>
-  </main>
+
+      <section class="article-feedback" aria-labelledby="feedback-heading">
+        <h2 class="article-feedback-title" id="feedback-heading">Обратная связь по статье</h2>
+        <p class="article-feedback-text">
+          Если вы заметили неточность, хотите предложить идею для улучшения или просто что-то написать, заполните форму ниже.
+        </p>
+        <form class="article-feedback-form" id="articleFeedbackForm">
+          <label class="article-feedback-label" for="articleFeedbackMessage">Сообщение *</label>
+          <textarea id="articleFeedbackMessage" class="article-feedback-input" rows="4" required></textarea>
+          <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">Email (необязательно)</label>
+          <input type="email" id="articleFeedbackEmail" class="article-feedback-input" placeholder="you@example.com" autocomplete="email" />
+          <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">Отправить</button>
+          <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="article-footer">
+      <div class="data-note">
+        <p><strong>Источник данных:</strong> Анализ базы данных <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a></p>
+      </div>
+    </footer>
+  </div>
 
   <script>
-    (function () {
-      var API = "https://wsdc-analytics-github-io.vercel.app";
-      function countsUrl() { return API.replace(/\/$/, "") + "/api/reactions"; }
-      function setCount(id, value) {
-        var el = document.querySelector("[data-count='" + id + "']");
-        if (el) el.textContent = typeof value === "number" ? value : 0;
-      }
-      function loadCounts() {
-        fetch(countsUrl(), { credentials: "omit" })
-          .then(function (r) { return r.ok ? r.json() : {}; })
-          .then(function (data) {
-            ["article_3year_rule_ru_positive", "article_3year_rule_ru_neutral", "article_3year_rule_ru_negative"]
-              .forEach(function (id) { setCount(id, data[id]); });
-          })
-          .catch(function () {});
-      }
-      function vote(id) {
-        fetch(countsUrl(), {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "omit",
-          body: JSON.stringify({ id: id })
-        }).then(loadCounts).catch(loadCounts);
-      }
-      document.querySelectorAll(".react-btn[data-id]").forEach(function (btn) {
-        btn.addEventListener("click", function () { vote(btn.getAttribute("data-id")); });
+(function() {
+  var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
+  function getCountsUrl() { return REACTIONS_API ? (REACTIONS_API.replace(/\/$/, '') + '/api/reactions') : 'static/data/reactions.json'; }
+  function applyCount(span, n) { if (span) span.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
+  function fetchCounts() {
+    var url = getCountsUrl();
+    fetch(url, { credentials: 'omit' }).then(function(r) { return r.ok ? r.json() : {}; }).then(function(data) {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
+        var id = span.getAttribute('data-lyket-id');
+        if (id) applyCount(span, (data && typeof data[id] === 'number') ? data[id] : 0);
       });
-      loadCounts();
-    })();
+    }).catch(function() {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) { applyCount(span, 0); });
+    });
+  }
+  function voteReaction(id, countSpan) {
+    if (!id || !countSpan || !REACTIONS_API) return;
+    countSpan.setAttribute('aria-busy', 'true');
+    countSpan.textContent = '…';
+    var base = REACTIONS_API.replace(/\/$/, '');
+    fetch(base + '/api/reactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({ id: id })
+    }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
+  }
+  function initReactionClicks() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      var overlay = trigger.querySelector('.lyket-overlay');
+      var id = overlay && overlay.getAttribute('data-lyket-id');
+      var item = trigger.closest('.article-reaction-item');
+      var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
+      if (!id || !countSpan) return;
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        voteReaction(id, countSpan);
+      });
+    });
+  }
+  function initReactionKeys() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      trigger.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        trigger.click();
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
+  else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
+})();
+  </script>
+  <script>
+(function() {
+  var FORM_ID = 'articleFeedbackForm';
+  var MESSAGE_ID = 'articleFeedbackMessage';
+  var EMAIL_ID = 'articleFeedbackEmail';
+  var SUBMIT_ID = 'articleFeedbackSubmit';
+  var STATUS_ID = 'articleFeedbackStatus';
+  var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
+  var ARTICLE_ID = 'article_3year_rule_ru';
+  var TXT = { sending: 'Отправляем...', ok: 'Спасибо! Сообщение отправлено.', error: 'Не удалось отправить. Попробуйте ещё раз позже.', validation: 'Пожалуйста, напишите чуть подробнее (минимум 5 символов).' };
+
+  function $(id) { return document.getElementById(id); }
+
+  function setStatus(text, isError) {
+    var el = $(STATUS_ID);
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = isError ? '#dc2626' : 'var(--text-secondary)';
+  }
+
+  function onSubmit(e) {
+    e.preventDefault();
+    var form = $(FORM_ID);
+    var msgEl = $(MESSAGE_ID);
+    var emailEl = $(EMAIL_ID);
+    var btn = $(SUBMIT_ID);
+
+    if (!form || !msgEl || !btn) return;
+
+    var message = msgEl.value.trim();
+    var email = emailEl && emailEl.value.trim();
+
+    if (!message || message.length < 5) {
+      setStatus(TXT.validation, true);
+      return;
+    }
+
+    btn.disabled = true;
+    setStatus(TXT.sending, false);
+
+    fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({
+        articleId: ARTICLE_ID,
+        articleUrl: window.location.href,
+        message: message,
+        email: email
+      })
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Request failed');
+      return r.json().catch(function() { return {}; });
+    }).then(function() {
+      setStatus(TXT.ok, false);
+      msgEl.value = '';
+    }).catch(function() {
+      setStatus(TXT.error, true);
+    }).finally(function() {
+      btn.disabled = false;
+    });
+  }
+
+  function init() {
+    var form = $(FORM_ID);
+    if (form) form.addEventListener('submit', onSubmit);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
   </script>
 </body>
 </html>
