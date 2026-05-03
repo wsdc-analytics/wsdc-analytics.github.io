@@ -467,11 +467,21 @@
     @media (max-width: 560px) {
       .kpi { grid-template-columns: 1fr; }
       .risk-table {
-        font-size: 11px;
+        table-layout: fixed;
+        font-size: 10px;
       }
       .risk-table th,
       .risk-table td {
-        padding: 7px 6px;
+        padding: 6px 5px;
+      }
+      .risk-table th {
+        font-size: 9px;
+        letter-spacing: 0;
+      }
+      /* Hide Total Points on phones to prevent horizontal scrolling */
+      .risk-table th:nth-child(4),
+      .risk-table td:nth-child(4) {
+        display: none;
       }
     }
   </style>
