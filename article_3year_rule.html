@@ -314,6 +314,19 @@
     .risk-table.status-table td:nth-child(3) {
       text-align: center;
     }
+    /* Special handling for 3-column tables: # | Dancer | Status Since */
+    .risk-table tr > th:nth-child(3):last-child,
+    .risk-table tr > td:nth-child(3):last-child {
+      text-align: left;
+      width: 96px;
+      padding-right: 12px;
+    }
+    .risk-table tr > th:first-child,
+    .risk-table tr > td:first-child {
+      width: 38px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
     .article-reactions {
       margin: 40px 0 0;
       padding-top: 24px;
