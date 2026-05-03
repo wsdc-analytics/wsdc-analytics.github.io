@@ -32,7 +32,7 @@ def translate_file(source_file, target_file, lang, translations):
 
 en_translations = {
     'Возвращение правила 3 лет: разбор публичной инициативы WSDC, ее возможных целей и последствий для All-Stars и Champions.': 'The Return of the 3-Year Rule: An analysis of the WSDC public initiative, its possible goals, and consequences for All-Stars and Champions.',
-    'Возвращение правила 3 лет: Необходимость или недоразумение?': 'The Return of the 3-Year Rule: Necessity or Misunderstanding?',
+    'Возвращение правила 3 лет: Необходимость или поспешность?': 'The Return of the 3-Year Rule: Necessity or Haste?',
     'Разбор публичной дискуссии WSDC о возврате 3-Year Rule: кого это затрагивает и является ли понижение статуса корректным инструментом.': 'An analysis of the WSDC public discussion on the return of the 3-Year Rule: who it affects and whether demoting status is the right tool.',
     'правило 3 лет': '3-year rule',
     'поинты': 'points',
@@ -113,7 +113,7 @@ en_translations = {
 
 es_translations = {
     'Возвращение правила 3 лет: разбор публичной инициативы WSDC, ее возможных целей и последствий для All-Stars и Champions.': 'El regreso de la regla de los 3 años: un análisis de la iniciativa pública del WSDC, sus posibles objetivos y consecuencias para All-Stars y Champions.',
-    'Возвращение правила 3 лет: Необходимость или недоразумение?': 'El regreso de la regla de los 3 años: ¿Necesidad o malentendido?',
+    'Возвращение правила 3 лет: Необходимость или поспешность?': 'El regreso de la regla de los 3 años: ¿Necesidad o precipitación?',
     'Разбор публичной дискуссии WSDC о возврате 3-Year Rule: кого это затрагивает и является ли понижение статуса корректным инструментом.': 'Un análisis del debate público del WSDC sobre el regreso de la regla de los 3 años: a quién afecta y si rebajar el estatus es la herramienta correcta.',
     'правило 3 лет': 'regla de 3 años',
     'поинты': 'puntos',
