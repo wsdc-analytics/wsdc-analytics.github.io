@@ -314,23 +314,37 @@
     .risk-table.status-table td:nth-child(3) {
       text-align: center;
     }
-    /* Special handling for 3-column tables: # | Dancer | Status Since */
-    .risk-table tr > th:nth-child(3):last-child,
-    .risk-table tr > td:nth-child(3):last-child {
+    /* Special handling for status-only 3-column table: # | Dancer | Status Since */
+    .risk-table.status-only-table tr > th:nth-child(3):last-child,
+    .risk-table.status-only-table tr > td:nth-child(3):last-child {
       text-align: left;
       width: 132px;
       padding-left: clamp(14px, 5vw, 56px);
       padding-right: 12px;
     }
-    .risk-table tr > th:nth-child(2):nth-last-child(2),
-    .risk-table tr > td:nth-child(2):nth-last-child(2) {
+    .risk-table.status-only-table tr > th:nth-child(2):nth-last-child(2),
+    .risk-table.status-only-table tr > td:nth-child(2):nth-last-child(2) {
       padding-right: 0;
     }
-    .risk-table tr > th:first-child,
-    .risk-table tr > td:first-child {
+    .risk-table.status-only-table tr > th:first-child,
+    .risk-table.status-only-table tr > td:first-child {
       width: 38px;
       padding-left: 8px;
       padding-right: 8px;
+    }
+    /* Special handling for year-only 3-column table: # | Dancer | Last Year */
+    .risk-table.year-only-table tr > th:first-child,
+    .risk-table.year-only-table tr > td:first-child {
+      width: 38px;
+      text-align: center;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .risk-table.year-only-table tr > th:nth-child(3):last-child,
+    .risk-table.year-only-table tr > td:nth-child(3):last-child {
+      width: 92px;
+      text-align: right;
+      white-space: nowrap;
     }
     .article-reactions {
       margin: 40px 0 0;
@@ -568,110 +582,108 @@
 <details class="risk-disclosure">
           <summary>Lista: 98 personas</summary>
           <div class="table-scroll">
-            <table class="risk-table">
+            <table class="risk-table year-only-table">
               <thead>
-                <tr><th>#</th><th>Bailarín</th><th>Puntos en 36 m.</th><th>Puntos Totales</th><th>Último Año</th></tr>
+                <tr><th>#</th><th>Bailarín</th><th>Último Año</th></tr>
               </thead>
-              <tbody>
-<tr><td>1</td><td>Deborah Szekely</td><td>0</td><td>415</td><td>2019</td></tr>
-<tr><td>2</td><td>Jessica Cox</td><td>0</td><td>268</td><td>2015</td></tr>
-<tr><td>3</td><td>Mary Ann Nunez</td><td>0</td><td>181</td><td>2014</td></tr>
-<tr><td>4</td><td>Luis Crespo</td><td>0</td><td>159</td><td>2014</td></tr>
-<tr><td>5</td><td>Parker Dearborn</td><td>0</td><td>157</td><td>2017</td></tr>
-<tr><td>6</td><td>Melina Ramirez</td><td>0</td><td>141</td><td>2012</td></tr>
-<tr><td>7</td><td>Patty Vo</td><td>0</td><td>141</td><td>2020</td></tr>
-<tr><td>8</td><td>Jason Wayne</td><td>0</td><td>130</td><td>2019</td></tr>
-<tr><td>9</td><td>Kellese Key</td><td>0</td><td>116</td><td>2018</td></tr>
-<tr><td>10</td><td>Courtney Adair</td><td>0</td><td>115</td><td>2020</td></tr>
-<tr><td>11</td><td>Myles Munroe</td><td>0</td><td>73</td><td>2019</td></tr>
-<tr><td>12</td><td>Mark Scheuffele</td><td>0</td><td>70</td><td>2012</td></tr>
-<tr><td>13</td><td>Angel Figueroa</td><td>0</td><td>63</td><td>2019</td></tr>
-<tr><td>14</td><td>Jill DeMarco</td><td>0</td><td>61</td><td>2015</td></tr>
-<tr><td>15</td><td>Yenni Setiawan</td><td>0</td><td>55</td><td>2018</td></tr>
-<tr><td>16</td><td>Taletha Jouzdani</td><td>0</td><td>53</td><td>2019</td></tr>
-<tr><td>17</td><td>Katrina Branson</td><td>0</td><td>52</td><td>2012</td></tr>
-<tr><td>18</td><td>Sharlot Bott</td><td>0</td><td>52</td><td>2012</td></tr>
-<tr><td>19</td><td>Katie Schneider</td><td>0</td><td>51</td><td>2013</td></tr>
-<tr><td>20</td><td>Chuck Brown</td><td>0</td><td>48</td><td>2014</td></tr>
-<tr><td>21</td><td>Yvonne Wayne</td><td>0</td><td>47</td><td>2018</td></tr>
-<tr><td>22</td><td>Michael Eads</td><td>0</td><td>46</td><td>2010</td></tr>
-<tr><td>23</td><td>Brent Key</td><td>0</td><td>45</td><td>2017</td></tr>
-<tr><td>24</td><td>Joanna Meinl</td><td>0</td><td>44</td><td>2016</td></tr>
-<tr><td>25</td><td>Stephanie Batista</td><td>0</td><td>44</td><td>2010</td></tr>
-<tr><td>26</td><td>Sylvia Sykes</td><td>0</td><td>43</td><td>2011</td></tr>
-<tr><td>27</td><td>Diego Borges</td><td>0</td><td>41</td><td>2017</td></tr>
-<tr><td>28</td><td>Pete Green</td><td>0</td><td>41</td><td>2012</td></tr>
-<tr><td>29</td><td>Jason Miklic</td><td>0</td><td>40</td><td>2015</td></tr>
-<tr><td>30</td><td>Jason Barnes</td><td>0</td><td>39</td><td>2014</td></tr>
-<tr><td>31</td><td>Michael Kiehm</td><td>0</td><td>39</td><td>2007</td></tr>
-<tr><td>32</td><td>Demetre Souliotes</td><td>0</td><td>37</td><td>2018</td></tr>
-<tr><td>33</td><td>Manny Viarrial</td><td>0</td><td>37</td><td>2013</td></tr>
-<tr><td>34</td><td>Ryan Crutcher</td><td>0</td><td>36</td><td>2020</td></tr>
-<tr><td>35</td><td>Giovanna Dottore</td><td>0</td><td>34</td><td>2008</td></tr>
-<tr><td>36</td><td>Debbie Figueroa</td><td>0</td><td>32</td><td>2014</td></tr>
-<tr><td>37</td><td>Miguel De Sousa</td><td>0</td><td>30</td><td>2012</td></tr>
-<tr><td>38</td><td>Mario Robau</td><td>0</td><td>29</td><td>2008</td></tr>
-<tr><td>39</td><td>Martin Parker</td><td>0</td><td>29</td><td>2009</td></tr>
-<tr><td>40</td><td>Nick Jay</td><td>0</td><td>28</td><td>2012</td></tr>
-<tr><td>41</td><td>Kristin Sorci</td><td>0</td><td>26</td><td>2009</td></tr>
-<tr><td>42</td><td>Lacey Schwimmer</td><td>0</td><td>25</td><td>2010</td></tr>
-<tr><td>43</td><td>Crystal Lambert</td><td>0</td><td>24</td><td>2015</td></tr>
-<tr><td>44</td><td>Erica Berg</td><td>0</td><td>24</td><td>2010</td></tr>
-<tr><td>45</td><td>Michael Norris</td><td>0</td><td>24</td><td>2012</td></tr>
-<tr><td>46</td><td>Patti Jobst</td><td>0</td><td>24</td><td>2010</td></tr>
-<tr><td>47</td><td>Wayne Bott</td><td>0</td><td>24</td><td>2004</td></tr>
-<tr><td>48</td><td>Michelle Kinkaid</td><td>0</td><td>23</td><td>2015</td></tr>
-<tr><td>49</td><td>Rob Ingenthron</td><td>0</td><td>23</td><td>2009</td></tr>
-<tr><td>50</td><td>Beata Howe</td><td>0</td><td>21</td><td>2009</td></tr>
-<tr><td>51</td><td>Heidi Groskreutz</td><td>0</td><td>21</td><td>2007</td></tr>
-<tr><td>52</td><td>Deanna Mollmann</td><td>0</td><td>20</td><td>2009</td></tr>
-<tr><td>53</td><td>Jessica Pacheco</td><td>0</td><td>20</td><td>2018</td></tr>
-<tr><td>54</td><td>Libbat Shaham</td><td>0</td><td>19</td><td>2007</td></tr>
-<tr><td>55</td><td>Lisa D&#x27;amico</td><td>0</td><td>19</td><td>2014</td></tr>
-<tr><td>56</td><td>Blake Hobby Dowling</td><td>0</td><td>18</td><td>2015</td></tr>
-<tr><td>57</td><td>Deonna Ball</td><td>0</td><td>18</td><td>2016</td></tr>
-<tr><td>58</td><td>Lisa Fay</td><td>0</td><td>18</td><td>2010</td></tr>
-<tr><td>59</td><td>Lisa Schaupp</td><td>0</td><td>18</td><td>2010</td></tr>
-<tr><td>60</td><td>Shawn Tobias</td><td>0</td><td>18</td><td>2009</td></tr>
-<tr><td>61</td><td>Jason Colacino</td><td>0</td><td>17</td><td>2004</td></tr>
-<tr><td>62</td><td>Ronnie De Benedetta</td><td>0</td><td>17</td><td>2013</td></tr>
-<tr><td>63</td><td>Gary Mcintyre</td><td>0</td><td>16</td><td>2020</td></tr>
-<tr><td>64</td><td>Alyssa Alden</td><td>0</td><td>15</td><td>2011</td></tr>
-<tr><td>65</td><td>Brad Whelan</td><td>0</td><td>15</td><td>2019</td></tr>
-<tr><td>66</td><td>Christopher Hussey</td><td>0</td><td>15</td><td>2011</td></tr>
-<tr><td>67</td><td>Doug Rousar</td><td>0</td><td>15</td><td>2020</td></tr>
-<tr><td>68</td><td>Jake Haning</td><td>0</td><td>15</td><td>2019</td></tr>
-<tr><td>69</td><td>Doug Silton</td><td>0</td><td>14</td><td>2018</td></tr>
-<tr><td>70</td><td>Hazel Mede Ulrich</td><td>0</td><td>14</td><td>2014</td></tr>
-<tr><td>71</td><td>Jason Marker</td><td>0</td><td>14</td><td>2019</td></tr>
-<tr><td>72</td><td>Phil Adams</td><td>0</td><td>14</td><td>2010</td></tr>
-<tr><td>73</td><td>Reina Ludwick</td><td>0</td><td>14</td><td>2015</td></tr>
-<tr><td>74</td><td>Richard Kear</td><td>0</td><td>13</td><td>2005</td></tr>
-<tr><td>75</td><td>Shawn Moody</td><td>0</td><td>13</td><td>2012</td></tr>
-<tr><td>76</td><td>Tony Schubert</td><td>0</td><td>13</td><td>2019</td></tr>
-<tr><td>77</td><td>Ben Hooten</td><td>0</td><td>12</td><td>2016</td></tr>
-<tr><td>78</td><td>Julie Ringquist</td><td>0</td><td>12</td><td>2005</td></tr>
-<tr><td>79</td><td>Kara Frenzel</td><td>0</td><td>12</td><td>2018</td></tr>
-<tr><td>80</td><td>Debbie Ramsey Boz</td><td>0</td><td>11</td><td>2010</td></tr>
-<tr><td>81</td><td>Donald Carl</td><td>0</td><td>11</td><td>2017</td></tr>
-<tr><td>82</td><td>Gary Jobst</td><td>0</td><td>11</td><td>2014</td></tr>
-<tr><td>83</td><td>John Kirkconnell</td><td>0</td><td>11</td><td>2019</td></tr>
-<tr><td>84</td><td>Tara Steinke</td><td>0</td><td>11</td><td>2008</td></tr>
-<tr><td>85</td><td>Terry Roseborough</td><td>0</td><td>11</td><td>2014</td></tr>
-<tr><td>86</td><td>Annick Paquet</td><td>0</td><td>10</td><td>2009</td></tr>
-<tr><td>87</td><td>Blandine Iche</td><td>0</td><td>10</td><td>2020</td></tr>
-<tr><td>88</td><td>Christopher Joe Schaupp</td><td>0</td><td>10</td><td>2010</td></tr>
-<tr><td>89</td><td>Jack Smith</td><td>0</td><td>10</td><td>2005</td></tr>
-<tr><td>90</td><td>John Festa</td><td>0</td><td>10</td><td>2015</td></tr>
-<tr><td>91</td><td>Katie Boyle</td><td>0</td><td>10</td><td>2009</td></tr>
-<tr><td>92</td><td>Kay Newhouse</td><td>0</td><td>10</td><td>2014</td></tr>
-<tr><td>93</td><td>Melissa Taylor</td><td>0</td><td>10</td><td>2005</td></tr>
-<tr><td>94</td><td>Michele Adams</td><td>0</td><td>10</td><td>1999</td></tr>
-<tr><td>95</td><td>Wendy Miller</td><td>0</td><td>10</td><td>2009</td></tr>
-<tr><td>96</td><td>Aidan Keith Hynes</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>97</td><td>Margaret Tuttle</td><td>0</td><td>0</td><td>—</td></tr>
-<tr><td>98</td><td>Za Thomaier</td><td>0</td><td>0</td><td>—</td></tr>
-              </tbody>
+              <tbody><tr><td>1</td><td>Deborah Szekely</td><td>2019</td></tr>
+<tr><td>2</td><td>Jessica Cox</td><td>2015</td></tr>
+<tr><td>3</td><td>Mary Ann Nunez</td><td>2014</td></tr>
+<tr><td>4</td><td>Luis Crespo</td><td>2014</td></tr>
+<tr><td>5</td><td>Parker Dearborn</td><td>2017</td></tr>
+<tr><td>6</td><td>Melina Ramirez</td><td>2012</td></tr>
+<tr><td>7</td><td>Patty Vo</td><td>2020</td></tr>
+<tr><td>8</td><td>Jason Wayne</td><td>2019</td></tr>
+<tr><td>9</td><td>Kellese Key</td><td>2018</td></tr>
+<tr><td>10</td><td>Courtney Adair</td><td>2020</td></tr>
+<tr><td>11</td><td>Myles Munroe</td><td>2019</td></tr>
+<tr><td>12</td><td>Mark Scheuffele</td><td>2012</td></tr>
+<tr><td>13</td><td>Angel Figueroa</td><td>2019</td></tr>
+<tr><td>14</td><td>Jill DeMarco</td><td>2015</td></tr>
+<tr><td>15</td><td>Yenni Setiawan</td><td>2018</td></tr>
+<tr><td>16</td><td>Taletha Jouzdani</td><td>2019</td></tr>
+<tr><td>17</td><td>Katrina Branson</td><td>2012</td></tr>
+<tr><td>18</td><td>Sharlot Bott</td><td>2012</td></tr>
+<tr><td>19</td><td>Katie Schneider</td><td>2013</td></tr>
+<tr><td>20</td><td>Chuck Brown</td><td>2014</td></tr>
+<tr><td>21</td><td>Yvonne Wayne</td><td>2018</td></tr>
+<tr><td>22</td><td>Michael Eads</td><td>2010</td></tr>
+<tr><td>23</td><td>Brent Key</td><td>2017</td></tr>
+<tr><td>24</td><td>Joanna Meinl</td><td>2016</td></tr>
+<tr><td>25</td><td>Stephanie Batista</td><td>2010</td></tr>
+<tr><td>26</td><td>Sylvia Sykes</td><td>2011</td></tr>
+<tr><td>27</td><td>Diego Borges</td><td>2017</td></tr>
+<tr><td>28</td><td>Pete Green</td><td>2012</td></tr>
+<tr><td>29</td><td>Jason Miklic</td><td>2015</td></tr>
+<tr><td>30</td><td>Jason Barnes</td><td>2014</td></tr>
+<tr><td>31</td><td>Michael Kiehm</td><td>2007</td></tr>
+<tr><td>32</td><td>Demetre Souliotes</td><td>2018</td></tr>
+<tr><td>33</td><td>Manny Viarrial</td><td>2013</td></tr>
+<tr><td>34</td><td>Ryan Crutcher</td><td>2020</td></tr>
+<tr><td>35</td><td>Giovanna Dottore</td><td>2008</td></tr>
+<tr><td>36</td><td>Debbie Figueroa</td><td>2014</td></tr>
+<tr><td>37</td><td>Miguel De Sousa</td><td>2012</td></tr>
+<tr><td>38</td><td>Mario Robau</td><td>2008</td></tr>
+<tr><td>39</td><td>Martin Parker</td><td>2009</td></tr>
+<tr><td>40</td><td>Nick Jay</td><td>2012</td></tr>
+<tr><td>41</td><td>Kristin Sorci</td><td>2009</td></tr>
+<tr><td>42</td><td>Lacey Schwimmer</td><td>2010</td></tr>
+<tr><td>43</td><td>Crystal Lambert</td><td>2015</td></tr>
+<tr><td>44</td><td>Erica Berg</td><td>2010</td></tr>
+<tr><td>45</td><td>Michael Norris</td><td>2012</td></tr>
+<tr><td>46</td><td>Patti Jobst</td><td>2010</td></tr>
+<tr><td>47</td><td>Wayne Bott</td><td>2004</td></tr>
+<tr><td>48</td><td>Michelle Kinkaid</td><td>2015</td></tr>
+<tr><td>49</td><td>Rob Ingenthron</td><td>2009</td></tr>
+<tr><td>50</td><td>Beata Howe</td><td>2009</td></tr>
+<tr><td>51</td><td>Heidi Groskreutz</td><td>2007</td></tr>
+<tr><td>52</td><td>Deanna Mollmann</td><td>2009</td></tr>
+<tr><td>53</td><td>Jessica Pacheco</td><td>2018</td></tr>
+<tr><td>54</td><td>Libbat Shaham</td><td>2007</td></tr>
+<tr><td>55</td><td>Lisa D&#x27;amico</td><td>2014</td></tr>
+<tr><td>56</td><td>Blake Hobby Dowling</td><td>2015</td></tr>
+<tr><td>57</td><td>Deonna Ball</td><td>2016</td></tr>
+<tr><td>58</td><td>Lisa Fay</td><td>2010</td></tr>
+<tr><td>59</td><td>Lisa Schaupp</td><td>2010</td></tr>
+<tr><td>60</td><td>Shawn Tobias</td><td>2009</td></tr>
+<tr><td>61</td><td>Jason Colacino</td><td>2004</td></tr>
+<tr><td>62</td><td>Ronnie De Benedetta</td><td>2013</td></tr>
+<tr><td>63</td><td>Gary Mcintyre</td><td>2020</td></tr>
+<tr><td>64</td><td>Alyssa Alden</td><td>2011</td></tr>
+<tr><td>65</td><td>Brad Whelan</td><td>2019</td></tr>
+<tr><td>66</td><td>Christopher Hussey</td><td>2011</td></tr>
+<tr><td>67</td><td>Doug Rousar</td><td>2020</td></tr>
+<tr><td>68</td><td>Jake Haning</td><td>2019</td></tr>
+<tr><td>69</td><td>Doug Silton</td><td>2018</td></tr>
+<tr><td>70</td><td>Hazel Mede Ulrich</td><td>2014</td></tr>
+<tr><td>71</td><td>Jason Marker</td><td>2019</td></tr>
+<tr><td>72</td><td>Phil Adams</td><td>2010</td></tr>
+<tr><td>73</td><td>Reina Ludwick</td><td>2015</td></tr>
+<tr><td>74</td><td>Richard Kear</td><td>2005</td></tr>
+<tr><td>75</td><td>Shawn Moody</td><td>2012</td></tr>
+<tr><td>76</td><td>Tony Schubert</td><td>2019</td></tr>
+<tr><td>77</td><td>Ben Hooten</td><td>2016</td></tr>
+<tr><td>78</td><td>Julie Ringquist</td><td>2005</td></tr>
+<tr><td>79</td><td>Kara Frenzel</td><td>2018</td></tr>
+<tr><td>80</td><td>Debbie Ramsey Boz</td><td>2010</td></tr>
+<tr><td>81</td><td>Donald Carl</td><td>2017</td></tr>
+<tr><td>82</td><td>Gary Jobst</td><td>2014</td></tr>
+<tr><td>83</td><td>John Kirkconnell</td><td>2019</td></tr>
+<tr><td>84</td><td>Tara Steinke</td><td>2008</td></tr>
+<tr><td>85</td><td>Terry Roseborough</td><td>2014</td></tr>
+<tr><td>86</td><td>Annick Paquet</td><td>2009</td></tr>
+<tr><td>87</td><td>Blandine Iche</td><td>2020</td></tr>
+<tr><td>88</td><td>Christopher Joe Schaupp</td><td>2010</td></tr>
+<tr><td>89</td><td>Jack Smith</td><td>2005</td></tr>
+<tr><td>90</td><td>John Festa</td><td>2015</td></tr>
+<tr><td>91</td><td>Katie Boyle</td><td>2009</td></tr>
+<tr><td>92</td><td>Kay Newhouse</td><td>2014</td></tr>
+<tr><td>93</td><td>Melissa Taylor</td><td>2005</td></tr>
+<tr><td>94</td><td>Michele Adams</td><td>1999</td></tr>
+<tr><td>95</td><td>Wendy Miller</td><td>2009</td></tr>
+<tr><td>96</td><td>Aidan Keith Hynes</td><td>—</td></tr>
+<tr><td>97</td><td>Margaret Tuttle</td><td>—</td></tr>
+<tr><td>98</td><td>Za Thomaier</td><td>—</td></tr></tbody>
             </table>
           </div>
         </details>
@@ -699,158 +711,156 @@
 <details class="risk-disclosure">
           <summary>Lista: 146 personas</summary>
           <div class="table-scroll">
-            <table class="risk-table">
+            <table class="risk-table year-only-table">
               <thead>
-                <tr><th>#</th><th>Bailarín</th><th>Puntos en 36 m.</th><th>Puntos Totales</th><th>Último Año</th></tr>
+                <tr><th>#</th><th>Bailarín</th><th>Último Año</th></tr>
               </thead>
-              <tbody>
-<tr><td>1</td><td>Kevin St. Laurent</td><td>0</td><td>28</td><td>2006</td></tr>
-<tr><td>2</td><td>Andrea Deaton</td><td>0</td><td>9</td><td>2004</td></tr>
-<tr><td>3</td><td>Bob Tucker</td><td>0</td><td>9</td><td>2010</td></tr>
-<tr><td>4</td><td>Connor Goodmanson</td><td>0</td><td>9</td><td>2016</td></tr>
-<tr><td>5</td><td>Jennifer Lyons</td><td>0</td><td>9</td><td>2012</td></tr>
-<tr><td>6</td><td>Rachele Smith</td><td>0</td><td>9</td><td>2013</td></tr>
-<tr><td>7</td><td>Scott Stuart</td><td>0</td><td>9</td><td>2013</td></tr>
-<tr><td>8</td><td>Tamara Brown</td><td>0</td><td>9</td><td>2014</td></tr>
-<tr><td>9</td><td>Barry Jones</td><td>0</td><td>8</td><td>2013</td></tr>
-<tr><td>10</td><td>Camille Lane</td><td>0</td><td>8</td><td>2010</td></tr>
-<tr><td>11</td><td>Dawn Blorstad</td><td>0</td><td>8</td><td>2012</td></tr>
-<tr><td>12</td><td>Glen Cravalho</td><td>0</td><td>8</td><td>2008</td></tr>
-<tr><td>13</td><td>Jimmy Mulligan</td><td>0</td><td>8</td><td>2007</td></tr>
-<tr><td>14</td><td>Kristen Jeanes Moody</td><td>0</td><td>8</td><td>2012</td></tr>
-<tr><td>15</td><td>Rome Slater</td><td>0</td><td>8</td><td>2014</td></tr>
-<tr><td>16</td><td>Stephanie Mchenry</td><td>0</td><td>8</td><td>2015</td></tr>
-<tr><td>17</td><td>Carlus Reed</td><td>0</td><td>7</td><td>2015</td></tr>
-<tr><td>18</td><td>Csilla Madocsai</td><td>0</td><td>7</td><td>2009</td></tr>
-<tr><td>19</td><td>Edwin Li</td><td>0</td><td>7</td><td>2010</td></tr>
-<tr><td>20</td><td>Jim Minty</td><td>0</td><td>7</td><td>2009</td></tr>
-<tr><td>21</td><td>Kristen Parker</td><td>0</td><td>7</td><td>2019</td></tr>
-<tr><td>22</td><td>Tybaldt Ulrich</td><td>0</td><td>7</td><td>2014</td></tr>
-<tr><td>23</td><td>Andrew Sinclair</td><td>0</td><td>6</td><td>2006</td></tr>
-<tr><td>24</td><td>Beth Bukoski</td><td>0</td><td>6</td><td>2008</td></tr>
-<tr><td>25</td><td>Dean Garrish</td><td>0</td><td>6</td><td>2010</td></tr>
-<tr><td>26</td><td>Delancey Von Langendoerfer</td><td>0</td><td>6</td><td>2017</td></tr>
-<tr><td>27</td><td>Denise Jordan-Williams</td><td>0</td><td>6</td><td>2003</td></tr>
-<tr><td>28</td><td>Erin Sweeney</td><td>0</td><td>6</td><td>2008</td></tr>
-<tr><td>29</td><td>Izabella Kowalska</td><td>0</td><td>6</td><td>2017</td></tr>
-<tr><td>30</td><td>Jeannie Tucker</td><td>0</td><td>6</td><td>2010</td></tr>
-<tr><td>31</td><td>Josh Clark</td><td>0</td><td>6</td><td>2009</td></tr>
-<tr><td>32</td><td>Joshua Sturgeon</td><td>0</td><td>6</td><td>2016</td></tr>
-<tr><td>33</td><td>Kelly Dye</td><td>0</td><td>6</td><td>2003</td></tr>
-<tr><td>34</td><td>Lauren Davis</td><td>0</td><td>6</td><td>2008</td></tr>
-<tr><td>35</td><td>Melanie Dawson</td><td>0</td><td>6</td><td>2004</td></tr>
-<tr><td>36</td><td>Sheena Shirley</td><td>0</td><td>6</td><td>2007</td></tr>
-<tr><td>37</td><td>Tatianna Bourget</td><td>0</td><td>6</td><td>2008</td></tr>
-<tr><td>38</td><td>Anyssa Olivares</td><td>0</td><td>5</td><td>2019</td></tr>
-<tr><td>39</td><td>Arthur Uspensky</td><td>0</td><td>5</td><td>2013</td></tr>
-<tr><td>40</td><td>Candace Cravalho</td><td>0</td><td>5</td><td>2008</td></tr>
-<tr><td>41</td><td>Dustin Anderson</td><td>0</td><td>5</td><td>2008</td></tr>
-<tr><td>42</td><td>Eric Myers</td><td>0</td><td>5</td><td>2006</td></tr>
-<tr><td>43</td><td>Gina Brown</td><td>0</td><td>5</td><td>2011</td></tr>
-<tr><td>44</td><td>Kevin Fitzhugh</td><td>0</td><td>5</td><td>2011</td></tr>
-<tr><td>45</td><td>Maira Pineda</td><td>0</td><td>5</td><td>2007</td></tr>
-<tr><td>46</td><td>Nathan Miller</td><td>0</td><td>5</td><td>2006</td></tr>
-<tr><td>47</td><td>Nicola Royston</td><td>0</td><td>5</td><td>2015</td></tr>
-<tr><td>48</td><td>Robert Jackson</td><td>0</td><td>5</td><td>2010</td></tr>
-<tr><td>49</td><td>Samir Zutshi</td><td>0</td><td>5</td><td>2017</td></tr>
-<tr><td>50</td><td>Stevie Blakely</td><td>0</td><td>5</td><td>2014</td></tr>
-<tr><td>51</td><td>Tori Ellington</td><td>0</td><td>5</td><td>2012</td></tr>
-<tr><td>52</td><td>Trevor Spika</td><td>0</td><td>5</td><td>2013</td></tr>
-<tr><td>53</td><td>Agnieszka Maslanka</td><td>0</td><td>4</td><td>2015</td></tr>
-<tr><td>54</td><td>Andrew Knight</td><td>0</td><td>4</td><td>2003</td></tr>
-<tr><td>55</td><td>Atlas Griffith</td><td>0</td><td>4</td><td>2003</td></tr>
-<tr><td>56</td><td>Beverly Brunerie</td><td>0</td><td>4</td><td>2016</td></tr>
-<tr><td>57</td><td>Brian Feehan</td><td>0</td><td>4</td><td>2003</td></tr>
-<tr><td>58</td><td>Browly Adjavon</td><td>0</td><td>4</td><td>2017</td></tr>
-<tr><td>59</td><td>Damon D&#x27;amico</td><td>0</td><td>4</td><td>2013</td></tr>
-<tr><td>60</td><td>Daniel Guido</td><td>0</td><td>4</td><td>2011</td></tr>
-<tr><td>61</td><td>Greg Pisano</td><td>0</td><td>4</td><td>2007</td></tr>
-<tr><td>62</td><td>Katherine Krok</td><td>0</td><td>4</td><td>2007</td></tr>
-<tr><td>63</td><td>Kevin Cruz</td><td>0</td><td>4</td><td>2003</td></tr>
-<tr><td>64</td><td>LeAnn Best Norris</td><td>0</td><td>4</td><td>2012</td></tr>
-<tr><td>65</td><td>Lindsey Nastos</td><td>0</td><td>4</td><td>2014</td></tr>
-<tr><td>66</td><td>Peggy Allen</td><td>0</td><td>4</td><td>2009</td></tr>
-<tr><td>67</td><td>Rosie Campos</td><td>0</td><td>4</td><td>1999</td></tr>
-<tr><td>68</td><td>Sarah Breck</td><td>0</td><td>4</td><td>2009</td></tr>
-<tr><td>69</td><td>Scott Mason</td><td>0</td><td>4</td><td>2009</td></tr>
-<tr><td>70</td><td>Will Carlton</td><td>0</td><td>4</td><td>2014</td></tr>
-<tr><td>71</td><td>Amber Ripley</td><td>0</td><td>3</td><td>2009</td></tr>
-<tr><td>72</td><td>Arnaud Perga</td><td>0</td><td>3</td><td>2016</td></tr>
-<tr><td>73</td><td>Bryan Jordan</td><td>0</td><td>3</td><td>2012</td></tr>
-<tr><td>74</td><td>Christopher Desjardins</td><td>0</td><td>3</td><td>2002</td></tr>
-<tr><td>75</td><td>Dani Canziani</td><td>0</td><td>3</td><td>2009</td></tr>
-<tr><td>76</td><td>Eric Byers</td><td>0</td><td>3</td><td>2020</td></tr>
-<tr><td>77</td><td>Henriette Koefoed</td><td>0</td><td>3</td><td>2012</td></tr>
-<tr><td>78</td><td>Jb Brodie</td><td>0</td><td>3</td><td>2016</td></tr>
-<tr><td>79</td><td>Louise Bretz</td><td>0</td><td>3</td><td>2003</td></tr>
-<tr><td>80</td><td>Mark Eckstein</td><td>0</td><td>3</td><td>2004</td></tr>
-<tr><td>81</td><td>Melanie Wong Jennings</td><td>0</td><td>3</td><td>2009</td></tr>
-<tr><td>82</td><td>Michael Krause</td><td>0</td><td>3</td><td>2002</td></tr>
-<tr><td>83</td><td>Nancy Heaverlo</td><td>0</td><td>3</td><td>2002</td></tr>
-<tr><td>84</td><td>Olivia Luke</td><td>0</td><td>3</td><td>2010</td></tr>
-<tr><td>85</td><td>Renee Lipman</td><td>0</td><td>3</td><td>2019</td></tr>
-<tr><td>86</td><td>Richard Lundin</td><td>0</td><td>3</td><td>2003</td></tr>
-<tr><td>87</td><td>Ruth Cnaany</td><td>0</td><td>3</td><td>2006</td></tr>
-<tr><td>88</td><td>Steve Neeren</td><td>0</td><td>3</td><td>2009</td></tr>
-<tr><td>89</td><td>Bill Cameron</td><td>0</td><td>2</td><td>2008</td></tr>
-<tr><td>90</td><td>Brandon Gautreaux</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>91</td><td>Cassy Olson</td><td>0</td><td>2</td><td>2011</td></tr>
-<tr><td>92</td><td>Cher Peadon</td><td>0</td><td>2</td><td>2013</td></tr>
-<tr><td>93</td><td>David Simpson</td><td>0</td><td>2</td><td>2012</td></tr>
-<tr><td>94</td><td>Don Herron</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>95</td><td>Estelle Bonnaire</td><td>0</td><td>2</td><td>2019</td></tr>
-<tr><td>96</td><td>Fred Price</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>97</td><td>Hannah Clonch</td><td>0</td><td>2</td><td>2015</td></tr>
-<tr><td>98</td><td>Jeremy Bryan</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>99</td><td>Katie Berardino</td><td>0</td><td>2</td><td>2002</td></tr>
-<tr><td>100</td><td>Ken Roesel</td><td>0</td><td>2</td><td>2010</td></tr>
-<tr><td>101</td><td>Lee Easton</td><td>0</td><td>2</td><td>2016</td></tr>
-<tr><td>102</td><td>Lindy Greer</td><td>0</td><td>2</td><td>2003</td></tr>
-<tr><td>103</td><td>Mana Parisi</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>104</td><td>Mark Blume</td><td>0</td><td>2</td><td>2008</td></tr>
-<tr><td>105</td><td>Mike Topel</td><td>0</td><td>2</td><td>2012</td></tr>
-<tr><td>106</td><td>Nicki Silton</td><td>0</td><td>2</td><td>2015</td></tr>
-<tr><td>107</td><td>Pamela Podmoroff</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>108</td><td>Piotr Lenart</td><td>0</td><td>2</td><td>2019</td></tr>
-<tr><td>109</td><td>Rodger Taylor</td><td>0</td><td>2</td><td>2005</td></tr>
-<tr><td>110</td><td>Sonny Watson</td><td>0</td><td>2</td><td>2004</td></tr>
-<tr><td>111</td><td>Stan Jaquish</td><td>0</td><td>2</td><td>2003</td></tr>
-<tr><td>112</td><td>Tera Vitale</td><td>0</td><td>2</td><td>2009</td></tr>
-<tr><td>113</td><td>Tracey Melin</td><td>0</td><td>2</td><td>2010</td></tr>
-<tr><td>114</td><td>Wesley Boz</td><td>0</td><td>2</td><td>2003</td></tr>
-<tr><td>115</td><td>Aaron Lorenzen</td><td>0</td><td>1</td><td>2009</td></tr>
-<tr><td>116</td><td>Andy Reid</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>117</td><td>Bill Borgida</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>118</td><td>Caitlin George</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>119</td><td>Cameron Crook</td><td>0</td><td>1</td><td>2013</td></tr>
-<tr><td>120</td><td>Chelsea Loomis Spika</td><td>0</td><td>1</td><td>2010</td></tr>
-<tr><td>121</td><td>Dan Amores</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>122</td><td>Darian Barrett</td><td>0</td><td>1</td><td>2007</td></tr>
-<tr><td>123</td><td>Eddie Valdez</td><td>0</td><td>1</td><td>2011</td></tr>
-<tr><td>124</td><td>Giselle Anguizola</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>125</td><td>James Leyva</td><td>0</td><td>1</td><td>2012</td></tr>
-<tr><td>126</td><td>Jesse Dickson</td><td>0</td><td>1</td><td>2019</td></tr>
-<tr><td>127</td><td>Jesse Vos</td><td>0</td><td>1</td><td>2013</td></tr>
-<tr><td>128</td><td>Jo Thompson Szymanski</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>129</td><td>Joe Palmer</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>130</td><td>John Piper</td><td>0</td><td>1</td><td>2015</td></tr>
-<tr><td>131</td><td>John Snyder</td><td>0</td><td>1</td><td>2005</td></tr>
-<tr><td>132</td><td>Keith Gussoni</td><td>0</td><td>1</td><td>2008</td></tr>
-<tr><td>133</td><td>Laura Dabby</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>134</td><td>Lauren Adams</td><td>0</td><td>1</td><td>2009</td></tr>
-<tr><td>135</td><td>Lisa Austin</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>136</td><td>Maggie Moon</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>137</td><td>Michael Mandel</td><td>0</td><td>1</td><td>2008</td></tr>
-<tr><td>138</td><td>Mitchell From</td><td>0</td><td>1</td><td>2009</td></tr>
-<tr><td>139</td><td>Robin Coleman</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>140</td><td>Robin Smith</td><td>0</td><td>1</td><td>2010</td></tr>
-<tr><td>141</td><td>Sara Spence</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>142</td><td>Sheli Schroeder</td><td>0</td><td>1</td><td>2007</td></tr>
-<tr><td>143</td><td>Simone Cox</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>144</td><td>Tami Harris Krok</td><td>0</td><td>1</td><td>2002</td></tr>
-<tr><td>145</td><td>Trish Connery</td><td>0</td><td>1</td><td>2005</td></tr>
-<tr><td>146</td><td>Zena Knight</td><td>0</td><td>1</td><td>2011</td></tr>
-              </tbody>
+              <tbody><tr><td>1</td><td>Kevin St. Laurent</td><td>2006</td></tr>
+<tr><td>2</td><td>Andrea Deaton</td><td>2004</td></tr>
+<tr><td>3</td><td>Bob Tucker</td><td>2010</td></tr>
+<tr><td>4</td><td>Connor Goodmanson</td><td>2016</td></tr>
+<tr><td>5</td><td>Jennifer Lyons</td><td>2012</td></tr>
+<tr><td>6</td><td>Rachele Smith</td><td>2013</td></tr>
+<tr><td>7</td><td>Scott Stuart</td><td>2013</td></tr>
+<tr><td>8</td><td>Tamara Brown</td><td>2014</td></tr>
+<tr><td>9</td><td>Barry Jones</td><td>2013</td></tr>
+<tr><td>10</td><td>Camille Lane</td><td>2010</td></tr>
+<tr><td>11</td><td>Dawn Blorstad</td><td>2012</td></tr>
+<tr><td>12</td><td>Glen Cravalho</td><td>2008</td></tr>
+<tr><td>13</td><td>Jimmy Mulligan</td><td>2007</td></tr>
+<tr><td>14</td><td>Kristen Jeanes Moody</td><td>2012</td></tr>
+<tr><td>15</td><td>Rome Slater</td><td>2014</td></tr>
+<tr><td>16</td><td>Stephanie Mchenry</td><td>2015</td></tr>
+<tr><td>17</td><td>Carlus Reed</td><td>2015</td></tr>
+<tr><td>18</td><td>Csilla Madocsai</td><td>2009</td></tr>
+<tr><td>19</td><td>Edwin Li</td><td>2010</td></tr>
+<tr><td>20</td><td>Jim Minty</td><td>2009</td></tr>
+<tr><td>21</td><td>Kristen Parker</td><td>2019</td></tr>
+<tr><td>22</td><td>Tybaldt Ulrich</td><td>2014</td></tr>
+<tr><td>23</td><td>Andrew Sinclair</td><td>2006</td></tr>
+<tr><td>24</td><td>Beth Bukoski</td><td>2008</td></tr>
+<tr><td>25</td><td>Dean Garrish</td><td>2010</td></tr>
+<tr><td>26</td><td>Delancey Von Langendoerfer</td><td>2017</td></tr>
+<tr><td>27</td><td>Denise Jordan-Williams</td><td>2003</td></tr>
+<tr><td>28</td><td>Erin Sweeney</td><td>2008</td></tr>
+<tr><td>29</td><td>Izabella Kowalska</td><td>2017</td></tr>
+<tr><td>30</td><td>Jeannie Tucker</td><td>2010</td></tr>
+<tr><td>31</td><td>Josh Clark</td><td>2009</td></tr>
+<tr><td>32</td><td>Joshua Sturgeon</td><td>2016</td></tr>
+<tr><td>33</td><td>Kelly Dye</td><td>2003</td></tr>
+<tr><td>34</td><td>Lauren Davis</td><td>2008</td></tr>
+<tr><td>35</td><td>Melanie Dawson</td><td>2004</td></tr>
+<tr><td>36</td><td>Sheena Shirley</td><td>2007</td></tr>
+<tr><td>37</td><td>Tatianna Bourget</td><td>2008</td></tr>
+<tr><td>38</td><td>Anyssa Olivares</td><td>2019</td></tr>
+<tr><td>39</td><td>Arthur Uspensky</td><td>2013</td></tr>
+<tr><td>40</td><td>Candace Cravalho</td><td>2008</td></tr>
+<tr><td>41</td><td>Dustin Anderson</td><td>2008</td></tr>
+<tr><td>42</td><td>Eric Myers</td><td>2006</td></tr>
+<tr><td>43</td><td>Gina Brown</td><td>2011</td></tr>
+<tr><td>44</td><td>Kevin Fitzhugh</td><td>2011</td></tr>
+<tr><td>45</td><td>Maira Pineda</td><td>2007</td></tr>
+<tr><td>46</td><td>Nathan Miller</td><td>2006</td></tr>
+<tr><td>47</td><td>Nicola Royston</td><td>2015</td></tr>
+<tr><td>48</td><td>Robert Jackson</td><td>2010</td></tr>
+<tr><td>49</td><td>Samir Zutshi</td><td>2017</td></tr>
+<tr><td>50</td><td>Stevie Blakely</td><td>2014</td></tr>
+<tr><td>51</td><td>Tori Ellington</td><td>2012</td></tr>
+<tr><td>52</td><td>Trevor Spika</td><td>2013</td></tr>
+<tr><td>53</td><td>Agnieszka Maslanka</td><td>2015</td></tr>
+<tr><td>54</td><td>Andrew Knight</td><td>2003</td></tr>
+<tr><td>55</td><td>Atlas Griffith</td><td>2003</td></tr>
+<tr><td>56</td><td>Beverly Brunerie</td><td>2016</td></tr>
+<tr><td>57</td><td>Brian Feehan</td><td>2003</td></tr>
+<tr><td>58</td><td>Browly Adjavon</td><td>2017</td></tr>
+<tr><td>59</td><td>Damon D&#x27;amico</td><td>2013</td></tr>
+<tr><td>60</td><td>Daniel Guido</td><td>2011</td></tr>
+<tr><td>61</td><td>Greg Pisano</td><td>2007</td></tr>
+<tr><td>62</td><td>Katherine Krok</td><td>2007</td></tr>
+<tr><td>63</td><td>Kevin Cruz</td><td>2003</td></tr>
+<tr><td>64</td><td>LeAnn Best Norris</td><td>2012</td></tr>
+<tr><td>65</td><td>Lindsey Nastos</td><td>2014</td></tr>
+<tr><td>66</td><td>Peggy Allen</td><td>2009</td></tr>
+<tr><td>67</td><td>Rosie Campos</td><td>1999</td></tr>
+<tr><td>68</td><td>Sarah Breck</td><td>2009</td></tr>
+<tr><td>69</td><td>Scott Mason</td><td>2009</td></tr>
+<tr><td>70</td><td>Will Carlton</td><td>2014</td></tr>
+<tr><td>71</td><td>Amber Ripley</td><td>2009</td></tr>
+<tr><td>72</td><td>Arnaud Perga</td><td>2016</td></tr>
+<tr><td>73</td><td>Bryan Jordan</td><td>2012</td></tr>
+<tr><td>74</td><td>Christopher Desjardins</td><td>2002</td></tr>
+<tr><td>75</td><td>Dani Canziani</td><td>2009</td></tr>
+<tr><td>76</td><td>Eric Byers</td><td>2020</td></tr>
+<tr><td>77</td><td>Henriette Koefoed</td><td>2012</td></tr>
+<tr><td>78</td><td>Jb Brodie</td><td>2016</td></tr>
+<tr><td>79</td><td>Louise Bretz</td><td>2003</td></tr>
+<tr><td>80</td><td>Mark Eckstein</td><td>2004</td></tr>
+<tr><td>81</td><td>Melanie Wong Jennings</td><td>2009</td></tr>
+<tr><td>82</td><td>Michael Krause</td><td>2002</td></tr>
+<tr><td>83</td><td>Nancy Heaverlo</td><td>2002</td></tr>
+<tr><td>84</td><td>Olivia Luke</td><td>2010</td></tr>
+<tr><td>85</td><td>Renee Lipman</td><td>2019</td></tr>
+<tr><td>86</td><td>Richard Lundin</td><td>2003</td></tr>
+<tr><td>87</td><td>Ruth Cnaany</td><td>2006</td></tr>
+<tr><td>88</td><td>Steve Neeren</td><td>2009</td></tr>
+<tr><td>89</td><td>Bill Cameron</td><td>2008</td></tr>
+<tr><td>90</td><td>Brandon Gautreaux</td><td>2009</td></tr>
+<tr><td>91</td><td>Cassy Olson</td><td>2011</td></tr>
+<tr><td>92</td><td>Cher Peadon</td><td>2013</td></tr>
+<tr><td>93</td><td>David Simpson</td><td>2012</td></tr>
+<tr><td>94</td><td>Don Herron</td><td>2009</td></tr>
+<tr><td>95</td><td>Estelle Bonnaire</td><td>2019</td></tr>
+<tr><td>96</td><td>Fred Price</td><td>2009</td></tr>
+<tr><td>97</td><td>Hannah Clonch</td><td>2015</td></tr>
+<tr><td>98</td><td>Jeremy Bryan</td><td>2009</td></tr>
+<tr><td>99</td><td>Katie Berardino</td><td>2002</td></tr>
+<tr><td>100</td><td>Ken Roesel</td><td>2010</td></tr>
+<tr><td>101</td><td>Lee Easton</td><td>2016</td></tr>
+<tr><td>102</td><td>Lindy Greer</td><td>2003</td></tr>
+<tr><td>103</td><td>Mana Parisi</td><td>2009</td></tr>
+<tr><td>104</td><td>Mark Blume</td><td>2008</td></tr>
+<tr><td>105</td><td>Mike Topel</td><td>2012</td></tr>
+<tr><td>106</td><td>Nicki Silton</td><td>2015</td></tr>
+<tr><td>107</td><td>Pamela Podmoroff</td><td>2009</td></tr>
+<tr><td>108</td><td>Piotr Lenart</td><td>2019</td></tr>
+<tr><td>109</td><td>Rodger Taylor</td><td>2005</td></tr>
+<tr><td>110</td><td>Sonny Watson</td><td>2004</td></tr>
+<tr><td>111</td><td>Stan Jaquish</td><td>2003</td></tr>
+<tr><td>112</td><td>Tera Vitale</td><td>2009</td></tr>
+<tr><td>113</td><td>Tracey Melin</td><td>2010</td></tr>
+<tr><td>114</td><td>Wesley Boz</td><td>2003</td></tr>
+<tr><td>115</td><td>Aaron Lorenzen</td><td>2009</td></tr>
+<tr><td>116</td><td>Andy Reid</td><td>2002</td></tr>
+<tr><td>117</td><td>Bill Borgida</td><td>2002</td></tr>
+<tr><td>118</td><td>Caitlin George</td><td>2002</td></tr>
+<tr><td>119</td><td>Cameron Crook</td><td>2013</td></tr>
+<tr><td>120</td><td>Chelsea Loomis Spika</td><td>2010</td></tr>
+<tr><td>121</td><td>Dan Amores</td><td>2002</td></tr>
+<tr><td>122</td><td>Darian Barrett</td><td>2007</td></tr>
+<tr><td>123</td><td>Eddie Valdez</td><td>2011</td></tr>
+<tr><td>124</td><td>Giselle Anguizola</td><td>2002</td></tr>
+<tr><td>125</td><td>James Leyva</td><td>2012</td></tr>
+<tr><td>126</td><td>Jesse Dickson</td><td>2019</td></tr>
+<tr><td>127</td><td>Jesse Vos</td><td>2013</td></tr>
+<tr><td>128</td><td>Jo Thompson Szymanski</td><td>2002</td></tr>
+<tr><td>129</td><td>Joe Palmer</td><td>2002</td></tr>
+<tr><td>130</td><td>John Piper</td><td>2015</td></tr>
+<tr><td>131</td><td>John Snyder</td><td>2005</td></tr>
+<tr><td>132</td><td>Keith Gussoni</td><td>2008</td></tr>
+<tr><td>133</td><td>Laura Dabby</td><td>2002</td></tr>
+<tr><td>134</td><td>Lauren Adams</td><td>2009</td></tr>
+<tr><td>135</td><td>Lisa Austin</td><td>2002</td></tr>
+<tr><td>136</td><td>Maggie Moon</td><td>2002</td></tr>
+<tr><td>137</td><td>Michael Mandel</td><td>2008</td></tr>
+<tr><td>138</td><td>Mitchell From</td><td>2009</td></tr>
+<tr><td>139</td><td>Robin Coleman</td><td>2002</td></tr>
+<tr><td>140</td><td>Robin Smith</td><td>2010</td></tr>
+<tr><td>141</td><td>Sara Spence</td><td>2002</td></tr>
+<tr><td>142</td><td>Sheli Schroeder</td><td>2007</td></tr>
+<tr><td>143</td><td>Simone Cox</td><td>2002</td></tr>
+<tr><td>144</td><td>Tami Harris Krok</td><td>2002</td></tr>
+<tr><td>145</td><td>Trish Connery</td><td>2005</td></tr>
+<tr><td>146</td><td>Zena Knight</td><td>2011</td></tr></tbody>
             </table>
           </div>
         </details>
@@ -879,7 +889,7 @@
 <details class="risk-disclosure">
           <summary>Lista: 29 personas</summary>
           <div class="table-scroll">
-            <table class="risk-table">
+            <table class="risk-table status-only-table">
               <thead>
                 <tr><th>#</th><th>Bailarín</th><th>Estatus Desde</th></tr>
               </thead>
