@@ -288,7 +288,6 @@
     .risk-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 720px;
       font-size: 14px;
     }
     .risk-table th,
@@ -310,10 +309,6 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .03em;
-    }
-    .risk-table td:first-child,
-    .risk-table td:nth-child(n+3) {
-      white-space: nowrap;
     }
     .risk-table.status-table th:nth-child(3),
     .risk-table.status-table td:nth-child(3) {
@@ -458,7 +453,6 @@
         line-height: 1.35;
       }
       .risk-table {
-        min-width: 620px;
         font-size: 12px;
       }
       .risk-table th,
@@ -473,12 +467,11 @@
     @media (max-width: 560px) {
       .kpi { grid-template-columns: 1fr; }
       .risk-table {
-        min-width: 560px;
         font-size: 11px;
       }
       .risk-table th,
       .risk-table td {
-        padding: 7px 8px;
+        padding: 7px 6px;
       }
     }
   </style>
