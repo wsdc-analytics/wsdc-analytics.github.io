@@ -99,16 +99,25 @@
       padding: 0;
     }
     .header {
-      background:
-        linear-gradient(135deg, rgba(12, 20, 56, 0.82), rgba(18, 28, 72, 0.74)),
-        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, .42), transparent 34%),
-        radial-gradient(circle at 82% 80%, rgba(37, 99, 235, .34), transparent 32%),
-        url("article_3year_rule_header.png") center center / cover no-repeat,
-        var(--color-primary);
+      background: var(--color-primary) url("article_3year_rule_header.png") center center / cover no-repeat;
       color: #fff;
       padding: 100px 80px 80px;
       border-bottom: 1px solid var(--border-color);
       position: relative;
+      will-change: transform;
+      background-attachment: scroll;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-primary);
+      opacity: 0.5;
+      z-index: 0;
+    }
+    .header > * {
+      position: relative;
+      z-index: 1;
     }
     .back-link {
       color: #fff;
