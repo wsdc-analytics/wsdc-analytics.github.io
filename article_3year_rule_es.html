@@ -318,8 +318,13 @@
     .risk-table tr > th:nth-child(3):last-child,
     .risk-table tr > td:nth-child(3):last-child {
       text-align: left;
-      width: 96px;
+      width: 132px;
+      padding-left: clamp(14px, 5vw, 56px);
       padding-right: 12px;
+    }
+    .risk-table tr > th:nth-child(2):nth-last-child(2),
+    .risk-table tr > td:nth-child(2):nth-last-child(2) {
+      padding-right: 0;
     }
     .risk-table tr > th:first-child,
     .risk-table tr > td:first-child {
