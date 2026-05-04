@@ -315,16 +315,26 @@
       text-align: center;
     }
     /* Special handling for status-only 3-column table: # | Dancer | Status Since */
+    .risk-table.status-only-table {
+      table-layout: fixed;
+      width: 100%;
+    }
     .risk-table.status-only-table tr > th:nth-child(3):last-child,
     .risk-table.status-only-table tr > td:nth-child(3):last-child {
-      text-align: left;
-      width: 132px;
-      padding-left: clamp(14px, 5vw, 56px);
+      text-align: right;
+      width: 32%;
+      min-width: 11.75rem;
+      padding-left: 12px;
       padding-right: 12px;
+      white-space: nowrap;
+      vertical-align: middle;
     }
     .risk-table.status-only-table tr > th:nth-child(2):nth-last-child(2),
     .risk-table.status-only-table tr > td:nth-child(2):nth-last-child(2) {
-      padding-right: 0;
+      padding-right: 12px;
+      width: auto;
+      overflow-wrap: break-word;
+      word-break: normal;
     }
     .risk-table.status-only-table tr > th:first-child,
     .risk-table.status-only-table tr > td:first-child {
@@ -533,6 +543,11 @@
       .risk-table td:first-child,
       .risk-table td:nth-child(n+3) {
         font-size: 9px;
+      }
+      .risk-table.status-only-table tr > th:nth-child(3):last-child,
+      .risk-table.status-only-table tr > td:nth-child(3):last-child {
+        white-space: normal;
+        min-width: 0;
       }
     }
   </style>
