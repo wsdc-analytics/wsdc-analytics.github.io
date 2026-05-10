@@ -140,10 +140,11 @@
         }
         .search-help .info-tooltip {
             position: absolute;
-            left: 100%;
+            right: 100%;
+            left: auto;
             top: 50%;
             transform: translateY(-50%);
-            margin-left: 10px;
+            margin-right: 10px;
             min-height: 36px;
             display: flex;
             align-items: center;
@@ -165,6 +166,15 @@
         .search-help .info-icon:hover .info-tooltip {
             opacity: 1;
             visibility: visible;
+        }
+        @media (max-width: 900px) {
+            .search-help .info-tooltip {
+                right: 0;
+                top: calc(100% + 8px);
+                transform: none;
+                margin-right: 0;
+                width: min(300px, calc(100vw - 32px));
+            }
         }
         .header-search {
             flex: 1;
