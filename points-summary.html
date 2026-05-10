@@ -527,6 +527,14 @@
             padding-top: 8px;
             border-top: 1px solid var(--border-color);
         }
+        .search-suggestions-intro {
+            font-size: 12px;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            padding: 8px 10px 10px;
+            margin: -2px -2px 4px;
+            border-bottom: 1px solid var(--border-color);
+        }
         .search-suggestion-heading {
             font-size: 11px;
             font-weight: 600;
@@ -535,15 +543,6 @@
             color: var(--text-tertiary);
             padding: 6px 10px 4px;
             line-height: 1.35;
-        }
-        .search-suggestion-hint {
-            display: block;
-            font-size: 11px;
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 0;
-            color: var(--text-tertiary);
-            margin-top: 2px;
         }
         .search-suggestion {
             width: 100%;
@@ -589,11 +588,11 @@
             <div class="search-help">
                 <span class="info-icon" aria-label="Search help" role="img">
                     <span aria-hidden="true">i</span>
-                    <span class="info-tooltip"><strong>Quick tips:</strong> Open &quot;How search works&quot; below for full detail. In short: typing filters events by title, city, dates, or text in results; the dropdown combines dancer names, cities, and event titles — picking a <em>dancer</em> locks &quot;dancer mode&quot;; picking a city or event fills plain text search. Coverage: posted blocks from 02-11-2025 onward.</span>
+                    <span class="info-tooltip">You can search the same information shown on the cards: start typing an <strong>event name</strong>, a <strong>city</strong>, or a <strong>dancer</strong>. Matching suggestions appear in sections below — pick the row you need. Choosing a <strong>dancer</strong> narrows to that person’s events; choosing a <strong>city</strong> or <strong>event</strong> runs a normal text filter. Optional detail: &quot;How search works&quot;. Data from posted summaries starting <strong>02-11-2025</strong>.</span>
                 </span>
             </div>
             <div class="search-box">
-                <input type="search" class="search-input" id="search-input" placeholder="Type to filter, or pick from suggestions…" autocomplete="off" aria-label="Search: filter events by text, or choose a dancer, city, or event from suggestions" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
+                <input type="search" class="search-input" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
                 <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
             </div>
         </div>
@@ -628,7 +627,7 @@
                 <ul>
                     <li><strong>Plain text (type and press Enter or wait)</strong> — Keeps events whose card matches your text anywhere in: <strong>event title</strong>, <strong>city / location line</strong>, <strong>dates</strong>, or <strong>dancer names</strong> inside the posted results. Matching ignores upper/lower case and accents (e.g. <code>münchen</code> matches Munich).</li>
                     <li><strong>Dropdown — Dancers</strong> — After at least <strong>two characters</strong>, suggestions list dancer names with how many events they appear in. <strong>Choosing a dancer</strong> turns on <strong>dancer mode</strong>: only events where that person appears stay visible; inside an event, only divisions where they placed may show. Edit or clear the field to exit dancer mode.</li>
-                    <li><strong>Dropdown — Cities &amp; locations</strong> — Choosing a row fills the box with that location and applies the same <strong>plain text</strong> rules (not dancer mode). Useful when you do not remember the exact spelling of the event title.</li>
+                    <li><strong>Dropdown — Cities</strong> — Lists <strong>unique cities</strong> (first part of the location line, so variants like &quot;Stockholm, Sweden&quot; and &quot;Stockholm, … län, Sweden&quot; count as one city). Choosing a city fills the box and runs <strong>plain text</strong> search (not dancer mode).</li>
                     <li><strong>Dropdown — Events</strong> — Same as typing part of the event name: plain text filter over titles (and other fields above).</li>
                     <li><strong>Why two behaviours?</strong> — Substring search can match many dancers at once; dancer mode is for focusing on <strong>one</strong> person’s footprint across events.</li>
                     <li><strong>Coverage note:</strong> This page reflects posted summary blocks starting from <strong>02-11-2025</strong>; not every historical competition may appear.</li>
@@ -791,6 +790,11 @@
                 const placeDirectory = buildPlaceDirectory(summaries);
                 const eventDirectory = buildEventDirectory(summaries);
 
+                function formatEventCount(n) {
+                    const x = Math.max(0, Number(n) || 0);
+                    return `${x} ${x === 1 ? 'event' : 'events'}`;
+                }
+
                 function filterSuggestEntries(entries, q, limit) {
                     return entries
                         .filter(d => d.norm.includes(q))
@@ -817,28 +821,28 @@
                         searchInput.setAttribute('aria-expanded', 'false');
                         return;
                     }
-                    let html = '';
+                    let html = '<div class="search-suggestions-intro">Start typing an event name, city, or dancer — then choose a row in the matching section.</div>';
                     let idx = 0;
                     if (d.length) {
-                        html += '<div class="search-suggestion-group" role="group" aria-label="Dancers"><div class="search-suggestion-heading">Dancers<span class="search-suggestion-hint">Choose one for dancer-only mode (strict match)</span></div>';
+                        html += '<div class="search-suggestion-group" role="group" aria-label="Dancers"><div class="search-suggestion-heading">Dancers</div>';
                         d.forEach(item => {
-                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="dancer" data-label="${escapeAttr(item.name)}" data-norm="${escapeAttr(item.norm)}">${escapeHtml(item.name)} <span class="suggestion-meta">(${item.count} events)</span></button>`;
+                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="dancer" data-label="${escapeAttr(item.name)}" data-norm="${escapeAttr(item.norm)}">${escapeHtml(item.name)} <span class="suggestion-meta">(${formatEventCount(item.count)})</span></button>`;
                             idx += 1;
                         });
                         html += '</div>';
                     }
                     if (p.length) {
-                        html += '<div class="search-suggestion-group" role="group" aria-label="Cities and locations"><div class="search-suggestion-heading">Cities &amp; locations<span class="search-suggestion-hint">Fills text search — matches title, location, dates, or names in results</span></div>';
+                        html += '<div class="search-suggestion-group" role="group" aria-label="Cities"><div class="search-suggestion-heading">Cities</div>';
                         p.forEach(item => {
-                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="place" data-label="${escapeAttr(item.label)}">${escapeHtml(item.label)} <span class="suggestion-meta">(${item.count} events)</span></button>`;
+                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="place" data-label="${escapeAttr(item.label)}">${escapeHtml(item.label)} <span class="suggestion-meta">(${formatEventCount(item.count)})</span></button>`;
                             idx += 1;
                         });
                         html += '</div>';
                     }
                     if (ev.length) {
-                        html += '<div class="search-suggestion-group" role="group" aria-label="Events"><div class="search-suggestion-heading">Events<span class="search-suggestion-hint">Fills text search — same as typing part of the event name</span></div>';
+                        html += '<div class="search-suggestion-group" role="group" aria-label="Events"><div class="search-suggestion-heading">Events</div>';
                         ev.forEach(item => {
-                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="event" data-label="${escapeAttr(item.label)}">${escapeHtml(item.label)} <span class="suggestion-meta">(${item.count}×)</span></button>`;
+                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="event" data-label="${escapeAttr(item.label)}">${escapeHtml(item.label)} <span class="suggestion-meta">(${formatEventCount(item.count)})</span></button>`;
                             idx += 1;
                         });
                         html += '</div>';
@@ -1130,16 +1134,23 @@
             return Array.from(map.values());
         }
 
+        function extractCityLabel(location) {
+            const s = String(location || '').trim();
+            if (!s) return '';
+            const first = s.split(',')[0].trim();
+            return first || s;
+        }
+
         function buildPlaceDirectory(summaries) {
             const map = new Map();
             summaries.forEach(summary => {
                 (summary.events || []).forEach(ev => {
-                    const loc = (ev.location || '').trim();
-                    if (!loc) return;
-                    const norm = normalizeSearchText(loc);
+                    const label = extractCityLabel(ev.location);
+                    if (!label) return;
+                    const norm = normalizeSearchText(label);
                     if (!norm) return;
                     if (!map.has(norm)) {
-                        map.set(norm, { label: loc, norm, count: 0 });
+                        map.set(norm, { label, norm, count: 0 });
                     }
                     map.get(norm).count += 1;
                 });
