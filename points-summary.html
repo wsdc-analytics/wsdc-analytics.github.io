@@ -98,6 +98,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            overflow: visible;
             gap: 16px;
             flex-wrap: wrap;
         }
@@ -118,6 +119,8 @@
             align-items: center;
             margin-top: 8px;
             flex-shrink: 0;
+            position: relative;
+            overflow: visible;
         }
         .search-help .info-icon {
             display: inline-flex;
@@ -161,19 +164,22 @@
             visibility: hidden;
             pointer-events: none;
             transition: opacity var(--transition), visibility var(--transition);
-            z-index: 90;
+            z-index: 200;
         }
         .search-help .info-icon:hover .info-tooltip {
             opacity: 1;
             visibility: visible;
         }
-        @media (max-width: 900px) {
+        /* Narrow screens: anchor to the icon's left edge so the panel grows rightward (right:0 pinned the box off-screen). */
+        @media (max-width: 1024px) {
             .search-help .info-tooltip {
-                right: 0;
+                left: 0;
+                right: auto;
                 top: calc(100% + 8px);
                 transform: none;
                 margin-right: 0;
-                width: min(300px, calc(100vw - 32px));
+                width: min(300px, calc(100vw - 24px));
+                max-width: calc(100vw - 24px);
             }
         }
         .header-search {
@@ -184,6 +190,7 @@
             display: flex;
             align-items: flex-start;
             gap: 8px;
+            overflow: visible;
         }
         .search-box {
             position: relative;
