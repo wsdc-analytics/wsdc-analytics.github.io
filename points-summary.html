@@ -143,11 +143,10 @@
         }
         .search-help .info-tooltip {
             position: absolute;
-            right: 100%;
-            left: auto;
-            top: 50%;
-            transform: translateY(-50%);
-            margin-right: 10px;
+            left: 0;
+            right: auto;
+            top: calc(100% + 10px);
+            transform: none;
             min-height: 36px;
             display: flex;
             flex-direction: column;
@@ -161,7 +160,8 @@
             line-height: 1.45;
             border-radius: 6px;
             white-space: normal;
-            width: 280px;
+            width: min(300px, calc(100vw - 24px));
+            max-width: calc(100vw - 24px);
             box-shadow: var(--shadow-card);
             opacity: 0;
             visibility: hidden;
@@ -181,18 +181,6 @@
         .search-help .info-icon:hover .info-tooltip {
             opacity: 1;
             visibility: visible;
-        }
-        /* Narrow screens: anchor to the icon's left edge so the panel grows rightward (right:0 pinned the box off-screen). */
-        @media (max-width: 1024px) {
-            .search-help .info-tooltip {
-                left: 0;
-                right: auto;
-                top: calc(100% + 8px);
-                transform: none;
-                margin-right: 0;
-                width: min(300px, calc(100vw - 24px));
-                max-width: calc(100vw - 24px);
-            }
         }
         .header-search {
             flex: 1;
