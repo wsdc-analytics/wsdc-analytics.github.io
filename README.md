@@ -1,27 +1,38 @@
 # WSDC Analytics
 
-Data-driven insights and analysis on the West Coast Swing competitive scene.
+Data-driven insights about the West Coast Swing competitive scene, published as a static GitHub Pages website.
 
-## Articles
+## Production Site
 
-- **[WSDC 2025: Events (RU)](events_2025.html)** - Comprehensive analysis of top WSDC events in 2025
-- **[WSDC 2025: Events (EN)](events_2025_en.html)** - Comprehensive analysis of top WSDC events in 2025
-- **[WSDC 2025: Geography (RU)](geo_2025.html)** - Geographical analysis by countries, states, and cities
+- Main: `https://wsdc-analytics.github.io/`
+- Homepage source: `index.html`
+- Points summary source: `points-summary.html`
+
+## Repository Layout
+
+- Root `*.html` — published pages and language variants.
+- `static/data/` — site datasets (`articles.json`, `points_summaries.json`, etc).
+- `static/css/`, `static/js/` — reusable frontend assets.
+- `api/` — serverless handlers for feedback/reactions.
+- `scripts/` — data and support automation scripts.
+- `docs/` — operational and architectural guidance.
+
+## Support and Operations
+
+- Baseline audit: [docs/AUDIT_BASELINE_2026-05.md](docs/AUDIT_BASELINE_2026-05.md)
+- Support runbook: [docs/SUPPORT_RUNBOOK.md](docs/SUPPORT_RUNBOOK.md)
+- Multilingual maintenance: [docs/MULTILINGUAL_MAINTENANCE.md](docs/MULTILINGUAL_MAINTENANCE.md)
+- Mini design system: [docs/DESIGN_SYSTEM_MINI.md](docs/DESIGN_SYSTEM_MINI.md)
+- SEO template: [docs/SEO_TEMPLATE.md](docs/SEO_TEMPLATE.md)
+- Repository practices: [docs/REPO_PRACTICES.md](docs/REPO_PRACTICES.md)
+- Content map: [docs/CONTENT_MAP.md](docs/CONTENT_MAP.md)
+- Scripts usage: [scripts/README.md](scripts/README.md)
 
 ## Data Source
 
-All data is based on analysis of the World Swing Dance Council (WSDC) database.
-
-## Interactive Dashboard
-
-[WSDC KPI Dashboard](https://public.tableau.com/app/profile/denisbalakin/viz/WSDCnew/KPIsDashboard)
-
-## Repository Operations
-
-- Repository practices: [docs/REPO_PRACTICES.md](docs/REPO_PRACTICES.md)
-- Content and reuse map: [docs/CONTENT_MAP.md](docs/CONTENT_MAP.md)
+Primary source is the WSDC registry data and derived analysis datasets maintained in this repository.
 
 ## License
 
-Content and analysis © 2025. Data sourced from WSDC Database.
+Content and analysis © 2025-2026. Data sourced from WSDC database and public WSDC resources.
 

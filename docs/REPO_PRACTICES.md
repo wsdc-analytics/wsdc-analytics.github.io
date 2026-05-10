@@ -26,6 +26,13 @@ Do not keep in Git:
 - Avoid committing local temporary intermediates.
 - If a dataset grows toward GitHub limits, split old snapshots to external storage/release artifacts and keep only the active baseline in this repository.
 
+## Script Hygiene
+
+- Prefer `scripts/pipeline/` for deterministic transformations.
+- Use `scripts/maintenance/` for operational sync/update jobs.
+- Keep one-off or deprecated scripts in `scripts/archive/`.
+- Avoid hardcoded absolute paths in scripts; derive paths from repository root.
+
 ## Branch and Commit Policy
 
 - `main` remains deployable.
@@ -34,3 +41,8 @@ Do not keep in Git:
   - `git status` reviewed,
   - only intended files staged,
   - no accidental mass deletions.
+
+## Operational References
+
+- Baseline audit: `docs/AUDIT_BASELINE_2026-05.md`
+- Support runbook: `docs/SUPPORT_RUNBOOK.md`

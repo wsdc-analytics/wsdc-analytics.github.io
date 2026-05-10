@@ -1,5 +1,11 @@
 # Scripts
 
+## Structure
+
+- `scripts/pipeline/` — deterministic scripts used in repeatable data generation.
+- `scripts/maintenance/` — operational helpers for updates/sync tasks.
+- `scripts/archive/` — historical one-off scripts not used in release flow.
+
 ## sync_telegraph_to_site.py
 
 Syncs event data (bracket numbers `[N]` and markers 🟡/🟢) from Telegraph "Full Info" pages into `static/data/points_summaries.json`.
@@ -41,4 +47,13 @@ Commit and push the updated JSON to the site:
 git add static/data/points_summaries.json
 git commit -m "Points summary: sync brackets and markers from Telegraph (N events)"
 git push
+```
+
+## Mandatory pre-release checks
+
+Run from repo root before push:
+
+```bash
+python3 scripts/validate_site_data.py
+python3 scripts/smoke_check_site_files.py
 ```

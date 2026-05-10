@@ -47,6 +47,7 @@
     <link rel="preconnect" href="https://www.worldsdc.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="stylesheet" href="static/css/tokens.css">
     <link rel="preload" href="static/data/articles.json" as="fetch" crossorigin>
     
     <!-- Google tag (gtag.js) -->
@@ -224,7 +225,7 @@
             border-radius: 0;
             font-size: 14px;
             font-weight: 500;
-            color: #888B92;
+            color: #4b5563;
             cursor: pointer;
             transition: color 0.2s ease, transform 0.2s ease;
             font-family: inherit;
@@ -239,10 +240,11 @@
         }
 
         .language-switcher button.active {
-            color: #212529;
-            border-bottom: 2px solid #212529;
-            padding-bottom: 2px;
-            transform: translateY(-1px);
+            color: #ffffff;
+            background: var(--color-primary-dark);
+            border-radius: 999px;
+            padding: 6px 10px;
+            transform: none;
         }
 
         @media (max-width: 768px) {
@@ -588,7 +590,9 @@
             }
 
             .top-bar-search {
-                display: none;
+                display: block;
+                flex: 1;
+                max-width: none;
             }
 
             .mobile-summary-btn {
@@ -771,7 +775,7 @@
                             <span aria-hidden="true">i</span>
                             <span class="info-tooltip" id="pointsSummaryTooltip">Points awarded by event</span>
                         </span>
-                        <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn">Summary Points</a>
+                        <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtn" aria-label="Open summary points page">Summary Points</a>
                     </nav>
                 </div>
                 <div class="top-bar-right">
@@ -805,7 +809,7 @@
                     <span aria-hidden="true">i</span>
                     <span class="info-tooltip" id="pointsSummaryTooltipMobile">Points awarded by event</span>
                 </span>
-                <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtnMobile">Summary Points</a>
+                <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtnMobile" aria-label="Open summary points page">Summary Points</a>
             </div>
         </div>
     </div>
@@ -859,33 +863,29 @@
         const articlesGrid = document.getElementById('articlesGrid');
         const langButtons = document.querySelectorAll('.lang-btn');
 
-        // Определение языка: URL параметр > localStorage > браузер > RU по умолчанию
+        // Определение языка: localStorage > браузер > EN по умолчанию
         function getCurrentLanguage() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlLang = urlParams.get('lang');
-            if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
-                return urlLang;
-            }
-            
             const storedLang = localStorage.getItem('wsdc-lang');
             if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) {
                 return storedLang;
             }
             
-            const browserLang = navigator.language || navigator.userLanguage;
-            if (browserLang.startsWith('ru')) return 'ru';
-            if (browserLang.startsWith('en')) return 'en';
-            if (browserLang.startsWith('es')) return 'es';
+            const browserLangs = Array.isArray(navigator.languages) && navigator.languages.length
+                ? navigator.languages
+                : [navigator.language || navigator.userLanguage || 'en'];
+            for (const langRaw of browserLangs) {
+                const lang = (langRaw || '').toLowerCase();
+                if (lang.startsWith('ru')) return 'ru';
+                if (lang.startsWith('es')) return 'es';
+                if (lang.startsWith('en')) return 'en';
+            }
             
-            return 'ru'; // По умолчанию
+            return 'en'; // По умолчанию
         }
 
         // Сохранение выбора языка
         function setLanguage(lang) {
             localStorage.setItem('wsdc-lang', lang);
-            const url = new URL(window.location);
-            url.searchParams.set('lang', lang);
-            window.history.replaceState({}, '', url);
             updateLanguage(lang);
         }
 
@@ -943,7 +943,7 @@
                 };
                 dashboardsTooltip.textContent = tooltips[lang] || tooltips.en;
             }
-            const ptsHref = 'points-summary.html' + (lang && lang !== 'en' ? '?lang=' + lang : '');
+            const ptsHref = 'points-summary.html';
             document.querySelectorAll('#pointsSummaryBtn, #pointsSummaryBtnMobile').forEach(el => {
                 if (el) el.href = ptsHref;
             });
@@ -958,7 +958,7 @@
             });
             document.querySelectorAll('[data-dash-href]').forEach(a => {
                 const base = a.dataset.dashHref || a.getAttribute('href');
-                a.href = base.includes('?') ? base.replace(/\?.*/, '') + '?lang=' + lang : base + '?lang=' + lang;
+                a.href = base.includes('?') ? base.replace(/\?.*/, '') : base;
             });
 
             // Фильтрация и отображение статей
@@ -1021,7 +1021,7 @@
                     : (article.category || '');
                 
                 html += `
-                    <a href="${article.url}?lang=${lang}" class="article-card" role="listitem" aria-label="Читать статью: ${article.title}">
+                    <a href="${article.url}" class="article-card" role="listitem" aria-label="Читать статью: ${article.title}">
                         <div class="meta">${metaText}</div>
                         <h2>${article.title}</h2>
                         <p>${article.description}</p>
@@ -1114,7 +1114,7 @@
             let html = `<div class="search-results-header" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">${countText[currentLang] || countText.en}</div>`;
             results.forEach(article => {
                 html += `
-                    <a href="${article.url}?lang=${currentLang}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;" role="article">
+                    <a href="${article.url}" class="search-result-item" style="text-decoration: none; color: inherit; display: block;" role="article">
                         <h3>${article.title}</h3>
                         <p>${article.description}</p>
                     </a>

@@ -34,6 +34,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="stylesheet" href="static/css/tokens.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
     <!-- Google tag (gtag.js) -->
@@ -75,6 +76,20 @@
             color: var(--text-primary);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+        }
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            background: #111827;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            z-index: 1000;
+        }
+        .skip-link:focus {
+            left: 12px;
+            top: 12px;
         }
         .header {
             background: var(--bg-primary);
@@ -406,6 +421,7 @@
     </style>
 </head>
 <body>
+    <a href="#catalog" class="skip-link">Skip to points catalog</a>
     <header class="header">
         <div class="header-left">
             <a href="index.html" class="back-link">&larr; Back to home</a>
@@ -413,7 +429,7 @@
             <span class="header-section-badge">Summary Points</span>
         </div>
         <div class="header-search">
-            <input type="search" class="search-input" id="search-input" placeholder="Search by event name or city..." autocomplete="off">
+            <input type="search" class="search-input" id="search-input" placeholder="Search by event name or city..." autocomplete="off" aria-label="Search events by name or city">
         </div>
     </header>
 
@@ -421,11 +437,11 @@
         <h1>WSDC Points Summary</h1>
         <p class="subtitle">Registry points awarded by event, division, and placement — not full competition results.</p>
         <div class="how-to-read" id="how-to-read">
-            <div class="how-to-read-header">
+            <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-read-body">
                 <span>How to read this page</span>
                 <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
-            <div class="how-to-read-body collapsed">
+            <div class="how-to-read-body collapsed" id="how-to-read-body">
                 <ul>
                     <li>This shows <strong>points awarded</strong> to dancers, not full event results.</li>
                     <li><strong>Events</strong> are grouped by the date results were posted.</li>
@@ -438,7 +454,7 @@
             </div>
         </div>
         <p class="search-no-results" id="search-no-results">No events match your search.</p>
-        <main id="catalog"></main>
+        <main id="catalog" aria-live="polite"></main>
     </div>
 
     <script>
@@ -448,11 +464,22 @@
             window.history.scrollRestoration = 'manual';
         }
 
-        document.getElementById('how-to-read')?.addEventListener('click', function(e) {
-            if (e.target.closest('.how-to-read-header')) {
-                const body = this.querySelector('.how-to-read-body');
-                body.classList.toggle('collapsed');
-                this.classList.toggle('expanded', !body.classList.contains('collapsed'));
+        const howToReadEl = document.getElementById('how-to-read');
+        function toggleHowToRead() {
+            const body = howToReadEl.querySelector('.how-to-read-body');
+            const header = howToReadEl.querySelector('.how-to-read-header');
+            body.classList.toggle('collapsed');
+            const expanded = !body.classList.contains('collapsed');
+            howToReadEl.classList.toggle('expanded', expanded);
+            header.setAttribute('aria-expanded', String(expanded));
+        }
+        howToReadEl?.addEventListener('click', function(e) {
+            if (e.target.closest('.how-to-read-header')) toggleHowToRead();
+        });
+        howToReadEl?.querySelector('.how-to-read-header')?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleHowToRead();
             }
         });
 

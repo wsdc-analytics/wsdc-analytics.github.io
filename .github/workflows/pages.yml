@@ -22,6 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate site data
+        run: python3 scripts/validate_site_data.py
+
+      - name: Smoke check critical pages
+        run: python3 scripts/smoke_check_site_files.py
+
       - name: Upload artifact (static site)
         uses: actions/upload-pages-artifact@v3
         with:
