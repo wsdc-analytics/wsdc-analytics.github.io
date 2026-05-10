@@ -566,9 +566,12 @@
 
             .top-bar {
                 padding: 12px 16px;
-                flex-wrap: wrap;
-                align-items: stretch;
-                min-height: 56px;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                align-items: center;
+                column-gap: 10px;
+                row-gap: 10px;
+                min-height: 0;
             }
 
             .top-bar-left,
@@ -577,21 +580,27 @@
                 align-items: center;
             }
 
-            /* Stack search + language row so all locale buttons stay visible */
+            /* One row: logo (left) + language (right); search spans full width below */
             .top-bar-right {
-                flex: 1 1 100%;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
+                display: contents;
+            }
+
+            .top-bar-left {
+                grid-column: 1;
+                grid-row: 1;
                 min-width: 0;
             }
 
             .language-switcher {
-                width: 100%;
-                justify-content: center;
+                grid-column: 2;
+                grid-row: 1;
+                justify-self: end;
+                align-self: center;
+                width: auto;
                 margin-bottom: 0;
-                gap: 10px;
-                flex-wrap: wrap;
+                gap: 8px;
+                flex-wrap: nowrap;
+                justify-content: flex-end;
             }
 
             .top-bar-separator {
@@ -608,7 +617,8 @@
 
             .top-bar-search {
                 display: block;
-                flex: 1 1 auto;
+                grid-column: 1 / -1;
+                grid-row: 2;
                 width: 100%;
                 max-width: none;
                 min-width: 0;
@@ -642,7 +652,12 @@
             }
 
             .container {
-                padding: 140px 24px 60px;
+                /* Fixed header + Summary row; avoid overlap with h1 (do not override in a second 768px block) */
+                padding: 152px 24px 60px;
+            }
+
+            header {
+                margin-top: 28px;
             }
 
             .article-card h2 {
@@ -746,10 +761,6 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 100px 24px 60px;
-            }
-
             h1 {
                 font-size: 36px;
             }
