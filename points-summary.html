@@ -475,6 +475,12 @@
             cursor: pointer;
         }
         .clear-filter-btn:hover { color: var(--text-primary); border-color: #cbd5e1; }
+        mark.dancer-highlight {
+            background: #fff3a3;
+            color: inherit;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -612,6 +618,8 @@
                     if ((events[0].name || '').trim() === 'Swing Crush') return false;
                     return true;
                 });
+                // Hide known duplicate summary block by date.
+                summaries = summaries.filter(s => (s.post_date || '').replace(/\s/g, '') !== '15-04-2026');
 
                 // If there are multiple summaries for the same date, keep only the fullest one.
                 // This protects against transient duplicates (e.g. 4 events vs 5 events for one post_date).
@@ -661,6 +669,7 @@
                 const clearFilterBtn = document.getElementById('clear-filter-btn');
                 const dancerDirectory = buildDancerDirectory(summaries);
                 let activeDancerNorm = '';
+                let activeDancerLabel = '';
 
                 function renderSuggestions(items) {
                     if (!items.length) {
@@ -679,6 +688,7 @@
 
                 function clearDancerFilter(resetInput) {
                     activeDancerNorm = '';
+                    activeDancerLabel = '';
                     activeFilterTextEl.textContent = '';
                     activeFilterEl.classList.remove('visible');
                     if (resetInput) searchInput.value = '';
@@ -686,6 +696,7 @@
 
                 function setDancerFilter(name, norm) {
                     activeDancerNorm = norm;
+                    activeDancerLabel = name;
                     activeFilterTextEl.textContent = `Dancer mode: ${name}`;
                     activeFilterEl.classList.add('visible');
                     searchInput.value = name;
@@ -728,6 +739,7 @@
                         });
                     });
                     if ((q || activeDancerNorm) && !anyVisible) noResults.classList.add('visible');
+                    updateDancerHighlights();
                 }
 
                 function updateSuggestions() {
@@ -781,6 +793,8 @@
                         searchInput.setAttribute('aria-expanded', 'false');
                     }
                 });
+
+                initPlaceContentCache();
             })
             .catch(() => {
                 catalog.innerHTML = '<div class="error">Could not load data. Open the page through a web server.</div>';
@@ -1020,6 +1034,75 @@
                 .replace(/"/g, '&quot;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
+        }
+
+        function initPlaceContentCache() {
+            document.querySelectorAll('.place-content').forEach(el => {
+                if (!el.hasAttribute('data-original-html')) {
+                    el.setAttribute('data-original-html', el.innerHTML);
+                }
+            });
+        }
+
+        function restorePlaceContentHtml() {
+            document.querySelectorAll('.place-content').forEach(el => {
+                const original = el.getAttribute('data-original-html');
+                if (original !== null) {
+                    el.innerHTML = original;
+                }
+            });
+        }
+
+        function escapeRegExp(str) {
+            return String(str || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function highlightTextNodes(root, query) {
+            if (!root || !query) return;
+            const regex = new RegExp(escapeRegExp(query), 'gi');
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+            const nodes = [];
+            let node = walker.nextNode();
+            while (node) {
+                if (node.nodeValue && node.nodeValue.trim()) {
+                    nodes.push(node);
+                }
+                node = walker.nextNode();
+            }
+
+            nodes.forEach(textNode => {
+                const text = textNode.nodeValue;
+                regex.lastIndex = 0;
+                if (!regex.test(text)) return;
+                const frag = document.createDocumentFragment();
+                let lastIdx = 0;
+                text.replace(regex, (match, offset) => {
+                    if (offset > lastIdx) {
+                        frag.appendChild(document.createTextNode(text.slice(lastIdx, offset)));
+                    }
+                    const mark = document.createElement('mark');
+                    mark.className = 'dancer-highlight';
+                    mark.textContent = match;
+                    frag.appendChild(mark);
+                    lastIdx = offset + match.length;
+                    return match;
+                });
+                if (lastIdx < text.length) {
+                    frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+                }
+                textNode.parentNode.replaceChild(frag, textNode);
+            });
+        }
+
+        function updateDancerHighlights() {
+            restorePlaceContentHtml();
+            if (!activeDancerNorm || !activeDancerLabel) return;
+            document.querySelectorAll('.event-card').forEach(card => {
+                if (card.style.display === 'none') return;
+                card.querySelectorAll('.place-content').forEach(el => {
+                    highlightTextNodes(el, activeDancerLabel);
+                });
+            });
         }
     </script>
 </body>
