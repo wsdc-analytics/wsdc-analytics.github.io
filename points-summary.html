@@ -243,6 +243,10 @@
         }
         .event-card:hover { box-shadow: var(--shadow-card-hover); border-color: #cbd5e1; }
         .event-card.expanded { border-color: #cbd5e1; box-shadow: var(--shadow-card-hover); }
+        .event-card.matched-dancer {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18), var(--shadow-card);
+        }
         .event-card { scroll-margin-top: 20px; }
         .event-header {
             padding: 18px 22px;
@@ -264,6 +268,23 @@
         .event-card.expanded .event-header .chevron { transform: rotate(180deg); color: var(--color-accent); }
         .event-name { font-weight: 600; font-size: 17px; letter-spacing: -0.01em; }
         .event-meta { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+        .event-match-badge {
+            display: none;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #92400e;
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 999px;
+            padding: 2px 8px;
+            width: fit-content;
+        }
+        .event-card.matched-dancer .event-match-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
         .event-body {
             padding: 0 22px 24px;
             border-top: 1px solid var(--border-color);
@@ -1012,6 +1033,7 @@
                         <div>
                             <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>
                             <div class="event-meta">${escapeHtml(ev.location)} &middot; ${escapeHtml(ev.dates)}</div>
+                            <div class="event-match-badge">Dancer match</div>
                         </div>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
@@ -1046,6 +1068,12 @@
 
         function restorePlaceContentHtml() {
             document.querySelectorAll('.place-content').forEach(el => {
+                const original = el.getAttribute('data-original-html');
+                if (original !== null) {
+                    el.innerHTML = original;
+                }
+            });
+            document.querySelectorAll('.event-name').forEach(el => {
                 const original = el.getAttribute('data-original-html');
                 if (original !== null) {
                     el.innerHTML = original;
@@ -1096,9 +1124,18 @@
 
         function updateDancerHighlights() {
             restorePlaceContentHtml();
+            document.querySelectorAll('.event-card').forEach(card => card.classList.remove('matched-dancer'));
             if (!activeDancerNorm || !activeDancerLabel) return;
             document.querySelectorAll('.event-card').forEach(card => {
                 if (card.style.display === 'none') return;
+                card.classList.add('matched-dancer');
+                const headerName = card.querySelector('.event-name');
+                if (headerName) {
+                    const original = headerName.getAttribute('data-original-html') || headerName.innerHTML;
+                    headerName.setAttribute('data-original-html', original);
+                    headerName.innerHTML = original;
+                    highlightTextNodes(headerName, activeDancerLabel);
+                }
                 card.querySelectorAll('.place-content').forEach(el => {
                     highlightTextNodes(el, activeDancerLabel);
                 });
