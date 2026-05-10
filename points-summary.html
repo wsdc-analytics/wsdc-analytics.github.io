@@ -113,6 +113,58 @@
             color: var(--text-secondary);
             background: var(--bg-primary);
         }
+        .search-help {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 2px;
+        }
+        .search-help .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            color: var(--text-tertiary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: help;
+            position: relative;
+            background: var(--bg-primary);
+        }
+        .search-help .info-icon:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+        .search-help .info-tooltip {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 10px;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--color-primary);
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.4;
+            border-radius: 6px;
+            white-space: normal;
+            width: 280px;
+            box-shadow: var(--shadow-card);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition), visibility var(--transition);
+            z-index: 90;
+        }
+        .search-help .info-icon:hover .info-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
         .header-search {
             flex: 1;
             min-width: 180px;
@@ -440,11 +492,6 @@
         }
         .search-no-results { display: none; color: var(--text-secondary); padding: 24px 0; margin: 0; }
         .search-no-results.visible { display: block; }
-        .search-hint {
-            margin-top: 8px;
-            font-size: 12px;
-            color: var(--text-tertiary);
-        }
         .search-suggestions {
             position: absolute;
             top: calc(100% + 6px);
@@ -477,30 +524,13 @@
             background: var(--bg-tertiary);
             outline: none;
         }
-        .search-active-filter {
-            display: none;
-            margin-top: 8px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            align-items: center;
-            gap: 8px;
-        }
-        .search-active-filter.visible { display: flex; }
-        .clear-filter-btn {
-            border: 1px solid var(--border-color);
-            border-radius: 999px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-size: 12px;
-            padding: 4px 10px;
-            cursor: pointer;
-        }
-        .clear-filter-btn:hover { color: var(--text-primary); border-color: #cbd5e1; }
         mark.dancer-highlight {
-            background: #fff3a3;
-            color: inherit;
-            padding: 0 2px;
+            background: #fde047;
+            color: #111827;
+            padding: 1px 3px;
             border-radius: 3px;
+            font-weight: 700;
+            box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.45);
         }
     </style>
 </head>
@@ -511,15 +541,16 @@
             <a href="index.html" class="back-link">&larr; Back to home</a>
             <span class="header-separator" aria-hidden="true">|</span>
             <span class="header-section-badge">Summary Points</span>
+            <div class="search-help">
+                <span class="info-icon" aria-label="Search help" role="img">
+                    <span aria-hidden="true">i</span>
+                    <span class="info-tooltip">Type event/city for quick filtering. For dancer mode, type a dancer name and choose one suggestion to keep only events where this dancer appears.</span>
+                </span>
+            </div>
         </div>
         <div class="header-search">
             <input type="search" class="search-input" id="search-input" placeholder="Search by event, city, or dancer..." autocomplete="off" aria-label="Search events by event name, city, or dancer" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="search-suggestions">
             <div class="search-suggestions" id="search-suggestions" role="listbox" aria-label="Dancer suggestions"></div>
-            <div class="search-active-filter" id="search-active-filter">
-                <span id="search-active-filter-text"></span>
-                <button type="button" class="clear-filter-btn" id="clear-filter-btn">Clear</button>
-            </div>
-            <div class="search-hint">Tip: type a dancer name and choose a suggestion for dancer mode.</div>
         </div>
     </header>
 
@@ -549,6 +580,8 @@
 
     <script>
         const catalog = document.getElementById('catalog');
+        let activeDancerNorm = '';
+        let activeDancerLabel = '';
         catalog.innerHTML = '<div class="loading">Loading...</div>';
         if (window.location.hash && window.history.scrollRestoration) {
             window.history.scrollRestoration = 'manual';
@@ -685,12 +718,7 @@
                 const searchInput = document.getElementById('search-input');
                 const noResults = document.getElementById('search-no-results');
                 const suggestionsEl = document.getElementById('search-suggestions');
-                const activeFilterEl = document.getElementById('search-active-filter');
-                const activeFilterTextEl = document.getElementById('search-active-filter-text');
-                const clearFilterBtn = document.getElementById('clear-filter-btn');
                 const dancerDirectory = buildDancerDirectory(summaries);
-                let activeDancerNorm = '';
-                let activeDancerLabel = '';
 
                 function renderSuggestions(items) {
                     if (!items.length) {
@@ -710,16 +738,12 @@
                 function clearDancerFilter(resetInput) {
                     activeDancerNorm = '';
                     activeDancerLabel = '';
-                    activeFilterTextEl.textContent = '';
-                    activeFilterEl.classList.remove('visible');
                     if (resetInput) searchInput.value = '';
                 }
 
                 function setDancerFilter(name, norm) {
                     activeDancerNorm = norm;
                     activeDancerLabel = name;
-                    activeFilterTextEl.textContent = `Dancer mode: ${name}`;
-                    activeFilterEl.classList.add('visible');
                     searchInput.value = name;
                     suggestionsEl.classList.remove('visible');
                     searchInput.setAttribute('aria-expanded', 'false');
@@ -799,12 +823,6 @@
                     const btn = e.target.closest('.search-suggestion');
                     if (!btn) return;
                     setDancerFilter(btn.getAttribute('data-name') || '', btn.getAttribute('data-norm') || '');
-                    applySearch();
-                });
-
-                clearFilterBtn.addEventListener('click', () => {
-                    clearDancerFilter(true);
-                    updateSuggestions();
                     applySearch();
                 });
 
