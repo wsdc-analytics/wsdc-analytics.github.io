@@ -662,18 +662,6 @@
                     seenKeys.add(key);
                     return true;
                 });
-                // Remove erroneous summary: 01-03-2026 (or 1-03-2026) with only Swing Crush (duplicate of 22-02-2026)
-                summaries = summaries.filter(s => {
-                    const pd = (s.post_date || '').replace(/\s/g, '');
-                    if (pd !== '01-03-2026' && pd !== '1-03-2026') return true;
-                    const events = s.events || [];
-                    if (events.length !== 1) return true;
-                    if ((events[0].name || '').trim() === 'Swing Crush') return false;
-                    return true;
-                });
-                // Hide known duplicate summary block by date.
-                summaries = summaries.filter(s => (s.post_date || '').replace(/\s/g, '') !== '15-04-2026');
-
                 // If there are multiple summaries for the same date, keep only the fullest one.
                 // This protects against transient duplicates (e.g. 4 events vs 5 events for one post_date).
                 const bestByDate = new Map();
