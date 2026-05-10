@@ -118,6 +118,7 @@
             min-width: 180px;
             max-width: 280px;
             margin-left: auto;
+            position: relative;
         }
         .back-link {
             color: var(--color-accent);
@@ -418,6 +419,62 @@
         }
         .search-no-results { display: none; color: var(--text-secondary); padding: 24px 0; margin: 0; }
         .search-no-results.visible { display: block; }
+        .search-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-card);
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 40;
+            display: none;
+            padding: 6px;
+        }
+        .search-suggestions.visible { display: block; }
+        .search-suggestion {
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .search-suggestion:hover,
+        .search-suggestion:focus {
+            background: var(--bg-tertiary);
+            outline: none;
+        }
+        .search-active-filter {
+            display: none;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            align-items: center;
+            gap: 8px;
+        }
+        .search-active-filter.visible { display: flex; }
+        .clear-filter-btn {
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 4px 10px;
+            cursor: pointer;
+        }
+        .clear-filter-btn:hover { color: var(--text-primary); border-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -429,7 +486,13 @@
             <span class="header-section-badge">Summary Points</span>
         </div>
         <div class="header-search">
-            <input type="search" class="search-input" id="search-input" placeholder="Search by event name or city..." autocomplete="off" aria-label="Search events by name or city">
+            <input type="search" class="search-input" id="search-input" placeholder="Search by event, city, or dancer..." autocomplete="off" aria-label="Search events by event name, city, or dancer" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="search-suggestions">
+            <div class="search-suggestions" id="search-suggestions" role="listbox" aria-label="Dancer suggestions"></div>
+            <div class="search-active-filter" id="search-active-filter">
+                <span id="search-active-filter-text"></span>
+                <button type="button" class="clear-filter-btn" id="clear-filter-btn">Clear</button>
+            </div>
+            <div class="search-hint">Tip: type a dancer name and choose a suggestion for dancer mode.</div>
         </div>
     </header>
 
@@ -592,22 +655,61 @@
 
                 const searchInput = document.getElementById('search-input');
                 const noResults = document.getElementById('search-no-results');
+                const suggestionsEl = document.getElementById('search-suggestions');
+                const activeFilterEl = document.getElementById('search-active-filter');
+                const activeFilterTextEl = document.getElementById('search-active-filter-text');
+                const clearFilterBtn = document.getElementById('clear-filter-btn');
+                const dancerDirectory = buildDancerDirectory(summaries);
+                let activeDancerNorm = '';
+
+                function renderSuggestions(items) {
+                    if (!items.length) {
+                        suggestionsEl.innerHTML = '';
+                        suggestionsEl.classList.remove('visible');
+                        searchInput.setAttribute('aria-expanded', 'false');
+                        return;
+                    }
+
+                    suggestionsEl.innerHTML = items.map((item, idx) => (
+                        `<button type="button" class="search-suggestion" role="option" id="search-suggestion-${idx}" data-name="${escapeAttr(item.name)}" data-norm="${escapeAttr(item.norm)}">${escapeHtml(item.name)} <span style="color: var(--text-tertiary);">(${item.count} events)</span></button>`
+                    )).join('');
+                    suggestionsEl.classList.add('visible');
+                    searchInput.setAttribute('aria-expanded', 'true');
+                }
+
+                function clearDancerFilter(resetInput) {
+                    activeDancerNorm = '';
+                    activeFilterTextEl.textContent = '';
+                    activeFilterEl.classList.remove('visible');
+                    if (resetInput) searchInput.value = '';
+                }
+
+                function setDancerFilter(name, norm) {
+                    activeDancerNorm = norm;
+                    activeFilterTextEl.textContent = `Dancer mode: ${name}`;
+                    activeFilterEl.classList.add('visible');
+                    searchInput.value = name;
+                    suggestionsEl.classList.remove('visible');
+                    searchInput.setAttribute('aria-expanded', 'false');
+                }
+
                 function applySearch() {
-                    const q = searchInput.value.trim().toLowerCase();
+                    const q = normalizeSearchText(searchInput.value.trim());
                     noResults.classList.remove('visible');
                     let anyVisible = false;
                     document.querySelectorAll('.year-section').forEach(sec => {
                         let yearHasVisible = false;
                         sec.querySelectorAll('.event-card').forEach(card => {
-                            const nameEl = card.querySelector('.event-name');
-                            const metaEl = card.querySelector('.event-meta');
-                            const text = ((nameEl?.textContent || '') + ' ' + (metaEl?.textContent || '')).toLowerCase();
-                            const match = !q || text.includes(q);
+                            const text = card.getAttribute('data-search-text') || '';
+                            const dancers = card.getAttribute('data-dancers') || '';
+                            const match = activeDancerNorm
+                                ? dancers.includes(`|${activeDancerNorm}|`)
+                                : (!q || text.includes(q));
                             card.style.display = match ? '' : 'none';
                             if (match) { anyVisible = true; yearHasVisible = true; }
                         });
                         sec.style.display = yearHasVisible ? '' : 'none';
-                        if (yearHasVisible && q) {
+                        if (yearHasVisible && (q || activeDancerNorm)) {
                             sec.classList.add('expanded');
                             const yearBody = sec.querySelector('.year-body');
                             if (yearBody) yearBody.classList.remove('collapsed');
@@ -625,9 +727,60 @@
                             dateEl.style.display = hasVisible ? '' : 'none';
                         });
                     });
-                    if (q && !anyVisible) noResults.classList.add('visible');
+                    if ((q || activeDancerNorm) && !anyVisible) noResults.classList.add('visible');
                 }
-                searchInput.addEventListener('input', applySearch);
+
+                function updateSuggestions() {
+                    if (activeDancerNorm) {
+                        renderSuggestions([]);
+                        return;
+                    }
+                    const q = normalizeSearchText(searchInput.value.trim());
+                    if (q.length < 2) {
+                        renderSuggestions([]);
+                        return;
+                    }
+                    const items = dancerDirectory
+                        .filter(d => d.norm.includes(q))
+                        .sort((a, b) => {
+                            const aStarts = a.norm.startsWith(q) ? 0 : 1;
+                            const bStarts = b.norm.startsWith(q) ? 0 : 1;
+                            if (aStarts !== bStarts) return aStarts - bStarts;
+                            if (b.count !== a.count) return b.count - a.count;
+                            return a.name.localeCompare(b.name);
+                        })
+                        .slice(0, 10);
+                    renderSuggestions(items);
+                }
+
+                searchInput.addEventListener('input', () => {
+                    const typed = normalizeSearchText(searchInput.value.trim());
+                    if (activeDancerNorm && typed !== activeDancerNorm) {
+                        clearDancerFilter(false);
+                    }
+                    updateSuggestions();
+                    applySearch();
+                });
+
+                suggestionsEl.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.search-suggestion');
+                    if (!btn) return;
+                    setDancerFilter(btn.getAttribute('data-name') || '', btn.getAttribute('data-norm') || '');
+                    applySearch();
+                });
+
+                clearFilterBtn.addEventListener('click', () => {
+                    clearDancerFilter(true);
+                    updateSuggestions();
+                    applySearch();
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.header-search')) {
+                        suggestionsEl.classList.remove('visible');
+                        searchInput.setAttribute('aria-expanded', 'false');
+                    }
+                });
             })
             .catch(() => {
                 catalog.innerHTML = '<div class="error">Could not load data. Open the page through a web server.</div>';
@@ -743,8 +896,74 @@
         function placeRow(medal, label, content) {
             return `<div class="place-row"><span class="place-medal">${medal}</span><span class="place-label">${label}</span><span class="place-content">${content}</span></div>`;
         }
+        function normalizeSearchText(value) {
+            return String(value || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function collectEventParticipants(ev) {
+            const names = [];
+            (ev.divisions || []).forEach(d => {
+                (d.places || []).forEach(p => {
+                    if (p.leader) names.push(cleanDancerName(p.leader));
+                    if (p.follower) names.push(cleanDancerName(p.follower));
+                    (p.leaders || []).forEach(name => names.push(cleanDancerName(name)));
+                    (p.followers || []).forEach(name => names.push(cleanDancerName(name)));
+                });
+            });
+            return names.filter(Boolean);
+        }
+
+        function cleanDancerName(name) {
+            return String(name || '')
+                .replace(/\(\+\d+\)\s*\[\d+\]/g, '')
+                .replace(/\(\+\d+\)/g, '')
+                .replace(/\[\d+\]/g, '')
+                .replace(/\u{1F7E1}|\u{1F7E2}/gu, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function buildEventSearchText(ev) {
+            const participants = collectEventParticipants(ev).join(' ');
+            const base = [
+                ev.name || '',
+                ev.location || '',
+                ev.dates || '',
+                participants
+            ].join(' ');
+            return normalizeSearchText(base);
+        }
+
+        function buildEventDancerTokens(ev) {
+            const unique = Array.from(new Set(collectEventParticipants(ev).map(normalizeSearchText).filter(Boolean)));
+            return `|${unique.join('|')}|`;
+        }
+
+        function buildDancerDirectory(summaries) {
+            const map = new Map();
+            summaries.forEach(summary => {
+                (summary.events || []).forEach(ev => {
+                    const unique = Array.from(new Set(collectEventParticipants(ev)));
+                    unique.forEach(name => {
+                        const norm = normalizeSearchText(name);
+                        if (!norm) return;
+                        if (!map.has(norm)) {
+                            map.set(norm, { name, norm, count: 0 });
+                        }
+                        map.get(norm).count += 1;
+                    });
+                });
+            });
+            return Array.from(map.values());
+        }
+
         function renderEvent(ev, postDate) {
             const slug = ev.slug || makeEventSlug(ev.name, postDate);
+            const searchText = buildEventSearchText(ev);
+            const dancerTokens = buildEventDancerTokens(ev);
             let divs = '';
             (ev.divisions || []).forEach(d => {
                 let placesHtml = '';
@@ -774,7 +993,7 @@
                 divs += `<div class="division-block ${divClass(d.division)}"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
             });
             return `
-                <div class="event-card" id="event-${slug || ''}">
+                <div class="event-card" id="event-${slug || ''}" data-search-text="${escapeAttr(searchText)}" data-dancers="${escapeAttr(dancerTokens)}">
                     <div class="event-header">
                         <div>
                             <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>
@@ -793,6 +1012,14 @@
             const div = document.createElement('div');
             div.textContent = s;
             return div.innerHTML;
+        }
+
+        function escapeAttr(s) {
+            return String(s || '')
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
         }
     </script>
 </body>
