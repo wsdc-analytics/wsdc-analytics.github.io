@@ -772,6 +772,7 @@
                     });
                     if ((q || activeDancerNorm) && !anyVisible) noResults.classList.add('visible');
                     updateDancerHighlights();
+                    updateDivisionVisibilityForDancerMode();
                 }
 
                 function updateSuggestions() {
@@ -1140,6 +1141,27 @@
                 }
                 card.querySelectorAll('.place-content').forEach(el => {
                     highlightTextNodes(el, activeDancerLabel);
+                });
+            });
+        }
+
+        function updateDivisionVisibilityForDancerMode() {
+            const cards = document.querySelectorAll('.event-card');
+            cards.forEach(card => {
+                const blocks = card.querySelectorAll('.division-block');
+                if (!activeDancerNorm) {
+                    blocks.forEach(block => {
+                        block.style.display = '';
+                    });
+                    return;
+                }
+
+                blocks.forEach(block => {
+                    const hasMatch = Array.from(block.querySelectorAll('.place-content')).some(el => {
+                        const text = normalizeSearchText(el.textContent || '');
+                        return text.includes(activeDancerNorm);
+                    });
+                    block.style.display = hasMatch ? '' : 'none';
                 });
             });
         }
