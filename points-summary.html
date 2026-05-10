@@ -1131,6 +1131,72 @@
             return Array.from(map.values());
         }
 
+        /** Last comma-separated segment when it repeats the flag country (keep city/region only). */
+        const FLAG_COUNTRY_LAST_PART = {
+            '🇩🇪': ['germany', 'deutschland'],
+            '🇺🇸': ['united states', 'usa', 'us'],
+            '🇫🇮': ['finland'],
+            '🇪🇸': ['spain'],
+            '🇸🇪': ['sweden'],
+            '🇬🇧': ['united kingdom', 'uk', 'great britain'],
+            '🇷🇺': ['russia'],
+            '🇸🇮': ['slovenia'],
+            '🇨🇦': ['canada'],
+            '🇸🇬': ['singapore'],
+            '🇮🇹': ['italy'],
+            '🇫🇷': ['france'],
+            '🇰🇷': ['south korea', 'korea'],
+            '🇵🇱': ['poland'],
+            '🇳🇱': ['netherlands', 'holland'],
+            '🇭🇺': ['hungary'],
+            '🇦🇺': ['australia'],
+            '🇳🇿': ['new zealand'],
+            '🇨🇿': ['czech republic', 'czechia'],
+            '🇨🇭': ['switzerland'],
+            '🇮🇪': ['ireland'],
+            '🇵🇹': ['portugal'],
+            '🇦🇹': ['austria'],
+            '🇧🇪': ['belgium'],
+            '🇩🇰': ['denmark'],
+            '🇳🇴': ['norway'],
+            '🇷🇴': ['romania'],
+            '🇺🇦': ['ukraine'],
+            '🇯🇵': ['japan'],
+            '🇲🇽': ['mexico'],
+            '🇧🇷': ['brazil'],
+            '🇦🇷': ['argentina'],
+            '🇿🇦': ['south africa']
+        };
+
+        function formatDisplayLocation(location, flag) {
+            let loc = String(location || '').trim();
+            if (!loc) return loc;
+            const aliases = flag ? FLAG_COUNTRY_LAST_PART[flag] : null;
+            if (aliases && aliases.length && loc.includes(',')) {
+                const parts = loc.split(',').map(p => p.trim()).filter(Boolean);
+                if (parts.length >= 2) {
+                    const lastRaw = parts[parts.length - 1].replace(/\.\s*$/, '').trim();
+                    const lastNorm = normalizeSearchText(lastRaw);
+                    const drop = aliases.some(a => normalizeSearchText(a) === lastNorm || lastRaw.toLowerCase() === a);
+                    if (drop) {
+                        loc = parts.slice(0, -1).join(', ');
+                    }
+                }
+            }
+            return loc.replace(/\.\s*$/, '').trim();
+        }
+
+        /** Drop trailing ", YYYY" when the range references a single calendar year (search JSON still uses full dates). */
+        function simplifyEventDatesDisplay(datesStr) {
+            const s = String(datesStr || '').trim();
+            if (!s) return s;
+            const years = s.match(/\b(19|20)\d{2}\b/g);
+            if (!years || years.length === 0) return s;
+            const unique = new Set(years);
+            if (unique.size > 1) return s;
+            return s.replace(/,\s*\d{4}\s*$/, '').trim();
+        }
+
         function renderEvent(ev, postDate) {
             const slug = ev.slug || makeEventSlug(ev.name, postDate);
             const searchText = buildEventSearchText(ev);
@@ -1163,12 +1229,14 @@
                 });
                 divs += `<div class="division-block ${divClass(d.division)}"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
             });
+            const displayLocation = formatDisplayLocation(ev.location, ev.flag);
+            const displayDates = simplifyEventDatesDisplay(ev.dates);
             return `
                 <div class="event-card" id="event-${slug || ''}" data-search-text="${escapeAttr(searchText)}" data-dancers="${escapeAttr(dancerTokens)}">
                     <div class="event-header">
                         <div>
                             <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>
-                            <div class="event-meta">${escapeHtml(ev.location)} &middot; ${escapeHtml(ev.dates)}</div>
+                            <div class="event-meta">${escapeHtml(displayLocation)} &middot; ${escapeHtml(displayDates)}</div>
                         </div>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
