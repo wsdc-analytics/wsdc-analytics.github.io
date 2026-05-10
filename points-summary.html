@@ -264,6 +264,13 @@
         .how-to-read-body li {
             margin-bottom: 6px;
         }
+        .how-to-read-body code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.92em;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
         .summary-date {
             font-size: 13px;
             font-weight: 600;
@@ -505,13 +512,39 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-card);
-            max-height: 260px;
+            max-height: min(360px, 52vh);
             overflow-y: auto;
             z-index: 40;
             display: none;
             padding: 6px;
         }
         .search-suggestions.visible { display: block; }
+        .search-suggestion-group {
+            padding: 2px 0;
+        }
+        .search-suggestion-group + .search-suggestion-group {
+            margin-top: 6px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+        }
+        .search-suggestion-heading {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            padding: 6px 10px 4px;
+            line-height: 1.35;
+        }
+        .search-suggestion-hint {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
         .search-suggestion {
             width: 100%;
             text-align: left;
@@ -522,11 +555,17 @@
             border-radius: 6px;
             font-size: 13px;
             cursor: pointer;
+            line-height: 1.35;
         }
         .search-suggestion:hover,
         .search-suggestion:focus {
             background: var(--bg-tertiary);
             outline: none;
+        }
+        .search-suggestion .suggestion-meta {
+            color: var(--text-tertiary);
+            font-size: 12px;
+            font-weight: 400;
         }
         mark.dancer-highlight {
             background: #fde047;
@@ -550,12 +589,12 @@
             <div class="search-help">
                 <span class="info-icon" aria-label="Search help" role="img">
                     <span aria-hidden="true">i</span>
-                    <span class="info-tooltip">Type event/city for quick filtering. For dancer mode, type a dancer name and choose one suggestion to keep only events where this dancer appears. Note: this summary currently includes posted event blocks starting from 02-11-2025.</span>
+                    <span class="info-tooltip"><strong>Quick tips:</strong> Open &quot;How search works&quot; below for full detail. In short: typing filters events by title, city, dates, or text in results; the dropdown combines dancer names, cities, and event titles — picking a <em>dancer</em> locks &quot;dancer mode&quot;; picking a city or event fills plain text search. Coverage: posted blocks from 02-11-2025 onward.</span>
                 </span>
             </div>
             <div class="search-box">
-                <input type="search" class="search-input" id="search-input" placeholder="Search by event, city, or dancer..." autocomplete="off" aria-label="Search events by event name, city, or dancer" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="search-suggestions">
-                <div class="search-suggestions" id="search-suggestions" role="listbox" aria-label="Dancer suggestions"></div>
+                <input type="search" class="search-input" id="search-input" placeholder="Type to filter, or pick from suggestions…" autocomplete="off" aria-label="Search: filter events by text, or choose a dancer, city, or event from suggestions" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
+                <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
             </div>
         </div>
     </header>
@@ -577,6 +616,22 @@
                     <li><strong>[N]</strong> — total points in that division after this event.</li>
                     <li><span class="legend-pill legend-pill-yellow"></span> — reached ALLOWED threshold (dancer can now compete in the next division).</li>
                     <li><span class="legend-pill legend-pill-green"></span> — reached REQUIRED threshold (dancer must now compete in the next division) or earned first points in Intermediate/Advanced/All-Stars.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="how-to-read how-to-search" id="how-to-search">
+            <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-search-body">
+                <span>How search works</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="how-to-read-body collapsed" id="how-to-search-body">
+                <ul>
+                    <li><strong>Plain text (type and press Enter or wait)</strong> — Keeps events whose card matches your text anywhere in: <strong>event title</strong>, <strong>city / location line</strong>, <strong>dates</strong>, or <strong>dancer names</strong> inside the posted results. Matching ignores upper/lower case and accents (e.g. <code>münchen</code> matches Munich).</li>
+                    <li><strong>Dropdown — Dancers</strong> — After at least <strong>two characters</strong>, suggestions list dancer names with how many events they appear in. <strong>Choosing a dancer</strong> turns on <strong>dancer mode</strong>: only events where that person appears stay visible; inside an event, only divisions where they placed may show. Edit or clear the field to exit dancer mode.</li>
+                    <li><strong>Dropdown — Cities &amp; locations</strong> — Choosing a row fills the box with that location and applies the same <strong>plain text</strong> rules (not dancer mode). Useful when you do not remember the exact spelling of the event title.</li>
+                    <li><strong>Dropdown — Events</strong> — Same as typing part of the event name: plain text filter over titles (and other fields above).</li>
+                    <li><strong>Why two behaviours?</strong> — Substring search can match many dancers at once; dancer mode is for focusing on <strong>one</strong> person’s footprint across events.</li>
+                    <li><strong>Coverage note:</strong> This page reflects posted summary blocks starting from <strong>02-11-2025</strong>; not every historical competition may appear.</li>
                 </ul>
             </div>
         </div>
@@ -609,6 +664,26 @@
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 toggleHowToRead();
+            }
+        });
+
+        const howToSearchEl = document.getElementById('how-to-search');
+        function toggleHowToSearch() {
+            if (!howToSearchEl) return;
+            const body = howToSearchEl.querySelector('.how-to-read-body');
+            const header = howToSearchEl.querySelector('.how-to-read-header');
+            body.classList.toggle('collapsed');
+            const expanded = !body.classList.contains('collapsed');
+            howToSearchEl.classList.toggle('expanded', expanded);
+            header.setAttribute('aria-expanded', String(expanded));
+        }
+        howToSearchEl?.addEventListener('click', function(e) {
+            if (e.target.closest('.how-to-read-header')) toggleHowToSearch();
+        });
+        howToSearchEl?.querySelector('.how-to-read-header')?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleHowToSearch();
             }
         });
 
@@ -713,18 +788,62 @@
                 const noResults = document.getElementById('search-no-results');
                 const suggestionsEl = document.getElementById('search-suggestions');
                 const dancerDirectory = buildDancerDirectory(summaries);
+                const placeDirectory = buildPlaceDirectory(summaries);
+                const eventDirectory = buildEventDirectory(summaries);
 
-                function renderSuggestions(items) {
-                    if (!items.length) {
+                function filterSuggestEntries(entries, q, limit) {
+                    return entries
+                        .filter(d => d.norm.includes(q))
+                        .sort((a, b) => {
+                            const aStarts = a.norm.startsWith(q) ? 0 : 1;
+                            const bStarts = b.norm.startsWith(q) ? 0 : 1;
+                            if (aStarts !== bStarts) return aStarts - bStarts;
+                            if (b.count !== a.count) return b.count - a.count;
+                            const al = a.label != null ? a.label : a.name;
+                            const bl = b.label != null ? b.label : b.name;
+                            return String(al).localeCompare(String(bl));
+                        })
+                        .slice(0, limit);
+                }
+
+                function renderSuggestionGroups(groups) {
+                    const d = groups.dancers || [];
+                    const p = groups.places || [];
+                    const ev = groups.events || [];
+                    const has = d.length + p.length + ev.length;
+                    if (!has) {
                         suggestionsEl.innerHTML = '';
                         suggestionsEl.classList.remove('visible');
                         searchInput.setAttribute('aria-expanded', 'false');
                         return;
                     }
-
-                    suggestionsEl.innerHTML = items.map((item, idx) => (
-                        `<button type="button" class="search-suggestion" role="option" id="search-suggestion-${idx}" data-name="${escapeAttr(item.name)}" data-norm="${escapeAttr(item.norm)}">${escapeHtml(item.name)} <span style="color: var(--text-tertiary);">(${item.count} events)</span></button>`
-                    )).join('');
+                    let html = '';
+                    let idx = 0;
+                    if (d.length) {
+                        html += '<div class="search-suggestion-group" role="group" aria-label="Dancers"><div class="search-suggestion-heading">Dancers<span class="search-suggestion-hint">Choose one for dancer-only mode (strict match)</span></div>';
+                        d.forEach(item => {
+                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="dancer" data-label="${escapeAttr(item.name)}" data-norm="${escapeAttr(item.norm)}">${escapeHtml(item.name)} <span class="suggestion-meta">(${item.count} events)</span></button>`;
+                            idx += 1;
+                        });
+                        html += '</div>';
+                    }
+                    if (p.length) {
+                        html += '<div class="search-suggestion-group" role="group" aria-label="Cities and locations"><div class="search-suggestion-heading">Cities &amp; locations<span class="search-suggestion-hint">Fills text search — matches title, location, dates, or names in results</span></div>';
+                        p.forEach(item => {
+                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="place" data-label="${escapeAttr(item.label)}">${escapeHtml(item.label)} <span class="suggestion-meta">(${item.count} events)</span></button>`;
+                            idx += 1;
+                        });
+                        html += '</div>';
+                    }
+                    if (ev.length) {
+                        html += '<div class="search-suggestion-group" role="group" aria-label="Events"><div class="search-suggestion-heading">Events<span class="search-suggestion-hint">Fills text search — same as typing part of the event name</span></div>';
+                        ev.forEach(item => {
+                            html += `<button type="button" class="search-suggestion" id="search-suggestion-${idx}" data-type="event" data-label="${escapeAttr(item.label)}">${escapeHtml(item.label)} <span class="suggestion-meta">(${item.count}×)</span></button>`;
+                            idx += 1;
+                        });
+                        html += '</div>';
+                    }
+                    suggestionsEl.innerHTML = html;
                     suggestionsEl.classList.add('visible');
                     searchInput.setAttribute('aria-expanded', 'true');
                 }
@@ -784,25 +903,19 @@
 
                 function updateSuggestions() {
                     if (activeDancerNorm) {
-                        renderSuggestions([]);
+                        renderSuggestionGroups({ dancers: [], places: [], events: [] });
                         return;
                     }
                     const q = normalizeSearchText(searchInput.value.trim());
                     if (q.length < 2) {
-                        renderSuggestions([]);
+                        renderSuggestionGroups({ dancers: [], places: [], events: [] });
                         return;
                     }
-                    const items = dancerDirectory
-                        .filter(d => d.norm.includes(q))
-                        .sort((a, b) => {
-                            const aStarts = a.norm.startsWith(q) ? 0 : 1;
-                            const bStarts = b.norm.startsWith(q) ? 0 : 1;
-                            if (aStarts !== bStarts) return aStarts - bStarts;
-                            if (b.count !== a.count) return b.count - a.count;
-                            return a.name.localeCompare(b.name);
-                        })
-                        .slice(0, 10);
-                    renderSuggestions(items);
+                    renderSuggestionGroups({
+                        dancers: filterSuggestEntries(dancerDirectory, q, 8),
+                        places: filterSuggestEntries(placeDirectory, q, 6),
+                        events: filterSuggestEntries(eventDirectory, q, 6)
+                    });
                 }
 
                 searchInput.addEventListener('input', () => {
@@ -817,7 +930,16 @@
                 suggestionsEl.addEventListener('click', (e) => {
                     const btn = e.target.closest('.search-suggestion');
                     if (!btn) return;
-                    setDancerFilter(btn.getAttribute('data-name') || '', btn.getAttribute('data-norm') || '');
+                    const type = btn.getAttribute('data-type') || 'dancer';
+                    const label = btn.getAttribute('data-label') || '';
+                    if (type === 'dancer') {
+                        setDancerFilter(label, btn.getAttribute('data-norm') || '');
+                    } else {
+                        clearDancerFilter(false);
+                        searchInput.value = label;
+                        suggestionsEl.classList.remove('visible');
+                        searchInput.setAttribute('aria-expanded', 'false');
+                    }
                     applySearch();
                 });
 
@@ -1003,6 +1125,40 @@
                         }
                         map.get(norm).count += 1;
                     });
+                });
+            });
+            return Array.from(map.values());
+        }
+
+        function buildPlaceDirectory(summaries) {
+            const map = new Map();
+            summaries.forEach(summary => {
+                (summary.events || []).forEach(ev => {
+                    const loc = (ev.location || '').trim();
+                    if (!loc) return;
+                    const norm = normalizeSearchText(loc);
+                    if (!norm) return;
+                    if (!map.has(norm)) {
+                        map.set(norm, { label: loc, norm, count: 0 });
+                    }
+                    map.get(norm).count += 1;
+                });
+            });
+            return Array.from(map.values());
+        }
+
+        function buildEventDirectory(summaries) {
+            const map = new Map();
+            summaries.forEach(summary => {
+                (summary.events || []).forEach(ev => {
+                    const raw = (ev.name || '').trim();
+                    if (!raw) return;
+                    const norm = normalizeSearchText(raw);
+                    if (!norm) return;
+                    if (!map.has(norm)) {
+                        map.set(norm, { label: raw, norm, count: 0 });
+                    }
+                    map.get(norm).count += 1;
                 });
             });
             return Array.from(map.values());
