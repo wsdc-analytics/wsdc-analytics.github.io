@@ -150,12 +150,15 @@
             margin-right: 10px;
             min-height: 36px;
             display: flex;
-            align-items: center;
-            padding: 8px 12px;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            padding: 10px 12px;
             background: var(--color-primary);
             color: #fff;
             font-size: 12px;
-            line-height: 1.4;
+            line-height: 1.45;
             border-radius: 6px;
             white-space: normal;
             width: 280px;
@@ -165,6 +168,15 @@
             pointer-events: none;
             transition: opacity var(--transition), visibility var(--transition);
             z-index: 200;
+        }
+        .search-help .info-tooltip-note {
+            display: block;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.28);
+            font-size: 11px;
+            line-height: 1.4;
+            opacity: 0.96;
         }
         .search-help .info-icon:hover .info-tooltip {
             opacity: 1;
@@ -527,14 +539,6 @@
             padding-top: 8px;
             border-top: 1px solid var(--border-color);
         }
-        .search-suggestions-intro {
-            font-size: 12px;
-            line-height: 1.45;
-            color: var(--text-secondary);
-            padding: 8px 10px 10px;
-            margin: -2px -2px 4px;
-            border-bottom: 1px solid var(--border-color);
-        }
         .search-suggestion-heading {
             font-size: 11px;
             font-weight: 600;
@@ -586,9 +590,9 @@
         </div>
         <div class="header-search">
             <div class="search-help">
-                <span class="info-icon" aria-label="Search help" role="img">
+                <span class="info-icon" aria-label="Brief search instructions (hover or focus to read)" role="img">
                     <span aria-hidden="true">i</span>
-                    <span class="info-tooltip">You can search the same information shown on the cards: start typing an <strong>event name</strong>, a <strong>city</strong>, or a <strong>dancer</strong>. Matching suggestions appear in sections below — pick the row you need. Choosing a <strong>dancer</strong> narrows to that person’s events; choosing a <strong>city</strong> or <strong>event</strong> runs a normal text filter. Optional detail: &quot;How search works&quot;. Data from posted summaries starting <strong>02-11-2025</strong>.</span>
+                    <span class="info-tooltip"><span class="info-tooltip-main">Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</span><span class="info-tooltip-note"><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</span></span>
                 </span>
             </div>
             <div class="search-box">
@@ -615,22 +619,6 @@
                     <li><strong>[N]</strong> — total points in that division after this event.</li>
                     <li><span class="legend-pill legend-pill-yellow"></span> — reached ALLOWED threshold (dancer can now compete in the next division).</li>
                     <li><span class="legend-pill legend-pill-green"></span> — reached REQUIRED threshold (dancer must now compete in the next division) or earned first points in Intermediate/Advanced/All-Stars.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="how-to-read how-to-search" id="how-to-search">
-            <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-search-body">
-                <span>How search works</span>
-                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-            <div class="how-to-read-body collapsed" id="how-to-search-body">
-                <ul>
-                    <li><strong>Plain text (type and press Enter or wait)</strong> — Keeps events whose card matches your text anywhere in: <strong>event title</strong>, <strong>city / location line</strong>, <strong>dates</strong>, or <strong>dancer names</strong> inside the posted results. Matching ignores upper/lower case and accents (e.g. <code>münchen</code> matches Munich).</li>
-                    <li><strong>Dropdown — Dancers</strong> — After at least <strong>two characters</strong>, suggestions list dancer names with how many events they appear in. <strong>Choosing a dancer</strong> turns on <strong>dancer mode</strong>: only events where that person appears stay visible; inside an event, only divisions where they placed may show. Edit or clear the field to exit dancer mode.</li>
-                    <li><strong>Dropdown — Cities</strong> — Lists <strong>unique cities</strong> (first part of the location line, so variants like &quot;Stockholm, Sweden&quot; and &quot;Stockholm, … län, Sweden&quot; count as one city). Choosing a city fills the box and runs <strong>plain text</strong> search (not dancer mode).</li>
-                    <li><strong>Dropdown — Events</strong> — Same as typing part of the event name: plain text filter over titles (and other fields above).</li>
-                    <li><strong>Why two behaviours?</strong> — Substring search can match many dancers at once; dancer mode is for focusing on <strong>one</strong> person’s footprint across events.</li>
-                    <li><strong>Coverage note:</strong> This page reflects posted summary blocks starting from <strong>02-11-2025</strong>; not every historical competition may appear.</li>
                 </ul>
             </div>
         </div>
@@ -663,26 +651,6 @@
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 toggleHowToRead();
-            }
-        });
-
-        const howToSearchEl = document.getElementById('how-to-search');
-        function toggleHowToSearch() {
-            if (!howToSearchEl) return;
-            const body = howToSearchEl.querySelector('.how-to-read-body');
-            const header = howToSearchEl.querySelector('.how-to-read-header');
-            body.classList.toggle('collapsed');
-            const expanded = !body.classList.contains('collapsed');
-            howToSearchEl.classList.toggle('expanded', expanded);
-            header.setAttribute('aria-expanded', String(expanded));
-        }
-        howToSearchEl?.addEventListener('click', function(e) {
-            if (e.target.closest('.how-to-read-header')) toggleHowToSearch();
-        });
-        howToSearchEl?.querySelector('.how-to-read-header')?.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleHowToSearch();
             }
         });
 
@@ -821,7 +789,7 @@
                         searchInput.setAttribute('aria-expanded', 'false');
                         return;
                     }
-                    let html = '<div class="search-suggestions-intro">Start typing an event name, city, or dancer — then choose a row in the matching section.</div>';
+                    let html = '';
                     let idx = 0;
                     if (d.length) {
                         html += '<div class="search-suggestion-group" role="group" aria-label="Dancers"><div class="search-suggestion-heading">Dancers</div>';
