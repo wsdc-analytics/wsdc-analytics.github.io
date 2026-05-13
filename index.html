@@ -716,6 +716,50 @@
             line-height: 1.6;
         }
 
+        .contact-card {
+            margin-top: 48px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: var(--shadow-soft);
+            padding: 24px;
+            text-align: left;
+        }
+
+        .contact-card h2 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.4px;
+        }
+
+        .contact-card p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .contact-email-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 14px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: background var(--transition-base), border-color var(--transition-base);
+        }
+
+        .contact-email-link:hover {
+            background: var(--bg-primary);
+            border-color: var(--color-primary);
+        }
+
 
         footer {
             margin-top: 80px;
@@ -772,6 +816,11 @@
             .articles-grid {
                 grid-template-columns: 1fr;
                 gap: 24px;
+            }
+
+            .contact-card {
+                margin-top: 32px;
+                padding: 18px;
             }
         }
     </style>
@@ -866,6 +915,11 @@
                 <!-- Статьи загружаются динамически через JavaScript -->
             </div>
         </main>
+        <section class="contact-card" aria-labelledby="contactTitle">
+            <h2 id="contactTitle">Contact</h2>
+            <p id="contactDescription">Questions, corrections, collaboration ideas, or data suggestions are welcome.</p>
+            <a class="contact-email-link" id="contactEmailLink" href="mailto:analytics.wsdc@gmail.com">analytics.wsdc@gmail.com</a>
+        </section>
 
     </div>
 
@@ -962,6 +1016,32 @@
             const subtitleElement = document.getElementById('subtitle');
             if (subtitleElement) {
                 subtitleElement.textContent = subtitles[lang] || subtitles.en;
+            }
+
+            const contactTitle = document.getElementById('contactTitle');
+            const contactDescription = document.getElementById('contactDescription');
+            const contactEmailLink = document.getElementById('contactEmailLink');
+            const contactCopy = {
+                ru: {
+                    title: 'Контакты',
+                    description: 'Если есть вопросы, уточнения по данным или идеи для новых материалов — напишите мне на почту.'
+                },
+                en: {
+                    title: 'Contact',
+                    description: 'For questions, data corrections, or collaboration ideas, feel free to send me an email.'
+                },
+                es: {
+                    title: 'Contacto',
+                    description: 'Si tienes preguntas, correcciones de datos o ideas de colaboración, escríbeme por correo.'
+                }
+            };
+            const contact = contactCopy[lang] || contactCopy.en;
+            if (contactTitle) contactTitle.textContent = contact.title;
+            if (contactDescription) contactDescription.textContent = contact.description;
+            if (contactEmailLink) {
+                contactEmailLink.href = 'mailto:analytics.wsdc@gmail.com';
+                contactEmailLink.textContent = 'analytics.wsdc@gmail.com';
+                contactEmailLink.setAttribute('aria-label', `Email: analytics.wsdc@gmail.com`);
             }
 
             // Кнопка Dashboards и tooltip
