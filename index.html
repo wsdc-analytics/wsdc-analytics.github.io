@@ -147,6 +147,11 @@
             position: relative;
         }
 
+        /* Wide viewports: no extra box; children participate in parent layout (see MDN display:contents). ≤768px: one row under the navbar. */
+        .mobile-top-extras {
+            display: contents;
+        }
+
         .top-bar {
             background: var(--bg-primary);
             border-radius: 12px;
@@ -741,11 +746,23 @@
                 min-width: 0;
             }
 
+            .mobile-top-extras {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                gap: 10px;
+                min-width: 0;
+            }
+
             .mobile-summary-btn {
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                justify-content: flex-start;
                 gap: 8px;
+                flex: 1;
+                min-width: 0;
             }
 
             .mobile-summary-btn .info-icon {
@@ -753,8 +770,9 @@
             }
 
             .mobile-summary-btn .nav-link-btn {
-                flex: 1;
-                max-width: 200px;
+                flex: 0 1 auto;
+                min-width: 0;
+                max-width: none;
             }
 
             /* Tooltip to the right of the icon overflows off-screen; open below instead */
@@ -768,9 +786,9 @@
                 max-width: min(320px, calc(100vw - 32px));
             }
 
-            .contact-nav {
+            .mobile-top-extras .contact-nav {
                 position: static;
-                align-self: flex-end;
+                flex-shrink: 0;
             }
 
             .contact-nav .contact-tooltip {
@@ -979,22 +997,24 @@
                     </div>
                 </div>
             </nav>
-            <div class="contact-nav" id="contactNav">
-                <button type="button" class="contact-btn" id="contactBtn" aria-label="Contacts" aria-expanded="false" aria-haspopup="true" aria-controls="contactMenu">
-                    <svg width="40" height="26" viewBox="0 0 48 32" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="43" height="27" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3.5 7L24 20L44.5 7" stroke="currentColor" stroke-width="2"/></svg>
-                    <span class="contact-tooltip" id="contactTooltipText">Contacts</span>
-                </button>
-                <ul class="contact-menu" id="contactMenu" role="menu">
-                    <li role="none"><a id="contactEmailItem" href="mailto:analytics.wsdc@gmail.com" role="menuitem">Send email</a></li>
-                    <li role="none"><a id="contactFacebookItem" href="https://www.facebook.com/share/1EUJKjHCER/" target="_blank" rel="noopener noreferrer" role="menuitem">Message on Facebook</a></li>
-                </ul>
-            </div>
-            <div class="mobile-summary-btn">
-                <span class="info-icon" role="img" aria-label="Information">
-                    <span aria-hidden="true">i</span>
-                    <span class="info-tooltip" id="pointsSummaryTooltipMobile">Points awarded by event</span>
-                </span>
-                <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtnMobile" aria-label="Open summary points page">Summary Points</a>
+            <div class="mobile-top-extras">
+                <div class="mobile-summary-btn">
+                    <span class="info-icon" role="img" aria-label="Information">
+                        <span aria-hidden="true">i</span>
+                        <span class="info-tooltip" id="pointsSummaryTooltipMobile">Points awarded by event</span>
+                    </span>
+                    <a href="points-summary.html" class="nav-link-btn" id="pointsSummaryBtnMobile" aria-label="Open summary points page">Summary Points</a>
+                </div>
+                <div class="contact-nav" id="contactNav">
+                    <button type="button" class="contact-btn" id="contactBtn" aria-label="Contacts" aria-expanded="false" aria-haspopup="true" aria-controls="contactMenu">
+                        <svg width="40" height="26" viewBox="0 0 48 32" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="43" height="27" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3.5 7L24 20L44.5 7" stroke="currentColor" stroke-width="2"/></svg>
+                        <span class="contact-tooltip" id="contactTooltipText">Contacts</span>
+                    </button>
+                    <ul class="contact-menu" id="contactMenu" role="menu">
+                        <li role="none"><a id="contactEmailItem" href="mailto:analytics.wsdc@gmail.com" role="menuitem">Send email</a></li>
+                        <li role="none"><a id="contactFacebookItem" href="https://www.facebook.com/share/1EUJKjHCER/" target="_blank" rel="noopener noreferrer" role="menuitem">Message on Facebook</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
