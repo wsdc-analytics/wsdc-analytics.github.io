@@ -769,10 +769,12 @@
                 flex-shrink: 0;
             }
 
+            /* Override shared fixed 160px width so the row fits narrow screens */
             .mobile-summary-btn .nav-link-btn {
-                flex: 0 1 auto;
+                width: auto;
+                flex: 1 1 0;
                 min-width: 0;
-                max-width: none;
+                max-width: min(160px, 100%);
             }
 
             /* Tooltip to the right of the icon overflows off-screen; open below instead */
@@ -805,12 +807,12 @@
             }
 
             .container {
-                /* Fixed header + Summary row; avoid overlap with h1 (do not override in a second 768px block) */
-                padding: 152px 24px 60px;
+                /* Fixed stack: wrapper offset + navbar (2 rows) + gap + Summary/contact row — 152px was too tight on real phones */
+                padding: calc(env(safe-area-inset-top, 0px) + 212px) 24px 60px;
             }
 
             header {
-                margin-top: 28px;
+                margin-top: 12px;
             }
 
             .article-card h2 {
