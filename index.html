@@ -285,6 +285,81 @@
             position: relative;
         }
 
+        .contact-nav {
+            position: relative;
+        }
+
+        .contact-nav .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-sizing: border-box;
+            min-width: 132px;
+            height: 36px;
+            padding: 0 14px;
+            white-space: nowrap;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+        }
+
+        .contact-nav .contact-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .contact-nav .contact-btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .contact-nav .contact-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            min-width: 240px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 6px;
+            list-style: none;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+        }
+
+        .contact-nav.open .contact-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .contact-nav .contact-menu a {
+            display: block;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background var(--transition-fast);
+        }
+
+        .contact-nav .contact-menu a:hover {
+            background: var(--bg-tertiary);
+            color: var(--color-primary);
+        }
+
         .search-box-inline {
             position: relative;
         }
@@ -624,6 +699,24 @@
                 min-width: 0;
             }
 
+            .contact-nav {
+                grid-column: 1 / -1;
+                grid-row: 3;
+                width: 100%;
+            }
+
+            .contact-nav .contact-btn {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .contact-nav .contact-menu {
+                left: 0;
+                right: auto;
+                width: 100%;
+                min-width: 0;
+            }
+
             .mobile-summary-btn {
                 display: flex;
                 align-items: center;
@@ -716,51 +809,6 @@
             line-height: 1.6;
         }
 
-        .contact-card {
-            margin-top: 48px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            box-shadow: var(--shadow-soft);
-            padding: 24px;
-            text-align: left;
-        }
-
-        .contact-card h2 {
-            margin: 0 0 8px;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.4px;
-        }
-
-        .contact-card p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .contact-email-link {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 14px;
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            font-weight: 600;
-            text-decoration: none;
-            transition: background var(--transition-base), border-color var(--transition-base);
-        }
-
-        .contact-email-link:hover {
-            background: var(--bg-primary);
-            border-color: var(--color-primary);
-        }
-
-
         footer {
             margin-top: 80px;
             padding-top: 40px;
@@ -816,11 +864,6 @@
             .articles-grid {
                 grid-template-columns: 1fr;
                 gap: 24px;
-            }
-
-            .contact-card {
-                margin-top: 32px;
-                padding: 18px;
             }
         }
     </style>
@@ -887,6 +930,16 @@
                     </div>
                     <div class="search-results-inline hidden" id="searchResults" role="region" aria-live="polite" aria-label="Результаты поиска"></div>
                 </div>
+                    <div class="contact-nav" id="contactNav">
+                        <button type="button" class="contact-btn" id="contactBtn" aria-expanded="false" aria-haspopup="true" aria-controls="contactMenu">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4H20V20H4V4Z" stroke="currentColor" stroke-width="2"/><path d="M4 7L12 13L20 7" stroke="currentColor" stroke-width="2"/></svg>
+                            <span id="contactBtnText">Contact</span>
+                        </button>
+                        <ul class="contact-menu" id="contactMenu" role="menu">
+                            <li role="none"><a id="contactEmailItem" href="mailto:analytics.wsdc@gmail.com" role="menuitem">Send email</a></li>
+                            <li role="none"><a id="contactFacebookItem" href="https://www.facebook.com/share/1EUJKjHCER/" target="_blank" rel="noopener noreferrer" role="menuitem">Message on Facebook</a></li>
+                        </ul>
+                    </div>
                     <div class="language-switcher" role="group" aria-label="Выбор языка">
                     <button data-lang="ru" class="lang-btn" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
                     <button data-lang="en" class="lang-btn" aria-label="Switch to English" aria-pressed="false">EN</button>
@@ -915,12 +968,6 @@
                 <!-- Статьи загружаются динамически через JavaScript -->
             </div>
         </main>
-        <section class="contact-card" aria-labelledby="contactTitle">
-            <h2 id="contactTitle">Contact</h2>
-            <p id="contactDescription">Questions, corrections, collaboration ideas, or data suggestions are welcome.</p>
-            <a class="contact-email-link" id="contactEmailLink" href="mailto:analytics.wsdc@gmail.com">analytics.wsdc@gmail.com</a>
-        </section>
-
     </div>
 
     <script>
@@ -1018,31 +1065,30 @@
                 subtitleElement.textContent = subtitles[lang] || subtitles.en;
             }
 
-            const contactTitle = document.getElementById('contactTitle');
-            const contactDescription = document.getElementById('contactDescription');
-            const contactEmailLink = document.getElementById('contactEmailLink');
-            const contactCopy = {
+            const contactBtnText = document.getElementById('contactBtnText');
+            const contactEmailItem = document.getElementById('contactEmailItem');
+            const contactFacebookItem = document.getElementById('contactFacebookItem');
+            const contactLabels = {
                 ru: {
-                    title: 'Контакты',
-                    description: 'Если есть вопросы, уточнения по данным или идеи для новых материалов — напишите мне на почту.'
+                    button: 'Контакты',
+                    email: 'Написать на email',
+                    facebook: 'Написать в Facebook'
                 },
                 en: {
-                    title: 'Contact',
-                    description: 'For questions, data corrections, or collaboration ideas, feel free to send me an email.'
+                    button: 'Contact',
+                    email: 'Send email',
+                    facebook: 'Message on Facebook'
                 },
                 es: {
-                    title: 'Contacto',
-                    description: 'Si tienes preguntas, correcciones de datos o ideas de colaboración, escríbeme por correo.'
+                    button: 'Contacto',
+                    email: 'Enviar email',
+                    facebook: 'Escribir en Facebook'
                 }
             };
-            const contact = contactCopy[lang] || contactCopy.en;
-            if (contactTitle) contactTitle.textContent = contact.title;
-            if (contactDescription) contactDescription.textContent = contact.description;
-            if (contactEmailLink) {
-                contactEmailLink.href = 'mailto:analytics.wsdc@gmail.com';
-                contactEmailLink.textContent = 'analytics.wsdc@gmail.com';
-                contactEmailLink.setAttribute('aria-label', `Email: analytics.wsdc@gmail.com`);
-            }
+            const contactLang = contactLabels[lang] || contactLabels.en;
+            if (contactBtnText) contactBtnText.textContent = contactLang.button;
+            if (contactEmailItem) contactEmailItem.textContent = contactLang.email;
+            if (contactFacebookItem) contactFacebookItem.textContent = contactLang.facebook;
 
             // Кнопка Dashboards и tooltip
             const logoLink = document.getElementById('logoLink');
@@ -1177,6 +1223,20 @@
             document.addEventListener('click', () => {
                 dashboardsDropdown.classList.remove('open');
                 dashboardsBtn.setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        const contactNav = document.getElementById('contactNav');
+        const contactBtn = document.getElementById('contactBtn');
+        if (contactNav && contactBtn) {
+            contactBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                contactNav.classList.toggle('open');
+                contactBtn.setAttribute('aria-expanded', contactNav.classList.contains('open'));
+            });
+            document.addEventListener('click', () => {
+                contactNav.classList.remove('open');
+                contactBtn.setAttribute('aria-expanded', 'false');
             });
         }
 
