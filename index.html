@@ -144,9 +144,13 @@
             max-width: 1200px;
             margin: 0 auto;
             pointer-events: auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
         }
 
         .top-bar {
+            flex: 1;
             background: var(--bg-primary);
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
@@ -287,24 +291,29 @@
 
         .contact-nav {
             position: relative;
+            flex: 0 0 auto;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            height: 62px;
+            width: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .contact-nav .contact-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
             box-sizing: border-box;
-            min-width: 132px;
-            height: 36px;
-            padding: 0 14px;
-            white-space: nowrap;
+            width: 40px;
+            height: 40px;
+            padding: 0;
             background: transparent;
             border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1;
+            border-radius: 10px;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-base);
@@ -319,6 +328,34 @@
         .contact-nav .contact-btn:focus {
             outline: 2px solid var(--color-primary);
             outline-offset: 2px;
+        }
+
+        .contact-nav .contact-tooltip {
+            position: absolute;
+            right: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            background: var(--color-primary);
+            color: white;
+            font-size: 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition-base), visibility var(--transition-base);
+            z-index: 101;
+        }
+
+        .contact-nav .contact-btn:hover .contact-tooltip,
+        .contact-nav .contact-btn:focus .contact-tooltip {
+            opacity: 1;
+            visibility: visible;
         }
 
         .contact-nav .contact-menu {
@@ -699,24 +736,6 @@
                 min-width: 0;
             }
 
-            .contact-nav {
-                grid-column: 1 / -1;
-                grid-row: 3;
-                width: 100%;
-            }
-
-            .contact-nav .contact-btn {
-                width: 100%;
-                min-width: 0;
-            }
-
-            .contact-nav .contact-menu {
-                left: 0;
-                right: auto;
-                width: 100%;
-                min-width: 0;
-            }
-
             .mobile-summary-btn {
                 display: flex;
                 align-items: center;
@@ -742,6 +761,23 @@
                 margin-left: 0;
                 white-space: normal;
                 max-width: min(320px, calc(100vw - 32px));
+            }
+
+            .contact-nav {
+                align-self: flex-end;
+            }
+
+            .contact-nav .contact-tooltip {
+                right: 0;
+                top: calc(100% + 8px);
+                transform: none;
+            }
+
+            .contact-nav .contact-menu {
+                left: auto;
+                right: 0;
+                width: max-content;
+                min-width: 220px;
             }
 
             .container {
@@ -930,16 +966,6 @@
                     </div>
                     <div class="search-results-inline hidden" id="searchResults" role="region" aria-live="polite" aria-label="Результаты поиска"></div>
                 </div>
-                    <div class="contact-nav" id="contactNav">
-                        <button type="button" class="contact-btn" id="contactBtn" aria-expanded="false" aria-haspopup="true" aria-controls="contactMenu">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4H20V20H4V4Z" stroke="currentColor" stroke-width="2"/><path d="M4 7L12 13L20 7" stroke="currentColor" stroke-width="2"/></svg>
-                            <span id="contactBtnText">Contact</span>
-                        </button>
-                        <ul class="contact-menu" id="contactMenu" role="menu">
-                            <li role="none"><a id="contactEmailItem" href="mailto:analytics.wsdc@gmail.com" role="menuitem">Send email</a></li>
-                            <li role="none"><a id="contactFacebookItem" href="https://www.facebook.com/share/1EUJKjHCER/" target="_blank" rel="noopener noreferrer" role="menuitem">Message on Facebook</a></li>
-                        </ul>
-                    </div>
                     <div class="language-switcher" role="group" aria-label="Выбор языка">
                     <button data-lang="ru" class="lang-btn" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
                     <button data-lang="en" class="lang-btn" aria-label="Switch to English" aria-pressed="false">EN</button>
@@ -947,6 +973,16 @@
                     </div>
                 </div>
             </nav>
+            <div class="contact-nav" id="contactNav">
+                <button type="button" class="contact-btn" id="contactBtn" aria-label="Contacts" aria-expanded="false" aria-haspopup="true" aria-controls="contactMenu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4H20V20H4V4Z" stroke="currentColor" stroke-width="2"/><path d="M4 7L12 13L20 7" stroke="currentColor" stroke-width="2"/></svg>
+                    <span class="contact-tooltip" id="contactTooltipText">Contacts</span>
+                </button>
+                <ul class="contact-menu" id="contactMenu" role="menu">
+                    <li role="none"><a id="contactEmailItem" href="mailto:analytics.wsdc@gmail.com" role="menuitem">Send email</a></li>
+                    <li role="none"><a id="contactFacebookItem" href="https://www.facebook.com/share/1EUJKjHCER/" target="_blank" rel="noopener noreferrer" role="menuitem">Message on Facebook</a></li>
+                </ul>
+            </div>
             <div class="mobile-summary-btn">
                 <span class="info-icon" role="img" aria-label="Information">
                     <span aria-hidden="true">i</span>
@@ -1065,7 +1101,8 @@
                 subtitleElement.textContent = subtitles[lang] || subtitles.en;
             }
 
-            const contactBtnText = document.getElementById('contactBtnText');
+            const contactBtn = document.getElementById('contactBtn');
+            const contactTooltipText = document.getElementById('contactTooltipText');
             const contactEmailItem = document.getElementById('contactEmailItem');
             const contactFacebookItem = document.getElementById('contactFacebookItem');
             const contactLabels = {
@@ -1086,7 +1123,8 @@
                 }
             };
             const contactLang = contactLabels[lang] || contactLabels.en;
-            if (contactBtnText) contactBtnText.textContent = contactLang.button;
+            if (contactBtn) contactBtn.setAttribute('aria-label', contactLang.button);
+            if (contactTooltipText) contactTooltipText.textContent = contactLang.button;
             if (contactEmailItem) contactEmailItem.textContent = contactLang.email;
             if (contactFacebookItem) contactFacebookItem.textContent = contactLang.facebook;
 
