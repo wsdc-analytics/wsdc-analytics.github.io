@@ -777,15 +777,11 @@
                 max-width: min(160px, 100%);
             }
 
-            /* Tooltip to the right of the icon overflows off-screen; open below instead */
-            .mobile-summary-btn .info-tooltip {
-                left: 0;
-                right: auto;
-                top: calc(100% + 8px);
-                transform: none;
-                margin-left: 0;
-                white-space: normal;
-                max-width: min(320px, calc(100vw - 32px));
+            /* Touch layout: no hover tooltips */
+            .mobile-summary-btn .info-tooltip,
+            .mobile-summary-btn .info-icon:hover .info-tooltip,
+            .mobile-summary-btn .info-icon:focus .info-tooltip {
+                display: none !important;
             }
 
             .mobile-top-extras .contact-nav {
@@ -793,10 +789,10 @@
                 flex-shrink: 0;
             }
 
-            .contact-nav .contact-tooltip {
-                right: 0;
-                top: calc(100% + 8px);
-                transform: none;
+            .contact-nav .contact-tooltip,
+            .contact-nav .contact-btn:hover .contact-tooltip,
+            .contact-nav .contact-btn:focus .contact-tooltip {
+                display: none !important;
             }
 
             .contact-nav .contact-menu {
