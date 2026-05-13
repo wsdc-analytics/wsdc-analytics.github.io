@@ -144,13 +144,10 @@
             max-width: 1200px;
             margin: 0 auto;
             pointer-events: auto;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            position: relative;
         }
 
         .top-bar {
-            flex: 1;
             background: var(--bg-primary);
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
@@ -290,17 +287,13 @@
         }
 
         .contact-nav {
-            position: relative;
-            flex: 0 0 auto;
-            background: var(--bg-primary);
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-color);
-            height: 62px;
-            width: 62px;
+            position: absolute;
+            top: 14px;
+            right: -76px;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 60;
         }
 
         .contact-nav .contact-btn {
@@ -308,12 +301,12 @@
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 32px;
             padding: 0;
             background: transparent;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
+            border: none;
+            border-radius: 6px;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-base);
@@ -321,7 +314,6 @@
         }
 
         .contact-nav .contact-btn:hover {
-            border-color: var(--color-primary);
             color: var(--color-primary);
         }
 
@@ -395,6 +387,19 @@
         .contact-nav .contact-menu a:hover {
             background: var(--bg-tertiary);
             color: var(--color-primary);
+        }
+
+        @media (max-width: 1280px) {
+            .top-bar-wrapper > div {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .contact-nav {
+                position: static;
+                align-self: flex-end;
+            }
         }
 
         .search-box-inline {
@@ -764,6 +769,7 @@
             }
 
             .contact-nav {
+                position: static;
                 align-self: flex-end;
             }
 
@@ -975,7 +981,7 @@
             </nav>
             <div class="contact-nav" id="contactNav">
                 <button type="button" class="contact-btn" id="contactBtn" aria-label="Contacts" aria-expanded="false" aria-haspopup="true" aria-controls="contactMenu">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4H20V20H4V4Z" stroke="currentColor" stroke-width="2"/><path d="M4 7L12 13L20 7" stroke="currentColor" stroke-width="2"/></svg>
+                    <svg width="40" height="26" viewBox="0 0 48 32" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="43" height="27" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3.5 7L24 20L44.5 7" stroke="currentColor" stroke-width="2"/></svg>
                     <span class="contact-tooltip" id="contactTooltipText">Contacts</span>
                 </button>
                 <ul class="contact-menu" id="contactMenu" role="menu">
