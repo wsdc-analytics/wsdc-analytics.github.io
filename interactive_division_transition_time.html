@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Время перехода между дивизионами — WSDC Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #fff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #6366f1;
+      --eco: #0d9488;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; font-family: "DM Sans", Inter, system-ui, sans-serif; color: var(--text); background: var(--card); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 12px; display: grid; gap: 10px; }
+    .meta { font-size: 12px; color: var(--muted); padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+    .ctrl { flex: 1 1 140px; min-width: 120px; }
+    .ctrl label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 4px; }
+    .ctrl select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: #fff; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-size: 13px; cursor: pointer; }
+    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .card { border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: #fff; }
+    .card h3 { margin: 0 0 4px; font-size: 14px; }
+    .card p { margin: 0 0 8px; font-size: 12px; color: var(--muted); }
+    .canvas-wrap { position: relative; height: 280px; }
+    .check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); padding: 4px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { color: var(--muted); font-weight: 600; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    @media (max-width: 640px) { .canvas-wrap { height: 240px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="meta" id="meta">Загрузка…</div>
+    <div class="tabs" id="viewTabs">
+      <button type="button" class="tab active" data-view="speed">Скорость перехода</button>
+      <button type="button" class="tab" data-view="volume">Объём переходов</button>
+      <button type="button" class="tab" data-view="eco">Экосистема</button>
+      <button type="button" class="tab" data-view="thresholds">Пороги (implied)</button>
+    </div>
+    <div class="controls" id="speedControls">
+      <div class="ctrl">
+        <label for="pair">Переход</label>
+        <select id="pair"></select>
+      </div>
+      <div class="ctrl">
+        <label for="metric">Метрика</label>
+        <select id="metric">
+          <option value="first_to_first">Первые в D → первые в D+1</option>
+          <option value="last_to_first">Последние в D → первые в D+1</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <label for="role">Роль</label>
+        <select id="role">
+          <option value="Leader">Leader</option>
+          <option value="Follower">Follower</option>
+          <option value="Both">Обе (среднее)</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <label>&nbsp;</label>
+        <label class="check"><input type="checkbox" id="ecoOverlay" /> Оверлей: ивенты (правая ось)</label>
+      </div>
+    </div>
+    <article class="card" id="panelSpeed">
+      <h3>Медиана месяцев до перехода</h3>
+      <p>Год на оси X — год <strong>первых</strong> поинтов в целевом дивизионе. Точки с n &lt; 30 скрыты.</p>
+      <div class="canvas-wrap"><canvas id="speedChart"></canvas></div>
+    </article>
+    <article class="card" id="panelVolume" hidden>
+      <h3>Число переходов по году</h3>
+      <p>Сколько танцоров впервые вошли в следующий дивизион в данном году (основная роль).</p>
+      <div class="canvas-wrap"><canvas id="volumeChart"></canvas></div>
+    </article>
+    <article class="card" id="panelEco" hidden>
+      <h3>Рост экосистемы</h3>
+      <p>Уникальные ивенты с рейтинговыми поинтами и танцоры с поинтами по календарному году.</p>
+      <div class="canvas-wrap"><canvas id="ecoChart"></canvas></div>
+    </article>
+    <article class="card" id="panelThresholds" hidden>
+      <h3>Implied thresholds (2021–22 → 2024–25)</h3>
+      <p>Иллюстрация: при каких порогах (allowed/required) медианное время до набора поинтов в дивизионе было бы как в 2021–2022. Не рекомендация WSDC.</p>
+      <div class="canvas-wrap"><canvas id="threshChart"></canvas></div>
+      <table id="threshTable"><thead><tr><th>Дивизион</th><th>Тип</th><th>Сейчас</th><th>Implied</th><th>Мес. база</th><th>Мес. сейчас</th></tr></thead><tbody></tbody></table>
+    </article>
+  </main>
+  <script>
+    const JSON_URL = "./static/data/division_transition_metrics.json?v=20260515-r1";
+    let DATA = null;
+    let charts = {};
+
+    function $(id) { return document.getElementById(id); }
+
+    function pairKey(from, to) { return from + "→" + to; }
+
+    function parsePair(val) {
+      const [from, to] = val.split("→");
+      return { from, to };
+    }
+
+    function yearsRange(minY, maxY) {
+      const y = [];
+      for (let i = minY; i <= maxY; i++) y.push(i);
+      return y;
+    }
+
+    function seriesFor(pair, metric, role) {
+      const { from, to } = parsePair(pair);
+      const rows = DATA.transition_series.filter(s =>
+        s.from_division === from && s.to_division === to && s.metric_variant === metric && !s.suppress
+      );
+      const byYear = {};
+      rows.forEach(s => {
+        if (role === "Both") {
+          if (!byYear[s.transition_year]) byYear[s.transition_year] = [];
+          if (s.median_months != null) byYear[s.transition_year].push(s.median_months);
+        } else if (s.role === role) {
+          byYear[s.transition_year] = s.median_months;
+        }
+      });
+      if (role === "Both") {
+        Object.keys(byYear).forEach(y => {
+          const arr = byYear[y];
+          byYear[y] = arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+        });
+      }
+      return byYear;
+    }
+
+    function countsFor(pair, role) {
+      const { from, to } = parsePair(pair);
+      const rows = DATA.transitions_count_by_year.filter(r =>
+        r.from_division === from && r.to_division === to
+      );
+      const byYear = {};
+      rows.forEach(r => {
+        if (role === "Both") {
+          byYear[r.transition_year] = (byYear[r.transition_year] || 0) + r.n;
+        } else if (r.role === role) {
+          byYear[r.transition_year] = r.n;
+        }
+      });
+      return byYear;
+    }
+
+    function destroyChart(id) {
+      if (charts[id]) { charts[id].destroy(); charts[id] = null; }
+    }
+
+    function renderSpeed() {
+      const pair = $("pair").value;
+      const metric = $("metric").value;
+      const role = $("role").value;
+      const overlay = $("ecoOverlay").checked;
+      const byYear = seriesFor(pair, metric, role);
+      const years = yearsRange(2010, 2026).filter(y => byYear[y] != null);
+      const medians = years.map(y => byYear[y]);
+      const eco = DATA.ecosystem_by_year;
+      const ecoMap = Object.fromEntries(eco.map(e => [e.year, e.unique_events]));
+
+      destroyChart("speed");
+      const datasets = [{
+        label: "Медиана, мес.",
+        data: medians,
+        borderColor: "#6366f1",
+        backgroundColor: "rgba(99,102,241,.15)",
+        tension: 0.2,
+        yAxisID: "y"
+      }];
+      if (overlay) {
+        datasets.push({
+          label: "Ивенты",
+          data: years.map(y => ecoMap[y] || null),
+          borderColor: "#0d9488",
+          borderDash: [4, 4],
+          tension: 0.2,
+          yAxisID: "y1"
+        });
+      }
+      charts.speed = new Chart($("speedChart"), {
+        type: "line",
+        data: { labels: years, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: { legend: { labels: { font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { font: { size: 10 } } },
+            y: { position: "left", title: { display: true, text: "Месяцы" }, ticks: { font: { size: 10 } } },
+            y1: overlay ? { position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "Ивенты" } } : { display: false }
+          }
+        }
+      });
+    }
+
+    function renderVolume() {
+      const pair = $("pair").value;
+      const role = $("role").value;
+      const byYear = countsFor(pair, role);
+      const years = yearsRange(2010, 2026).filter(y => byYear[y]);
+      destroyChart("volume");
+      charts.volume = new Chart($("volumeChart"), {
+        type: "bar",
+        data: {
+          labels: years,
+          datasets: [{ label: "Переходов", data: years.map(y => byYear[y]), backgroundColor: "rgba(99,102,241,.7)" }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } }
+        }
+      });
+    }
+
+    function renderEco() {
+      const eco = DATA.ecosystem_by_year.filter(e => e.year >= 2010 && e.year <= 2026);
+      destroyChart("eco");
+      charts.eco = new Chart($("ecoChart"), {
+        type: "line",
+        data: {
+          labels: eco.map(e => e.year),
+          datasets: [
+            { label: "Ивенты", data: eco.map(e => e.unique_events), borderColor: "#6366f1", tension: 0.2 },
+            { label: "Танцоры", data: eco.map(e => e.unique_dancers), borderColor: "#0d9488", tension: 0.2 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { font: { size: 11 } } } },
+          scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } }
+        }
+      });
+    }
+
+    function renderThresholds() {
+      const imp = DATA.implied_thresholds || [];
+      const labels = imp.map(r => r.division + " " + (r.threshold_type === "allowed" ? "allowed" : "req."));
+      destroyChart("thresh");
+      charts.thresh = new Chart($("threshChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            { label: "Факт (2021+)", data: imp.map(r => r.actual_threshold), backgroundColor: "rgba(107,114,128,.5)" },
+            { label: "Implied", data: imp.map(r => r.implied_threshold), backgroundColor: "rgba(99,102,241,.75)" }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { font: { size: 11 } } } },
+          scales: { x: { ticks: { font: { size: 9 }, maxRotation: 45 } }, y: { title: { display: true, text: "Поинты" } } }
+        }
+      });
+      const tbody = $("threshTable").querySelector("tbody");
+      tbody.innerHTML = imp.map(r => `<tr>
+        <td>${r.division}</td><td>${r.threshold_type}</td>
+        <td class="num">${r.actual_threshold}</td><td class="num">${r.implied_threshold}</td>
+        <td class="num">${r.median_months_baseline}</td><td class="num">${r.median_months_current}</td>
+      </tr>`).join("");
+    }
+
+    function setView(view) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === view));
+      $("panelSpeed").hidden = view !== "speed";
+      $("panelVolume").hidden = view !== "volume";
+      $("panelEco").hidden = view !== "eco";
+      $("panelThresholds").hidden = view !== "thresholds";
+      $("speedControls").style.display = view === "speed" || view === "volume" ? "flex" : "none";
+      if (view === "speed") renderSpeed();
+      if (view === "volume") renderVolume();
+      if (view === "eco") renderEco();
+      if (view === "thresholds") renderThresholds();
+    }
+
+    async function init() {
+      const res = await fetch(JSON_URL);
+      DATA = await res.json();
+      $("meta").textContent = `Данные WSDC Registry Points по состоянию на ${DATA.data_as_of}. База implied: ${DATA.baseline_years.join("–")}, текущий период: ${DATA.current_years.join("–")}.`;
+
+      const sel = $("pair");
+      DATA.article_transitions.forEach(t => {
+        const o = document.createElement("option");
+        o.value = pairKey(t.from, t.to);
+        o.textContent = pairKey(t.from, t.to);
+        sel.appendChild(o);
+      });
+
+      document.querySelectorAll(".tab").forEach(btn => {
+        btn.addEventListener("click", () => setView(btn.dataset.view));
+      });
+      ["pair", "metric", "role", "ecoOverlay"].forEach(id => {
+        $(id).addEventListener("change", () => {
+          const v = document.querySelector(".tab.active").dataset.view;
+          if (v === "speed") renderSpeed();
+          if (v === "volume") renderVolume();
+        });
+      });
+      setView("speed");
+    }
+    init().catch(e => { $("meta").textContent = "Ошибка загрузки: " + e.message; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "description": "WSDC Skill Level advancement thresholds by rules epoch (for analysis; see rules_evolution_2025.html)",
+  "epochs": [
+    {
+      "id": "pre_2013",
+      "valid_from": null,
+      "valid_to": 2012,
+      "model": "cumulative",
+      "transitions": {
+        "Novice": { "to": "Intermediate", "points": 20 },
+        "Intermediate": { "to": "Advanced", "points": 25 },
+        "Advanced": { "to": "All-Stars", "points": 40 }
+      }
+    },
+    {
+      "id": "2013_2020",
+      "valid_from": 2013,
+      "valid_to": 2020,
+      "model": "cumulative",
+      "transitions": {
+        "Novice": { "to": "Intermediate", "points": 15 },
+        "Intermediate": { "to": "Advanced", "points": 30 },
+        "Advanced": { "to": "All-Stars", "points": 45, "notes": "Advanced points in last 3 years for All-Star eligibility (2013 rules)" }
+      }
+    },
+    {
+      "id": "2021_plus",
+      "valid_from": 2021,
+      "valid_to": null,
+      "model": "allowed_required_36mo",
+      "divisions": {
+        "Novice": { "allowed": 16, "required": 30 },
+        "Intermediate": { "allowed": 30, "required": 45 },
+        "Advanced": { "allowed": 45, "required": 60 },
+        "All-Stars": {
+          "champions_allowed": { "champions_points": 1, "or_all_star_points": 150 },
+          "champions_required": { "champions_points": 10, "or_all_star_points": 225 }
+        }
+      }
+    }
+  ],
+  "analysis_baseline_years": [2021, 2022],
+  "analysis_current_years": [2024, 2025],
+  "rolling_window_months": 36
+}

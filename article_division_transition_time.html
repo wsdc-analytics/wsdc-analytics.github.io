@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Год к году: время перехода между дивизионами Skill Level, рост ивентов и implied пороги WSDC." />
+  <meta property="og:title" content="Скорость лестницы Skill Level: время между дивизионами" />
+  <meta property="og:description" content="Как менялось календарное время перехода между дивизионами WSDC и что это значит для порогов allowed/required." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://wsdc-analytics.github.io/article_division_transition_time.html" />
+  <meta property="og:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <meta name="keywords" content="WSDC, West Coast Swing, Skill Level, дивизионы, переход, поинты, Novice, Intermediate, Advanced, All-Star, Champions, аналитика">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://wsdc-analytics.github.io/article_division_transition_time.html">
+  <meta name="twitter:title" content="Скорость лестницы Skill Level: время между дивизионами">
+  <meta name="twitter:description" content="Как менялось календарное время перехода между дивизионами WSDC и что это значит для порогов allowed/required.">
+  <meta name="twitter:image" content="https://wsdc-analytics.github.io/events_background.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="preload" href="events_background.png" as="image" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Скорость лестницы Skill Level | WSDC Analytics</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Скорость лестницы Skill Level: время между дивизионами",
+    "description": "Год к году: время перехода между дивизионами Skill Level, рост ивентов и implied пороги WSDC",
+    "url": "https://wsdc-analytics.github.io/article_division_transition_time.html",
+    "image": "https://wsdc-analytics.github.io/events_background.png",
+    "datePublished": "2026-05-15",
+    "dateModified": "2026-05-15",
+    "author": { "@type": "Organization", "name": "WSDC Analytics" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "WSDC Analytics",
+      "logo": { "@type": "ImageObject", "url": "https://wsdc-analytics.github.io/events_background.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://wsdc-analytics.github.io/article_division_transition_time.html" }
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LMLCY5PE8Z');
+  </script>
+  <style>
+    :root {
+      --color-primary: #2d3748;
+      --color-primary-dark: #1a202c;
+      --color-primary-light: #4a5568;
+      --color-link-accent: #2563eb;
+      --accent: #6366f1;
+      --bg-primary: #ffffff;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f7fafc;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --border-color: #e5e5e5;
+      --transition-fast: 0.15s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--color-primary);
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+      border-radius: 0 0 4px 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .skip-link:focus {
+      top: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body {
+      font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .magazine-container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      padding: 0;
+    }
+    .header {
+      background: var(--color-primary) url("events_background.png") center center / cover no-repeat;
+      color: #fff;
+      padding: 100px 80px 80px;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      will-change: transform;
+      background-attachment: scroll;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-primary);
+      opacity: 0.5;
+      z-index: 0;
+    }
+    .header > * {
+      position: relative;
+      z-index: 1;
+    }
+    .article-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .back-link {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity var(--transition-base);
+    }
+    .back-link:hover { opacity: 0.8; }
+    .language-switcher {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .language-switcher button {
+      padding: 4px 0;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.65);
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s ease;
+      font-family: inherit;
+    }
+    .language-switcher button:hover { color: rgba(255, 255, 255, 0.9); }
+    .language-switcher button:focus { outline: none; }
+    .language-switcher button.active {
+      color: white;
+      border-bottom: 2px solid white;
+      padding-bottom: 2px;
+      transform: translateY(-1px);
+    }
+    .language-switcher button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .title {
+      margin: 0 0 18px;
+      font-size: 46px;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      font-weight: 700;
+      max-width: 820px;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, .9);
+      max-width: 780px;
+    }
+    .article-content {
+      padding: 64px 80px 72px;
+      margin: 0 auto;
+    }
+    /* Как в article_secondary_role: узкая колонка текста */
+    .article-content > .section,
+    .article-content > .article-reactions,
+    .article-content > .article-feedback {
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .section p {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+    }
+    .section h2,
+    .section h3 {
+      text-align: left;
+    }
+    .risk-disclosure summary {
+      text-align: left;
+    }
+    .section .warning {
+      text-align: left;
+    }
+    .section {
+      margin-bottom: 56px;
+    }
+    .section:last-child { margin-bottom: 0; }
+    h2 {
+      margin: 0 0 24px;
+      font-size: 32px;
+      line-height: 1.25;
+      letter-spacing: -0.6px;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      padding-left: 18px;
+      border-left: 4px solid var(--color-primary);
+    }
+    h3 {
+      margin: 28px 0 12px;
+      font-size: 20px;
+      line-height: 1.35;
+      color: var(--color-primary-dark);
+      font-weight: 700;
+    }
+    p {
+      margin: 0 0 18px;
+      color: var(--text-secondary);
+    }
+    strong { color: var(--text-primary); }
+    .warning {
+      background: #fff7ed;
+      border-left: 4px solid #f97316;
+      padding: 16px 18px;
+      border-radius: 12px;
+      font-size: 16px;
+      color: #9a3412;
+      margin: 20px 0 24px;
+    }
+    ul { margin: 10px 0 0 24px; padding: 0; color: var(--text-secondary); }
+    li { margin-bottom: 10px; }
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 28px 0 18px;
+    }
+    .kpi-item {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 18px 16px;
+      background: var(--bg-tertiary);
+    }
+    .kpi-value {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--color-primary-dark);
+    }
+    .kpi-label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      line-height: 1.35;
+    }
+    .risk-disclosure {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      margin: 16px 0;
+      background: var(--bg-tertiary);
+      overflow: hidden;
+    }
+    .risk-disclosure summary {
+      cursor: pointer;
+      padding: 16px 18px;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      list-style-position: inside;
+    }
+    .table-scroll {
+      overflow-x: auto;
+      background: #fff;
+      border-top: 1px solid var(--border-color);
+    }
+    .risk-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .risk-table th,
+    .risk-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+      vertical-align: top;
+    }
+    .risk-table th:first-child,
+    .risk-table th:nth-child(n+3),
+    .risk-table td:first-child,
+    .risk-table td:nth-child(n+3) {
+      text-align: right;
+    }
+    .risk-table th {
+      background: #f9fafb;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .risk-table.status-table th:nth-child(3),
+    .risk-table.status-table td:nth-child(3) {
+      text-align: center;
+    }
+    /* Special handling for status-only 3-column table: # | Dancer | Status Since */
+    .risk-table.status-only-table {
+      table-layout: fixed;
+      width: 100%;
+    }
+    .risk-table.status-only-table tr > th:nth-child(3):last-child,
+    .risk-table.status-only-table tr > td:nth-child(3):last-child {
+      text-align: right;
+      width: 32%;
+      min-width: 11.75rem;
+      padding-left: 12px;
+      padding-right: 12px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .risk-table.status-only-table tr > th:nth-child(2):nth-last-child(2),
+    .risk-table.status-only-table tr > td:nth-child(2):nth-last-child(2) {
+      padding-right: 12px;
+      width: auto;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+    .risk-table.status-only-table tr > th:first-child,
+    .risk-table.status-only-table tr > td:first-child {
+      width: 38px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    /* Special handling for year+points table: # | Dancer | Total Points | Last Year */
+    .risk-table.year-points-table tr > th:first-child,
+    .risk-table.year-points-table tr > td:first-child {
+      width: 38px;
+      text-align: center;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .risk-table.year-points-table tr > th:nth-child(3),
+    .risk-table.year-points-table tr > td:nth-child(3) {
+      width: 96px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .risk-table.year-points-table tr > th:nth-child(4),
+    .risk-table.year-points-table tr > td:nth-child(4) {
+      width: 92px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .article-reactions {
+      margin: 40px 0 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      text-align: right;
+      max-width: 100%;
+    }
+    .article-reactions-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; }
+    .article-reactions-buttons { display: flex; flex-wrap: wrap; gap: 20px; justify-content: flex-end; align-items: flex-start; }
+    .article-reaction-item { display: inline-flex; align-items: center; gap: 6px; }
+    .article-reaction-trigger {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none; background: none; padding: 4px; font-size: inherit; line-height: 1;
+      min-width: 2.5rem; min-height: 2.5rem; border-radius: 6px;
+    }
+    .article-reaction-trigger:hover { background: rgba(45, 55, 72, 0.06); }
+    .article-reaction-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .article-reaction-emoji { font-size: 1.5rem; line-height: 1; pointer-events: none; font-weight: 600; font-family: inherit; }
+    .article-reaction-item.reaction-approve .article-reaction-emoji { color: #16a34a; }
+    .article-reaction-item.reaction-neutral .article-reaction-emoji { color: #6b7280; }
+    .article-reaction-item.reaction-disapprove .article-reaction-emoji { color: #dc2626; }
+    .article-reaction-trigger .lyket-overlay { position: absolute; inset: 0; opacity: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .article-reaction-trigger .lyket-overlay > * {
+      width: 100% !important; height: 100% !important; min-width: 0 !important; min-height: 0 !important;
+      margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important;
+      font-size: 0 !important; line-height: 0 !important;
+    }
+    .article-reaction-count { font-size: 0.95rem; color: var(--text-secondary); min-width: 1.2em; text-align: left; }
+
+    .article-feedback {
+      margin-top: 32px;
+      padding: 24px 24px 20px;
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      max-width: 100%;
+      text-align: left;
+    }
+    .article-feedback-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .article-feedback-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .article-feedback-label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .article-feedback-input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      background: var(--bg-primary);
+    }
+    .article-feedback-input:focus {
+      outline: 2px solid var(--color-link-accent);
+      outline-offset: 2px;
+      border-color: var(--color-link-accent);
+    }
+    .article-feedback-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--color-link-accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+    }
+    .article-feedback-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .article-feedback-button[disabled] {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+    }
+    .article-feedback-status {
+      font-size: 13px;
+      margin-top: 8px;
+      color: var(--text-secondary);
+    }
+
+    .article-footer {
+      background-color: var(--bg-secondary);
+      padding: 48px 80px;
+      border-top: 2px solid var(--color-primary);
+      margin-top: 0;
+    }
+    .article-footer .data-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+    .article-footer .data-note p { margin: 0; }
+    .article-footer .data-note a {
+      color: var(--color-primary);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .article-footer .data-note a:hover { opacity: 0.85; }
+    @media (max-width: 900px) {
+      body { font-size: 16px; }
+      .header { padding: 50px 20px 48px; }
+      .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .language-switcher { align-self: flex-end; }
+      .article-content { padding: 40px 16px 48px; }
+      .article-footer { padding: 32px 16px; }
+      .article-reactions { text-align: left; }
+      .title { font-size: 32px; letter-spacing: -1px; }
+      .subtitle { font-size: 18px; }
+      h2 { font-size: 26px; }
+      .kpi { grid-template-columns: 1fr 1fr; }
+      .risk-disclosure summary {
+        padding: 13px 14px;
+        font-size: 14px;
+        line-height: 1.35;
+      }
+      .risk-table {
+        font-size: 12px;
+      }
+      .risk-table th,
+      .risk-table td {
+        padding: 8px 9px;
+      }
+      .risk-table th {
+        font-size: 10px;
+        letter-spacing: .02em;
+      }
+    }
+    @media (max-width: 560px) {
+      .kpi { grid-template-columns: 1fr; }
+      .risk-table {
+        table-layout: auto;
+        font-size: 10px;
+      }
+      .risk-table th,
+      .risk-table td {
+        padding: 6px 5px;
+      }
+      .risk-table th {
+        font-size: 9px;
+        letter-spacing: 0;
+      }
+      .risk-table th:first-child,
+      .risk-table td:first-child {
+        width: 28px;
+        text-align: center;
+      }
+      /* Keep points+year on year-points tables; hide col 4 only on 5-col tables */
+      .risk-table:not(.year-points-table):not(.status-only-table) th:nth-child(4),
+      .risk-table:not(.year-points-table):not(.status-only-table) td:nth-child(4) {
+        display: none;
+      }
+      .risk-table td:nth-child(2) {
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .risk-table td:first-child,
+      .risk-table td:nth-child(n+3) {
+        font-size: 9px;
+      }
+      .risk-table.status-only-table tr > th:nth-child(3):last-child,
+      .risk-table.status-only-table tr > td:nth-child(3):last-child {
+        white-space: normal;
+        min-width: 0;
+      }
+    }
+  
+    .chart-embed { margin: 24px 0; border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(15,23,42,.05); }
+    .chart-embed iframe { display: block; width: 100%; min-height: 520px; border: 0; }
+
+  </style>
+
+  <script src="static/js/lang-redirect.js"></script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+  <div class="magazine-container">
+    <header class="header" style="background-image: url('events_background.png');">
+      <div class="article-header-top">
+        <a class="back-link" href="/" id="backLink">← К главной</a>
+        <div class="language-switcher" role="group" aria-label="Выбор языка">
+          <button class="lang-btn active" data-lang="ru" disabled>RU</button>
+          <button class="lang-btn" data-lang="en" disabled>EN</button>
+          <button class="lang-btn" data-lang="es" disabled>ES</button>
+        </div>
+      </div>
+      <h1 class="title">Скорость лестницы Skill Level: время между дивизионами</h1>
+      <p class="subtitle">Как менялось календарное время перехода и что это значит для порогов WSDC</p>
+    </header>
+    <main id="main-content" class="article-content">
+      <section class="section">
+        <h2>Вопрос</h2>
+        <p>Сообщество WCS растёт: больше рейтинговых ивентов, больше танцоров с поинтами, больше конкуренции. При этом пороги перехода между дивизионами Skill Level (Novice → Intermediate → Advanced → All-Stars → Champions) в модели allowed/required с 2021 года в основном <strong>не менялись</strong>: 16/30, 30/45, 45/60 поинтов за 36 месяцев.</p>
+        <p>Гипотеза: при тех же порогах календарное время пути по лестнице <strong>сокращается</strong> — поинты набираются быстрее, переходов в год становится больше. Ниже — проверка по данным WSDC Registry Points и осторожный регуляторный срез: до каких порогов пришлось бы поднять «заслоны», чтобы вернуть медианное время набора поинтов, как в 2021–2022.</p>
+      </section>
+      <section class="section">
+        <h2>Что считаем переходом</h2>
+        <p>Анализ только по <strong>основной роли</strong> (dominate role). Это не доля второй роли и не снимки allowed/required из реестра WSDC — см. <a href="article_secondary_role.html">статью о второй роли</a>.</p>
+        <p><strong>Вариант A (first → first):</strong> месяцы от первых поинтов в дивизионе D до первых поинтов в D+1.</p>
+        <p><strong>Вариант B (last → first):</strong> от последних поинтов в D до первых в D+1 — ближе к «сколько я ещё соревновался в дивизионе», но чувствителен к паузам и разовым поинтам.</p>
+        <p><strong>Год на графиках:</strong> календарный год <em>первых</em> поинтов в целевом дивизионе (transition year). Так сопоставимы когорты по годам.</p>
+      </section>
+      <section class="section">
+        <h2>Динамика по годам</h2>
+        <p>На интерактиве — медиана месяцев, число переходов, рост ивентов/танцоров и блок implied thresholds. Годы с выборкой n &lt; 30 скрыты.</p>
+        <div class="chart-embed">
+          <iframe title="Время перехода между дивизионами" src="interactive_division_transition_time.html?v=20260515" width="100%" height="520" scrolling="no"></iframe>
+        </div>
+        <h3>Novice → Intermediate (Leader, вариант A)</h3>
+        <p>До пандемии (2018–2019) медиана около <strong>17–18 месяцев</strong>. В 2022–2023 — аномально высокие значения (37–36 мес.) на фоне восстановления календаря. В 2024–2025 медиана снова <strong>14–16,5 месяцев</strong> при росте числа переходов (176 и 227 в год). Ускорение относительно 2018–2019 умеренное, но объём переходов выше.</p>
+        <h3>Intermediate → Advanced</h3>
+        <p>Та же картина: 2018–2019 ~23–24 мес., пик 42–43 мес. в 2022–2023, 2024–2025 — <strong>20–26 мес.</strong></p>
+        <h3>Advanced → All-Stars</h3>
+        <p>Меньше наблюдений; 2025 — медиана 29 мес. (n=39). Старшие ступени менее однородны.</p>
+        <p>Вариант B в среднем даёт <strong>короче</strong> интервалы, чем A (танцор часто получает первые поинты в следующем дивизионе, ещё соревнуясь в предыдущем). Для выводов о «скорости карьеры» устойчивее опираться на A; B — дополнительная проверка.</p>
+      </section>
+      <section class="section">
+        <h2>Контекст: ивенты и танцоры</h2>
+        <div class="kpi">
+          <div class="kpi-item"><span class="kpi-value">172</span><span class="kpi-label">ивента с поинтами в 2025</span></div>
+          <div class="kpi-item"><span class="kpi-value">3991</span><span class="kpi-label">танцоров с поинтами в 2025</span></div>
+          <div class="kpi-item"><span class="kpi-value">92→172</span><span class="kpi-label">ивентов 2022→2025</span></div>
+          <div class="kpi-item"><span class="kpi-value">2497→3991</span><span class="kpi-label">танцоров 2022→2025</span></div>
+        </div>
+        <p>Рост экосистемы коррелирует со сжатием времени до порогов; причинно утверждать «больше ивентов → быстрее карьера» по одной корреляции нельзя (менялись правила второй роли, Trial Events с 2025 и т.д.).</p>
+      </section>
+      <section class="section">
+        <h2>Пороги как регулирование перетока</h2>
+        <p>С 2021 года WSDC задаёт allowed/required за 36 месяцев (подробная хронология — в <a href="rules_evolution_2025.html">эволюции правил</a>). Мы измерили: сколько месяцев от первых поинтов в дивизионе до набора порога (rolling 36 мес., основная роль).</p>
+        <p>Сравнение базы <strong>2021–2022</strong> и <strong>2024–2025</strong>. Упрощённая иллюстрация (не рекомендация WSDC):</p>
+        <p><code>implied ≈ порог × (медиана_месяцев_2021–22 / медиана_месяцев_2024–25)</code></p>
+        <div class="warning">Механическая экстраполяция. Не учитывает Tier, петиции, Champions-by-discretion, смену философии правил 2013/2021.</div>
+        <div class="table-scroll">
+          <table class="risk-table">
+            <thead><tr><th>Дивизион</th><th>Тип</th><th>Порог сейчас</th><th>Implied</th><th>Мес. 21–22</th><th>Мес. 24–25</th></tr></thead>
+            <tbody>
+              <tr><td>Novice</td><td>allowed</td><td>16</td><td>~35</td><td>18,5</td><td>8,5</td></tr>
+              <tr><td>Novice</td><td>required</td><td>30</td><td>~66</td><td>17,5</td><td>8,0</td></tr>
+              <tr><td>Intermediate</td><td>allowed</td><td>30</td><td>~67</td><td>30,75</td><td>13,75</td></tr>
+              <tr><td>Intermediate</td><td>required</td><td>45</td><td>~92</td><td>22,5</td><td>11,0</td></tr>
+              <tr><td>Advanced</td><td>allowed</td><td>45</td><td>~78</td><td>30,0</td><td>17,25</td></tr>
+              <tr><td>Advanced</td><td>required</td><td>60</td><td>~127</td><td>41,25</td><td>19,5</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Если цель политики — сохранить <em>календарную</em> длительность «заслона», при текущих темпах набора поинтов пороги выглядят завышенными примерно в <strong>1,7–2,2 раза</strong> относительно уровня 2021–2022. Это повод к дискуссии, а не к автоматическому пересмотру правил.</p>
+      </section>
+      <section class="section">
+        <h2>Ограничения</h2>
+        <ul>
+          <li>Только поинты в основной роли; вторичная роль меняла правила с 2021.</li>
+          <li>2020–2021 и частично 2022 — аномалии календаря ивентов.</li>
+          <li>All-Stars → Champions: малый n, отдельная логика статуса.</li>
+          <li>Implied thresholds — модель, не официальный расчёт WSDC.</li>
+        </ul>
+      </section>
+      <section class="section">
+        <h2>Вывод</h2>
+        <p>Данные поддерживают гипотезу <strong>частично</strong>: в 2024–2025 медианное время до следующего дивизиона (вариант A) для нижних ступеней снова ниже, чем в «пиковые» 2022–2023, а объём переходов выше. Пороги allowed/required с 2021 года при большем числе ивентов и танцоров дают более короткий календарный путь, чем в базовую эпоху 2021–2022 — что видно и в implied-оценке порогов.</p>
+        <p>Для обсуждения регулирования перетока полезно разделять: (1) скорость карьеры по факту поинтов, (2) объём переходов, (3) нормативные пороги WSDC. Статья показывает все три слоя на одних данных Registry Points.</p>
+      </section>
+
+<section class="article-reactions" aria-label="Оценка статьи">
+        <div class="article-reactions-label">Оцените статью:</div>
+        <div class="article-reactions-buttons">
+          <div class="article-reaction-item reaction-approve">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Одобряю статью">
+              <span class="article-reaction-emoji" aria-hidden="true">✓</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-division-transition" data-lyket-id="article_division_transition_ru_positive"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-division-transition" data-lyket-id="article_division_transition_ru_positive">—</span>
+          </div>
+          <div class="article-reaction-item reaction-neutral">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Нейтральное отношение">
+              <span class="article-reaction-emoji" aria-hidden="true">○</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-division-transition" data-lyket-id="article_division_transition_ru_neutral"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-division-transition" data-lyket-id="article_division_transition_ru_neutral">—</span>
+          </div>
+          <div class="article-reaction-item reaction-disapprove">
+            <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Не одобряю статью">
+              <span class="article-reaction-emoji" aria-hidden="true">✗</span>
+              <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-division-transition" data-lyket-id="article_division_transition_ru_negative"></div>
+            </div>
+            <span class="article-reaction-count" data-lyket-namespace="articles-division-transition" data-lyket-id="article_division_transition_ru_negative">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-feedback" aria-labelledby="feedback-heading">
+        <h2 class="article-feedback-title" id="feedback-heading">Обратная связь по статье</h2>
+        <p class="article-feedback-text">
+          Если вы заметили неточность, хотите предложить идею для улучшения или просто что-то написать, заполните форму ниже.
+        </p>
+        <form class="article-feedback-form" id="articleFeedbackForm">
+          <label class="article-feedback-label" for="articleFeedbackMessage">Сообщение *</label>
+          <textarea id="articleFeedbackMessage" class="article-feedback-input" rows="4" required></textarea>
+          <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">Email (необязательно)</label>
+          <input type="email" id="articleFeedbackEmail" class="article-feedback-input" placeholder="you@example.com" autocomplete="email" />
+          <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">Отправить</button>
+          <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="article-footer">
+      <div class="data-note">
+        <p><strong>Источник данных:</strong> Анализ базы данных <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+(function() {
+  var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
+  function getCountsUrl() { return REACTIONS_API ? (REACTIONS_API.replace(/\/$/, '') + '/api/reactions') : 'static/data/reactions.json'; }
+  function applyCount(span, n) { if (span) span.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
+  function fetchCounts() {
+    var url = getCountsUrl();
+    fetch(url, { credentials: 'omit' }).then(function(r) { return r.ok ? r.json() : {}; }).then(function(data) {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
+        var id = span.getAttribute('data-lyket-id');
+        if (id) applyCount(span, (data && typeof data[id] === 'number') ? data[id] : 0);
+      });
+    }).catch(function() {
+      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) { applyCount(span, 0); });
+    });
+  }
+  function voteReaction(id, countSpan) {
+    if (!id || !countSpan || !REACTIONS_API) return;
+    countSpan.setAttribute('aria-busy', 'true');
+    countSpan.textContent = '…';
+    var base = REACTIONS_API.replace(/\/$/, '');
+    fetch(base + '/api/reactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({ id: id })
+    }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
+  }
+  function initReactionClicks() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      var overlay = trigger.querySelector('.lyket-overlay');
+      var id = overlay && overlay.getAttribute('data-lyket-id');
+      var item = trigger.closest('.article-reaction-item');
+      var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
+      if (!id || !countSpan) return;
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        voteReaction(id, countSpan);
+      });
+    });
+  }
+  function initReactionKeys() {
+    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
+      trigger.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        trigger.click();
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
+  else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
+})();
+  </script>
+  <script>
+(function() {
+  var FORM_ID = 'articleFeedbackForm';
+  var MESSAGE_ID = 'articleFeedbackMessage';
+  var EMAIL_ID = 'articleFeedbackEmail';
+  var SUBMIT_ID = 'articleFeedbackSubmit';
+  var STATUS_ID = 'articleFeedbackStatus';
+  var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
+  var ARTICLE_ID = 'article_division_transition_ru';
+  var TXT = { sending: 'Отправляем...', ok: 'Спасибо! Сообщение отправлено.', error: 'Не удалось отправить. Попробуйте ещё раз позже.', validation: 'Пожалуйста, напишите чуть подробнее (минимум 5 символов).' };
+
+  function $(id) { return document.getElementById(id); }
+
+  function setStatus(text, isError) {
+    var el = $(STATUS_ID);
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = isError ? '#dc2626' : 'var(--text-secondary)';
+  }
+
+  function onSubmit(e) {
+    e.preventDefault();
+    var form = $(FORM_ID);
+    var msgEl = $(MESSAGE_ID);
+    var emailEl = $(EMAIL_ID);
+    var btn = $(SUBMIT_ID);
+
+    if (!form || !msgEl || !btn) return;
+
+    var message = msgEl.value.trim();
+    var email = emailEl && emailEl.value.trim();
+
+    if (!message || message.length < 5) {
+      setStatus(TXT.validation, true);
+      return;
+    }
+
+    btn.disabled = true;
+    setStatus(TXT.sending, false);
+
+    fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({
+        articleId: ARTICLE_ID,
+        articleUrl: window.location.href,
+        message: message,
+        email: email
+      })
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Request failed');
+      return r.json().catch(function() { return {}; });
+    }).then(function() {
+      setStatus(TXT.ok, false);
+      msgEl.value = '';
+    }).catch(function() {
+      setStatus(TXT.error, true);
+    }).finally(function() {
+      btn.disabled = false;
+    });
+  }
+
+  function init() {
+    var form = $(FORM_ID);
+    if (form) form.addEventListener('submit', onSubmit);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+  </script>
+  <script>
+    (function() {
+      function getCurrentLanguage() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlLang = urlParams.get('lang');
+        if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) return urlLang;
+        var storedLang = localStorage.getItem('wsdc-lang');
+        if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) return storedLang;
+        return 'ru';
+      }
+      function setLanguage(lang) {
+        localStorage.setItem('wsdc-lang', lang);
+        if (lang === 'ru') window.location.href = 'article_division_transition_time.html?lang=ru';
+      }
+      function updateBackLink() {
+        var lang = getCurrentLanguage();
+        var backLink = document.getElementById('backLink');
+        if (backLink) backLink.href = '/?lang=' + lang;
+      }
+      var currentLang = getCurrentLanguage();
+      updateBackLink();
+      var langButtons = document.querySelectorAll('.lang-btn');
+      langButtons.forEach(function(btn) {
+        if (btn.dataset.lang === currentLang) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-pressed', 'true');
+        } else {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-pressed', 'false');
+        }
+        btn.addEventListener('click', function() {
+          if (!btn.disabled) setLanguage(btn.dataset.lang);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
