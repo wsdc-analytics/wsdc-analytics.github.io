@@ -708,35 +708,33 @@
         <h2>Что это значит для порогов</h2>
         <p>Если пороги нужны только как формальная отметка — “набрал X поинтов, можешь идти дальше” — тогда, возможно, ничего страшного не происходит. Танцоров стало больше, ивентов стало больше, значит и переходов стало больше.</p>
         <p>Но если пороги — это инструмент управления трафиком, то ситуация меняется. Тогда важно, чтобы они соответствовали масштабу движения. Порог, который нормально работал при ограниченном календаре, может стать слишком мягким при календаре, где у активного танцора гораздо больше возможностей набрать поинты.</p>
-        <p>Один способ проверить это — спросить: какими должны были бы быть пороги сегодня, если бы мы хотели сохранить примерно прежнюю календарную длительность пути?</p>
-        <p><code>implied ≈ порог × (медиана_месяцев_2018–19 / медиана_месяцев_2024–25)</code></p>
-        <div class="warning">Это не предложение автоматически поднять пороги. Это способ увидеть масштаб расхождения между прежней скоростью лестницы и текущим потоком.</div>
+        <p>Один способ проверить это — спросить: какими должны были бы быть allowed-пороги сегодня, если бы мы хотели сохранить примерно прежнюю календарную длительность пути?</p>
+        <p><code>technical reset ≈ порог × (медиана_месяцев_2015–19 / медиана_месяцев_2024–25)</code></p>
+        <div class="warning">Это не предложение автоматически поднять пороги. Механический расчёт показывает только нижнюю техническую оценку. Если правило должно работать несколько лет, а не догонять календарь каждый сезон, регулятору пришлось бы отдельно решать, нужен ли сглаживающий запас.</div>
 
         <figure class="figure-chart">
           <h3>6. Если удерживать старую скорость</h3>
-          <p class="chart-lead">Текущий allowed-порог и условный порог, который дал бы скорость ближе к 2018–2019.</p>
+          <p class="chart-lead">Текущий allowed-порог и технический reset, который дал бы скорость ближе к 2015–2019.</p>
           <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
         </figure>
 
         <div class="table-scroll">
           <table class="risk-table">
-            <thead><tr><th>Дивизион</th><th>Тип</th><th>Сейчас</th><th>Implied</th><th>Мес. 18–19</th><th>Мес. 24–25</th></tr></thead>
+            <thead><tr><th>Дивизион</th><th>Сейчас</th><th>Technical reset</th><th>Buffered reset</th><th>Что показывает</th></tr></thead>
             <tbody id="impliedTableBody">
-              <tr><td>Novice</td><td>allowed</td><td>16</td><td>~21</td><td>11,0</td><td>8,5</td></tr>
-              <tr><td>Novice</td><td>required</td><td>30</td><td>~41</td><td>11,0</td><td>8,0</td></tr>
-              <tr><td>Intermediate</td><td>allowed</td><td>30</td><td>~35</td><td>16,0</td><td>13,75</td></tr>
-              <tr><td>Intermediate</td><td>required</td><td>45</td><td>~66</td><td>16,0</td><td>11,0</td></tr>
-              <tr><td>Advanced</td><td>allowed</td><td>45</td><td>~54</td><td>20,5</td><td>17,25</td></tr>
-              <tr><td>Advanced</td><td>required</td><td>60</td><td>~63</td><td>20,5</td><td>19,5</td></tr>
+              <tr><td>Novice</td><td>16</td><td>~22</td><td>22–25</td><td>Сильный сигнал ускорения</td></tr>
+              <tr><td>Intermediate</td><td>30</td><td>~33</td><td>35–40</td><td>Сигнал есть, но мягче</td></tr>
+              <tr><td>Advanced</td><td>45</td><td>~45</td><td>нет явного сигнала</td><td>Скорость близка к baseline</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Для Novice allowed это даёт не 16, а примерно 21 поинт. Для Intermediate allowed — около 35 вместо 30. Для Advanced allowed — около 54 вместо 45. Это не радикальные числа везде, но направление видно: при текущем календаре прежние пороги пропускают людей быстрее.</p>
+        <p>Так появляется три сценария. <strong>No change</strong> — оставить пороги как есть, если цель системы — быстрый доступ к следующему дивизиону. <strong>Technical reset</strong> — вернуть скорость набора ближе к 2015–2019: это даёт примерно 22 для Novice и 33 для Intermediate. <strong>Buffered reset</strong> — заложить запас на несколько лет роста календаря, чтобы не перенастраивать пороги каждый сезон; это уже не вывод из данных, а политический выбор.</p>
+        <p>В этой логике вопрос сильнее всего возникает в нижних ступенях. Для Advanced такой расчёт почти не даёт аргумента за повышение: текущая скорость близка к исторической.</p>
       </section>
 
       <section class="section">
         <h2>Но поднять пороги — не бесплатное решение</h2>
-        <p>Самое очевидное возражение: доступ к ивентам распределён неравномерно. Для танцора в регионе с плотным календарём 21 поинт может быть просто вопросом активности. Для танцора, который живёт в регионе с несколькими доступными registry-ивентами в год, тот же порог может стать почти стеной.</p>
+        <p>Самое очевидное возражение: доступ к ивентам распределён неравномерно. Для танцора в регионе с плотным календарём 22–25 поинтов может быть просто вопросом активности. Для танцора, который живёт в регионе с несколькими доступными registry-ивентами в год, тот же порог может стать почти стеной.</p>
         <p>Поэтому “поднять пороги” — это не нейтральная техническая правка. Она сильнее ударит по танцорам из регионов с меньшим количеством ивентов: часть Азии, Австралия, локальные сцены вне плотного североамериканского и европейского календаря. Система может стать более управляемой по трафику, но менее равной по доступу.</p>
         <p>Именно поэтому вопрос не в том, “какой порог красивее на графике”. Вопрос в том, чем WSDC считает Skill Level: быстрым отражением соревновательного результата или более медленной лестницей мастерства, где переход должен занимать определённое время и количество соревновательного опыта.</p>
       </section>
@@ -747,7 +745,7 @@
           <li>Это анализ основной роли и движения по Skill Level, а не второй роли.</li>
           <li>2020–2022 — аномалия календаря; её нельзя читать как нормальную скорость системы.</li>
           <li>2026 используется только как ранний сигнал: год неполный, а переходы появляются в данных с лагом.</li>
-          <li>Implied thresholds — иллюстрация масштаба, не официальный расчёт WSDC.</li>
+          <li>Technical reset и buffered reset — иллюстрации масштаба, не официальный расчёт WSDC.</li>
           <li>Качество танца, уровень тренировок и судейское восприятие здесь не измеряются.</li>
         </ul>
       </section>
@@ -964,25 +962,28 @@
     });
   }
   function renderImplied(DATA) {
-    var imp = (DATA.implied_thresholds || []).filter(function(r) { return r.threshold_type === 'allowed'; });
+    var rows = [
+      { division: 'Novice', current: 16, technical: 22, buffered: '22–25', signal: 'Сильный сигнал ускорения' },
+      { division: 'Intermediate', current: 30, technical: 33, buffered: '35–40', signal: 'Сигнал есть, но мягче' },
+      { division: 'Advanced', current: 45, technical: 45, buffered: 'нет явного сигнала', signal: 'Скорость близка к baseline' }
+    ];
     destroy('implied');
     charts.implied = new Chart(document.getElementById('chartImplied'), {
       type: 'bar',
       data: {
-        labels: imp.map(function(r) { return r.division; }),
+        labels: rows.map(function(r) { return r.division; }),
         datasets: [
-          { label: 'Сейчас', data: imp.map(function(r) { return r.actual_threshold; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
-          { label: 'Implied (2018–19 темп)', data: imp.map(function(r) { return r.implied_threshold; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
+          { label: 'Сейчас', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
+          { label: 'Technical reset (2015–19 темп)', data: rows.map(function(r) { return r.technical; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
         ]
       },
       options: baseOpts('Поинты')
     });
     var tbody = document.getElementById('impliedTableBody');
-    if (tbody && DATA.implied_thresholds) {
-      tbody.innerHTML = DATA.implied_thresholds.map(function(r) {
-        return '<tr><td>' + r.division + '</td><td>' + r.threshold_type + '</td><td>' + r.actual_threshold +
-          '</td><td>~' + Math.round(r.implied_threshold) + '</td><td>' + r.median_months_baseline +
-          '</td><td>' + r.median_months_current + '</td></tr>';
+    if (tbody) {
+      tbody.innerHTML = rows.map(function(r) {
+        return '<tr><td>' + r.division + '</td><td>' + r.current + '</td><td>~' + r.technical +
+          '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
       }).join('');
     }
   }
