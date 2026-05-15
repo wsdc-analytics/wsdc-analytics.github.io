@@ -646,7 +646,7 @@
       <section class="section">
         <h2>Как читаем данные</h2>
         <p>Смотрим только основную роль танцора. Вторая роль — отдельная история и здесь не нужна, потому что вопрос именно про основной путь по Skill Level.</p>
-        <p>Для контекста беру три периода: <strong>2015–2019</strong> как более ранний нормальный календарь до ковида, <strong>2021–2022</strong> как момент жизни новых правил в неполной системе, и <strong>2024–2025</strong> как текущий разогнанный календарь.</p>
+        <p>Для скорости набора порогов я сравниваю нормальный доковидный период <strong>2015–2019</strong> с текущим разогнанным календарём <strong>2024–2025</strong>. Ковидные годы 2020–2022 показываю отдельно как аномалию календаря, но не использую как baseline: это был неполный режим системы, а не нормальная точка сравнения.</p>
         <p>Есть две разные вещи, которые важно не смешивать. Первая — сколько месяцев человеку в среднем нужно, чтобы добраться до порога по данным Registry Points. Это аналитическая метрика, а не дословная формулировка правил. Вторая — сколько людей вообще проходит через этот порог и попадает в следующий дивизион. Для разговора о правилах нужны обе.</p>
       </section>
       <section class="section">
@@ -858,7 +858,6 @@
   function renderThresholdSpeed(DATA) {
     var divisions = ['Novice', 'Intermediate', 'Advanced'];
     var earlyYears = [2015, 2016, 2017, 2018, 2019];
-    var ruleYears = [2021, 2022];
     var currentYears = [2024, 2025];
     destroy('threshold');
     charts.threshold = new Chart(document.getElementById('chartThresholdSpeed'), {
@@ -867,7 +866,6 @@
         labels: divisions,
         datasets: [
           { label: '2015–19', data: divisions.map(function(d) { return allowedMedian(DATA, d, earlyYears); }), backgroundColor: 'rgba(99, 102, 241, 0.65)' },
-          { label: '2021–22', data: divisions.map(function(d) { return allowedMedian(DATA, d, ruleYears); }), backgroundColor: 'rgba(249, 115, 22, 0.45)' },
           { label: '2024–25', data: divisions.map(function(d) { return allowedMedian(DATA, d, currentYears); }), backgroundColor: 'rgba(13, 148, 136, 0.65)' }
         ]
       },
