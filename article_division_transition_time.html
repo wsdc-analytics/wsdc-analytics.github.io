@@ -673,7 +673,19 @@
         </figure>
 
         <figure class="figure-chart">
-          <h3>4. Календарь снова стал большим</h3>
+          <h3>4. Доля быстрых переходов тоже выросла</h3>
+          <p class="chart-lead">Из всех, кто впервые получил поинты в дивизионе, какая доля получила первые поинты в следующем дивизионе за 12 месяцев.</p>
+          <div class="canvas-wrap"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
+          <p class="chart-caption">Это проверка второй стороны гипотезы: не только “дошедшие идут быстрее”, но и “больше стартовавших успевает пройти дальше в короткое окно”. В нижних дивизионах 2023–2024 выше доковидного коридора; Advanced → All-Stars такого эффекта пока не показывает.</p>
+        </figure>
+
+        <h3>Не только быстрее, но и шире</h3>
+        <p>Если смотреть только на тех, кто уже получил первые поинты в следующем дивизионе, мы видим скорость перехода. Но для разговора о трафике нужен ещё один вопрос: какая доля всей стартовой когорты вообще успевает пройти дальше?</p>
+        <p>Для этого берём танцоров по году первых поинтов в дивизионе и смотрим, кто получил первые поинты в следующем дивизионе за 12 месяцев. Такое окно достаточно короткое, чтобы уже аккуратно читать 2024 год, и достаточно содержательное, чтобы увидеть быстрый проход через правила.</p>
+        <p>В 2012–2018 доля быстрых переходов Novice → Intermediate была около <strong>18,3%</strong>, а в 2023–2024 — уже <strong>21,8%</strong>. Для Intermediate → Advanced рост ещё заметнее: <strong>11,9%</strong> против <strong>15,0%</strong>. Это косвенно подтверждает, что поток не просто ускорился у отдельных активных танцоров, а расширился внутри нижних ступеней лестницы.</p>
+
+        <figure class="figure-chart">
+          <h3>5. Календарь снова стал большим</h3>
           <p class="chart-lead">Уникальные ивенты с рейтинговыми поинтами и танцоры с поинтами.</p>
           <div class="canvas-wrap"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
           <p class="chart-caption">В 2021 было 26 ивентов и 1007 танцоров с поинтами. В 2025 — 172 ивента и 3991 танцор. Правила, введённые в одном масштабе календаря, теперь работают в другом.</p>
@@ -700,7 +712,7 @@
         <div class="warning">Это не предложение автоматически поднять пороги. Это способ увидеть масштаб расхождения между прежней скоростью лестницы и текущим потоком.</div>
 
         <figure class="figure-chart">
-          <h3>5. Если удерживать старую скорость</h3>
+          <h3>6. Если удерживать старую скорость</h3>
           <p class="chart-lead">Текущий allowed-порог и условный порог, который дал бы скорость ближе к 2018–2019.</p>
           <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
         </figure>
@@ -912,6 +924,21 @@
       options: baseOpts('Переходов в год')
     });
   }
+  function renderConversion() {
+    var labels = ['Novice→Intermediate', 'Intermediate→Advanced', 'Advanced→All-Stars'];
+    destroy('conversion');
+    charts.conversion = new Chart(document.getElementById('chartConversion'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: '2012–18 baseline', data: [18.3, 11.9, 5.1], backgroundColor: 'rgba(99, 102, 241, 0.65)' },
+          { label: '2023–24', data: [21.8, 15.0, 3.5], backgroundColor: 'rgba(13, 148, 136, 0.65)' }
+        ]
+      },
+      options: baseOpts('% за 12 месяцев')
+    });
+  }
   function renderEco(DATA) {
     var eco = DATA.ecosystem_by_year.filter(function(e) { return e.year >= 2015 && e.year <= 2025; });
     destroy('eco');
@@ -965,6 +992,7 @@
       renderThresholdSpeed(DATA);
       renderTransitions(DATA);
       renderVolume(DATA);
+      renderConversion();
       renderEco(DATA);
       renderImplied(DATA);
     }).catch(function(err) { console.error('Charts failed', err); });
