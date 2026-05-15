@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Год к году: время перехода между дивизионами Skill Level, рост ивентов и implied пороги WSDC." />
-  <meta property="og:title" content="Скорость лестницы Skill Level: время между дивизионами" />
-  <meta property="og:description" content="Как менялось календарное время перехода между дивизионами WSDC и что это значит для порогов allowed/required." />
+  <meta name="description" content="Продолжение дискуссии о правиле 3 лет: ускорилась ли лестница Skill Level при неизменных порогах и что это значит для All-Star и Champions." />
+  <meta property="og:title" content="Быстрая лестница: гипотеза для дискуссии о All-Star и Champions" />
+  <meta property="og:description" content="Основная роль, рост ивентов, скорость набора порогов 16/30/45 и один из вариантов политики — без второй роли." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://wsdc-analytics.github.io/article_division_transition_time.html" />
   <meta property="og:image" content="https://wsdc-analytics.github.io/events_background.png">
   <meta name="keywords" content="WSDC, West Coast Swing, Skill Level, дивизионы, переход, поинты, Novice, Intermediate, Advanced, All-Star, Champions, аналитика">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://wsdc-analytics.github.io/article_division_transition_time.html">
-  <meta name="twitter:title" content="Скорость лестницы Skill Level: время между дивизионами">
-  <meta name="twitter:description" content="Как менялось календарное время перехода между дивизионами WSDC и что это значит для порогов allowed/required.">
+  <meta name="twitter:title" content="Быстрая лестница: гипотеза для дискуссии о All-Star и Champions">
+  <meta name="twitter:description" content="Ускорение лестницы по основной роли, рост ивентов и гипотетический вариант — поднять пороги allowed/required.">
   <meta name="twitter:image" content="https://wsdc-analytics.github.io/events_background.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,17 +21,17 @@
   <link rel="dns-prefetch" href="https://www.googletagmanager.com">
   <link rel="preload" href="events_background.png" as="image" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Скорость лестницы Skill Level | WSDC Analytics</title>
+  <title>Быстрая лестница Skill Level | WSDC Analytics</title>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Скорость лестницы Skill Level: время между дивизионами",
-    "description": "Год к году: время перехода между дивизионами Skill Level, рост ивентов и implied пороги WSDC",
+    "headline": "Быстрая лестница: гипотеза для дискуссии о All-Star и Champions",
+    "description": "Продолжение линии про правило 3 лет: скорость лестницы по основной роли, рост ивентов и один вариант политики",
     "url": "https://wsdc-analytics.github.io/article_division_transition_time.html",
     "image": "https://wsdc-analytics.github.io/events_background.png",
     "datePublished": "2026-05-15",
-    "dateModified": "2026-05-15",
+    "dateModified": "2026-05-16",
     "author": { "@type": "Organization", "name": "WSDC Analytics" },
     "publisher": {
       "@type": "Organization",
@@ -551,8 +551,63 @@
       }
     }
   
-    .chart-embed { margin: 24px 0; border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(15,23,42,.05); }
-    .chart-embed iframe { display: block; width: 100%; min-height: 520px; border: 0; }
+    .figure-chart {
+      margin: 28px 0;
+      padding: 20px 18px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, .05);
+    }
+    .figure-chart h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+    .figure-chart .chart-lead {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: var(--text-tertiary);
+    }
+    .canvas-wrap {
+      position: relative;
+      height: 300px;
+    }
+    .chart-caption {
+      margin: 10px 0 0;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      line-height: 1.45;
+    }
+    .research-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 16px 0 8px;
+    }
+    .research-table th,
+    .research-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+      vertical-align: top;
+    }
+    .research-table th {
+      background: #f9fafb;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      color: var(--text-tertiary);
+    }
+    .footnote {
+      font-size: 15px;
+      color: var(--text-secondary);
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin: 20px 0;
+    }
+    @media (max-width: 900px) {
+      .canvas-wrap { height: 260px; }
+    }
 
   </style>
 
@@ -570,80 +625,128 @@
           <button class="lang-btn" data-lang="es" disabled>ES</button>
         </div>
       </div>
-      <h1 class="title">Скорость лестницы Skill Level: время между дивизионами</h1>
-      <p class="subtitle">Как менялось календарное время перехода и что это значит для порогов WSDC</p>
+      <h1 class="title">Быстрая лестница: гипотеза для дискуссии о All-Star и Champions</h1>
+      <p class="subtitle">Продолжение линии про правило 3 лет — скорость основной роли, рост ивентов и один вариант политики (не рекомендация WSDC)</p>
     </header>
     <main id="main-content" class="article-content">
       <section class="section">
-        <h2>Вопрос</h2>
-        <p>Сообщество WCS растёт: больше рейтинговых ивентов, больше танцоров с поинтами, больше конкуренции. При этом пороги перехода между дивизионами Skill Level (Novice → Intermediate → Advanced → All-Stars → Champions) в модели allowed/required с 2021 года в основном <strong>не менялись</strong>: 16/30, 30/45, 45/60 поинтов за 36 месяцев.</p>
-        <p>Гипотеза: при тех же порогах календарное время пути по лестнице <strong>сокращается</strong> — поинты набираются быстрее, переходов в год становится больше. Ниже — проверка по данным WSDC Registry Points и осторожный регуляторный срез: до каких порогов пришлось бы поднять «заслоны», чтобы вернуть медианное время набора поинтов, как в 2021–2022.</p>
+        <h2>Мостик от правила 3 лет</h2>
+        <p>В <a href="article_3year_rule.html">статье о возвращении правила 3 лет</a> разбирается верх лестницы: WSDC обсуждает обязательную активность All-Stars и Champions (минимум 3 поинта за 36 месяцев). Это про <strong>наполненность и актуальность</strong> элитных дивизионов — кто имеет право выступать там сейчас.</p>
+        <p>Здесь — <strong>другой слой той же дискуссии</strong>, снизу: что происходит с основной ролью, пока пороги Novice → Intermediate → Advanced → All-Stars с 2021 года в основном <strong>не менялись</strong> (16/30, 30/45, 45/60 за 36 месяцев; см. <a href="rules_evolution_2025.html">эволюцию правил</a>). Гипотеза: при росте числа ивентов и поездок поинты набираются быстрее, формальный статус по Skill Level движется быстрее, а конкурентная среда в номинации — плотнее. Это не доказывает «недотанцевали», но согласуется с мотивом регулировать переток и элитные дивизионы.</p>
+        <p class="footnote"><strong>Не в фокусе:</strong> <a href="article_secondary_role.html">вторая роль</a> — отдельная история (мало ивентов, сохранение конкурсной механики). Здесь только <strong>dominate role</strong>.</p>
+      </section>
+
+      <section class="section">
+        <h2>На какие вопросы отвечаем</h2>
+        <table class="research-table">
+          <thead><tr><th>Вопрос</th><th>Что смотрим в данных</th></tr></thead>
+          <tbody>
+            <tr><td>Ускорился ли набор порогов allowed?</td><td>Месяцы от первых поинтов в дивизионе до allowed (rolling 36 мес.)</td></tr>
+            <tr><td>Вырос ли приток в следующий дивизион?</td><td>Число переходов Novice→Int, Int→Adv по годам</td></tr>
+            <tr><td>Связано ли это с масштабом экосистемы?</td><td>Ивенты и танцоры с поинтами по годам</td></tr>
+            <tr><td>Один вариант политики: поднять пороги?</td><td>Implied thresholds: 2018–19 vs 2024–25</td></tr>
+            <tr><td>Кому такой вариант вреднее?</td><td>Неравномерный доступ к ивентам по регионам</td></tr>
+          </tbody>
+        </table>
       </section>
       <section class="section">
-        <h2>Что считаем переходом</h2>
-        <p>Анализ только по <strong>основной роли</strong> (dominate role). Это не доля второй роли и не снимки allowed/required из реестра WSDC — см. <a href="article_secondary_role.html">статью о второй роли</a>.</p>
-        <p><strong>Вариант A (first → first):</strong> месяцы от первых поинтов в дивизионе D до первых поинтов в D+1.</p>
-        <p><strong>Вариант B (last → first):</strong> от последних поинтов в D до первых в D+1 — ближе к «сколько я ещё соревновался в дивизионе», но чувствителен к паузам и разовым поинтам.</p>
-        <p><strong>Год на графиках:</strong> календарный год <em>первых</em> поинтов в целевом дивизионе (transition year). Так сопоставимы когорты по годам.</p>
+        <h2>Методы</h2>
+        <p>Источник: <a href="https://points.worldsdc.com/" target="_blank" rel="noopener noreferrer">WSDC Points Registry</a>. Только <strong>основная роль</strong> (dominate role). Сравнение эпох: <strong>2018–2019</strong> (до ковида), <strong>2020–2022</strong> (аномалия календаря), <strong>2024–2025</strong> (пост-восстановление). На графиках переходов — Leader, метрика «первые поинты в D → первые в D+1»; год на оси X — год первых поинтов в целевом дивизионе. Годы с n &lt; 30 не показываем.</p>
+        <p>В 2021 сменилась модель правил (cumulative → allowed/required за 36 мес.); сравнение «до/после» по порогам — осторожное, с опорой на текущие 16/30/45.</p>
       </section>
       <section class="section">
-        <h2>Динамика по годам</h2>
-        <p>На интерактиве — медиана месяцев, число переходов, рост ивентов/танцоров и блок implied thresholds. Годы с выборкой n &lt; 30 скрыты.</p>
-        <div class="chart-embed">
-          <iframe title="Время перехода между дивизионами" src="interactive_division_transition_time.html?v=20260515" width="100%" height="520" scrolling="no"></iframe>
-        </div>
-        <h3>Novice → Intermediate (Leader, вариант A)</h3>
-        <p>До пандемии (2018–2019) медиана около <strong>17–18 месяцев</strong>. В 2022–2023 — аномально высокие значения (37–36 мес.) на фоне восстановления календаря. В 2024–2025 медиана снова <strong>14–16,5 месяцев</strong> при росте числа переходов (176 и 227 в год). Ускорение относительно 2018–2019 умеренное, но объём переходов выше.</p>
-        <h3>Intermediate → Advanced</h3>
-        <p>Та же картина: 2018–2019 ~23–24 мес., пик 42–43 мес. в 2022–2023, 2024–2025 — <strong>20–26 мес.</strong></p>
-        <h3>Advanced → All-Stars</h3>
-        <p>Меньше наблюдений; 2025 — медиана 29 мес. (n=39). Старшие ступени менее однородны.</p>
-        <p>Вариант B в среднем даёт <strong>короче</strong> интервалы, чем A (танцор часто получает первые поинты в следующем дивизионе, ещё соревнуясь в предыдущем). Для выводов о «скорости карьеры» устойчивее опираться на A; B — дополнительная проверка.</p>
-      </section>
-      <section class="section">
-        <h2>Контекст: ивенты и танцоры</h2>
+        <h2>Данные</h2>
+        <figure class="figure-chart">
+          <h3>1. Быстрее до allowed</h3>
+          <p class="chart-lead">Медиана месяцев до порога allowed (Leader). Сравнение 2018–19 и 2024–25.</p>
+          <div class="canvas-wrap"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
+          <p class="chart-caption">Novice allowed: ~11 → ~8,5 мес.; Intermediate: ~16 → ~13,75; Advanced: ~20,5 → ~17,25. Пороги в правилах те же.</p>
+        </figure>
+
+        <figure class="figure-chart">
+          <h3>2. Переходы и ковид</h3>
+          <p class="chart-lead">Медиана месяцев Novice→Intermediate и Intermediate→Advanced; оранжевая зона — 2020–2022.</p>
+          <div class="canvas-wrap"><canvas id="chartTransitions" aria-label="Время перехода между дивизионами по годам"></canvas></div>
+          <p class="chart-caption">2022–2023 — раздутые 36–37 мес. (мало ивентов), не тренд правил. В 2024–25 Novice→Int снова ~14–16,5 мес., но переходов в год много (176–227 только Leader).</p>
+        </figure>
+
+        <figure class="figure-chart">
+          <h3>3. Объём переходов</h3>
+          <p class="chart-lead">Сколько танцоров впервые получили поинты в следующем дивизионе (основная роль, Leader).</p>
+          <div class="canvas-wrap"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
+          <p class="chart-caption">Приток в Intermediate и Advanced остаётся высоким при сжатии времени до порогов.</p>
+        </figure>
+
+        <figure class="figure-chart">
+          <h3>4. Экосистема</h3>
+          <p class="chart-lead">Уникальные ивенты с рейтинговыми поинтами и танцоры с поинтами.</p>
+          <div class="canvas-wrap"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
+          <p class="chart-caption">2018: 146 ивентов, 3514 танцоров; 2025: 172 ивента, 3991 танцор. После дна 2022 (92 / 2497) — быстрый отскок.</p>
+        </figure>
+
         <div class="kpi">
-          <div class="kpi-item"><span class="kpi-value">172</span><span class="kpi-label">ивента с поинтами в 2025</span></div>
-          <div class="kpi-item"><span class="kpi-value">3991</span><span class="kpi-label">танцоров с поинтами в 2025</span></div>
-          <div class="kpi-item"><span class="kpi-value">92→172</span><span class="kpi-label">ивентов 2022→2025</span></div>
-          <div class="kpi-item"><span class="kpi-value">2497→3991</span><span class="kpi-label">танцоров 2022→2025</span></div>
+          <div class="kpi-item"><span class="kpi-value">~23%</span><span class="kpi-label">быстрее Novice allowed (11→8,5 мес.)</span></div>
+          <div class="kpi-item"><span class="kpi-value">408</span><span class="kpi-label">переходов Nov→Int 2018–19</span></div>
+          <div class="kpi-item"><span class="kpi-value">403</span><span class="kpi-label">переходов Nov→Int 2024–25</span></div>
+          <div class="kpi-item"><span class="kpi-value">1,2–1,5×</span><span class="kpi-label">implied allowed к порогам</span></div>
         </div>
-        <p>Рост экосистемы коррелирует со сжатием времени до порогов; причинно утверждать «больше ивентов → быстрее карьера» по одной корреляции нельзя (менялись правила второй роли, Trial Events с 2025 и т.д.).</p>
       </section>
       <section class="section">
-        <h2>Пороги как регулирование перетока</h2>
-        <p>С 2021 года WSDC задаёт allowed/required за 36 месяцев (подробная хронология — в <a href="rules_evolution_2025.html">эволюции правил</a>). Мы измерили: сколько месяцев от первых поинтов в дивизионе до набора порога (rolling 36 мес., основная роль).</p>
-        <p>Сравнение базы <strong>2021–2022</strong> и <strong>2024–2025</strong>. Упрощённая иллюстрация (не рекомендация WSDC):</p>
-        <p><code>implied ≈ порог × (медиана_месяцев_2021–22 / медиана_месяцев_2024–25)</code></p>
-        <div class="warning">Механическая экстраполяция. Не учитывает Tier, петиции, Champions-by-discretion, смену философии правил 2013/2021.</div>
+        <h2>Поинты и мастерство</h2>
+        <p>Реестр измеряет <strong>участие и результат на ивентах</strong>, не уровень танца в вакууме. Тренировки могли стать качественнее и чаще — мы этого из данных не видим.</p>
+        <p>Интерпретация для дискуссии о All-Star/Champions: при большом числе ивентов танцор быстрее набирает поинты и формально поднимается по лестнице, тогда как в номинации уже есть люди, которые годами держат дивизион. Возникает разрыв между <strong>статусом в реестре</strong> и <strong>конкурентной зрелостью в зале</strong> — один из возможных фонов для инициатив WSDC наверху (в т.ч. <a href="article_3year_rule.html">правило 3 лет</a>). Это гипотеза, не вывод регрессии.</p>
+      </section>
+
+      <section class="section">
+        <h2>Один вариант политики: поднять пороги</h2>
+        <p>Не рекомендация WSDC Analytics — <strong>один гипотетический рычаг</strong> в цепочке «много ивентов → быстрый набор → переполнение снизу». Если цель — вернуть <em>календарную</em> длительность набора как в 2018–19 при сегодняшних темпах:</p>
+        <p><code>implied ≈ порог × (медиана_месяцев_2018–19 / медиана_месяцев_2024–25)</code></p>
+        <div class="warning">Механическая модель. Не учитывает Tier, петиции, Champions-by-discretion, Trial Events 2025+.</div>
+
+        <figure class="figure-chart">
+          <h3>5. Implied allowed (иллюстрация)</h3>
+          <p class="chart-lead">Текущий порог allowed vs оценка для темпа 2018–19 (Leader, 2018–19 vs 2024–25).</p>
+          <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
+        </figure>
+
         <div class="table-scroll">
           <table class="risk-table">
-            <thead><tr><th>Дивизион</th><th>Тип</th><th>Порог сейчас</th><th>Implied</th><th>Мес. 21–22</th><th>Мес. 24–25</th></tr></thead>
-            <tbody>
-              <tr><td>Novice</td><td>allowed</td><td>16</td><td>~35</td><td>18,5</td><td>8,5</td></tr>
-              <tr><td>Novice</td><td>required</td><td>30</td><td>~66</td><td>17,5</td><td>8,0</td></tr>
-              <tr><td>Intermediate</td><td>allowed</td><td>30</td><td>~67</td><td>30,75</td><td>13,75</td></tr>
-              <tr><td>Intermediate</td><td>required</td><td>45</td><td>~92</td><td>22,5</td><td>11,0</td></tr>
-              <tr><td>Advanced</td><td>allowed</td><td>45</td><td>~78</td><td>30,0</td><td>17,25</td></tr>
-              <tr><td>Advanced</td><td>required</td><td>60</td><td>~127</td><td>41,25</td><td>19,5</td></tr>
+            <thead><tr><th>Дивизион</th><th>Тип</th><th>Сейчас</th><th>Implied</th><th>Мес. 18–19</th><th>Мес. 24–25</th></tr></thead>
+            <tbody id="impliedTableBody">
+              <tr><td>Novice</td><td>allowed</td><td>16</td><td>~21</td><td>11,0</td><td>8,5</td></tr>
+              <tr><td>Novice</td><td>required</td><td>30</td><td>~41</td><td>11,0</td><td>8,0</td></tr>
+              <tr><td>Intermediate</td><td>allowed</td><td>30</td><td>~35</td><td>16,0</td><td>13,75</td></tr>
+              <tr><td>Intermediate</td><td>required</td><td>45</td><td>~66</td><td>16,0</td><td>11,0</td></tr>
+              <tr><td>Advanced</td><td>allowed</td><td>45</td><td>~54</td><td>20,5</td><td>17,25</td></tr>
+              <tr><td>Advanced</td><td>required</td><td>60</td><td>~63</td><td>20,5</td><td>19,5</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Если цель политики — сохранить <em>календарную</em> длительность «заслона», при текущих темпах набора поинтов пороги выглядят завышенными примерно в <strong>1,7–2,2 раза</strong> относительно уровня 2021–2022. Это повод к дискуссии, а не к автоматическому пересмотру правил.</p>
+        <p>Такой сценарий замедлил бы формальный переток, но вызвал бы спор: «заслоны» снова отстают от масштаба сцены — или наоборот, возвращают воздух в номинации.</p>
       </section>
+
+      <section class="section">
+        <h2>Неравномерность доступа к ивентам</h2>
+        <p>Рост числа registry-ивентов и конкурентной активности в последние годы сильнее завязан на <strong>США и часть европейского календаря</strong> — там и раньше была плотная соревновательная среда (см. <a href="overview_2025.html">обзор 2025</a>). Танцоры, которые в основном ездят на локальные ивенты (многие сцены в Азии, Австралии, России и др.), набирают поинты <strong>медленнее</strong> при тех же порогах.</p>
+        <p>Если поднять 16→21 или 30→35, разрыв с «ивентными туристами» из плотных регионов может <strong>усилиться</strong>: кто и так ездит на 15–25 registry-ивентов в год, быстрее закроет новый порог; кто ограничен 5–10 локальными — нет. Локальное сообщество при этом может выиграть (меньше «пролёта» через дивизионы) или проиграть (сложнее догнать календарь лидеров) — зависит от региона; данных для однозначного вывода нет.</p>
+        <p class="footnote">Любое регулирование «сверху» (3-year rule) и «снизу» (пороги) нужно смотреть вместе с географией ивентов, а не только с медианой по всему реестру.</p>
+      </section>
+
       <section class="section">
         <h2>Ограничения</h2>
         <ul>
-          <li>Только поинты в основной роли; вторичная роль меняла правила с 2021.</li>
-          <li>2020–2021 и частично 2022 — аномалии календаря ивентов.</li>
-          <li>All-Stars → Champions: малый n, отдельная логика статуса.</li>
-          <li>Implied thresholds — модель, не официальный расчёт WSDC.</li>
+          <li>Только поинты основной роли; вторая роль — отдельная статья.</li>
+          <li>2020–2022 — аномалия календаря, не тренд правил 2021.</li>
+          <li>All-Stars → Champions: малый n, отдельная логика статуса (см. правило 3 лет).</li>
+          <li>Implied thresholds — модель WSDC Analytics, не расчёт WSDC.</li>
+          <li>Мастерство и качество номинаций данными не измеряются.</li>
         </ul>
       </section>
+
       <section class="section">
         <h2>Вывод</h2>
-        <p>Данные поддерживают гипотезу <strong>частично</strong>: в 2024–2025 медианное время до следующего дивизиона (вариант A) для нижних ступеней снова ниже, чем в «пиковые» 2022–2023, а объём переходов выше. Пороги allowed/required с 2021 года при большем числе ивентов и танцоров дают более короткий календарный путь, чем в базовую эпоху 2021–2022 — что видно и в implied-оценке порогов.</p>
-        <p>Для обсуждения регулирования перетока полезно разделять: (1) скорость карьеры по факту поинтов, (2) объём переходов, (3) нормативные пороги WSDC. Статья показывает все три слоя на одних данных Registry Points.</p>
+        <p>Данные <strong>частично поддерживают</strong> гипотезу «быстрой лестницы»: при неизменных порогах allowed с 2021 года медианное время до allowed сократилось (2018–19 vs 2024–25), приток в следующие дивизионы остаётся высоким, экосистема ивентов выросла. Это один из возможных фонов дискуссии о регулировании All-Star/Champions — рядом с <a href="article_3year_rule.html">правилом 3 лет</a>, но не вместо него.</p>
+        <p>Поднятие порогов 16/30/45 — лишь <strong>один спорный вариант</strong> с ценой для регионов с меньшим доступом к ивентам. Статья не призывает WSDC его принять; она связывает верх и низ лестницы в одной картине на данных Registry Points.</p>
       </section>
 
 <section class="article-reactions" aria-label="Оценка статьи">
@@ -696,6 +799,167 @@
     </footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+(function() {
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260516';
+  var charts = {};
+  function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
+  function covidPlugin() {
+    return {
+      id: 'covidBand',
+      beforeDraw: function(chart) {
+        var x = chart.scales.x;
+        if (!x) return;
+        var x0 = x.getPixelForValue(2020);
+        var x1 = x.getPixelForValue(2022);
+        var area = chart.chartArea;
+        var ctx = chart.ctx;
+        ctx.save();
+        ctx.fillStyle = 'rgba(249, 115, 22, 0.1)';
+        ctx.fillRect(x0, area.top, x1 - x0, area.bottom - area.top);
+        ctx.restore();
+      }
+    };
+  }
+  function baseOpts(yTitle) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { font: { size: 10 } } },
+        y: { title: { display: !!yTitle, text: yTitle || '' }, ticks: { font: { size: 10 } } }
+      }
+    };
+  }
+  function renderThresholdSpeed(DATA) {
+    var imp = (DATA.implied_thresholds || []).filter(function(r) { return r.threshold_type === 'allowed'; });
+    destroy('threshold');
+    charts.threshold = new Chart(document.getElementById('chartThresholdSpeed'), {
+      type: 'bar',
+      data: {
+        labels: imp.map(function(r) { return r.division; }),
+        datasets: [
+          { label: '2018–19', data: imp.map(function(r) { return r.median_months_baseline; }), backgroundColor: 'rgba(99, 102, 241, 0.65)' },
+          { label: '2024–25', data: imp.map(function(r) { return r.median_months_current; }), backgroundColor: 'rgba(13, 148, 136, 0.65)' }
+        ]
+      },
+      options: baseOpts('Месяцы до allowed')
+    });
+  }
+  function transitionSeries(DATA, from, to) {
+    return DATA.transition_series.filter(function(s) {
+      return s.from_division === from && s.to_division === to && s.role === 'Leader' &&
+        s.metric_variant === 'first_to_first' && !s.suppress;
+    });
+  }
+  function renderTransitions(DATA) {
+    var years = [];
+    for (var y = 2015; y <= 2025; y++) years.push(y);
+    var nov = transitionSeries(DATA, 'Novice', 'Intermediate');
+    var int = transitionSeries(DATA, 'Intermediate', 'Advanced');
+    var novMap = Object.fromEntries(nov.map(function(r) { return [r.transition_year, r.median_months]; }));
+    var intMap = Object.fromEntries(int.map(function(r) { return [r.transition_year, r.median_months]; }));
+    destroy('transitions');
+    charts.transitions = new Chart(document.getElementById('chartTransitions'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Novice→Intermediate', data: years.map(function(y) { return novMap[y] != null ? novMap[y] : null; }), borderColor: '#6366f1', tension: 0.2, spanGaps: true },
+          { label: 'Intermediate→Advanced', data: years.map(function(y) { return intMap[y] != null ? intMap[y] : null; }), borderColor: '#0d9488', tension: 0.2, spanGaps: true }
+        ]
+      },
+      options: baseOpts('Медиана, мес.'),
+      plugins: [covidPlugin()]
+    });
+  }
+  function renderVolume(DATA) {
+    var years = [];
+    for (var y = 2015; y <= 2025; y++) years.push(y);
+    function counts(from, to) {
+      var rows = DATA.transitions_count_by_year.filter(function(r) {
+        return r.from_division === from && r.to_division === to && r.role === 'Leader';
+      });
+      return Object.fromEntries(rows.map(function(r) { return [r.transition_year, r.n]; }));
+    }
+    var novC = counts('Novice', 'Intermediate');
+    var intC = counts('Intermediate', 'Advanced');
+    destroy('volume');
+    charts.volume = new Chart(document.getElementById('chartVolume'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Novice→Intermediate', data: years.map(function(y) { return novC[y] || 0; }), backgroundColor: 'rgba(99, 102, 241, 0.55)' },
+          { label: 'Intermediate→Advanced', data: years.map(function(y) { return intC[y] || 0; }), backgroundColor: 'rgba(13, 148, 136, 0.55)' }
+        ]
+      },
+      options: baseOpts('Переходов в год')
+    });
+  }
+  function renderEco(DATA) {
+    var eco = DATA.ecosystem_by_year.filter(function(e) { return e.year >= 2015 && e.year <= 2025; });
+    destroy('eco');
+    charts.eco = new Chart(document.getElementById('chartEco'), {
+      type: 'line',
+      data: {
+        labels: eco.map(function(e) { return e.year; }),
+        datasets: [
+          { label: 'Ивенты', data: eco.map(function(e) { return e.unique_events; }), borderColor: '#6366f1', yAxisID: 'y', tension: 0.2 },
+          { label: 'Танцоры', data: eco.map(function(e) { return e.unique_dancers; }), borderColor: '#0d9488', yAxisID: 'y1', tension: 0.2 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { labels: { font: { size: 11 } } } },
+        scales: {
+          x: { ticks: { font: { size: 10 } } },
+          y: { position: 'left', title: { display: true, text: 'Ивенты' }, ticks: { font: { size: 10 } } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Танцоры' }, ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+  }
+  function renderImplied(DATA) {
+    var imp = (DATA.implied_thresholds || []).filter(function(r) { return r.threshold_type === 'allowed'; });
+    destroy('implied');
+    charts.implied = new Chart(document.getElementById('chartImplied'), {
+      type: 'bar',
+      data: {
+        labels: imp.map(function(r) { return r.division; }),
+        datasets: [
+          { label: 'Сейчас', data: imp.map(function(r) { return r.actual_threshold; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
+          { label: 'Implied (2018–19 темп)', data: imp.map(function(r) { return r.implied_threshold; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
+        ]
+      },
+      options: baseOpts('Поинты')
+    });
+    var tbody = document.getElementById('impliedTableBody');
+    if (tbody && DATA.implied_thresholds) {
+      tbody.innerHTML = DATA.implied_thresholds.map(function(r) {
+        return '<tr><td>' + r.division + '</td><td>' + r.threshold_type + '</td><td>' + r.actual_threshold +
+          '</td><td>~' + Math.round(r.implied_threshold) + '</td><td>' + r.median_months_baseline +
+          '</td><td>' + r.median_months_current + '</td></tr>';
+      }).join('');
+    }
+  }
+  function initCharts() {
+    fetch(JSON_URL, { credentials: 'omit' }).then(function(r) { return r.json(); }).then(function(DATA) {
+      renderThresholdSpeed(DATA);
+      renderTransitions(DATA);
+      renderVolume(DATA);
+      renderEco(DATA);
+      renderImplied(DATA);
+    }).catch(function(err) { console.error('Charts failed', err); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCharts);
+  else initCharts();
+})();
+  </script>
   <script>
 (function() {
   var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
