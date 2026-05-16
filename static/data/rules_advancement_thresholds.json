@@ -24,14 +24,37 @@
       }
     },
     {
-      "id": "2021_plus",
+      "id": "2021_2022",
       "valid_from": 2021,
+      "valid_to": 2022,
+      "model": "allowed_required_36mo",
+      "divisions": {
+        "Novice": { "allowed": 16, "required": 30 },
+        "Intermediate": { "allowed": 30, "required": 45 },
+        "Advanced": {
+          "allowed": 45,
+          "required": 60,
+          "notes": "45 Advanced pts (36 mo) allowed to enter All-Stars; 60 required"
+        },
+        "All-Stars": {
+          "champions_allowed": { "champions_points": 1, "or_all_star_points": 150 },
+          "champions_required": { "champions_points": 10, "or_all_star_points": 225 }
+        }
+      }
+    },
+    {
+      "id": "2023_plus",
+      "valid_from": 2023,
       "valid_to": null,
       "model": "allowed_required_36mo",
       "divisions": {
         "Novice": { "allowed": 16, "required": 30 },
         "Intermediate": { "allowed": 30, "required": 45 },
-        "Advanced": { "allowed": 45, "required": 60 },
+        "Advanced": {
+          "allowed": 60,
+          "required": 90,
+          "notes": "60 Advanced pts allowed to enter All-Stars; 90 required; 3-year window removed in 2023 rules"
+        },
         "All-Stars": {
           "champions_allowed": { "champions_points": 1, "or_all_star_points": 150 },
           "champions_required": { "champions_points": 10, "or_all_star_points": 225 }
@@ -41,5 +64,11 @@
   ],
   "analysis_baseline_years": [2021, 2022],
   "analysis_current_years": [2024, 2025],
-  "rolling_window_months": 36
+  "rolling_window_months": 36,
+  "policy_allowed_transitions": [
+    { "from": "Novice", "to": "Intermediate", "allowed_points": 16, "epoch": "2021_plus" },
+    { "from": "Intermediate", "to": "Advanced", "allowed_points": 30, "epoch": "2021_plus" },
+    { "from": "Advanced", "to": "All-Stars", "allowed_points": 45, "epoch": "2021_2022", "valid_to_year": 2022 },
+    { "from": "Advanced", "to": "All-Stars", "allowed_points": 60, "required_points": 90, "epoch": "2023_plus", "valid_from_year": 2023 }
+  ]
 }

@@ -327,7 +327,7 @@ def main() -> None:
     m2_by_dancer: dict[tuple, float] = {}
     for did, evs in events_by_dancer.items():
         role = dominate[did]
-        for div in ("Novice", "Intermediate", "Advanced"):
+        for div in ("Novice", "Intermediate"):
             if div not in first_pts[did]:
                 continue
             t0 = first_pts[did][div]
@@ -398,7 +398,7 @@ def main() -> None:
                 )
 
     implied_thresholds = []
-    for div in ("Novice", "Intermediate", "Advanced"):
+    for div in ("Novice", "Intermediate"):
         for ttype in ("allowed", "required"):
             for role in ("All",):
                 base_meds, cur_meds = [], []

@@ -638,7 +638,7 @@
 
       <section class="section">
         <h2>Почему это важно</h2>
-        <p>Порог в 16, 30 или 45 поинтов кажется технической деталью. Но на практике он определяет, как быстро люди уходят из Novice, попадают в Intermediate, затем в Advanced и дальше.</p>
+        <p>Пороги вроде <strong>16</strong> (Novice → Intermediate) или <strong>30</strong> (Intermediate → Advanced) кажутся технической деталью. Но на практике они определяют, как быстро люди уходят из Novice и попадают в Intermediate, а затем в Advanced. Отдельная история — выход из Advanced в All-Stars: с 2023 года это <strong>60</strong> Advanced-поинтов (allowed) или <strong>90</strong> (required); в 2021–2022 было <strong>45/60</strong> в окне 36 месяцев.</p>
         <p>Если порог слишком высокий, люди застревают. Если слишком низкий для текущего календаря, они быстро пролетают дивизионы: формально уже имеют право идти выше, но в новом дивизионе встречают танцоров, которые соревнуются там годами. Тогда проблема становится не личной (“кто-то недостаточно хорош”), а системной: <strong>насколько быстро сама система пропускает людей через уровни</strong>.</p>
         <p>Здесь я не пытаюсь измерить качество танца. Реестр WSDC показывает поинты, участие и результаты на соревнованиях. Он не знает, сколько человек тренировался, насколько глубоко он понимает музыку и как выглядит его танец в зале. Но реестр хорошо показывает другое: скорость и объём движения через правила.</p>
       </section>
@@ -649,12 +649,13 @@
         <p>Для скорости набора порогов я сравниваю нормальный доковидный период <strong>2015–2019</strong> с текущим разогнанным календарём <strong>2024–2025</strong>. Ковидные годы 2020–2022 показываю отдельно как аномалию календаря, но не использую как baseline: это был неполный режим системы, а не нормальная точка сравнения.</p>
         <p>Для 12-месячной конверсии нужен более длинный baseline, поэтому беру <strong>2010–2018</strong>: так меньше риска, что один год случайно задаст норму. Свежий срез для этой метрики — <strong>2023–2024</strong>, потому что по 2025 ещё не прошло достаточно времени. <strong>2026</strong> использую только как ранний сигнал.</p>
         <p>Есть две разные вещи, которые важно не смешивать. Первая — сколько месяцев человеку в среднем нужно, чтобы добраться до порога по данным Registry Points. Это аналитическая метрика, а не дословная формулировка правил. Вторая — сколько людей вообще проходит через этот порог и попадает в следующий дивизион. Для разговора о правилах нужны обе.</p>
+        <p>Сценарии «technical reset» ниже считаю только для <strong>Novice</strong> и <strong>Intermediate</strong> (allowed 16 и 30). Число <strong>45</strong> в правилах — это required для выхода из Intermediate, а не порог Advanced → All-Stars.</p>
       </section>
       <section class="section">
         <h2>Что видно в цифрах</h2>
         <figure class="figure-chart">
           <h3>1. До порога стали доходить быстрее</h3>
-          <p class="chart-lead">Медиана месяцев до allowed-порога. Важна не точная неделя, а порядок скорости.</p>
+          <p class="chart-lead">Медиана месяцев до allowed-порога в Novice и Intermediate (16 и 30 поинтов). Важна не точная неделя, а порядок скорости.</p>
           <div class="canvas-wrap"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
           <p class="chart-caption">В Novice путь до allowed сократился примерно с 11 месяцев в 2015–2019 до 8 месяцев в 2024–2025. В Intermediate — примерно с 15 до 13,5 месяцев. Это не катастрофа само по себе, но это изменение скорости при тех же порогах.</p>
         </figure>
@@ -717,22 +718,21 @@
 
         <figure class="figure-chart">
           <h3>6. Если удерживать старую скорость</h3>
-          <p class="chart-lead">Текущий allowed-порог и технический reset, который дал бы скорость ближе к 2015–2019.</p>
+          <p class="chart-lead">Текущие allowed-пороги Novice и Intermediate и technical reset, который дал бы скорость ближе к 2015–2019.</p>
           <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
         </figure>
 
         <div class="table-scroll">
           <table class="risk-table">
-            <thead><tr><th>Дивизион</th><th>Сейчас</th><th>Technical reset</th><th>Buffered reset</th><th>Что показывает</th></tr></thead>
+            <thead><tr><th>Переход</th><th>Сейчас (allowed)</th><th>Technical reset</th><th>Buffered reset</th><th>Что показывает</th></tr></thead>
             <tbody id="impliedTableBody">
-              <tr><td>Novice</td><td>16</td><td>~22</td><td>22–25</td><td>Сильный сигнал ускорения</td></tr>
-              <tr><td>Intermediate</td><td>30</td><td>~33</td><td>35–40</td><td>Сигнал есть, но мягче</td></tr>
-              <tr><td>Advanced</td><td>45</td><td>~45</td><td>нет явного сигнала</td><td>Скорость близка к baseline</td></tr>
+              <tr><td>Novice → Intermediate</td><td>16</td><td>~22</td><td>22–25</td><td>Сильный сигнал ускорения</td></tr>
+              <tr><td>Intermediate → Advanced</td><td>30</td><td>~33</td><td>35–40</td><td>Сигнал есть, но мягче</td></tr>
             </tbody>
           </table>
         </div>
         <p>Так появляется три сценария. <strong>No change</strong> — оставить пороги как есть, если цель системы — быстрый доступ к следующему дивизиону. <strong>Technical reset</strong> — вернуть скорость набора ближе к 2015–2019: это даёт примерно 22 для Novice и 33 для Intermediate. <strong>Buffered reset</strong> — заложить запас на несколько лет роста календаря, чтобы не перенастраивать пороги каждый сезон; это уже не вывод из данных, а политический выбор.</p>
-        <p>В этой логике вопрос сильнее всего возникает в нижних ступенях. Для Advanced такой расчёт почти не даёт аргумента за повышение: текущая скорость близка к исторической.</p>
+        <p>В этой логике вопрос сильнее всего возникает в Novice и Intermediate. Переход Advanced → All-Stars (60/90 с 2023 года) здесь отдельно: другие пороги, другой темп когорты, и он уже обсуждается в контексте правил для старших дивизионов.</p>
       </section>
 
       <section class="section">
@@ -748,7 +748,7 @@
           <li>Это анализ основного пути движения по Skill Level; метрики суммированы по лидерам и фолловерам (All), каждый танцор — один раз по dominate role.</li>
           <li>2020–2022 — аномалия календаря; её нельзя читать как нормальную скорость системы.</li>
           <li>2026 используется только как ранний сигнал: год неполный, а переходы появляются в данных с лагом.</li>
-          <li>Technical reset и buffered reset — иллюстрации масштаба, не официальный расчёт WSDC.</li>
+          <li>Technical reset и buffered reset — иллюстрации масштаба, не официальный расчёт WSDC; только Novice (16) и Intermediate (30). Adv→All-Stars: 60/90 с 2023 года.</li>
           <li>Качество танца, уровень тренировок и судейское восприятие здесь не измеряются.</li>
         </ul>
       </section>
@@ -812,7 +812,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260516';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
   function covidPlugin() {
@@ -868,7 +868,7 @@
   }
 
   function renderThresholdSpeed(DATA) {
-    var divisions = ['Novice', 'Intermediate', 'Advanced'];
+    var divisions = ['Novice', 'Intermediate'];
     var earlyYears = [2015, 2016, 2017, 2018, 2019];
     var currentYears = [2024, 2025];
     destroy('threshold');
@@ -990,18 +990,17 @@
   }
   function renderImplied(DATA) {
     var rows = [
-      { division: 'Novice', current: 16, buffered: '22–25', signal: 'Сильный сигнал ускорения' },
-      { division: 'Intermediate', current: 30, buffered: '35–40', signal: 'Сигнал есть, но мягче' },
-      { division: 'Advanced', current: 45, buffered: 'нет явного сигнала', signal: 'Скорость близка к baseline' }
+      { label: 'Novice → Intermediate', thresholdDiv: 'Novice', current: 16, buffered: '22–25', signal: 'Сильный сигнал ускорения' },
+      { label: 'Intermediate → Advanced', thresholdDiv: 'Intermediate', current: 30, buffered: '35–40', signal: 'Сигнал есть, но мягче' }
     ].map(function(r) {
-      var technical = technicalReset(DATA, r.division, r.current);
+      var technical = technicalReset(DATA, r.thresholdDiv, r.current);
       return Object.assign({}, r, { technical: technical != null ? technical : r.current });
     });
     destroy('implied');
     charts.implied = new Chart(document.getElementById('chartImplied'), {
       type: 'bar',
       data: {
-        labels: rows.map(function(r) { return r.division; }),
+        labels: rows.map(function(r) { return r.label; }),
         datasets: [
           { label: 'Сейчас', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
           { label: 'Technical reset (2015–19 темп)', data: rows.map(function(r) { return r.technical; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
@@ -1012,7 +1011,7 @@
     var tbody = document.getElementById('impliedTableBody');
     if (tbody) {
       tbody.innerHTML = rows.map(function(r) {
-        return '<tr><td>' + r.division + '</td><td>' + r.current + '</td><td>~' + r.technical +
+        return '<tr><td>' + r.label + '</td><td>' + r.current + '</td><td>~' + r.technical +
           '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
       }).join('');
     }
