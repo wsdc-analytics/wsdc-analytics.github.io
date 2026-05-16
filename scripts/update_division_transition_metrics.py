@@ -21,6 +21,12 @@ ARTICLE_TRANSITIONS = [
 MIN_N_DISPLAY = 30
 BASELINE_YEARS = {2021, 2022}
 CURRENT_YEARS = {2024, 2025}
+COHORT_PERIODS = {
+    "2010-2018": frozenset(range(2010, 2019)),
+    "2023-2024": frozenset({2023, 2024}),
+}
+COHORT_WINDOW_MONTHS = 12
+ROLES = ("Leader", "Follower", "All")
 
 
 def parse_args() -> argparse.Namespace:
@@ -87,6 +93,37 @@ def median_safe(values: list[float]) -> float | None:
     if not values:
         return None
     return float(statistics.median(values))
+
+
+def cohort_conversion_stats(
+    first_pts: dict,
+    dominate: dict,
+    from_div: str,
+    to_div: str,
+    cohort_years: frozenset[int],
+    role: str,
+    window_months: int = COHORT_WINDOW_MONTHS,
+) -> dict:
+    starters = converted = 0
+    for did, fp in first_pts.items():
+        if from_div not in fp:
+            continue
+        if fp[from_div][0] not in cohort_years:
+            continue
+        dancer_role = dominate[did]
+        if role != "All" and dancer_role != role:
+            continue
+        starters += 1
+        if to_div not in fp:
+            continue
+        if months_between(fp[from_div], fp[to_div]) <= window_months:
+            converted += 1
+    rate = round(100 * converted / starters, 1) if starters else None
+    return {
+        "starters": starters,
+        "converted": converted,
+        "rate_pct": rate,
+    }
 
 
 def aggregate_stats(months_list: list[float]) -> dict:
@@ -251,16 +288,29 @@ def main() -> None:
             )
             transition_counts[(ty, role, from_div, to_div)] += 1
 
+    counts_all: dict[tuple, int] = defaultdict(int)
+    for (ty, role, from_div, to_div), n in transition_counts.items():
+        counts_all[(ty, from_div, to_div)] += n
+    for key, n in counts_all.items():
+        ty, from_div, to_div = key
+        transition_counts[(ty, "All", from_div, to_div)] = n
+
     transition_series = []
     years_all = sorted({k[0] for k in m1_buckets} | {k[0] for k in m1b_buckets})
     for ty in years_all:
-        for role in ("Leader", "Follower"):
+        for role in ROLES:
             for from_div, to_div in ARTICLE_TRANSITIONS:
                 for variant, bucket in (
                     ("first_to_first", m1_buckets),
                     ("last_to_first", m1b_buckets),
                 ):
-                    stats = aggregate_stats(bucket.get((ty, role, from_div, to_div, variant), []))
+                    if role == "All":
+                        vals = []
+                        for r in ("Leader", "Follower"):
+                            vals.extend(bucket.get((ty, r, from_div, to_div, variant), []))
+                    else:
+                        vals = bucket.get((ty, role, from_div, to_div, variant), [])
+                    stats = aggregate_stats(vals)
                     stats.update(
                         {
                             "transition_year": ty,
@@ -305,6 +355,13 @@ def main() -> None:
     for (_did, div, kind), (months, cross_year, role, _target) in m2_by_dancer.items():
         m2_buckets[(cross_year, div, kind, role)].append(float(months))
 
+    m2_all: dict[tuple, list[float]] = defaultdict(list)
+    for (y, div, kind, role), vals in m2_buckets.items():
+        m2_all[(y, div, kind)].extend(vals)
+    for key, vals in m2_all.items():
+        y, div, kind = key
+        m2_buckets[(y, div, kind, "All")] = vals
+
     months_to_threshold = []
     for key, vals in sorted(m2_buckets.items()):
         y, div, ttype, role = key
@@ -322,39 +379,59 @@ def main() -> None:
         )
         months_to_threshold.append(stats)
 
+    cohort_conversion = []
+    for period_id, cohort_years in COHORT_PERIODS.items():
+        for from_div, to_div in ARTICLE_TRANSITIONS[:3]:
+            for role in ROLES:
+                stats = cohort_conversion_stats(
+                    first_pts, dominate, from_div, to_div, cohort_years, role
+                )
+                cohort_conversion.append(
+                    {
+                        "cohort_period": period_id,
+                        "window_months": COHORT_WINDOW_MONTHS,
+                        "role": role,
+                        "from_division": from_div,
+                        "to_division": to_div,
+                        **stats,
+                    }
+                )
+
     implied_thresholds = []
     for div in ("Novice", "Intermediate", "Advanced"):
         for ttype in ("allowed", "required"):
-            base_meds, cur_meds = [], []
-            th_base = threshold_for_year(rules, 2021, div).get(ttype)
-            for (y, d, tt, _role), vals in m2_buckets.items():
-                if d != div or tt != ttype:
+            for role in ("All",):
+                base_meds, cur_meds = [], []
+                th_base = threshold_for_year(rules, 2021, div).get(ttype)
+                for (y, d, tt, r), vals in m2_buckets.items():
+                    if d != div or tt != ttype or r != role:
+                        continue
+                    med = median_safe(vals)
+                    if med is None:
+                        continue
+                    if y in BASELINE_YEARS:
+                        base_meds.append(med)
+                    if y in CURRENT_YEARS:
+                        cur_meds.append(med)
+                med_base = median_safe(base_meds)
+                med_cur = median_safe(cur_meds)
+                if not th_base or not med_base or not med_cur or med_cur <= 0:
                     continue
-                med = median_safe(vals)
-                if med is None:
-                    continue
-                if y in BASELINE_YEARS:
-                    base_meds.append(med)
-                if y in CURRENT_YEARS:
-                    cur_meds.append(med)
-            med_base = median_safe(base_meds)
-            med_cur = median_safe(cur_meds)
-            if not th_base or not med_base or not med_cur or med_cur <= 0:
-                continue
-            ratio = med_base / med_cur
-            implied_thresholds.append(
-                {
-                    "division": div,
-                    "threshold_type": ttype,
-                    "baseline_years": sorted(BASELINE_YEARS),
-                    "current_years": sorted(CURRENT_YEARS),
-                    "actual_threshold": th_base,
-                    "median_months_baseline": round(med_base, 2),
-                    "median_months_current": round(med_cur, 2),
-                    "implied_threshold": round(th_base * ratio, 1),
-                    "ratio_baseline_over_current": round(ratio, 3),
-                }
-            )
+                ratio = med_base / med_cur
+                implied_thresholds.append(
+                    {
+                        "division": div,
+                        "threshold_type": ttype,
+                        "role": role,
+                        "baseline_years": sorted(BASELINE_YEARS),
+                        "current_years": sorted(CURRENT_YEARS),
+                        "actual_threshold": th_base,
+                        "median_months_baseline": round(med_base, 2),
+                        "median_months_current": round(med_cur, 2),
+                        "implied_threshold": round(th_base * ratio, 1),
+                        "ratio_baseline_over_current": round(ratio, 3),
+                    }
+                )
 
     velocity: dict[tuple, list[float]] = defaultdict(list)
     pts_acc: dict[tuple, float] = defaultdict(float)
@@ -382,6 +459,7 @@ def main() -> None:
         "current_years": sorted(CURRENT_YEARS),
         "excluded_counts": excluded,
         "transition_series": transition_series,
+        "cohort_conversion": cohort_conversion,
         "transitions_count_by_year": [
             {
                 "transition_year": ty,

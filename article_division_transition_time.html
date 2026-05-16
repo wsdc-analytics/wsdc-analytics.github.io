@@ -31,7 +31,7 @@
     "url": "https://wsdc-analytics.github.io/article_division_transition_time.html",
     "image": "https://wsdc-analytics.github.io/events_background.png",
     "datePublished": "2026-05-15",
-    "dateModified": "2026-05-16",
+    "dateModified": "2026-05-17",
     "author": { "@type": "Organization", "name": "WSDC Analytics" },
     "publisher": {
       "@type": "Organization",
@@ -645,7 +645,7 @@
 
       <section class="section">
         <h2>Как читаем данные</h2>
-        <p>Смотрим только основной путь танцора по Skill Level: первые поинты в дивизионе, скорость набора порога и факт перехода в следующий дивизион.</p>
+        <p>Смотрим только основной путь танцора по Skill Level: первые поинты в дивизионе, скорость набора порога и факт перехода в следующий дивизион. Каждый танцор учитывается один раз по своей dominate role (основной роли в реестре), без второй роли; в графиках и таблицах ниже лидеры и фолловеры суммированы вместе (All). Пороги WSDC от роли не зависят.</p>
         <p>Для скорости набора порогов я сравниваю нормальный доковидный период <strong>2015–2019</strong> с текущим разогнанным календарём <strong>2024–2025</strong>. Ковидные годы 2020–2022 показываю отдельно как аномалию календаря, но не использую как baseline: это был неполный режим системы, а не нормальная точка сравнения.</p>
         <p>Для 12-месячной конверсии нужен более длинный baseline, поэтому беру <strong>2010–2018</strong>: так меньше риска, что один год случайно задаст норму. Свежий срез для этой метрики — <strong>2023–2024</strong>, потому что по 2025 ещё не прошло достаточно времени. <strong>2026</strong> использую только как ранний сигнал.</p>
         <p>Есть две разные вещи, которые важно не смешивать. Первая — сколько месяцев человеку в среднем нужно, чтобы добраться до порога по данным Registry Points. Это аналитическая метрика, а не дословная формулировка правил. Вторая — сколько людей вообще проходит через этот порог и попадает в следующий дивизион. Для разговора о правилах нужны обе.</p>
@@ -670,20 +670,20 @@
           <h3>3. Важно не только “как быстро”, но и “сколько людей”</h3>
           <p class="chart-lead">Сколько танцоров впервые получили поинты в следующем дивизионе.</p>
           <div class="canvas-wrap"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
-          <p class="chart-caption">Novice → Intermediate в 2024–2025: 403 перехода Leader за два года — почти столько же, сколько 408 в 2018–2019. Intermediate → Advanced даже выше: 196 против 185. То есть речь не только о скорости отдельных людей, но и о потоке.</p>
+          <p class="chart-caption">Novice → Intermediate в 2024–2025: <strong>947</strong> переходов за два года против <strong>885</strong> в 2018–2019 (+7%). Intermediate → Advanced: <strong>420</strong> против <strong>398</strong>. То есть речь не только о скорости отдельных людей, но и о потоке.</p>
         </figure>
 
         <figure class="figure-chart">
           <h3>4. Доля быстрых переходов тоже выросла</h3>
           <p class="chart-lead">Из всех, кто впервые получил поинты в дивизионе, какая доля получила первые поинты в следующем дивизионе за 12 месяцев.</p>
           <div class="canvas-wrap"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
-          <p class="chart-caption">Это проверка второй стороны гипотезы: не только “дошедшие идут быстрее”, но и “больше стартовавших успевает пройти дальше в короткое окно”. Novice → Intermediate: 1223/6601 → 370/1696; Intermediate → Advanced: 397/3092 → 123/819. Advanced → All-Stars такого эффекта пока не показывает.</p>
+          <p class="chart-caption">Это проверка второй стороны гипотезы: не только “дошедшие идут быстрее”, но и “больше стартовавших успевает пройти дальше в короткое окно”. Novice → Intermediate: 1236/6601 → 372/1696; Intermediate → Advanced: 412/3092 → 123/819. Advanced → All-Stars такого эффекта пока не показывает.</p>
         </figure>
 
         <h3>Не только быстрее, но и шире</h3>
         <p>Если смотреть только на тех, кто уже получил первые поинты в следующем дивизионе, мы видим скорость перехода. Но для разговора о трафике нужен ещё один вопрос: какая доля всей стартовой когорты вообще успевает пройти дальше?</p>
         <p>Для этого берём танцоров по году первых поинтов в дивизионе и смотрим, кто получил первые поинты в следующем дивизионе за 12 месяцев. Такое окно достаточно короткое, чтобы уже аккуратно читать 2024 год, и достаточно содержательное, чтобы увидеть быстрый проход через правила.</p>
-        <p>В 2010–2018 доля быстрых переходов Novice → Intermediate была около <strong>18,5%</strong>, а в 2023–2024 — уже <strong>21,8%</strong>. В абсолютных числах это <strong>1223 из 6601</strong> стартовавших в базе против <strong>370 из 1696</strong> в 2023–2024. Для Intermediate → Advanced рост тоже заметен: <strong>12,8%</strong> (397 из 3092) против <strong>15,0%</strong> (123 из 819). Это косвенно подтверждает, что поток не просто ускорился у отдельных активных танцоров, а расширился внутри нижних ступеней лестницы.</p>
+        <p>В 2010–2018 доля быстрых переходов Novice → Intermediate была около <strong>18,7%</strong>, а в 2023–2024 — уже <strong>21,9%</strong>. В абсолютных числах это <strong>1236 из 6601</strong> стартовавших в базе против <strong>372 из 1696</strong> в 2023–2024. Для Intermediate → Advanced рост тоже заметен: <strong>13,3%</strong> (412 из 3092) против <strong>15,0%</strong> (123 из 819). Это косвенно подтверждает, что поток не просто ускорился у отдельных активных танцоров, а расширился внутри нижних ступеней лестницы.</p>
         <p>Если смотреть по годам, картина становится точнее. Для Novice → Intermediate 2024 год уже выше всего доковидного коридора 2010–2018: <strong>22,7%</strong> против исторического диапазона примерно <strong>16,9–20,0%</strong>. Для Intermediate → Advanced это не абсолютный рекорд: ранние 2010–2011 были выше, но относительно более устойчивого периода 2012–2018 текущие значения снова поднялись (<strong>15,3%</strong> в 2024 против обычных ~10–13%). Advanced → All-Stars такого расширения не показывает: там 2023–2024 остаются около <strong>3–4%</strong>.</p>
 
         <figure class="figure-chart">
@@ -695,8 +695,8 @@
 
         <div class="kpi">
           <div class="kpi-item"><span class="kpi-value">~23%</span><span class="kpi-label">быстрее Novice allowed (11→8,5 мес.)</span></div>
-          <div class="kpi-item"><span class="kpi-value">408</span><span class="kpi-label">переходов Nov→Int 2018–19</span></div>
-          <div class="kpi-item"><span class="kpi-value">403</span><span class="kpi-label">переходов Nov→Int 2024–25</span></div>
+          <div class="kpi-item"><span class="kpi-value">885</span><span class="kpi-label">переходов Nov→Int 2018–19</span></div>
+          <div class="kpi-item"><span class="kpi-value">947</span><span class="kpi-label">переходов Nov→Int 2024–25</span></div>
           <div class="kpi-item"><span class="kpi-value">22–25</span><span class="kpi-label">buffered reset для Novice allowed</span></div>
         </div>
 
@@ -705,6 +705,7 @@
         <p>К текущему срезу в 2026 уже есть <strong>64 ивента</strong>, <strong>2598 танцоров с поинтами</strong> и <strong>19113 поинтов</strong>. При этом медиана времени до allowed продолжает снижаться именно в нижних ступенях: <strong>Novice allowed — 7 месяцев</strong> (против ~8 месяцев в 2024–2025), <strong>Intermediate allowed — 10 месяцев</strong> (против ~13,5 месяцев в 2024–2025).</p>
         <p>Это ещё не трендовая линия и не прогноз на весь год. Но если такой темп сохранится, вопрос о порогах станет не вопросом разового скачка 2024–2025, а вопросом нового режима работы лестницы.</p>
       </section>
+
       <section class="section">
         <h2>Что это значит для порогов</h2>
         <p>Если пороги нужны только как формальная отметка — “набрал X поинтов, можешь идти дальше” — тогда, возможно, ничего страшного не происходит. Танцоров стало больше, ивентов стало больше, значит и переходов стало больше.</p>
@@ -744,7 +745,7 @@
       <section class="section">
         <h2>Ограничения</h2>
         <ul>
-          <li>Это анализ основного пути движения по Skill Level.</li>
+          <li>Это анализ основного пути движения по Skill Level; метрики суммированы по лидерам и фолловерам (All), каждый танцор — один раз по dominate role.</li>
           <li>2020–2022 — аномалия календаря; её нельзя читать как нормальную скорость системы.</li>
           <li>2026 используется только как ранний сигнал: год неполный, а переходы появляются в данных с лагом.</li>
           <li>Technical reset и buffered reset — иллюстрации масштаба, не официальный расчёт WSDC.</li>
@@ -848,13 +849,24 @@
     var mid = Math.floor(arr.length / 2);
     return arr.length % 2 ? arr[mid] : (arr[mid - 1] + arr[mid]) / 2;
   }
+  var MAIN_ROLE = 'All';
+
   function allowedMedian(DATA, division, years) {
     var rows = DATA.months_to_threshold.filter(function(r) {
-      return r.division === division && r.threshold_type === 'allowed' && r.role === 'Leader' &&
+      return r.division === division && r.threshold_type === 'allowed' && r.role === MAIN_ROLE &&
         years.indexOf(r.year) !== -1 && !r.suppress && r.median_months != null;
     });
     return median(rows.map(function(r) { return r.median_months; }));
   }
+
+  function cohortRate(DATA, period, fromDiv, toDiv, role) {
+    var row = (DATA.cohort_conversion || []).find(function(r) {
+      return r.cohort_period === period && r.from_division === fromDiv &&
+        r.to_division === toDiv && r.role === role;
+    });
+    return row && row.rate_pct != null ? row.rate_pct : null;
+  }
+
   function renderThresholdSpeed(DATA) {
     var divisions = ['Novice', 'Intermediate', 'Advanced'];
     var earlyYears = [2015, 2016, 2017, 2018, 2019];
@@ -874,7 +886,7 @@
   }
   function transitionSeries(DATA, from, to) {
     return DATA.transition_series.filter(function(s) {
-      return s.from_division === from && s.to_division === to && s.role === 'Leader' &&
+      return s.from_division === from && s.to_division === to && s.role === MAIN_ROLE &&
         s.metric_variant === 'first_to_first' && !s.suppress;
     });
   }
@@ -904,7 +916,7 @@
     for (var y = 2015; y <= 2025; y++) years.push(y);
     function counts(from, to) {
       var rows = DATA.transitions_count_by_year.filter(function(r) {
-        return r.from_division === from && r.to_division === to && r.role === 'Leader';
+        return r.from_division === from && r.to_division === to && r.role === MAIN_ROLE;
       });
       return Object.fromEntries(rows.map(function(r) { return [r.transition_year, r.n]; }));
     }
@@ -923,16 +935,21 @@
       options: baseOpts('Переходов в год')
     });
   }
-  function renderConversion() {
-    var labels = ['Novice→Intermediate', 'Intermediate→Advanced', 'Advanced→All-Stars'];
+  function renderConversion(DATA) {
+    var pairs = [
+      ['Novice', 'Intermediate', 'Novice→Intermediate'],
+      ['Intermediate', 'Advanced', 'Intermediate→Advanced'],
+      ['Advanced', 'All-Stars', 'Advanced→All-Stars']
+    ];
+    var labels = pairs.map(function(p) { return p[2]; });
     destroy('conversion');
     charts.conversion = new Chart(document.getElementById('chartConversion'), {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [
-          { label: '2010–18 baseline', data: [18.5, 12.8, 5.1], backgroundColor: 'rgba(99, 102, 241, 0.65)' },
-          { label: '2023–24', data: [21.8, 15.0, 3.5], backgroundColor: 'rgba(13, 148, 136, 0.65)' }
+          { label: '2010–18 baseline', data: pairs.map(function(p) { return cohortRate(DATA, '2010-2018', p[0], p[1], MAIN_ROLE); }), backgroundColor: 'rgba(99, 102, 241, 0.65)' },
+          { label: '2023–24', data: pairs.map(function(p) { return cohortRate(DATA, '2023-2024', p[0], p[1], MAIN_ROLE); }), backgroundColor: 'rgba(13, 148, 136, 0.65)' }
         ]
       },
       options: baseOpts('% за 12 месяцев')
@@ -963,12 +980,23 @@
       }
     });
   }
+  function technicalReset(DATA, division, current) {
+    var earlyYears = [2015, 2016, 2017, 2018, 2019];
+    var currentYears = [2024, 2025];
+    var medEarly = allowedMedian(DATA, division, earlyYears);
+    var medCur = allowedMedian(DATA, division, currentYears);
+    if (medEarly == null || medCur == null || medCur <= 0) return null;
+    return Math.round(current * medEarly / medCur);
+  }
   function renderImplied(DATA) {
     var rows = [
-      { division: 'Novice', current: 16, technical: 22, buffered: '22–25', signal: 'Сильный сигнал ускорения' },
-      { division: 'Intermediate', current: 30, technical: 33, buffered: '35–40', signal: 'Сигнал есть, но мягче' },
-      { division: 'Advanced', current: 45, technical: 45, buffered: 'нет явного сигнала', signal: 'Скорость близка к baseline' }
-    ];
+      { division: 'Novice', current: 16, buffered: '22–25', signal: 'Сильный сигнал ускорения' },
+      { division: 'Intermediate', current: 30, buffered: '35–40', signal: 'Сигнал есть, но мягче' },
+      { division: 'Advanced', current: 45, buffered: 'нет явного сигнала', signal: 'Скорость близка к baseline' }
+    ].map(function(r) {
+      var technical = technicalReset(DATA, r.division, r.current);
+      return Object.assign({}, r, { technical: technical != null ? technical : r.current });
+    });
     destroy('implied');
     charts.implied = new Chart(document.getElementById('chartImplied'), {
       type: 'bar',
@@ -994,7 +1022,7 @@
       renderThresholdSpeed(DATA);
       renderTransitions(DATA);
       renderVolume(DATA);
-      renderConversion();
+      renderConversion(DATA);
       renderEco(DATA);
       renderImplied(DATA);
     }).catch(function(err) { console.error('Charts failed', err); });
