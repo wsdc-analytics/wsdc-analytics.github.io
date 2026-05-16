@@ -13,14 +13,25 @@
       }
     },
     {
-      "id": "2013_2020",
+      "id": "2013_2017",
       "valid_from": 2013,
-      "valid_to": 2020,
+      "valid_to": 2017,
       "model": "cumulative",
       "transitions": {
         "Novice": { "to": "Intermediate", "points": 15 },
         "Intermediate": { "to": "Advanced", "points": 30 },
-        "Advanced": { "to": "All-Stars", "points": 45, "notes": "Advanced points in last 3 years for All-Star eligibility (2013 rules)" }
+        "Advanced": { "to": "All-Stars", "points": 45, "notes": "Cumulative; 2015 rules also use 3-year Advanced window for All-Star" }
+      }
+    },
+    {
+      "id": "2018_2020",
+      "valid_from": 2018,
+      "valid_to": 2020,
+      "model": "allowed_required_36mo",
+      "divisions": {
+        "Novice": { "allowed": 16, "required": 30 },
+        "Intermediate": { "allowed": 30, "required": 45 },
+        "Advanced": { "allowed": 45, "required": 60 }
       }
     },
     {

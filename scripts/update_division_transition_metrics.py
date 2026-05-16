@@ -170,6 +170,101 @@ def rolling_sum(events: list[dict], div: str, at_ym: tuple[int, int], window: in
     return sum(e["pts"] for e in events if e["div"] == div and lo <= ym_ord(*e["ym"]) <= at)
 
 
+def months_to_adv_allowed(
+    first_pts: dict[str, dict[str, tuple[int, int]]],
+    events: list[dict],
+    ref_year: int,
+    rules: dict,
+) -> int | None:
+    if "Advanced" not in first_pts:
+        return None
+    t0 = first_pts["Advanced"]
+    th = threshold_for_year(rules, ref_year, "Advanced")
+    if not th or th.get("allowed") is None:
+        return None
+    target = float(th["allowed"])
+    epoch = th.get("epoch", "")
+    use_cumulative = bool(th.get("cumulative")) or (epoch == "2023_plus" and ref_year >= 2023)
+    total = 0.0
+    for e in events:
+        if e["div"] != "Advanced" or e["ym"] < t0:
+            continue
+        if use_cumulative:
+            total += e["pts"]
+            if total >= target:
+                return months_between(t0, e["ym"])
+        elif rolling_sum(events, "Advanced", e["ym"], 36) >= target:
+            return months_between(t0, e["ym"])
+    return None
+
+
+def build_advanced_path_metrics(
+    first_pts: dict[str, dict[str, tuple[int, int]]],
+    events_by_dancer: dict[str, list[dict]],
+    rules: dict,
+) -> tuple[list[dict], list[dict]]:
+    era_specs = [
+        ("2015-19", frozenset(range(2015, 2020))),
+        ("2021-22", frozenset({2021, 2022})),
+        ("2024-25", frozenset(range(2024, 2026))),
+    ]
+    by_era: list[dict] = []
+    for era_id, years in era_specs:
+        to_thr, to_as, gaps = [], [], []
+        for did, fp in first_pts.items():
+            if "Advanced" not in fp or "All-Stars" not in fp:
+                continue
+            if fp["All-Stars"][0] not in years or fp["All-Stars"] <= fp["Advanced"]:
+                continue
+            evs = events_by_dancer[did]
+            rule_year = fp["All-Stars"][0]
+            m_thr = months_to_adv_allowed(fp, evs, rule_year, rules)
+            m_as = months_between(fp["Advanced"], fp["All-Stars"])
+            to_as.append(float(m_as))
+            if m_thr is not None:
+                to_thr.append(float(m_thr))
+                gaps.append(float(m_as - m_thr))
+        ref_year = max(years)
+        by_era.append(
+            {
+                "era": era_id,
+                "cohort": "first_all_stars_year",
+                "ref_rule_year": ref_year,
+                "allowed_points_label": "per dancer rule year in era",
+                "months_to_allowed": aggregate_stats(to_thr),
+                "months_first_adv_to_first_as": aggregate_stats(to_as),
+                "months_gap_after_allowed": aggregate_stats(gaps),
+            }
+        )
+
+    by_year: list[dict] = []
+    for y in range(2015, 2026):
+        to_thr, to_as = [], []
+        for did, fp in first_pts.items():
+            if "Advanced" not in fp or "All-Stars" not in fp:
+                continue
+            if fp["All-Stars"][0] != y or fp["All-Stars"] <= fp["Advanced"]:
+                continue
+            evs = events_by_dancer[did]
+            m_thr = months_to_adv_allowed(fp, evs, y, rules)
+            m_as = months_between(fp["Advanced"], fp["All-Stars"])
+            to_as.append(float(m_as))
+            if m_thr is not None:
+                to_thr.append(float(m_thr))
+        thr_stats = aggregate_stats(to_thr)
+        as_stats = aggregate_stats(to_as)
+        by_year.append(
+            {
+                "year": y,
+                "allowed_points": threshold_for_year(rules, y, "Advanced").get("allowed"),
+                "months_to_allowed": thr_stats,
+                "months_first_adv_to_first_as": as_stats,
+                "suppress": thr_stats["n"] < MIN_N_DISPLAY or as_stats["n"] < MIN_N_DISPLAY,
+            }
+        )
+    return by_era, by_year
+
+
 def main() -> None:
     args = parse_args()
     source = Path(args.source_dir)
@@ -450,6 +545,10 @@ def main() -> None:
         stats.update({"year": y, "division": div, "role": role})
         points_velocity.append(stats)
 
+    advanced_path_era, advanced_path_by_year = build_advanced_path_metrics(
+        first_pts, events_by_dancer, rules
+    )
+
     payload = {
         "data_as_of": date.today().isoformat(),
         "source_dir": str(source),
@@ -483,6 +582,8 @@ def main() -> None:
         "implied_thresholds": implied_thresholds,
         "points_velocity": points_velocity,
         "rules_epochs_ref": "rules_advancement_thresholds.json",
+        "advanced_path_era": advanced_path_era,
+        "advanced_path_by_year": advanced_path_by_year,
     }
 
     output.parent.mkdir(parents=True, exist_ok=True)
