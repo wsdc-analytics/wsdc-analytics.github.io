@@ -290,26 +290,67 @@
       border-collapse: collapse;
       font-size: 14px;
     }
-    .rules-evolution-table {
+    .timeline {
+      max-width: 700px;
+      margin: 32px 0;
+      padding-left: 28px;
+      border-left: 2px solid var(--border-color);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -35px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid white;
+      box-shadow: 0 0 0 1px var(--border-color);
+    }
+    .timeline-year {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .timeline-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+    .rules-evolution-link {
+      color: var(--color-link-accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .dual-metrics-block { margin: 28px 0; }
+    .dual-metrics-block h3 { font-size: 18px; margin: 0 0 12px; }
+    .dual-metrics-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: 12px;
     }
-    .rules-evolution-table th,
-    .rules-evolution-table td {
-      padding: 10px 12px;
+    .dual-metrics-table th,
+    .dual-metrics-table td {
+      padding: 6px 8px;
       border-bottom: 1px solid var(--border-color);
-      text-align: left;
-      vertical-align: top;
+      text-align: right;
     }
-    .rules-evolution-table th {
-      background: var(--bg-tertiary);
-      font-weight: 600;
-    }
-    .rules-evolution-table td:first-child {
-      white-space: nowrap;
-      font-weight: 500;
-    }
+    .dual-metrics-table th:first-child,
+    .dual-metrics-table td:first-child { text-align: left; }
+    .dual-metrics-table th { background: var(--bg-tertiary); font-weight: 600; }
+    .dual-metrics-table tr.period-row td { font-weight: 600; background: #f8fafc; }
+    .dual-metrics-table .muted { color: #64748b; }
     .risk-table th,
     .risk-table td {
       padding: 10px 12px;
@@ -677,55 +718,31 @@
       </section>
 
       <section class="section">
-        <h2>Как менялись правила (с 2015 года)</h2>
-        <p>Чтобы не путать эпохи в графиках, коротко — что менялось в правилах и зачем. Подробная хронология с PDF: <a href="rules_evolution_2025.html">эволюция правил WSDC</a>.</p>
-        <div class="table-scroll">
-          <table class="rules-evolution-table">
-            <thead>
-              <tr>
-                <th>Эпоха</th>
-                <th>Модель</th>
-                <th>Novice → Intermediate</th>
-                <th>Intermediate → Advanced</th>
-                <th>Advanced → All-Stars</th>
-                <th>Зачем</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>2015</strong></td>
-                <td>Кумулятивные пороги; для All-Stars — только Advanced-поинты за <strong>последние 3 года</strong></td>
-                <td><strong>15</strong> (было 20)</td>
-                <td><strong>30</strong> (было 25)</td>
-                <td><strong>45</strong> (было 40)</td>
-                <td>Смягчить лестницу после старой схемы 20/25/40; пороги близки к «нижним» значениям, с которыми мы живём и сейчас в Nov/Int</td>
-              </tr>
-              <tr>
-                <td><strong>2018</strong></td>
-                <td><strong>Allowed / Required</strong> + накопление в окне <strong>36 месяцев</strong> (не «вся карьера»)</td>
-                <td>16 / 30</td>
-                <td>30 / 45</td>
-                <td>45 / 60</td>
-                <td>Замедлить «пролёт» лестницы: отдельно «можно идти» и «закрепился»; ужесточить выход в All-Stars</td>
-              </tr>
-              <tr>
-                <td><strong>2021</strong></td>
-                <td>Та же логика 16/30, 30/45, 45/60 в реестре; формализация в Registry Rules</td>
-                <td colspan="3">Без смены цифр, но правила становятся прозрачнее для организаторов и танцоров</td>
-                <td>Закрепить систему после ковида</td>
-              </tr>
-              <tr>
-                <td><strong>2023</strong></td>
-                <td>Allowed / Required; для Adv→AS снято 36-месячное окно, пороги подняты</td>
-                <td>16 / 30</td>
-                <td>30 / 45</td>
-                <td><strong>60 / 90</strong></td>
-                <td>Снова удлинить путь в All-Stars, когда люди снова быстро набирали 45 в rolling-окне</td>
-              </tr>
-            </tbody>
-          </table>
+        <h2>Как менялись правила переходов</h2>
+        <p>До 2015 года действовали более высокие кумулятивные пороги — <strong>20 / 25 / 40</strong> поинтов для Novice, Intermediate и Advanced. В редакции 2015 года WSDC зафиксировала базовую «лестницу», близкую к привычной сегодня по нижним ступеням. Дальше правила менялись поэтапно: сначала смягчение и окно для All-Stars, затем система <strong>allowed / required</strong> с rolling-накоплением, и снова ужесточение верхней ступени. Этот контекст важен для интерпретации графиков ниже.</p>
+        <p>В хронологии ниже <strong>allowed</strong> — поинты, при которых можно идти в старший дивизион; <strong>required</strong> — порог закрепления уровня. В аналитике статьи я сравниваю в первую очередь allowed.</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2015</div>
+            <div class="timeline-text">Базовые пороги переходов по Skill Level (кумулятивно): Novice → Intermediate <strong>15</strong> (было 20), Intermediate → Advanced <strong>30</strong> (было 25), Advanced → All-Stars <strong>45</strong> (было 40). Для All-Stars учитываются только Advanced-поинты за <strong>последние 3 года</strong> — не за всю карьеру.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2018</div>
+            <div class="timeline-text"><strong>Ключевой момент.</strong> Вводится система <strong>allowed / required</strong> и накопление в окне <strong>36 месяцев</strong>: Novice <strong>16 / 30</strong>, Intermediate <strong>30 / 45</strong>, Advanced <strong>45 / 60</strong>. WSDC отдельно фиксирует «можно идти выше» и «закрепился на уровне» — чтобы замедлить слишком быстрый проход лестницы.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2021</div>
+            <div class="timeline-text">Те же цифры <strong>16/30</strong>, <strong>30/45</strong>, <strong>45/60</strong> в окне 36 месяцев закрепляются в Registry Rules. Пороги не меняются, но правила становятся прозрачнее для организаторов и танцоров после ковида.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2023</div>
+            <div class="timeline-text">Для Advanced → All-Stars пороги поднимаются до <strong>60 / 90</strong>, 36-месячное окно для этого перехода снимается. Novice и Intermediate без изменений: <strong>16/30</strong> и <strong>30/45</strong>. Ответ на ситуацию, когда люди снова слишком быстро набирали 45 Advanced-поинтов в rolling-окне.</div>
+          </div>
         </div>
-        <p>Важно для чтения данных: WSDC <strong>уже реагировала</strong> на быстрый поток — и в 2018, и в 2023. В 2021–2022 это видно в цифрах: путь Advanced → All-Stars временно растянулся. Сейчас, при большом календаре, нижние ступени (Nov/Int) снова ускорились при <strong>тех же</strong> 16/30, а для Advanced планка <strong>60</strong> по календарному ритму снова близка к старой «до 45».</p>
+
+        <p>Пандемия 2020–2021 годов резко сократила календарь и число переходов — на графиках ниже эти годы аномальны и не задают «норму». Восстановление к 2023–2025 наложилось на уже действующие пороги: в цифрах видно, что в <strong>2021–2022</strong> путь Advanced → All-Stars временно растянулся, а к <strong>2024–2025</strong> нижние ступени снова ускорились при тех же <strong>16/30</strong>, а темп набора <strong>60</strong> Advanced-поинтов сравнялся со старым темпом до <strong>45</strong>.</p>
+        <p>Подробнее об эволюции правил WSDC — в отдельном <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru" class="rules-evolution-link">исследовании</a>.</p>
       </section>
 
       <section class="section">
@@ -800,6 +817,12 @@
         <p>2026 год пока нельзя читать как завершённый год: часть ивентов ещё впереди, часть переходов проявится в данных с задержкой, а первые месяцы года могут быть смещены в сторону самых активных танцоров. Но первые значения уже полезны как проверка направления.</p>
         <p>К текущему срезу в 2026 уже есть <strong>64 ивента</strong>, <strong>2598 танцоров с поинтами</strong> и <strong>19113 поинтов</strong>. При этом медиана времени до allowed продолжает снижаться именно в нижних ступенях: <strong>Novice allowed — 7 месяцев</strong> (против ~8 месяцев в 2024–2025), <strong>Intermediate allowed — 10 месяцев</strong> (против ~13,5 месяцев в 2024–2025).</p>
         <p>Это ещё не трендовая линия и не прогноз на весь год. Но если такой темп сохранится, вопрос о порогах станет не вопросом разового скачка 2024–2025, а вопросом нового режима работы лестницы.</p>
+      </section>
+
+      <section class="section" id="dual-metrics-section">
+        <h2>Таблицы: min / med / max по годам (2015–2025)</h2>
+        <p>Когорта — год <strong>первых поинтов в D+1</strong>. <strong>M1</strong> — до allowed-порога; <strong>M2</strong> — до первых поинтов в старшем дивизионе. n₁ и n₂ могут отличаться (не все, кто перешёл, успели набрать порог в данных реестра). Строки <strong>2015–2019</strong> и <strong>2024–2025</strong> — сводка периодов (2020–2022 не входят).</p>
+        <div id="dualMetricsTablesRoot"></div>
       </section>
 
       <section class="section">
@@ -908,7 +931,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517b';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517c';
+  var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517c';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
   function covidPlugin() {
@@ -1075,13 +1099,56 @@
       data: {
         labels: years,
         datasets: [
-          { label: 'До allowed (планка)', data: rows.map(function(r) { return r.months_to_allowed.median_months; }), borderColor: '#6366f1', tension: 0.2, spanGaps: true },
-          { label: 'До первых поинтов в All-Stars', data: rows.map(function(r) { return r.months_first_adv_to_first_as.median_months; }), borderColor: '#0d9488', tension: 0.2, spanGaps: true }
+          { label: 'M1 max', data: rows.map(function(r) { return r.months_to_allowed.max_months; }), borderColor: 'rgba(99,102,241,0.3)', borderDash: [4, 4], tension: 0.2, spanGaps: true, pointRadius: 0 },
+          { label: 'M1 med', data: rows.map(function(r) { return r.months_to_allowed.median_months; }), borderColor: '#6366f1', tension: 0.2, spanGaps: true },
+          { label: 'M1 min', data: rows.map(function(r) { return r.months_to_allowed.min_months; }), borderColor: 'rgba(99,102,241,0.55)', borderDash: [2, 2], tension: 0.2, spanGaps: true, pointRadius: 0 },
+          { label: 'M2 max', data: rows.map(function(r) { return r.months_first_adv_to_first_as.max_months; }), borderColor: 'rgba(13,148,136,0.3)', borderDash: [4, 4], tension: 0.2, spanGaps: true, pointRadius: 0 },
+          { label: 'M2 med', data: rows.map(function(r) { return r.months_first_adv_to_first_as.median_months; }), borderColor: '#0d9488', tension: 0.2, spanGaps: true },
+          { label: 'M2 min', data: rows.map(function(r) { return r.months_first_adv_to_first_as.min_months; }), borderColor: 'rgba(13,148,136,0.55)', borderDash: [2, 2], tension: 0.2, spanGaps: true, pointRadius: 0 }
         ]
       },
-      options: baseOpts('Медиана, мес.'),
+      options: baseOpts('Месяцы'),
       plugins: [covidPlugin()]
     });
+  }
+  function renderDualMetricsTables(DUAL) {
+    var root = document.getElementById('dualMetricsTablesRoot');
+    if (!root || !DUAL || !DUAL.rows) return;
+    var minN = DUAL.min_n_display || 30;
+    function cell(stats) {
+      if (!stats || stats.n < 10 || stats.median == null) return '—';
+      var star = stats.n < minN ? '*' : '';
+      return stats.min.toFixed(0) + ' / ' + stats.median.toFixed(1) + ' / ' + stats.max.toFixed(0) + star;
+    }
+    var order = [
+      ['Novice', 'Intermediate'],
+      ['Intermediate', 'Advanced'],
+      ['Advanced', 'All-Stars'],
+      ['All-Stars', 'Champions']
+    ];
+    var html = '';
+    order.forEach(function(pair) {
+      var from = pair[0], to = pair[1];
+      var rows = DUAL.rows.filter(function(r) {
+        return r.from_division === from && r.to_division === to;
+      });
+      var yearRows = rows.filter(function(r) { return r.period_type === 'year'; }).sort(function(a, b) {
+        return parseInt(a.period, 10) - parseInt(b.period, 10);
+      });
+      var eraRows = rows.filter(function(r) { return r.period_type === 'era'; }).sort(function(a, b) {
+        return a.period.localeCompare(b.period);
+      });
+      html += '<div class="dual-metrics-block"><h3>' + from + ' → ' + to + '</h3><div class="table-scroll"><table class="dual-metrics-table">';
+      html += '<thead><tr><th>Год</th><th class="muted">n₁</th><th>M1 min / med / max</th><th class="muted">n₂</th><th>M2 min / med / max</th></tr></thead><tbody>';
+      yearRows.concat(eraRows).forEach(function(r) {
+        var cls = r.period_type === 'era' ? ' class="period-row"' : '';
+        html += '<tr' + cls + '><td>' + r.period + '</td><td class="muted">' + r.n_to_threshold + '</td><td>' +
+          cell(r.months_to_threshold) + '</td><td class="muted">' + r.n_first_to_first + '</td><td>' +
+          cell(r.months_first_to_first) + '</td></tr>';
+      });
+      html += '</tbody></table></div></div>';
+    });
+    root.innerHTML = html;
   }
   function renderEco(DATA) {
     var eco = DATA.ecosystem_by_year.filter(function(e) { return e.year >= 2015 && e.year <= 2025; });
@@ -1145,7 +1212,11 @@
     }
   }
   function initCharts() {
-    fetch(JSON_URL, { credentials: 'omit' }).then(function(r) { return r.json(); }).then(function(DATA) {
+    Promise.all([
+      fetch(JSON_URL, { credentials: 'omit' }).then(function(r) { return r.json(); }),
+      fetch(DUAL_METRICS_URL, { credentials: 'omit' }).then(function(r) { return r.json(); })
+    ]).then(function(res) {
+      var DATA = res[0], DUAL = res[1];
       renderThresholdSpeed(DATA);
       renderTransitions(DATA);
       renderVolume(DATA);
@@ -1154,6 +1225,7 @@
       renderAdvancedDualYear(DATA);
       renderEco(DATA);
       renderImplied(DATA);
+      renderDualMetricsTables(DUAL);
     }).catch(function(err) { console.error('Charts failed', err); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCharts);

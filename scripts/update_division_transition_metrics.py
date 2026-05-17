@@ -128,12 +128,22 @@ def cohort_conversion_stats(
 
 def aggregate_stats(months_list: list[float]) -> dict:
     if not months_list:
-        return {"n": 0, "median_months": None, "mean_months": None, "p25": None, "p75": None}
+        return {
+            "n": 0,
+            "median_months": None,
+            "mean_months": None,
+            "min_months": None,
+            "max_months": None,
+            "p25": None,
+            "p75": None,
+        }
     qs = statistics.quantiles(months_list, n=4) if len(months_list) >= 2 else [months_list[0], months_list[0], months_list[0]]
     return {
         "n": len(months_list),
         "median_months": round(median_safe(months_list) or 0, 2),
         "mean_months": round(sum(months_list) / len(months_list), 2),
+        "min_months": round(min(months_list), 2),
+        "max_months": round(max(months_list), 2),
         "p25": round(qs[0], 2),
         "p75": round(qs[2], 2),
     }
