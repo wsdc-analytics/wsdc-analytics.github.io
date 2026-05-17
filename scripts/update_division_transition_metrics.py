@@ -158,7 +158,7 @@ def threshold_for_year(rules: dict, year: int, division: str) -> dict:
         if vt is not None and year > vt:
             continue
         model = epoch.get("model")
-        if model == "allowed_required_36mo":
+        if model in ("allowed_required_36mo", "allowed_required"):
             d = epoch.get("divisions", {}).get(division)
             if d and "allowed" in d:
                 return {
@@ -194,7 +194,10 @@ def months_to_adv_allowed(
         return None
     target = float(th["allowed"])
     epoch = th.get("epoch", "")
-    use_cumulative = bool(th.get("cumulative")) or (epoch == "2023_plus" and ref_year >= 2023)
+    use_cumulative = bool(th.get("cumulative")) or (
+        epoch == "2023_plus" and ref_year >= 2023
+    )
+    use_rolling = not use_cumulative and epoch in ("2018_2020", "2021_2022")
     total = 0.0
     for e in events:
         if e["div"] != "Advanced" or e["ym"] < t0:
@@ -428,7 +431,7 @@ def main() -> None:
                     )
                     transition_series.append(stats)
 
-    # m2: first calendar year when rolling 36-mo sum in D reaches threshold
+    # m2: months to allowed/required (Nov/Int: cumulative points in division)
     m2_by_dancer: dict[tuple, float] = {}
     for did, evs in events_by_dancer.items():
         role = dominate[did]
@@ -437,6 +440,7 @@ def main() -> None:
                 continue
             t0 = first_pts[did][div]
             reached: dict[str, bool] = {}
+            cum = 0.0
             for e in evs:
                 if e["div"] != div or e["ym"] < t0:
                     continue
@@ -444,13 +448,13 @@ def main() -> None:
                 th = threshold_for_year(rules, year, div)
                 if not th:
                     continue
-                roll = rolling_sum(evs, div, e["ym"], 36)
+                cum += e["pts"]
                 months_from_start = months_between(t0, e["ym"])
                 for kind in ("allowed", "required"):
                     if reached.get(kind):
                         continue
                     target = th.get(kind)
-                    if target is not None and roll >= target:
+                    if target is not None and cum >= target:
                         reached[kind] = True
                         key = (did, div, kind)
                         if key not in m2_by_dancer:

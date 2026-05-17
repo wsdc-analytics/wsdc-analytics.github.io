@@ -711,7 +711,7 @@
         <p>Для 12-месячной конверсии нужен более длинный baseline, поэтому беру <strong>2010–2018</strong>: так меньше риска, что один год случайно задаст норму. Свежий срез для этой метрики — <strong>2023–2024</strong>, потому что по 2025 ещё не прошло достаточно времени. <strong>2026</strong> использую только как ранний сигнал.</p>
         <p>Для Advanced → All-Stars и для нижней лестницы я всегда сравниваю <strong>две метрики</strong>, их нельзя подменять друг другом:</p>
         <ol>
-          <li><strong>До allowed-планки</strong> — сколько месяцев от первых поинтов в текущем дивизионе до набора порога, при котором по правилам эпохи можно идти в старший дивизион (по данным Registry Points, с учётом кумулятивной или rolling-модели той эпохи).</li>
+          <li><strong>До allowed-планки</strong> — сколько месяцев от первых поинтов в текущем дивизионе до набора порога, при котором по правилам эпохи можно идти в старший дивизион (по данным Registry Points: для Novice/Intermediate — сумма поинтов в дивизионе; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за последние 36 месяцев).</li>
           <li><strong>До первых поинтов в дивизионе выше</strong> — сколько месяцев от первых Advanced-поинтов до первых All-Stars-поинтов в реестре (фактический переход на соревнованиях).</li>
         </ol>
         <p>Разница между ними — «зазор» после eligibility: формально право уже есть, но человек ещё соревнуется в старом дивизионе. Для Novice/Intermediate сценарии «technical reset» ниже считаю только по первой метрике (allowed <strong>16</strong> и <strong>30</strong>). Число <strong>45</strong> в правилах — required для выхода из Intermediate, а не порог Advanced → All-Stars.</p>
@@ -719,7 +719,7 @@
 
       <section class="section">
         <h2>Как менялись правила переходов</h2>
-        <p>До 2015 года действовали более высокие кумулятивные пороги — <strong>20 / 25 / 40</strong> поинтов для Novice, Intermediate и Advanced. В редакции 2015 года WSDC зафиксировала базовую «лестницу», близкую к привычной сегодня по нижним ступеням. Дальше правила менялись поэтапно: сначала смягчение и окно для All-Stars, затем система <strong>allowed / required</strong> с rolling-накоплением, и снова ужесточение верхней ступени. Этот контекст важен для интерпретации графиков ниже.</p>
+        <p>До 2015 года действовали более высокие кумулятивные пороги — <strong>20 / 25 / 40</strong> поинтов для Novice, Intermediate и Advanced. В редакции 2015 года WSDC зафиксировала базовую «лестницу», близкую к привычной сегодня по нижним ступеням. Дальше правила менялись поэтапно: смягчение и трёхлетнее окно для All-Stars (2015), затем <strong>allowed / required</strong> (2018) — для Nov/Int по-прежнему по сумме поинтов в дивизионе, а окно <strong>36 месяцев</strong> вводится только для набора Advanced-поинтов перед All-Stars. С 2023 года снова ужесточили верхнюю ступень. Этот контекст важен для интерпретации графиков ниже.</p>
         <p>В хронологии ниже <strong>allowed</strong> — поинты, при которых можно идти в старший дивизион; <strong>required</strong> — порог закрепления уровня. В аналитике статьи я сравниваю в первую очередь allowed.</p>
 
         <div class="timeline">
@@ -729,11 +729,11 @@
           </div>
           <div class="timeline-item">
             <div class="timeline-year">2018</div>
-            <div class="timeline-text"><strong>Ключевой момент.</strong> Вводится система <strong>allowed / required</strong> и накопление в окне <strong>36 месяцев</strong>: Novice <strong>16 / 30</strong>, Intermediate <strong>30 / 45</strong>, Advanced <strong>45 / 60</strong>. WSDC отдельно фиксирует «можно идти выше» и «закрепился на уровне» — чтобы замедлить слишком быстрый проход лестницы.</div>
+            <div class="timeline-text"><strong>Ключевой момент.</strong> Вводится система <strong>allowed / required</strong>: Novice <strong>16 / 30</strong> и Intermediate <strong>30 / 45</strong> — по сумме поинтов в соответствующем дивизионе; для перехода Advanced → All-Stars — <strong>45 / 60</strong> Advanced-поинтов, накопленных за <strong>последние 36 месяцев</strong> (не за всю карьеру). WSDC отдельно фиксирует «можно идти выше» и «закрепился на уровне».</div>
           </div>
           <div class="timeline-item">
             <div class="timeline-year">2021</div>
-            <div class="timeline-text">Те же цифры <strong>16/30</strong>, <strong>30/45</strong>, <strong>45/60</strong> в окне 36 месяцев закрепляются в Registry Rules. Пороги не меняются, но правила становятся прозрачнее для организаторов и танцоров после ковида.</div>
+            <div class="timeline-text">Те же цифры <strong>16/30</strong> и <strong>30/45</strong> (кумулятивно в Nov/Int) и <strong>45/60</strong> Advanced-поинтов за 36 месяцев для выхода в All-Stars закрепляются в Registry Rules. Пороги не меняются, но правила становятся прозрачнее для организаторов и танцоров после ковида.</div>
           </div>
           <div class="timeline-item">
             <div class="timeline-year">2023</div>
@@ -797,7 +797,7 @@
 
         <h3>Advanced: планка 60 нагнала старый темп</h3>
         <p>Нижняя лестница и верхняя ведут себя по-разному. Nov/Int с 2018 года на <strong>16/30</strong> — ускорение в графиках 1–4 при том же правиле. Advanced WSDC ужесточала дважды (2018, 2023); на графике 5 видно, что в <strong>2021–22</strong> путь растянулся, а к <strong>2024–25</strong> темп набора <strong>60</strong> сравнялся со старым темпом до <strong>45</strong>, а путь до All-Stars — с ~<strong>25</strong> месяцами. Регуляторный запас исчерпан; конверсия Adv→AS (~3–4%) не раздувается.</p>
-        <div class="warning">«До планки» — приближение к allowed по Registry Points (модель эпохи: кумулятив или rolling 36 мес.). Когорта — дошедшие до All-Stars.</div>
+        <div class="warning">«До планки» — приближение к allowed по Registry Points: кумулятив для Nov/Int; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за 36 мес.; с 2023 — кумулятив 60/90. Когорта — дошедшие до All-Stars.</div>
 
         <figure class="figure-chart">
           <h3>7. Календарь снова стал большим</h3>
@@ -866,7 +866,7 @@
           <li>Это анализ основного пути движения по Skill Level; метрики суммированы по лидерам и фолловерам (All), каждый танцор — один раз по dominate role.</li>
           <li>2020–2022 — аномалия календаря; её нельзя читать как нормальную скорость системы.</li>
           <li>2026 используется только как ранний сигнал: год неполный, а переходы появляются в данных с лагом.</li>
-          <li>Для Advanced сравниваются две метрики (до allowed и до первых поинтов в All-Stars); «до планки» считается по модели правил эпохи (кумулятив / rolling 36 мес.), это не дословная eligibility.</li>
+          <li>Для Advanced сравниваются две метрики (до allowed и до первых поинтов в All-Stars); «до планки» для Nov/Int — кумулятив, для Advanced → All-Stars (2018–2022) — Advanced-поинты за 36 мес.; это не дословная eligibility.</li>
           <li>Technical reset и buffered reset — иллюстрации масштаба, не официальный расчёт WSDC; только Novice (16) и Intermediate (30). Adv→All-Stars: 60/90 с 2023 года.</li>
           <li>Качество танца, уровень тренировок и судейское восприятие здесь не измеряются.</li>
         </ul>
@@ -931,8 +931,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517c';
-  var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517c';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517d';
+  var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
   function covidPlugin() {

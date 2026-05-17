@@ -81,7 +81,7 @@ def threshold_for_year(rules: dict, year: int, division: str) -> dict:
         if vt is not None and year > vt:
             continue
         model = epoch.get("model")
-        if model == "allowed_required_36mo":
+        if model in ("allowed_required_36mo", "allowed_required"):
             d = epoch.get("divisions", {}).get(division)
             if d and "allowed" in d:
                 return {"allowed": d["allowed"], "required": d.get("required"), "epoch": epoch["id"]}
@@ -132,19 +132,18 @@ def months_to_allowed(
         return None
     target = float(th["allowed"])
     epoch = th.get("epoch", "")
-    use_cumulative = bool(th.get("cumulative")) or (
-        from_div == "Advanced" and epoch == "2023_plus" and ref_year >= 2023
-    )
+    use_rolling = from_div == "Advanced" and epoch in ("2018_2020", "2021_2022")
     total = 0.0
     for e in events:
         if e["div"] != from_div or e["ym"] < t0:
             continue
-        if use_cumulative:
+        if use_rolling:
+            if rolling_sum(events, from_div, e["ym"], 36) >= target:
+                return months_between(t0, e["ym"])
+        else:
             total += e["pts"]
             if total >= target:
                 return months_between(t0, e["ym"])
-        elif rolling_sum(events, from_div, e["ym"], 36) >= target:
-            return months_between(t0, e["ym"])
     return None
 
 
