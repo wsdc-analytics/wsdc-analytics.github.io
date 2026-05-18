@@ -633,31 +633,43 @@
       position: relative;
       height: 300px;
     }
-    .chart-legend-inline {
+    .chart-legend {
+      margin: 0 0 12px;
+    }
+    .chart-legend .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px 16px;
-      margin: 0 0 12px;
-      font-size: 12px;
-      color: var(--text-tertiary);
+      gap: 8px;
+      margin: 0;
     }
-    .chart-legend-inline .legend-pill {
+    .chart-legend .legend-item {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      color: #5b6063;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f7f8f9;
+      border: 1px solid rgba(117, 119, 120, 0.14);
+      border-radius: 999px;
+      padding: 4px 8px;
     }
-    .chart-legend-inline .legend-swatch {
+    .chart-legend .legend-line {
       width: 10px;
-      height: 10px;
-      border-radius: 3px;
+      height: 2px;
+      display: inline-block;
+      box-sizing: border-box;
+      background: transparent;
       flex-shrink: 0;
     }
-    .chart-legend-inline .legend-swatch.line {
-      width: 18px;
-      height: 0;
-      border-radius: 0;
-      border-top: 2px solid;
-    }
+    .chart-legend .legend-line.series-indigo { border-top: 2px solid #6366f1; }
+    .chart-legend .legend-line.series-teal { border-top: 2px solid #0d9488; }
+    .chart-legend .legend-line.series-amber { border-top: 2px solid #f59e0b; }
+    .chart-legend .legend-line.series-slate { border-top: 2px solid #94a3b8; }
+    .chart-legend .legend-line.series-indigo-dash { border-top: 2px dashed rgba(99, 102, 241, 0.55); }
+    .chart-legend .legend-line.series-teal-dash { border-top: 2px dashed rgba(13, 148, 136, 0.55); }
     .chartjs-ext-tooltip {
       position: absolute;
       pointer-events: none;
@@ -804,38 +816,46 @@
         <h2>Что видно в цифрах</h2>
         <figure class="figure-chart">
           <h3>1. До порога стали доходить быстрее</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#f59e0b"></span>2026 (неполный)</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>2025</span>
+              <span class="legend-item"><span class="legend-line series-amber"></span>2026 (неполный)</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
         </figure>
 
         <figure class="figure-chart">
           <h3>2. До первых поинтов в старшем дивизионе (M2)</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#f59e0b"></span>2026 (неполный)</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>2025</span>
+              <span class="legend-item"><span class="legend-line series-amber"></span>2026 (неполный)</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartFirstToFirstSpeed" aria-label="Месяцы до первых поинтов в D+1"></canvas></div>
         </figure>
 
         <figure class="figure-chart">
           <h3>3. Важно не только “как быстро”, но и “сколько людей”</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (среднее/год)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>Novice→Intermediate</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>Intermediate→Advanced</span>
+            </div>
           </div>
-          <div class="chart-canvas-box"><canvas id="chartVolume" aria-label="Число переходов"></canvas></div>
+          <div class="chart-canvas-box"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
         </figure>
 
         <figure class="figure-chart">
           <h3>4. Доля быстрых переходов за 12 месяцев</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2023–24</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>2023–24</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
         </figure>
@@ -846,18 +866,22 @@
 
         <figure class="figure-chart">
           <h3>5. Advanced: до планки и до All-Stars — две линии</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>До allowed (M1)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>До All-Stars (M2)</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>M1 (до allowed)</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>M2 (до All-Stars)</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartAdvancedDual" aria-label="Advanced: до планки и до All-Stars по эпохам"></canvas></div>
         </figure>
 
         <figure class="figure-chart">
           <h3>6. Advanced по годам (те же две метрики)</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#6366f1"></span>M1 (до allowed)</span>
-            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#0d9488"></span>M2 (до All-Stars)</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>M1 (до allowed)</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>M2 (до All-Stars)</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartAdvancedDualYear" aria-label="Advanced: две метрики по годам"></canvas></div>
         </figure>
@@ -868,9 +892,11 @@
 
         <figure class="figure-chart">
           <h3>7. Календарь снова стал большим</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#6366f1"></span>Ивенты</span>
-            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#0d9488"></span>Танцоры</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>Ивенты</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>Танцоры</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
         </figure>
@@ -905,9 +931,11 @@
 
         <figure class="figure-chart">
           <h3>8. Если удерживать старую скорость</h3>
-          <div class="chart-legend-inline" aria-hidden="true">
-            <span class="legend-pill"><span class="legend-swatch" style="background:#94a3b8"></span>Сейчас (allowed)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>Reset к базе (2025)</span>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-slate"></span>Сейчас (allowed)</span>
+              <span class="legend-item"><span class="legend-line series-indigo"></span>Reset к базе (2025)</span>
+            </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
         </figure>
@@ -1218,22 +1246,57 @@
   }
 
   function renderVolume(DATA) {
-    var labels = ['Novice→Intermediate', 'Intermediate→Advanced'];
-    var baseNov = transitionCountAvg(DATA, 'Novice', 'Intermediate', BASELINE_YEARS);
-    var baseInt = transitionCountAvg(DATA, 'Intermediate', 'Advanced', BASELINE_YEARS);
-    var y25Nov = transitionCountAvg(DATA, 'Novice', 'Intermediate', [2025]);
-    var y25Int = transitionCountAvg(DATA, 'Intermediate', 'Advanced', [2025]);
+    var years = [];
+    for (var y = 2015; y <= 2025; y++) years.push(String(y));
+    function countsByYear(from, to) {
+      var rows = DATA.transitions_count_by_year.filter(function(r) {
+        return r.from_division === from && r.to_division === to && r.role === MAIN_ROLE;
+      });
+      return Object.fromEntries(rows.map(function(r) { return [r.transition_year, r.n]; }));
+    }
+    var novC = countsByYear('Novice', 'Intermediate');
+    var intC = countsByYear('Intermediate', 'Advanced');
     destroy('volume');
     charts.volume = new Chart(document.getElementById('chartVolume'), {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: years,
         datasets: [
-          { label: '2015–19 (среднее/год)', data: [baseNov, baseInt], backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
-          { label: '2025', data: [y25Nov, y25Int], backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
+          {
+            label: 'Novice→Intermediate',
+            data: years.map(function(y) { return novC[parseInt(y, 10)] || 0; }),
+            backgroundColor: BAR_BASE,
+            borderRadius: 4,
+            maxBarThickness: 28
+          },
+          {
+            label: 'Intermediate→Advanced',
+            data: years.map(function(y) { return intC[parseInt(y, 10)] || 0; }),
+            backgroundColor: BAR_2025,
+            borderRadius: 4,
+            maxBarThickness: 28
+          }
         ]
       },
-      options: baseOpts('Переходов в год', 'count')
+      options: Object.assign(baseOpts('Переходов в год', 'count'), {
+        scales: {
+          x: {
+            ticks: {
+              color: 'rgba(55, 65, 81, 0.55)',
+              font: { size: 9, weight: 500 },
+              maxRotation: 0,
+              autoSkip: false,
+              callback: function(value, index) {
+                var label = this.getLabelForValue(value);
+                return (label === '2015' || label === '2020' || label === '2025') ? label : '';
+              }
+            },
+            grid: { display: false },
+            border: { display: true, color: 'rgba(15, 23, 42, 0.14)' }
+          },
+          y: chartScales('Переходов в год', 'count').y
+        }
+      })
     });
   }
 
