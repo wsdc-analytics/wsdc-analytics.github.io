@@ -251,7 +251,7 @@ def build_advanced_path_metrics(
         )
 
     by_year: list[dict] = []
-    for y in range(2015, 2026):
+    for y in range(2015, 2027):
         to_thr, to_as = [], []
         for did, fp in first_pts.items():
             if "Advanced" not in fp or "All-Stars" not in fp:

@@ -742,9 +742,9 @@
         <h2>Что видно в цифрах</h2>
         <figure class="figure-chart">
           <h3>1. До порога стали доходить быстрее</h3>
-          <p class="chart-lead">Медиана месяцев до allowed-порога в Novice и Intermediate (16 и 30 поинтов). Важна не точная неделя, а порядок скорости.</p>
+          <p class="chart-lead">Медиана месяцев до allowed-порога: Novice <strong>16</strong>, Intermediate <strong>30</strong>, Advanced <strong>45</strong> (2015–19) и <strong>60</strong> (с 2023). Базовый период <strong>2015–19</strong> — медиана годовых медиан; <strong>2025</strong> и <strong>2026</strong> — отдельные календарные годы (2026 неполный, данные реестра на май 2026).</p>
           <div class="canvas-wrap"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
-          <p class="chart-caption">В Novice путь до allowed сократился примерно с 11 месяцев в 2015–2019 до 8 месяцев в 2024–2025. В Intermediate — примерно с 15 до 13,5 месяцев. Это не катастрофа само по себе, но это изменение скорости при тех же порогах.</p>
+          <p class="chart-caption" id="chartThresholdSpeedCaption">Загрузка подписи…</p>
         </figure>
 
         <figure class="figure-chart">
@@ -924,7 +924,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517d';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517e';
   var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
@@ -964,12 +964,32 @@
   }
   var MAIN_ROLE = 'All';
 
+  var BASELINE_YEARS = [2015, 2016, 2017, 2018, 2019];
+
   function allowedMedian(DATA, division, years) {
     var rows = DATA.months_to_threshold.filter(function(r) {
       return r.division === division && r.threshold_type === 'allowed' && r.role === MAIN_ROLE &&
         years.indexOf(r.year) !== -1 && !r.suppress && r.median_months != null;
     });
     return median(rows.map(function(r) { return r.median_months; }));
+  }
+
+  function advancedAllowedMedian(DATA, years) {
+    var rows = (DATA.advanced_path_by_year || []).filter(function(r) {
+      return years.indexOf(r.year) !== -1 && !r.suppress &&
+        r.months_to_allowed && r.months_to_allowed.median_months != null;
+    });
+    return median(rows.map(function(r) { return r.months_to_allowed.median_months; }));
+  }
+
+  function thresholdSpeedValue(DATA, division, years) {
+    if (division === 'Advanced') return advancedAllowedMedian(DATA, years);
+    return allowedMedian(DATA, division, years);
+  }
+
+  function fmtMonths(v) {
+    if (v == null || isNaN(v)) return '—';
+    return (Math.round(v * 10) / 10).toString().replace('.', ',');
   }
 
   function cohortRate(DATA, period, fromDiv, toDiv, role) {
@@ -981,21 +1001,36 @@
   }
 
   function renderThresholdSpeed(DATA) {
-    var divisions = ['Novice', 'Intermediate'];
-    var earlyYears = [2015, 2016, 2017, 2018, 2019];
-    var currentYears = [2024, 2025];
+    var divisions = ['Novice', 'Intermediate', 'Advanced'];
     destroy('threshold');
+    var baseline = divisions.map(function(d) { return thresholdSpeedValue(DATA, d, BASELINE_YEARS); });
+    var y2025 = divisions.map(function(d) { return thresholdSpeedValue(DATA, d, [2025]); });
+    var y2026 = divisions.map(function(d) { return thresholdSpeedValue(DATA, d, [2026]); });
     charts.threshold = new Chart(document.getElementById('chartThresholdSpeed'), {
       type: 'bar',
       data: {
         labels: divisions,
         datasets: [
-          { label: '2015–19', data: divisions.map(function(d) { return allowedMedian(DATA, d, earlyYears); }), backgroundColor: 'rgba(99, 102, 241, 0.65)' },
-          { label: '2024–25', data: divisions.map(function(d) { return allowedMedian(DATA, d, currentYears); }), backgroundColor: 'rgba(13, 148, 136, 0.65)' }
+          { label: '2015–19 (база)', data: baseline, backgroundColor: 'rgba(99, 102, 241, 0.65)' },
+          { label: '2025', data: y2025, backgroundColor: 'rgba(13, 148, 136, 0.65)' },
+          { label: '2026 (неполный год)', data: y2026, backgroundColor: 'rgba(245, 158, 11, 0.75)' }
         ]
       },
       options: baseOpts('Месяцы до allowed')
     });
+    var cap = document.getElementById('chartThresholdSpeedCaption');
+    if (cap) {
+      var novB = baseline[0], nov25 = y2025[0], nov26 = y2026[0];
+      var intB = baseline[1], int25 = y2025[1], int26 = y2026[1];
+      var advB = baseline[2], adv25 = y2025[2], adv26 = y2026[2];
+      cap.innerHTML = '<strong>Novice</strong> (16): база <strong>' + fmtMonths(novB) + '</strong> мес. → 2025 <strong>' + fmtMonths(nov25) +
+        '</strong> → 2026* <strong>' + fmtMonths(nov26) + '</strong> мес. ' +
+        '<strong>Intermediate</strong> (30): <strong>' + fmtMonths(intB) + '</strong> → <strong>' + fmtMonths(int25) +
+        '</strong> → <strong>' + fmtMonths(int26) + '</strong> мес. ' +
+        '<strong>Advanced</strong> (allowed 45 / 60): <strong>' + fmtMonths(advB) + '</strong> → <strong>' + fmtMonths(adv25) +
+        '</strong> → <strong>' + fmtMonths(adv26) + '</strong> мес. ' +
+        'По Nov/Int пороги не менялись; для Advanced с 2023 планка выше (60). *2026 — неполный год, ранняя оценка.';
+    }
   }
   function transitionSeries(DATA, from, to) {
     return DATA.transition_series.filter(function(s) {
