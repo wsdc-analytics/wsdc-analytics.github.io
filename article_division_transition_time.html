@@ -748,21 +748,28 @@
         </figure>
 
         <figure class="figure-chart">
-          <h3>2. Ковид растянул путь, но это была аномалия</h3>
+          <h3>2. До первых поинтов в старшем дивизионе (M2)</h3>
+          <p class="chart-lead"><strong>M2</strong> — медиана месяцев от первых поинтов в дивизионе <strong>D</strong> до первых поинтов в <strong>D+1</strong> (фактический переход на соревнованиях). Когорта — год <strong>первых поинтов в D+1</strong>. Те же периоды, что на графике 1: база <strong>2015–19</strong>, отдельно <strong>2025</strong> и неполный <strong>2026</strong>.</p>
+          <div class="canvas-wrap"><canvas id="chartFirstToFirstSpeed" aria-label="Месяцы до первых поинтов в D+1"></canvas></div>
+          <p class="chart-caption" id="chartFirstToFirstSpeedCaption">Загрузка подписи…</p>
+        </figure>
+
+        <figure class="figure-chart">
+          <h3>3. Ковид растянул путь, но это была аномалия</h3>
           <p class="chart-lead">Медиана месяцев от первых поинтов в одном дивизионе до первых поинтов в следующем. Оранжевая зона — ковидный провал календаря.</p>
           <div class="canvas-wrap"><canvas id="chartTransitions" aria-label="Время перехода между дивизионами по годам"></canvas></div>
           <p class="chart-caption">В 2022–2023 путь выглядел длинным не потому, что пороги стали идеальными, а потому что люди переживали паузы и сломанный календарь. В 2024–2025 метрика вернулась к коротким значениям.</p>
         </figure>
 
         <figure class="figure-chart">
-          <h3>3. Важно не только “как быстро”, но и “сколько людей”</h3>
+          <h3>4. Важно не только “как быстро”, но и “сколько людей”</h3>
           <p class="chart-lead">Сколько танцоров впервые получили поинты в следующем дивизионе.</p>
           <div class="canvas-wrap"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
           <p class="chart-caption">Novice → Intermediate в 2024–2025: <strong>947</strong> переходов за два года против <strong>885</strong> в 2018–2019 (+7%). Intermediate → Advanced: <strong>420</strong> против <strong>398</strong>. То есть речь не только о скорости отдельных людей, но и о потоке.</p>
         </figure>
 
         <figure class="figure-chart">
-          <h3>4. Доля быстрых переходов тоже выросла</h3>
+          <h3>5. Доля быстрых переходов тоже выросла</h3>
           <p class="chart-lead">Из всех, кто впервые получил поинты в дивизионе, какая доля получила первые поинты в следующем дивизионе за 12 месяцев.</p>
           <div class="canvas-wrap"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
           <p class="chart-caption">Это проверка второй стороны гипотезы: не только “дошедшие идут быстрее”, но и “больше стартовавших успевает пройти дальше в короткое окно”. Novice → Intermediate: 1236/6601 → 372/1696; Intermediate → Advanced: 412/3092 → 123/819. Advanced → All-Stars такого эффекта пока не показывает.</p>
@@ -775,25 +782,25 @@
         <p>Если смотреть по годам, картина становится точнее. Для Novice → Intermediate 2024 год уже выше всего доковидного коридора 2010–2018: <strong>22,7%</strong> против исторического диапазона примерно <strong>16,9–20,0%</strong>. Для Intermediate → Advanced это не абсолютный рекорд: ранние 2010–2011 были выше, но относительно более устойчивого периода 2012–2018 текущие значения снова поднялись (<strong>15,3%</strong> в 2024 против обычных ~10–13%). Advanced → All-Stars такого расширения не показывает: там 2023–2024 остаются около <strong>3–4%</strong>.</p>
 
         <figure class="figure-chart">
-          <h3>5. Advanced: до планки и до All-Stars — две линии</h3>
+          <h3>6. Advanced: до планки и до All-Stars — две линии</h3>
           <p class="chart-lead">Когорта: первые All-Stars-поинты в эпохе. Синяя колонка — медиана до allowed; зелёная — до первых поинтов в All-Stars. Разница — зазор после eligibility.</p>
           <div class="canvas-wrap"><canvas id="chartAdvancedDual" aria-label="Advanced: до планки и до All-Stars по эпохам"></canvas></div>
           <p class="chart-caption"><strong>2015–19:</strong> до планки ~<strong>19</strong> мес., до All-Stars ~<strong>25</strong> мес., зазор ~<strong>3</strong> мес. <strong>2021–22:</strong> ~<strong>24,5</strong> / ~<strong>48</strong> / ~<strong>23,5</strong> — мера сработала. <strong>2024–25:</strong> до <strong>60</strong> ~<strong>21</strong> мес., до All-Stars ~<strong>26</strong> мес., зазор снова ~<strong>3</strong> мес.</p>
         </figure>
 
         <figure class="figure-chart">
-          <h3>6. Advanced по годам (те же две метрики)</h3>
+          <h3>7. Advanced по годам (те же две метрики)</h3>
           <p class="chart-lead">Год — год первых All-Stars-поинтов. Оранжевая зона — ковид.</p>
           <div class="canvas-wrap"><canvas id="chartAdvancedDualYear" aria-label="Advanced: две метрики по годам"></canvas></div>
           <p class="chart-caption">После 2024 обе линии снова сближаются к доковидному коридору при allowed <strong>60</strong> вместо прежних <strong>45</strong>.</p>
         </figure>
 
         <h3>Advanced: планка 60 нагнала старый темп</h3>
-        <p>Нижняя лестница и верхняя ведут себя по-разному. Nov/Int с 2018 года на <strong>16/30</strong> — ускорение в графиках 1–4 при том же правиле. Advanced WSDC ужесточала дважды (2018, 2023); на графике 5 видно, что в <strong>2021–22</strong> путь растянулся, а к <strong>2024–25</strong> темп набора <strong>60</strong> сравнялся со старым темпом до <strong>45</strong>, а путь до All-Stars — с ~<strong>25</strong> месяцами. Регуляторный запас исчерпан; конверсия Adv→AS (~3–4%) не раздувается.</p>
+        <p>Нижняя лестница и верхняя ведут себя по-разному. Nov/Int с 2018 года на <strong>16/30</strong> — ускорение в графиках 1–2 (M1 и M2) при том же правиле. Advanced WSDC ужесточала дважды (2018, 2023); на графиках 6–7 видно, что в <strong>2021–22</strong> путь растянулся, а к <strong>2024–25</strong> темп набора <strong>60</strong> сравнялся со старым темпом до <strong>45</strong>, а путь до All-Stars — с ~<strong>25</strong> месяцами. Регуляторный запас исчерпан; конверсия Adv→AS (~3–4%) не раздувается.</p>
         <div class="warning">«До планки» — приближение к allowed по Registry Points: кумулятив для Nov/Int; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за 36 мес.; с 2023 — кумулятив 60/90. Когорта — дошедшие до All-Stars.</div>
 
         <figure class="figure-chart">
-          <h3>7. Календарь снова стал большим</h3>
+          <h3>8. Календарь снова стал большим</h3>
           <p class="chart-lead">Уникальные ивенты с рейтинговыми поинтами и танцоры с поинтами.</p>
           <div class="canvas-wrap"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
           <p class="chart-caption">В 2021 было 26 ивентов и 1007 танцоров с поинтами. В 2025 — 172 ивента и 3991 танцор. Правила, введённые в одном масштабе календаря, теперь работают в другом.</p>
@@ -828,7 +835,7 @@
         <div class="warning">Это не предложение автоматически поднять пороги. Механический расчёт показывает только нижнюю техническую оценку. Если правило должно работать несколько лет, а не догонять календарь каждый сезон, регулятору пришлось бы отдельно решать, нужен ли сглаживающий запас.</div>
 
         <figure class="figure-chart">
-          <h3>8. Если удерживать старую скорость</h3>
+          <h3>9. Если удерживать старую скорость</h3>
           <p class="chart-lead">Текущие allowed-пороги Novice и Intermediate и technical reset, который дал бы скорость ближе к 2015–2019.</p>
           <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
         </figure>
@@ -1000,13 +1007,28 @@
     return row && row.rate_pct != null ? row.rate_pct : null;
   }
 
-  function renderThresholdSpeed(DATA) {
-    var divisions = ['Novice', 'Intermediate', 'Advanced'];
-    destroy('threshold');
-    var baseline = divisions.map(function(d) { return thresholdSpeedValue(DATA, d, BASELINE_YEARS); });
-    var y2025 = divisions.map(function(d) { return thresholdSpeedValue(DATA, d, [2025]); });
-    var y2026 = divisions.map(function(d) { return thresholdSpeedValue(DATA, d, [2026]); });
-    charts.threshold = new Chart(document.getElementById('chartThresholdSpeed'), {
+  var M2_TO_DIVISION = {
+    Novice: 'Intermediate',
+    Intermediate: 'Advanced',
+    Advanced: 'All-Stars'
+  };
+
+  function m2Median(DATA, fromDiv, years) {
+    var toDiv = M2_TO_DIVISION[fromDiv];
+    var rows = DATA.transition_series.filter(function(r) {
+      return r.from_division === fromDiv && r.to_division === toDiv && r.role === MAIN_ROLE &&
+        r.metric_variant === 'first_to_first' && years.indexOf(r.transition_year) !== -1 &&
+        !r.suppress && r.median_months != null;
+    });
+    return median(rows.map(function(r) { return r.median_months; }));
+  }
+
+  function renderPeriodCompareChart(chartKey, canvasId, captionId, divisions, valueFn, yTitle, buildCaption) {
+    destroy(chartKey);
+    var baseline = divisions.map(function(d) { return valueFn(d, BASELINE_YEARS); });
+    var y2025 = divisions.map(function(d) { return valueFn(d, [2025]); });
+    var y2026 = divisions.map(function(d) { return valueFn(d, [2026]); });
+    charts[chartKey] = new Chart(document.getElementById(canvasId), {
       type: 'bar',
       data: {
         labels: divisions,
@@ -1016,21 +1038,54 @@
           { label: '2026 (неполный год)', data: y2026, backgroundColor: 'rgba(245, 158, 11, 0.75)' }
         ]
       },
-      options: baseOpts('Месяцы до allowed')
+      options: baseOpts(yTitle)
     });
-    var cap = document.getElementById('chartThresholdSpeedCaption');
-    if (cap) {
-      var novB = baseline[0], nov25 = y2025[0], nov26 = y2026[0];
-      var intB = baseline[1], int25 = y2025[1], int26 = y2026[1];
-      var advB = baseline[2], adv25 = y2025[2], adv26 = y2026[2];
-      cap.innerHTML = '<strong>Novice</strong> (16): база <strong>' + fmtMonths(novB) + '</strong> мес. → 2025 <strong>' + fmtMonths(nov25) +
-        '</strong> → 2026* <strong>' + fmtMonths(nov26) + '</strong> мес. ' +
-        '<strong>Intermediate</strong> (30): <strong>' + fmtMonths(intB) + '</strong> → <strong>' + fmtMonths(int25) +
-        '</strong> → <strong>' + fmtMonths(int26) + '</strong> мес. ' +
-        '<strong>Advanced</strong> (allowed 45 / 60): <strong>' + fmtMonths(advB) + '</strong> → <strong>' + fmtMonths(adv25) +
-        '</strong> → <strong>' + fmtMonths(adv26) + '</strong> мес. ' +
-        'По Nov/Int пороги не менялись; для Advanced с 2023 планка выше (60). *2026 — неполный год, ранняя оценка.';
+    var cap = document.getElementById(captionId);
+    if (cap && buildCaption) {
+      cap.innerHTML = buildCaption(baseline, y2025, y2026);
     }
+  }
+
+  function renderThresholdSpeed(DATA) {
+    var divisions = ['Novice', 'Intermediate', 'Advanced'];
+    renderPeriodCompareChart(
+      'threshold',
+      'chartThresholdSpeed',
+      'chartThresholdSpeedCaption',
+      divisions,
+      function(div, years) { return thresholdSpeedValue(DATA, div, years); },
+      'Месяцы до allowed',
+      function(baseline, y2025, y2026) {
+        return '<strong>Novice→Int</strong> (M1, 16): база <strong>' + fmtMonths(baseline[0]) + '</strong> → 2025 <strong>' + fmtMonths(y2025[0]) +
+          '</strong> → 2026* <strong>' + fmtMonths(y2026[0]) + '</strong> мес. ' +
+          '<strong>Int→Adv</strong> (30): <strong>' + fmtMonths(baseline[1]) + '</strong> → <strong>' + fmtMonths(y2025[1]) +
+          '</strong> → <strong>' + fmtMonths(y2026[1]) + '</strong> мес. ' +
+          '<strong>Adv→AS</strong> (45/60): <strong>' + fmtMonths(baseline[2]) + '</strong> → <strong>' + fmtMonths(y2025[2]) +
+          '</strong> → <strong>' + fmtMonths(y2026[2]) + '</strong> мес. ' +
+          'По Nov/Int пороги не менялись; для Advanced с 2023 планка 60. *2026 — неполный год.';
+      }
+    );
+  }
+
+  function renderFirstToFirstSpeed(DATA) {
+    var divisions = ['Novice', 'Intermediate', 'Advanced'];
+    renderPeriodCompareChart(
+      'firstToFirst',
+      'chartFirstToFirstSpeed',
+      'chartFirstToFirstSpeedCaption',
+      divisions,
+      function(div, years) { return m2Median(DATA, div, years); },
+      'Месяцы до первых поинтов в D+1',
+      function(baseline, y2025, y2026) {
+        return '<strong>Novice→Int</strong> (M2): база <strong>' + fmtMonths(baseline[0]) + '</strong> → 2025 <strong>' + fmtMonths(y2025[0]) +
+          '</strong> → 2026* <strong>' + fmtMonths(y2026[0]) + '</strong> мес. ' +
+          '<strong>Int→Adv</strong>: <strong>' + fmtMonths(baseline[1]) + '</strong> → <strong>' + fmtMonths(y2025[1]) +
+          '</strong> → <strong>' + fmtMonths(y2026[1]) + '</strong> мес. ' +
+          '<strong>Adv→AS</strong>: <strong>' + fmtMonths(baseline[2]) + '</strong> → <strong>' + fmtMonths(y2025[2]) +
+          '</strong> → <strong>' + fmtMonths(y2026[2]) + '</strong> мес. ' +
+          'M2 короче M1, если люди идут выше сразу после eligibility; рост M2 при тех же порогах — «зазор» сжимается. *2026 — неполный год.';
+      }
+    );
   }
   function transitionSeries(DATA, from, to) {
     return DATA.transition_series.filter(function(s) {
@@ -1246,6 +1301,7 @@
     ]).then(function(res) {
       var DATA = res[0], DUAL = res[1];
       renderThresholdSpeed(DATA);
+      renderFirstToFirstSpeed(DATA);
       renderTransitions(DATA);
       renderVolume(DATA);
       renderConversion(DATA);
