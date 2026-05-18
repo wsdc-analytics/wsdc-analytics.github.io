@@ -629,9 +629,72 @@
       font-size: 14px;
       color: var(--text-tertiary);
     }
-    .canvas-wrap {
+    .chart-canvas-box {
       position: relative;
       height: 300px;
+    }
+    .chart-legend-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .chart-legend-inline .legend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chart-legend-inline .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .chart-legend-inline .legend-swatch.line {
+      width: 18px;
+      height: 0;
+      border-radius: 0;
+      border-top: 2px solid;
+    }
+    .chartjs-ext-tooltip {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 20;
+      min-width: 168px;
+      max-width: 280px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #0f172a;
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    .chartjs-ext-tooltip .tt-title {
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+    .chartjs-ext-tooltip .tt-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin: 2px 0;
+    }
+    .chartjs-ext-tooltip .tt-label { font-weight: 600; }
+    .chartjs-ext-tooltip .tt-value {
+      margin-left: auto;
+      font-weight: 700;
+      text-align: right;
+      font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
     }
     .chart-caption {
       margin: 10px 0 0;
@@ -667,7 +730,7 @@
       margin: 20px 0;
     }
     @media (max-width: 900px) {
-      .canvas-wrap { height: 260px; }
+      .chart-canvas-box { height: 260px; }
     }
 
   </style>
@@ -728,8 +791,7 @@
       <section class="section">
         <h2>Как читаем данные</h2>
         <p>Смотрим только основной путь танцора по Skill Level: первые поинты в дивизионе, скорость набора порога и факт перехода в следующий дивизион. Каждый танцор учитывается один раз по своей dominate role (основной роли в реестре), без второй роли; в графиках и таблицах ниже лидеры и фолловеры суммированы вместе (All). Пороги WSDC от роли не зависят.</p>
-        <p>Для скорости набора порогов я сравниваю нормальный доковидный период <strong>2015–2019</strong> с текущим разогнанным календарём <strong>2024–2025</strong>. Ковидные годы 2020–2022 показываю отдельно как аномалию календаря, но не использую как baseline: это был неполный режим системы, а не нормальная точка сравнения.</p>
-        <p>Для 12-месячной конверсии нужен более длинный baseline, поэтому беру <strong>2010–2018</strong>: так меньше риска, что один год случайно задаст норму. Свежий срез для этой метрики — <strong>2023–2024</strong>, потому что по 2025 ещё не прошло достаточно времени. <strong>2026</strong> использую только как ранний сигнал.</p>
+        <p>Для скорости набора порогов, объёма переходов и 12-месячной конверсии я сравниваю один и тот же baseline <strong>2015–2019</strong> с отдельным календарным годом <strong>2025</strong>. На графиках M1 и M2 дополнительно показываю неполный <strong>2026</strong> как ранний сигнал. Ковидные 2020–2022 в baseline не входят и отдельным графиком не выделяю: это аномалия календаря, а не «норма» для сравнения.</p>
         <p>Для Advanced → All-Stars и для нижней лестницы я всегда сравниваю <strong>две метрики</strong>, их нельзя подменять друг другом:</p>
         <ol>
           <li><strong>До allowed-планки</strong> — сколько месяцев от первых поинтов в текущем дивизионе до набора порога, при котором по правилам эпохи можно идти в старший дивизион (по данным Registry Points: для Novice/Intermediate — сумма поинтов в дивизионе; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за последние 36 месяцев).</li>
@@ -743,74 +805,95 @@
         <figure class="figure-chart">
           <h3>1. До порога стали доходить быстрее</h3>
           <p class="chart-lead">Медиана месяцев до allowed-порога: Novice <strong>16</strong>, Intermediate <strong>30</strong>, Advanced <strong>45</strong> (2015–19) и <strong>60</strong> (с 2023). Базовый период <strong>2015–19</strong> — медиана годовых медиан; <strong>2025</strong> и <strong>2026</strong> — отдельные календарные годы (2026 неполный, данные реестра на май 2026).</p>
-          <div class="canvas-wrap"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#f59e0b"></span>2026 (неполный)</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
           <p class="chart-caption" id="chartThresholdSpeedCaption">Загрузка подписи…</p>
         </figure>
 
         <figure class="figure-chart">
           <h3>2. До первых поинтов в старшем дивизионе (M2)</h3>
           <p class="chart-lead"><strong>M2</strong> — медиана месяцев от первых поинтов в дивизионе <strong>D</strong> до первых поинтов в <strong>D+1</strong> (фактический переход на соревнованиях). Когорта — год <strong>первых поинтов в D+1</strong>. Те же периоды, что на графике 1: база <strong>2015–19</strong>, отдельно <strong>2025</strong> и неполный <strong>2026</strong>.</p>
-          <div class="canvas-wrap"><canvas id="chartFirstToFirstSpeed" aria-label="Месяцы до первых поинтов в D+1"></canvas></div>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#f59e0b"></span>2026 (неполный)</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartFirstToFirstSpeed" aria-label="Месяцы до первых поинтов в D+1"></canvas></div>
           <p class="chart-caption" id="chartFirstToFirstSpeedCaption">Загрузка подписи…</p>
         </figure>
 
         <figure class="figure-chart">
-          <h3>3. Ковид растянул путь, но это была аномалия</h3>
-          <p class="chart-lead">Медиана месяцев от первых поинтов в одном дивизионе до первых поинтов в следующем. Оранжевая зона — ковидный провал календаря.</p>
-          <div class="canvas-wrap"><canvas id="chartTransitions" aria-label="Время перехода между дивизионами по годам"></canvas></div>
-          <p class="chart-caption">В 2022–2023 путь выглядел длинным не потому, что пороги стали идеальными, а потому что люди переживали паузы и сломанный календарь. В 2024–2025 метрика вернулась к коротким значениям.</p>
+          <h3>3. Важно не только “как быстро”, но и “сколько людей”</h3>
+          <p class="chart-lead">Число переходов (первые поинты в следующем дивизионе): среднее за год в baseline <strong>2015–19</strong> и отдельно <strong>2025</strong>.</p>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (среднее/год)</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartVolume" aria-label="Число переходов"></canvas></div>
+          <p class="chart-caption" id="chartVolumeCaption">Загрузка подписи…</p>
         </figure>
 
         <figure class="figure-chart">
-          <h3>4. Важно не только “как быстро”, но и “сколько людей”</h3>
-          <p class="chart-lead">Сколько танцоров впервые получили поинты в следующем дивизионе.</p>
-          <div class="canvas-wrap"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
-          <p class="chart-caption">Novice → Intermediate в 2024–2025: <strong>947</strong> переходов за два года против <strong>885</strong> в 2018–2019 (+7%). Intermediate → Advanced: <strong>420</strong> против <strong>398</strong>. То есть речь не только о скорости отдельных людей, но и о потоке.</p>
-        </figure>
-
-        <figure class="figure-chart">
-          <h3>5. Доля быстрых переходов тоже выросла</h3>
-          <p class="chart-lead">Из всех, кто впервые получил поинты в дивизионе, какая доля получила первые поинты в следующем дивизионе за 12 месяцев.</p>
-          <div class="canvas-wrap"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
-          <p class="chart-caption">Это проверка второй стороны гипотезы: не только “дошедшие идут быстрее”, но и “больше стартовавших успевает пройти дальше в короткое окно”. Novice → Intermediate: 1236/6601 → 372/1696; Intermediate → Advanced: 412/3092 → 123/819. Advanced → All-Stars такого эффекта пока не показывает.</p>
+          <h3>4. Доля быстрых переходов за 12 месяцев</h3>
+          <p class="chart-lead">Из всех, кто впервые получил поинты в дивизионе в годе когорты, какая доля получила первые поинты в следующем дивизионе за 12 месяцев. Те же периоды: <strong>2015–19</strong> и <strong>2025</strong>.</p>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
+          <p class="chart-caption" id="chartConversionCaption">Загрузка подписи…</p>
         </figure>
 
         <h3>Не только быстрее, но и шире</h3>
-        <p>Если смотреть только на тех, кто уже получил первые поинты в следующем дивизионе, мы видим скорость перехода. Но для разговора о трафике нужен ещё один вопрос: какая доля всей стартовой когорты вообще успевает пройти дальше?</p>
-        <p>Для этого берём танцоров по году первых поинтов в дивизионе и смотрим, кто получил первые поинты в следующем дивизионе за 12 месяцев. Такое окно достаточно короткое, чтобы уже аккуратно читать 2024 год, и достаточно содержательное, чтобы увидеть быстрый проход через правила.</p>
-        <p>В 2010–2018 доля быстрых переходов Novice → Intermediate была около <strong>18,7%</strong>, а в 2023–2024 — уже <strong>21,9%</strong>. В абсолютных числах это <strong>1236 из 6601</strong> стартовавших в базе против <strong>372 из 1696</strong> в 2023–2024. Для Intermediate → Advanced рост тоже заметен: <strong>13,3%</strong> (412 из 3092) против <strong>15,0%</strong> (123 из 819). Это косвенно подтверждает, что поток не просто ускорился у отдельных активных танцоров, а расширился внутри нижних ступеней лестницы.</p>
-        <p>Если смотреть по годам, картина становится точнее. Для Novice → Intermediate 2024 год уже выше всего доковидного коридора 2010–2018: <strong>22,7%</strong> против исторического диапазона примерно <strong>16,9–20,0%</strong>. Для Intermediate → Advanced это не абсолютный рекорд: ранние 2010–2011 были выше, но относительно более устойчивого периода 2012–2018 текущие значения снова поднялись (<strong>15,3%</strong> в 2024 против обычных ~10–13%). Advanced → All-Stars такого расширения не показывает: там 2023–2024 остаются около <strong>3–4%</strong>.</p>
+        <p>Если смотреть только на тех, кто уже получил первые поинты в следующем дивизионе, мы видим скорость перехода (графики 1–2). Но для разговора о трафике нужен ещё один вопрос: какая доля всей стартовой когорты вообще успевает пройти дальше за 12 месяцев?</p>
+        <p>За baseline <strong>2015–2019</strong> доля быстрых переходов Novice → Intermediate — <strong>15,8%</strong> (<strong>707 из 4480</strong> стартовавших), в <strong>2025</strong> — тоже <strong>15,8%</strong> (<strong>171 из 1083</strong>): доля не выросла, но абсолютный поток стартов и переходов плотнее. Для Intermediate → Advanced в baseline <strong>10,6%</strong> (<strong>230 из 2165</strong>), в 2025 — <strong>9,7%</strong> (<strong>50 из 518</strong>). Advanced → All-Stars остаётся низкой: <strong>4,1%</strong> против <strong>2,3%</strong> — расширения «массового» быстрого прохода наверх нет.</p>
 
         <figure class="figure-chart">
-          <h3>6. Advanced: до планки и до All-Stars — две линии</h3>
+          <h3>5. Advanced: до планки и до All-Stars — две линии</h3>
           <p class="chart-lead">Когорта: первые All-Stars-поинты в эпохе. Синяя колонка — медиана до allowed; зелёная — до первых поинтов в All-Stars. Разница — зазор после eligibility.</p>
-          <div class="canvas-wrap"><canvas id="chartAdvancedDual" aria-label="Advanced: до планки и до All-Stars по эпохам"></canvas></div>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>До allowed (M1)</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>До All-Stars (M2)</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartAdvancedDual" aria-label="Advanced: до планки и до All-Stars по эпохам"></canvas></div>
           <p class="chart-caption"><strong>2015–19:</strong> до планки ~<strong>19</strong> мес., до All-Stars ~<strong>25</strong> мес., зазор ~<strong>3</strong> мес. <strong>2021–22:</strong> ~<strong>24,5</strong> / ~<strong>48</strong> / ~<strong>23,5</strong> — мера сработала. <strong>2024–25:</strong> до <strong>60</strong> ~<strong>21</strong> мес., до All-Stars ~<strong>26</strong> мес., зазор снова ~<strong>3</strong> мес.</p>
         </figure>
 
         <figure class="figure-chart">
-          <h3>7. Advanced по годам (те же две метрики)</h3>
-          <p class="chart-lead">Год — год первых All-Stars-поинтов. Оранжевая зона — ковид.</p>
-          <div class="canvas-wrap"><canvas id="chartAdvancedDualYear" aria-label="Advanced: две метрики по годам"></canvas></div>
+          <h3>6. Advanced по годам (те же две метрики)</h3>
+          <p class="chart-lead">Год — год первых All-Stars-поинтов. Сплошные линии — медианы M1 и M2; пунктир — min/max.</p>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#6366f1"></span>M1 (до allowed)</span>
+            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#0d9488"></span>M2 (до All-Stars)</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartAdvancedDualYear" aria-label="Advanced: две метрики по годам"></canvas></div>
           <p class="chart-caption">После 2024 обе линии снова сближаются к доковидному коридору при allowed <strong>60</strong> вместо прежних <strong>45</strong>.</p>
         </figure>
 
         <h3>Advanced: планка 60 нагнала старый темп</h3>
-        <p>Нижняя лестница и верхняя ведут себя по-разному. Nov/Int с 2018 года на <strong>16/30</strong> — ускорение в графиках 1–2 (M1 и M2) при том же правиле. Advanced WSDC ужесточала дважды (2018, 2023); на графиках 6–7 видно, что в <strong>2021–22</strong> путь растянулся, а к <strong>2024–25</strong> темп набора <strong>60</strong> сравнялся со старым темпом до <strong>45</strong>, а путь до All-Stars — с ~<strong>25</strong> месяцами. Регуляторный запас исчерпан; конверсия Adv→AS (~3–4%) не раздувается.</p>
+        <p>Нижняя лестница и верхняя ведут себя по-разному. Nov/Int с 2018 года на <strong>16/30</strong> — ускорение в графиках 1–2 (M1 и M2) при том же правиле. Advanced WSDC ужесточала дважды (2018, 2023); на графиках 5–6 видно, что в <strong>2021–22</strong> путь растянулся, а к <strong>2024–25</strong> темп набора <strong>60</strong> сравнялся со старым темпом до <strong>45</strong>, а путь до All-Stars — с ~<strong>25</strong> месяцами. Регуляторный запас исчерпан; конверсия Adv→AS (~2–4%) не раздувается.</p>
         <div class="warning">«До планки» — приближение к allowed по Registry Points: кумулятив для Nov/Int; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за 36 мес.; с 2023 — кумулятив 60/90. Когорта — дошедшие до All-Stars.</div>
 
         <figure class="figure-chart">
-          <h3>8. Календарь снова стал большим</h3>
+          <h3>7. Календарь снова стал большим</h3>
           <p class="chart-lead">Уникальные ивенты с рейтинговыми поинтами и танцоры с поинтами.</p>
-          <div class="canvas-wrap"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#6366f1"></span>Ивенты</span>
+            <span class="legend-pill"><span class="legend-swatch line" style="border-color:#0d9488"></span>Танцоры</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
           <p class="chart-caption">В 2021 было 26 ивентов и 1007 танцоров с поинтами. В 2025 — 172 ивента и 3991 танцор. Правила, введённые в одном масштабе календаря, теперь работают в другом.</p>
         </figure>
 
         <div class="kpi">
-          <div class="kpi-item"><span class="kpi-value">~23%</span><span class="kpi-label">быстрее Novice allowed (11→8,5 мес.)</span></div>
-          <div class="kpi-item"><span class="kpi-value">885</span><span class="kpi-label">переходов Nov→Int 2018–19</span></div>
-          <div class="kpi-item"><span class="kpi-value">947</span><span class="kpi-label">переходов Nov→Int 2024–25</span></div>
-          <div class="kpi-item"><span class="kpi-value">22–25</span><span class="kpi-label">buffered reset для Novice allowed</span></div>
+          <div class="kpi-item"><span class="kpi-value">428→517</span><span class="kpi-label">Nov→Int переходов/год (база→2025)</span></div>
+          <div class="kpi-item"><span class="kpi-value">15,8%</span><span class="kpi-label">12-мес. конверсия Nov (база и 2025)</span></div>
+          <div class="kpi-item"><span class="kpi-value">~21</span><span class="kpi-label">мес. Nov allowed (база→2025)</span></div>
+          <div class="kpi-item"><span class="kpi-value">22–27</span><span class="kpi-label">buffered reset Novice</span></div>
         </div>
 
         <h3>2026: ранний сигнал, а не прогноз</h3>
@@ -835,9 +918,13 @@
         <div class="warning">Это не предложение автоматически поднять пороги. Механический расчёт показывает только нижнюю техническую оценку. Если правило должно работать несколько лет, а не догонять календарь каждый сезон, регулятору пришлось бы отдельно решать, нужен ли сглаживающий запас.</div>
 
         <figure class="figure-chart">
-          <h3>9. Если удерживать старую скорость</h3>
+          <h3>8. Если удерживать старую скорость</h3>
           <p class="chart-lead">Текущие allowed (16 / 30) и пересчёт порога к базе <strong>2015–19</strong>, если темп набора останется как в полном <strong>2025</strong> году. В таблице — buffered-диапазон с учётом раннего ускорения (неполный 2026, только как тренд).</p>
-          <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
+          <div class="chart-legend-inline" aria-hidden="true">
+            <span class="legend-pill"><span class="legend-swatch" style="background:#94a3b8"></span>Сейчас (allowed)</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>Reset к базе (2025)</span>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
           <p class="chart-caption" id="chartImpliedCaption"></p>
         </figure>
 
@@ -848,7 +935,7 @@
           </table>
         </div>
         <p id="impliedScenariosText">Загрузка сценариев…</p>
-        <p>В этой логике вопрос сильнее всего возникает в Novice и Intermediate — пороги не менялись, а M1 ускорился. Advanced → All-Stars (60/90) — отдельно на графиках 6–7.</p>
+        <p>В этой логике вопрос сильнее всего возникает в Novice и Intermediate — пороги не менялись, а M1 ускорился. Advanced → All-Stars (60/90) — отдельно на графиках 5–6.</p>
       </section>
 
       <section class="section">
@@ -929,36 +1016,110 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517g';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517h';
   var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
-  function covidPlugin() {
+
+  var BAR_BASE = 'rgba(99, 102, 241, 0.65)';
+  var BAR_2025 = 'rgba(13, 148, 136, 0.65)';
+  var BAR_2026 = 'rgba(245, 158, 11, 0.75)';
+  var LINE_M1 = '#6366f1';
+  var LINE_M2 = '#0d9488';
+
+  function getOrCreateTooltip(chart) {
+    var tooltipEl = chart.canvas.parentNode.querySelector('.chartjs-ext-tooltip');
+    if (!tooltipEl) {
+      tooltipEl = document.createElement('div');
+      tooltipEl.className = 'chartjs-ext-tooltip';
+      chart.canvas.parentNode.style.position = 'relative';
+      chart.canvas.parentNode.appendChild(tooltipEl);
+    }
+    return tooltipEl;
+  }
+
+  function formatTooltipValue(v, unit) {
+    if (v == null || Number.isNaN(v)) return '—';
+    if (unit === 'pct') return Number(v).toFixed(1).replace('.', ',') + '%';
+    if (unit === 'months') return fmtMonths(v) + ' мес.';
+    if (unit === 'count') return String(Math.round(v));
+    return String(v);
+  }
+
+  function externalTooltipHandler(unit) {
+    return function(context) {
+      var chart = context.chart;
+      var tooltip = context.tooltip;
+      var tooltipEl = getOrCreateTooltip(chart);
+      if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = 0;
+        tooltipEl.style.transform = '';
+        return;
+      }
+      var rows = (tooltip.dataPoints || []).map(function(dp) {
+        var label = dp.dataset.label || '';
+        var c = dp.dataset.backgroundColor || dp.dataset.borderColor || '#334155';
+        var v = dp.parsed.y;
+        return '<div class="tt-row" style="color:' + c + '"><span class="tt-label">' + label +
+          '</span><span class="tt-value">' + formatTooltipValue(v, unit) + '</span></div>';
+      }).join('');
+      var title = (tooltip.title && tooltip.title.length) ? tooltip.title[0] : '';
+      tooltipEl.innerHTML = '<div class="tt-title">' + title + '</div>' + rows;
+      var canvas = chart.canvas;
+      var parent = canvas.parentNode;
+      var pad = 10;
+      var cx = canvas.offsetLeft + tooltip.caretX;
+      var cy = canvas.offsetTop + tooltip.caretY;
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.left = cx + 'px';
+      tooltipEl.style.top = cy + 'px';
+      requestAnimationFrame(function() {
+        var tw = tooltipEl.offsetWidth;
+        var pw = parent.clientWidth;
+        if (!tw || !pw) {
+          tooltipEl.style.transform = 'translate(-50%, calc(-100% - 8px))';
+          return;
+        }
+        var dx = -tw / 2;
+        if (cx + dx < pad) dx = pad - cx;
+        if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
+        tooltipEl.style.transform = 'translate(' + dx + 'px, calc(-100% - 8px))';
+      });
+    };
+  }
+
+  function chartScales(yTitle, unit) {
+    var yTicks = { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10, weight: 500 } };
+    if (unit === 'pct') {
+      yTicks.callback = function(v) { return v + '%'; };
+    }
     return {
-      id: 'covidBand',
-      beforeDraw: function(chart) {
-        var x = chart.scales.x;
-        if (!x) return;
-        var x0 = x.getPixelForValue(2020);
-        var x1 = x.getPixelForValue(2022);
-        var area = chart.chartArea;
-        var ctx = chart.ctx;
-        ctx.save();
-        ctx.fillStyle = 'rgba(249, 115, 22, 0.1)';
-        ctx.fillRect(x0, area.top, x1 - x0, area.bottom - area.top);
-        ctx.restore();
+      x: {
+        ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10, weight: 500 }, maxRotation: 0 },
+        grid: { display: false },
+        border: { display: true, color: 'rgba(15, 23, 42, 0.14)' }
+      },
+      y: {
+        title: yTitle ? { display: true, text: yTitle, color: 'rgba(55, 65, 81, 0.75)', font: { size: 11, weight: 600 } } : { display: false },
+        ticks: yTicks,
+        grid: { color: 'rgba(15, 23, 42, 0.06)', drawBorder: false },
+        border: { display: true, color: 'rgba(15, 23, 42, 0.12)' },
+        beginAtZero: true
       }
     };
   }
-  function baseOpts(yTitle) {
+
+  function baseOpts(yTitle, unit) {
     return {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { labels: { font: { size: 11 } } } },
-      scales: {
-        x: { ticks: { font: { size: 10 } } },
-        y: { title: { display: !!yTitle, text: yTitle || '' }, ticks: { font: { size: 10 } } }
-      }
+      layout: { padding: { top: 8, right: 10, bottom: 22, left: 4 } },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false, external: externalTooltipHandler(unit || 'count') }
+      },
+      scales: chartScales(yTitle, unit)
     };
   }
   function median(values) {
@@ -997,11 +1158,15 @@
     return (Math.round(v * 10) / 10).toString().replace('.', ',');
   }
 
-  function cohortRate(DATA, period, fromDiv, toDiv, role) {
-    var row = (DATA.cohort_conversion || []).find(function(r) {
+  function cohortRow(DATA, period, fromDiv, toDiv, role) {
+    return (DATA.cohort_conversion || []).find(function(r) {
       return r.cohort_period === period && r.from_division === fromDiv &&
         r.to_division === toDiv && r.role === role;
     });
+  }
+
+  function cohortRate(DATA, period, fromDiv, toDiv, role) {
+    var row = cohortRow(DATA, period, fromDiv, toDiv, role);
     return row && row.rate_pct != null ? row.rate_pct : null;
   }
 
@@ -1031,12 +1196,12 @@
       data: {
         labels: divisions,
         datasets: [
-          { label: '2015–19 (база)', data: baseline, backgroundColor: 'rgba(99, 102, 241, 0.65)' },
-          { label: '2025', data: y2025, backgroundColor: 'rgba(13, 148, 136, 0.65)' },
-          { label: '2026 (неполный год)', data: y2026, backgroundColor: 'rgba(245, 158, 11, 0.75)' }
+          { label: '2015–19 (база)', data: baseline, backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
+          { label: '2025', data: y2025, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 },
+          { label: '2026 (неполный)', data: y2026, backgroundColor: BAR_2026, borderRadius: 6, maxBarThickness: 48 }
         ]
       },
-      options: baseOpts(yTitle)
+      options: baseOpts(yTitle, 'months')
     });
     var cap = document.getElementById(captionId);
     if (cap && buildCaption) {
@@ -1085,57 +1250,42 @@
       }
     );
   }
-  function transitionSeries(DATA, from, to) {
-    return DATA.transition_series.filter(function(s) {
-      return s.from_division === from && s.to_division === to && s.role === MAIN_ROLE &&
-        s.metric_variant === 'first_to_first' && !s.suppress;
+  function transitionCountAvg(DATA, from, to, years) {
+    var rows = DATA.transitions_count_by_year.filter(function(r) {
+      return r.from_division === from && r.to_division === to && r.role === MAIN_ROLE &&
+        years.indexOf(r.transition_year) !== -1;
     });
+    if (!rows.length) return null;
+    var total = rows.reduce(function(s, r) { return s + (r.n || 0); }, 0);
+    return Math.round(total / years.length);
   }
-  function renderTransitions(DATA) {
-    var years = [];
-    for (var y = 2015; y <= 2025; y++) years.push(y);
-    var nov = transitionSeries(DATA, 'Novice', 'Intermediate');
-    var int = transitionSeries(DATA, 'Intermediate', 'Advanced');
-    var novMap = Object.fromEntries(nov.map(function(r) { return [r.transition_year, r.median_months]; }));
-    var intMap = Object.fromEntries(int.map(function(r) { return [r.transition_year, r.median_months]; }));
-    destroy('transitions');
-    charts.transitions = new Chart(document.getElementById('chartTransitions'), {
-      type: 'line',
-      data: {
-        labels: years,
-        datasets: [
-          { label: 'Novice→Intermediate', data: years.map(function(y) { return novMap[y] != null ? novMap[y] : null; }), borderColor: '#6366f1', tension: 0.2, spanGaps: true },
-          { label: 'Intermediate→Advanced', data: years.map(function(y) { return intMap[y] != null ? intMap[y] : null; }), borderColor: '#0d9488', tension: 0.2, spanGaps: true }
-        ]
-      },
-      options: baseOpts('Медиана, мес.'),
-      plugins: [covidPlugin()]
-    });
-  }
+
   function renderVolume(DATA) {
-    var years = [];
-    for (var y = 2015; y <= 2025; y++) years.push(y);
-    function counts(from, to) {
-      var rows = DATA.transitions_count_by_year.filter(function(r) {
-        return r.from_division === from && r.to_division === to && r.role === MAIN_ROLE;
-      });
-      return Object.fromEntries(rows.map(function(r) { return [r.transition_year, r.n]; }));
-    }
-    var novC = counts('Novice', 'Intermediate');
-    var intC = counts('Intermediate', 'Advanced');
+    var labels = ['Novice→Intermediate', 'Intermediate→Advanced'];
+    var baseNov = transitionCountAvg(DATA, 'Novice', 'Intermediate', BASELINE_YEARS);
+    var baseInt = transitionCountAvg(DATA, 'Intermediate', 'Advanced', BASELINE_YEARS);
+    var y25Nov = transitionCountAvg(DATA, 'Novice', 'Intermediate', [2025]);
+    var y25Int = transitionCountAvg(DATA, 'Intermediate', 'Advanced', [2025]);
     destroy('volume');
     charts.volume = new Chart(document.getElementById('chartVolume'), {
       type: 'bar',
       data: {
-        labels: years,
+        labels: labels,
         datasets: [
-          { label: 'Novice→Intermediate', data: years.map(function(y) { return novC[y] || 0; }), backgroundColor: 'rgba(99, 102, 241, 0.55)' },
-          { label: 'Intermediate→Advanced', data: years.map(function(y) { return intC[y] || 0; }), backgroundColor: 'rgba(13, 148, 136, 0.55)' }
+          { label: '2015–19 (среднее/год)', data: [baseNov, baseInt], backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
+          { label: '2025', data: [y25Nov, y25Int], backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
         ]
       },
-      options: baseOpts('Переходов в год')
+      options: baseOpts('Переходов в год', 'count')
     });
+    var cap = document.getElementById('chartVolumeCaption');
+    if (cap) {
+      cap.innerHTML = '<strong>Nov→Int:</strong> ~<strong>' + baseNov + '</strong>/год (2015–19) → <strong>' + y25Nov +
+        '</strong> в 2025. <strong>Int→Adv:</strong> ~<strong>' + baseInt + '</strong>/год → <strong>' + y25Int +
+        '</strong>. Рост потока при тех же порогах 16/30.';
+    }
   }
+
   function renderConversion(DATA) {
     var pairs = [
       ['Novice', 'Intermediate', 'Novice→Intermediate'],
@@ -1143,18 +1293,37 @@
       ['Advanced', 'All-Stars', 'Advanced→All-Stars']
     ];
     var labels = pairs.map(function(p) { return p[2]; });
+    var baseRates = pairs.map(function(p) { return cohortRate(DATA, '2015-2019', p[0], p[1], MAIN_ROLE); });
+    var y25Rates = pairs.map(function(p) { return cohortRate(DATA, '2025', p[0], p[1], MAIN_ROLE); });
     destroy('conversion');
     charts.conversion = new Chart(document.getElementById('chartConversion'), {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [
-          { label: '2010–18 baseline', data: pairs.map(function(p) { return cohortRate(DATA, '2010-2018', p[0], p[1], MAIN_ROLE); }), backgroundColor: 'rgba(99, 102, 241, 0.65)' },
-          { label: '2023–24', data: pairs.map(function(p) { return cohortRate(DATA, '2023-2024', p[0], p[1], MAIN_ROLE); }), backgroundColor: 'rgba(13, 148, 136, 0.65)' }
+          { label: '2015–19 (база)', data: baseRates, backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
+          { label: '2025', data: y25Rates, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
         ]
       },
-      options: baseOpts('% за 12 месяцев')
+      options: baseOpts('Доля за 12 мес.', 'pct')
     });
+    var cap = document.getElementById('chartConversionCaption');
+    if (cap) {
+      var novB = cohortRow(DATA, '2015-2019', 'Novice', 'Intermediate', MAIN_ROLE);
+      var nov25 = cohortRow(DATA, '2025', 'Novice', 'Intermediate', MAIN_ROLE);
+      var intB = cohortRow(DATA, '2015-2019', 'Intermediate', 'Advanced', MAIN_ROLE);
+      var int25 = cohortRow(DATA, '2025', 'Intermediate', 'Advanced', MAIN_ROLE);
+      cap.innerHTML = '<strong>Nov→Int:</strong> <strong>' + fmtPct(novB && novB.rate_pct) + '</strong> (' +
+        (novB ? novB.converted + '/' + novB.starters : '—') + ') → <strong>' + fmtPct(nov25 && nov25.rate_pct) +
+        '</strong> (' + (nov25 ? nov25.converted + '/' + nov25.starters : '—') + '). ' +
+        '<strong>Int→Adv:</strong> <strong>' + fmtPct(intB && intB.rate_pct) + '</strong> → <strong>' +
+        fmtPct(int25 && int25.rate_pct) + '</strong>. Adv→AS остаётся низкой.';
+    }
+  }
+
+  function fmtPct(v) {
+    if (v == null || isNaN(v)) return '—';
+    return (Math.round(v * 10) / 10).toString().replace('.', ',') + '%';
   }
   function renderAdvancedDual(DATA) {
     var eras = DATA.advanced_path_era || [];
@@ -1164,11 +1333,11 @@
       data: {
         labels: eras.map(function(e) { return e.era; }),
         datasets: [
-          { label: 'До allowed (планка)', data: eras.map(function(e) { return e.months_to_allowed.median_months; }), backgroundColor: 'rgba(99, 102, 241, 0.65)' },
-          { label: 'До первых поинтов в All-Stars', data: eras.map(function(e) { return e.months_first_adv_to_first_as.median_months; }), backgroundColor: 'rgba(13, 148, 136, 0.65)' }
+          { label: 'До allowed (M1)', data: eras.map(function(e) { return e.months_to_allowed.median_months; }), backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
+          { label: 'До All-Stars (M2)', data: eras.map(function(e) { return e.months_first_adv_to_first_as.median_months; }), backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
         ]
       },
-      options: baseOpts('Медиана, мес.')
+      options: baseOpts('Медиана, мес.', 'months')
     });
   }
   function renderAdvancedDualYear(DATA) {
@@ -1180,16 +1349,15 @@
       data: {
         labels: years,
         datasets: [
-          { label: 'M1 max', data: rows.map(function(r) { return r.months_to_allowed.max_months; }), borderColor: 'rgba(99,102,241,0.3)', borderDash: [4, 4], tension: 0.2, spanGaps: true, pointRadius: 0 },
-          { label: 'M1 med', data: rows.map(function(r) { return r.months_to_allowed.median_months; }), borderColor: '#6366f1', tension: 0.2, spanGaps: true },
-          { label: 'M1 min', data: rows.map(function(r) { return r.months_to_allowed.min_months; }), borderColor: 'rgba(99,102,241,0.55)', borderDash: [2, 2], tension: 0.2, spanGaps: true, pointRadius: 0 },
-          { label: 'M2 max', data: rows.map(function(r) { return r.months_first_adv_to_first_as.max_months; }), borderColor: 'rgba(13,148,136,0.3)', borderDash: [4, 4], tension: 0.2, spanGaps: true, pointRadius: 0 },
-          { label: 'M2 med', data: rows.map(function(r) { return r.months_first_adv_to_first_as.median_months; }), borderColor: '#0d9488', tension: 0.2, spanGaps: true },
-          { label: 'M2 min', data: rows.map(function(r) { return r.months_first_adv_to_first_as.min_months; }), borderColor: 'rgba(13,148,136,0.55)', borderDash: [2, 2], tension: 0.2, spanGaps: true, pointRadius: 0 }
+          { label: 'M1 max', data: rows.map(function(r) { return r.months_to_allowed.max_months; }), borderColor: 'rgba(99,102,241,0.3)', borderDash: [4, 4], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 },
+          { label: 'M1 med', data: rows.map(function(r) { return r.months_to_allowed.median_months; }), borderColor: LINE_M1, borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0, pointHoverRadius: 3 },
+          { label: 'M1 min', data: rows.map(function(r) { return r.months_to_allowed.min_months; }), borderColor: 'rgba(99,102,241,0.55)', borderDash: [2, 2], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 },
+          { label: 'M2 max', data: rows.map(function(r) { return r.months_first_adv_to_first_as.max_months; }), borderColor: 'rgba(13,148,136,0.3)', borderDash: [4, 4], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 },
+          { label: 'M2 med', data: rows.map(function(r) { return r.months_first_adv_to_first_as.median_months; }), borderColor: LINE_M2, borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0, pointHoverRadius: 3 },
+          { label: 'M2 min', data: rows.map(function(r) { return r.months_first_adv_to_first_as.min_months; }), borderColor: 'rgba(13,148,136,0.55)', borderDash: [2, 2], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 }
         ]
       },
-      options: baseOpts('Месяцы'),
-      plugins: [covidPlugin()]
+      options: baseOpts('Месяцы', 'months')
     });
   }
   function renderDualMetricsTables(DUAL) {
@@ -1239,21 +1407,17 @@
       data: {
         labels: eco.map(function(e) { return e.year; }),
         datasets: [
-          { label: 'Ивенты', data: eco.map(function(e) { return e.unique_events; }), borderColor: '#6366f1', yAxisID: 'y', tension: 0.2 },
-          { label: 'Танцоры', data: eco.map(function(e) { return e.unique_dancers; }), borderColor: '#0d9488', yAxisID: 'y1', tension: 0.2 }
+          { label: 'Ивенты', data: eco.map(function(e) { return e.unique_events; }), borderColor: LINE_M1, borderWidth: 1.8, yAxisID: 'y', tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, pointHoverRadius: 3 },
+          { label: 'Танцоры', data: eco.map(function(e) { return e.unique_dancers; }), borderColor: LINE_M2, borderWidth: 1.8, yAxisID: 'y1', tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, pointHoverRadius: 3 }
         ]
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: { legend: { labels: { font: { size: 11 } } } },
+      options: Object.assign(baseOpts('', 'count'), {
         scales: {
-          x: { ticks: { font: { size: 10 } } },
-          y: { position: 'left', title: { display: true, text: 'Ивенты' }, ticks: { font: { size: 10 } } },
-          y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Танцоры' }, ticks: { font: { size: 10 } } }
+          x: chartScales('', 'count').x,
+          y: { position: 'left', title: { display: true, text: 'Ивенты', color: 'rgba(55, 65, 81, 0.75)', font: { size: 11, weight: 600 } }, ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10 } }, grid: { color: 'rgba(15, 23, 42, 0.06)' }, beginAtZero: true },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Танцоры', color: 'rgba(55, 65, 81, 0.75)', font: { size: 11, weight: 600 } }, ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10 } }, beginAtZero: true }
         }
-      }
+      })
     });
   }
   function technicalReset(current, medBaseline, medYear) {
@@ -1317,11 +1481,11 @@
       data: {
         labels: rows.map(function(r) { return r.label; }),
         datasets: [
-          { label: 'Сейчас (allowed)', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
-          { label: 'Reset к базе (темп 2025)', data: rows.map(function(r) { return r.reset; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
+          { label: 'Сейчас (allowed)', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)', borderRadius: 6, maxBarThickness: 56 },
+          { label: 'Reset к базе (2025)', data: rows.map(function(r) { return r.reset; }), backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 56 }
         ]
       },
-      options: Object.assign(baseOpts('Поинты'), {
+      options: Object.assign(baseOpts('Поинты', 'count'), {
         scales: {
           x: { ticks: { font: { size: 10 } } },
           y: { title: { display: true, text: 'Поинты' }, ticks: { font: { size: 10 } }, suggestedMax: 42 }
@@ -1357,7 +1521,6 @@
       var DATA = res[0], DUAL = res[1];
       renderThresholdSpeed(DATA);
       renderFirstToFirstSpeed(DATA);
-      renderTransitions(DATA);
       renderVolume(DATA);
       renderConversion(DATA);
       renderAdvancedDual(DATA);

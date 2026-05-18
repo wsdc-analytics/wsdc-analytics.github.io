@@ -22,8 +22,8 @@ MIN_N_DISPLAY = 30
 BASELINE_YEARS = {2021, 2022}
 CURRENT_YEARS = {2024, 2025}
 COHORT_PERIODS = {
-    "2010-2018": frozenset(range(2010, 2019)),
-    "2023-2024": frozenset({2023, 2024}),
+    "2015-2019": frozenset(range(2015, 2020)),
+    "2025": frozenset({2025}),
 }
 COHORT_WINDOW_MONTHS = 12
 ROLES = ("Leader", "Follower", "All")
