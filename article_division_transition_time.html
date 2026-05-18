@@ -791,7 +791,7 @@
       <section class="section">
         <h2>Как читаем данные</h2>
         <p>Смотрим только основной путь танцора по Skill Level: первые поинты в дивизионе, скорость набора порога и факт перехода в следующий дивизион. Каждый танцор учитывается один раз по своей dominate role (основной роли в реестре), без второй роли; в графиках и таблицах ниже лидеры и фолловеры суммированы вместе (All). Пороги WSDC от роли не зависят.</p>
-        <p>Для скорости набора порогов, объёма переходов и 12-месячной конверсии я сравниваю один и тот же baseline <strong>2015–2019</strong> с отдельным календарным годом <strong>2025</strong>. На графиках M1 и M2 дополнительно показываю неполный <strong>2026</strong> как ранний сигнал. Ковидные 2020–2022 в baseline не входят и отдельным графиком не выделяю: это аномалия календаря, а не «норма» для сравнения.</p>
+        <p>Для скорости набора порогов и объёма переходов сравниваю baseline <strong>2015–2019</strong> с отдельным календарным годом <strong>2025</strong> (на графиках M1/M2 — ещё неполный <strong>2026</strong> как ранний сигнал). Для <strong>12-месячной конверсии</strong> свежий срез — <strong>2023–2024</strong>: у стартовавших в 2025 ещё не закрыто окно наблюдения (нужны данные до конца 2026). В расчёт попадают только когорты с полным окном follow-up до среза реестра. Ковидные 2020–2022 в baseline не входят.</p>
         <p>Для Advanced → All-Stars и для нижней лестницы я всегда сравниваю <strong>две метрики</strong>, их нельзя подменять друг другом:</p>
         <ol>
           <li><strong>До allowed-планки</strong> — сколько месяцев от первых поинтов в текущем дивизионе до набора порога, при котором по правилам эпохи можно идти в старший дивизион (по данным Registry Points: для Novice/Intermediate — сумма поинтов в дивизионе; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за последние 36 месяцев).</li>
@@ -839,10 +839,10 @@
 
         <figure class="figure-chart">
           <h3>4. Доля быстрых переходов за 12 месяцев</h3>
-          <p class="chart-lead">Из всех, кто впервые получил поинты в дивизионе в годе когорты, какая доля получила первые поинты в следующем дивизионе за 12 месяцев. Те же периоды: <strong>2015–19</strong> и <strong>2025</strong>.</p>
+          <p class="chart-lead">Доля стартовавших в дивизионе, получивших первые поинты в следующем за <strong>12 месяцев</strong>. Сравнение: <strong>2015–19</strong> и <strong>2023–24</strong> (полное окно наблюдения до среза реестра). Когорта <strong>2025</strong> не показана — follow-up ещё не завершён.</p>
           <div class="chart-legend-inline" aria-hidden="true">
             <span class="legend-pill"><span class="legend-swatch" style="background:#6366f1"></span>2015–19 (база)</span>
-            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2025</span>
+            <span class="legend-pill"><span class="legend-swatch" style="background:#0d9488"></span>2023–24</span>
           </div>
           <div class="chart-canvas-box"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
           <p class="chart-caption" id="chartConversionCaption">Загрузка подписи…</p>
@@ -850,7 +850,7 @@
 
         <h3>Не только быстрее, но и шире</h3>
         <p>Если смотреть только на тех, кто уже получил первые поинты в следующем дивизионе, мы видим скорость перехода (графики 1–2). Но для разговора о трафике нужен ещё один вопрос: какая доля всей стартовой когорты вообще успевает пройти дальше за 12 месяцев?</p>
-        <p>За baseline <strong>2015–2019</strong> доля быстрых переходов Novice → Intermediate — <strong>15,8%</strong> (<strong>707 из 4480</strong> стартовавших), в <strong>2025</strong> — тоже <strong>15,8%</strong> (<strong>171 из 1083</strong>): доля не выросла, но абсолютный поток стартов и переходов плотнее. Для Intermediate → Advanced в baseline <strong>10,6%</strong> (<strong>230 из 2165</strong>), в 2025 — <strong>9,7%</strong> (<strong>50 из 518</strong>). Advanced → All-Stars остаётся низкой: <strong>4,1%</strong> против <strong>2,3%</strong> — расширения «массового» быстрого прохода наверх нет.</p>
+        <p>За baseline <strong>2015–2019</strong> доля быстрых переходов Novice → Intermediate — <strong>15,8%</strong> (<strong>707 из 4480</strong> с полным окном), в <strong>2023–2024</strong> — <strong>21,9%</strong> (<strong>372 из 1696</strong>). Для Intermediate → Advanced: <strong>10,6%</strong> (<strong>230 из 2165</strong>) против <strong>15,0%</strong> (<strong>123 из 819</strong>). Advanced → All-Stars по-прежнему низкая: <strong>4,1%</strong> против <strong>3,5%</strong>. Рост виден на нижних ступенях; верхняя лестница «массово» не раздувается.</p>
 
         <figure class="figure-chart">
           <h3>5. Advanced: до планки и до All-Stars — две линии</h3>
@@ -891,7 +891,7 @@
 
         <div class="kpi">
           <div class="kpi-item"><span class="kpi-value">428→517</span><span class="kpi-label">Nov→Int переходов/год (база→2025)</span></div>
-          <div class="kpi-item"><span class="kpi-value">15,8%</span><span class="kpi-label">12-мес. конверсия Nov (база и 2025)</span></div>
+          <div class="kpi-item"><span class="kpi-value">21,9%</span><span class="kpi-label">12-мес. конверсия Nov (2023–24)</span></div>
           <div class="kpi-item"><span class="kpi-value">~21</span><span class="kpi-label">мес. Nov allowed (база→2025)</span></div>
           <div class="kpi-item"><span class="kpi-value">22–27</span><span class="kpi-label">buffered reset Novice</span></div>
         </div>
@@ -1016,7 +1016,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517h';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260518a';
   var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
@@ -1294,7 +1294,7 @@
     ];
     var labels = pairs.map(function(p) { return p[2]; });
     var baseRates = pairs.map(function(p) { return cohortRate(DATA, '2015-2019', p[0], p[1], MAIN_ROLE); });
-    var y25Rates = pairs.map(function(p) { return cohortRate(DATA, '2025', p[0], p[1], MAIN_ROLE); });
+    var recentRates = pairs.map(function(p) { return cohortRate(DATA, '2023-2024', p[0], p[1], MAIN_ROLE); });
     destroy('conversion');
     charts.conversion = new Chart(document.getElementById('chartConversion'), {
       type: 'bar',
@@ -1302,7 +1302,7 @@
         labels: labels,
         datasets: [
           { label: '2015–19 (база)', data: baseRates, backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
-          { label: '2025', data: y25Rates, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
+          { label: '2023–24', data: recentRates, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
         ]
       },
       options: baseOpts('Доля за 12 мес.', 'pct')
@@ -1310,14 +1310,16 @@
     var cap = document.getElementById('chartConversionCaption');
     if (cap) {
       var novB = cohortRow(DATA, '2015-2019', 'Novice', 'Intermediate', MAIN_ROLE);
-      var nov25 = cohortRow(DATA, '2025', 'Novice', 'Intermediate', MAIN_ROLE);
+      var novR = cohortRow(DATA, '2023-2024', 'Novice', 'Intermediate', MAIN_ROLE);
       var intB = cohortRow(DATA, '2015-2019', 'Intermediate', 'Advanced', MAIN_ROLE);
-      var int25 = cohortRow(DATA, '2025', 'Intermediate', 'Advanced', MAIN_ROLE);
+      var intR = cohortRow(DATA, '2023-2024', 'Intermediate', 'Advanced', MAIN_ROLE);
+      var obs = (novR && novR.observation_end) || (DATA.data_as_of || '').slice(0, 7);
       cap.innerHTML = '<strong>Nov→Int:</strong> <strong>' + fmtPct(novB && novB.rate_pct) + '</strong> (' +
-        (novB ? novB.converted + '/' + novB.starters : '—') + ') → <strong>' + fmtPct(nov25 && nov25.rate_pct) +
-        '</strong> (' + (nov25 ? nov25.converted + '/' + nov25.starters : '—') + '). ' +
+        (novB ? novB.converted + '/' + novB.starters : '—') + ') → <strong>' + fmtPct(novR && novR.rate_pct) +
+        '</strong> (' + (novR ? novR.converted + '/' + novR.starters : '—') + '). ' +
         '<strong>Int→Adv:</strong> <strong>' + fmtPct(intB && intB.rate_pct) + '</strong> → <strong>' +
-        fmtPct(int25 && int25.rate_pct) + '</strong>. Adv→AS остаётся низкой.';
+        fmtPct(intR && intR.rate_pct) + '</strong>. Срез реестра: <strong>' + obs +
+        '</strong>; в расчёт только когорты с полным 12-мес. окном. 2025 не сравниваем — follow-up открыт.';
     }
   }
 

@@ -23,7 +23,8 @@ BASELINE_YEARS = {2021, 2022}
 CURRENT_YEARS = {2024, 2025}
 COHORT_PERIODS = {
     "2015-2019": frozenset(range(2015, 2020)),
-    "2025": frozenset({2025}),
+    # 2025 excluded: 12-mo follow-up for Dec 2025 starters needs Dec 2026 (not in registry yet).
+    "2023-2024": frozenset({2023, 2024}),
 }
 COHORT_WINDOW_MONTHS = 12
 ROLES = ("Leader", "Follower", "All")
@@ -102,9 +103,16 @@ def cohort_conversion_stats(
     to_div: str,
     cohort_years: frozenset[int],
     role: str,
+    observation_end: tuple[int, int],
     window_months: int = COHORT_WINDOW_MONTHS,
 ) -> dict:
+    """Share who reach next division within window_months.
+
+    Only dancers with a complete observation window are counted: first points in
+    from_div must be at least window_months before observation_end (registry cut-off).
+  """
     starters = converted = 0
+    excluded_immature = 0
     for did, fp in first_pts.items():
         if from_div not in fp:
             continue
@@ -112,6 +120,9 @@ def cohort_conversion_stats(
             continue
         dancer_role = dominate[did]
         if role != "All" and dancer_role != role:
+            continue
+        if months_between(fp[from_div], observation_end) < window_months:
+            excluded_immature += 1
             continue
         starters += 1
         if to_div not in fp:
@@ -123,6 +134,7 @@ def cohort_conversion_stats(
         "starters": starters,
         "converted": converted,
         "rate_pct": rate,
+        "starters_excluded_immature": excluded_immature,
     }
 
 
@@ -351,6 +363,11 @@ def main() -> None:
     for did in events_by_dancer:
         events_by_dancer[did].sort(key=lambda e: ym_ord(*e["ym"]))
 
+    observation_end = max(
+        (e["ym"] for evs in events_by_dancer.values() for e in evs),
+        default=(date.today().year, date.today().month),
+    )
+
     raw_rows: list[dict] = []
     m1_buckets: dict[tuple, list[float]] = defaultdict(list)
     m1b_buckets: dict[tuple, list[float]] = defaultdict(list)
@@ -493,12 +510,19 @@ def main() -> None:
         for from_div, to_div in ARTICLE_TRANSITIONS[:3]:
             for role in ROLES:
                 stats = cohort_conversion_stats(
-                    first_pts, dominate, from_div, to_div, cohort_years, role
+                    first_pts,
+                    dominate,
+                    from_div,
+                    to_div,
+                    cohort_years,
+                    role,
+                    observation_end,
                 )
                 cohort_conversion.append(
                     {
                         "cohort_period": period_id,
                         "window_months": COHORT_WINDOW_MONTHS,
+                        "observation_end": f"{observation_end[0]}-{observation_end[1]:02d}",
                         "role": role,
                         "from_division": from_div,
                         "to_division": to_div,
