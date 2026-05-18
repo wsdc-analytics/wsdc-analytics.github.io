@@ -831,26 +831,24 @@
         <p>Но если пороги — это инструмент управления трафиком, то ситуация меняется. Тогда важно, чтобы они соответствовали масштабу движения. Порог, который нормально работал при ограниченном календаре, может стать слишком мягким при календаре, где у активного танцора гораздо больше возможностей набрать поинты.</p>
         <p>Фокус здесь именно на <strong>allowed</strong>: это первая точка, где танцор получает право двигаться выше. Required — другая логика, больше похожая на закрепление уровня, поэтому для разговора о трафике её не смешиваю с allowed.</p>
         <p>Один способ проверить масштаб — спросить: какими должны были бы быть allowed-пороги сегодня, если бы мы хотели сохранить примерно прежнюю календарную длительность пути?</p>
-        <p><code>technical reset ≈ порог × (медиана_месяцев_2015–19 / медиана_месяцев_2024–25)</code></p>
+        <p><code>technical reset ≈ порог × (медиана M1 за 2015–19 / медиана M1 за год)</code> — по той же метрике, что на графике 1. Два варианта: темп <strong>2025</strong> и ранний сигнал <strong>2026</strong> (неполный год).</p>
         <div class="warning">Это не предложение автоматически поднять пороги. Механический расчёт показывает только нижнюю техническую оценку. Если правило должно работать несколько лет, а не догонять календарь каждый сезон, регулятору пришлось бы отдельно решать, нужен ли сглаживающий запас.</div>
 
         <figure class="figure-chart">
           <h3>9. Если удерживать старую скорость</h3>
-          <p class="chart-lead">Текущие allowed-пороги Novice и Intermediate и technical reset, который дал бы скорость ближе к 2015–2019.</p>
+          <p class="chart-lead">Текущие allowed (16 / 30) и пересчёт порога, чтобы медиана месяцев до allowed вернулась к уровню <strong>2015–19</strong>, если темп останется как в <strong>2025</strong> или как в раннем <strong>2026</strong>.</p>
           <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
+          <p class="chart-caption" id="chartImpliedCaption"></p>
         </figure>
 
         <div class="table-scroll">
           <table class="risk-table">
-            <thead><tr><th>Переход</th><th>Сейчас (allowed)</th><th>Technical reset</th><th>Buffered reset</th><th>Что показывает</th></tr></thead>
-            <tbody id="impliedTableBody">
-              <tr><td>Novice → Intermediate</td><td>16</td><td>~22</td><td>22–25</td><td>Сильный сигнал ускорения</td></tr>
-              <tr><td>Intermediate → Advanced</td><td>30</td><td>~33</td><td>35–40</td><td>Сигнал есть, но мягче</td></tr>
-            </tbody>
+            <thead><tr><th>Переход</th><th>Сейчас</th><th>M1 база</th><th>M1 2025</th><th>M1 2026*</th><th>Reset 2025</th><th>Reset 2026*</th><th>Buffered</th><th>Сигнал</th></tr></thead>
+            <tbody id="impliedTableBody"></tbody>
           </table>
         </div>
-        <p>Так появляется три сценария. <strong>No change</strong> — оставить пороги как есть, если цель системы — быстрый доступ к следующему дивизиону. <strong>Technical reset</strong> — вернуть скорость набора ближе к 2015–2019: это даёт примерно 22 для Novice и 33 для Intermediate. <strong>Buffered reset</strong> — заложить запас на несколько лет роста календаря, чтобы не перенастраивать пороги каждый сезон; это уже не вывод из данных, а политический выбор.</p>
-        <p>В этой логике вопрос сильнее всего возникает в Novice и Intermediate — там пороги не менялись, а темп вырос. Для Advanced → All-Stars (60/90 с 2023 года) отдельная история выше: поднятие планки замедлило когорту в 2021–2022, но к 2024–2025 календарь снова выровнял время до eligibility с доковидной эпохой.</p>
+        <p id="impliedScenariosText">Загрузка сценариев…</p>
+        <p>В этой логике вопрос сильнее всего возникает в Novice и Intermediate — пороги не менялись, а M1 ускорился. Advanced → All-Stars (60/90) — отдельно на графиках 6–7.</p>
       </section>
 
       <section class="section">
@@ -931,7 +929,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517e';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517f';
   var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
@@ -1258,40 +1256,92 @@
       }
     });
   }
-  function technicalReset(DATA, division, current) {
-    var earlyYears = [2015, 2016, 2017, 2018, 2019];
-    var currentYears = [2024, 2025];
-    var medEarly = allowedMedian(DATA, division, earlyYears);
-    var medCur = allowedMedian(DATA, division, currentYears);
-    if (medEarly == null || medCur == null || medCur <= 0) return null;
-    return Math.round(current * medEarly / medCur);
+  function technicalReset(current, medBaseline, medYear) {
+    if (medBaseline == null || medYear == null || medYear <= 0) return null;
+    return Math.round(current * medBaseline / medYear);
   }
-  function renderImplied(DATA) {
-    var rows = [
-      { label: 'Novice → Intermediate', thresholdDiv: 'Novice', current: 16, buffered: '22–25', signal: 'Сильный сигнал ускорения' },
-      { label: 'Intermediate → Advanced', thresholdDiv: 'Intermediate', current: 30, buffered: '35–40', signal: 'Сигнал есть, но мягче' }
-    ].map(function(r) {
-      var technical = technicalReset(DATA, r.thresholdDiv, r.current);
-      return Object.assign({}, r, { technical: technical != null ? technical : r.current });
+
+  function bufferedRange(technical, pct) {
+    if (technical == null) return '—';
+    var hi = Math.round(technical * (1 + (pct || 0.12)));
+    return technical + '–' + hi;
+  }
+
+  function accelerationSignal(medBaseline, medYear) {
+    if (medBaseline == null || medYear == null || medBaseline <= 0) return '—';
+    var ratio = medYear / medBaseline;
+    if (ratio <= 0.8) return 'Сильный сигнал ускорения';
+    if (ratio < 0.98) return 'Сигнал есть, но мягче';
+    return 'Скорость близка к базе';
+  }
+
+  function buildImpliedRows(DATA) {
+    var specs = [
+      { label: 'Novice → Intermediate', thresholdDiv: 'Novice', current: 16 },
+      { label: 'Intermediate → Advanced', thresholdDiv: 'Intermediate', current: 30 }
+    ];
+    return specs.map(function(spec) {
+      var medBase = allowedMedian(DATA, spec.thresholdDiv, BASELINE_YEARS);
+      var med25 = allowedMedian(DATA, spec.thresholdDiv, [2025]);
+      var med26 = allowedMedian(DATA, spec.thresholdDiv, [2026]);
+      var reset25 = technicalReset(spec.current, medBase, med25);
+      var reset26 = technicalReset(spec.current, medBase, med26);
+      return {
+        label: spec.label,
+        current: spec.current,
+        medBase: medBase,
+        med25: med25,
+        med26: med26,
+        reset25: reset25,
+        reset26: reset26,
+        buffered: bufferedRange(reset26 || reset25, 0.12),
+        signal: accelerationSignal(medBase, med26 != null ? med26 : med25)
+      };
     });
+  }
+
+  function renderImplied(DATA) {
+    var rows = buildImpliedRows(DATA);
     destroy('implied');
     charts.implied = new Chart(document.getElementById('chartImplied'), {
       type: 'bar',
       data: {
         labels: rows.map(function(r) { return r.label; }),
         datasets: [
-          { label: 'Сейчас', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
-          { label: 'Technical reset (2015–19 темп)', data: rows.map(function(r) { return r.technical; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
+          { label: 'Сейчас (allowed)', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
+          { label: 'К базе при темпе 2025', data: rows.map(function(r) { return r.reset25; }), backgroundColor: 'rgba(13, 148, 136, 0.65)' },
+          { label: 'К базе при темпе 2026*', data: rows.map(function(r) { return r.reset26; }), backgroundColor: 'rgba(245, 158, 11, 0.75)' }
         ]
       },
-      options: baseOpts('Поинты')
+      options: Object.assign(baseOpts('Поинты'), {
+        scales: {
+          x: { ticks: { font: { size: 10 } } },
+          y: { title: { display: true, text: 'Поинты' }, ticks: { font: { size: 10 } }, suggestedMax: 45 }
+        }
+      })
     });
     var tbody = document.getElementById('impliedTableBody');
     if (tbody) {
       tbody.innerHTML = rows.map(function(r) {
-        return '<tr><td>' + r.label + '</td><td>' + r.current + '</td><td>~' + r.technical +
-          '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
+        return '<tr><td>' + r.label + '</td><td>' + r.current + '</td><td>' + fmtMonths(r.medBase) +
+          '</td><td>' + fmtMonths(r.med25) + '</td><td>' + fmtMonths(r.med26) + '*</td><td>~' + (r.reset25 != null ? r.reset25 : '—') +
+          '</td><td>~' + (r.reset26 != null ? r.reset26 : '—') + '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
       }).join('');
+    }
+    var cap = document.getElementById('chartImpliedCaption');
+    if (cap && rows.length >= 2) {
+      var n = rows[0];
+      cap.textContent = 'Novice: при темпе 2025 порог ~' + n.reset25 + ' (сейчас 16); при темпе 2026* ~' + n.reset26 +
+        '. Intermediate: ~' + rows[1].reset25 + ' и ~' + rows[1].reset26 + ' при 30 сейчас.';
+    }
+    var scen = document.getElementById('impliedScenariosText');
+    if (scen && rows.length >= 2) {
+      var nov = rows[0], intR = rows[1];
+      scen.innerHTML = 'Три сценария. <strong>No change</strong> — оставить 16 / 30. <strong>Technical reset (2025)</strong> — ~<strong>' +
+        nov.reset25 + '</strong> / ~<strong>' + intR.reset25 + '</strong> поинтов, если календарь останется как в 2025. ' +
+        '<strong>Technical reset (2026*)</strong> — ~<strong>' + nov.reset26 + '</strong> / ~<strong>' + intR.reset26 +
+        '</strong>, если тренд ускорения сохранится. <strong>Buffered reset</strong> (запас ~12% к варианту 2026*) — ' +
+        nov.buffered + ' и ' + intR.buffered + '; политический выбор, не вывод формулы.';
     }
   }
   function initCharts() {
