@@ -831,19 +831,19 @@
         <p>Но если пороги — это инструмент управления трафиком, то ситуация меняется. Тогда важно, чтобы они соответствовали масштабу движения. Порог, который нормально работал при ограниченном календаре, может стать слишком мягким при календаре, где у активного танцора гораздо больше возможностей набрать поинты.</p>
         <p>Фокус здесь именно на <strong>allowed</strong>: это первая точка, где танцор получает право двигаться выше. Required — другая логика, больше похожая на закрепление уровня, поэтому для разговора о трафике её не смешиваю с allowed.</p>
         <p>Один способ проверить масштаб — спросить: какими должны были бы быть allowed-пороги сегодня, если бы мы хотели сохранить примерно прежнюю календарную длительность пути?</p>
-        <p><code>technical reset ≈ порог × (медиана M1 за 2015–19 / медиана M1 за год)</code> — по той же метрике, что на графике 1. Два варианта: темп <strong>2025</strong> и ранний сигнал <strong>2026</strong> (неполный год).</p>
+        <p><code>technical reset ≈ порог × (медиана M1 за 2015–19 / медиана M1 за 2025)</code> — по той же метрике, что на графике 1. <strong>Buffered</strong> — верхняя оценка с учётом раннего ускорения в неполном 2026 (тренд, не отдельный «год» для сравнения).</p>
         <div class="warning">Это не предложение автоматически поднять пороги. Механический расчёт показывает только нижнюю техническую оценку. Если правило должно работать несколько лет, а не догонять календарь каждый сезон, регулятору пришлось бы отдельно решать, нужен ли сглаживающий запас.</div>
 
         <figure class="figure-chart">
           <h3>9. Если удерживать старую скорость</h3>
-          <p class="chart-lead">Текущие allowed (16 / 30) и пересчёт порога, чтобы медиана месяцев до allowed вернулась к уровню <strong>2015–19</strong>, если темп останется как в <strong>2025</strong> или как в раннем <strong>2026</strong>.</p>
+          <p class="chart-lead">Текущие allowed (16 / 30) и пересчёт порога к базе <strong>2015–19</strong>, если темп набора останется как в полном <strong>2025</strong> году. В таблице — buffered-диапазон с учётом раннего ускорения (неполный 2026, только как тренд).</p>
           <div class="canvas-wrap"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
           <p class="chart-caption" id="chartImpliedCaption"></p>
         </figure>
 
         <div class="table-scroll">
           <table class="risk-table">
-            <thead><tr><th>Переход</th><th>Сейчас</th><th>M1 база</th><th>M1 2025</th><th>M1 2026*</th><th>Reset 2025</th><th>Reset 2026*</th><th>Buffered</th><th>Сигнал</th></tr></thead>
+            <thead><tr><th>Переход</th><th>Сейчас</th><th>M1 база</th><th>M1 2025</th><th>Reset (к базе)</th><th>Buffered</th><th>Сигнал</th></tr></thead>
             <tbody id="impliedTableBody"></tbody>
           </table>
         </div>
@@ -929,7 +929,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517f';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260517g';
   var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
@@ -1275,6 +1275,18 @@
     return 'Скорость близка к базе';
   }
 
+  function bufferedFromTrend(resetBase, medBase, med25, med26, current) {
+    if (resetBase == null) return '—';
+    var trendHi = null;
+    if (med26 != null && med25 != null && med26 > 0 && med26 < med25) {
+      trendHi = technicalReset(current, medBase, med26);
+    }
+    if (trendHi != null && trendHi > resetBase) {
+      return resetBase + '–' + trendHi;
+    }
+    return bufferedRange(resetBase, 0.12);
+  }
+
   function buildImpliedRows(DATA) {
     var specs = [
       { label: 'Novice → Intermediate', thresholdDiv: 'Novice', current: 16 },
@@ -1284,18 +1296,15 @@
       var medBase = allowedMedian(DATA, spec.thresholdDiv, BASELINE_YEARS);
       var med25 = allowedMedian(DATA, spec.thresholdDiv, [2025]);
       var med26 = allowedMedian(DATA, spec.thresholdDiv, [2026]);
-      var reset25 = technicalReset(spec.current, medBase, med25);
-      var reset26 = technicalReset(spec.current, medBase, med26);
+      var reset = technicalReset(spec.current, medBase, med25);
       return {
         label: spec.label,
         current: spec.current,
         medBase: medBase,
         med25: med25,
-        med26: med26,
-        reset25: reset25,
-        reset26: reset26,
-        buffered: bufferedRange(reset26 || reset25, 0.12),
-        signal: accelerationSignal(medBase, med26 != null ? med26 : med25)
+        reset: reset,
+        buffered: bufferedFromTrend(reset, medBase, med25, med26, spec.current),
+        signal: accelerationSignal(medBase, med25)
       };
     });
   }
@@ -1309,14 +1318,13 @@
         labels: rows.map(function(r) { return r.label; }),
         datasets: [
           { label: 'Сейчас (allowed)', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)' },
-          { label: 'К базе при темпе 2025', data: rows.map(function(r) { return r.reset25; }), backgroundColor: 'rgba(13, 148, 136, 0.65)' },
-          { label: 'К базе при темпе 2026*', data: rows.map(function(r) { return r.reset26; }), backgroundColor: 'rgba(245, 158, 11, 0.75)' }
+          { label: 'Reset к базе (темп 2025)', data: rows.map(function(r) { return r.reset; }), backgroundColor: 'rgba(99, 102, 241, 0.75)' }
         ]
       },
       options: Object.assign(baseOpts('Поинты'), {
         scales: {
           x: { ticks: { font: { size: 10 } } },
-          y: { title: { display: true, text: 'Поинты' }, ticks: { font: { size: 10 } }, suggestedMax: 45 }
+          y: { title: { display: true, text: 'Поинты' }, ticks: { font: { size: 10 } }, suggestedMax: 42 }
         }
       })
     });
@@ -1324,24 +1332,21 @@
     if (tbody) {
       tbody.innerHTML = rows.map(function(r) {
         return '<tr><td>' + r.label + '</td><td>' + r.current + '</td><td>' + fmtMonths(r.medBase) +
-          '</td><td>' + fmtMonths(r.med25) + '</td><td>' + fmtMonths(r.med26) + '*</td><td>~' + (r.reset25 != null ? r.reset25 : '—') +
-          '</td><td>~' + (r.reset26 != null ? r.reset26 : '—') + '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
+          '</td><td>' + fmtMonths(r.med25) + '</td><td>~' + (r.reset != null ? r.reset : '—') +
+          '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
       }).join('');
     }
     var cap = document.getElementById('chartImpliedCaption');
     if (cap && rows.length >= 2) {
-      var n = rows[0];
-      cap.textContent = 'Novice: при темпе 2025 порог ~' + n.reset25 + ' (сейчас 16); при темпе 2026* ~' + n.reset26 +
-        '. Intermediate: ~' + rows[1].reset25 + ' и ~' + rows[1].reset26 + ' при 30 сейчас.';
+      cap.textContent = 'Novice: reset к базе ~' + rows[0].reset + ' (сейчас 16), buffered ' + rows[0].buffered +
+        '. Intermediate: reset ~' + rows[1].reset + ', buffered ' + rows[1].buffered + '.';
     }
     var scen = document.getElementById('impliedScenariosText');
     if (scen && rows.length >= 2) {
       var nov = rows[0], intR = rows[1];
-      scen.innerHTML = 'Три сценария. <strong>No change</strong> — оставить 16 / 30. <strong>Technical reset (2025)</strong> — ~<strong>' +
-        nov.reset25 + '</strong> / ~<strong>' + intR.reset25 + '</strong> поинтов, если календарь останется как в 2025. ' +
-        '<strong>Technical reset (2026*)</strong> — ~<strong>' + nov.reset26 + '</strong> / ~<strong>' + intR.reset26 +
-        '</strong>, если тренд ускорения сохранится. <strong>Buffered reset</strong> (запас ~12% к варианту 2026*) — ' +
-        nov.buffered + ' и ' + intR.buffered + '; политический выбор, не вывод формулы.';
+      scen.innerHTML = 'Три сценария. <strong>No change</strong> — 16 / 30. <strong>Technical reset</strong> (темп 2025) — ~<strong>' +
+        nov.reset + '</strong> / ~<strong>' + intR.reset + '</strong>. <strong>Buffered</strong> — ' + nov.buffered + ' и ' +
+        intR.buffered + ': нижняя граница = reset 2025, верхняя — если раннее ускорение 2026 сохранится; политический запас, не официальный расчёт WSDC.';
     }
   }
   function initCharts() {
