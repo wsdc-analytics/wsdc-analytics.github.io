@@ -801,19 +801,15 @@
       </section>
 
       <section class="section">
-        <h2>Как читаем данные</h2>
-        <p>Смотрим только основной путь танцора по Skill Level: первые поинты в дивизионе, скорость набора порога и факт перехода в следующий дивизион. Каждый танцор учитывается один раз по своей dominate role (основной роли в реестре), без второй роли; в графиках и таблицах ниже лидеры и фолловеры суммированы вместе (All). Пороги WSDC от роли не зависят.</p>
-        <p>Для скорости набора порогов и объёма переходов сравниваю baseline <strong>2015–2019</strong> с отдельным календарным годом <strong>2025</strong> (на графиках M1/M2 — ещё неполный <strong>2026</strong> как ранний сигнал). Для <strong>12-месячной конверсии</strong> свежий срез — <strong>2023–2024</strong>: у стартовавших в 2025 ещё не закрыто окно наблюдения (нужны данные до конца 2026). В расчёт попадают только когорты с полным окном follow-up до среза реестра. Ковидные 2020–2022 в baseline не входят.</p>
-        <p>Для Advanced → All-Stars и для нижней лестницы я всегда сравниваю <strong>две метрики</strong>, их нельзя подменять друг другом:</p>
-        <ol>
-          <li><strong>До allowed-планки</strong> — сколько месяцев от первых поинтов в текущем дивизионе до набора порога, при котором по правилам эпохи можно идти в старший дивизион (по данным Registry Points: для Novice/Intermediate — сумма поинтов в дивизионе; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за последние 36 месяцев).</li>
-          <li><strong>До первых поинтов в дивизионе выше</strong> — сколько месяцев от первых Advanced-поинтов до первых All-Stars-поинтов в реестре (фактический переход на соревнованиях).</li>
-        </ol>
-        <p>Разница между ними — «зазор» после eligibility: формально право уже есть, но человек ещё соревнуется в старом дивизионе. Для Novice/Intermediate сценарии «technical reset» ниже считаю только по первой метрике (allowed <strong>16</strong> и <strong>30</strong>). Число <strong>45</strong> в правилах — required для выхода из Intermediate, а не порог Advanced → All-Stars.</p>
+        <h2>Как устроен этот разбор</h2>
+        <p>Ниже — только то, что видно в <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">реестре WSDC</a>: основной путь по Skill Level (без второй роли), лидеры и фолловеры вместе. Это не оценка качества танца и не суждение о том, «готов» ли человек к следующему дивизиону — только о том, <strong>как быстро и в каком объёме</strong> танцоры проходят формальные ступени лестницы при неизменных с 2018 года порогах <strong>16/30</strong> на Novice и Intermediate.</p>
+        <p>Сравниваю спокойный период <strong>2015–2019</strong> (без ковидных лет) с <strong>2025</strong> годом. Долю «быстрых» переходов за 12 месяцев — с <strong>2023–2024</strong>: у когорт 2025 года окно наблюдения ещё не закрыто. На части графиков есть неполный <strong>2026</strong> — как ранний сигнал, не как итог года.</p>
       </section>
 
       <section class="section">
-        <h2>Что видно в цифрах</h2>
+        <h2>Нижняя лестница: быстрее и шире</h2>
+        <p>Логика статьи простая: если пороги задумывались как регулятор потока между дивизионами, то при выросшем календаре важно посмотреть, не стала ли нижняя часть лестницы проходиться заметно быстрее и для большего числа людей — при тех же цифрах в правилах. Это отдельный вопрос от роста личного мастерства: соревнования измеряют успех в системе поинтов, а не часы в зале.</p>
+
         <figure class="figure-chart">
           <h3>1. До порога стали доходить быстрее</h3>
           <div class="chart-legend" aria-hidden="true">
@@ -825,9 +821,10 @@
           </div>
           <div class="chart-canvas-box"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
         </figure>
+        <p>Медианное время от первых поинтов в дивизионе до набора allowed-порога сократилось на Novice и Intermediate: при тех же <strong>16</strong> и <strong>30</strong> поинтах путь занимает меньше месяцев, чем в базовом периоде. Advanced на этом графике — отдельная история (там пороги менялись в 2018 и 2023); ниже она сведена к короткому контрасту.</p>
 
         <figure class="figure-chart">
-          <h3>2. До первых поинтов в старшем дивизионе (M2)</h3>
+          <h3>2. До первых поинтов в старшем дивизионе</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
@@ -837,9 +834,10 @@
           </div>
           <div class="chart-canvas-box"><canvas id="chartFirstToFirstSpeed" aria-label="Месяцы до первых поинтов в D+1"></canvas></div>
         </figure>
+        <p>Если смотреть на тех, кто уже получил первые поинты в следующем дивизионе, картина та же: медианный срок сокращается на Novice и Intermediate. То есть ускорение видно не только «на бумаге» у порога, но и в фактическом появлении в старшем дивизионе на соревнованиях.</p>
 
         <figure class="figure-chart">
-          <h3>3. Важно не только “как быстро”, но и “сколько людей”</h3>
+          <h3>3. Важно не только «как быстро», но и «сколько людей»</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice→Intermediate</span>
@@ -848,6 +846,7 @@
           </div>
           <div class="chart-canvas-box"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
         </figure>
+        <p>Число переходов Novice → Intermediate и Intermediate → Advanced выросло вместе с календарём: после провала 2020–2021 поток снова набирает обороты, а в 2024–2025 объём уже выше доковидной базы. Ускорение по времени сопровождается большим числом людей, проходящих ступени — это не эффект «нескольких очень активных».</p>
 
         <figure class="figure-chart">
           <h3>4. Доля быстрых переходов за 12 месяцев</h3>
@@ -860,38 +859,15 @@
           <div class="chart-canvas-box"><canvas id="chartConversion" aria-label="Доля стартовавших, дошедших до следующего дивизиона за 12 месяцев"></canvas></div>
         </figure>
 
-        <h3>Не только быстрее, но и шире</h3>
-        <p>Если смотреть только на тех, кто уже получил первые поинты в следующем дивизионе, мы видим скорость перехода (графики 1–2). Но для разговора о трафике нужен ещё один вопрос: какая доля всей стартовой когорты вообще успевает пройти дальше за 12 месяцев?</p>
-        <p>За baseline <strong>2015–2019</strong> доля быстрых переходов Novice → Intermediate — <strong>15,8%</strong> (<strong>707 из 4480</strong> с полным окном), в <strong>2023–2024</strong> — <strong>21,9%</strong> (<strong>372 из 1696</strong>). Для Intermediate → Advanced: <strong>10,6%</strong> (<strong>230 из 2165</strong>) против <strong>15,0%</strong> (<strong>123 из 819</strong>). Advanced → All-Stars по-прежнему низкая: <strong>4,1%</strong> против <strong>3,5%</strong>. Рост виден на нижних ступенях; верхняя лестница «массово» не раздувается.</p>
+        <p>Здесь смотрим не на «самых быстрых», а на всю стартовую когорту: какая доля за 12 месяцев получает первые поинты в следующем дивизионе. За <strong>2015–2019</strong> таких быстрых переходов Novice → Intermediate — <strong>15,8%</strong> (<strong>707 из 4480</strong>), в <strong>2023–2024</strong> — <strong>21,9%</strong> (<strong>372 из 1696</strong>). Intermediate → Advanced: <strong>10,6%</strong> против <strong>15,0%</strong>. На нижних ступенях поток стал не только быстрее, но и шире. Advanced → All-Stars по-прежнему редкий (<strong>4,1%</strong> против <strong>3,5%</strong>) — массового «раздувания» верхней лестницы в данных нет.</p>
+      </section>
+
+      <section class="section">
+        <h2>Почему это не похоже на случайный всплеск</h2>
+        <p>Ускорение на Novice и Intermediate совпадает с восстановлением календаря: больше ивентов и больше танцоров с поинтами — больше возможностей пройти формальные ступени за тот же календарный год.</p>
 
         <figure class="figure-chart">
-          <h3>5. Advanced: до планки и до All-Stars — две линии</h3>
-          <div class="chart-legend" aria-hidden="true">
-            <div class="legend">
-              <span class="legend-item"><span class="legend-line series-indigo"></span>M1 (до allowed)</span>
-              <span class="legend-item"><span class="legend-line series-teal"></span>M2 (до All-Stars)</span>
-            </div>
-          </div>
-          <div class="chart-canvas-box"><canvas id="chartAdvancedDual" aria-label="Advanced: до планки и до All-Stars по эпохам"></canvas></div>
-        </figure>
-
-        <figure class="figure-chart">
-          <h3>6. Advanced по годам (те же две метрики)</h3>
-          <div class="chart-legend" aria-hidden="true">
-            <div class="legend">
-              <span class="legend-item"><span class="legend-line series-indigo"></span>M1 (до allowed)</span>
-              <span class="legend-item"><span class="legend-line series-teal"></span>M2 (до All-Stars)</span>
-            </div>
-          </div>
-          <div class="chart-canvas-box"><canvas id="chartAdvancedDualYear" aria-label="Advanced: две метрики по годам"></canvas></div>
-        </figure>
-
-        <h3>Advanced: планка 60 нагнала старый темп</h3>
-        <p>Нижняя лестница и верхняя ведут себя по-разному. Nov/Int с 2018 года на <strong>16/30</strong> — ускорение в графиках 1–2 (M1 и M2) при том же правиле. Advanced WSDC ужесточала дважды (2018, 2023); на графиках 5–6 видно, что в <strong>2021–22</strong> путь растянулся, а к <strong>2024–25</strong> темп набора <strong>60</strong> сравнялся со старым темпом до <strong>45</strong>, а путь до All-Stars — с ~<strong>25</strong> месяцами. Регуляторный запас исчерпан; конверсия Adv→AS (~2–4%) не раздувается.</p>
-        <div class="warning">«До планки» — приближение к allowed по Registry Points: кумулятив для Nov/Int; для Advanced → All-Stars с 2018 по 2022 — Advanced-поинты за 36 мес.; с 2023 — кумулятив 60/90. Когорта — дошедшие до All-Stars.</div>
-
-        <figure class="figure-chart">
-          <h3>7. Календарь снова стал большим</h3>
+          <h3>5. Календарь снова стал большим</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Ивенты</span>
@@ -900,37 +876,49 @@
           </div>
           <div class="chart-canvas-box"><canvas id="chartEco" aria-label="Рост ивентов и танцоров"></canvas></div>
         </figure>
-
-        <div class="kpi">
-          <div class="kpi-item"><span class="kpi-value">428→517</span><span class="kpi-label">Nov→Int переходов/год (база→2025)</span></div>
-          <div class="kpi-item"><span class="kpi-value">21,9%</span><span class="kpi-label">12-мес. конверсия Nov (2023–24)</span></div>
-          <div class="kpi-item"><span class="kpi-value">~21</span><span class="kpi-label">мес. Nov allowed (база→2025)</span></div>
-          <div class="kpi-item"><span class="kpi-value">22–27</span><span class="kpi-label">buffered reset Novice</span></div>
-        </div>
+        <p>После провала 2020–2021 число registry-ивентов и танцоров с поинтами вернулось к росту. Это не доказывает причину ускорения переходов, но задаёт контекст: те же пороги действуют в экосистеме с большим предложением соревнований, чем в базовом периоде 2015–2019.</p>
 
         <h3>2026: ранний сигнал, а не прогноз</h3>
-        <p>2026 год пока нельзя читать как завершённый год: часть ивентов ещё впереди, часть переходов проявится в данных с задержкой, а первые месяцы года могут быть смещены в сторону самых активных танцоров. Но первые значения уже полезны как проверка направления.</p>
-        <p>К текущему срезу в 2026 уже есть <strong>64 ивента</strong>, <strong>2598 танцоров с поинтами</strong> и <strong>19113 поинтов</strong>. При этом медиана времени до allowed продолжает снижаться именно в нижних ступенях: <strong>Novice allowed — 7 месяцев</strong> (против ~8 месяцев в 2024–2025), <strong>Intermediate allowed — 10 месяцев</strong> (против ~13,5 месяцев в 2024–2025).</p>
-        <p>Это ещё не трендовая линия и не прогноз на весь год. Но если такой темп сохранится, вопрос о порогах станет не вопросом разового скачка 2024–2025, а вопросом нового режима работы лестницы.</p>
-      </section>
-
-      <section class="section" id="dual-metrics-section">
-        <h2>Таблицы: min / med / max по годам (2015–2025)</h2>
-        <p>Когорта — год <strong>первых поинтов в D+1</strong>. <strong>M1</strong> — до allowed-порога; <strong>M2</strong> — до первых поинтов в старшем дивизионе. n₁ и n₂ могут отличаться (не все, кто перешёл, успели набрать порог в данных реестра). Строки <strong>2015–2019</strong> и <strong>2024–2025</strong> — сводка периодов (2020–2022 не входят).</p>
-        <div id="dualMetricsTablesRoot"></div>
+        <p>2026 год пока нельзя читать как завершённый: часть ивентов впереди, переходы в реестре появляются с лагом. Но на графиках 1–2 неполный 2026 уже показывает дальнейшее снижение медианы до allowed на Novice и Intermediate. Если темп сохранится, речь пойдёт не о разовом скачке 2024–2025, а о устойчивом режиме.</p>
       </section>
 
       <section class="section">
-        <h2>Что это значит для порогов</h2>
-        <p>Если пороги нужны только как формальная отметка — “набрал X поинтов, можешь идти дальше” — тогда, возможно, ничего страшного не происходит. Танцоров стало больше, ивентов стало больше, значит и переходов стало больше.</p>
-        <p>Но если пороги — это инструмент управления трафиком, то ситуация меняется. Тогда важно, чтобы они соответствовали масштабу движения. Порог, который нормально работал при ограниченном календаре, может стать слишком мягким при календаре, где у активного танцора гораздо больше возможностей набрать поинты.</p>
-        <p>Фокус здесь именно на <strong>allowed</strong>: это первая точка, где танцор получает право двигаться выше. Required — другая логика, больше похожая на закрепление уровня, поэтому для разговора о трафике её не смешиваю с allowed.</p>
-        <p>Один способ проверить масштаб — спросить: какими должны были бы быть allowed-пороги сегодня, если бы мы хотели сохранить примерно прежнюю календарную длительность пути?</p>
-        <p><code>technical reset ≈ порог × (медиана M1 за 2015–19 / медиана M1 за 2025)</code> — по той же метрике, что на графике 1. <strong>Buffered</strong> — верхняя оценка с учётом раннего ускорения в неполном 2026 (тренд, не отдельный «год» для сравнения).</p>
-        <div class="warning">Это не предложение автоматически поднять пороги. Механический расчёт показывает только нижнюю техническую оценку. Если правило должно работать несколько лет, а не догонять календарь каждый сезон, регулятору пришлось бы отдельно решать, нужен ли сглаживающий запас.</div>
+        <h2>Верхняя лестница — другой сюжет</h2>
+        <p>На Novice и Intermediate пороги <strong>16/30</strong> не менялись с 2018 года, и именно там видно ускорение. Advanced → All-Stars WSDC ужесточала отдельно (в том числе <strong>60/90</strong> с 2023 года). Ниже — сравнение «до порога» и «до первых поинтов в All-Stars»; это не центральный вывод статьи, а контраст: регулятор на верхней ступени срабатывал иначе, и массового перетока в All-Stars нет.</p>
 
         <figure class="figure-chart">
-          <h3>8. Если удерживать старую скорость</h3>
+          <h3>6. Advanced: до порога и до All-Stars</h3>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>До порога</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>До All-Stars</span>
+            </div>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartAdvancedDual" aria-label="Advanced: до планки и до All-Stars по эпохам"></canvas></div>
+        </figure>
+
+        <figure class="figure-chart">
+          <h3>7. Advanced по годам</h3>
+          <div class="chart-legend" aria-hidden="true">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-line series-indigo"></span>До порога</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>До All-Stars</span>
+            </div>
+          </div>
+          <div class="chart-canvas-box"><canvas id="chartAdvancedDualYear" aria-label="Advanced: две метрики по годам"></canvas></div>
+        </figure>
+
+        <p>На графиках видно: в <strong>2021–2022</strong> путь Advanced → All-Stars временно растянулся после ужесточения правил; к <strong>2024–2025</strong> темп снова сблизился с доковидным. Это не отменяет вопроса о нижней лестнице — наоборот, показывает, что WSDC уже подкручивала «ручку» на верхней ступени, когда поток становился слишком быстрым.</p>
+      </section>
+
+      <section class="section">
+        <h2>Вопрос к порогам — без готового ответа</h2>
+        <p>Если пороги — лишь формальная отметка («набрал X — можешь идти»), рост переходов может быть естественным следствием большего календаря. Если же пороги — способ сглаживать поток между дивизионами, то неизменные <strong>16/30</strong> при ускорении на графиках 1–4 заслуживают обсуждения: совпадает ли темп лестницы с тем, какой соревновательный опыт WSDC хочет видеть внутри каждого уровня.</p>
+        <p>Ниже — не рекомендация «поднять до N», а арифметическая иллюстрация: <em>какими были бы allowed-пороги, если бы медианное время до порога осталось как в 2015–2019</em> (по той же метрике, что на графике 1).</p>
+        <div class="warning">Упражнение на масштаб, а не проект правила. Не учитывает географию, мотивацию и качество танца — только календарную скорость в реестре.</div>
+
+        <figure class="figure-chart">
+          <h3>8. Иллюстрация: «вернуть» базовый темп (Nov / Int)</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-slate"></span>Сейчас (allowed)</span>
@@ -940,38 +928,39 @@
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
         </figure>
 
-        <div class="table-scroll">
-          <table class="risk-table">
-            <thead><tr><th>Переход</th><th>Сейчас</th><th>M1 база</th><th>M1 2025</th><th>Reset (к базе)</th><th>Buffered</th><th>Сигнал</th></tr></thead>
-            <tbody id="impliedTableBody"></tbody>
-          </table>
-        </div>
-        <p>В этой логике вопрос сильнее всего возникает в Novice и Intermediate — пороги не менялись, а M1 ускорился. Advanced → All-Stars (60/90) — отдельно на графиках 5–6.</p>
+        <details class="risk-disclosure">
+          <summary>Таблица расчёта (для тех, кому нужны цифры)</summary>
+          <div class="table-scroll">
+            <table class="risk-table">
+              <thead><tr><th>Переход</th><th>Сейчас</th><th>Медиана база</th><th>Медиана 2025</th><th>Иллюстрация</th><th>Диапазон</th><th>Сигнал</th></tr></thead>
+              <tbody id="impliedTableBody"></tbody>
+            </table>
+          </div>
+        </details>
+        <p>Цифры на графике 8 относятся только к Novice и Intermediate — там пороги не менялись, а время до allowed сократилось. Это повод для разговора, а не готовая цифра для правил.</p>
       </section>
 
       <section class="section">
-        <h2>Но поднять пороги — не бесплатное решение</h2>
-        <p>Самое очевидное возражение: доступ к ивентам распределён неравномерно. Для танцора в регионе с плотным календарём 22–25 поинтов может быть просто вопросом активности. Для танцора, который живёт в регионе с несколькими доступными registry-ивентами в год, тот же порог может стать почти стеной.</p>
-        <p>Поэтому “поднять пороги” — это не нейтральная техническая правка. Она сильнее ударит по танцорам из регионов с меньшим количеством ивентов: часть Азии, Австралия, локальные сцены вне плотного североамериканского и европейского календаря. Система может стать более управляемой по трафику, но менее равной по доступу.</p>
-        <p>Именно поэтому вопрос не в том, “какой порог красивее на графике”. Вопрос в том, чем WSDC считает Skill Level: быстрым отражением соревновательного результата или более медленной лестницей мастерства, где переход должен занимать определённое время и количество соревновательного опыта.</p>
+        <h2>Почему «просто поднять пороги» — не нейтрально</h2>
+        <p>Доступ к registry-ивентам распределён неравномерно. В регионе с плотным календарём более высокий порог может означать «чуть дольше соревноваться». В регионе с несколькими ивентами в год — почти стену. Любое ужесточение сильнее ударит по тем, у кого меньше возможностей набрать поинты.</p>
+        <p>Статья не призывает к конкретному решению. Она показывает, что <strong>скорость продвижения по лестнице и рост соревновательного мастерства — не одно и то же</strong>: реестр фиксирует поинты и переходы, а не часы в зале. Если community считает, что лестница должна отражать именно соревновательный опыт, а не только доступность ивентов, этот разрыв стоит обсуждать открыто — в том числе с WSDC.</p>
       </section>
 
       <section class="section">
         <h2>Ограничения</h2>
         <ul>
-          <li>Это анализ основного пути движения по Skill Level; метрики суммированы по лидерам и фолловерам (All), каждый танцор — один раз по dominate role.</li>
-          <li>2020–2022 — аномалия календаря; её нельзя читать как нормальную скорость системы.</li>
-          <li>2026 используется только как ранний сигнал: год неполный, а переходы появляются в данных с лагом.</li>
-          <li>Для Advanced сравниваются две метрики (до allowed и до первых поинтов в All-Stars); «до планки» для Nov/Int — кумулятив, для Advanced → All-Stars (2018–2022) — Advanced-поинты за 36 мес.; это не дословная eligibility.</li>
-          <li>Technical reset и buffered reset — иллюстрации масштаба, не официальный расчёт WSDC; только Novice (16) и Intermediate (30). Adv→All-Stars: 60/90 с 2023 года.</li>
-          <li>Качество танца, уровень тренировок и судейское восприятие здесь не измеряются.</li>
+          <li>Только основной путь по Skill Level; лидеры и фолловеры суммированы (All), один танцор — одна dominate role.</li>
+          <li>2020–2022 — аномалия календаря, не «норма» для сравнения.</li>
+          <li>2026 — ранний сигнал; год и часть переходов ещё неполные в данных.</li>
+          <li>График 8 и таблица — иллюстрация для Novice (16) и Intermediate (30), не расчёт WSDC.</li>
+          <li>Качество танца, тренировки и судейское восприятие здесь не измеряются.</li>
         </ul>
       </section>
 
       <section class="section">
         <h2>Вывод</h2>
-        <p>Главный вывод не в том, что “все слишком быстро переходят” и не в том, что “пороги срочно надо поднять”. Если пороги должны управлять движением между дивизионами, то нижняя часть лестницы уже работает быстрее и шире, чем в доковидной норме.</p>
-        <p>Вопрос не в том, поставить 22 или 25. Вопрос глубже: какую скорость движения WSDC считает здоровой — быстрый доступ к следующему дивизиону, ограничение численности или более медленную соревновательную лестницу с большим запасом опыта внутри каждого уровня?</p>
+        <p>Нижняя часть Skill Level-лестницы после восстановления календаря проходится <strong>быстрее и для большей доли когорты</strong>, чем в 2015–2019, при неизменных <strong>16/30</strong>. Это не доказательство, что танцоры «не готовы» или что пороги «сломаны» — и не призыв их срочно поднять.</p>
+        <p>Это приглашение к вопросу: <strong>какую скорость движения по дивизионам WSDC и community считают здоровой</strong> — и насколько эта скорость должна совпадать с тем, как люди на самом деле растут как танцоры. Ответа в реестре нет; его может дать только общий разговор.</p>
       </section>
 
 <section class="article-reactions" aria-label="Оценка статьи">
@@ -1028,7 +1017,6 @@
   <script>
 (function() {
   var JSON_URL = 'static/data/division_transition_metrics.json?v=20260518a';
-  var DUAL_METRICS_URL = 'static/data/dual_metrics_by_year.json?v=20260517d';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
 
@@ -1499,21 +1487,19 @@
     }
   }
   function initCharts() {
-    Promise.all([
-      fetch(JSON_URL, { credentials: 'omit' }).then(function(r) { return r.json(); }),
-      fetch(DUAL_METRICS_URL, { credentials: 'omit' }).then(function(r) { return r.json(); })
-    ]).then(function(res) {
-      var DATA = res[0], DUAL = res[1];
-      renderThresholdSpeed(DATA);
-      renderFirstToFirstSpeed(DATA);
-      renderVolume(DATA);
-      renderConversion(DATA);
-      renderAdvancedDual(DATA);
-      renderAdvancedDualYear(DATA);
-      renderEco(DATA);
-      renderImplied(DATA);
-      renderDualMetricsTables(DUAL);
-    }).catch(function(err) { console.error('Charts failed', err); });
+    fetch(JSON_URL, { credentials: 'omit' })
+      .then(function(r) { return r.json(); })
+      .then(function(DATA) {
+        renderThresholdSpeed(DATA);
+        renderFirstToFirstSpeed(DATA);
+        renderVolume(DATA);
+        renderConversion(DATA);
+        renderAdvancedDual(DATA);
+        renderAdvancedDualYear(DATA);
+        renderEco(DATA);
+        renderImplied(DATA);
+      })
+      .catch(function(err) { console.error('Charts failed', err); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCharts);
   else initCharts();
