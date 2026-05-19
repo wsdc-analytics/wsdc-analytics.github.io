@@ -871,7 +871,7 @@
             </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartM1ByYear" aria-label="М1 по годам и дивизионам"></canvas></div>
-          <p class="chart-breakdown-note">Медиана внутри каждого календарного года; линии могут прерываться, если в году мало наблюдений. 2020–2022 и неполный 2026 сопоставлять с другими годами осторожно.</p>
+          <p class="chart-breakdown-note">Медиана внутри каждого календарного года; все годы показаны. В подсказке годы с малым числом наблюдений (n &lt; 30) отмечены «*».</p>
         </details>
 
         <figure class="figure-chart">
@@ -896,7 +896,7 @@
             </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartM2ByYear" aria-label="М2 по годам и дивизионам"></canvas></div>
-          <p class="chart-breakdown-note">Та же логика, что на основном графике М2: от первых поинтов в дивизионе до первых поинтов в старшем. Advanced — до All-Stars.</p>
+          <p class="chart-breakdown-note">Та же логика, что на основном графике М2: от первых поинтов в дивизионе до первых поинтов в старшем. Advanced — до All-Stars. Годы с n &lt; 30 в подсказке помечены «*».</p>
         </details>
 
         <p class="method-conclusion">Мы не доказываем, что танцоры стали объективно «готовее» быстрее. Мы показываем, что <strong>при тех же порогах</strong> типичное <strong>календарное</strong> время до права перехода (М1) и до первых поинтов в старшем дивизионе (М2) на Novice и Intermediate <strong>короче, чем в базовом периоде 2015–2019</strong>, в условиях более плотного календаря. Это повод обсудить, совпадает ли темп лестницы с тем, как community понимает рост мастерства — а не готовый ответ «поднять пороги».</p>
@@ -1341,47 +1341,127 @@
     Advanced: '#d97706'
   };
 
-  function m1YearValue(DATA, division, year) {
+  function yearTickLabel(label) {
+    var y = parseInt(label, 10);
+    if (isNaN(y)) return '';
+    if (y % 10 === 0 || y === 2015 || y === 2026) return String(y);
+    return '';
+  }
+
+  function m1YearMeta(DATA, division, year, minN) {
     if (division === 'Advanced') {
-      var adv = (DATA.advanced_path_by_year || []).find(function(r) {
-        return r.year === year && !r.suppress;
-      });
-      if (!adv || !adv.months_to_allowed || adv.months_to_allowed.median_months == null) return null;
-      return adv.months_to_allowed.median_months;
+      var adv = (DATA.advanced_path_by_year || []).find(function(r) { return r.year === year; });
+      if (!adv || !adv.months_to_allowed || adv.months_to_allowed.median_months == null) {
+        return { value: null, lowSample: false };
+      }
+      var nA = adv.months_to_allowed.n;
+      return { value: adv.months_to_allowed.median_months, lowSample: nA != null && nA < minN };
     }
     var row = DATA.months_to_threshold.find(function(r) {
       return r.division === division && r.threshold_type === 'allowed' && r.role === MAIN_ROLE &&
-        r.year === year && !r.suppress && r.median_months != null;
+        r.year === year && r.median_months != null;
     });
-    return row ? row.median_months : null;
+    if (!row) return { value: null, lowSample: false };
+    return { value: row.median_months, lowSample: row.n != null && row.n < minN };
   }
 
-  function m2YearValue(DATA, division, year) {
+  function m2YearMeta(DATA, division, year, minN) {
     var toDiv = M2_TO_DIVISION[division];
     var row = DATA.transition_series.find(function(r) {
       return r.from_division === division && r.to_division === toDiv && r.role === MAIN_ROLE &&
-        r.metric_variant === 'first_to_first' && r.transition_year === year &&
-        !r.suppress && r.median_months != null;
+        r.metric_variant === 'first_to_first' && r.transition_year === year && r.median_months != null;
     });
-    return row ? row.median_months : null;
+    if (!row) return { value: null, lowSample: false };
+    return { value: row.median_months, lowSample: row.n != null && row.n < minN };
   }
 
-  function renderYearlyDivisionLineChart(chartKey, canvasId, valueFn) {
+  function yearlyTooltipHandler(unit) {
+    return function(context) {
+      var chart = context.chart;
+      var tooltip = context.tooltip;
+      var tooltipEl = getOrCreateTooltip(chart);
+      if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = 0;
+        tooltipEl.style.transform = '';
+        return;
+      }
+      tooltipEl.style.minWidth = '220px';
+      var year = parseInt((tooltip.title && tooltip.title[0]) || '', 10);
+      var metaByDiv = (chart._yearlyMeta && chart._yearlyMeta[year]) || {};
+      var divisions = ['Novice', 'Intermediate', 'Advanced'];
+      var rows = divisions.map(function(div) {
+        var m = metaByDiv[div] || {};
+        var c = DIVISION_LINE_COLORS[div];
+        var val = m.value;
+        var suffix = m.lowSample ? '*' : '';
+        var display = val == null ? '—' : formatTooltipValue(val, unit) + suffix;
+        return '<div class="tt-row" style="color:' + c + '"><span class="tt-label">' + div +
+          '</span><span class="tt-value">' + display + '</span></div>';
+      }).join('');
+      tooltipEl.innerHTML = '<div class="tt-title">' + year + '</div>' + rows;
+      var canvas = chart.canvas;
+      var parent = canvas.parentNode;
+      var pad = 10;
+      var cx = canvas.offsetLeft + tooltip.caretX;
+      var cy = canvas.offsetTop + tooltip.caretY;
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.left = cx + 'px';
+      tooltipEl.style.top = cy + 'px';
+      requestAnimationFrame(function() {
+        var tw = tooltipEl.offsetWidth;
+        var pw = parent.clientWidth;
+        if (!tw || !pw) {
+          tooltipEl.style.transform = 'translate(-50%, calc(-100% - 8px))';
+          return;
+        }
+        var dx = -tw / 2;
+        if (cx + dx < pad) dx = pad - cx;
+        if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
+        tooltipEl.style.transform = 'translate(' + dx + 'px, calc(-100% - 8px))';
+      });
+    };
+  }
+
+  function yearlyChartOptions() {
+    var opts = baseOpts('Месяцы', 'months');
+    opts.scales.x.ticks.autoSkip = false;
+    opts.scales.x.ticks.font = { size: 9, weight: 500 };
+    opts.scales.x.ticks.callback = function(value) {
+      return yearTickLabel(this.getLabelForValue(value));
+    };
+    opts.scales.y.ticks.stepSize = 10;
+    var yHandler = yearlyTooltipHandler('months');
+    opts.plugins.tooltip.external = function(ctx) {
+      ctx.chart._tooltipUnit = 'months';
+      yHandler(ctx);
+    };
+    return opts;
+  }
+
+  function renderYearlyDivisionLineChart(chartKey, canvasId, metaFn) {
     destroy(chartKey);
     var years = [];
     for (var y = 2015; y <= 2026; y++) years.push(String(y));
     var divisions = ['Novice', 'Intermediate', 'Advanced'];
+    var yearlyMeta = {};
+    years.forEach(function(ys) {
+      var year = parseInt(ys, 10);
+      yearlyMeta[year] = {};
+      divisions.forEach(function(div) {
+        yearlyMeta[year][div] = metaFn(div, year);
+      });
+    });
     var datasets = divisions.map(function(div) {
       var color = DIVISION_LINE_COLORS[div];
       return {
         label: div,
-        data: years.map(function(ys) { return valueFn(div, parseInt(ys, 10)); }),
+        data: years.map(function(ys) { return metaFn(div, parseInt(ys, 10)).value; }),
         borderColor: color,
         tooltipColor: color,
         borderWidth: 1.8,
         tension: 0.35,
         cubicInterpolationMode: 'monotone',
-        spanGaps: true,
+        spanGaps: false,
         pointRadius: 0,
         pointHoverRadius: 3
       };
@@ -1389,37 +1469,22 @@
     charts[chartKey] = new Chart(document.getElementById(canvasId), {
       type: 'line',
       data: { labels: years, datasets: datasets },
-      options: Object.assign(baseOpts('Месяцы', 'months'), {
-        scales: {
-          x: {
-            ticks: {
-              color: 'rgba(55, 65, 81, 0.55)',
-              font: { size: 9, weight: 500 },
-              maxRotation: 0,
-              autoSkip: false,
-              callback: function(value) {
-                var label = this.getLabelForValue(value);
-                return (label === '2015' || label === '2020' || label === '2025' || label === '2026') ? label : '';
-              }
-            },
-            grid: { display: false },
-            border: { display: true, color: 'rgba(15, 23, 42, 0.14)' }
-          },
-          y: chartScales('Месяцы', 'months').y
-        }
-      })
+      options: yearlyChartOptions()
     });
+    charts[chartKey]._yearlyMeta = yearlyMeta;
   }
 
   function renderM1ByYear(DATA) {
+    var minN = DATA.min_n_display || 30;
     renderYearlyDivisionLineChart('m1ByYear', 'chartM1ByYear', function(div, year) {
-      return m1YearValue(DATA, div, year);
+      return m1YearMeta(DATA, div, year, minN);
     });
   }
 
   function renderM2ByYear(DATA) {
+    var minN = DATA.min_n_display || 30;
     renderYearlyDivisionLineChart('m2ByYear', 'chartM2ByYear', function(div, year) {
-      return m2YearValue(DATA, div, year);
+      return m2YearMeta(DATA, div, year, minN);
     });
   }
 
