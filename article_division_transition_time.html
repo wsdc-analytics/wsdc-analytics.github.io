@@ -672,6 +672,7 @@
       height: 10px;
       border: none;
       border-radius: 2px;
+      opacity: 0.7;
       background: repeating-linear-gradient(
         -45deg,
         rgba(245, 158, 11, 0.28),
@@ -1159,6 +1160,7 @@
     tile.width = w;
     tile.height = h;
     var g = tile.getContext('2d');
+    g.globalAlpha = 0.7;
     g.fillStyle = '#fffbeb';
     g.fillRect(0, 0, w, h);
     g.strokeStyle = '#d97706';
@@ -1169,6 +1171,7 @@
       g.lineTo(x + h, 0);
       g.stroke();
     }
+    g.globalAlpha = 1;
     return ctx.createPattern(tile, 'repeat');
   }
   function median(values) {
@@ -1256,8 +1259,7 @@
             tooltipColor: '#d97706',
             borderRadius: 6,
             maxBarThickness: 48,
-            borderColor: 'rgba(217, 119, 6, 0.85)',
-            borderWidth: 1.5
+            borderWidth: 0
           }
         ]
       },
