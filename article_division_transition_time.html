@@ -667,6 +667,19 @@
     .chart-legend .legend-line.series-indigo { border-top: 2px solid #6366f1; }
     .chart-legend .legend-line.series-teal { border-top: 2px solid #0d9488; }
     .chart-legend .legend-line.series-amber { border-top: 2px solid #f59e0b; }
+    .chart-legend .legend-line.series-amber-hatch {
+      width: 10px;
+      height: 10px;
+      border: none;
+      border-radius: 2px;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(245, 158, 11, 0.28),
+        rgba(245, 158, 11, 0.28) 2px,
+        rgba(245, 158, 11, 0.88) 2px,
+        rgba(245, 158, 11, 0.88) 3px
+      );
+    }
     .chart-legend .legend-line.series-slate { border-top: 2px solid #94a3b8; }
     .chart-legend .legend-line.series-indigo-dash { border-top: 2px dashed rgba(99, 102, 241, 0.55); }
     .chart-legend .legend-line.series-teal-dash { border-top: 2px dashed rgba(13, 148, 136, 0.55); }
@@ -675,8 +688,8 @@
       pointer-events: none;
       opacity: 0;
       z-index: 20;
-      min-width: 168px;
-      max-width: 280px;
+      min-width: 200px;
+      max-width: 320px;
       padding: 10px 12px;
       border-radius: 12px;
       border: 1px solid rgba(15, 23, 42, 0.08);
@@ -699,6 +712,8 @@
       align-items: baseline;
       gap: 12px;
       margin: 2px 0;
+      flex-wrap: nowrap;
+      white-space: nowrap;
     }
     .chartjs-ext-tooltip .tt-label { font-weight: 600; }
     .chartjs-ext-tooltip .tt-value {
@@ -799,40 +814,40 @@
       </section>
 
       <section class="section">
-        <h2>Как устроен этот разбор</h2>
-        <p>Ниже — только то, что видно в <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">реестре WSDC</a>: основной путь по Skill Level (без второй роли), лидеры и фолловеры вместе. Это не оценка качества танца и не суждение о том, «готов» ли человек к следующему дивизиону — только о том, <strong>как быстро и в каком объёме</strong> танцоры проходят формальные ступени лестницы при неизменных с 2018 года порогах <strong>16/30</strong> на Novice и Intermediate.</p>
-        <p>Сравниваю спокойный период <strong>2015–2019</strong> (без ковидных лет) с <strong>2025</strong> годом. Долю «быстрых» переходов за 12 месяцев — с <strong>2023–2024</strong>: у когорт 2025 года окно наблюдения ещё не закрыто. На части графиков есть неполный <strong>2026</strong> — как ранний сигнал, не как итог года.</p>
+        <h2>Как и что считалось</h2>
+        <p><strong>М1</strong> — медианное время, которое в выбранном периоде танцорам понадобилось от набора первого поинта в дивизионе до получения права выступать в следующей дивизионе.</p>
+        <p><strong>М2</strong> — медианное время, которое в выбранном периоде танцорам понадобилось от набора первого поинта в дивизионе до набора первого поинта в следующем дивизионе.</p>
+        <p><strong>Периоды</strong> — в качестве сравниваемых периодов взяты стабильный и по количеству ивентов, и по правилам переходов период до пандемии с 2015 по 2019 год, рекордный 2025 год, когда комьюнити полностью восстановилось, и для контроля данные 2026 года, чтобы понимать текущий тренд.</p>
+        <p><strong>Номинации</strong> — исследовались наиболее стабильные номинации Novice, Intermediate и Advanced и переходы из них в более старший дивизион. All-Stars и Champions не исследовались, поскольку по этим номинациям данных недостаточно.</p>
       </section>
 
       <section class="section">
-        <h2>Нижняя лестница: быстрее и шире</h2>
-        <p>Логика статьи простая: если пороги задумывались как регулятор потока между дивизионами, то при выросшем календаре важно посмотреть, не стала ли нижняя часть лестницы проходиться заметно быстрее и для большего числа людей — при тех же цифрах в правилах. Это отдельный вопрос от роста личного мастерства: соревнования измеряют успех в системе поинтов, а не часы в зале.</p>
+        <h2>Что показывают данные</h2>
+        <p>Логика исследования простая: если пороги задумывались как регулятор потока между дивизионами, то при выросшем календаре важно посмотреть, не стала ли нижняя часть лестницы проходиться заметно быстрее и для большего числа людей — при тех же порогах в правилах. Это тот момент, когда важно разделять рост личного мастерства и соревновательные успехи в системе поинтов.</p>
 
         <figure class="figure-chart">
-          <h3>1. До порога стали доходить быстрее</h3>
+          <h3>Динамика изменения М1 по дивизионам в периодах</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
-              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
+              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19</span>
               <span class="legend-item"><span class="legend-line series-teal"></span>2025</span>
-              <span class="legend-item"><span class="legend-line series-amber"></span>2026 (неполный)</span>
+              <span class="legend-item"><span class="legend-line series-amber-hatch"></span>2026</span>
             </div>
           </div>
-          <div class="chart-canvas-box"><canvas id="chartThresholdSpeed" aria-label="Месяцы до allowed по дивизионам"></canvas></div>
+          <div class="chart-canvas-box"><canvas id="chartThresholdSpeed" aria-label="М1 по дивизионам, месяцы"></canvas></div>
         </figure>
-        <p>Медианное время от первых поинтов в дивизионе до набора allowed-порога сократилось на Novice и Intermediate: при тех же <strong>16</strong> и <strong>30</strong> поинтах путь занимает меньше месяцев, чем в базовом периоде. Advanced на этом графике — отдельная история (там пороги менялись в 2018 и 2023); ниже она сведена к короткому контрасту.</p>
 
         <figure class="figure-chart">
-          <h3>2. До первых поинтов в старшем дивизионе</h3>
+          <h3>Динамика изменения М2 по дивизионам в периодах</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
-              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
+              <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19</span>
               <span class="legend-item"><span class="legend-line series-teal"></span>2025</span>
-              <span class="legend-item"><span class="legend-line series-amber"></span>2026 (неполный)</span>
+              <span class="legend-item"><span class="legend-line series-amber-hatch"></span>2026</span>
             </div>
           </div>
-          <div class="chart-canvas-box"><canvas id="chartFirstToFirstSpeed" aria-label="Месяцы до первых поинтов в D+1"></canvas></div>
+          <div class="chart-canvas-box"><canvas id="chartFirstToFirstSpeed" aria-label="М2 по дивизионам, месяцы"></canvas></div>
         </figure>
-        <p>Если смотреть на тех, кто уже получил первые поинты в следующем дивизионе, картина та же: медианный срок сокращается на Novice и Intermediate. То есть ускорение видно не только «на бумаге» у порога, но и в фактическом появлении в старшем дивизионе на соревнованиях.</p>
 
         <figure class="figure-chart">
           <h3>3. Важно не только «как быстро», но и «сколько людей»</h3>
@@ -1053,9 +1068,16 @@
         tooltipEl.style.transform = '';
         return;
       }
+      if (chart._tooltipUnit === 'months') {
+        tooltipEl.style.minWidth = '220px';
+      } else {
+        tooltipEl.style.minWidth = '';
+      }
       var rows = (tooltip.dataPoints || []).map(function(dp) {
         var label = dp.dataset.label || '';
-        var c = dp.dataset.backgroundColor || dp.dataset.borderColor || '#334155';
+        var c = dp.dataset.tooltipColor ||
+          (typeof dp.dataset.backgroundColor === 'string' ? dp.dataset.backgroundColor : null) ||
+          dp.dataset.borderColor || '#334155';
         var v = dp.parsed.y;
         return '<div class="tt-row" style="color:' + c + '"><span class="tt-label">' + label +
           '</span><span class="tt-value">' + formatTooltipValue(v, unit) + '</span></div>';
@@ -1107,6 +1129,7 @@
   }
 
   function baseOpts(yTitle, unit) {
+    var handler = externalTooltipHandler(unit || 'count');
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -1114,10 +1137,33 @@
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { enabled: false, external: externalTooltipHandler(unit || 'count') }
+        tooltip: {
+          enabled: false,
+          external: function(ctx) {
+            ctx.chart._tooltipUnit = unit || 'count';
+            handler(ctx);
+          }
+        }
       },
       scales: chartScales(yTitle, unit)
     };
+  }
+
+  function stripePattern(chart) {
+    var size = 8;
+    var tile = document.createElement('canvas');
+    tile.width = size;
+    tile.height = size;
+    var g = tile.getContext('2d');
+    g.fillStyle = 'rgba(245, 158, 11, 0.22)';
+    g.fillRect(0, 0, size, size);
+    g.strokeStyle = 'rgba(217, 119, 6, 0.9)';
+    g.lineWidth = 1.5;
+    g.beginPath();
+    g.moveTo(0, size);
+    g.lineTo(size, 0);
+    g.stroke();
+    return chart.ctx.createPattern(tile, 'repeat');
   }
   function median(values) {
     var arr = values.filter(function(v) { return v != null; }).sort(function(a, b) { return a - b; });
@@ -1193,13 +1239,15 @@
       data: {
         labels: divisions,
         datasets: [
-          { label: '2015–19 (база)', data: baseline, backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
-          { label: '2025', data: y2025, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 },
-          { label: '2026 (неполный)', data: y2026, backgroundColor: BAR_2026, borderRadius: 6, maxBarThickness: 48 }
+          { label: '2015–19', data: baseline, backgroundColor: BAR_BASE, tooltipColor: '#6366f1', borderRadius: 6, maxBarThickness: 48 },
+          { label: '2025', data: y2025, backgroundColor: BAR_2025, tooltipColor: '#0d9488', borderRadius: 6, maxBarThickness: 48 },
+          { label: '2026', data: y2026, backgroundColor: BAR_2026, tooltipColor: '#d97706', borderRadius: 6, maxBarThickness: 48, borderColor: 'rgba(217, 119, 6, 0.75)', borderWidth: 1 }
         ]
       },
       options: baseOpts(yTitle, 'months')
     });
+    var ds2026 = charts[chartKey].data.datasets[2];
+    ds2026.backgroundColor = stripePattern(charts[chartKey]);
   }
 
   function renderThresholdSpeed(DATA) {
@@ -1208,7 +1256,7 @@
       'chartThresholdSpeed',
       ['Novice', 'Intermediate', 'Advanced'],
       function(div, years) { return thresholdSpeedValue(DATA, div, years); },
-      'Месяцы до allowed'
+      'Месяцы'
     );
   }
 
@@ -1218,7 +1266,7 @@
       'chartFirstToFirstSpeed',
       ['Novice', 'Intermediate', 'Advanced'],
       function(div, years) { return m2Median(DATA, div, years); },
-      'Месяцы до первых поинтов в D+1'
+      'Месяцы'
     );
   }
   function transitionCountAvg(DATA, from, to, years) {
