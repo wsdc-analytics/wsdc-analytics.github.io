@@ -740,18 +740,18 @@
       color: var(--text-secondary);
       line-height: 1.55;
     }
+    .risk-disclosure.chart-year-breakdown {
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, .05);
+      border-radius: 16px;
+      margin: 16px 0 28px;
+    }
     .risk-disclosure.chart-year-breakdown .chart-canvas-box {
       height: 280px;
-      margin: 0 16px 16px;
+      margin: 0 18px 18px;
     }
     .risk-disclosure.chart-year-breakdown .chart-legend {
-      margin: 12px 16px 0;
-    }
-    .risk-disclosure.chart-year-breakdown .chart-breakdown-note {
-      margin: 0 16px 16px;
-      font-size: 13px;
-      color: var(--text-tertiary);
-      line-height: 1.45;
+      margin: 0 18px 12px;
     }
     .research-table {
       width: 100%;
@@ -861,9 +861,9 @@
           </div>
           <div class="chart-canvas-box"><canvas id="chartThresholdSpeed" aria-label="М1 по дивизионам, месяцы"></canvas></div>
         </figure>
-        <p class="chart-caption">Медианное время от первых поинтов в дивизионе до набора allowed-порога сократилось на Novice и Intermediate: при тех же <strong>16</strong> и <strong>30</strong> поинтах путь занимает меньше месяцев, чем в базовом периоде. Advanced на этом графике — отдельная история (там пороги менялись в 2018 и 2023); ниже она сведена к короткому контрасту.</p>
+
         <details class="risk-disclosure chart-year-breakdown">
-          <summary>М1 по годам (2015–2026)</summary>
+          <summary>Динамика изменения М1 по годам</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice</span>
@@ -872,8 +872,9 @@
             </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartM1ByYear" aria-label="М1 по годам и дивизионам"></canvas></div>
-          <p class="chart-breakdown-note">Медиана внутри каждого календарного года; все годы показаны. В подсказке годы с малым числом наблюдений (n &lt; 30) отмечены «*».</p>
         </details>
+
+        <p>Как видно на представленных графиках, в период с 2015 по 2019 год на то, чтобы получить право выступать в Intermediate, требовалось примерно <strong>12 месяцев</strong> от получения первого поинта в Novice. На переход из Intermediate в Advanced требовалось <strong>17 месяцев</strong>, а на переход из Advanced в All-Stars — около <strong>20 месяцев</strong>. В 2025 году этот показатель составил <strong>9 месяцев</strong> в Novice, <strong>16 месяцев</strong> в Intermediate и <strong>21 месяц</strong> в Advanced. Тренд 2026 года показывает, что в Novice этот показатель уже ближе к <strong>6 месяцам</strong>, а в Intermediate — к <strong>13</strong>.</p>
 
         <figure class="figure-chart">
           <h3>Динамика изменения М2 по дивизионам в периодах</h3>
@@ -886,9 +887,9 @@
           </div>
           <div class="chart-canvas-box"><canvas id="chartFirstToFirstSpeed" aria-label="М2 по дивизионам, месяцы"></canvas></div>
         </figure>
-        <p class="chart-caption">Если смотреть на тех, кто уже получил первые поинты в следующем дивизионе, картина та же: медианный срок сокращается на Novice и Intermediate. То есть ускорение видно не только «на бумаге» у порога, но и в фактическом появлении в старшем дивизионе на соревнованиях.</p>
+
         <details class="risk-disclosure chart-year-breakdown">
-          <summary>М2 по годам (2015–2026)</summary>
+          <summary>Динамика изменения М2 по годам</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice</span>
@@ -897,7 +898,6 @@
             </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartM2ByYear" aria-label="М2 по годам и дивизионам"></canvas></div>
-          <p class="chart-breakdown-note">Та же логика, что на основном графике М2: от первых поинтов в дивизионе до первых поинтов в старшем. Advanced — до All-Stars. Годы с n &lt; 30 в подсказке помечены «*».</p>
         </details>
 
         <p class="method-conclusion">Мы не доказываем, что танцоры стали объективно «готовее» быстрее. Мы показываем, что <strong>при тех же порогах</strong> типичное <strong>календарное</strong> время до права перехода (М1) и до первых поинтов в старшем дивизионе (М2) на Novice и Intermediate <strong>короче, чем в базовом периоде 2015–2019</strong>, в условиях более плотного календаря. Это повод обсудить, совпадает ли темп лестницы с тем, как community понимает рост мастерства — а не готовый ответ «поднять пороги».</p>
@@ -1752,6 +1752,17 @@
       }).join('');
     }
   }
+  function bindYearChartResize() {
+    var map = { chartM1ByYear: 'm1ByYear', chartM2ByYear: 'm2ByYear' };
+    document.querySelectorAll('.chart-year-breakdown').forEach(function(el) {
+      el.addEventListener('toggle', function() {
+        if (!el.open) return;
+        var canvas = el.querySelector('canvas');
+        var key = canvas && map[canvas.id];
+        if (key && charts[key]) charts[key].resize();
+      });
+    });
+  }
   function initCharts() {
     fetch(JSON_URL, { credentials: 'omit' })
       .then(function(r) { return r.json(); })
@@ -1766,6 +1777,7 @@
         renderAdvancedDualYear(DATA);
         renderEco(DATA);
         renderImplied(DATA);
+        bindYearChartResize();
       })
       .catch(function(err) { console.error('Charts failed', err); });
   }
