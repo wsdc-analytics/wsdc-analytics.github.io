@@ -948,24 +948,25 @@
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-slate"></span>Сейчас (allowed)</span>
-              <span class="legend-item"><span class="legend-line series-indigo"></span>Диапазон к базовому темпу</span>
+              <span class="legend-item"><span class="legend-line series-indigo"></span>База при темпе 2025</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>База при темпе 2026 (+12%)</span>
             </div>
           </div>
-          <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и иллюстративный диапазон"></canvas></div>
+          <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и два сценария пересчёта"></canvas></div>
         </figure>
 
-        <p>Столбик «сейчас» — действующий allowed-порог (<strong>16</strong> и <strong>30</strong>). Второй столбик — не одна цифра, а <strong>диапазон</strong>: нижняя граница показывает, до скольки поинтов пришлось бы поднять порог, чтобы медианное время до allowed снова совпало с 2015–2019 при темпе <strong>2025</strong>; верхняя граница добавляет запас на продолжающееся ускорение (в том числе по сигналу <strong>2026</strong>). Это масштаб для разговора, а не предложение правила.</p>
+        <p>Три столбика на каждый переход — все «полные», от нуля: действующий allowed; пересчёт, если медианное время до порога должно остаться как в 2015–2019, но при <strong>темпе 2025</strong>; и пересчёт при <strong>темпе 2026</strong> плюс <strong>12%</strong> запаса на продолжающееся ускорение. Это два сценария «вернуть базу», а не готовое правило.</p>
 
         <details class="risk-disclosure">
           <summary>Таблица расчёта (для тех, кому нужны цифры)</summary>
           <div class="table-scroll">
             <table class="risk-table">
-              <thead><tr><th>Переход</th><th>Сейчас</th><th>Медиана база</th><th>Медиана 2025</th><th>Иллюстрация</th><th>Диапазон</th><th>Сигнал</th></tr></thead>
+              <thead><tr><th>Переход</th><th>Сейчас</th><th>Медиана база</th><th>Медиана 2025</th><th>2025</th><th>2026 (+12%)</th><th>Сигнал</th></tr></thead>
               <tbody id="impliedTableBody"></tbody>
             </table>
           </div>
         </details>
-        <p class="chart-caption">Таблица ниже дублирует расчёт: «Иллюстрация» — нижняя граница диапазона, «Диапазон» — полный интервал с верхней границей.</p>
+        <p class="chart-caption">Таблица дублирует те же три сценария, что на графике.</p>
       </section>
 
       <section class="section">
@@ -1638,12 +1639,6 @@
     return Math.round(current * medBaseline / medYear);
   }
 
-  function bufferedRange(technical, pct) {
-    if (technical == null) return '—';
-    var hi = Math.round(technical * (1 + (pct || 0.12)));
-    return technical + '–' + hi;
-  }
-
   function accelerationSignal(medBaseline, medYear) {
     if (medBaseline == null || medYear == null || medBaseline <= 0) return '—';
     var ratio = medYear / medBaseline;
@@ -1652,26 +1647,12 @@
     return 'Скорость близка к базе';
   }
 
-  function bufferedFromTrend(resetBase, medBase, med25, med26, current) {
-    if (resetBase == null) return '—';
-    var trendHi = null;
-    if (med26 != null && med25 != null && med26 > 0 && med26 < med25) {
-      trendHi = technicalReset(current, medBase, med26);
-    }
-    if (trendHi != null && trendHi > resetBase) {
-      return resetBase + '–' + trendHi;
-    }
-    return bufferedRange(resetBase, 0.12);
-  }
+  var IMPLIED_BUFFER_PCT = 0.12;
 
-  function impliedRangeBounds(resetBase, medBase, med25, med26, current) {
-    if (resetBase == null) return { lo: null, hi: null };
-    var hi = Math.round(resetBase * 1.12);
-    if (med26 != null && med25 != null && med26 > 0 && med26 < med25) {
-      var trendHi = technicalReset(current, medBase, med26);
-      if (trendHi != null && trendHi > resetBase) hi = trendHi;
-    }
-    return { lo: resetBase, hi: hi };
+  function scenario2026Buffered(current, medBase, med26) {
+    var raw = technicalReset(current, medBase, med26);
+    if (raw == null) return null;
+    return Math.round(raw * (1 + IMPLIED_BUFFER_PCT));
   }
 
   function buildImpliedRows(DATA) {
@@ -1683,18 +1664,16 @@
       var medBase = allowedMedian(DATA, spec.thresholdDiv, BASELINE_YEARS);
       var med25 = allowedMedian(DATA, spec.thresholdDiv, [2025]);
       var med26 = allowedMedian(DATA, spec.thresholdDiv, [2026]);
-      var reset = technicalReset(spec.current, medBase, med25);
-      var bounds = impliedRangeBounds(reset, medBase, med25, med26, spec.current);
+      var reset25 = technicalReset(spec.current, medBase, med25);
+      var reset26Buffered = scenario2026Buffered(spec.current, medBase, med26);
       return {
         label: spec.label,
         tableLabel: spec.thresholdDiv === 'Novice' ? 'Novice → Intermediate' : 'Intermediate → Advanced',
         current: spec.current,
         medBase: medBase,
         med25: med25,
-        reset: reset,
-        rangeLo: bounds.lo,
-        rangeHi: bounds.hi,
-        buffered: bufferedFromTrend(reset, medBase, med25, med26, spec.current),
+        reset25: reset25,
+        reset26Buffered: reset26Buffered,
         signal: accelerationSignal(medBase, med25)
       };
     });
@@ -1714,15 +1693,9 @@
       var rows = (tooltip.dataPoints || []).map(function(dp) {
         var label = dp.dataset.label || '';
         var c = dp.dataset.tooltipColor || dp.dataset.borderColor || '#334155';
-        var raw = dp.raw;
-        var display;
-        if (Array.isArray(raw)) {
-          display = raw[0] + '–' + raw[1] + ' п.';
-        } else {
-          display = String(raw) + ' п.';
-        }
+        var v = dp.parsed.y;
         return '<div class="tt-row" style="color:' + c + '"><span class="tt-label">' + label +
-          '</span><span class="tt-value">' + display + '</span></div>';
+          '</span><span class="tt-value">' + (v == null ? '—' : v + ' п.') + '</span></div>';
       }).join('');
       var title = (tooltip.title && tooltip.title.length) ? tooltip.title[0] : '';
       tooltipEl.innerHTML = '<div class="tt-title">' + title + '</div>' + rows;
@@ -1753,7 +1726,7 @@
     var rows = buildImpliedRows(DATA);
     var maxY = 0;
     rows.forEach(function(r) {
-      maxY = Math.max(maxY, r.current || 0, r.rangeHi || 0);
+      maxY = Math.max(maxY, r.current || 0, r.reset25 || 0, r.reset26Buffered || 0);
     });
     var yMax = Math.ceil((maxY + 5) / 10) * 10;
     destroy('implied');
@@ -1768,25 +1741,31 @@
             backgroundColor: 'rgba(148, 163, 184, 0.75)',
             tooltipColor: '#64748b',
             borderRadius: 6,
-            maxBarThickness: 52
+            maxBarThickness: 44
           },
           {
-            label: 'Диапазон к базовому темпу',
-            data: rows.map(function(r) {
-              return r.rangeLo != null && r.rangeHi != null ? [r.rangeLo, r.rangeHi] : null;
-            }),
-            backgroundColor: 'rgba(99, 102, 241, 0.55)',
+            label: 'База при темпе 2025',
+            data: rows.map(function(r) { return r.reset25; }),
+            backgroundColor: BAR_BASE,
             tooltipColor: '#6366f1',
             borderRadius: 6,
-            maxBarThickness: 52
+            maxBarThickness: 44
+          },
+          {
+            label: 'База при темпе 2026 (+12%)',
+            data: rows.map(function(r) { return r.reset26Buffered; }),
+            backgroundColor: BAR_2025,
+            tooltipColor: '#0d9488',
+            borderRadius: 6,
+            maxBarThickness: 44
           }
         ]
       },
       options: Object.assign(baseOpts('Поинты', 'count'), {
         datasets: {
           bar: {
-            categoryPercentage: 0.52,
-            barPercentage: 0.88
+            categoryPercentage: 0.58,
+            barPercentage: 0.92
           }
         },
         plugins: {
@@ -1817,8 +1796,9 @@
     if (tbody) {
       tbody.innerHTML = rows.map(function(r) {
         return '<tr><td>' + r.tableLabel + '</td><td>' + r.current + '</td><td>' + fmtMonths(r.medBase) +
-          '</td><td>' + fmtMonths(r.med25) + '</td><td>~' + (r.reset != null ? r.reset : '—') +
-          '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
+          '</td><td>' + fmtMonths(r.med25) + '</td><td>~' + (r.reset25 != null ? r.reset25 : '—') +
+          '</td><td>~' + (r.reset26Buffered != null ? r.reset26Buffered : '—') +
+          '</td><td>' + r.signal + '</td></tr>';
       }).join('');
     }
   }
