@@ -882,12 +882,15 @@
 
         <p>Чтобы проверить, не обманывает ли нас один срез, смотрим ещё две вещи: стало ли в целом <strong>больше людей</strong>, совершающих переходы между дивизионами, и выросла ли <strong>доля тех</strong>, кто получает первые поинты в следующем дивизионе в течение ближайших 12 месяцев.</p>
 
+        <p>На графике «Число переходов по годам» каждый <strong>переход</strong> — это танцор, у которого в реестре есть <strong>первые поинты</strong> в дивизионе A и позже — <strong>первые поинты</strong> в более высоком дивизионе B (дата в B строго после даты в A). В соответствующий <strong>год</strong> на оси он попадает по году получения первых поинтов в B. На каждую пару дивизионов танцор учитывается <strong>один раз</strong>, по доминирующей роли в реестре (Leader или Follower); линии на графике — сумма по всем ролям.</p>
+
         <details class="risk-disclosure chart-year-breakdown">
           <summary>Число переходов по годам</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice→Intermediate</span>
               <span class="legend-item"><span class="legend-line series-teal"></span>Intermediate→Advanced</span>
+              <span class="legend-item"><span class="legend-line series-amber"></span>Advanced→All-Stars</span>
             </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartVolume" aria-label="Число переходов по годам"></canvas></div>
@@ -1012,7 +1015,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260523a';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260524a';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
 
@@ -1021,6 +1024,12 @@
   var BAR_2026 = 'rgba(245, 158, 11, 0.75)';
   var LINE_M1 = '#6366f1';
   var LINE_M2 = '#0d9488';
+  var LINE_AMBER = '#f59e0b';
+  var VOLUME_TRANSITION_LINES = [
+    { from: 'Novice', to: 'Intermediate', label: 'Novice→Intermediate', color: LINE_M1 },
+    { from: 'Intermediate', to: 'Advanced', label: 'Intermediate→Advanced', color: LINE_M2 },
+    { from: 'Advanced', to: 'All-Stars', label: 'Advanced→All-Stars', color: LINE_AMBER }
+  ];
 
   function getOrCreateTooltip(chart) {
     var tooltipEl = chart.canvas.parentNode.querySelector('.chartjs-ext-tooltip');
@@ -1431,56 +1440,37 @@
 
   function renderVolume(DATA) {
     var years = [];
-    for (var y = 2015; y <= 2025; y++) years.push(String(y));
+    for (var y = 2015; y <= 2026; y++) years.push(String(y));
     function countsByYear(from, to) {
       var rows = DATA.transitions_count_by_year.filter(function(r) {
         return r.from_division === from && r.to_division === to && r.role === MAIN_ROLE;
       });
       return Object.fromEntries(rows.map(function(r) { return [r.transition_year, r.n]; }));
     }
-    var novC = countsByYear('Novice', 'Intermediate');
-    var intC = countsByYear('Intermediate', 'Advanced');
+    var datasets = VOLUME_TRANSITION_LINES.map(function(p) {
+      var c = countsByYear(p.from, p.to);
+      return {
+        label: p.label,
+        data: years.map(function(y) { return c[parseInt(y, 10)] || 0; }),
+        borderColor: p.color,
+        borderWidth: 1.8,
+        tension: 0.35,
+        cubicInterpolationMode: 'monotone',
+        pointRadius: 0,
+        pointHoverRadius: 3
+      };
+    });
     destroy('volume');
+    var opts = baseOpts('Переходов в год', 'count');
+    opts.scales.x.ticks.autoSkip = false;
+    opts.scales.x.ticks.font = { size: 9, weight: 500 };
+    opts.scales.x.ticks.callback = function(value) {
+      return yearTickLabel(this.getLabelForValue(value));
+    };
     charts.volume = new Chart(document.getElementById('chartVolume'), {
-      type: 'bar',
-      data: {
-        labels: years,
-        datasets: [
-          {
-            label: 'Novice→Intermediate',
-            data: years.map(function(y) { return novC[parseInt(y, 10)] || 0; }),
-            backgroundColor: BAR_BASE,
-            borderRadius: 4,
-            maxBarThickness: 28
-          },
-          {
-            label: 'Intermediate→Advanced',
-            data: years.map(function(y) { return intC[parseInt(y, 10)] || 0; }),
-            backgroundColor: BAR_2025,
-            borderRadius: 4,
-            maxBarThickness: 28
-          }
-        ]
-      },
-      options: Object.assign(baseOpts('Переходов в год', 'count'), {
-        scales: {
-          x: {
-            ticks: {
-              color: 'rgba(55, 65, 81, 0.55)',
-              font: { size: 9, weight: 500 },
-              maxRotation: 0,
-              autoSkip: false,
-              callback: function(value, index) {
-                var label = this.getLabelForValue(value);
-                return (label === '2015' || label === '2020' || label === '2025') ? label : '';
-              }
-            },
-            grid: { display: false },
-            border: { display: true, color: 'rgba(15, 23, 42, 0.14)' }
-          },
-          y: chartScales('Переходов в год', 'count').y
-        }
-      })
+      type: 'line',
+      data: { labels: years, datasets: datasets },
+      options: opts
     });
   }
 
