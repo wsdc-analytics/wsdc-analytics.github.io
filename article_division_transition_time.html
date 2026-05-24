@@ -944,15 +944,17 @@
         <div class="warning">Упражнение на масштаб, а не проект правила. Не учитывает географию, мотивацию и качество танца — только календарную скорость в реестре.</div>
 
         <figure class="figure-chart">
-          <h3>8. Иллюстрация: «вернуть» базовый темп (Nov / Int)</h3>
+          <h3>Иллюстрация: «вернуть» базовый темп (Nov / Int)</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-slate"></span>Сейчас (allowed)</span>
-              <span class="legend-item"><span class="legend-line series-indigo"></span>Reset к базе (2025)</span>
+              <span class="legend-item"><span class="legend-line series-indigo"></span>Диапазон к базовому темпу</span>
             </div>
           </div>
-          <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие и implied пороги allowed"></canvas></div>
+          <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и иллюстративный диапазон"></canvas></div>
         </figure>
+
+        <p>Столбик «сейчас» — действующий allowed-порог (<strong>16</strong> и <strong>30</strong>). Второй столбик — не одна цифра, а <strong>диапазон</strong>: нижняя граница показывает, до скольки поинтов пришлось бы поднять порог, чтобы медианное время до allowed снова совпало с 2015–2019 при темпе <strong>2025</strong>; верхняя граница добавляет запас на продолжающееся ускорение (в том числе по сигналу <strong>2026</strong>). Это масштаб для разговора, а не предложение правила.</p>
 
         <details class="risk-disclosure">
           <summary>Таблица расчёта (для тех, кому нужны цифры)</summary>
@@ -963,7 +965,7 @@
             </table>
           </div>
         </details>
-        <p class="chart-caption">Цифры на графике относятся только к Novice и Intermediate — там пороги не менялись, а время до allowed сократилось. Это повод для разговора, а не готовая цифра для правил.</p>
+        <p class="chart-caption">Таблица ниже дублирует расчёт: «Иллюстрация» — нижняя граница диапазона, «Диапазон» — полный интервал с верхней границей.</p>
       </section>
 
       <section class="section">
@@ -978,7 +980,7 @@
           <li>Только основной путь по Skill Level; лидеры и фолловеры суммированы (All), один танцор — одна dominate role.</li>
           <li>2020–2022 — аномалия календаря, не «норма» для сравнения.</li>
           <li>2026 — ранний сигнал; год и часть переходов ещё неполные в данных.</li>
-          <li>График 8 и таблица — иллюстрация для Novice (16) и Intermediate (30), не расчёт WSDC.</li>
+          <li>Иллюстрация и таблица — расчёт для Novice (16) и Intermediate (30), не расчёт WSDC.</li>
           <li>Качество танца, тренировки и судейское восприятие здесь не измеряются.</li>
         </ul>
       </section>
@@ -1662,51 +1664,159 @@
     return bufferedRange(resetBase, 0.12);
   }
 
+  function impliedRangeBounds(resetBase, medBase, med25, med26, current) {
+    if (resetBase == null) return { lo: null, hi: null };
+    var hi = Math.round(resetBase * 1.12);
+    if (med26 != null && med25 != null && med26 > 0 && med26 < med25) {
+      var trendHi = technicalReset(current, medBase, med26);
+      if (trendHi != null && trendHi > resetBase) hi = trendHi;
+    }
+    return { lo: resetBase, hi: hi };
+  }
+
   function buildImpliedRows(DATA) {
     var specs = [
-      { label: 'Novice → Intermediate', thresholdDiv: 'Novice', current: 16 },
-      { label: 'Intermediate → Advanced', thresholdDiv: 'Intermediate', current: 30 }
+      { label: 'Nov → Int', thresholdDiv: 'Novice', current: 16 },
+      { label: 'Int → Adv', thresholdDiv: 'Intermediate', current: 30 }
     ];
     return specs.map(function(spec) {
       var medBase = allowedMedian(DATA, spec.thresholdDiv, BASELINE_YEARS);
       var med25 = allowedMedian(DATA, spec.thresholdDiv, [2025]);
       var med26 = allowedMedian(DATA, spec.thresholdDiv, [2026]);
       var reset = technicalReset(spec.current, medBase, med25);
+      var bounds = impliedRangeBounds(reset, medBase, med25, med26, spec.current);
       return {
         label: spec.label,
+        tableLabel: spec.thresholdDiv === 'Novice' ? 'Novice → Intermediate' : 'Intermediate → Advanced',
         current: spec.current,
         medBase: medBase,
         med25: med25,
         reset: reset,
+        rangeLo: bounds.lo,
+        rangeHi: bounds.hi,
         buffered: bufferedFromTrend(reset, medBase, med25, med26, spec.current),
         signal: accelerationSignal(medBase, med25)
       };
     });
   }
 
+  function impliedTooltipHandler() {
+    return function(context) {
+      var chart = context.chart;
+      var tooltip = context.tooltip;
+      var tooltipEl = getOrCreateTooltip(chart);
+      if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = 0;
+        tooltipEl.style.transform = '';
+        return;
+      }
+      tooltipEl.style.minWidth = '220px';
+      var rows = (tooltip.dataPoints || []).map(function(dp) {
+        var label = dp.dataset.label || '';
+        var c = dp.dataset.tooltipColor || dp.dataset.borderColor || '#334155';
+        var raw = dp.raw;
+        var display;
+        if (Array.isArray(raw)) {
+          display = raw[0] + '–' + raw[1] + ' п.';
+        } else {
+          display = String(raw) + ' п.';
+        }
+        return '<div class="tt-row" style="color:' + c + '"><span class="tt-label">' + label +
+          '</span><span class="tt-value">' + display + '</span></div>';
+      }).join('');
+      var title = (tooltip.title && tooltip.title.length) ? tooltip.title[0] : '';
+      tooltipEl.innerHTML = '<div class="tt-title">' + title + '</div>' + rows;
+      var canvas = chart.canvas;
+      var parent = canvas.parentNode;
+      var pad = 10;
+      var cx = canvas.offsetLeft + tooltip.caretX;
+      var cy = canvas.offsetTop + tooltip.caretY;
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.left = cx + 'px';
+      tooltipEl.style.top = cy + 'px';
+      requestAnimationFrame(function() {
+        var tw = tooltipEl.offsetWidth;
+        var pw = parent.clientWidth;
+        if (!tw || !pw) {
+          tooltipEl.style.transform = 'translate(-50%, calc(-100% - 8px))';
+          return;
+        }
+        var dx = -tw / 2;
+        if (cx + dx < pad) dx = pad - cx;
+        if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
+        tooltipEl.style.transform = 'translate(' + dx + 'px, calc(-100% - 8px))';
+      });
+    };
+  }
+
   function renderImplied(DATA) {
     var rows = buildImpliedRows(DATA);
+    var maxY = 0;
+    rows.forEach(function(r) {
+      maxY = Math.max(maxY, r.current || 0, r.rangeHi || 0);
+    });
+    var yMax = Math.ceil((maxY + 5) / 10) * 10;
     destroy('implied');
     charts.implied = new Chart(document.getElementById('chartImplied'), {
       type: 'bar',
       data: {
         labels: rows.map(function(r) { return r.label; }),
         datasets: [
-          { label: 'Сейчас (allowed)', data: rows.map(function(r) { return r.current; }), backgroundColor: 'rgba(148, 163, 184, 0.7)', borderRadius: 6, maxBarThickness: 56 },
-          { label: 'Reset к базе (2025)', data: rows.map(function(r) { return r.reset; }), backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 56 }
+          {
+            label: 'Сейчас (allowed)',
+            data: rows.map(function(r) { return r.current; }),
+            backgroundColor: 'rgba(148, 163, 184, 0.75)',
+            tooltipColor: '#64748b',
+            borderRadius: 6,
+            maxBarThickness: 52
+          },
+          {
+            label: 'Диапазон к базовому темпу',
+            data: rows.map(function(r) {
+              return r.rangeLo != null && r.rangeHi != null ? [r.rangeLo, r.rangeHi] : null;
+            }),
+            backgroundColor: 'rgba(99, 102, 241, 0.55)',
+            tooltipColor: '#6366f1',
+            borderRadius: 6,
+            maxBarThickness: 52
+          }
         ]
       },
       options: Object.assign(baseOpts('Поинты', 'count'), {
+        datasets: {
+          bar: {
+            categoryPercentage: 0.52,
+            barPercentage: 0.88
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+            external: impliedTooltipHandler()
+          }
+        },
         scales: {
-          x: { ticks: { font: { size: 10 } } },
-          y: { title: { display: true, text: 'Поинты' }, ticks: { font: { size: 10 } }, suggestedMax: 42 }
+          x: {
+            ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10, weight: 600 }, maxRotation: 0 },
+            grid: { display: false },
+            border: { display: true, color: 'rgba(15, 23, 42, 0.14)' }
+          },
+          y: {
+            title: { display: true, text: 'Поинты', color: 'rgba(55, 65, 81, 0.75)', font: { size: 11, weight: 600 } },
+            ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10, weight: 500 }, stepSize: 10 },
+            grid: { color: 'rgba(15, 23, 42, 0.06)', drawBorder: false },
+            border: { display: true, color: 'rgba(15, 23, 42, 0.12)' },
+            beginAtZero: true,
+            suggestedMax: yMax
+          }
         }
       })
     });
     var tbody = document.getElementById('impliedTableBody');
     if (tbody) {
       tbody.innerHTML = rows.map(function(r) {
-        return '<tr><td>' + r.label + '</td><td>' + r.current + '</td><td>' + fmtMonths(r.medBase) +
+        return '<tr><td>' + r.tableLabel + '</td><td>' + r.current + '</td><td>' + fmtMonths(r.medBase) +
           '</td><td>' + fmtMonths(r.med25) + '</td><td>~' + (r.reset != null ? r.reset : '—') +
           '</td><td>' + r.buffered + '</td><td>' + r.signal + '</td></tr>';
       }).join('');
