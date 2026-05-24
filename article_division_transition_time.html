@@ -31,7 +31,7 @@
     "url": "https://wsdc-analytics.github.io/article_division_transition_time.html",
     "image": "https://wsdc-analytics.github.io/events_background.png",
     "datePublished": "2026-05-15",
-    "dateModified": "2026-05-23",
+    "dateModified": "2026-05-19",
     "author": { "@type": "Organization", "name": "WSDC Analytics" },
     "publisher": {
       "@type": "Organization",
@@ -333,24 +333,6 @@
       text-decoration: underline;
       text-underline-offset: 2px;
     }
-    .dual-metrics-block { margin: 28px 0; }
-    .dual-metrics-block h3 { font-size: 18px; margin: 0 0 12px; }
-    .dual-metrics-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    .dual-metrics-table th,
-    .dual-metrics-table td {
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--border-color);
-      text-align: right;
-    }
-    .dual-metrics-table th:first-child,
-    .dual-metrics-table td:first-child { text-align: left; }
-    .dual-metrics-table th { background: var(--bg-tertiary); font-weight: 600; }
-    .dual-metrics-table tr.period-row td { font-weight: 600; background: #f8fafc; }
-    .dual-metrics-table .muted { color: #64748b; }
     .risk-table th,
     .risk-table td {
       padding: 10px 12px;
@@ -724,21 +706,18 @@
       font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
       font-variant-numeric: tabular-nums;
     }
-    .chart-caption {
-      margin: 10px 0 0;
-      font-size: 13px;
-      color: var(--text-tertiary);
-      line-height: 1.45;
-    }
-    .method-conclusion {
-      margin: 28px 0 8px;
-      padding: 18px 20px;
+    .article-conclusion {
+      margin: 0;
+      padding: 22px 24px;
       background: var(--bg-tertiary);
       border-radius: 12px;
       border-left: 4px solid var(--accent);
-      font-size: 16px;
-      color: var(--text-secondary);
-      line-height: 1.55;
+    }
+    .article-conclusion p:last-child { margin-bottom: 0; }
+    .article-footer .data-as-of {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-tertiary);
     }
     .risk-disclosure.chart-year-breakdown {
       background: #fff;
@@ -834,7 +813,7 @@
           </div>
         </div>
 
-        <p>Пандемия 2020–2021 годов резко сократила календарь и число переходов. Восстановление после 2023 года наложилось на утверждённые пороги, а рост комьюнити в 2025 году поставил вопрос об их актуальности — что косвенно отразилось в дискуссии о возвращении 36-месячного окна в старшие номинации.</p>
+        <p>Пандемия 2020–2021 годов резко сократила календарь и число переходов. Восстановление после 2023 года наложилось на утверждённые пороги, а рост сообщества в 2025 году поставил вопрос об их актуальности — что косвенно отразилось в дискуссии о возвращении 36-месячного окна в старшие номинации.</p>
       </section>
 
       <section class="section">
@@ -842,12 +821,13 @@
         <p><strong>М1</strong> — медианное время*, которое в выбранном периоде танцорам понадобилось от набора первого поинта в дивизионе до получения права выступать в следующем дивизионе.</p>
         <p><em>*Медиана — «серединное» время: у половины танцоров переход занял меньше этого срока, у половины — больше.</em></p>
         <p><strong>М2</strong> — медианное время, которое в выбранном периоде танцорам понадобилось от набора первого поинта в дивизионе до набора первого поинта в следующем дивизионе.</p>
-        <p><strong>Периоды</strong> — в качестве сравниваемых периодов взяты стабильный и по количеству ивентов, и по правилам переходов период до пандемии с 2015 по 2019 год, рекордный 2025 год, когда комьюнити полностью восстановилось, и для контроля данные 2026 года, чтобы понимать текущий тренд. Дополнительно приведены непрерывная динамика метрик по годам с 2015 по 2026 год.</p>
+        <p><strong>Периоды</strong> — в качестве сравниваемых периодов взяты стабильный и по количеству ивентов, и по правилам переходов период до пандемии с 2015 по 2019 год, рекордный 2025 год, когда сообщество полностью восстановилось, и для контроля данные 2026 года, чтобы понимать текущий тренд. Дополнительно приведена непрерывная динамика метрик по годам с 2015 по 2026 год.</p>
         <p><strong>Номинации</strong> — исследовались наиболее стабильные номинации Novice, Intermediate и Advanced и переходы из них в более старший дивизион. All-Stars и Champions не исследовались, поскольку по этим номинациям данных недостаточно.</p>
       </section>
 
       <section class="section">
         <h2>Что показывают данные</h2>
+        <p>На Novice и Intermediate при неизменных порогах <strong>16/30</strong> типичный календарный путь по лестнице заметно короче, чем в 2015–2019. На Advanced → All-Stars сюжет другой — его разберём отдельно.</p>
         <p>Логика исследования простая: если пороги задумывались исходя из представления, каким должен быть средний показатель соревновательной состоятельности перед переходом в следующий дивизион, то увеличение количества ивентов и тиров приведёт к тому, что люди будут иметь меньше времени для подготовки к тому, чтобы соревноваться в более старшем дивизионе, что в итоге может сказаться на снижении качества среднего уровня танцевания.</p>
 
         <figure class="figure-chart">
@@ -863,7 +843,7 @@
         </figure>
 
         <details class="risk-disclosure chart-year-breakdown">
-          <summary>Динамика изменения М1 по годам</summary>
+          <summary>М1 по годам, 2015–2026 — развернуть</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice</span>
@@ -889,7 +869,7 @@
         </figure>
 
         <details class="risk-disclosure chart-year-breakdown">
-          <summary>Динамика изменения М2 по годам</summary>
+          <summary>М2 по годам, 2015–2026 — развернуть</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice</span>
@@ -902,12 +882,10 @@
 
         <p>Если смотреть на фактическое появление в старшем дивизионе — метрику М2 — картина согласуется с М1, но мягче. В период с 2015 по 2019 год от первого поинта в Novice до первого поинта в Intermediate проходило примерно <strong>17 месяцев</strong>, из Intermediate в Advanced — <strong>21 месяц</strong>, из Advanced в All-Stars — около <strong>25 месяцев</strong>. В 2025 году эти показатели составили <strong>15</strong>, <strong>17</strong> и <strong>27 месяцев</strong> соответственно. Тренд 2026 года пока близок к <strong>15 месяцам</strong> на Novice, <strong>17–18</strong> на Intermediate и <strong>28</strong> на Advanced.</p>
 
-        <p class="method-conclusion">Мы не доказываем, что танцоры стали объективно «готовее» быстрее. Мы показываем, что <strong>при тех же порогах</strong> типичное <strong>календарное</strong> время до права перехода (М1) и до первых поинтов в старшем дивизионе (М2) на Novice и Intermediate <strong>короче, чем в базовом периоде 2015–2019</strong>, в условиях более плотного календаря. Это повод обсудить, совпадает ли темп лестницы с тем, как community понимает рост мастерства — а не готовый ответ «поднять пороги».</p>
-
-        <p>Исходя из этого, имеет смысл дополнительно проверить два смежных вопроса: стало ли в целом <strong>больше людей</strong>, совершающих переходы между дивизионами, и выросла ли <strong>доля тех</strong>, кто получает первые поинты в следующем дивизионе в течение ближайших 12 месяцев.</p>
+        <p>Исходя из этого, имеет смысл дополнительно проверить два смежных вопроса: стало ли в целом <strong>больше людей</strong>, совершающих переходы между дивизионами, и выросла ли <strong>доля тех</strong>, кто получает первые поинты в следующем дивизионе в течение ближайших 12 месяцев. Ниже — две детализации; их можно развернуть при необходимости.</p>
 
         <details class="risk-disclosure chart-year-breakdown">
-          <summary>Число переходов по годам</summary>
+          <summary>Число переходов по годам — развернуть</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>Novice→Intermediate</span>
@@ -918,7 +896,7 @@
         </details>
 
         <details class="risk-disclosure chart-year-breakdown">
-          <summary>Доля быстрых переходов за 12 месяцев</summary>
+          <summary>Доля быстрых переходов за 12 месяцев — развернуть</summary>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
               <span class="legend-item"><span class="legend-line series-indigo"></span>2015–19 (база)</span>
@@ -933,14 +911,14 @@
 
       <section class="section">
         <h2>Верхняя лестница — другой сюжет</h2>
-        <p>На Novice и Intermediate пороги <strong>16/30</strong> не менялись с 2018 года, и именно там видно ускорение. На старшей ступени картина иная: метрика М2 для перехода Advanced → All-Stars <strong>не показывает такого же сжатия сроков</strong> — медианное время до первых поинтов в All-Stars остаётся сопоставимым с доковидным периодом или даже чуть выше.</p>
+        <p>Если на нижних ступенях пороги не менялись, на верхней WSDC как раз их подняла — и там картина иная. На Novice и Intermediate пороги <strong>16/30</strong> не менялись с 2018 года, и именно там видно ускорение. На старшей ступени метрика М2 для перехода Advanced → All-Stars <strong>не показывает такого же сжатия сроков</strong> — медианное время до первых поинтов в All-Stars остаётся сопоставимым с доковидным периодом или даже чуть выше.</p>
         <p>При этом правила менялись. В 2015–2019 allowed-порог для перехода в All-Stars был <strong>45</strong> Advanced-поинтов; с 2023 года — <strong>60</strong> (required <strong>90</strong>). WSDC подняла планку именно потому, что поток в эту номинацию стал слишком быстрым. Сейчас, в 2025–2026 годах, типичное время до первых поинтов в All-Stars (<strong>27–28 месяцев</strong>) уже <strong>почти догнало</strong> темп, при котором раньше переходили при пороге <strong>45</strong> поинтов (около <strong>25 месяцев</strong> в 2015–2019). Повышение порога пока сдерживает массовый переток, но приближение к «доковидной» скорости заметно — и это отдельный повод следить за динамикой на верхней ступени.</p>
       </section>
 
       <section class="section">
         <h2>Вопрос к порогам — без готового ответа</h2>
         <p>Если пороги — лишь формальная отметка («набрал X — можешь идти»), рост переходов может быть естественным следствием большего календаря. Если же пороги — способ сглаживать поток между дивизионами, то неизменные <strong>16/30</strong> при ускорении на нижней лестнице заслуживают обсуждения: совпадает ли темп лестницы с тем, какой соревновательный опыт WSDC хочет видеть внутри каждого уровня.</p>
-        <p>Ниже — не рекомендация «поднять до N», а арифметическая иллюстрация: <em>какими были бы allowed-пороги, если бы медианное время до порога осталось как в 2015–2019</em> (по той же метрике, что на графике 1).</p>
+        <p>Ниже — не рекомендация «поднять до N», а арифметическая иллюстрация: <em>какими были бы allowed-пороги, если бы медианное время до порога осталось как в 2015–2019</em> (по той же метрике М1, что на основных графиках выше).</p>
         <div class="warning">Упражнение на масштаб, а не проект правила. Не учитывает географию, мотивацию и качество танца — только календарную скорость в реестре.</div>
 
         <figure class="figure-chart">
@@ -955,10 +933,10 @@
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и два сценария пересчёта"></canvas></div>
         </figure>
 
-        <p>Три столбика на каждый переход — все «полные», от нуля: действующий allowed; пересчёт, если медианное время до порога должно остаться как в 2015–2019, но при <strong>темпе 2025</strong>; и пересчёт при <strong>темпе 2026</strong> плюс <strong>12%</strong> запаса на продолжающееся ускорение. Это два сценария «вернуть базу», а не готовое правило.</p>
+        <p>Три столбика на каждый переход — действующий allowed и два сценария «вернуть базовый темп» при скорости 2025 и 2026 (+12% запас). Это масштаб для разговора, а не готовое правило.</p>
 
-        <details class="risk-disclosure">
-          <summary>Таблица расчёта (для тех, кому нужны цифры)</summary>
+        <details class="risk-disclosure chart-year-breakdown">
+          <summary>Таблица расчёта — развернуть</summary>
           <div class="table-scroll">
             <table class="risk-table">
               <thead><tr><th>Переход</th><th>Сейчас</th><th>Медиана база</th><th>Медиана 2025</th><th>2025</th><th>2026 (+12%)</th><th>Сигнал</th></tr></thead>
@@ -966,30 +944,20 @@
             </table>
           </div>
         </details>
-        <p class="chart-caption">Таблица дублирует те же три сценария, что на графике.</p>
       </section>
 
       <section class="section">
         <h2>Почему «просто поднять пороги» — не нейтрально</h2>
         <p>Доступ к registry-ивентам распределён неравномерно. В регионе с плотным календарём более высокий порог может означать «чуть дольше соревноваться». В регионе с несколькими ивентами в год — почти стену. Любое ужесточение сильнее ударит по тем, у кого меньше возможностей набрать поинты.</p>
-        <p>Статья не призывает к конкретному решению. Она показывает, что <strong>скорость продвижения по лестнице и рост соревновательного мастерства — не одно и то же</strong>: реестр фиксирует поинты и переходы, а не часы в зале. Если community считает, что лестница должна отражать именно соревновательный опыт, а не только доступность ивентов, этот разрыв стоит обсуждать открыто — в том числе с WSDC.</p>
-      </section>
-
-      <section class="section">
-        <h2>Ограничения</h2>
-        <ul>
-          <li>Только основной путь по Skill Level; лидеры и фолловеры суммированы (All), один танцор — одна dominate role.</li>
-          <li>2020–2022 — аномалия календаря, не «норма» для сравнения.</li>
-          <li>2026 — ранний сигнал; год и часть переходов ещё неполные в данных.</li>
-          <li>Иллюстрация и таблица — расчёт для Novice (16) и Intermediate (30), не расчёт WSDC.</li>
-          <li>Качество танца, тренировки и судейское восприятие здесь не измеряются.</li>
-        </ul>
+        <p>Статья не призывает к конкретному решению. Она показывает, что <strong>скорость продвижения по лестнице и рост соревновательного мастерства — не одно и то же</strong>: реестр фиксирует поинты и переходы, а не часы в зале. Если сообщество считает, что лестница должна отражать именно соревновательный опыт, а не только доступность ивентов, этот разрыв стоит обсуждать открыто — в том числе с WSDC.</p>
       </section>
 
       <section class="section">
         <h2>Вывод</h2>
-        <p>Нижняя часть Skill Level-лестницы после восстановления календаря проходится <strong>быстрее и для большей доли когорты</strong>, чем в 2015–2019, при неизменных <strong>16/30</strong>. Это не доказательство, что танцоры «не готовы» или что пороги «сломаны» — и не призыв их срочно поднять.</p>
-        <p>Это приглашение к вопросу: <strong>какую скорость движения по дивизионам WSDC и community считают здоровой</strong> — и насколько эта скорость должна совпадать с тем, как люди на самом деле растут как танцоры. Ответа в реестре нет; его может дать только общий разговор.</p>
+        <div class="article-conclusion">
+          <p>Календарь WSDC после восстановления стал заметно плотнее, а пороги Novice и Intermediate (<strong>16/30</strong>) не менялись с 2018 года. По данным реестра, при тех же порогах нижняя лестница проходится <strong>быстрее и для большей доли когорты</strong>, чем в 2015–2019: сжались и М1, и М2, выросла доля быстрых переходов за год. На Advanced → All-Stars после поднятия порогов до <strong>60/90</strong> массового ускорения нет, но темп снова приближается к доковидному.</p>
+          <p>Это не доказательство, что танцоры «не готовы», и не призыв срочно поднять пороги. Реестр считает поинты, а не опыт в зале; любое ужесточение бьёт неравномерно по регионам. Вопрос, который остаётся открытым: <strong>какую скорость движения по Skill Level сообщество и WSDC считают здоровой</strong> — и насколько она должна совпадать с тем, как люди на самом деле растут как танцоры.</p>
+        </div>
       </section>
 
 <section class="article-reactions" aria-label="Оценка статьи">
@@ -1038,6 +1006,7 @@
     <footer class="article-footer">
       <div class="data-note">
         <p><strong>Источник данных:</strong> Анализ базы данных <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a></p>
+        <p id="dataAsOfNote" class="data-as-of" aria-live="polite"></p>
       </div>
     </footer>
   </div>
@@ -1539,101 +1508,6 @@
       options: baseOpts('Доля за 12 мес.', 'pct')
     });
   }
-  function renderAdvancedDual(DATA) {
-    var eras = DATA.advanced_path_era || [];
-    destroy('advanced');
-    charts.advanced = new Chart(document.getElementById('chartAdvancedDual'), {
-      type: 'bar',
-      data: {
-        labels: eras.map(function(e) { return e.era; }),
-        datasets: [
-          { label: 'До allowed (M1)', data: eras.map(function(e) { return e.months_to_allowed.median_months; }), backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
-          { label: 'До All-Stars (M2)', data: eras.map(function(e) { return e.months_first_adv_to_first_as.median_months; }), backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
-        ]
-      },
-      options: baseOpts('Медиана, мес.', 'months')
-    });
-  }
-  function renderAdvancedDualYear(DATA) {
-    var rows = (DATA.advanced_path_by_year || []).filter(function(r) { return !r.suppress; });
-    var years = rows.map(function(r) { return r.year; });
-    destroy('advancedYear');
-    charts.advancedYear = new Chart(document.getElementById('chartAdvancedDualYear'), {
-      type: 'line',
-      data: {
-        labels: years,
-        datasets: [
-          { label: 'M1 max', data: rows.map(function(r) { return r.months_to_allowed.max_months; }), borderColor: 'rgba(99,102,241,0.3)', borderDash: [4, 4], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 },
-          { label: 'M1 med', data: rows.map(function(r) { return r.months_to_allowed.median_months; }), borderColor: LINE_M1, borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0, pointHoverRadius: 3 },
-          { label: 'M1 min', data: rows.map(function(r) { return r.months_to_allowed.min_months; }), borderColor: 'rgba(99,102,241,0.55)', borderDash: [2, 2], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 },
-          { label: 'M2 max', data: rows.map(function(r) { return r.months_first_adv_to_first_as.max_months; }), borderColor: 'rgba(13,148,136,0.3)', borderDash: [4, 4], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 },
-          { label: 'M2 med', data: rows.map(function(r) { return r.months_first_adv_to_first_as.median_months; }), borderColor: LINE_M2, borderWidth: 1.8, tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0, pointHoverRadius: 3 },
-          { label: 'M2 min', data: rows.map(function(r) { return r.months_first_adv_to_first_as.min_months; }), borderColor: 'rgba(13,148,136,0.55)', borderDash: [2, 2], tension: 0.35, cubicInterpolationMode: 'monotone', spanGaps: true, pointRadius: 0 }
-        ]
-      },
-      options: baseOpts('Месяцы', 'months')
-    });
-  }
-  function renderDualMetricsTables(DUAL) {
-    var root = document.getElementById('dualMetricsTablesRoot');
-    if (!root || !DUAL || !DUAL.rows) return;
-    var minN = DUAL.min_n_display || 30;
-    function cell(stats) {
-      if (!stats || stats.n < 10 || stats.median == null) return '—';
-      var star = stats.n < minN ? '*' : '';
-      return stats.min.toFixed(0) + ' / ' + stats.median.toFixed(1) + ' / ' + stats.max.toFixed(0) + star;
-    }
-    var order = [
-      ['Novice', 'Intermediate'],
-      ['Intermediate', 'Advanced'],
-      ['Advanced', 'All-Stars'],
-      ['All-Stars', 'Champions']
-    ];
-    var html = '';
-    order.forEach(function(pair) {
-      var from = pair[0], to = pair[1];
-      var rows = DUAL.rows.filter(function(r) {
-        return r.from_division === from && r.to_division === to;
-      });
-      var yearRows = rows.filter(function(r) { return r.period_type === 'year'; }).sort(function(a, b) {
-        return parseInt(a.period, 10) - parseInt(b.period, 10);
-      });
-      var eraRows = rows.filter(function(r) { return r.period_type === 'era'; }).sort(function(a, b) {
-        return a.period.localeCompare(b.period);
-      });
-      html += '<div class="dual-metrics-block"><h3>' + from + ' → ' + to + '</h3><div class="table-scroll"><table class="dual-metrics-table">';
-      html += '<thead><tr><th>Год</th><th class="muted">n₁</th><th>M1 min / med / max</th><th class="muted">n₂</th><th>M2 min / med / max</th></tr></thead><tbody>';
-      yearRows.concat(eraRows).forEach(function(r) {
-        var cls = r.period_type === 'era' ? ' class="period-row"' : '';
-        html += '<tr' + cls + '><td>' + r.period + '</td><td class="muted">' + r.n_to_threshold + '</td><td>' +
-          cell(r.months_to_threshold) + '</td><td class="muted">' + r.n_first_to_first + '</td><td>' +
-          cell(r.months_first_to_first) + '</td></tr>';
-      });
-      html += '</tbody></table></div></div>';
-    });
-    root.innerHTML = html;
-  }
-  function renderEco(DATA) {
-    var eco = DATA.ecosystem_by_year.filter(function(e) { return e.year >= 2015 && e.year <= 2025; });
-    destroy('eco');
-    charts.eco = new Chart(document.getElementById('chartEco'), {
-      type: 'line',
-      data: {
-        labels: eco.map(function(e) { return e.year; }),
-        datasets: [
-          { label: 'Ивенты', data: eco.map(function(e) { return e.unique_events; }), borderColor: LINE_M1, borderWidth: 1.8, yAxisID: 'y', tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, pointHoverRadius: 3 },
-          { label: 'Танцоры', data: eco.map(function(e) { return e.unique_dancers; }), borderColor: LINE_M2, borderWidth: 1.8, yAxisID: 'y1', tension: 0.35, cubicInterpolationMode: 'monotone', pointRadius: 0, pointHoverRadius: 3 }
-        ]
-      },
-      options: Object.assign(baseOpts('', 'count'), {
-        scales: {
-          x: chartScales('', 'count').x,
-          y: { position: 'left', title: { display: true, text: 'Ивенты', color: 'rgba(55, 65, 81, 0.75)', font: { size: 11, weight: 600 } }, ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10 } }, grid: { color: 'rgba(15, 23, 42, 0.06)' }, beginAtZero: true },
-          y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Танцоры', color: 'rgba(55, 65, 81, 0.75)', font: { size: 11, weight: 600 } }, ticks: { color: 'rgba(55, 65, 81, 0.55)', font: { size: 10 } }, beginAtZero: true }
-        }
-      })
-    });
-  }
   function technicalReset(current, medBaseline, medYear) {
     if (medBaseline == null || medYear == null || medYear <= 0) return null;
     return Math.round(current * medBaseline / medYear);
@@ -1822,6 +1696,10 @@
     fetch(JSON_URL, { credentials: 'omit' })
       .then(function(r) { return r.json(); })
       .then(function(DATA) {
+        var asOf = document.getElementById('dataAsOfNote');
+        if (asOf && DATA.data_as_of) {
+          asOf.textContent = 'Данные актуальны на ' + DATA.data_as_of + '.';
+        }
         renderThresholdSpeed(DATA);
         renderFirstToFirstSpeed(DATA);
         renderM1ByYear(DATA);
