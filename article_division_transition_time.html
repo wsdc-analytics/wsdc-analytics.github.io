@@ -1440,7 +1440,7 @@
 
   function renderVolume(DATA) {
     var years = [];
-    for (var y = 2015; y <= 2026; y++) years.push(String(y));
+    for (var y = 2015; y <= 2025; y++) years.push(String(y));
     function countsByYear(from, to) {
       var rows = DATA.transitions_count_by_year.filter(function(r) {
         return r.from_division === from && r.to_division === to && r.role === MAIN_ROLE;
@@ -1465,7 +1465,8 @@
     opts.scales.x.ticks.autoSkip = false;
     opts.scales.x.ticks.font = { size: 9, weight: 500 };
     opts.scales.x.ticks.callback = function(value) {
-      return yearTickLabel(this.getLabelForValue(value));
+      var label = this.getLabelForValue(value);
+      return (label === '2015' || label === '2020' || label === '2025') ? label : '';
     };
     charts.volume = new Chart(document.getElementById('chartVolume'), {
       type: 'line',
