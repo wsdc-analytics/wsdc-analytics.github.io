@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-  <link rel="preload" href="events_background.png" as="image" fetchpriority="high">
+  <link rel="preload" href="article_division_transition_time_header.jpg" as="image" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>Ускорение переходов между дивизионами: Надо ли что-то делать? | WSDC Analytics</title>
   <script type="application/ld+json">
@@ -63,6 +63,7 @@
       --text-tertiary: #718096;
       --border-color: #e5e5e5;
       --transition-fast: 0.15s ease;
+      --transition-base: 0.2s ease;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     .skip-link {
@@ -99,7 +100,7 @@
       padding: 0;
     }
     .header {
-      background: var(--color-primary) url("events_background.png") center center / cover no-repeat;
+      background: var(--color-primary) url("article_division_transition_time_header.jpg") center center / cover no-repeat;
       color: #fff;
       padding: 100px 80px 80px;
       border-bottom: 1px solid var(--border-color);
@@ -765,7 +766,7 @@
 <body>
   <a href="#main-content" class="skip-link">Перейти к содержимому</a>
   <div class="magazine-container">
-    <header class="header" style="background-image: url('events_background.png');">
+    <header class="header">
       <div class="article-header-top">
         <a class="back-link" href="/" id="backLink">← К главной</a>
         <div class="language-switcher" role="group" aria-label="Выбор языка">
