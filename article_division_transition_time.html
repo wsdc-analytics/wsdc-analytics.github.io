@@ -714,11 +714,6 @@
       border-left: 4px solid var(--accent);
     }
     .article-conclusion p:last-child { margin-bottom: 0; }
-    .article-footer .data-as-of {
-      margin-top: 8px;
-      font-size: 14px;
-      color: var(--text-tertiary);
-    }
     .risk-disclosure.chart-year-breakdown {
       background: #fff;
       box-shadow: 0 4px 20px rgba(15, 23, 42, .05);
@@ -995,7 +990,7 @@
     <footer class="article-footer">
       <div class="data-note">
         <p><strong>Источник данных:</strong> Анализ базы данных <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a></p>
-        <p id="dataAsOfNote" class="data-as-of" aria-live="polite"></p>
+        <p><strong>Связанные материалы:</strong> <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru">Эволюция правил WSDC</a> · <a href="https://wsdc-analytics.github.io/article_3year_rule.html?lang=ru">Возвращение правила 3 лет</a></p>
       </div>
     </footer>
   </div>
@@ -1670,10 +1665,6 @@
     fetch(JSON_URL, { credentials: 'omit' })
       .then(function(r) { return r.json(); })
       .then(function(DATA) {
-        var asOf = document.getElementById('dataAsOfNote');
-        if (asOf && DATA.data_as_of) {
-          asOf.textContent = 'Данные актуальны на ' + DATA.data_as_of + '.';
-        }
         renderThresholdSpeed(DATA);
         renderFirstToFirstSpeed(DATA);
         renderM1ByYear(DATA);
