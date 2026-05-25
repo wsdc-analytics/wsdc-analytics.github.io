@@ -1490,11 +1490,17 @@
       data: {
         labels: labels,
         datasets: [
-          { label: '2015–19 (база)', data: baseRates, backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 48 },
-          { label: '2023–24', data: recentRates, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 48 }
+          { label: '2015–19 (база)', data: baseRates, backgroundColor: BAR_BASE, borderRadius: 6, maxBarThickness: 52 },
+          { label: '2023–24', data: recentRates, backgroundColor: BAR_2025, borderRadius: 6, maxBarThickness: 52 }
         ]
       },
-      options: baseOpts('Доля за 12 мес.', 'pct')
+      options: Object.assign(baseOpts('Доля за 12 мес.', 'pct'), {
+        datasets: {
+          bar: {
+            barPercentage: 0.98
+          }
+        }
+      })
     });
   }
   function technicalReset(current, medBaseline, medYear) {
