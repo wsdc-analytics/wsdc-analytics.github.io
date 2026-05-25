@@ -7,7 +7,8 @@
     rules_evolution_2025: ["ru", "en", "es"],
     rules_catalog: ["ru", "en", "es"],
     article_secondary_role: ["ru", "en", "es"],
-    article_3year_rule: ["ru", "en", "es"]
+    article_3year_rule: ["ru", "en", "es"],
+    article_division_transition_time: ["ru", "en", "es"]
   };
 
   function pickPreferredLanguage() {
