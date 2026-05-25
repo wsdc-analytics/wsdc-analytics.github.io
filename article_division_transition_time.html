@@ -932,17 +932,7 @@
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и два сценария пересчёта"></canvas></div>
         </figure>
 
-        <p>Три столбика на каждый переход — действующий allowed и два сценария «вернуть базовый темп» при скорости 2025 и 2026 (+12% запас). Их задача — не предложить новую норму, а показать, насколько изменилась скорость движения по дороге.</p>
-
-        <details class="risk-disclosure chart-year-breakdown">
-          <summary>Таблица расчёта</summary>
-          <div class="table-scroll">
-            <table class="risk-table">
-              <thead><tr><th>Переход</th><th>Сейчас</th><th>Медиана база</th><th>Медиана 2025</th><th>2025</th><th>2026 (+12%)</th><th>Сигнал</th></tr></thead>
-              <tbody id="impliedTableBody"></tbody>
-            </table>
-          </div>
-        </details>
+        <p>Для того, чтобы медианное время набора поинтов в Novice до порога перехода в Intermediate вернулось к доковидным значениям, порог должен быть <strong>21</strong> поинт, а с учётом тренда 2026 года и расчётом на сохранение этого тренда — <strong>30</strong> поинтов. Для перехода из Intermediate в Advanced эти значения составляют <strong>32</strong> и <strong>44</strong> поинта соответственно.</p>
       </section>
 
       <section class="section">
@@ -1659,15 +1649,6 @@
         }
       })
     });
-    var tbody = document.getElementById('impliedTableBody');
-    if (tbody) {
-      tbody.innerHTML = rows.map(function(r) {
-        return '<tr><td>' + r.tableLabel + '</td><td>' + r.current + '</td><td>' + fmtMonths(r.medBase) +
-          '</td><td>' + fmtMonths(r.med25) + '</td><td>~' + (r.reset25 != null ? r.reset25 : '—') +
-          '</td><td>~' + (r.reset26Buffered != null ? r.reset26Buffered : '—') +
-          '</td><td>' + r.signal + '</td></tr>';
-      }).join('');
-    }
   }
   function bindYearChartResize() {
     var map = {
