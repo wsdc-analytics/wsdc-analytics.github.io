@@ -924,9 +924,9 @@
           <h3>Какими выглядели бы пороги при старом темпе движения</h3>
           <div class="chart-legend" aria-hidden="true">
             <div class="legend">
-              <span class="legend-item"><span class="legend-line series-slate"></span>Сейчас (allowed)</span>
-              <span class="legend-item"><span class="legend-line series-indigo"></span>База при темпе 2025</span>
-              <span class="legend-item"><span class="legend-line series-teal"></span>База при темпе 2026 (+12%)</span>
+              <span class="legend-item"><span class="legend-line series-slate"></span>Текущий порог</span>
+              <span class="legend-item"><span class="legend-line series-indigo"></span>Порог с учётом темпа 2025 года</span>
+              <span class="legend-item"><span class="legend-line series-teal"></span>Порог с учётом тренда 2026 года</span>
             </div>
           </div>
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и два сценария пересчёта"></canvas></div>
@@ -1603,7 +1603,7 @@
         labels: rows.map(function(r) { return r.label; }),
         datasets: [
           {
-            label: 'Сейчас (allowed)',
+            label: 'Текущий порог',
             data: rows.map(function(r) { return r.current; }),
             backgroundColor: 'rgba(148, 163, 184, 0.75)',
             tooltipColor: '#64748b',
@@ -1611,7 +1611,7 @@
             maxBarThickness: 44
           },
           {
-            label: 'База при темпе 2025',
+            label: 'Порог с учётом темпа 2025 года',
             data: rows.map(function(r) { return r.reset25; }),
             backgroundColor: BAR_BASE,
             tooltipColor: '#6366f1',
@@ -1619,7 +1619,7 @@
             maxBarThickness: 44
           },
           {
-            label: 'База при темпе 2026 (+12%)',
+            label: 'Порог с учётом тренда 2026 года',
             data: rows.map(function(r) { return r.reset26Buffered; }),
             backgroundColor: BAR_2025,
             tooltipColor: '#0d9488',
