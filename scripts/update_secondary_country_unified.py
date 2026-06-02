@@ -22,6 +22,11 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from country_normalization import normalize_country  # noqa: E402
+
 
 SKILL_DIVISIONS = {
     "Newcomer",
@@ -33,24 +38,6 @@ SKILL_DIVISIONS = {
 }
 UI_DIVISIONS = ["Total", "Newcomer", "Novice", "Intermediate", "Advanced", "All-Stars"]
 ROLE_GROUPS = ["Total", "Leader", "Follower"]
-
-
-def normalize_country(value: str) -> str:
-    mapping = {
-        "Usa": "United States",
-        "U.S.A.": "United States",
-        "United States Of America": "United States",
-        "Uk": "United Kingdom",
-        "England": "United Kingdom",
-        "Scotland": "United Kingdom",
-        "Wales": "United Kingdom",
-        "Korea, Republic Of": "Republic of Korea",
-        "South Korea": "Republic of Korea",
-        "Republic Of Korea": "Republic of Korea",
-        "Russian Federation": "Russia",
-    }
-    key = (value or "").strip()
-    return mapping.get(key, key)
 
 
 def parse_args() -> argparse.Namespace:
