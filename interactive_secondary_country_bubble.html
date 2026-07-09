@@ -558,11 +558,15 @@
       return 1;
     }
 
+    function isUnitedStates(country) {
+      return String(country || "").trim().toLowerCase() === "united states";
+    }
+
     function getPoints(year, group, division, hideUsa) {
       const rows = getSourceRows(year, group, division);
       const filteredRows = rows
         .filter((r) => r.transitions > 0)
-        .filter((r) => !hideUsa || r.country !== "United States");
+        .filter((r) => !hideUsa || !isUnitedStates(r.country));
       const radii = buildAdaptiveRadiusMap(filteredRows);
       const bubbleScale = getBubbleScaleFactor() * getDensityScale(filteredRows.length);
       const points = filteredRows.map((r, i) => ({
@@ -622,7 +626,7 @@
     let activeGroup = "Total";
     let activeDivision = "Total";
     const pinState = { active: false, point: null, x: 0, y: 0 };
-    const UNIFIED_URL = "./static/data/secondary_country_unified.json?v=20260709";
+    const UNIFIED_URL = "./static/data/secondary_country_unified.json?v=20260709-us-fix";
     let unifiedData = null;
     let unifiedLoadPromise = null;
 

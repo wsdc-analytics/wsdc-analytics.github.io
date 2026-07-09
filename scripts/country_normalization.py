@@ -11,6 +11,7 @@ _COUNTRY_ALIASES: dict[str, str] = {
     "u.s.a.": "United States",
     "u.s.": "United States",
     "ga usa": "United States",
+    "united states": "United States",
     "united states of america": "United States",
     "uk": "United Kingdom",
     "u.k.": "United Kingdom",

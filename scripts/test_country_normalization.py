@@ -9,6 +9,8 @@ def test_aliases() -> None:
     assert normalize_country("GA USA") == "United States"
     assert normalize_country("CA USA") == "United States"
     assert normalize_country("Usa") == "United States"
+    assert normalize_country("United states") == "United States"
+    assert normalize_country("UNITED STATES") == "United States"
     assert normalize_country("Holland") == "Netherlands"
     assert normalize_country("England") == "United Kingdom"
 
