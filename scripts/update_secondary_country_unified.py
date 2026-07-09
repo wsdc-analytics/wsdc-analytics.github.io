@@ -26,6 +26,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from country_normalization import normalize_country  # noqa: E402
+from division_normalization import normalize_division  # noqa: E402
 
 
 SKILL_DIVISIONS = {
@@ -96,7 +97,7 @@ def main() -> None:
             if dominant_role not in ("leader", "follower") or event_role not in ("leader", "follower"):
                 continue
 
-            division = (row.get("event_competition") or "").strip()
+            division = normalize_division(row.get("event_competition") or "")
             if division not in SKILL_DIVISIONS:
                 continue
 
