@@ -44,7 +44,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Update secondary country unified dataset.")
     parser.add_argument(
         "--source-dir",
-        default="/Users/ania/.cursor/projects/tableau/My-Tableau-Projects/WSDC/WSDC Points",
+        default="/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data",
         help="Path to folder with dancer_role_info.csv, dancers_results_info.csv, location_info.csv",
     )
     parser.add_argument(
