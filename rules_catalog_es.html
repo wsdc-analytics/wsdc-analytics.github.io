@@ -13,7 +13,9 @@
 <meta content="Catálogo de documentos de reglas: cronología de ediciones con enlaces a PDF." name="description"/>
     <meta content="reglas, catálogo, documentos, PDF, reglamento, Registry Event Rules, Points Registry" name="keywords"/>
     <title>Catálogo de documentos de reglas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -58,8 +60,7 @@
         }
         .back-link { color: white; text-decoration: none; font-size: 14px; opacity: 0.9; }
         .back-link:hover { opacity: 1; }
-        .language-switcher { display: flex; gap: 16px; align-items: center; }
-        .language-switcher button {
+.language-switcher button {
             padding: 4px 0;
             background: none;
             border: none;
@@ -144,18 +145,24 @@
         }
     </style>
 <script src="static/js/lang-redirect.js"></script>
+  <link rel="stylesheet" href="static/css/article-shell.css">
 </head>
 <body>
-    <div class="magazine-container">
+      <div
+    data-site-chrome
+    data-active="home"
+    data-lang="es"
+    data-home-href="index.html"
+    data-lang-mode="navigate"
+    data-lang-ru="rules_catalog.html"
+    data-lang-en="rules_catalog_en.html"
+    data-lang-es="rules_catalog_es.html"
+  ></div>
+<div class="magazine-container">
         <header class="article-header">
             <div class="article-header-top">
-                <a href="index.html" class="back-link">← Back to home</a>
-                <div class="language-switcher" role="group" aria-label="Idioma">
-                    <button class="lang-btn" data-lang="ru" aria-pressed="false">RU</button>
-                    <button class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
-                    <button class="lang-btn active" data-lang="es" aria-pressed="true">ES</button>
-                </div>
-            </div>
+                <a class="wsdc-back is-on-hero" href="index.html?lang=es" data-wsdc-back id="backLink">Volver al inicio</a>
+</div>
             <h1 class="article-title">Catálogo de documentos de reglas WSDC</h1>
             <p class="article-subtitle">Cronología de ediciones con enlaces</p>
         </header>
@@ -251,7 +258,7 @@
         (function() {
             const currentLang = 'es';
             const urls = { ru: 'rules_catalog.html', en: 'rules_catalog_en.html', es: 'rules_catalog_es.html' };
-            document.querySelectorAll('.lang-btn').forEach(btn => {
+            document.querySelectorAll('.language-switcher .lang-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (this.dataset.lang !== currentLang) {
                         localStorage.setItem('wsdc-lang', this.dataset.lang);
@@ -261,5 +268,15 @@
             });
         })();
     </script>
+  <script src="static/js/site-chrome.js" defer></script>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var urlLang = urlParams.get('lang');
+      if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+        localStorage.setItem('wsdc-lang', urlLang);
+      }
+    })();
+  </script>
 </body>
 </html>

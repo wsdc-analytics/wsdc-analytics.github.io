@@ -41,7 +41,9 @@
         property="twitter:description" />
     <meta content="https://wsdc-analytics.github.io/wsdc_geo_wordcloud.png" property="twitter:image" />
     <title>WSDC 2025: Top Bailarines</title>
-    <!-- Structured Data (Schema.org) -->
+      <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+<!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -192,14 +194,7 @@
             align-items: center;
             margin-bottom: 24px;
         }
-
-        .language-switcher {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .language-switcher button {
+.language-switcher button {
             padding: 4px 0;
             background: none;
             border: none;
@@ -304,15 +299,15 @@
         p {
             margin-bottom: 24px;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
 
         .article-content p {
-            text-align: justify;
+            text-align: left;
         }
 
         .article-content ul li {
-            text-align: justify;
+            text-align: left;
         }
 
         /* Pull quotes and highlights */
@@ -320,7 +315,7 @@
             font-size: 24px;
             font-style: italic;
             color: var(--text-primary);
-            text-align: justify;
+            text-align: left;
             padding: 0;
             margin: 40px 0;
             border-left: 4px solid var(--color-primary);
@@ -444,7 +439,7 @@
             font-weight: 500;
             color: #4a5568;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             font-family: inherit;
         }
 
@@ -581,12 +576,7 @@
                 align-items: flex-start;
                 gap: 16px;
             }
-
-            .language-switcher {
-                align-self: flex-end;
-            }
-
-            .intro {
+.intro {
                 font-size: 18px;
                 padding-left: 16px;
                 border-left-width: 3px;
@@ -722,7 +712,7 @@
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             font-family: inherit;
         }
 
@@ -888,21 +878,27 @@
         }
     </style>
 <script src="static/js/lang-redirect.js"></script>
+  <link rel="stylesheet" href="static/css/article-shell.css">
 </head>
 
 <body>
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     
-    <div class="magazine-container">
+      <div
+    data-site-chrome
+    data-active="home"
+    data-lang="es"
+    data-home-href="index.html"
+    data-lang-mode="navigate"
+    data-lang-ru="dancers_2025.html"
+    data-lang-en="dancers_2025_en.html"
+    data-lang-es="dancers_2025_es.html"
+  ></div>
+<div class="magazine-container">
         <header class="article-header">
             <div class="article-header-top">
-                <a class="back-link" href="/?lang=es" id="backLink" style="color: white; position: relative; z-index: 2;">Back to home</a>
-                <div class="language-switcher" role="group" aria-label="Выбор языка">
-                    <button class="lang-btn" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
-                    <button class="lang-btn" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
-                    <button class="lang-btn active" data-lang="es" aria-label="Cambiar a español" aria-pressed="true">ES</button>
-                </div>
-            </div>
+                <a class="wsdc-back is-on-hero" href="index.html?lang=es" data-wsdc-back id="backLink">Volver al inicio</a>
+</div>
             <h1 class="article-title">WSDC 2025: Bailarines</h1>
             <div class="article-subtitle">Los bailarines de WCS más exitosos en 2025</div>
         </header>
@@ -1523,7 +1519,7 @@
             updateBackLink();
 
             // Обработчики переключения языка
-            const langButtons = document.querySelectorAll('.lang-btn');
+            const langButtons = document.querySelectorAll('.language-switcher .lang-btn');
             langButtons.forEach(btn => {
                 if (btn.dataset.lang === currentLang) {
                     btn.classList.add('active');
@@ -2265,6 +2261,16 @@
     }
 })();
 </script>
+  <script src="static/js/site-chrome.js" defer></script>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var urlLang = urlParams.get('lang');
+      if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+        localStorage.setItem('wsdc-lang', urlLang);
+      }
+    })();
+  </script>
 </body>
 
 </html>

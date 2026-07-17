@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="WSDC KPI Dashboard - интерактивная аналитика West Coast Swing">
+    <meta name="description" content="WSDC KPI Dashboard - interactive West Coast Swing analytics">
     <title>WSDC KPI Dashboard | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,18 +20,6 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <style>
-        :root {
-            --color-primary: #2d3748;
-            --bg-primary: #ffffff;
-            --bg-secondary: #FFFFFF;
-            --text-primary: #2d3748;
-            --text-secondary: #4a5568;
-            --border-color: #e5e5e5;
-            --border-color-hover: #cbd5e0;
-            --bg-tertiary: #f7fafc;
-            --transition-base: 0.2s ease;
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             overflow: hidden;
@@ -38,8 +27,8 @@
         }
         body {
             font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+            background: var(--wsdc-color-surface, #fff);
+            color: var(--wsdc-color-text, #1f2937);
             line-height: 1.6;
         }
         .page {
@@ -48,123 +37,19 @@
             height: 100vh;
             overflow: hidden;
         }
-        .header {
+        .dash-chrome {
             flex-shrink: 0;
-            padding: 12px 24px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
+        }
+.viz-frame {
+            flex: 1;
+            min-height: 0;
+            margin: 10px 16px 16px;
+            border: 1px solid var(--wsdc-color-border, #d1d5db);
+            border-radius: 12px;
+            background: var(--wsdc-color-surface, #fff);
+            overflow: hidden;
             display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .back-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .back-link:hover { color: #1d4ed8; }
-        .header-separator { color: var(--text-secondary); opacity: 0.6; font-size: 14px; }
-        .dashboard-select {
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 32px 8px 16px;
-            height: 36px;
-            min-width: 200px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .dashboard-select:hover {
-            border-color: var(--color-primary);
-        }
-        /* Dashboards dropdown — как на главной */
-        .dashboards-nav { display: flex; align-items: center; }
-        .dashboards-nav .dropdown-wrapper { position: relative; }
-        .dashboards-nav .dropdown-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-sizing: border-box;
-            min-width: 200px;
-            height: 36px;
-            padding: 0 16px;
-            white-space: nowrap;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all var(--transition-base);
-            font-family: inherit;
-        }
-        .dashboards-nav .dropdown-btn:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-        }
-        .dashboards-nav .dropdown-btn:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
-        }
-        .dashboards-nav .dropdown-btn svg {
-            transition: transform var(--transition-base);
-        }
-        .dashboards-nav .dropdown-wrapper.open .dropdown-btn svg {
-            transform: rotate(180deg);
-        }
-        .dashboards-nav .dropdown-menu {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            min-width: 240px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            padding: 6px;
-            list-style: none;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-4px);
-            transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
-        }
-        .dashboards-nav .dropdown-wrapper.open .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .dashboards-nav .dropdown-menu a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: background var(--transition-base);
-        }
-        .dashboards-nav .dropdown-menu a:hover {
-            background: var(--bg-tertiary);
-            color: var(--color-primary);
-        }
-        .dashboards-nav .dropdown-menu a.current {
-            font-weight: 600;
-            color: var(--color-primary);
-        }
-        .dashboards-nav .dropdown-menu a.current::before {
-            content: '✓';
-            font-size: 14px;
-            color: var(--color-primary);
+            flex-direction: column;
         }
         .viz-viewport {
             flex: 1;
@@ -185,55 +70,42 @@
 </head>
 <body>
     <div class="page">
-        <header class="header">
-            <a href="index.html" class="back-link">← Back to home</a>
-            <span class="header-separator" aria-hidden="true">|</span>
-            <nav class="dashboards-nav" aria-label="Дашборды">
-                <div class="dropdown-wrapper" id="dashboardsDropdown">
-                    <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
-                        <span id="dashboardsBtnText">Metrics</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                    </button>
-                    <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
-                        <li role="none"><a href="dashboard.html" role="menuitem" data-dash="dashboard.html">Metrics</a></li>
-                        <li role="none"><a href="navigator.html" role="menuitem" data-dash="navigator.html">Events Navigator</a></li>
-                        <li role="none"><a href="rankings.html" role="menuitem" data-dash="rankings.html">Dancer's Ranking</a></li>
-                        <li role="none"><a href="dancer-profile.html" role="menuitem" data-dash="dancer-profile.html">Dancer Profile</a></li>
-                        <li role="none"><a href="secondary_role_distribution_dashboard_en.html" role="menuitem" data-dash="secondary_role_distribution_dashboard_en.html">Secondary Role Points</a></li>
-                        <li role="none"><a href="city-clouds.html" role="menuitem" data-dash="city-clouds.html">Cities Cloud</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
+        <div class="dash-chrome">
+            <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="dashboard.html"></div>
+                        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+</div>
 
-        <div class="viz-viewport" id="vizViewport">
-            <div class="viz-scaled" id="vizScaled">
-                <div class='tableauPlaceholder' id='viz1770821220405' style='position: relative'>
-                    <noscript>
-                        <a href='#'>
-                            <img alt='KPIsDashboard ' src='https://public.tableau.com/static/images/WS/WSDCnew/KPIsDashboard/1_rss.png' style='border: none' />
-                        </a>
-                    </noscript>
-                    <object class='tableauViz' style='display:none;'>
-                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-                        <param name='embed_code_version' value='3' />
-                        <param name='site_root' value='' />
-                        <param name='name' value='WSDCnew&#47;KPIsDashboard' />
-                        <param name='tabs' value='no' />
-                        <param name='toolbar' value='yes' />
-                        <param name='static_image' value='https://public.tableau.com/static/images/WS/WSDCnew/KPIsDashboard/1.png' />
-                        <param name='animate_transition' value='yes' />
-                        <param name='display_static_image' value='yes' />
-                        <param name='display_spinner' value='yes' />
-                        <param name='display_overlay' value='yes' />
-                        <param name='display_count' value='yes' />
-                        <param name='language' value='en-US' />
-                    </object>
+        <div class="viz-frame">
+            <div class="viz-viewport" id="vizViewport">
+                <div class="viz-scaled" id="vizScaled">
+                    <div class='tableauPlaceholder' id='viz1770821220405' style='position: relative'>
+                        <noscript>
+                            <a href='#'>
+                                <img alt='KPIsDashboard ' src='https://public.tableau.com/static/images/WS/WSDCnew/KPIsDashboard/1_rss.png' style='border: none' />
+                            </a>
+                        </noscript>
+                        <object class='tableauViz' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='' />
+                            <param name='name' value='WSDCnew&#47;KPIsDashboard' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='yes' />
+                            <param name='static_image' value='https://public.tableau.com/static/images/WS/WSDCnew/KPIsDashboard/1.png' />
+                            <param name='animate_transition' value='yes' />
+                            <param name='display_static_image' value='yes' />
+                            <param name='display_spinner' value='yes' />
+                            <param name='display_overlay' value='yes' />
+                            <param name='display_count' value='yes' />
+                            <param name='language' value='en-US' />
+                        </object>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="static/js/site-chrome.js" defer></script>
     <script type='text/javascript'>
         var VIZ_WIDTH = 1600;
         var VIZ_HEIGHT = 1127;
@@ -244,7 +116,7 @@
             var availableW = viewport.clientWidth;
             var availableH = viewport.clientHeight;
             var scale = Math.min(availableW / VIZ_WIDTH, availableH / VIZ_HEIGHT);
-            scale = Math.min(scale, 1); // не увеличивать больше оригинала
+            scale = Math.min(scale, 1);
             scaled.style.transform = 'scale(' + scale + ')';
         }
 
@@ -267,22 +139,6 @@
         };
 
         window.addEventListener('resize', fitViz);
-
-        (function() {
-            var currentPage = document.location.pathname.split('/').pop() || 'dashboard.html';
-            var labels = { 'dashboard.html': 'Metrics', 'navigator.html': 'Events Navigator', 'rankings.html': "Dancer's Ranking", 'dancer-profile.html': 'Dancer Profile', 'secondary_role_distribution_dashboard_en.html': 'Secondary Role Points', 'city-clouds.html': 'Cities Cloud' };
-            var btn = document.getElementById('dashboardsBtn');
-            var btnText = document.getElementById('dashboardsBtnText');
-            var wrap = document.getElementById('dashboardsDropdown');
-            if (btnText) btnText.textContent = labels[currentPage] || 'Metrics';
-            document.querySelectorAll('.dashboards-nav .dropdown-menu a[data-dash]').forEach(function(a) {
-                if (a.getAttribute('data-dash') === currentPage) a.classList.add('current');
-            });
-            if (btn && wrap) {
-                btn.addEventListener('click', function(e) { e.stopPropagation(); wrap.classList.toggle('open'); btn.setAttribute('aria-expanded', wrap.classList.contains('open')); });
-                document.addEventListener('click', function() { wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); });
-            }
-        })();
     </script>
 </body>
 </html>

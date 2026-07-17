@@ -1,0 +1,160 @@
+/**
+ * Evolved C article shell — visual harmonization for magazine pages.
+ * Keeps structure/content; quiets tokens, cards, and section chrome.
+ * MUST load after the page's inline <style> (typically just before </head>).
+ */
+
+:root {
+  --wsdc-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --wsdc-press: 140ms;
+  --wsdc-enter: 180ms;
+
+  /* Remap legacy article locals onto Evolved C tokens */
+  --color-primary: var(--wsdc-color-brand, #111827);
+  --color-primary-dark: var(--wsdc-color-text-strong, #0b1221);
+  --color-primary-light: var(--wsdc-color-text-muted, #4b5563);
+  --color-link-accent: var(--wsdc-color-brand-accent, #2563eb);
+  --accent: var(--wsdc-color-brand, #111827);
+
+  --bg-primary: var(--wsdc-color-surface, #ffffff);
+  --bg-secondary: var(--wsdc-color-surface, #ffffff);
+  --bg-tertiary: var(--wsdc-color-surface-soft, #f8fafc);
+
+  --text-primary: var(--wsdc-color-text, #1f2937);
+  --text-secondary: var(--wsdc-color-text-muted, #4b5563);
+  --text-tertiary: #6b7280;
+
+  --border-color: var(--wsdc-color-border, #d1d5db);
+  --border-color-hover: #9ca3af;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-card: none;
+
+  --transition-fast: var(--wsdc-press) var(--wsdc-ease-out);
+  --transition-base: var(--wsdc-enter) var(--wsdc-ease-out);
+  --transition-slow: 220ms var(--wsdc-ease-out);
+}
+
+body {
+  color: var(--wsdc-color-text, #1f2937);
+  background: var(--wsdc-color-surface, #ffffff);
+}
+
+/* Reading column: left-align (no justify rivers) */
+.section p,
+.article-content p,
+.article-content .section-content p,
+.intro {
+  text-align: left;
+  text-justify: auto;
+}
+
+/* Section titles: quieter than thick magazine rails */
+h2,
+.section h2,
+.section-title {
+  border-left-width: 2px;
+  border-left-color: var(--wsdc-color-brand, #111827);
+  padding-left: 14px;
+  letter-spacing: -0.02em;
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+/* Flat panels instead of elevated cards */
+.kpi-item,
+.risk-disclosure,
+.chart-card,
+.chart-box,
+.chart-canvas-box,
+.stat-card,
+.metric-card,
+.callout,
+.footnote,
+.warning {
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.kpi-item,
+.risk-disclosure,
+.chart-card,
+.chart-box,
+.stat-card,
+.metric-card {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+}
+
+.warning {
+  border-left-width: 2px;
+}
+
+.footnote {
+  border-left-width: 2px;
+  border-left-color: var(--wsdc-color-brand, #111827);
+}
+
+/* Timeline markers: brand, not indigo */
+.timeline-item::before,
+.timeline-year-marker {
+  background: var(--wsdc-color-brand, #111827);
+}
+
+.timeline {
+  border-left-color: var(--wsdc-color-border, #d1d5db);
+}
+
+/* Links */
+a.rules-evolution-link,
+.article-content a:not(.wsdc-back):not(.back-link) {
+  color: var(--wsdc-color-brand-accent, #2563eb);
+}
+
+/* Reaction / interactive focus */
+.article-reaction-trigger:focus-visible,
+.timeline-toggle:focus-visible {
+  outline: 2px solid var(--wsdc-color-brand, #111827);
+  outline-offset: 2px;
+}
+
+.article-reaction-trigger:active {
+  transform: scale(0.97);
+}
+
+.article-reaction-trigger {
+  transition: transform var(--wsdc-press) var(--wsdc-ease-out), background var(--wsdc-press) ease;
+}
+
+/* Chart accents that used indigo in CSS legends */
+.chart-legend .legend-line.series-indigo,
+.chart-legend .legend-swatch.series-indigo {
+  border-top-color: var(--wsdc-color-brand, #111827);
+  background: var(--wsdc-color-brand, #111827);
+}
+
+.chart-legend .legend-line.series-indigo-dash {
+  border-top-color: rgba(17, 24, 39, 0.55);
+}
+
+/* Hide dead language-switcher styles if markup leftover appears */
+.article-header-top .language-switcher {
+  display: none !important;
+}
+
+/* Soften hero overlay slightly for quieter entry under chrome */
+.header::before,
+.article-header::before {
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-reaction-trigger {
+    transition: none;
+  }
+
+  .article-reaction-trigger:active {
+    transform: none;
+  }
+}

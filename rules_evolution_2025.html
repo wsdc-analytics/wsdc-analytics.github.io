@@ -23,7 +23,9 @@
     <meta content="Эволюция правил: от простого к сложному" property="twitter:title"/>
     <meta content="Хронология редакций правил WSDC с 2002 года и ключевые этапы, сформировавшие систему WSDC ивентов" property="twitter:description"/>
     <title>Эволюция правил: от простого к сложному</title>
-    <!-- Structured Data (Schema.org) -->
+      <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+<!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -176,14 +178,7 @@
             align-items: center;
             margin-bottom: 24px;
         }
-
-        .language-switcher {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .language-switcher button {
+.language-switcher button {
             padding: 4px 0;
             background: none;
             border: none;
@@ -254,7 +249,7 @@
             border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
 
         .section {
@@ -276,7 +271,7 @@
             color: var(--text-primary);
             margin-bottom: 0;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
 
         .section-content p {
@@ -327,7 +322,7 @@
             background: var(--bg-primary);
             border: 3px solid var(--border-color);
             z-index: 2;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             box-shadow: var(--shadow-sm);
         }
 
@@ -406,7 +401,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             width: 100%;
             text-align: left;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -468,7 +463,7 @@
         }
 
         .timeline-details {
-            text-align: justify;
+            text-align: left;
         }
 
         .timeline-changes {
@@ -750,11 +745,7 @@
                 align-items: flex-start;
                 gap: 16px;
             }
-
-            .language-switcher {
-                align-self: flex-end;
-            }
-        }
+}
 
         /* Comments section */
         .comments-container {
@@ -785,7 +776,7 @@
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             font-family: inherit;
             padding: 8px 16px;
         }
@@ -962,19 +953,25 @@
         }
     </style>
 <script src="static/js/lang-redirect.js"></script>
+  <link rel="stylesheet" href="static/css/article-shell.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
-    <div class="magazine-container">
+      <div
+    data-site-chrome
+    data-active="home"
+    data-lang="ru"
+    data-home-href="index.html"
+    data-lang-mode="navigate"
+    data-lang-ru="rules_evolution_2025.html"
+    data-lang-en="rules_evolution_2025_en.html"
+    data-lang-es="rules_evolution_2025_es.html"
+  ></div>
+<div class="magazine-container">
         <header class="article-header">
             <div class="article-header-top">
-                <a href="index.html" class="back-link">← Back to home</a>
-                <div class="language-switcher" role="group" aria-label="Выбор языка">
-                    <button class="lang-btn active" data-lang="ru" aria-label="Русский язык" aria-pressed="true">RU</button>
-                    <button class="lang-btn" data-lang="en" aria-label="English language" aria-pressed="false">EN</button>
-                    <button class="lang-btn" data-lang="es" aria-label="Español" aria-pressed="false">ES</button>
-                </div>
-            </div>
+                <a class="wsdc-back is-on-hero" href="index.html?lang=ru" data-wsdc-back id="backLink">На главную</a>
+</div>
             <h1 class="article-title">Эволюция правил: от простого к сложному</h1>
             <p class="article-subtitle">Как менялись правила WSDC с 2002 года</p>
         </header>
@@ -1361,7 +1358,7 @@
         // Language switcher
         (function() {
             const currentLang = 'ru';
-            const langButtons = document.querySelectorAll('.lang-btn');
+            const langButtons = document.querySelectorAll('.language-switcher .lang-btn');
             function setLanguage(lang) {
                 localStorage.setItem('wsdc-lang', lang);
                 const urls = { ru: 'rules_evolution_2025.html', en: 'rules_evolution_2025_en.html', es: 'rules_evolution_2025_es.html' };
@@ -1595,5 +1592,15 @@
     }
 })();
 </script>
+  <script src="static/js/site-chrome.js" defer></script>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var urlLang = urlParams.get('lang');
+      if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+        localStorage.setItem('wsdc-lang', urlLang);
+      }
+    })();
+  </script>
 </body>
 </html>

@@ -12,7 +12,7 @@
       --text: #1f2937;
       --muted: #6b7280;
       --border: #e5e7eb;
-      --accent: #6366f1;
+      --accent: #111827;
       --eco: #0d9488;
     }
     * { box-sizing: border-box; }
@@ -172,7 +172,7 @@
       const datasets = [{
         label: "Медиана, мес.",
         data: medians,
-        borderColor: "#6366f1",
+        borderColor: "#111827",
         backgroundColor: "rgba(99,102,241,.15)",
         tension: 0.2,
         yAxisID: "y"
@@ -233,7 +233,7 @@
         data: {
           labels: eco.map(e => e.year),
           datasets: [
-            { label: "Ивенты", data: eco.map(e => e.unique_events), borderColor: "#6366f1", tension: 0.2 },
+            { label: "Ивенты", data: eco.map(e => e.unique_events), borderColor: "#111827", tension: 0.2 },
             { label: "Танцоры", data: eco.map(e => e.unique_dancers), borderColor: "#0d9488", tension: 0.2 }
           ]
         },

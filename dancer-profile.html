@@ -7,6 +7,8 @@
     <title>Dancer Profile | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
@@ -103,7 +105,7 @@
             line-height: 1;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             font-family: inherit;
         }
         .dashboards-nav .dropdown-btn:hover {
@@ -181,30 +183,27 @@
         .viz-scaled .tableauPlaceholder {
             display: inline-block;
         }
+    
+        .dash-chrome { flex-shrink: 0; }
+.viz-frame-shell {
+            flex: 1;
+            min-height: 0;
+            margin: 10px 16px 16px;
+            border: 1px solid var(--wsdc-color-border, #d1d5db);
+            border-radius: 12px;
+            background: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
     <div class="page">
-        <header class="header">
-            <a href="index.html" class="back-link">← Back to home</a>
-            <span class="header-separator" aria-hidden="true">|</span>
-            <nav class="dashboards-nav" aria-label="Дашборды">
-                <div class="dropdown-wrapper" id="dashboardsDropdown">
-                    <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
-                        <span id="dashboardsBtnText">Dancer Profile</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                    </button>
-                    <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
-                        <li role="none"><a href="dashboard.html" role="menuitem" data-dash="dashboard.html">Metrics</a></li>
-                        <li role="none"><a href="navigator.html" role="menuitem" data-dash="navigator.html">Events Navigator</a></li>
-                        <li role="none"><a href="rankings.html" role="menuitem" data-dash="rankings.html">Dancer's Ranking</a></li>
-                        <li role="none"><a href="dancer-profile.html" role="menuitem" data-dash="dancer-profile.html">Dancer Profile</a></li>
-                        <li role="none"><a href="secondary_role_distribution_dashboard_en.html" role="menuitem" data-dash="secondary_role_distribution_dashboard_en.html">Secondary Role Points</a></li>
-                        <li role="none"><a href="city-clouds.html" role="menuitem" data-dash="city-clouds.html">Cities Cloud</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
+                <div class="dash-chrome">
+            <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="dancer-profile.html"></div>
+                        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+</div>
 
         <div class="viz-viewport" id="vizViewport">
             <div class="viz-scaled" id="vizScaled">
@@ -267,22 +266,7 @@
         };
 
         window.addEventListener('resize', fitViz);
-
-        (function() {
-            var currentPage = document.location.pathname.split('/').pop() || 'dashboard.html';
-            var labels = { 'dashboard.html': 'Metrics', 'navigator.html': 'Events Navigator', 'rankings.html': "Dancer's Ranking", 'dancer-profile.html': 'Dancer Profile', 'secondary_role_distribution_dashboard_en.html': 'Secondary Role Points', 'city-clouds.html': 'Cities Cloud' };
-            var btn = document.getElementById('dashboardsBtn');
-            var btnText = document.getElementById('dashboardsBtnText');
-            var wrap = document.getElementById('dashboardsDropdown');
-            if (btnText) btnText.textContent = labels[currentPage] || 'Metrics';
-            document.querySelectorAll('.dashboards-nav .dropdown-menu a[data-dash]').forEach(function(a) {
-                if (a.getAttribute('data-dash') === currentPage) a.classList.add('current');
-            });
-            if (btn && wrap) {
-                btn.addEventListener('click', function(e) { e.stopPropagation(); wrap.classList.toggle('open'); btn.setAttribute('aria-expanded', wrap.classList.contains('open')); });
-                document.addEventListener('click', function() { wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); });
-            }
-        })();
-    </script>
+</script>
+    <script src="static/js/site-chrome.js" defer></script>
 </body>
 </html>

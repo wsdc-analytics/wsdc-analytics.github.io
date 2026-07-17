@@ -35,6 +35,7 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
     <!-- Google tag (gtag.js) -->
@@ -91,29 +92,16 @@
             left: 12px;
             top: 12px;
         }
-        .header {
-            background: var(--bg-primary);
+        .page-search {
+            margin: 14px 0 8px;
+            padding: 8px 0;
             border-bottom: 1px solid var(--border-color);
-            padding: 14px 24px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            overflow: visible;
-            gap: 16px;
-            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 8px;
+            max-width: 420px;
         }
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .header-separator { color: var(--text-tertiary); font-size: 14px; }
-        .header-section-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: var(--bg-primary);
-        }
+        .page-search .search-box { flex: 1; min-width: 0; }
         .search-help {
             display: inline-flex;
             align-items: center;
@@ -126,27 +114,30 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            border: 2px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
             color: var(--text-tertiary);
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             cursor: help;
             position: relative;
             background: var(--bg-primary);
+            box-sizing: border-box;
         }
-        .search-help .info-icon:hover {
-            border-color: var(--color-accent);
-            color: var(--color-accent);
+        .search-help .info-icon:hover,
+        .search-help .info-icon:focus-visible {
+            border-color: var(--color-primary, var(--color-accent));
+            color: var(--color-primary, var(--color-accent));
+            outline: none;
         }
         .search-help .info-tooltip {
             position: absolute;
-            left: 0;
+            left: calc(100% + 8px);
             right: auto;
-            top: calc(100% + 10px);
-            transform: none;
+            top: 50%;
+            transform: translateY(-50%);
             min-height: 36px;
             display: flex;
             flex-direction: column;
@@ -158,10 +149,10 @@
             color: #fff;
             font-size: 12px;
             line-height: 1.45;
-            border-radius: 6px;
+            border-radius: 8px;
             white-space: normal;
-            width: min(300px, calc(100vw - 24px));
-            max-width: calc(100vw - 24px);
+            width: min(300px, calc(100vw - 48px));
+            max-width: min(300px, calc(100vw - 48px));
             box-shadow: var(--shadow-card);
             opacity: 0;
             visibility: hidden;
@@ -178,33 +169,16 @@
             line-height: 1.4;
             opacity: 0.96;
         }
-        .search-help .info-icon:hover .info-tooltip {
+        .search-help .info-icon:hover .info-tooltip,
+        .search-help .info-icon:focus-visible .info-tooltip {
             opacity: 1;
             visibility: visible;
-        }
-        .header-search {
-            flex: 1;
-            min-width: 240px;
-            max-width: 360px;
-            margin-left: auto;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            overflow: visible;
         }
         .search-box {
             position: relative;
             flex: 1;
         }
-        .back-link {
-            color: var(--color-accent);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color var(--transition);
-        }
-        .back-link:hover { color: #1d4ed8; }
-        .container {
+.container {
             max-width: 860px;
             margin: 0 auto;
             padding: 48px 24px 80px;
@@ -453,9 +427,7 @@
         }
 
         @media (max-width: 640px) {
-            .header { padding: 12px 16px; flex-direction: column; align-items: stretch; }
-            .header-left { justify-content: flex-start; }
-            .header-search { max-width: none; margin-left: 0; margin-top: 8px; }
+            .page-search { max-width: none; }
             .search-help { margin-top: 10px; }
             .container { padding: 24px 16px 48px; }
             .how-to-read-header { padding: 14px 16px; }
@@ -483,6 +455,19 @@
         }
         .header .search-input {
             max-width: none;
+        }
+        .page-search .search-input {
+            max-width: none;
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            padding-left: 36px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+        .page-search .search-input:focus {
+            border-color: transparent;
+            box-shadow: none;
         }
         .search-input {
             width: 100%;
@@ -570,13 +555,13 @@
 </head>
 <body>
     <a href="#catalog" class="skip-link">Skip to points catalog</a>
-    <header class="header">
-        <div class="header-left">
-            <a href="index.html" class="back-link">&larr; Back to home</a>
-            <span class="header-separator" aria-hidden="true">|</span>
-            <span class="header-section-badge">Summary Points</span>
-        </div>
-        <div class="header-search">
+    <div data-site-chrome data-active="points" data-lang="en" data-home-href="index.html"></div>
+
+    <div class="container">
+                <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+<h1>Summary Points</h1>
+        <p class="subtitle">Weekly points awarded by event, organized by publication date.</p>
+        <div class="page-search">
             <div class="search-help">
                 <span class="info-icon" aria-label="Brief search instructions (hover or focus to read)" role="img">
                     <span aria-hidden="true">i</span>
@@ -588,11 +573,6 @@
                 <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
             </div>
         </div>
-    </header>
-
-    <div class="container">
-        <h1>WSDC Points Summary</h1>
-        <p class="subtitle">Registry points awarded by event, division, and placement — not full competition results.</p>
         <div class="how-to-read" id="how-to-read">
             <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-read-body">
                 <span>How to read this page</span>
@@ -614,6 +594,7 @@
         <main id="catalog" aria-live="polite"></main>
     </div>
 
+    <script src="static/js/site-chrome.js" defer></script>
     <script>
         const catalog = document.getElementById('catalog');
         let activeDancerNorm = '';
@@ -904,7 +885,7 @@
                 });
 
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.header-search')) {
+                    if (!e.target.closest('.page-search')) {
                         suggestionsEl.classList.remove('visible');
                         searchInput.setAttribute('aria-expanded', 'false');
                     }

@@ -1,0 +1,510 @@
+/**
+ * Shared Evolved C site chrome - floating nav across homepage, Points Summary,
+ * dashboards, and magazine articles.
+ */
+:root {
+  --wsdc-chrome-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --wsdc-chrome-enter: 180ms;
+  --wsdc-chrome-exit: 120ms;
+  --wsdc-chrome-press: 140ms;
+  --wsdc-chrome-radius: 10px;
+  --wsdc-chrome-z: 50;
+}
+
+.wsdc-chrome-wrap {
+  position: relative;
+  z-index: var(--wsdc-chrome-z);
+  padding: 12px 12px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.wsdc-chrome-wrap.is-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 16px 0;
+  pointer-events: none;
+}
+
+.wsdc-chrome-wrap.is-fixed .wsdc-chrome {
+  pointer-events: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.wsdc-chrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  border-radius: var(--wsdc-chrome-radius);
+  background: var(--wsdc-color-surface, #ffffff);
+}
+
+.wsdc-chrome__brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--wsdc-color-text-strong, #0b1221);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 4px 2px;
+  border-radius: 8px;
+  transition: transform var(--wsdc-chrome-press) var(--wsdc-chrome-ease-out), opacity var(--wsdc-chrome-press) ease;
+}
+
+.wsdc-chrome__brand:hover {
+  opacity: 0.85;
+}
+
+.wsdc-chrome__brand:active {
+  transform: scale(0.97);
+}
+
+.wsdc-chrome__brand:focus-visible {
+  outline: 2px solid var(--wsdc-color-brand, #111827);
+  outline-offset: 2px;
+}
+
+.wsdc-chrome__brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.wsdc-chrome__brand-logo img {
+  height: 24px;
+  width: auto;
+  max-width: 78px;
+  object-fit: contain;
+  /* Source gif is white; invert to near-black mark on light chrome */
+  filter: invert(1);
+  opacity: 0.92;
+}
+
+/* Logo → Dashboards tip: 40px (8px chrome gap + 32px) */
+.wsdc-chrome__brand + .wsdc-chrome__cluster {
+  margin-left: 32px;
+}
+
+.wsdc-chrome__spacer {
+  flex: 1 1 auto;
+  min-width: 12px;
+}
+
+.wsdc-chrome__cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.wsdc-chrome__tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--wsdc-color-border, #d1d5db);
+  color: var(--wsdc-color-text-muted, #4b5563);
+  font-size: 10px;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1;
+  cursor: help;
+  flex-shrink: 0;
+  background: var(--wsdc-color-surface, #ffffff);
+  opacity: 1;
+  box-sizing: border-box;
+}
+
+.wsdc-chrome__tip-mark {
+  display: block;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+.wsdc-chrome__tip:focus {
+  outline: none;
+}
+
+.wsdc-chrome__tip:focus-visible {
+  outline: 2px solid var(--wsdc-color-brand, #111827);
+  outline-offset: 2px;
+  border-color: var(--wsdc-color-brand, #111827);
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+.wsdc-chrome__tip-bubble {
+  position: absolute;
+  left: calc(100% + 8px);
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%) scale(0.96);
+  transform-origin: left center;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--wsdc-color-brand, #111827);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  border-radius: 8px;
+  max-width: min(280px, calc(100vw - 48px));
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 8;
+  transition:
+    opacity var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
+    transform var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
+    visibility var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
+}
+
+.wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) scale(1);
+  transition-duration: var(--wsdc-chrome-enter);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wsdc-chrome__tip:hover {
+    border-color: var(--wsdc-color-text-strong, #0b1221);
+    color: var(--wsdc-color-text-strong, #0b1221);
+  }
+
+  .wsdc-chrome__tip:hover .wsdc-chrome__tip-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) scale(1);
+    transition-duration: var(--wsdc-chrome-enter);
+  }
+}
+
+.wsdc-chrome__pill {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--wsdc-color-text-muted, #4b5563);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform var(--wsdc-chrome-press) var(--wsdc-chrome-ease-out),
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.wsdc-chrome__pill:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
+.wsdc-chrome__pill:active {
+  transform: scale(0.97);
+}
+
+.wsdc-chrome__pill:focus-visible {
+  outline: 2px solid var(--wsdc-color-brand, #111827);
+  outline-offset: 2px;
+}
+
+.wsdc-chrome__pill.is-active {
+  color: var(--wsdc-color-text-strong, #0b1221);
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+  border-color: var(--wsdc-color-border, #d1d5db);
+}
+
+.wsdc-chrome__pill svg {
+  transition: transform var(--wsdc-chrome-enter) var(--wsdc-chrome-ease-out);
+}
+
+.wsdc-chrome__dd.is-open .wsdc-chrome__pill svg {
+  transform: rotate(180deg);
+}
+
+.wsdc-chrome__dd {
+  position: relative;
+  display: inline-flex;
+}
+
+.wsdc-chrome__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 6;
+  min-width: 200px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: var(--wsdc-chrome-radius);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  background: var(--wsdc-color-surface, #ffffff);
+  transform-origin: top left;
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
+    transform var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
+}
+
+.wsdc-chrome__dd.is-open .wsdc-chrome__menu {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  transition-duration: var(--wsdc-chrome-enter);
+}
+
+.wsdc-chrome__menu a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--wsdc-color-text, #1f2937);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.wsdc-chrome__menu a:hover {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
+.wsdc-chrome__menu a.is-current {
+  font-weight: 600;
+}
+
+.wsdc-chrome__contact {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wsdc-chrome__contact-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 6px;
+  min-width: 36px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--wsdc-color-text-muted, #4b5563);
+  opacity: 0.5;
+  border-radius: 8px;
+  line-height: 0;
+  transition:
+    transform var(--wsdc-chrome-press) var(--wsdc-chrome-ease-out),
+    opacity var(--wsdc-chrome-press) ease;
+}
+
+.wsdc-chrome__contact-btn:hover {
+  opacity: 0.75;
+}
+
+.wsdc-chrome__contact-btn:active {
+  transform: scale(0.97);
+  opacity: 0.7;
+}
+
+.wsdc-chrome__contact-btn:focus-visible {
+  outline: 2px solid var(--wsdc-color-brand, #111827);
+  outline-offset: 2px;
+  opacity: 0.85;
+}
+
+.wsdc-chrome__contact-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  min-width: 180px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: var(--wsdc-chrome-radius);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  background: var(--wsdc-color-surface, #ffffff);
+  transform-origin: top right;
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
+    transform var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
+}
+
+.wsdc-chrome__contact.is-open .wsdc-chrome__contact-menu {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  transition-duration: var(--wsdc-chrome-enter);
+}
+
+.wsdc-chrome__contact-menu a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--wsdc-color-text, #1f2937);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.wsdc-chrome__contact-menu a:hover {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
+.wsdc-chrome__langs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.wsdc-chrome-page-pad {
+  /* Space below fixed chrome for page content */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
+}
+
+/**
+ * Production-like "Back to home" — quiet Evolved C treatment.
+ * Arrow via ::before (same pattern as static/css/style.css).
+ */
+.wsdc-back,
+a.back-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--wsdc-color-text, #1f2937);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+  opacity: 0.78;
+  line-height: 1.2;
+  position: relative;
+  z-index: 2;
+  transition: opacity var(--wsdc-chrome-press) ease;
+}
+
+.wsdc-back::before,
+a.back-link::before {
+  content: "←";
+  margin-right: 8px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.wsdc-back:hover,
+a.back-link:hover {
+  opacity: 1;
+}
+
+.wsdc-back:focus-visible,
+a.back-link:focus-visible {
+  outline: 2px solid var(--wsdc-color-brand, #111827);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wsdc-back.is-on-hero,
+a.back-link.is-on-hero {
+  color: rgba(255, 255, 255, 0.92);
+  opacity: 0.9;
+  margin-bottom: 24px;
+}
+
+.wsdc-back.is-on-hero:hover,
+a.back-link.is-on-hero:hover {
+  opacity: 1;
+}
+
+.wsdc-back.is-on-hero:focus-visible,
+a.back-link.is-on-hero:focus-visible {
+  outline-color: #fff;
+}
+
+@media (max-width: 720px) {
+  .wsdc-chrome {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .wsdc-chrome__spacer {
+    display: none;
+  }
+
+  .wsdc-chrome__langs {
+    margin-left: auto;
+  }
+
+  .wsdc-chrome__tip-bubble {
+    left: calc(100% + 8px);
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%) scale(0.96);
+    transform-origin: left center;
+    max-width: min(240px, calc(100vw - 64px));
+  }
+
+  .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
+    transform: translateY(-50%) scale(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .wsdc-chrome__tip:hover .wsdc-chrome__tip-bubble {
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
+  .wsdc-chrome-page-pad {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 96px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wsdc-chrome__menu,
+  .wsdc-chrome__contact-menu,
+  .wsdc-chrome__pill,
+  .wsdc-chrome__pill svg,
+  .wsdc-chrome__contact-btn,
+  .wsdc-chrome__brand {
+    transition: none !important;
+  }
+
+  .wsdc-chrome__menu,
+  .wsdc-chrome__contact-menu {
+    transform: none;
+  }
+}

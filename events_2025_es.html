@@ -37,6 +37,8 @@
 <meta content="Análisis de los principales eventos WSDC en 2025: cambios en los rankings globales, tendencias regionales, estadísticas sobre puntos y nuevos bailarines." property="twitter:description"/>
 <meta content="https://wsdc-analytics.github.io/events_background.png" property="twitter:image"/>
 <title>WSDC 2025: Eventos</title>
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
 <!-- Structured Data (Schema.org) -->
 <script type="application/ld+json">
     {
@@ -190,14 +192,7 @@
             align-items: center;
             margin-bottom: 24px;
         }
-
-        .language-switcher {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .language-switcher button {
+.language-switcher button {
             padding: 4px 0;
             background: none;
             border: none;
@@ -260,7 +255,7 @@
             border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
 
         .section {
@@ -286,10 +281,10 @@
         p {
             margin-bottom: 24px;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
-        .article-content p { text-align: justify; }
-        .article-content ul li { text-align: justify; }
+        .article-content p { text-align: left; }
+        .article-content ul li { text-align: left; }
 
         /* Tables */
         .table-scroll {
@@ -502,7 +497,7 @@
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             font-family: inherit;
         }
 
@@ -652,9 +647,7 @@
             .comments-tabs { flex-wrap: wrap; }
             .comments-tab { padding: 10px 16px; font-size: 14px; }
             .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .language-switcher { align-self: flex-end; }
-            
-            .section { margin: 32px 0; }
+.section { margin: 32px 0; }
             .section-title { font-size: 24px; }
             
             /* Table adjustments for mobile */
@@ -786,19 +779,25 @@
         }
     </style>
 <script src="static/js/lang-redirect.js"></script>
+  <link rel="stylesheet" href="static/css/article-shell.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     
+  <div
+    data-site-chrome
+    data-active="home"
+    data-lang="es"
+    data-home-href="index.html"
+    data-lang-mode="navigate"
+    data-lang-ru="events_2025.html"
+    data-lang-en="events_2025_en.html"
+    data-lang-es="events_2025_es.html"
+  ></div>
 <div class="magazine-container">
 <header class="article-header">
 <div class="article-header-top">
-<a class="back-link" href="index.html" id="backLink" style="color: white; position: relative; z-index: 2;">Back to home</a>
-<div class="language-switcher" role="group" aria-label="Выбор языка">
-<button class="lang-btn" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
-<button class="lang-btn" data-lang="en" aria-label="Switch to English" aria-pressed="false">EN</button>
-<button class="lang-btn active" data-lang="es" aria-label="Cambiar a español" aria-pressed="true">ES</button>
-</div>
+<a class="wsdc-back is-on-hero" href="index.html?lang=es" data-wsdc-back id="backLink">Volver al inicio</a>
 </div>
 <h1 class="article-title">WSDC 2025: Eventos</h1>
 <div class="article-subtitle">Cambios en el top global y tendencias regionales.</div>
@@ -1519,7 +1518,7 @@
         updateBackLink();
 
         // Manejadores de cambio de idioma
-        const langButtons = document.querySelectorAll('.lang-btn');
+        const langButtons = document.querySelectorAll('.language-switcher .lang-btn');
         langButtons.forEach(btn => {
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
@@ -1665,5 +1664,15 @@
     }
 })();
 </script>
+  <script src="static/js/site-chrome.js" defer></script>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var urlLang = urlParams.get('lang');
+      if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+        localStorage.setItem('wsdc-lang', urlLang);
+      }
+    })();
+  </script>
 </body>
 </html>

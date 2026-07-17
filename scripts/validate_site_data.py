@@ -74,11 +74,47 @@ def validate_points_summaries() -> None:
     print("[OK] points_summaries.json")
 
 
+def validate_homepage_kpis() -> None:
+    path = DATA_DIR / "homepage_kpis.json"
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("homepage_kpis.json must be an object")
+    for field in ("as_of", "totals", "comparisons"):
+        if field not in data:
+            fail(f"homepage_kpis.json missing field: {field}")
+    totals = data["totals"]
+    if not isinstance(totals, dict):
+        fail("homepage_kpis.json.totals must be an object")
+    for metric in ("events", "points", "dancers"):
+        if metric not in totals:
+            fail(f"homepage_kpis.json.totals missing: {metric}")
+    comparisons = data["comparisons"]
+    if not isinstance(comparisons, dict):
+        fail("homepage_kpis.json.comparisons must be an object")
+    for scale in ("week", "month", "year"):
+        block = comparisons.get(scale)
+        if not isinstance(block, dict):
+            fail(f"homepage_kpis.json.comparisons.{scale} must be an object")
+        for field in ("label", "period", "increment"):
+            if field not in block:
+                fail(f"homepage_kpis.json.comparisons.{scale} missing: {field}")
+        period = block["period"]
+        if not isinstance(period, dict) or "start" not in period or "end" not in period:
+            fail(f"homepage_kpis.json.comparisons.{scale}.period must include start/end")
+        increment = block["increment"]
+        if not isinstance(increment, dict):
+            fail(f"homepage_kpis.json.comparisons.{scale}.increment must be an object")
+        for metric in ("events", "points", "dancers"):
+            if metric not in increment:
+                fail(f"homepage_kpis.json.comparisons.{scale}.increment missing: {metric}")
+    print("[OK] homepage_kpis.json")
+
+
 def main() -> None:
     validate_articles()
     validate_points_summaries()
+    validate_homepage_kpis()
     print("[OK] Data validation passed.")
-
 
 if __name__ == "__main__":
     main()

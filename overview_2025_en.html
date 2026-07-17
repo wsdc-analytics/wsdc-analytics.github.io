@@ -29,7 +29,9 @@
     <meta content="WSDC 2025: Continental Differences in Development Dynamics" property="twitter:title"/>
     <meta content="Fresh data from 2025 reveals a community at a crossroads: a mature American heartland and a European frontier expanding at breakneck speed." property="twitter:description"/>
     <title>WSDC 2025: Continental Differences in Development Dynamics</title>
-    <!-- Structured Data (Schema.org) -->
+      <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+<!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -184,14 +186,7 @@
             align-items: center;
             margin-bottom: 24px;
         }
-
-        .language-switcher {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .language-switcher button {
+.language-switcher button {
             padding: 4px 0;
             background: none;
             border: none;
@@ -269,7 +264,7 @@
             border-left: 3px solid var(--color-primary);
             padding-left: 32px;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
 
         .section {
@@ -291,7 +286,7 @@
             color: var(--text-primary);
             margin-bottom: 0;
             max-width: 700px;
-            text-align: justify;
+            text-align: left;
         }
         
         .section-content + .data-visualization {
@@ -303,7 +298,7 @@
         }
         
         .article-content p {
-            text-align: justify;
+            text-align: left;
         }
 
         /* Image containers */
@@ -335,7 +330,7 @@
             font-size: 28px;
             font-style: italic;
             color: var(--text-primary);
-            text-align: justify;
+            text-align: left;
             padding: 0;
             margin: 60px 0;
             border-left: 4px solid var(--color-primary);
@@ -452,12 +447,7 @@
                 align-items: flex-start;
                 gap: 16px;
             }
-            
-            .language-switcher {
-                align-self: flex-end;
-            }
-            
-            .comparison-table {
+.comparison-table {
                 font-size: 14px;
             }
         }
@@ -875,7 +865,7 @@
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
             font-family: inherit;
         }
 
@@ -1127,21 +1117,27 @@
         }
     </style>
 <script src="static/js/lang-redirect.js"></script>
+  <link rel="stylesheet" href="static/css/article-shell.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     
-    <div class="magazine-container">
+      <div
+    data-site-chrome
+    data-active="home"
+    data-lang="en"
+    data-home-href="index.html"
+    data-lang-mode="navigate"
+    data-lang-ru="overview_2025.html"
+    data-lang-en="overview_2025_en.html"
+    data-lang-es="overview_2025_es.html"
+  ></div>
+<div class="magazine-container">
         <!-- Article Header -->
         <header class="article-header">
             <div class="article-header-top">
-                <a class="back-link" href="/" id="backLink" style="color: white; position: relative; z-index: 2;">← Back to home</a>
-                <div class="language-switcher" role="group" aria-label="Выбор языка">
-                    <button class="lang-btn" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
-                    <button class="lang-btn active" data-lang="en" aria-label="Switch to English" aria-pressed="true">EN</button>
-                    <button class="lang-btn" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
-                </div>
-            </div>
+                <a class="wsdc-back is-on-hero" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+</div>
             <h1 class="article-title">WSDC 2025:<br>Continental Differences in Development Dynamics</h1>
             <div class="article-subtitle">2025 Results: America maintains stability while Europe breaks growth records.</div>
         </header>
@@ -1679,7 +1675,7 @@
         updateBackLink();
 
         // Обработчики переключения языка
-        const langButtons = document.querySelectorAll('.lang-btn');
+        const langButtons = document.querySelectorAll('.language-switcher .lang-btn');
         langButtons.forEach(btn => {
             if (btn.dataset.lang === currentLang) {
                 btn.classList.add('active');
@@ -1828,6 +1824,16 @@
     }
 })();
 </script>
+  <script src="static/js/site-chrome.js" defer></script>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var urlLang = urlParams.get('lang');
+      if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+        localStorage.setItem('wsdc-lang', urlLang);
+      }
+    })();
+  </script>
 </body>
 </html>
 

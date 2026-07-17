@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
   <style>
     :root {
       --color-primary: #2d3748;
@@ -36,7 +38,8 @@
       flex-direction: column;
       overflow: hidden;
     }
-    .header {
+    .dash-chrome { flex-shrink: 0; }
+.header {
       flex-shrink: 0;
       padding: 12px 24px;
       background: var(--bg-primary);
@@ -76,7 +79,7 @@
       line-height: 1;
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: transform 0.2s ease, opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
       font-family: inherit;
     }
     .dashboards-nav .dropdown-btn:hover {
@@ -185,9 +188,8 @@
     }
     .viz-card {
       border: 1px solid var(--border-color);
-      border-radius: 14px;
+      border-radius: 12px;
       background: #fff;
-      box-shadow: var(--shadow-md);
       overflow: hidden;
       flex: 1;
       min-height: 0;
@@ -248,34 +250,13 @@
 </head>
 <body>
   <main class="page">
-    <header class="header">
-      <a href="index.html" class="back-link">← Back to home</a>
-      <span class="header-separator" aria-hidden="true">|</span>
-      <nav class="dashboards-nav" aria-label="Dashboards">
-        <div class="dropdown-wrapper" id="dashboardsDropdown">
-          <button type="button" class="dropdown-btn" id="dashboardsBtn" aria-expanded="false" aria-haspopup="true" aria-controls="dashboardsMenu">
-            <span>Metrics</span>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-          <ul class="dropdown-menu" id="dashboardsMenu" role="menu">
-            <li role="none"><a href="dashboard.html" role="menuitem">Metrics</a></li>
-            <li role="none"><a href="navigator.html" role="menuitem">Events Navigator</a></li>
-            <li role="none"><a href="rankings.html" role="menuitem">Dancer's Ranking</a></li>
-            <li role="none"><a href="dancer-profile.html" role="menuitem">Dancer Profile</a></li>
-            <li role="none"><a href="secondary_role_distribution_dashboard_en.html" role="menuitem">Secondary Role Points</a></li>
-            <li role="none"><a href="city-clouds.html" role="menuitem">Cities Cloud</a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+    <div class="dash-chrome">
+      <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="secondary_role_distribution_dashboard_en.html"></div>
+                  <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+</div>
 
     <section class="content">
 
-    <h1 class="title">Secondary-Role Points Distribution by Year and Country</h1>
-    <p class="lead">
-      This dashboard shows how points earned while dancing in a secondary role are distributed across countries and years.
-      Use filters to compare role and division slices, identify where secondary-role contribution is strongest, and track the year-to-year dynamic.
-    </p>
     <div class="meta-row">
       <p class="data-note">Data coverage: fixed snapshots for 2023-2025, plus a live 2026 partial slice (as of 2026-07-09).</p>
       <p class="size-note">Size: dancers in selected slice</p>
@@ -291,22 +272,6 @@
     </section>
     </section>
   </main>
-  <script>
-    (function () {
-      const wrapper = document.getElementById("dashboardsDropdown");
-      const btn = document.getElementById("dashboardsBtn");
-      if (!wrapper || !btn) return;
-      btn.addEventListener("click", function () {
-        const open = wrapper.classList.toggle("open");
-        btn.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-      document.addEventListener("click", function (event) {
-        if (!wrapper.contains(event.target)) {
-          wrapper.classList.remove("open");
-          btn.setAttribute("aria-expanded", "false");
-        }
-      });
-    })();
-  </script>
+  <script src="static/js/site-chrome.js" defer></script>
 </body>
 </html>

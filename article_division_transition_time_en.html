@@ -28,7 +28,9 @@
   <link rel="dns-prefetch" href="https://www.googletagmanager.com">
   <link rel="preload" href="article_division_transition_time_header.jpg" as="image" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Faster Division Transitions: Should Anything Be Done? | WSDC Analytics</title>
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+<title>Faster Division Transitions: Should Anything Be Done? | WSDC Analytics</title>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -61,7 +63,7 @@
       --color-primary-dark: #1a202c;
       --color-primary-light: #4a5568;
       --color-link-accent: #2563eb;
-      --accent: #6366f1;
+      --accent: #111827;
       --bg-primary: #ffffff;
       --bg-secondary: #ffffff;
       --bg-tertiary: #f7fafc;
@@ -109,7 +111,7 @@
     .header {
       background: var(--color-primary) url("article_division_transition_time_header.jpg") center center / cover no-repeat;
       color: #fff;
-      padding: 100px 80px 80px;
+      padding: 80px 80px 72px;
       border-bottom: 1px solid var(--border-color);
       position: relative;
       will-change: transform;
@@ -140,12 +142,7 @@
       transition: opacity var(--transition-base);
     }
     .back-link:hover { opacity: 0.8; }
-    .language-switcher {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-    .language-switcher button {
+.language-switcher button {
       padding: 4px 0;
       background: none;
       border: none;
@@ -196,7 +193,7 @@
       margin-right: auto;
     }
     .section p {
-      text-align: justify;
+      text-align: left;
       text-justify: inter-word;
       hyphens: none;
       -webkit-hyphens: none;
@@ -538,8 +535,7 @@
       body { font-size: 16px; }
       .header { padding: 50px 20px 48px; }
       .article-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .language-switcher { align-self: flex-end; }
-      .article-content { padding: 40px 16px 48px; }
+.article-content { padding: 40px 16px 48px; }
       .article-footer { padding: 32px 16px; }
       .article-reactions { text-align: left; }
       .title { font-size: 32px; letter-spacing: -1px; }
@@ -654,7 +650,7 @@
       background: transparent;
       flex-shrink: 0;
     }
-    .chart-legend .legend-line.series-indigo { border-top: 2px solid #6366f1; }
+    .chart-legend .legend-line.series-indigo { border-top: 2px solid #111827; }
     .chart-legend .legend-line.series-teal { border-top: 2px solid #0d9488; }
     .chart-legend .legend-line.series-amber { border-top: 2px solid #f59e0b; }
     .chart-legend .legend-line.series-amber-hatch {
@@ -672,7 +668,7 @@
       );
     }
     .chart-legend .legend-line.series-slate { border-top: 2px solid #94a3b8; }
-    .chart-legend .legend-line.series-indigo-dash { border-top: 2px dashed rgba(99, 102, 241, 0.55); }
+    .chart-legend .legend-line.series-indigo-dash { border-top: 2px dashed rgba(17, 24, 39, 0.55); }
     .chart-legend .legend-line.series-teal-dash { border-top: 2px dashed rgba(13, 148, 136, 0.55); }
     .chartjs-ext-tooltip {
       position: absolute;
@@ -769,20 +765,26 @@
   </style>
 
   <script src="static/js/lang-redirect.js"></script>
+  <link rel="stylesheet" href="static/css/article-shell.css">
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
+  <div
+    data-site-chrome
+    data-active="home"
+    data-lang="en"
+    data-home-href="index.html"
+    data-lang-mode="navigate"
+    data-lang-ru="article_division_transition_time.html"
+    data-lang-en="article_division_transition_time_en.html"
+    data-lang-es="article_division_transition_time_es.html"
+  ></div>
   <div class="magazine-container">
     <header class="header">
-      <div class="article-header-top">
-        <a class="back-link" href="/" id="backLink">← Back to Home</a>
-        <div class="language-switcher" role="group" aria-label="Language selection">
-          <button class="lang-btn" data-lang="ru" aria-label="Переключить на русский язык" aria-pressed="false">RU</button>
-          <button class="lang-btn active" data-lang="en" aria-label="Switch to English" aria-pressed="true">EN</button>
-          <button class="lang-btn" data-lang="es" aria-label="Cambiar a español" aria-pressed="false">ES</button>
-        </div>
+            <div class="article-header-top">
+        <a class="wsdc-back is-on-hero" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
       </div>
-      <h1 class="title">Faster Division Transitions: Should Anything Be Done?</h1>
+<h1 class="title">Faster Division Transitions: Should Anything Be Done?</h1>
       <p class="subtitle">What happens to division transitions when there are more events but thresholds stay the same</p>
     </header>
     <main id="main-content" class="article-content">
@@ -1010,10 +1012,10 @@
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
 
-  var BAR_BASE = 'rgba(99, 102, 241, 0.65)';
+  var BAR_BASE = 'rgba(17, 24, 39, 0.65)';
   var BAR_2025 = 'rgba(13, 148, 136, 0.65)';
   var BAR_2026 = 'rgba(245, 158, 11, 0.75)';
-  var LINE_M1 = '#6366f1';
+  var LINE_M1 = '#111827';
   var LINE_M2 = '#0d9488';
   var LINE_AMBER = '#f59e0b';
   var VOLUME_TRANSITION_LINES = [
@@ -1229,7 +1231,7 @@
       data: {
         labels: divisions,
         datasets: [
-          { label: '2015–19', data: baseline, backgroundColor: BAR_BASE, tooltipColor: '#6366f1', borderRadius: 6, maxBarThickness: 48 },
+          { label: '2015–19', data: baseline, backgroundColor: BAR_BASE, tooltipColor: '#111827', borderRadius: 6, maxBarThickness: 48 },
           { label: '2025', data: y2025, backgroundColor: BAR_2025, tooltipColor: '#0d9488', borderRadius: 6, maxBarThickness: 48 },
           {
             label: '2026',
@@ -1267,7 +1269,7 @@
   }
 
   var DIVISION_LINE_COLORS = {
-    Novice: '#6366f1',
+    Novice: '#111827',
     Intermediate: '#0d9488',
     Advanced: '#d97706'
   };
@@ -1607,7 +1609,7 @@
             label: 'Threshold adjusted for 2025 pace',
             data: rows.map(function(r) { return r.reset25; }),
             backgroundColor: BAR_BASE,
-            tooltipColor: '#6366f1',
+            tooltipColor: '#111827',
             borderRadius: 6,
             maxBarThickness: 44
           },
@@ -1818,42 +1820,14 @@
   }
 })();
   </script>
+  <script src="static/js/site-chrome.js" defer></script>
   <script>
     (function() {
-      function getCurrentLanguage() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var urlLang = urlParams.get('lang');
-        if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) return urlLang;
-        var storedLang = localStorage.getItem('wsdc-lang');
-        if (storedLang && ['ru', 'en', 'es'].includes(storedLang)) return storedLang;
-        return 'ru';
+      var urlParams = new URLSearchParams(window.location.search);
+      var urlLang = urlParams.get('lang');
+      if (urlLang && ['ru', 'en', 'es'].includes(urlLang)) {
+        localStorage.setItem('wsdc-lang', urlLang);
       }
-      function setLanguage(lang) {
-        localStorage.setItem('wsdc-lang', lang);
-        if (lang === 'ru') window.location.href = 'article_division_transition_time.html?lang=ru';
-        else if (lang === 'en') window.location.href = 'article_division_transition_time_en.html?lang=en';
-        else if (lang === 'es') window.location.href = 'article_division_transition_time_es.html?lang=es';
-      }
-      function updateBackLink() {
-        var lang = getCurrentLanguage();
-        var backLink = document.getElementById('backLink');
-        if (backLink) backLink.href = '/?lang=' + lang;
-      }
-      var currentLang = getCurrentLanguage();
-      updateBackLink();
-      var langButtons = document.querySelectorAll('.lang-btn');
-      langButtons.forEach(function(btn) {
-        if (btn.dataset.lang === currentLang) {
-          btn.classList.add('active');
-          btn.setAttribute('aria-pressed', 'true');
-        } else {
-          btn.classList.remove('active');
-          btn.setAttribute('aria-pressed', 'false');
-        }
-        btn.addEventListener('click', function() {
-          if (!btn.disabled) setLanguage(btn.dataset.lang);
-        });
-      });
     })();
   </script>
 </body>
