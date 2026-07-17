@@ -438,6 +438,19 @@ a.back-link:focus-visible {
   border-radius: 4px;
 }
 
+/**
+ * Dashboards: align Back to home under the WSDC logo
+ * (same horizontal track as .wsdc-chrome-wrap + .wsdc-chrome + brand pad).
+ */
+.dash-chrome > .wsdc-back {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 10px auto 8px;
+  padding-left: calc(12px + 14px + 2px);
+  box-sizing: border-box;
+}
+
 .wsdc-back.is-on-hero,
 a.back-link.is-on-hero {
   color: rgba(255, 255, 255, 0.92);
