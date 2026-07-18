@@ -327,21 +327,15 @@
     .peer-gap {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.55rem;
-      margin: 0.35rem 0 0.85rem;
+      justify-content: flex-start;
+      margin: 0.15rem 0 0.55rem;
+      padding-left: 0.15rem;
       color: var(--muted);
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .peer-gap::before,
-    .peer-gap::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--line);
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      line-height: 1;
+      user-select: none;
     }
 
     .stack-era { margin: 1rem 0 0.25rem; width: 100%; }
@@ -866,7 +860,7 @@
     const parts = [];
     rows.forEach((r, idx) => {
       if (!selfInTop && idx === topN) {
-        parts.push(`<div class="peer-gap" aria-hidden="true">место ${rank}</div>`);
+        parts.push(`<div class="peer-gap" aria-hidden="true">···</div>`);
       }
       const v = r[key] || 0;
       const w = ((100 * v) / max).toFixed(1);
