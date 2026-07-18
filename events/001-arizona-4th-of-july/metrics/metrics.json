@@ -3,11 +3,11 @@
   "generated": "2026-07-17",
   "definitions": {
     "skill_jj": "West Coast Swing + Newcomer/Novice/Intermediate/Advanced/All-Star/Champion, points > 0",
-    "new_dancers": "dancers whose first-ever WSDC points (any event) fall on this event date",
+    "new_dancers": "dancers whose first-ever WSDC points row (any division, points>0) is Skill JJ at this event",
     "wins": "result_standardized = '1' at this event (Skill JJ)",
     "started_here_notable": "first WSDC points at this event AND Champion points in calendar years >= (max_year - 19); here >= 2007 (last 20 years)",
     "pairs": "All-Star/Champion place-matched Leader+Follower with same result_standardized in {1,2,3,4,5} same event_year+division (JJ finals convention; not stored partner_id)",
-    "peer_context": "Among Skill JJ events with >=20 edition years in registry; ranks by unique dancers / first-points-here / edition years",
+    "peer_context": "Among Skill JJ events with >=20 edition years; ranks by unique dancers / first-ever WSDC points at this event / edition years",
     "launchpad": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
     "division_era_mix": "Share of Skill JJ points at this event by division, aggregated by era (COVID gap years excluded from 2022–2026 bucket)",
     "retention": "Return = scored points at this event in year Y and again in Y+1; editions = distinct years with points here"
@@ -529,7 +529,7 @@
           "unique_dancers": 1652,
           "total_points": 11367,
           "is_this_event": false,
-          "first_points_here": 369
+          "first_points_here": 367
         },
         {
           "event_name": "Boogie By The Bay",
@@ -537,7 +537,7 @@
           "unique_dancers": 1519,
           "total_points": 11052,
           "is_this_event": false,
-          "first_points_here": 196
+          "first_points_here": 184
         },
         {
           "event_name": "Capital Swing Dance Convention",
@@ -545,7 +545,7 @@
           "unique_dancers": 1518,
           "total_points": 9210,
           "is_this_event": false,
-          "first_points_here": 340
+          "first_points_here": 329
         },
         {
           "event_name": "Summer Hummer",
@@ -553,7 +553,7 @@
           "unique_dancers": 1424,
           "total_points": 8549,
           "is_this_event": false,
-          "first_points_here": 355
+          "first_points_here": 337
         },
         {
           "event_name": "Liberty Swing Dance Championships",
@@ -561,7 +561,7 @@
           "unique_dancers": 1418,
           "total_points": 8356,
           "is_this_event": false,
-          "first_points_here": 245
+          "first_points_here": 243
         },
         {
           "event_name": "Swing Fling",
@@ -569,7 +569,7 @@
           "unique_dancers": 1370,
           "total_points": 8358,
           "is_this_event": false,
-          "first_points_here": 409
+          "first_points_here": 402
         },
         {
           "event_name": "Phoenix 4th of July",
@@ -577,7 +577,7 @@
           "unique_dancers": 1364,
           "total_points": 8284,
           "is_this_event": true,
-          "first_points_here": 257
+          "first_points_here": 245
         },
         {
           "event_name": "Boston Tea Party",
@@ -585,7 +585,7 @@
           "unique_dancers": 1343,
           "total_points": 8173,
           "is_this_event": false,
-          "first_points_here": 415
+          "first_points_here": 402
         },
         {
           "event_name": "Easter Swing",
@@ -593,7 +593,7 @@
           "unique_dancers": 1286,
           "total_points": 8581,
           "is_this_event": false,
-          "first_points_here": 265
+          "first_points_here": 258
         },
         {
           "event_name": "J&J O'Rama",
@@ -601,7 +601,7 @@
           "unique_dancers": 1279,
           "total_points": 8554,
           "is_this_event": false,
-          "first_points_here": 154
+          "first_points_here": 141
         },
         {
           "event_name": "SwingTime",
@@ -609,7 +609,7 @@
           "unique_dancers": 1265,
           "total_points": 7535,
           "is_this_event": false,
-          "first_points_here": 254
+          "first_points_here": 250
         },
         {
           "event_name": "Monterey Swing Fest",
@@ -617,31 +617,31 @@
           "unique_dancers": 1154,
           "total_points": 7804,
           "is_this_event": false,
-          "first_points_here": 208
+          "first_points_here": 200
         }
       ],
       "peers_top12_by_first_points": [
         {
-          "event_name": "Boston Tea Party",
-          "editions": 26,
-          "unique_dancers": 1281,
-          "first_points_here": 415,
-          "total_points": 7796,
-          "is_this_event": false
-        },
-        {
           "event_name": "Swing Fling",
           "editions": 29,
           "unique_dancers": 1336,
-          "first_points_here": 409,
+          "first_points_here": 402,
           "total_points": 8138,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 402,
+          "total_points": 7796,
           "is_this_event": false
         },
         {
           "event_name": "MADjam",
           "editions": 21,
           "unique_dancers": 1652,
-          "first_points_here": 369,
+          "first_points_here": 367,
           "total_points": 11367,
           "is_this_event": false
         },
@@ -649,7 +649,7 @@
           "event_name": "Summer Hummer",
           "editions": 25,
           "unique_dancers": 1413,
-          "first_points_here": 355,
+          "first_points_here": 337,
           "total_points": 8468,
           "is_this_event": false
         },
@@ -657,7 +657,7 @@
           "event_name": "Capital Swing Dance Convention",
           "editions": 30,
           "unique_dancers": 1518,
-          "first_points_here": 340,
+          "first_points_here": 329,
           "total_points": 9210,
           "is_this_event": false
         },
@@ -665,7 +665,7 @@
           "event_name": "Countdown Swing Boston",
           "editions": 22,
           "unique_dancers": 937,
-          "first_points_here": 324,
+          "first_points_here": 304,
           "total_points": 5463,
           "is_this_event": false
         },
@@ -673,31 +673,31 @@
           "event_name": "Easter Swing",
           "editions": 30,
           "unique_dancers": 1359,
-          "first_points_here": 265,
+          "first_points_here": 258,
           "total_points": 9226,
+          "is_this_event": false
+        },
+        {
+          "event_name": "SwingTime",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 250,
+          "total_points": 7535,
           "is_this_event": false
         },
         {
           "event_name": "Phoenix 4th of July",
           "editions": 34,
           "unique_dancers": 1364,
-          "first_points_here": 257,
+          "first_points_here": 245,
           "total_points": 8284,
           "is_this_event": true
-        },
-        {
-          "event_name": "SwingTime",
-          "editions": 31,
-          "unique_dancers": 1265,
-          "first_points_here": 254,
-          "total_points": 7535,
-          "is_this_event": false
         },
         {
           "event_name": "Liberty Swing Dance Championships",
           "editions": 21,
           "unique_dancers": 1418,
-          "first_points_here": 245,
+          "first_points_here": 243,
           "total_points": 8356,
           "is_this_event": false
         },
@@ -705,7 +705,7 @@
           "event_name": "Bridgetown Swing Boogie",
           "editions": 21,
           "unique_dancers": 806,
-          "first_points_here": 219,
+          "first_points_here": 214,
           "total_points": 5054,
           "is_this_event": false
         },
@@ -713,12 +713,12 @@
           "event_name": "FreZno Dance Classic",
           "editions": 26,
           "unique_dancers": 830,
-          "first_points_here": 216,
+          "first_points_here": 202,
           "total_points": 5289,
           "is_this_event": false
         }
       ],
-      "rank_by_first_points_among_long": 8
+      "rank_by_first_points_among_long": 9
     },
     "launchpad": {
       "definition": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
