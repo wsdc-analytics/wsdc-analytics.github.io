@@ -83,12 +83,13 @@
     }
     .article-header-underlay {
       background: url("../assets/hero_underlay.png") center / cover no-repeat;
-      opacity: 0.55;
+      opacity: 0.68;
       mix-blend-mode: screen;
     }
     .article-header-wash {
+      /* Stronger at the bottom where title sits, so white event marks don't collide with white type */
       background:
-        linear-gradient(180deg, rgba(45, 55, 72, 0.22) 0%, rgba(45, 55, 72, 0.38) 48%, rgba(45, 55, 72, 0.58) 100%);
+        linear-gradient(180deg, rgba(45, 55, 72, 0.28) 0%, rgba(45, 55, 72, 0.48) 42%, rgba(20, 28, 42, 0.72) 100%);
       opacity: 1;
     }
     .article-header > *:not(.article-header-media) { position: relative; z-index: 1; }
