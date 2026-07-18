@@ -657,8 +657,8 @@
         4TH of July Convention в общем ранжировании.
       </p>
       <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Метрика сравнения ивентов">
-        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">С поинтами</button>
-        <button type="button" role="tab" data-metric="first_points_here" aria-selected="false">Первые поинты</button>
+        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
+        <button type="button" role="tab" data-metric="first_points_here" aria-selected="false">Новые танцоры</button>
       </div>
       <div class="bar-chart" id="peerBars" aria-label="Ивенты по выбранной метрике"></div>
       <p class="footnote" id="peerFoot">
@@ -679,9 +679,9 @@
         в 1994 таких 17. Сейчас обычно единицы или небольшой десяток в год.
       </p>
       <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Метрика траектории">
-        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">С поинтами</button>
+        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
         <button type="button" role="tab" data-metric="total_points" aria-selected="false">Поинты</button>
-        <button type="button" role="tab" data-metric="new_dancers" aria-selected="false">Новые</button>
+        <button type="button" role="tab" data-metric="new_dancers" aria-selected="false">Новые танцоры</button>
       </div>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="trajTip" aria-hidden="true"></div>
@@ -784,7 +784,7 @@
       </p>
       <div class="metric-toggles" id="peopleToggles" role="tablist" aria-label="Метрика топ-5">
         <button type="button" role="tab" data-metric="points" class="is-active" aria-selected="true">Поинты</button>
-        <button type="button" role="tab" data-metric="editions" aria-selected="false">Проведения</button>
+        <button type="button" role="tab" data-metric="editions" aria-selected="false">Количество проведений</button>
         <button type="button" role="tab" data-metric="wins" aria-selected="false">Победы</button>
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Топ-5 танцоров"></div>
@@ -1077,20 +1077,38 @@
     return series;
   }
 
+  /** Year ticks: always endpoints; evenly spaced intermediates that do not crowd the ends. */
+  function pickYearTicks(y0, y1, maxLabels) {
+    const span = y1 - y0;
+    if (span <= 0) return [y0];
+    const steps = [5, 10, 4, 8, 2];
+    let best = [y0, y1];
+    for (const step of steps) {
+      const mid = [];
+      const first = Math.ceil((y0 + 1) / step) * step;
+      for (let y = first; y < y1; y += step) mid.push(y);
+      const minEdge = Math.max(3, Math.ceil(step * 0.75));
+      const kept = mid.filter((y) => y - y0 >= minEdge && y1 - y >= minEdge);
+      const ticks = [y0, ...kept, y1];
+      if (ticks.length <= maxLabels && ticks.length >= best.length) best = ticks;
+    }
+    return best;
+  }
+
   function renderTraj(metric) {
     const svg = document.getElementById("trajChart");
     const tip = document.getElementById("trajTip");
     const series = buildSeries(metric);
     const labels = {
-      total_points: "Поинты (Jack&Jill по уровням)",
-      unique_dancers: "Танцоры с поинтами",
-      new_dancers: "Новые (первые поинты WSDC здесь)"
+      total_points: "Поинты",
+      unique_dancers: "Танцоры",
+      new_dancers: "Новые танцоры"
     };
     document.getElementById("trajCaption").textContent =
       labels[metric] + ". Наведите на точку: год и значение.";
 
     const W = 720, H = 280;
-    const pad = { t: 16, r: 12, b: 36, l: 36 };
+    const pad = { t: 16, r: 16, b: 36, l: 36 };
     const iw = W - pad.l - pad.r;
     const ih = H - pad.t - pad.b;
     const vals = series.map((s) => s.value).filter((v) => v != null);
@@ -1128,11 +1146,14 @@
       gapRects += `<rect x="${x0}" y="${pad.t}" width="${Math.max(x1 - x0, 2)}" height="${ih}" fill="#e8ebf0"/>`;
     });
 
+    const y0 = series[0].year;
+    const y1 = series[n - 1].year;
+    const yearTicks = new Set(pickYearTicks(y0, y1, 8));
     let xLabels = "";
     series.forEach((s, i) => {
-      if (i === 0 || i === n - 1 || s.year % 4 === 0) {
-        xLabels += `<text x="${xAt(i)}" y="${H - 14}" text-anchor="middle" font-size="11" fill="#6b7280">${s.year}</text>`;
-      }
+      if (!yearTicks.has(s.year)) return;
+      const anchor = i === 0 ? "start" : i === n - 1 ? "end" : "middle";
+      xLabels += `<text x="${xAt(i)}" y="${H - 14}" text-anchor="${anchor}" font-size="11" fill="#6b7280">${s.year}</text>`;
     });
 
     const dots = series.map((s, i) => {
