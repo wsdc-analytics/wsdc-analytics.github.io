@@ -42,11 +42,14 @@
       background: var(--paper);
     }
 
-    /* Series underlay (locked): ../assets/hero_underlay.png
-       + per-event blurred accent: assets/hero_fullwidth.png
-       + readability wash (::after), same stacking idea as other article heroes */
+    /* Hero stack (series):
+       1) event asset from site (blurred) — bottom
+       2) locked ChatGPT underlay — middle, brightness matched to other articles
+       3) slate wash like article_3year_rule (::before opacity ~0.5)
+       4) title / subtitle — top */
     .article-header {
-      background: #0b1220 url("../assets/hero_underlay.png") center / cover no-repeat;
+      --hero-slate: #2d3748;
+      background: var(--hero-slate);
       color: #fff;
       padding: 100px var(--pad-x) 80px;
       position: relative;
@@ -56,26 +59,35 @@
       justify-content: flex-end;
       overflow: hidden;
     }
-    .article-header::before {
-      content: "";
-      position: absolute;
-      inset: -24px;
-      background: url("assets/hero_fullwidth.png") center / cover no-repeat;
-      filter: blur(22px) saturate(1.08);
-      opacity: 0.5;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .article-header::after {
-      content: "";
+    .article-header-media {
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(180deg, rgba(11, 18, 32, 0.28) 0%, rgba(11, 18, 32, 0.58) 52%, rgba(11, 18, 32, 0.86) 100%);
       z-index: 0;
       pointer-events: none;
+      overflow: hidden;
     }
-    .article-header > * { position: relative; z-index: 1; }
+    .article-header-event,
+    .article-header-underlay,
+    .article-header-wash {
+      position: absolute;
+      inset: 0;
+    }
+    .article-header-event {
+      inset: -28px;
+      background: url("assets/hero_fullwidth.png") center / cover no-repeat;
+      filter: blur(18px) saturate(1.05);
+      transform: scale(1.04);
+    }
+    .article-header-underlay {
+      background: url("../assets/hero_underlay.png") center / cover no-repeat;
+      opacity: 0.72;
+      mix-blend-mode: screen;
+    }
+    .article-header-wash {
+      background: var(--hero-slate);
+      opacity: 0.52;
+    }
+    .article-header > *:not(.article-header-media) { position: relative; z-index: 1; }
     .article-eyebrow {
       font-size: 12px;
       text-transform: uppercase;
@@ -423,6 +435,11 @@
 
 <div class="magazine-container">
   <header class="article-header">
+    <div class="article-header-media" aria-hidden="true">
+      <div class="article-header-event"></div>
+      <div class="article-header-underlay"></div>
+      <div class="article-header-wash"></div>
+    </div>
     <div class="article-eyebrow">Портрет события · Jack&amp;Jill по уровням</div>
     <h1 class="article-title">4th of July Convention</h1>
     <p class="article-subtitle">Финикс, Аризона · 1991-2026 · 34 проведения в реестре WSDC</p>
