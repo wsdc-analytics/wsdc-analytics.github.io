@@ -657,8 +657,8 @@
         4TH of July Convention в общем ранжировании.
       </p>
       <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Метрика сравнения ивентов">
-        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">С поинтами</button>
-        <button type="button" role="tab" data-metric="first_points_here" aria-selected="false">Первые поинты</button>
+        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
+        <button type="button" role="tab" data-metric="first_points_here" aria-selected="false">Новые танцоры</button>
       </div>
       <div class="bar-chart" id="peerBars" aria-label="Ивенты по выбранной метрике"></div>
       <p class="footnote" id="peerFoot">
@@ -679,9 +679,9 @@
         в 1994 таких 17. Сейчас обычно единицы или небольшой десяток в год.
       </p>
       <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Метрика траектории">
-        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">С поинтами</button>
+        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
         <button type="button" role="tab" data-metric="total_points" aria-selected="false">Поинты</button>
-        <button type="button" role="tab" data-metric="new_dancers" aria-selected="false">Новые</button>
+        <button type="button" role="tab" data-metric="new_dancers" aria-selected="false">Новые танцоры</button>
       </div>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="trajTip" aria-hidden="true"></div>
@@ -784,7 +784,7 @@
       </p>
       <div class="metric-toggles" id="peopleToggles" role="tablist" aria-label="Метрика топ-5">
         <button type="button" role="tab" data-metric="points" class="is-active" aria-selected="true">Поинты</button>
-        <button type="button" role="tab" data-metric="editions" aria-selected="false">Проведения</button>
+        <button type="button" role="tab" data-metric="editions" aria-selected="false">Количество проведений</button>
         <button type="button" role="tab" data-metric="wins" aria-selected="false">Победы</button>
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Топ-5 танцоров"></div>
@@ -1082,9 +1082,9 @@
     const tip = document.getElementById("trajTip");
     const series = buildSeries(metric);
     const labels = {
-      total_points: "Поинты (Jack&Jill по уровням)",
-      unique_dancers: "Танцоры с поинтами",
-      new_dancers: "Новые (первые поинты WSDC здесь)"
+      total_points: "Поинты",
+      unique_dancers: "Танцоры",
+      new_dancers: "Новые танцоры"
     };
     document.getElementById("trajCaption").textContent =
       labels[metric] + ". Наведите на точку: год и значение.";
