@@ -73,19 +73,22 @@
       inset: 0;
     }
     .article-header-event {
-      inset: -28px;
+      inset: -8px;
       background: url("assets/hero_fullwidth.png") center / cover no-repeat;
-      filter: blur(18px) saturate(1.05);
-      transform: scale(1.04);
+      /* Soft retouch only: keep phoenix / wordmark outlines readable */
+      filter: blur(2.5px) saturate(1.08) contrast(1.05);
+      transform: scale(1.02);
+      opacity: 0.92;
     }
     .article-header-underlay {
       background: url("../assets/hero_underlay.png") center / cover no-repeat;
-      opacity: 0.72;
+      opacity: 0.48;
       mix-blend-mode: screen;
     }
     .article-header-wash {
-      background: var(--hero-slate);
-      opacity: 0.52;
+      background:
+        linear-gradient(180deg, rgba(45, 55, 72, 0.28) 0%, rgba(45, 55, 72, 0.42) 45%, rgba(45, 55, 72, 0.62) 100%);
+      opacity: 1;
     }
     .article-header > *:not(.article-header-media) { position: relative; z-index: 1; }
     .article-eyebrow {
