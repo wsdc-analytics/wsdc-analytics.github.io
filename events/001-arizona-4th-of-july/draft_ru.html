@@ -125,6 +125,21 @@
       width: 100%;
       max-width: none;
       margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+    .article-rail .section-title,
+    .article-rail .snapshot,
+    .article-rail .insight-kpis,
+    .article-rail .bar-chart,
+    .article-rail .hbar-meta,
+    .article-rail .metric-toggles,
+    .article-rail .name-list,
+    .article-rail .stack-era-label,
+    .article-rail .stack-legend,
+    .article-rail .chart-caption {
       text-align: left;
     }
     .article-rail p,
@@ -381,7 +396,8 @@
       line-height: 1.65;
       max-width: none;
       width: 100%;
-      text-align: left;
+      text-align: justify;
+      text-justify: inter-word;
       margin-bottom: 0.85rem;
     }
     .data-note:last-child { margin-bottom: 0; }
