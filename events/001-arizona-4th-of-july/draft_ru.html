@@ -202,7 +202,9 @@
       margin: 1.5rem 0 0.25rem;
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
+      overflow: visible;
     }
+    .snapshot-item { overflow: visible; }
     .snapshot-item {
       padding: 1.1rem 0.85rem 1rem 0;
       border-right: 1px solid var(--line);
@@ -210,6 +212,9 @@
     .snapshot-item:last-child { border-right: 0; padding-right: 0; }
     .snapshot-item:not(:first-child) { padding-left: 0.85rem; }
     .snapshot-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -238,16 +243,71 @@
       text-transform: uppercase;
       line-height: 1.2;
     }
-    .snapshot-hint {
-      display: block;
-      margin: 0 0 0.45rem;
-      padding: 0.4rem 0.5rem;
-      border-left: 2px solid var(--accent);
-      background: rgba(15, 118, 110, 0.06);
-      color: var(--ink-soft);
-      font-size: 0.72rem;
-      line-height: 1.35;
-      font-weight: 500;
+    .snapshot-info {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+    .snapshot-info .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      font-style: normal;
+      font-family: "Source Sans 3", Georgia, sans-serif;
+      letter-spacing: 0;
+      text-transform: none;
+      line-height: 1;
+      cursor: help;
+      position: relative;
+      transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+    }
+    .snapshot-info .info-icon:hover,
+    .snapshot-info .info-icon:focus-visible {
+      color: var(--accent);
+      border-color: var(--accent);
+      outline: none;
+    }
+    .snapshot-info .info-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      min-width: 12.5rem;
+      max-width: min(15.5rem, 70vw);
+      padding: 0.55rem 0.7rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+      line-height: 1.4;
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s var(--ease-out), visibility 0.18s var(--ease-out);
+      z-index: 20;
+      white-space: normal;
+    }
+    .snapshot-item:last-child .snapshot-info .info-tooltip {
+      left: auto;
+      right: 0;
+      transform: none;
+    }
+    .snapshot-info .info-icon:hover .info-tooltip,
+    .snapshot-info .info-icon:focus-visible .info-tooltip {
+      opacity: 1;
+      visibility: visible;
     }
     .snapshot-note { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
 
@@ -570,17 +630,32 @@
         <div class="snapshot-note">среди всех ивентов с Jack&amp;Jill по уровням</div>
       </div>
       <div class="snapshot-item">
-        <div class="snapshot-label">Танцоры</div>
+        <div class="snapshot-label">
+          Танцоры
+          <span class="snapshot-info">
+            <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение: уникальные танцоры с очками на этом ивенте">
+              <span aria-hidden="true">i</span>
+              <span class="info-tooltip">Количество уникальных танцоров, которые когда-либо получали очки на этом ивенте (Jack&amp;Jill по уровням).</span>
+            </span>
+          </span>
+        </div>
         <div class="snapshot-value">1364</div>
-        <div class="snapshot-hint">Уникальные танцоры с очками &gt;&nbsp;0 в Jack&amp;Jill по уровням (Newcomer–Champion) за всё время события</div>
         <div class="snapshot-rank">топ-6</div>
         <div class="snapshot-note">среди всех ивентов</div>
       </div>
       <div class="snapshot-item">
-        <div class="snapshot-label">Новые танцоры</div>
+        <div class="snapshot-label">
+          Новые танцоры
+          <span class="snapshot-info">
+            <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение: первые очки WSDC именно на этом ивенте">
+              <span aria-hidden="true">i</span>
+              <span class="info-tooltip">Количество танцоров, получивших свои первые очки WSDC именно на этом ивенте.</span>
+            </span>
+          </span>
+        </div>
         <div class="snapshot-value">245</div>
         <div class="snapshot-rank">топ-13</div>
-        <div class="snapshot-note">первые очки WSDC — Skill JJ здесь · среди всех ивентов</div>
+        <div class="snapshot-note">среди всех ивентов</div>
       </div>
     </div>
 
