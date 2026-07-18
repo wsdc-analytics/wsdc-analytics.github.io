@@ -8,7 +8,7 @@
   <title>4TH of July Convention: портрет события (черновик)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --ink: #1a1f2e;
@@ -21,17 +21,17 @@
       --hero-tint: rgba(17, 24, 39, 0.62);
       --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      /* Shell по центру экрана; контент на всю ширину между pad-x */
       --shell-max: 980px;
-      --pad-x: clamp(1.25rem, 5vw, 5rem);
+      --rail-max: 700px;
+      --pad-x: clamp(1rem, 4vw, 5rem);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: "Source Sans 3", Georgia, sans-serif;
+      font-family: "DM Sans", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.7;
       color: var(--ink);
       background: var(--paper);
-      font-size: 18px;
+      font-size: 17px;
       -webkit-font-smoothing: antialiased;
       text-align: left;
     }
@@ -102,12 +102,12 @@
       font-weight: 600;
     }
     .article-title {
-      font-family: Fraunces, Georgia, serif;
-      font-size: clamp(2.4rem, 5vw, 3.25rem);
+      font-family: inherit;
+      font-size: clamp(2.1rem, 4.5vw, 2.875rem);
       font-weight: 700;
-      line-height: 1.08;
+      line-height: 1.05;
       margin: 0 0 18px;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
       max-width: 18ch;
     }
     .article-subtitle {
@@ -120,11 +120,12 @@
     .article-content {
       padding: 4rem var(--pad-x) 2.5rem;
     }
-    /* Страфа = вся ширина shell минус pad; блок по центру страницы через shell */
+    /* Как в article_3year_rule / secondary_role: узкая колонка текста 700px */
     .article-rail {
       width: 100%;
-      max-width: none;
-      margin: 0;
+      max-width: var(--rail-max);
+      margin-left: auto;
+      margin-right: auto;
       text-align: justify;
       text-justify: inter-word;
       hyphens: none;
@@ -181,8 +182,8 @@
     }
     .section { margin: 3.25rem 0; }
     .section-title {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 1.55rem;
+      font-family: inherit;
+      font-size: 1.45rem;
       font-weight: 650;
       margin: 0 0 0.85rem;
       letter-spacing: -0.02em;
@@ -249,7 +250,7 @@
       font-size: 10px;
       font-weight: 700;
       font-style: normal;
-      font-family: "Source Sans 3", Georgia, sans-serif;
+      font-family: inherit;
       letter-spacing: 0;
       text-transform: none;
       line-height: 1;
@@ -512,11 +513,15 @@
       padding: 2rem var(--pad-x) 2.5rem;
       border-top: 1px solid var(--line);
     }
+    .article-footer > * {
+      max-width: var(--rail-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
     .data-note {
       font-size: 0.875rem;
       color: var(--muted);
       line-height: 1.65;
-      max-width: none;
       width: 100%;
       text-align: justify;
       text-justify: inter-word;
