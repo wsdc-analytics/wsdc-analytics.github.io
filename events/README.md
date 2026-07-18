@@ -21,9 +21,9 @@ Shared underlay for every event portrait:
 
 Stack (bottom → top), same brightness family as other article heroes (`#2d3748` wash ≈ 0.5):
 
-1. blurred event asset from the event site (`assets/hero_fullwidth.png` or logo)
-2. locked ChatGPT underlay (`../assets/hero_underlay.png`, screen + opacity)
-3. slate wash (`#2d3748`)
+1. event asset from the event site (`assets/hero_fullwidth.png` or logo), lightly softened so outlines stay recognizable
+2. locked ChatGPT underlay (`../assets/hero_underlay.png`, screen + lighter opacity) as a retouching mix
+3. slate wash (`#2d3748` gradient) for title readability
 4. title / subtitle text
 
 ## Pilot
