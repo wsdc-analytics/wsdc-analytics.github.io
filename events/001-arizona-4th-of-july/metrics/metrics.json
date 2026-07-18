@@ -7,7 +7,7 @@
     "wins": "result_standardized = '1' at this event (Skill JJ)",
     "started_here_notable": "first WSDC points at this event AND Champion points in calendar years >= (max_year - 19); here >= 2007 (last 20 years)",
     "pairs": "All-Star/Champion place-matched Leader+Follower with same result_standardized in {1,2,3,4,5} same event_year+division (JJ finals convention; not stored partner_id)",
-    "peer_context": "Skill JJ events; ranks among all events and among events with >=20 edition years; unique dancers / first-ever WSDC points at this event / edition years",
+    "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / edition years",
     "launchpad": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
     "division_era_mix": "Share of Skill JJ points at this event by division, aggregated by era (COVID gap years excluded from 2022–2026 bucket)",
     "retention": "Return = scored points at this event in year Y and again in Y+1; editions = distinct years with points here"
@@ -646,6 +646,14 @@
           "is_this_event": false
         },
         {
+          "event_name": "BudaFest",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "is_this_event": false
+        },
+        {
           "event_name": "Summer Hummer",
           "editions": 25,
           "unique_dancers": 1413,
@@ -662,11 +670,144 @@
           "is_this_event": false
         },
         {
+          "event_name": "West in Lyon",
+          "editions": 13,
+          "unique_dancers": 746,
+          "first_points_here": 321,
+          "total_points": 5104,
+          "is_this_event": false
+        },
+        {
           "event_name": "Countdown Swing Boston",
           "editions": 22,
           "unique_dancers": 937,
           "first_points_here": 304,
           "total_points": 5463,
+          "is_this_event": false
+        },
+        {
+          "event_name": "D-Town Swing",
+          "editions": 11,
+          "unique_dancers": 698,
+          "first_points_here": 271,
+          "total_points": 3785,
+          "is_this_event": false
+        },
+        {
+          "event_name": "French Open",
+          "editions": 14,
+          "unique_dancers": 840,
+          "first_points_here": 263,
+          "total_points": 5724,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 258,
+          "total_points": 9226,
+          "is_this_event": false
+        },
+        {
+          "event_name": "SwingTime",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 250,
+          "total_points": 7535,
+          "is_this_event": false
+        },
+        {
+          "event_name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 245,
+          "total_points": 8284,
+          "is_this_event": true
+        }
+      ],
+      "rank_by_first_points_among_long": 9,
+      "rank_by_unique_all": 6,
+      "rank_by_first_points_all": 13,
+      "peers_top15_by_first_points": [
+        {
+          "event_name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 402,
+          "total_points": 8138,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 402,
+          "total_points": 7796,
+          "is_this_event": false
+        },
+        {
+          "event_name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 367,
+          "total_points": 11367,
+          "is_this_event": false
+        },
+        {
+          "event_name": "BudaFest",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 337,
+          "total_points": 8468,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 329,
+          "total_points": 9210,
+          "is_this_event": false
+        },
+        {
+          "event_name": "West in Lyon",
+          "editions": 13,
+          "unique_dancers": 746,
+          "first_points_here": 321,
+          "total_points": 5104,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Countdown Swing Boston",
+          "editions": 22,
+          "unique_dancers": 937,
+          "first_points_here": 304,
+          "total_points": 5463,
+          "is_this_event": false
+        },
+        {
+          "event_name": "D-Town Swing",
+          "editions": 11,
+          "unique_dancers": 698,
+          "first_points_here": 271,
+          "total_points": 3785,
+          "is_this_event": false
+        },
+        {
+          "event_name": "French Open",
+          "editions": 14,
+          "unique_dancers": 840,
+          "first_points_here": 263,
+          "total_points": 5724,
           "is_this_event": false
         },
         {
@@ -702,25 +843,14 @@
           "is_this_event": false
         },
         {
-          "event_name": "Bridgetown Swing Boogie",
-          "editions": 21,
-          "unique_dancers": 806,
-          "first_points_here": 214,
-          "total_points": 5054,
-          "is_this_event": false
-        },
-        {
-          "event_name": "FreZno Dance Classic",
-          "editions": 26,
-          "unique_dancers": 830,
-          "first_points_here": 202,
-          "total_points": 5289,
+          "event_name": "Asia West Coast Swing Open",
+          "editions": 11,
+          "unique_dancers": 528,
+          "first_points_here": 222,
+          "total_points": 3598,
           "is_this_event": false
         }
-      ],
-      "rank_by_first_points_among_long": 9,
-      "rank_by_unique_all": 6,
-      "rank_by_first_points_all": 13
+      ]
     },
     "launchpad": {
       "definition": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
