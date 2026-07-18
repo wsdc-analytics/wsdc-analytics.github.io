@@ -142,13 +142,14 @@
     .article-rail .name-list,
     .article-rail .stack-era-label,
     .article-rail .stack-legend,
-    .article-rail .chart-caption {
+    .article-rail .chart-caption,
+    .article-rail .article-links {
       text-align: left;
     }
     .article-rail p,
     .article-rail .intro,
     .article-rail .series-lede,
-    .article-rail .meta-line,
+    .article-rail .article-links,
     .article-rail .footnote,
     .article-rail .closing,
     .article-rail .section-title,
@@ -298,12 +299,46 @@
     }
     .snapshot-note { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
 
-    .meta-line {
+    .article-links {
+      margin: 0 0 1.25rem;
       font-size: 0.9rem;
       color: var(--ink-soft);
-      margin: 0 0 0.35rem;
       line-height: 1.55;
+      text-align: left;
     }
+    .article-links > summary {
+      cursor: pointer;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--accent);
+      font-weight: 600;
+      user-select: none;
+    }
+    .article-links > summary::-webkit-details-marker { display: none; }
+    .article-links > summary::before {
+      content: "▸";
+      display: inline-block;
+      font-size: 0.75em;
+      transition: transform 0.15s var(--ease-out);
+    }
+    .article-links[open] > summary::before { transform: rotate(90deg); }
+    .article-links > summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+    .article-links-list {
+      margin: 0.55rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .article-links-list li {
+      margin: 0 0 0.35rem;
+    }
+    .article-links-list li:last-child { margin-bottom: 0; }
+    .article-links-list a { font-weight: 500; }
 
     .metric-toggles {
       display: inline-flex;
@@ -580,7 +615,7 @@
     <p class="series-lede">
       Первая статья посвящена ивенту с самой длинной историей проведения и учётным номером 1
       в реестре WSDC:
-      <a href="https://phoenix4thofjuly.com/" rel="noopener noreferrer" target="_blank">4TH of July Convention</a>,
+      <strong>4TH of July Convention</strong>,
       который проводится в Финиксе, Аризона, США.
     </p>
 
@@ -600,14 +635,23 @@
       поинты на ивенте: 1994 (17).
     </p>
 
-    <p class="meta-line">
-      Площадка проведения:
-      <a href="https://www.marriott.com/en-us/hotels/phxcb-jw-marriott-scottsdale-camelback-inn-resort-and-spa/overview/" rel="noopener noreferrer" target="_blank">JW Marriott Camelback Inn, Scottsdale</a>.
-      Сайт ивента:
-      <a href="https://phoenix4thofjuly.com/" rel="noopener noreferrer" target="_blank">phoenix4thofjuly.com</a>.
-      Сайт клуба:
-      <a href="https://greaterphoenixswingdanceclub.com/" rel="noopener noreferrer" target="_blank">greaterphoenixswingdanceclub.com</a>.
-    </p>
+    <details class="article-links">
+      <summary>Ссылки</summary>
+      <ul class="article-links-list">
+        <li>
+          Площадка проведения:
+          <a href="https://www.marriott.com/en-us/hotels/phxcb-jw-marriott-scottsdale-camelback-inn-resort-and-spa/overview/" rel="noopener noreferrer" target="_blank">JW Marriott Camelback Inn, Scottsdale</a>
+        </li>
+        <li>
+          Сайт ивента:
+          <a href="https://phoenix4thofjuly.com/" rel="noopener noreferrer" target="_blank">phoenix4thofjuly.com</a>
+        </li>
+        <li>
+          Сайт клуба:
+          <a href="https://greaterphoenixswingdanceclub.com/" rel="noopener noreferrer" target="_blank">greaterphoenixswingdanceclub.com</a>
+        </li>
+      </ul>
+    </details>
 
     <div class="snapshot">
       <div class="snapshot-item">
