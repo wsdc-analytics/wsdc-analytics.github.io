@@ -73,21 +73,22 @@
       inset: 0;
     }
     .article-header-event {
-      inset: -8px;
-      background: url("assets/hero_fullwidth.png") center / cover no-repeat;
-      /* Soft retouch only: keep phoenix / wordmark outlines readable */
-      filter: blur(2.5px) saturate(1.08) contrast(1.05);
-      transform: scale(1.02);
-      opacity: 0.92;
+      inset: 0;
+      /* contain = show full Phoenix graphic, not cropped by cover */
+      background: url("assets/hero_fullwidth.png") center 42% / contain no-repeat;
+      filter: none;
+      opacity: 0.95;
+      transform: scale(0.82);
+      transform-origin: center center;
     }
     .article-header-underlay {
       background: url("../assets/hero_underlay.png") center / cover no-repeat;
-      opacity: 0.48;
+      opacity: 0.55;
       mix-blend-mode: screen;
     }
     .article-header-wash {
       background:
-        linear-gradient(180deg, rgba(45, 55, 72, 0.28) 0%, rgba(45, 55, 72, 0.42) 45%, rgba(45, 55, 72, 0.62) 100%);
+        linear-gradient(180deg, rgba(45, 55, 72, 0.22) 0%, rgba(45, 55, 72, 0.38) 48%, rgba(45, 55, 72, 0.58) 100%);
       opacity: 1;
     }
     .article-header > *:not(.article-header-media) { position: relative; z-index: 1; }
