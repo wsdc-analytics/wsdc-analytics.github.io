@@ -606,7 +606,7 @@
     </div>
     <div class="article-eyebrow">Цикл · история событий WSDC</div>
     <h1 class="article-title">4TH of July Convention</h1>
-    <p class="article-subtitle">Финикс, Аризона · 1991-2026 · 34 проведения в реестре WSDC</p>
+    <p class="article-subtitle">Финикс, Аризона · 1991-2026 · 34 издания в реестре WSDC</p>
   </header>
 
   <main class="article-content">
@@ -660,7 +660,7 @@
 
     <div class="snapshot">
       <div class="snapshot-item">
-        <div class="snapshot-label">Количество проведений</div>
+        <div class="snapshot-label">Издания</div>
         <div class="snapshot-value">34</div>
         <div class="snapshot-note">топ-1 среди всех ивентов</div>
       </div>
@@ -808,7 +808,7 @@
       <h2 class="section-title" id="ret-title">Кто возвращается</h2>
       <p>
         Большинство оставляет след один раз: 63% танцоров с поинтами на 4TH of July Convention были здесь
-        только в одном проведении. Три и больше: около 15%.
+        только в одном издании. Три и больше: около 15%.
         Линию держит относительно тонкое ядро регулярных.
       </p>
       <p>
@@ -816,7 +816,7 @@
         Самый слабый недавний сезон: 2023→2024, 13%.
         После пропуска 2019→2022 вернулись около 21% из тех, кто был в 2019.
       </p>
-      <div class="bar-chart" id="retBars" aria-label="Число проведений на танцора"></div>
+      <div class="bar-chart" id="retBars" aria-label="Число изданий на танцора"></div>
       <p class="footnote" id="retFoot"></p>
     </section>
 
@@ -828,12 +828,12 @@
       </p>
       <p>
         По поинтам: Robert Royston, Michael Kielbasa, Melissa Rutz.
-        По проведениям рядом Royston и Benji Schwimmer (по 11).
+        По изданиям рядом Royston и Benji Schwimmer (по 11).
         По победам снова они (по 4), дальше Dayne Darden, Tom Jennings, Thomas Carter.
       </p>
       <div class="metric-toggles" id="peopleToggles" role="tablist" aria-label="Метрика топ-5">
         <button type="button" role="tab" data-metric="points" class="is-active" aria-selected="true">Поинты</button>
-        <button type="button" role="tab" data-metric="editions" aria-selected="false">Количество проведений</button>
+        <button type="button" role="tab" data-metric="editions" aria-selected="false">Издания</button>
         <button type="button" role="tab" data-metric="wins" aria-selected="false">Победы</button>
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Топ-5 танцоров"></div>
@@ -862,7 +862,7 @@
       <p class="closing">
         4TH of July Convention держит самую длинную линию Jack&amp;Jill по уровням в реестре при среднем объёме поинтов,
         кормит в основном Novice, Intermediate и Advanced и регулярно выпускает стартовавших дальше по календарю.
-        Для части это первая запись в WSDC. Для большинства с поинтами здесь: одно проведение.
+        Для части это первая запись в WSDC. Для большинства с поинтами здесь: одно издание.
         Портрет одного якоря, не рейтинг.
       </p>
     </section>
@@ -1008,7 +1008,7 @@
       const v = r[key] || 0;
       const w = ((100 * v) / max).toFixed(1);
       const label = `#${r._rank} ${shortEventName(r.event_name)}`;
-      parts.push(hbar(label, `${v} · ${r.editions} пр.`, w, !!r.is_this_event, false));
+      parts.push(hbar(label, `${v} · ${r.editions} изд.`, w, !!r.is_this_event, false));
     });
     document.getElementById("peerBars").innerHTML = parts.join("");
     const foot = document.getElementById("peerFoot");
@@ -1088,13 +1088,13 @@
     const max = Math.max(...low.map((h) => h.dancers));
     document.getElementById("retBars").innerHTML = low.map((h) => {
       const w = ((100 * h.dancers) / max).toFixed(1);
-      const label = h.editions === 1 ? "1 проведение" : h.editions === "5+" ? "5+ проведений" : String(h.editions);
+      const label = h.editions === 1 ? "1 издание" : h.editions === "5+" ? "5+ изданий" : String(h.editions);
       const focus = h.editions === 1;
       return hbar(label, String(h.dancers), w, focus, h.editions === "5+");
     }).join("");
     document.getElementById("retFoot").textContent =
       "Сколько разных лет танцор оставлял поинты Jack&Jill по уровням именно на 4TH of July Convention. " +
-      `5+ проведений: ${R.five_plus_editions_n} человек и ${String(R.five_plus_points_share_pct).replace(".", ",")}% всех поинтов события.`;
+      `5+ изданий: ${R.five_plus_editions_n} человек и ${String(R.five_plus_points_share_pct).replace(".", ",")}% всех поинтов события.`;
   }
 
   function renderPeople(metric) {
@@ -1102,7 +1102,7 @@
     const rows = M.top5_by_metric[key];
     const valKey = key === "points" ? "points_here" : key;
     const max = Math.max(...rows.map((r) => r[valKey]));
-    const unit = key === "points" ? "поинт." : key === "editions" ? "пр." : "побед";
+    const unit = key === "points" ? "поинт." : key === "editions" ? "изд." : "побед";
     document.getElementById("peopleBars").innerHTML = rows.map((r) => {
       const v = r[valKey];
       const w = ((100 * v) / max).toFixed(1);
