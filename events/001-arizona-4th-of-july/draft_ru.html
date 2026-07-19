@@ -720,8 +720,7 @@
       <p>
         Переключатель ниже показывает три среза по всем ивентам: кто вообще брал поинты
         на ивенте, кто взял здесь свои первые поинты WSDC, и сколько Skill-Level поинтов
-        начислили на ивенте за всё время. В каждом срезе: топ-5, затем разрыв и место
-        4TH of July Convention в общем ранжировании.
+        начислили на ивенте за всё время.
       </p>
       <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Метрика сравнения ивентов">
         <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
@@ -729,10 +728,6 @@
         <button type="button" role="tab" data-metric="total_points" aria-selected="false">Поинты</button>
       </div>
       <div class="bar-chart" id="peerBars" aria-label="Ивенты по выбранной метрике"></div>
-      <p class="footnote" id="peerFoot">
-        Jack&amp;Jill по уровням · среди всех ивентов.
-        Топ-5 и отдельно 4TH of July Convention с его местом в полном ранжировании.
-      </p>
     </section>
 
     <section class="section" aria-labelledby="traj-title">
@@ -1028,9 +1023,10 @@
       ? all.slice(0, topN).map((r, i) => ({ ...r, _rank: i + 1 }))
       : leaders.map((r, i) => ({ ...r, _rank: i + 1 })).concat([{ ...self, _rank: rank }]);
     const max = Math.max(...rows.map((r) => r[key] || 0), 1);
+    const showGap = !selfInTop && rank > topN + 1;
     const parts = [];
     rows.forEach((r, idx) => {
-      if (!selfInTop && idx === topN) {
+      if (showGap && idx === topN) {
         parts.push(`<div class="peer-gap" aria-hidden="true">···</div>`);
       }
       const v = r[key] || 0;
@@ -1039,17 +1035,6 @@
       parts.push(hbar(label, String(v), w, !!r.is_this_event, false));
     });
     document.getElementById("peerBars").innerHTML = parts.join("");
-    const foot = document.getElementById("peerFoot");
-    if (foot) {
-      const what = key === "first_points_here"
-        ? "по числу танцоров, у которых первые поинты WSDC вообще были Skill JJ на этом событии"
-        : key === "total_points"
-          ? "по сумме Skill-Level поинтов (Jack&Jill по уровням) за всё время"
-          : "по числу танцоров с поинтами на событии";
-      foot.textContent =
-        `Jack&Jill по уровням · среди всех ивентов · ${what}. ` +
-        `Топ-${topN}, затем 4TH of July Convention: ${rank}-е место из ${pc.events_total_n || "…"}.`;
-    }
   }
 
   const ERA_COLORS = {
