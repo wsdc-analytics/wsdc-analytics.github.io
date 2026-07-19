@@ -1019,7 +1019,7 @@
       const v = r[key] || 0;
       const w = ((100 * v) / max).toFixed(1);
       const label = `#${r._rank} ${shortEventName(r.event_name)}`;
-      parts.push(hbar(label, `${v} · ${r.editions} изд.`, w, !!r.is_this_event, false));
+      parts.push(hbar(label, String(v), w, !!r.is_this_event, false));
     });
     document.getElementById("peerBars").innerHTML = parts.join("");
     const foot = document.getElementById("peerFoot");
