@@ -986,14 +986,17 @@
       `</div>`
     ).join("");
 
-    const ladder = L.highest_division_counts.filter((d) => d.n > 0);
-    const max = Math.max(...ladder.map((d) => d.n));
+    const ladder = L.highest_division_counts.slice();
+    const base = L.starters_n || ladder.reduce((s, d) => s + d.n, 0) || 1;
+    const max = Math.max(...ladder.map((d) => d.n), 1);
     document.getElementById("launchBars").innerHTML = ladder.map((d) => {
       const w = ((100 * d.n) / max).toFixed(1);
-      return hbar(d.division, String(d.n), w, false);
+      const pct = (Math.round((1000 * d.n) / base) / 10).toFixed(1).replace(".", ",");
+      return hbar(d.division, `${d.n} · ${pct}%`, w, false);
     }).join("");
     document.getElementById("launchFoot").innerHTML =
-      `Высший дивизион карьеры среди стартовавших здесь. Медиана до первого All-Star ≈ ${Math.round(L.median_months_to_allstar / 12)} лет, ` +
+      `Высший дивизион карьеры среди ${base} стартовавших здесь: число танцоров и доля от всех стартов. ` +
+      `Медиана до первого All-Star ≈ ${Math.round(L.median_months_to_allstar / 12)} лет, ` +
       `до Champion ≈ ${Math.round(L.median_months_to_champion / 12)} лет.`;
   }
 
