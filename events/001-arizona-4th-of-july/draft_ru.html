@@ -205,32 +205,36 @@
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
       overflow: visible;
+      width: 100%;
     }
     .snapshot-item {
-      padding: 1.1rem 0.7rem 1rem 0;
+      padding: 1rem 0.55rem 0.9rem 0;
       border-right: 1px solid var(--line);
       overflow: visible;
+      min-width: 0;
     }
     .snapshot-item:last-child { border-right: 0; padding-right: 0; }
-    .snapshot-item:not(:first-child) { padding-left: 0.7rem; }
+    .snapshot-item:not(:first-child) { padding-left: 0.55rem; }
     .snapshot-label {
       display: flex;
       align-items: center;
-      gap: 0.35rem;
-      font-size: 11px;
+      flex-wrap: wrap;
+      gap: 0.28rem;
+      font-size: 9.5px;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.06em;
       color: var(--muted);
       font-weight: 600;
-      margin-bottom: 0.55rem;
+      margin-bottom: 0.45rem;
+      line-height: 1.25;
     }
     .snapshot-value {
       font-family: var(--mono);
-      font-size: 1.65rem;
+      font-size: 1.35rem;
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.4rem;
     }
     .snapshot-info {
       position: relative;
@@ -241,13 +245,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       border: 1.5px solid var(--line);
       background: transparent;
       color: var(--muted);
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       font-style: normal;
       font-family: inherit;
@@ -299,7 +303,7 @@
       opacity: 1;
       visibility: visible;
     }
-    .snapshot-note { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+    .snapshot-note { font-size: 0.6875rem; color: var(--muted); line-height: 1.35; }
 
     .article-links {
       margin: 0 0 1.25rem;
