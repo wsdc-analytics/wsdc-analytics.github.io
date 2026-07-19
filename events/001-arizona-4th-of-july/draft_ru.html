@@ -141,8 +141,6 @@
     .article-rail .hbar-meta,
     .article-rail .metric-toggles,
     .article-rail .name-list,
-    .article-rail .stack-era-label,
-    .article-rail .stack-legend,
     .article-rail .chart-caption,
     .article-rail .article-links {
       text-align: left;
@@ -158,9 +156,7 @@
     .article-rail .figure,
     .article-rail .snapshot,
     .article-rail .insight-kpis,
-    .article-rail .stack-era,
-    .article-rail .name-list,
-    .article-rail #eraBars {
+    .article-rail .name-list {
       max-width: none;
       width: 100%;
     }
@@ -447,42 +443,6 @@
       user-select: none;
     }
 
-    .stack-era { margin: 1rem 0 0.25rem; width: 100%; }
-    .stack-era-row { margin-bottom: 1.15rem; }
-    .stack-era-row:last-of-type { margin-bottom: 0.65rem; }
-    .stack-era-row.is-current .stack-era-label { color: var(--ink); }
-    .stack-era-label {
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--ink-soft);
-      margin-bottom: 0.4rem;
-    }
-    .stack-track {
-      display: flex;
-      height: 18px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #e8ebf0;
-    }
-    .stack-era-row.is-current .stack-track {
-      box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.12);
-    }
-    .stack-seg { height: 100%; min-width: 0; }
-    .stack-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem 0.9rem;
-      margin: 0 0 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--line);
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-    .stack-legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
-    .stack-swatch {
-      width: 8px; height: 8px; border-radius: 2px; display: inline-block;
-    }
-
     .insight-kpis {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -766,34 +726,6 @@
       </div>
     </section>
 
-    <section class="section" aria-labelledby="era-title">
-      <h2 class="section-title" id="era-title">Как менялся состав дивизионов</h2>
-      <p>
-        Сумма за всё время по дивизионам мало что даёт: Novice почти всегда сверху, там просто больше записей с поинтами.
-        Интереснее доли поинтов по эпохам.
-      </p>
-      <p>
-        В 1990-х Advanced держал около трети поинтов события. К 2010-м и особенно к 2022-2026 картина
-        осела вокруг среднего уровня: примерно треть у Novice, рядом Intermediate и Advanced,
-        старшие дивизионы заметно тоньше.
-      </p>
-      <p>
-        Отдельно уходит Newcomer. Все его поинты на этом событии: 1993-1997 и всплеск в 2009 (30 поинтов).
-        С 2010 по 2026: ноль. На диаграмме за две последние эпохи серого сегмента нет; это не баг графика.
-      </p>
-      <p>
-        Сайт сейчас перечисляет дивизионы Jack&amp;Jill так: Novice, Intermediate, Advanced, All Star, Champion.
-        Newcomer как уровень WSDC там не указан; номер WSDC просят «для Novice и выше».
-        Newcomer Bootcamp на главной (так названо на сайте) похож на программу или воркшоп,
-        а не на Jack&amp;Jill с поинтами в реестре.
-      </p>
-      <div id="eraBars" aria-label="Доля поинтов по дивизионам и эпохам"></div>
-      <p class="footnote">
-        Доля поинтов Jack&amp;Jill по уровням внутри эпохи. 2020-2021 в расчёт не входят.
-        Внешние источники по дивизионам и истории клуба: см. футер.
-      </p>
-    </section>
-
     <section class="section" aria-labelledby="launch-title">
       <h2 class="section-title" id="launch-title">Куда уходят те, кто стартовал здесь</h2>
       <p>
@@ -1047,37 +979,6 @@
     document.getElementById("peerBars").innerHTML = parts.join("");
   }
 
-  const ERA_COLORS = {
-    Newcomer: "#94a3b8",
-    Novice: "#0f766e",
-    Intermediate: "#0e7490",
-    Advanced: "#c2410c",
-    "All-Star": "#9f1239",
-    Champion: "#1e293b"
-  };
-
-  function renderEraMix() {
-    const eras = M.insights.division_era_mix.eras;
-    const legendDivs = ["Novice", "Intermediate", "Advanced", "All-Star", "Champion", "Newcomer"];
-    const legend = `<div class="stack-legend">${legendDivs.map((d) =>
-      `<span><i class="stack-swatch" style="background:${ERA_COLORS[d]}"></i>${d}</span>`
-    ).join("")}</div>`;
-    const lastEra = eras.length ? String(eras[eras.length - 1].era) : "";
-    const rows = eras.map((e) => {
-      const segs = ["Newcomer", "Novice", "Intermediate", "Advanced", "All-Star", "Champion"]
-        .filter((d) => e.share_pct[d] != null)
-        .map((d) => {
-          const pct = e.share_pct[d];
-          return `<div class="stack-seg" style="width:${pct}%;background:${ERA_COLORS[d] || "#cbd5e1"}" title="${d}: ${pct}%"></div>`;
-        }).join("");
-      const nov = e.share_pct.Novice != null ? `Nov ${String(e.share_pct.Novice).replace(".", ",")}%` : "";
-      const adv = e.share_pct.Advanced != null ? `Adv ${String(e.share_pct.Advanced).replace(".", ",")}%` : "";
-      const current = String(e.era) === lastEra ? " is-current" : "";
-      return `<div class="stack-era-row${current}"><div class="stack-era-label">${String(e.era).replace(/[–—]/g, "-")} · ${e.total_points} поинт.${nov || adv ? ` · ${[nov, adv].filter(Boolean).join(" · ")}` : ""}</div><div class="stack-track">${segs}</div></div>`;
-    }).join("");
-    document.getElementById("eraBars").innerHTML = `<div class="stack-era">${legend}${rows}</div>`;
-  }
-
   function renderLaunch() {
     const L = M.insights.launchpad;
     document.getElementById("launchKpis").innerHTML = [
@@ -1276,7 +1177,6 @@
   bindToggles("peopleToggles", renderPeople);
 
   renderPeerBars("unique_dancers");
-  renderEraMix();
   renderLaunch();
   renderRetention();
   renderTraj("unique_dancers");
