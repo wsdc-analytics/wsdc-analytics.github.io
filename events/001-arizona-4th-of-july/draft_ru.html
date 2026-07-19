@@ -727,17 +727,17 @@
     </section>
 
     <section class="section" aria-labelledby="launch-title">
-      <h2 class="section-title" id="launch-title">Куда уходят те, кто стартовал здесь</h2>
+      <h2 class="section-title" id="launch-title">Как сложилось у тех, кто стартовал здесь</h2>
       <p>
         Для 245 танцоров 4TH of July Convention стал первым событием с поинтами WSDC:
-        около 18% всех, кто когда-либо оставлял здесь поинты Jack&amp;Jill по уровням.
+        это около 18% от количества танцоров, которые получали здесь поинты.
       </p>
+      <div class="insight-kpis" id="launchKpis"></div>
       <p>
         Даже у тех, кто после старта здесь дошёл до All-Star или Champion, большая часть
         поинтов карьеры набрана уже на других ивентах (около 87%). Arizona чаще даёт первый
         след в реестре, чем становится местом, где копят основную массу поинтов.
       </p>
-      <div class="insight-kpis" id="launchKpis"></div>
       <p>
         По высшему дивизиону карьеры большинство стартовавших здесь остаётся в Novice, Intermediate и Advanced.
         До All-Star и выше доходит примерно каждый восьмой, до Champion примерно каждый пятнадцатый.
@@ -982,11 +982,13 @@
   function renderLaunch() {
     const L = M.insights.launchpad;
     document.getElementById("launchKpis").innerHTML = [
-      ["Стартов здесь", L.starters_n, "первые поинты WSDC на 4TH of July Convention"],
+      ["Новые танцоры", L.starters_n, ""],
       ["Дошли до All-Star+", `${String(L.reached_allstar_plus_pct).replace(".", ",")}%`, `${L.reached_allstar_plus_n} из ${L.starters_n}`],
-      ["До Champion", `${String(L.reached_champion_pct).replace(".", ",")}%`, `${L.reached_champion_n} из ${L.starters_n}`]
+      ["Дошли до Champion", `${String(L.reached_champion_pct).replace(".", ",")}%`, `${L.reached_champion_n} из ${L.starters_n}`]
     ].map(([lab, val, note]) =>
-      `<div class="snapshot-item"><div class="snapshot-label">${lab}</div><div class="snapshot-value">${val}</div><div class="snapshot-note">${note}</div></div>`
+      `<div class="snapshot-item"><div class="snapshot-label">${lab}</div><div class="snapshot-value">${val}</div>` +
+      (note ? `<div class="snapshot-note">${note}</div>` : "") +
+      `</div>`
     ).join("");
 
     const ladder = L.highest_division_counts.filter((d) => d.n > 0);
