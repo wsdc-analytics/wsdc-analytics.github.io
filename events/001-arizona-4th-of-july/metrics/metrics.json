@@ -5,7 +5,7 @@
     "skill_jj": "West Coast Swing + Newcomer/Novice/Intermediate/Advanced/All-Star/Champion, points > 0",
     "new_dancers": "dancers whose first-ever WSDC points row (any division, points>0) is Skill JJ at this event",
     "wins": "result_standardized = '1' at this event (Skill JJ)",
-    "started_here_notable": "first WSDC points at this event AND Champion points in calendar years >= (max_year - 19); here >= 2007 (last 20 years)",
+    "started_here_notable": "among starters who reached Champion: WSDC Hall of Fame inductees (Wayne Bott, Martin Parker), plus Katie Schneider, Heidi Groskreutz, Cameo Cross, and Mackenzie Keister",
     "pairs": "All-Star/Champion place-matched Leader+Follower with same result_standardized in {1,2,3,4,5} same event_year+division (JJ finals convention; not stored partner_id)",
     "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
     "launchpad": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
@@ -462,54 +462,48 @@
     "assets/logo_website.png",
     "assets/logo_estd_1982.png"
   ],
-  "started_here_notable_champ_20y": [
+  "started_here_notable_examples": [
     {
-      "dancer_name": "Cameo Cross",
-      "event_year": 2007,
-      "champ_pts_20y": 316,
-      "last_champ_year": 2026
+      "dancer_name": "Wayne Bott",
+      "event_year": 1992,
+      "champ_pts": 24,
+      "wsdc_hof_year": 2009,
+      "hof_url": "https://worldsdc.com/hall-of-fame/wayne-bott-2009/"
+    },
+    {
+      "dancer_name": "Martin Parker",
+      "event_year": 1993,
+      "champ_pts": 29,
+      "wsdc_hof_year": 2015,
+      "hof_url": "https://worldsdc.com/hall-of-fame/martin-parker-2015/"
     },
     {
       "dancer_name": "Katie Schneider",
       "event_year": 2000,
-      "champ_pts_20y": 41,
-      "last_champ_year": 2013
+      "champ_pts": 51,
+      "wsdc_hof_year": null,
+      "hof_url": null
     },
     {
-      "dancer_name": "Sharlot Bott",
-      "event_year": 1992,
-      "champ_pts_20y": 37,
-      "last_champ_year": 2012
+      "dancer_name": "Heidi Groskreutz",
+      "event_year": 2000,
+      "champ_pts": 21,
+      "wsdc_hof_year": null,
+      "hof_url": null
     },
     {
-      "dancer_name": "Christopher Hussey",
-      "event_year": 1999,
-      "champ_pts_20y": 14,
-      "last_champ_year": 2011
+      "dancer_name": "Cameo Cross",
+      "event_year": 2007,
+      "champ_pts": 316,
+      "wsdc_hof_year": null,
+      "hof_url": null
     },
     {
-      "dancer_name": "Terry Roseborough",
-      "event_year": 1999,
-      "champ_pts_20y": 8,
-      "last_champ_year": 2014
-    },
-    {
-      "dancer_name": "Barry Jones",
-      "event_year": 1992,
-      "champ_pts_20y": 8,
-      "last_champ_year": 2013
-    },
-    {
-      "dancer_name": "Carlus Reed",
-      "event_year": 2008,
-      "champ_pts_20y": 7,
-      "last_champ_year": 2015
-    },
-    {
-      "dancer_name": "Gary Jobst",
-      "event_year": 1994,
-      "champ_pts_20y": 7,
-      "last_champ_year": 2014
+      "dancer_name": "Mackenzie Keister",
+      "event_year": 2022,
+      "champ_pts": 5,
+      "wsdc_hof_year": null,
+      "hof_url": null
     }
   ],
   "insights": {
