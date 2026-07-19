@@ -7,7 +7,7 @@
     "wins": "result_standardized = '1' at this event (Skill JJ)",
     "started_here_notable": "first WSDC points at this event AND Champion points in calendar years >= (max_year - 19); here >= 2007 (last 20 years)",
     "pairs": "All-Star/Champion place-matched Leader+Follower with same result_standardized in {1,2,3,4,5} same event_year+division (JJ finals convention; not stored partner_id)",
-    "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / edition years",
+    "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
     "launchpad": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
     "division_era_mix": "Share of Skill JJ points at this event by division, aggregated by era (COVID gap years excluded from 2022–2026 bucket)",
     "retention": "Return = scored points at this event in year Y and again in Y+1; editions = distinct years with points here"
@@ -514,7 +514,7 @@
   ],
   "insights": {
     "peer_context": {
-      "definition": "Among Skill JJ events with >=20 edition years in registry; ranks by unique dancers / edition years",
+      "definition": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
       "this_event": "4TH of July Convention",
       "editions": 34,
       "unique_dancers": 1364,
@@ -850,7 +850,107 @@
           "total_points": 3598,
           "is_this_event": false
         }
-      ]
+      ],
+      "peers_top12_by_total_points": [
+        {
+          "event_name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 367,
+          "total_points": 11367,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Boogie By The Bay",
+          "editions": 31,
+          "unique_dancers": 1476,
+          "first_points_here": 184,
+          "total_points": 10682,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 258,
+          "total_points": 9226,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 329,
+          "total_points": 9210,
+          "is_this_event": false
+        },
+        {
+          "event_name": "J&J O'Rama",
+          "editions": 28,
+          "unique_dancers": 1279,
+          "first_points_here": 141,
+          "total_points": 8554,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 337,
+          "total_points": 8468,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 243,
+          "total_points": 8356,
+          "is_this_event": false
+        },
+        {
+          "event_name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 245,
+          "total_points": 8284,
+          "is_this_event": true
+        },
+        {
+          "event_name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 402,
+          "total_points": 8138,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Monterey Swing Fest",
+          "editions": 31,
+          "unique_dancers": 1154,
+          "first_points_here": 200,
+          "total_points": 7804,
+          "is_this_event": false
+        },
+        {
+          "event_name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 402,
+          "total_points": 7796,
+          "is_this_event": false
+        },
+        {
+          "event_name": "BudaFest",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "is_this_event": false
+        }
+      ],
+      "rank_by_total_points_all": 8,
+      "total_points": 8284
     },
     "launchpad": {
       "definition": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
