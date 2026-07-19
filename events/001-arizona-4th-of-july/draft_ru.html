@@ -556,18 +556,31 @@
       background: var(--ink);
       color: #fff;
       font-size: 12px;
-      padding: 5px 8px;
+      padding: 6px 9px;
       border-radius: 5px;
       opacity: 0;
       transform: translate(-50%, -120%) scale(0.97);
       transition: opacity 140ms var(--ease-out), transform 140ms var(--ease-out);
       white-space: nowrap;
       z-index: 5;
+      text-align: center;
+      line-height: 1.35;
     }
     .line-tip.is-on {
       opacity: 1;
       transform: translate(-50%, -120%) scale(1);
     }
+    .line-tip-main { display: block; }
+    .line-tip-yoy {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .line-tip-yoy.is-up { color: #5eead4; }
+    .line-tip-yoy.is-down { color: #fb7185; }
+    .line-tip-yoy.is-flat { color: #94a3b8; }
     .chart-wrap { position: relative; }
 
     @media (max-width: 900px) {
@@ -1145,6 +1158,28 @@
     return series;
   }
 
+  function yoyChange(series, index) {
+    const cur = series[index];
+    if (cur == null || cur.value == null) return null;
+    let prev = null;
+    for (let j = index - 1; j >= 0; j--) {
+      if (series[j].value != null) {
+        prev = series[j];
+        break;
+      }
+    }
+    if (!prev || prev.value === 0) return null;
+    return ((cur.value - prev.value) / prev.value) * 100;
+  }
+
+  function formatYoy(pct) {
+    if (pct == null || !Number.isFinite(pct)) return null;
+    const rounded = Math.round(pct);
+    if (rounded === 0) return { text: "0% г/г", cls: "is-flat" };
+    const sign = rounded > 0 ? "+" : "−";
+    return { text: `${sign}${Math.abs(rounded)}% г/г`, cls: rounded > 0 ? "is-up" : "is-down" };
+  }
+
   /** Year ticks: always endpoints; evenly spaced intermediates that do not crowd the ends. */
   function pickYearTicks(y0, y1, maxLabels) {
     const span = y1 - y0;
@@ -1173,7 +1208,7 @@
       new_dancers: "Новые танцоры"
     };
     document.getElementById("trajCaption").textContent =
-      labels[metric] + ". Наведите на точку: год и значение.";
+      labels[metric] + ". Наведите на точку: год, значение и изменение к предыдущему году.";
 
     const W = 720, H = 280;
     const pad = { t: 16, r: 16, b: 36, l: 36 };
@@ -1233,11 +1268,15 @@
 
     svg.querySelectorAll(".traj-dot").forEach((dot) => {
       dot.addEventListener("mouseenter", () => {
-        const s = series[+dot.dataset.i];
+        const i = +dot.dataset.i;
+        const s = series[i];
         const rect = svg.getBoundingClientRect();
         const cx = +dot.getAttribute("cx");
         const cy = +dot.getAttribute("cy");
-        tip.textContent = `${s.year}: ${s.value}`;
+        const yoy = formatYoy(yoyChange(series, i));
+        tip.innerHTML =
+          `<span class="line-tip-main">${s.year}: ${s.value}</span>` +
+          (yoy ? `<span class="line-tip-yoy ${yoy.cls}">${yoy.text}</span>` : "");
         tip.style.left = (cx / W) * rect.width + "px";
         tip.style.top = (cy / H) * rect.height + "px";
         tip.classList.add("is-on");
