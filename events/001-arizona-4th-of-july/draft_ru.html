@@ -734,11 +734,6 @@
       </p>
       <div class="insight-kpis" id="launchKpis"></div>
       <p>
-        Даже у тех, кто после старта здесь дошёл до All-Star или Champion, большая часть
-        поинтов карьеры набрана уже на других ивентах (около 87%). Arizona чаще даёт первый
-        след в реестре, чем становится местом, где копят основную массу поинтов.
-      </p>
-      <p>
         По высшему дивизиону карьеры большинство стартовавших здесь остаётся в Novice, Intermediate и Advanced.
         До All-Star и выше доходит примерно каждый восьмой, до Champion примерно каждый пятнадцатый.
       </p>
@@ -999,8 +994,7 @@
     }).join("");
     document.getElementById("launchFoot").innerHTML =
       `Высший дивизион карьеры среди стартовавших здесь. Медиана до первого All-Star ≈ ${Math.round(L.median_months_to_allstar / 12)} лет, ` +
-      `до Champion ≈ ${Math.round(L.median_months_to_champion / 12)} лет. ` +
-      `У All-Star и выше медиана доли карьерных поинтов вне 4TH of July Convention: ${String(L.as_plus_median_career_points_share_outside_pct).replace(".", ",")}%.`;
+      `до Champion ≈ ${Math.round(L.median_months_to_champion / 12)} лет.`;
   }
 
   function renderRetention() {
