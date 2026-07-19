@@ -1175,9 +1175,9 @@
   function formatYoy(pct) {
     if (pct == null || !Number.isFinite(pct)) return null;
     const rounded = Math.round(pct);
-    if (rounded === 0) return { text: "0% г/г", cls: "is-flat" };
+    if (rounded === 0) return { text: "0% год к году", cls: "is-flat" };
     const sign = rounded > 0 ? "+" : "−";
-    return { text: `${sign}${Math.abs(rounded)}% г/г`, cls: rounded > 0 ? "is-up" : "is-down" };
+    return { text: `${sign}${Math.abs(rounded)}% год к году`, cls: rounded > 0 ? "is-up" : "is-down" };
   }
 
   /** Year ticks: always endpoints; evenly spaced intermediates that do not crowd the ends. */
