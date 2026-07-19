@@ -748,15 +748,11 @@
     </section>
 
     <section class="section" aria-labelledby="traj-title">
-      <h2 class="section-title" id="traj-title">Что видно по годам</h2>
+      <h2 class="section-title" id="traj-title">Динамика метрик по годам</h2>
       <p>
-        После пропуска 2020-2021 ряд снова плотный: 66-92 танцоров с поинтами, 236-371 поинтов за год.
-        Близко к сильным годам 2010-х, без резкого провала после возвращения.
-      </p>
-      <p>
-        Пик по танцорам с поинтами: 2009 (100). По сумме поинтов: 2014 (380).
-        Больше всего «новых» (первые поинты WSDC именно здесь) было в ранние годы реестра:
-        в 1994 таких 17. Сейчас обычно единицы или небольшой десяток в год.
+        У ивента были резкие взлёты (1998, 2007) и падения (2011, 2018), плюс двухгодичный
+        пропуск в 2020–2021. При этом 2026 уже близко к историческим пикам по танцорам и поинтам.
+        Метрика новых танцоров сюда не попадает: её максимумы остались в 1990-х.
       </p>
       <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Метрика траектории">
         <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
@@ -766,7 +762,7 @@
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="trajTip" aria-hidden="true"></div>
         <svg id="trajChart" viewBox="0 0 720 280" role="img" aria-label="Траектория метрики по годам"></svg>
-        <p class="chart-caption" id="trajCaption"></p>
+        <p class="chart-caption" id="trajCaption">Наведите на точку: год, значение и изменение к предыдущему году.</p>
       </div>
       <p class="footnote">
         Серая полоса на графике: 2020-2021, событие не проводилось. Ранние годы в реестре покрыты тоньше.
@@ -1202,13 +1198,6 @@
     const svg = document.getElementById("trajChart");
     const tip = document.getElementById("trajTip");
     const series = buildSeries(metric);
-    const labels = {
-      total_points: "Поинты",
-      unique_dancers: "Танцоры",
-      new_dancers: "Новые танцоры"
-    };
-    document.getElementById("trajCaption").textContent =
-      labels[metric] + ". Наведите на точку: год, значение и изменение к предыдущему году.";
 
     const W = 720, H = 280;
     const pad = { t: 16, r: 16, b: 36, l: 36 };
