@@ -2,14 +2,14 @@
   "generated_at": "2026-07-20",
   "as_of": "2026-07-20",
   "data_through": "2026-07-31",
-  "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
+  "source_dir": "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data",
   "methodology": {
-    "events_total": "count of rows in events_wsdc.csv",
+    "events_total": "count of occurred WSDC editions in event_editions.csv (result_rows > 0 or event_occurred); one row per event year/month that awarded points",
     "points_total": "sum of event_points across all nominations in dancers_results_info.csv",
     "dancers_total": "count of unique dancer_id in dancers_results_info.csv",
     "dancers_increment": "new dancers = unique dancer_id whose first WSDC points fall in the window (week/month: earliest edition start_date; year: event_year of that first event)",
     "edition_dates": "event_editions.csv start_date/end_date (edition_date remains YYYY-MM-01 for Tableau)",
-    "calendar_archive": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data/edition_calendar_dates.csv",
+    "calendar_archive": "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data/edition_calendar_dates.csv",
     "as_of_note": "as_of defaults to today.",
     "increment_note": "Events/points increments count activity in the window. Dancers increment counts new dancers (first WSDC points), not unique participants.",
     "week_note": "Week uses ISO week of edition start_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
@@ -17,7 +17,7 @@
     "year_note": "Year increment uses WSDC event_year (not calendar start_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2617,
+    "events": 2637,
     "points": 711119.0,
     "dancers": 27141
   },
