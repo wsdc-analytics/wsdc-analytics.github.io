@@ -754,7 +754,7 @@
       <h2 class="section-title" id="ret-title">Кто возвращается</h2>
       <p>
         Большинство оставляет след один раз: 63% танцоров с поинтами на 4TH of July Convention были здесь
-        только в одном издании. Три и больше: около 15%.
+        только с одним успешным участием. Три и больше: около 15%.
         Линию держит относительно тонкое ядро регулярных.
       </p>
       <p>
@@ -767,7 +767,7 @@
         <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Доля повторного набора поинтов год к году"></svg>
         <p class="chart-caption" id="retCaption">Доля танцоров с поинтами в году Y, которые снова набрали поинты в Y+1 (1991–2026). Ранние годы на тонкой выборке. Наведите на точку: переход лет и процент.</p>
       </div>
-      <div class="bar-chart" id="retBars" aria-label="Число изданий на танцора"></div>
+      <div class="bar-chart" id="retBars" aria-label="Число успешных участий на танцора"></div>
       <p class="footnote" id="retFoot"></p>
     </section>
 
@@ -1003,6 +1003,7 @@
   function renderRetention() {
     const R = M.insights.retention;
     const hist = R.edition_histogram;
+    const base = R.unique_dancers || hist.reduce((s, h) => s + h.dancers, 0);
     const low = [];
     let fivePlus = 0;
     hist.forEach((h) => {
@@ -1010,16 +1011,24 @@
       else low.push(h);
     });
     if (fivePlus > 0) low.push({ editions: "5+", dancers: fivePlus });
-    const max = Math.max(...low.map((h) => h.dancers));
+    const max = Math.max(...low.map((h) => h.dancers), 1);
+    const participationLabel = (editions) => {
+      if (editions === 1) return "1 успешное участие";
+      if (editions === "5+") return "5+ успешных участий";
+      const n = Number(editions);
+      if (n >= 2 && n <= 4) return `${n} успешных участия`;
+      return `${editions} успешных участий`;
+    };
     document.getElementById("retBars").innerHTML = low.map((h) => {
       const w = ((100 * h.dancers) / max).toFixed(1);
-      const label = h.editions === 1 ? "1 издание" : h.editions === "5+" ? "5+ изданий" : String(h.editions);
+      const pct = (Math.round((1000 * h.dancers) / base) / 10).toFixed(1).replace(".", ",");
       const focus = h.editions === 1;
-      return hbar(label, String(h.dancers), w, focus, h.editions === "5+");
+      return hbar(participationLabel(h.editions), `${h.dancers} · ${pct}%`, w, focus, h.editions === "5+");
     }).join("");
     document.getElementById("retFoot").textContent =
-      "Сколько разных лет танцор оставлял поинты Jack&Jill по уровням именно на 4TH of July Convention. " +
-      `5+ изданий: ${R.five_plus_editions_n} человек и ${String(R.five_plus_points_share_pct).replace(".", ",")}% всех поинтов события.`;
+      "Успешное участие = год, в котором танцор набрал поинты Jack&Jill по уровням на 4TH of July Convention " +
+      "(в базу попадают финальные результаты с поинтами, не все выходы на паркет). " +
+      `5+ участий: ${R.five_plus_editions_n} человек и ${String(R.five_plus_points_share_pct).replace(".", ",")}% всех поинтов события.`;
     renderReturnRateChart();
   }
 
