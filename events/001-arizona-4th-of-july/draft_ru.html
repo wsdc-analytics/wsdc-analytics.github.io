@@ -1036,8 +1036,8 @@
         : Math.round((1000 * h.dancers) / base) / 10;
       const pointsPct = h.points_share_pct;
       const valueText = pointsPct != null
-        ? `${fmtPct(peoplePct)}% танцоров набрали ${fmtPct(pointsPct)}% поинтов`
-        : `${fmtPct(peoplePct)}% танцоров`;
+        ? `${h.dancers} · ${fmtPct(peoplePct)}% танцоров набрали ${fmtPct(pointsPct)}% поинтов`
+        : `${h.dancers} · ${fmtPct(peoplePct)}% танцоров`;
       const focus = h.editions === 1;
       return hbar(participationLabel(h.editions), valueText, w, focus, h.editions === "5+");
     }).join("");
