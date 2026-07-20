@@ -767,7 +767,7 @@
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="retTip" aria-hidden="true"></div>
         <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Доля повторного набора поинтов год к году"></svg>
-        <p class="chart-caption" id="retCaption">Доля танцоров с поинтами в году Y, которые снова набрали поинты в Y+1 (1991–2026). Ранние годы на тонкой выборке. Наведите на точку: переход лет и процент.</p>
+        <p class="chart-caption" id="retCaption">Доля танцоров с поинтами в году Y, которые снова набрали поинты в Y+1 (1991–2026).</p>
       </div>
     </section>
 
@@ -1152,10 +1152,9 @@
         const cx = +dot.getAttribute("cx");
         const cy = +dot.getAttribute("cy");
         const rate = String(s.value).replace(".", ",");
-        const yoy = formatYoy(yoyChange(series, i));
         tip.innerHTML =
-          `<span class="line-tip-main">${s.from_year}→${s.year}: ${rate}% · ${s.returned} из ${s.base}</span>` +
-          (yoy ? `<span class="line-tip-yoy ${yoy.cls}">${yoy.text}</span>` : "");
+          `<span class="line-tip-main">${rate}%</span>` +
+          `<span class="line-tip-main">${s.returned} из ${s.base}</span>`;
         tip.style.left = (cx / W) * rect.width + "px";
         tip.style.top = (cy / H) * rect.height + "px";
         tip.classList.add("is-on");
