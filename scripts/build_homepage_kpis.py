@@ -3,7 +3,9 @@
 
 Metrics
 -------
-- events (totals): count of rows in events_wsdc.csv
+- events (totals): count of occurred WSDC editions in event_editions.csv
+  (rows with result_rows > 0, or event_occurred). One row = one event
+  year/month that awarded points — not the stale events_wsdc registry dump.
 - points (totals): sum of event_points across all nominations in results
 - dancers (totals): count of unique dancer_id in results
 
@@ -130,12 +132,33 @@ def add_months(year: int, month: int, delta: int) -> tuple[int, int]:
     return idx // 12, idx % 12 + 1
 
 
-def count_catalog_events(source: Path) -> int | None:
-    path = source / "events_wsdc.csv"
+def count_occurred_editions(source: Path) -> int | None:
+    """Count WSDC editions that awarded points (not events_wsdc registry rows).
+
+    Includes editions even when start_date is missing — totals must move when
+    new results land, unlike the stale events_wsdc dump.
+    """
+    path = source / "event_editions.csv"
     if not path.exists():
         return None
+    count = 0
     with path.open("r", encoding="utf-8-sig", newline="") as f:
-        return sum(1 for _ in csv.DictReader(f))
+        for row in csv.DictReader(f):
+            name = (row.get("event_name") or "").strip()
+            if not name:
+                continue
+            try:
+                result_rows = int(float(row.get("result_rows") or 0))
+            except ValueError:
+                result_rows = 0
+            if truthy(row.get("event_occurred") or "") or result_rows > 0:
+                count += 1
+    return count
+
+
+def count_catalog_events(source: Path) -> int | None:
+    """Deprecated alias kept for callers; prefer count_occurred_editions."""
+    return count_occurred_editions(source)
 
 
 def load_editions(source: Path) -> list[Edition]:
@@ -418,7 +441,7 @@ def main() -> None:
     by_event, result_totals, first_points, first_wsdc_year, data_through = load_result_aggs(
         source, edition_starts
     )
-    catalog_events = count_catalog_events(source)
+    occurred_editions = count_occurred_editions(source)
 
     as_of = as_of_arg or date.today()
     if as_of > data_through:
@@ -430,7 +453,11 @@ def main() -> None:
         as_of = date.today()
 
     totals = {
-        "events": catalog_events if catalog_events is not None else len({ed.event_name for ed in editions}),
+        "events": (
+            occurred_editions
+            if occurred_editions is not None
+            else len({(ed.event_name, ed.event_year) for ed in editions if ed.occurred})
+        ),
         "points": result_totals["points"],
         "dancers": result_totals["dancers"],
     }
@@ -448,7 +475,10 @@ def main() -> None:
         "data_through": data_through.isoformat(),
         "source_dir": str(source),
         "methodology": {
-            "events_total": "count of rows in events_wsdc.csv",
+            "events_total": (
+                "count of occurred WSDC editions in event_editions.csv "
+                "(result_rows > 0 or event_occurred); one row per event year/month that awarded points"
+            ),
             "points_total": "sum of event_points across all nominations in dancers_results_info.csv",
             "dancers_total": "count of unique dancer_id in dancers_results_info.csv",
             "dancers_increment": (
