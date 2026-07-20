@@ -758,7 +758,6 @@
         получали поинты на 2, 3, 4, 5 и более ивентах и какая доля начисленных поинтов приходится на такие группы танцоров.
       </p>
       <div class="bar-chart" id="retBars" aria-label="Число успешных участий на танцора"></div>
-      <p class="footnote" id="retFoot"></p>
       <p>
         Также интересно посмотреть, какой процент танцоров получал поинты год к году от тех, кто получил поинты годом ранее —
         это может говорить о том, что на ивенте получают поинты одни и те же люди. Например, в 2015 году поинты на ивенте
@@ -1037,14 +1036,11 @@
         : Math.round((1000 * h.dancers) / base) / 10;
       const pointsPct = h.points_share_pct;
       const valueText = pointsPct != null
-        ? `${h.dancers} · ${fmtPct(peoplePct)}% танц. · ${fmtPct(pointsPct)}% поинт.`
-        : `${h.dancers} · ${fmtPct(peoplePct)}%`;
+        ? `${fmtPct(peoplePct)}% танцоров набрали ${fmtPct(pointsPct)}% поинтов`
+        : `${fmtPct(peoplePct)}% танцоров`;
       const focus = h.editions === 1;
       return hbar(participationLabel(h.editions), valueText, w, focus, h.editions === "5+");
     }).join("");
-    document.getElementById("retFoot").textContent =
-      "В подписи бара: число танцоров · доля танцоров · доля всех поинтов события у группы. " +
-      "Учитываются только годы с поинтами Jack&Jill по уровням (финалы с поинтами в реестре).";
     renderReturnRateChart();
   }
 
