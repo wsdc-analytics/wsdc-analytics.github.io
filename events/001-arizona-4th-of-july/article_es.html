@@ -167,7 +167,7 @@
     .article-content {
       padding: 4rem var(--pad-x) 2.5rem;
     }
-    /* Как в article_3year_rule / secondary_role: узкая колонка текста 700px */
+    /* Same as article_3year_rule / secondary_role: narrow 700px text column */
     .article-rail {
       width: 100%;
       max-width: var(--rail-max);
@@ -421,7 +421,7 @@
       .metric-toggles button:hover:not(.is-active) { background: rgba(255, 255, 255, 0.55); }
     }
 
-    /* Фигуры: без «карточек», в одной ширине с текстом */
+    /* Figures: no cards, same width as the text column */
     .figure {
       margin: 1.15rem 0 0.85rem;
       padding: 0;
@@ -438,7 +438,7 @@
       line-height: 1.45;
     }
 
-    /* Bars: meta сверху, трек на всю ширину колонки */
+    /* Bars: meta on top, track spans the full column width */
     .bar-chart { margin: 1rem 0 0.5rem; width: 100%; }
     .bar-chart + p,
     .figure + p {
@@ -785,7 +785,7 @@
       Este artículo abre una serie de retratos de eventos WSDC a partir del registro de puntos.
     </p>
     <p class="series-lede">
-      La primera entrega trata el evento con la historia más larga del registro, número 1: la <strong>4TH of July Convention</strong> en Phoenix, Arizona.
+      La primera entrega está dedicada al evento con la historia más larga y el número 1 en el registro: la <strong>4TH of July Convention</strong> de Phoenix, Arizona.
     </p>
 
     <p class="intro">
@@ -818,7 +818,7 @@
       <div class="snapshot-item">
         <div class="snapshot-label">Ediciones</div>
         <div class="snapshot-value">34</div>
-        <div class="snapshot-note">top-1 entre todos los eventos</div>
+        <div class="snapshot-note">n.º 1 entre todos los eventos</div>
       </div>
       <div class="snapshot-item">
         <div class="snapshot-label">
@@ -831,7 +831,7 @@
           </span>
         </div>
         <div class="snapshot-value">1364</div>
-        <div class="snapshot-note">top-6 entre todos los eventos</div>
+        <div class="snapshot-note">n.º 6 entre todos los eventos</div>
       </div>
       <div class="snapshot-item">
         <div class="snapshot-label">
@@ -844,7 +844,7 @@
           </span>
         </div>
         <div class="snapshot-value">245</div>
-        <div class="snapshot-note">top-13 entre todos los eventos</div>
+        <div class="snapshot-note">n.º 13 entre todos los eventos</div>
       </div>
       <div class="snapshot-item">
         <div class="snapshot-label">
@@ -857,17 +857,17 @@
           </span>
         </div>
         <div class="snapshot-value">8284</div>
-        <div class="snapshot-note">top-8 entre todos los eventos</div>
+        <div class="snapshot-note">n.º 8 entre todos los eventos</div>
       </div>
     </div>
 
     <section class="section" aria-labelledby="peer-title">
-      <h2 class="section-title" id="peer-title">El más frecuente, no el más grande</h2>
+      <h2 class="section-title" id="peer-title">El de más ediciones, pero no el más grande</h2>
       <p>
-        Sorprende que el evento con la historia más larga casi no lidere ninguna métrica clave. Por bailarines con puntos es 6.º (1364), por nuevos bailarines 13.º (245), por puntos Skill Level 8.º (8284).
+        Sorprende que el evento con la historia más larga no lidere casi ninguna métrica clave: es 6.º por bailarines con puntos (1364), 13.º por nuevos bailarines (245) y 8.º por puntos Skill Level (8284).
       </p>
       <p>
-        Una de las razones: Newcomer dejó de ofrecerse desde 1998 (salvo un breve regreso en 2009).
+        Una de las razones: la división Newcomer no se ofrece desde 1998, salvo un breve regreso en 2009.
       </p>
       <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Métrica de comparación entre eventos">
         <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Bailarines</button>
@@ -880,7 +880,7 @@
     <section class="section" aria-labelledby="traj-title">
       <h2 class="section-title" id="traj-title">Cómo cambió el evento</h2>
       <p>
-        El crecimiento no fue lineal: hubo saltos fuertes (1998, 2007) y caídas (2011, 2018), más el hueco de 2020-2021. Aun así, 2026 ya está cerca de los picos históricos de bailarines y puntos.
+        El crecimiento no fue lineal: hubo subidas fuertes (1998, 2007) y caídas (2011, 2018), además de la pausa de 2020-2021. Aun así, 2026 ya está cerca de los máximos históricos de bailarines y puntos.
       </p>
       <p>
         Los máximos de nuevos bailarines quedaron en los años 90. Hoy esa métrica es claramente más modesta que en muchos otros eventos.
@@ -893,22 +893,22 @@
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="trajTip" aria-hidden="true"></div>
         <svg id="trajChart" viewBox="0 0 720 280" role="img" aria-label="Trayectoria de la métrica por año"></svg>
-        <p class="chart-caption" id="trajCaption">Pasa el cursor por un punto: año, valor y cambio respecto al año anterior.</p>
+        <p class="chart-caption" id="trajCaption">Pasa el cursor sobre un punto para ver el año, el valor y el cambio respecto al año anterior.</p>
       </div>
     </section>
 
     <section class="section" aria-labelledby="launch-title">
       <h2 class="section-title" id="launch-title">Quién empezó aquí</h2>
       <p>
-        Para aproximadamente uno de cada cinco bailarines con puntos en este evento (245 de 1364, alrededor del 18%), 4TH of July Convention fue su primera entrada en el registro WSDC.
+        Para aproximadamente uno de cada cinco bailarines con puntos en este evento (245 de 1364, alrededor del 18%), la 4TH of July Convention fue su primera entrada en el registro WSDC.
       </p>
       <div class="insight-kpis" id="launchKpis"></div>
       <p>
-        La mayoría de quienes empezaron aquí siguen en Novice-Advanced: cerca de un tercio en Novice y alrededor de un cuarto con derecho a Intermediate y a Advanced. Hasta All-Star o más llega aproximadamente uno de cada ocho; hasta Champion, uno de cada quince.
+        La mayoría de quienes empezaron aquí sigue entre Novice y Advanced: cerca de un tercio está en Novice, y aproximadamente una cuarta parte puede competir en Intermediate y otra en Advanced. A All-Star o más llega alrededor de uno de cada ocho; a Champion, uno de cada quince.
       </p>
       <div class="bar-chart" id="launchBars" aria-label="División más alta alcanzada por quienes empezaron aquí"></div>
       <p>
-        Entre quienes llegaron a Champion hay integrantes del Hall of Fame de WSDC y bailarines muy visibles hoy:
+        Entre quienes llegaron a Champion hay integrantes del Hall of Fame de WSDC y bailarines muy conocidos hoy en día:
       </p>
       <ul class="name-list">
         <li>Wayne Bott: primeros puntos en 1992, Hall of Fame WSDC 2009</li>
@@ -922,17 +922,17 @@
     </section>
 
     <section class="section" aria-labelledby="ret-title">
-      <h2 class="section-title" id="ret-title">Con qué frecuencia puntúan aquí</h2>
+      <h2 class="section-title" id="ret-title">Con qué frecuencia puntúan aquí los bailarines</h2>
       <p>
-        La mayoría de los bailarines con puntos en este evento aparecen una sola vez: el 63% (865 de 1364) sumó puntos en una sola edición. Representan el 39,4% de todos los puntos Skill Level. Abajo: cómo se distribuyen quienes tienen más participaciones con puntos y qué parte de los puntos concentran esos grupos.
+        La mayoría de los bailarines con puntos en este evento puntuó una sola vez: el 63% (865 de 1364) sumó puntos en una única edición, y ese grupo concentra el 39,4% de todos los puntos Skill Level. A continuación: cómo se distribuyen quienes tienen varias participaciones con puntos y qué parte de los puntos reúne cada grupo.
       </p>
       <div class="bar-chart" id="retBars" aria-label="Participaciones con puntos por bailarín"></div>
       <p>
-        De un año a otro el panorama es otro: alrededor del 25% de quienes puntuaron en un año vuelve a puntuar al siguiente. Eso muestra cuán estable es el grupo que deja puntos en el evento. El pico fue 2015: 40,7% de quienes puntuaron en 2014.
+        De un año al siguiente el panorama cambia: alrededor del 25% de quienes puntúan en un año vuelve a puntuar al siguiente. Eso muestra lo estable que es el grupo que suma puntos en el evento. El máximo llegó en 2015, cuando volvió a puntuar el 40,7% de quienes lo hicieron en 2014.
       </p>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="retTip" aria-hidden="true"></div>
-        <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Porcentaje de retorno de puntos año a año"></svg>
+        <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Porcentaje de retorno año a año"></svg>
         <p class="chart-caption" id="retCaption">Porcentaje de bailarines con puntos en el año Y que volvieron a puntuar en Y+1 (1991-2026).</p>
       </div>
     </section>
@@ -943,7 +943,7 @@
         El líder histórico de Phoenix es Robert Royston: más puntos, más participaciones con puntos y más victorias en este evento que nadie.
       </p>
       <p>
-        Por puntos le siguen Michael Kielbasa (45) y Melissa Rutz (43). Más participaciones con puntos: 11 cada uno para Robert Royston y Benji Schwimmer; ellos también lideran en victorias (4 cada uno).
+        Por puntos le siguen Michael Kielbasa (45) y Melissa Rutz (43). Robert Royston y Benji Schwimmer encabezan las participaciones con puntos, con 11 cada uno, y también comparten el liderato en victorias (4 cada uno).
       </p>
       <div class="metric-toggles" id="peopleToggles" role="tablist" aria-label="Métrica del top 5">
         <button type="button" role="tab" data-metric="points" class="is-active" aria-selected="true">Puntos</button>
@@ -952,14 +952,14 @@
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Top 5 de bailarines"></div>
       <p>
-        Robert Royston y Torri Zzaoui coincidieron con más frecuencia en finales y sumaron puntos (tres finales, una victoria). Una victoria compartida con dos finales cada uno: Robert Royston y Brandi Tobias, Kyle Redd y Deborah Szekely, Benji Schwimmer y Laureen Baldovi, Billy Smuck y Sheena Shirley, Bret Navarre y Kristen Parker. PJ Turner y Melissa Rutz coincidieron dos veces en la final, pero no ganaron.
+        La pareja que más veces coincidió en finales con puntos es Robert Royston y Torri Zzaoui: tres finales y una victoria. Otras parejas suman dos finales y una victoria compartida cada una: Robert Royston y Brandi Tobias, Kyle Redd y Deborah Szekely, Benji Schwimmer y Laureen Baldovi, Billy Smuck y Sheena Shirley, y Bret Navarre y Kristen Parker. PJ Turner y Melissa Rutz llegaron dos veces juntos a la final, pero nunca ganaron.
       </p>
     </section>
 
     <section class="section" aria-labelledby="closing-title">
       <h2 class="section-title" id="closing-title">Cierre</h2>
       <p class="closing">
-        4TH of July Convention no es el evento más masivo ni el más «productivo» de la historia de WSDC, pese a su duración récord. Lo distinguen la estabilidad y la historia larga. Para cientos de bailarines aquí empezó el camino en los rankings WSDC, y parte de futuros campeones obtuvo aquí sus primeros puntos. La mayoría de los participantes puntuó en este evento solo una vez. Aun así, el formato se mantiene año tras año y el fin de semana sigue siendo un punto fijo en el mapa del WCS.
+        Pese a su longevidad récord, la 4TH of July Convention no es el evento más masivo ni el más «productivo» de la historia de WSDC. Lo que la distingue es la estabilidad y una trayectoria larga. Para cientos de bailarines aquí empezó su camino en los rankings de WSDC, y varios futuros campeones obtuvieron aquí sus primeros puntos. La mayoría de los participantes puntuó en este evento una sola vez. Aun así, el formato se mantiene año tras año y el fin de semana sigue siendo un punto fijo en el mapa del WCS.
       </p>
     </section>
     
@@ -1167,8 +1167,8 @@
         : Math.round((1000 * h.dancers) / base) / 10;
       const pointsPct = h.points_share_pct;
       const valueText = pointsPct != null
-        ? "{dancers} · {peoplePct}% de bailarines sumaron {pointsPct}% de los puntos".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct)).replace("{pointsPct}", fmtPct(pointsPct))
-        : "{dancers} · {peoplePct}% de bailarines".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct));
+        ? "{dancers} · el {peoplePct}% de los bailarines sumó el {pointsPct}% de los puntos".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct)).replace("{pointsPct}", fmtPct(pointsPct))
+        : "{dancers} · {peoplePct}% de los bailarines".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct));
       const focus = h.editions === 1;
       return hbar(participationLabel(h.editions), valueText, w, focus, h.editions === "5+");
     }).join("");
