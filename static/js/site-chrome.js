@@ -7,6 +7,7 @@
  *   data-fixed           "true" for position:fixed (homepage)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       brand logo link (default index.html) — return home
+ *   data-path-prefix     prefix for dashboard / points-summary hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
  *   data-current-dash    filename to mark current dashboard link
@@ -22,6 +23,13 @@
     { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points" },
     { href: "city-clouds.html", label: "Cities Cloud" },
   ];
+
+  function withPathPrefix(root, href) {
+    var prefix = root.getAttribute("data-path-prefix") || "";
+    if (!prefix || !href) return href;
+    if (/^(https?:|mailto:|\/)/i.test(href)) return href;
+    return prefix + href;
+  }
 
   var LABELS = {
     dashboards: { ru: "Дашборды", en: "Dashboards", es: "Paneles" },
@@ -135,9 +143,10 @@
 
     var dashItems = DASHBOARDS.map(function (d) {
       var cur = d.href === currentDash ? " is-current" : "";
+      var href = withPathPrefix(root, d.href);
       return (
         '<li role="none"><a href="' +
-        esc(d.href) +
+        esc(href) +
         '" role="menuitem" data-dash-href="' +
         esc(d.href) +
         '" class="' +
@@ -193,7 +202,9 @@
       tipHtml(pointsTip, 'data-chrome-points-tip') +
       '<a class="wsdc-chrome__pill' +
       pointsActive +
-      '" href="points-summary.html" id="pointsSummaryBtn">' +
+      '" href="' +
+      esc(withPathPrefix(root, "points-summary.html")) +
+      '" id="pointsSummaryBtn">' +
       esc(LABELS.points[lang] || LABELS.points.en) +
       "</a>" +
       "</div>" +

@@ -34,4 +34,7 @@ Stack (bottom → top), same brightness family as other article heroes (`#2d3748
 
 ## Pilot
 
-- [`001-arizona-4th-of-july/draft_ru.html`](001-arizona-4th-of-july/draft_ru.html)
+- [`001-arizona-4th-of-july/article_ru.html`](001-arizona-4th-of-july/article_ru.html) · [`article_en.html`](001-arizona-4th-of-july/article_en.html) · [`article_es.html`](001-arizona-4th-of-july/article_es.html)
+- Rebuild from `source_draft_ru.html` + `i18n.json`: `python3 scripts/build_arizona_event_articles.py`
+- `draft_ru.html` redirects to `article_ru.html` (old URL)
+- Still **not** on the homepage until explicit publish
