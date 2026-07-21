@@ -429,6 +429,7 @@
     .hbar.is-focus .hbar-value { color: var(--accent); }
     .hbar.is-muted .hbar-fill { background: rgba(26, 31, 46, 0.28); }
     .hbar.is-muted .hbar-meta { color: var(--muted); font-weight: 500; }
+    .people-pairs-lead { margin-top: 1.7em; }
     .peer-gap {
       display: flex;
       align-items: center;
@@ -787,7 +788,7 @@
         <button type="button" role="tab" data-metric="wins" aria-selected="false">Победы</button>
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Топ-5 танцоров"></div>
-      <p>
+      <p class="people-pairs-lead">
         А вот чаще всего в финалах совпадали и получали поинты Robert Royston и Torri Zzaoui
         (три финала и одна победа). Ещё по одной совместной победе при двух успешных финалах у
         Robert Royston и Brandi Tobias, Kyle Redd и Deborah Szekely, Benji Schwimmer и Laureen Baldovi,
@@ -1152,11 +1153,10 @@
     const rows = M.top5_by_metric[key];
     const valKey = key === "points" ? "points_here" : key;
     const max = Math.max(...rows.map((r) => r[valKey]));
-    const unit = key === "points" ? "поинт." : key === "editions" ? "уч." : "побед";
     document.getElementById("peopleBars").innerHTML = rows.map((r) => {
       const v = r[valKey];
       const w = ((100 * v) / max).toFixed(1);
-      return hbar(r.dancer_name, `${v} ${unit}`, w, false);
+      return hbar(r.dancer_name, String(v), w, false);
     }).join("");
   }
 
