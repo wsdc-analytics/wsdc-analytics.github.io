@@ -876,6 +876,17 @@ def build_one(lang: str, draft: str, i18n: dict) -> str:
       padding-left: 0;
       margin-left: 0;
     }}
+    /* Keep series teal: shell remaps --accent to brand gray */
+    :root {{
+      --accent: #0f766e;
+    }}
+    .hbar.is-focus .hbar-fill {{
+      background: #0f766e;
+    }}
+    .hbar.is-focus .hbar-meta,
+    .hbar.is-focus .hbar-value {{
+      color: #0f766e;
+    }}
   </style>
 </head>"""
 
