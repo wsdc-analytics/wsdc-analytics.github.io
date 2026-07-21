@@ -22,11 +22,17 @@ NS = "articles-events-001-arizona"
 
 EXTRA_CSS = r"""
     .article-header-top {
-      position: absolute;
-      top: 24px;
-      left: var(--pad-x);
-      right: var(--pad-x);
-      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+    .article-header {
+      justify-content: flex-start;
+    }
+    .article-eyebrow {
+      margin-top: auto;
     }
     .article-reactions {
       margin: 40px 0 0;
@@ -830,11 +836,46 @@ def build_one(lang: str, draft: str, i18n: dict) -> str:
         flags=re.S,
     )
 
-    # Left-align like production articles
-    html = html.replace("text-align: justify;", "text-align: left;", 2)
+    # Keep draft justify; article-shell left-align is overridden after the link below.
+    JUSTIFY_OVERRIDE = f"""  <link rel="stylesheet" href="{STATIC}/css/article-shell.css">
+  <style>
+    /* Event portraits: restore width justification (shell defaults to left). */
+    .article-rail,
+    .article-rail p,
+    .article-rail .intro,
+    .article-rail .series-lede,
+    .article-rail .closing,
+    .article-rail .footnote,
+    .article-content .data-note,
+    .article-footer .data-note {{
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+      -ms-hyphens: none;
+    }}
+    .article-rail .section-title,
+    .article-rail .snapshot,
+    .article-rail .insight-kpis,
+    .article-rail .bar-chart,
+    .article-rail .hbar-meta,
+    .article-rail .metric-toggles,
+    .article-rail .name-list,
+    .article-rail .chart-caption,
+    .article-rail .article-links,
+    .article-rail .article-reactions,
+    .article-rail .article-feedback {{
+      text-align: left;
+    }}
+  </style>
+</head>"""
 
-    # Inject extra CSS before </style>
-    html = html.replace("  </style>\n</head>", EXTRA_CSS + "  </style>\n  <link rel=\"stylesheet\" href=\"" + STATIC + "/css/article-shell.css\">\n</head>", 1)
+    # Inject extra CSS before </style>, then shell + justify override
+    html = html.replace(
+        "  </style>\n</head>",
+        EXTRA_CSS + "  </style>\n" + JUSTIFY_OVERRIDE,
+        1,
+    )
 
     # Body: chrome + back link
     html = html.replace("<body>\n\n<div class=\"magazine-container\">", "<body>\n" + chrome_mount(t) + "\n<div class=\"magazine-container\">", 1)
