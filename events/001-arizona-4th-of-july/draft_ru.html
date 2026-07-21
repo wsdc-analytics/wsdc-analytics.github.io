@@ -382,7 +382,6 @@
     }
     .figure-chart {
       padding: 0.75rem 0 0.35rem;
-      border-top: 1px solid var(--line);
     }
     .figure svg { width: 100%; height: auto; display: block; }
     .chart-caption {
@@ -394,6 +393,10 @@
 
     /* Bars: meta сверху, трек на всю ширину колонки */
     .bar-chart { margin: 1rem 0 0.5rem; width: 100%; }
+    .bar-chart + p,
+    .figure + p {
+      margin-top: 1.7em;
+    }
     .hbar {
       margin-bottom: 0.7rem;
     }
@@ -429,7 +432,6 @@
     .hbar.is-focus .hbar-value { color: var(--accent); }
     .hbar.is-muted .hbar-fill { background: rgba(26, 31, 46, 0.28); }
     .hbar.is-muted .hbar-meta { color: var(--muted); font-weight: 500; }
-    .people-pairs-lead { margin-top: 1.7em; }
     .peer-gap {
       display: flex;
       align-items: center;
@@ -463,8 +465,6 @@
     .name-list li { margin-bottom: 0.35rem; }
 
     .closing {
-      border-top: 1px solid var(--line);
-      padding-top: 1.5rem;
       font-size: 1.05rem;
     }
 
@@ -597,7 +597,7 @@
       Эта статья открывает цикл портретов ивентов WSDC через данные реестра поинтов.
     </p>
     <p class="series-lede">
-      Первый портрет: у ивента с самой долгой историей проведения и учётным номером 1:
+      Первая статья об ивенте с самой долгой историей проведения и учётным номером 1:
       <strong>4TH of July Convention</strong> в Финиксе, Аризона, США.
     </p>
 
@@ -685,7 +685,7 @@
         По танцорам с поинтами он 6-й (1364), по новым танцорам 13-й (245), по сумме поинтов Skill Level 8-й (8284).
       </p>
       <p>
-        Одна из причин: отказ от номинации Newcomer с 1998 года (с мимолётным возвратом номинации в 2009).
+        Одна из причин: отказ от номинации Newcomer с 1998 года (с мимолётным возвращением номинации в 2009).
       </p>
       <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Метрика сравнения ивентов">
         <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
@@ -698,7 +698,7 @@
     <section class="section" aria-labelledby="traj-title">
       <h2 class="section-title" id="traj-title">Как менялся ивент</h2>
       <p>
-        Ивент не отличается плавным ростом: были резкие взлёты (1998, 2007) и падения (2011, 2018),
+        Ивент не отличается плавностью роста: были резкие взлёты (1998, 2007) и падения (2011, 2018),
         плюс пропуск 2020-2021. При этом 2026 уже близко к историческим пикам по танцорам и поинтам.
       </p>
       <p>
@@ -724,14 +724,14 @@
       </p>
       <div class="insight-kpis" id="launchKpis"></div>
       <p>
-        Большинство стартовавших здесь дальше остаётся в Novice-Advanced: примерно треть в Novice,
+        Большинство стартовавших здесь сейчас остаются в Novice-Advanced: примерно треть в Novice,
         по четверти имеют право выступать в Intermediate и Advanced. До All-Star и выше доходит
         примерно каждый восьмой, до Champion каждый пятнадцатый.
       </p>
       <div class="bar-chart" id="launchBars" aria-label="Высший дивизион стартовавших здесь"></div>
       <p>
         Среди тех, кто дошёл до Champion, есть и танцоры, включённые в зал славы WSDC,
-        и известные танцоры сейчас:
+        и те, кто на виду сейчас:
       </p>
       <ul class="name-list">
         <li>Wayne Bott: первые поинты в 1992, Hall of Fame WSDC 2009</li>
@@ -753,9 +753,9 @@
       </p>
       <div class="bar-chart" id="retBars" aria-label="Число успешных участий на танцора"></div>
       <p>
-        Год к году картина другая: какая доля танцоров с поинтами в одном году снова набирает поинты
-        в следующем году. Это показывает, насколько постоянный состав получает поинты на ивенте.
-        Пик недавних лет пришёлся на 2015: 40,7% от тех, кто получил поинты в 2014.
+        Год к году картина другая: приблизительно 25% танцоров с поинтами в одном году снова набирает
+        поинты в следующем году. Это показывает, насколько постоянный состав получает поинты на ивенте.
+        Пик пришёлся на 2015: 40,7% от тех, кто получил поинты в 2014.
       </p>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="retTip" aria-hidden="true"></div>
@@ -767,7 +767,7 @@
     <section class="section" aria-labelledby="people-title">
       <h2 class="section-title" id="people-title">Наиболее успешные танцоры ивента</h2>
       <p>
-        Лидером Финикса за всю историю остаётся Robert Royston: у него больше всех поинтов,
+        Лидером Финикса за всю историю является Robert Royston: у него больше всех поинтов,
         успешных участий и побед на этом ивенте.
       </p>
       <p>
@@ -781,7 +781,7 @@
         <button type="button" role="tab" data-metric="wins" aria-selected="false">Победы</button>
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Топ-5 танцоров"></div>
-      <p class="people-pairs-lead">
+      <p>
         Чаще всего в финалах совпадали и получали поинты Robert Royston и Torri Zzaoui
         (три финала, одна победа). Ещё по одной совместной победе при двух финалах
         у Robert Royston и Brandi Tobias, Kyle Redd и Deborah Szekely, Benji Schwimmer и Laureen Baldovi,
@@ -790,7 +790,8 @@
       </p>
     </section>
 
-    <section class="section">
+    <section class="section" aria-labelledby="closing-title">
+      <h2 class="section-title" id="closing-title">Заключение</h2>
       <p class="closing">
         4TH of July Convention не самый массовый и не самый «результативный» ивент в истории WSDC,
         несмотря на рекордную продолжительность существования. Его отличают стабильность и длинная история.
@@ -803,65 +804,14 @@
   </main>
 
   <footer class="article-footer">
-    <p class="sources-title">Данные из базы</p>
     <p class="data-note">
-      Цифры, траектории, дивизионы, старты здесь, возвраты, топы и пары считаются по реестру
-      поинтов и результатов WSDC: танцоры с поинтами &gt; 0 в Jack&amp;Jill по уровням.
-      Каталог событий: <code>event_catalog.csv</code> (в том числе <strong>номер события = 1</strong> для
-      4TH of July Convention). Файл метрик этой статьи:
-      <code>metrics/metrics.json</code>, собран 2026-07-17.
-    </p>
-
-    <p class="sources-title">Источники вне базы (контекст, история, имена)</p>
-    <ul class="sources-list">
-      <li>
-        <a href="https://phoenix4thofjuly.com/" rel="noopener noreferrer" target="_blank">phoenix4thofjuly.com</a>
-        — официальный сайт: полное имя со словом Convention, «46th year» / с 1982,
-        площадка Camelback Inn, короткое имя P4J / Phoenix 4th of July.
-      </li>
-      <li>
-        <a href="https://phoenix4thofjuly.com/about/" rel="noopener noreferrer" target="_blank">phoenix4thofjuly.com/about</a>
-        — GPSDC как организатор, клуб с 1981, джем Kenny Wetzel с первого съезда 1982.
-      </li>
-      <li>
-        <a href="https://phoenix4thofjuly.com/competition/" rel="noopener noreferrer" target="_blank">phoenix4thofjuly.com/competition</a>
-        — актуальные дивизионы уровневого Jack&amp;Jill (Novice, Intermediate, Advanced, All Star, Champion), роли не привязаны к полу,
-        акцент на Jack&amp;Jill и социальных танцах; Newcomer как уровень WSDC не указан.
-      </li>
-      <li>
-        <a href="https://phoenix4thofjuly.com/event-details/" rel="noopener noreferrer" target="_blank">phoenix4thofjuly.com/event-details</a>
-        — даты, отель JW Marriott Scottsdale Camelback Inn.
-      </li>
-      <li>
-        <a href="https://greaterphoenixswingdanceclub.com/" rel="noopener noreferrer" target="_blank">greaterphoenixswingdanceclub.com</a>
-        — сайт клуба GPSDC.
-      </li>
-      <li>
-        <a href="https://greaterphoenixswingdanceclub.com/the-history%2Fhall-of-fame" rel="noopener noreferrer" target="_blank">GPSDC History / Hall of Fame</a>
-        — клуб основан в 1981; первый съезд 1982; джем как традиция закрытия
-        (на странице фамилия Wetzel иногда с опечаткой Wentzl/Wentzel).
-      </li>
-      <li>
-        <a href="https://worldsdc.com/hall-of-fame/" rel="noopener noreferrer" target="_blank">worldsdc.com/hall-of-fame</a>
-        — зал славы WSDC; среди стартовавших здесь до Champion — Wayne Bott (2009) и Martin Parker (2015).
-      </li>
-      <li>
-        <a href="https://worldsdc.com/hall-of-fame/robert-bryant-1993/" rel="noopener noreferrer" target="_blank">worldsdc.com · Robert Bryant (зал славы, 1993)</a>
-        — один из десяти основателей GPSDC и 4TH of July Convention in Phoenix.
-      </li>
-      <li>
-        <a href="https://worldsdc.com/playground-event-list/" rel="noopener noreferrer" target="_blank">worldsdc.com/playground-event-list</a>
-        — короткое календарное имя «Phoenix 4th of July» (без Convention в списке).
-      </li>
-      <li>
-        <a href="https://www.worlddanceregistry.com/event.aspx?euid=14a7956f-8330-42d4-ac9d-f15efc1943c8" rel="noopener noreferrer" target="_blank">World Dance Registry · Phoenix 4th of July 2025</a>
-        — внешний список с коротким именем без Convention.
-      </li>
-    </ul>
-    <p class="data-note">
-      Всё, что относится к истории клуба, именам события, площадке и правилам конкурсов,
-      взято из источников выше. Всё, что относится к поинтам и сравнениям между событиями,
-      взято из реестра / <code>metrics/metrics.json</code>.
+      В статье использованы данные реестра поинтов
+      <a href="https://worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC</a>
+      и информация, размещённая на
+      <a href="https://worldsdc.com/" rel="noopener noreferrer" target="_blank">сайте WSDC</a>,
+      <a href="https://phoenix4thofjuly.com/" rel="noopener noreferrer" target="_blank">сайте ивента</a>
+      и
+      <a href="https://greaterphoenixswingdanceclub.com/" rel="noopener noreferrer" target="_blank">сайте клуба-организатора</a>.
     </p>
   </footer>
 </div>
