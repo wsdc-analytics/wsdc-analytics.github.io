@@ -867,6 +867,15 @@ def build_one(lang: str, draft: str, i18n: dict) -> str:
     .article-rail .article-feedback {{
       text-align: left;
     }}
+    /* Drop magazine H2 rail — flush left with body column */
+    .article-rail .section-title,
+    .article-rail h2.section-title,
+    .article-content .section-title,
+    .article-feedback-title {{
+      border-left: none;
+      padding-left: 0;
+      margin-left: 0;
+    }}
   </style>
 </head>"""
 
