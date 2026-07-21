@@ -173,7 +173,7 @@
       max-width: var(--rail-max);
       margin-left: auto;
       margin-right: auto;
-      text-align: left;
+      text-align: justify;
       text-justify: inter-word;
       hyphens: none;
       -webkit-hyphens: none;
@@ -530,7 +530,7 @@
       color: var(--muted);
       line-height: 1.65;
       width: 100%;
-      text-align: left;
+      text-align: justify;
       text-justify: inter-word;
       hyphens: none;
       -webkit-hyphens: none;
@@ -620,11 +620,17 @@
     }
 
     .article-header-top {
-      position: absolute;
-      top: 24px;
-      left: var(--pad-x);
-      right: var(--pad-x);
-      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+    .article-header {
+      justify-content: flex-start;
+    }
+    .article-eyebrow {
+      margin-top: auto;
     }
     .article-reactions {
       margin: 40px 0 0;
@@ -690,6 +696,36 @@
     }
   </style>
   <link rel="stylesheet" href="../../static/css/article-shell.css">
+  <style>
+    /* Event portraits: restore width justification (shell defaults to left). */
+    .article-rail,
+    .article-rail p,
+    .article-rail .intro,
+    .article-rail .series-lede,
+    .article-rail .closing,
+    .article-rail .footnote,
+    .article-content .data-note,
+    .article-footer .data-note {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+      -ms-hyphens: none;
+    }
+    .article-rail .section-title,
+    .article-rail .snapshot,
+    .article-rail .insight-kpis,
+    .article-rail .bar-chart,
+    .article-rail .hbar-meta,
+    .article-rail .metric-toggles,
+    .article-rail .name-list,
+    .article-rail .chart-caption,
+    .article-rail .article-links,
+    .article-rail .article-reactions,
+    .article-rail .article-feedback {
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Перейти к содержимому</a>
@@ -733,7 +769,7 @@
     </p>
 
     <p class="intro">
-      История ивента начинается задолго до появления реестра WSDC: в 1981 в Финиксе открылся клуб GPSDC, а с 1982 он начал проводить июльский танцевальный уикенд. В 1991 это клубное событие стало одним из первых ивентов WSDC.
+      История ивента начинается задолго до появления реестра WSDC: в 1981 в Финиксе открылся клуб Greater Phoenix Swing Dance Club, а с 1982 он начал проводить июльский танцевальный уикенд. В 1991 это клубное событие стало одним из первых ивентов WSDC.
     </p>
 
     <p class="intro">
