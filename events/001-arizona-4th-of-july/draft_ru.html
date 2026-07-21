@@ -1156,7 +1156,8 @@
     document.getElementById("peopleBars").innerHTML = rows.map((r) => {
       const v = r[valKey];
       const w = ((100 * v) / max).toFixed(1);
-      return hbar(r.dancer_name, String(v), w, false);
+      const focus = r.dancer_name === "Robert Royston";
+      return hbar(r.dancer_name, String(v), w, focus, false);
     }).join("");
   }
 
