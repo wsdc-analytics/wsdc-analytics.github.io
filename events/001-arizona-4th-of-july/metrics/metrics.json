@@ -6,7 +6,7 @@
     "new_dancers": "dancers whose first-ever WSDC points row (any division, points>0) is Skill JJ at this event",
     "wins": "result_standardized = '1' at this event (Skill JJ)",
     "started_here_notable": "among starters who reached Champion: WSDC Hall of Fame inductees (Wayne Bott, Martin Parker), plus Katie Schneider, Heidi Groskreutz, Cameo Cross, and Mackenzie Keister",
-    "pairs": "All-Star/Champion place-matched Leader+Follower with same result_standardized in {1,2,3,4,5} same event_year+division (JJ finals convention; not stored partner_id)",
+    "pairs": "Skill Level JJ place-matched Leader+Follower with same result_standardized in {1,2,3,4,5} same event_year+division (JJ finals convention; not stored partner_id)",
     "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
     "launchpad": "first-ever WSDC points (any skill JJ result) at this event; highest division and career points share outside this event",
     "division_era_mix": "Share of Skill JJ points at this event by division, aggregated by era (COVID gap years excluded from 2022–2026 bucket)",
@@ -381,7 +381,7 @@
     ]
   },
   "pairs_as_champ": {
-    "method_note": "Place-matched Leader+Follower (same place 1–5) in All-Star/Champion at this event",
+    "method_note": "Place-matched Leader+Follower (same place 1–5) in any Skill Level JJ division at this event",
     "by_wins": [
       {
         "leader_name": "Robert Royston",
@@ -391,8 +391,22 @@
         "years": 3
       },
       {
-        "leader_name": "Robert Royston",
-        "follower_name": "Brandi Tobias",
+        "leader_name": "Benji Schwimmer",
+        "follower_name": "Laureen Baldovi",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2
+      },
+      {
+        "leader_name": "Billy Smuck",
+        "follower_name": "Sheena Shirley",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2
+      },
+      {
+        "leader_name": "Bret Navarre",
+        "follower_name": "Kristen Parker",
         "placed_together": 2,
         "wins_together": 1,
         "years": 2
@@ -405,11 +419,25 @@
         "years": 2
       },
       {
-        "leader_name": "Benji Schwimmer",
-        "follower_name": "Laureen Baldovi",
+        "leader_name": "Robert Royston",
+        "follower_name": "Brandi Tobias",
         "placed_together": 2,
         "wins_together": 1,
         "years": 2
+      },
+      {
+        "leader_name": "Adam Mcmahon",
+        "follower_name": "Tara Mccroskey",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1
+      },
+      {
+        "leader_name": "Ajay Ranipeta",
+        "follower_name": "Rehanna Loncar",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1
       }
     ],
     "by_placements": [
@@ -421,6 +449,27 @@
         "years": 3
       },
       {
+        "leader_name": "Benji Schwimmer",
+        "follower_name": "Laureen Baldovi",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2
+      },
+      {
+        "leader_name": "Billy Smuck",
+        "follower_name": "Sheena Shirley",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2
+      },
+      {
+        "leader_name": "Bret Navarre",
+        "follower_name": "Kristen Parker",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2
+      },
+      {
         "leader_name": "Kyle Redd",
         "follower_name": "Deborah Szekely",
         "placed_together": 2,
@@ -436,14 +485,14 @@
       },
       {
         "leader_name": "Benji Schwimmer",
-        "follower_name": "Laureen Baldovi",
+        "follower_name": "Sarah Vann Drake",
         "placed_together": 2,
-        "wins_together": 1,
+        "wins_together": 0,
         "years": 2
       },
       {
-        "leader_name": "PJ Turner",
-        "follower_name": "Melissa Rutz",
+        "leader_name": "Gabriel Sebastian",
+        "follower_name": "Alex Raposo",
         "placed_together": 2,
         "wins_together": 0,
         "years": 2
