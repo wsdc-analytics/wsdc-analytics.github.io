@@ -2,6 +2,12 @@
 
 Long-form portraits of individual WSDC events (Skill JJ points registry).
 
+## Writing rules
+
+Series editorial guide (conclusion-first sections, charts after insight, Summary as synthesis):  
+→ workspace docs: `projects/wsdc/docs/events/EVENT_ARTICLE_SERIES_WRITING.md`  
+(also mirrored below if present in this repo: `EVENT_ARTICLE_SERIES_WRITING.md`)
+
 ## Status
 
 Drafts under `events/` are **not** linked from the homepage or `static/data/articles.json` until ready to publish.
