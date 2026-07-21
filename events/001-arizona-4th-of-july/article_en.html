@@ -167,7 +167,7 @@
     .article-content {
       padding: 4rem var(--pad-x) 2.5rem;
     }
-    /* Как в article_3year_rule / secondary_role: узкая колонка текста 700px */
+    /* Same as article_3year_rule / secondary_role: narrow 700px text column */
     .article-rail {
       width: 100%;
       max-width: var(--rail-max);
@@ -421,7 +421,7 @@
       .metric-toggles button:hover:not(.is-active) { background: rgba(255, 255, 255, 0.55); }
     }
 
-    /* Фигуры: без «карточек», в одной ширине с текстом */
+    /* Figures: no cards, same width as the text column */
     .figure {
       margin: 1.15rem 0 0.85rem;
       padding: 0;
@@ -438,7 +438,7 @@
       line-height: 1.45;
     }
 
-    /* Bars: meta сверху, трек на всю ширину колонки */
+    /* Bars: meta on top, track spans the full column width */
     .bar-chart { margin: 1rem 0 0.5rem; width: 100%; }
     .bar-chart + p,
     .figure + p {
@@ -818,7 +818,7 @@
       <div class="snapshot-item">
         <div class="snapshot-label">Editions</div>
         <div class="snapshot-value">34</div>
-        <div class="snapshot-note">top-1 among all events</div>
+        <div class="snapshot-note">#1 among all events</div>
       </div>
       <div class="snapshot-item">
         <div class="snapshot-label">
@@ -831,7 +831,7 @@
           </span>
         </div>
         <div class="snapshot-value">1364</div>
-        <div class="snapshot-note">top-6 among all events</div>
+        <div class="snapshot-note">#6 among all events</div>
       </div>
       <div class="snapshot-item">
         <div class="snapshot-label">
@@ -844,7 +844,7 @@
           </span>
         </div>
         <div class="snapshot-value">245</div>
-        <div class="snapshot-note">top-13 among all events</div>
+        <div class="snapshot-note">#13 among all events</div>
       </div>
       <div class="snapshot-item">
         <div class="snapshot-label">
@@ -857,17 +857,17 @@
           </span>
         </div>
         <div class="snapshot-value">8284</div>
-        <div class="snapshot-note">top-8 among all events</div>
+        <div class="snapshot-note">#8 among all events</div>
       </div>
     </div>
 
     <section class="section" aria-labelledby="peer-title">
-      <h2 class="section-title" id="peer-title">Most editions — not the biggest room</h2>
+      <h2 class="section-title" id="peer-title">The most editions, but not the biggest event</h2>
       <p>
-        Surprisingly, the longest-running event does not lead almost any headline metric. By dancers with points it ranks 6th (1,364), by new dancers 13th (245), by Skill Level points 8th (8,284).
+        Surprisingly, the longest-running event leads in almost none of the headline metrics: it ranks 6th by dancers with points (1,364), 13th by new dancers (245), and 8th by total Skill Level points (8,284).
       </p>
       <p>
-        One reason: Newcomer has not been offered since 1998 (aside from a brief return in 2009).
+        One reason: the Newcomer division hasn't been offered since 1998, apart from a brief return in 2009.
       </p>
       <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Event comparison metric">
         <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Dancers</button>
@@ -883,7 +883,7 @@
         Growth was never smooth: sharp rises in 1998 and 2007, drops in 2011 and 2018, plus the 2020–2021 gap. Still, 2026 is already close to historic peaks for dancers and points.
       </p>
       <p>
-        Peaks for new dancers stayed in the 1990s. Today that metric is clearly more modest than at many other events.
+        The peak years for new dancers were back in the 1990s. Today that number is noticeably lower than at many other events.
       </p>
       <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Trajectory metric">
         <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Dancers</button>
@@ -893,7 +893,7 @@
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="trajTip" aria-hidden="true"></div>
         <svg id="trajChart" viewBox="0 0 720 280" role="img" aria-label="Metric trajectory by year"></svg>
-        <p class="chart-caption" id="trajCaption">Hover a point for the year, value, and change vs. the previous year.</p>
+        <p class="chart-caption" id="trajCaption">Hover over a point to see the year, the value, and the change from the previous year.</p>
       </div>
     </section>
 
@@ -904,7 +904,7 @@
       </p>
       <div class="insight-kpis" id="launchKpis"></div>
       <p>
-        Most who started here still sit in Novice–Advanced: about a third in Novice, roughly a quarter each eligible for Intermediate and Advanced. About one in eight reaches All-Star or higher; about one in fifteen reaches Champion.
+        Most dancers who started here are still in Novice through Advanced: about a third in Novice, and roughly a quarter each eligible for Intermediate and Advanced. About one in eight reaches All-Star or higher; about one in fifteen reaches Champion.
       </p>
       <div class="bar-chart" id="launchBars" aria-label="Highest division reached by dancers who started here"></div>
       <p>
@@ -924,26 +924,26 @@
     <section class="section" aria-labelledby="ret-title">
       <h2 class="section-title" id="ret-title">How often dancers score here</h2>
       <p>
-        Most dancers with points at this event appear once: 63% (865 of 1,364) scored in only one edition. They account for 39.4% of all Skill Level points. Below: how dancers with more successful appearances distribute, and what share of points those groups hold.
+        Most dancers with points at this event scored only once: 63% (865 of 1,364) earned points in a single edition, and together they account for 39.4% of all Skill Level points. Below: how dancers with multiple scoring appearances break down, and what share of the points each group holds.
       </p>
-      <div class="bar-chart" id="retBars" aria-label="Successful appearances per dancer"></div>
+      <div class="bar-chart" id="retBars" aria-label="Scoring appearances per dancer"></div>
       <p>
-        Year to year looks different: about 25% of dancers with points in one year score again the next. That shows how stable the scoring field is. The peak was 2015: 40.7% of those who scored in 2014.
+        Year over year, the picture is different: about 25% of the dancers who score in one year come back and score again the next. That's a measure of how stable the scoring field is. The peak came in 2015, when 40.7% of the 2014 scorers returned.
       </p>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="retTip" aria-hidden="true"></div>
         <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Share returning to score year over year"></svg>
-        <p class="chart-caption" id="retCaption">Share of dancers with points in year Y who scored again in Y+1 (1991–2026).</p>
+        <p class="chart-caption" id="retCaption">Share of dancers with points in year Y who scored again in year Y+1 (1991–2026).</p>
       </div>
     </section>
 
     <section class="section" aria-labelledby="people-title">
       <h2 class="section-title" id="people-title">The event’s most successful dancers</h2>
       <p>
-        Phoenix’s all-time leader is Robert Royston: more points, successful appearances, and wins at this event than anyone else.
+        The all-time leader in Phoenix is Robert Royston, with more points, more scoring appearances, and more wins at this event than anyone else.
       </p>
       <p>
-        Next by points: Michael Kielbasa (45) and Melissa Rutz (43). Most successful appearances: 11 each for Robert Royston and Benji Schwimmer; they also lead in wins (4 each).
+        Next by points are Michael Kielbasa (45) and Melissa Rutz (43). Robert Royston and Benji Schwimmer have the most scoring appearances, 11 each, and they also share the lead in wins with 4 apiece.
       </p>
       <div class="metric-toggles" id="peopleToggles" role="tablist" aria-label="Top-5 metric">
         <button type="button" role="tab" data-metric="points" class="is-active" aria-selected="true">Points</button>
@@ -952,14 +952,14 @@
       </div>
       <div class="bar-chart" id="peopleBars" aria-label="Top 5 dancers"></div>
       <p>
-        Robert Royston and Torri Zzaoui most often placed together and scored (three finals, one win). One shared win with two finals each: Robert Royston and Brandi Tobias, Kyle Redd and Deborah Szekely, Benji Schwimmer and Laureen Baldovi, Billy Smuck and Sheena Shirley, Bret Navarre and Kristen Parker. PJ Turner and Melissa Rutz placed together twice in finals but never won.
+        The pairing that placed together most often is Robert Royston and Torri Zzaoui, with three shared finals and one win. Several other pairs each landed two finals with one shared win: Robert Royston and Brandi Tobias, Kyle Redd and Deborah Szekely, Benji Schwimmer and Laureen Baldovi, Billy Smuck and Sheena Shirley, and Bret Navarre and Kristen Parker. PJ Turner and Melissa Rutz made two finals together but never won.
       </p>
     </section>
 
     <section class="section" aria-labelledby="closing-title">
       <h2 class="section-title" id="closing-title">Closing</h2>
       <p class="closing">
-        The 4TH of July Convention is not the largest or most “productive” event in WSDC history, despite its record longevity. What sets it apart is stability and a long timeline. For hundreds of dancers this is where the WSDC rankings journey began, and some future champions earned their first points here. Most participants scored at this event only once. Still, the format has held for years, and the weekend remains a fixed point on the WCS map.
+        Despite its record longevity, the 4TH of July Convention has never been the biggest or highest-scoring event in WSDC history. What sets it apart is stability and staying power. For hundreds of dancers, this is where their WSDC record began, and some future champions earned their first points here. Most who scored here did so only once. Yet the event has kept its format year after year and remains a fixture on the WCS map.
       </p>
     </section>
     
@@ -992,7 +992,7 @@
 
     <section class="article-feedback" aria-labelledby="feedback-heading">
       <h2 class="article-feedback-title" id="feedback-heading">Article feedback</h2>
-      <p class="article-feedback-text">If you spotted an inaccuracy, have an idea to improve this piece, or simply want to write something, use the form below.</p>
+      <p class="article-feedback-text">Spotted an inaccuracy, have an idea for improvement, or just want to say something? Use the form below.</p>
       <form class="article-feedback-form" id="articleFeedbackForm">
         <label class="article-feedback-label" for="articleFeedbackMessage">Message *</label>
         <textarea id="articleFeedbackMessage" class="article-feedback-input" rows="4" required></textarea>
@@ -1153,11 +1153,11 @@
     }
     const max = Math.max(...low.map((h) => h.dancers), 1);
     const participationLabel = (editions) => {
-      if (editions === 1) return "1 successful appearance";
-      if (editions === "5+") return "5+ successful appearances";
+      if (editions === 1) return "1 scoring appearance";
+      if (editions === "5+") return "5+ scoring appearances";
       const n = Number(editions);
-      if (n >= 2 && n <= 4) return "{n} successful appearances".replace("{n}", String(n));
-      return "{n} successful appearances".replace("{n}", String(editions));
+      if (n >= 2 && n <= 4) return "{n} scoring appearances".replace("{n}", String(n));
+      return "{n} scoring appearances".replace("{n}", String(editions));
     };
     const fmtPct = (v) => String(v).replace(".", PCT_DEC);
     document.getElementById("retBars").innerHTML = low.map((h) => {
@@ -1167,7 +1167,7 @@
         : Math.round((1000 * h.dancers) / base) / 10;
       const pointsPct = h.points_share_pct;
       const valueText = pointsPct != null
-        ? "{dancers} · {peoplePct}% of dancers scored {pointsPct}% of points".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct)).replace("{pointsPct}", fmtPct(pointsPct))
+        ? "{dancers} · {peoplePct}% of dancers earned {pointsPct}% of points".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct)).replace("{pointsPct}", fmtPct(pointsPct))
         : "{dancers} · {peoplePct}% of dancers".replace("{dancers}", String(h.dancers)).replace("{peoplePct}", fmtPct(peoplePct));
       const focus = h.editions === 1;
       return hbar(participationLabel(h.editions), valueText, w, focus, h.editions === "5+");
