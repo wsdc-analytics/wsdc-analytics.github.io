@@ -42,13 +42,36 @@ body {
   background: var(--wsdc-color-surface, #ffffff);
 }
 
-/* Reading column: left-align (no justify rivers) */
+/* Fixed chrome clearance — article inline `.magazine-container { padding: 0 }` must not cancel top pad */
+.magazine-container.wsdc-chrome-page-pad {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
+}
+
+@media (max-width: 720px) {
+  .magazine-container.wsdc-chrome-page-pad {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 108px);
+  }
+}
+
+/* Reading column: justify without automatic hyphenation */
 .section p,
+.section-content,
+.section-content p,
 .article-content p,
+.article-content .section-content,
 .article-content .section-content p,
-.intro {
-  text-align: left;
-  text-justify: auto;
+.article-content li,
+.intro,
+.article-disclaimer,
+.terms-note,
+.chart-section-note {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 /* Section titles: quieter than thick magazine rails */
