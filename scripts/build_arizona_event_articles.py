@@ -177,6 +177,7 @@ def chrome_mount(t: dict) -> str:
     return f"""  <a href="#main-content" class="skip-link">{esc_html(t['skip_link'])}</a>
   <div
     data-site-chrome
+    data-fixed="true"
     data-active="home"
     data-lang="{lang}"
     data-home-href="../../index.html"
@@ -898,7 +899,11 @@ def build_one(lang: str, draft: str, i18n: dict) -> str:
     )
 
     # Body: chrome + back link
-    html = html.replace("<body>\n\n<div class=\"magazine-container\">", "<body>\n" + chrome_mount(t) + "\n<div class=\"magazine-container\">", 1)
+    html = html.replace(
+        "<body>\n\n<div class=\"magazine-container\">",
+        "<body>\n" + chrome_mount(t) + "\n<div class=\"wsdc-chrome-page-pad magazine-container\">",
+        1,
+    )
     html = html.replace(
         '  <header class="article-header">\n    <div class="article-header-media"',
         f'  <header class="article-header">\n    <div class="article-header-top">\n      <a class="wsdc-back is-on-hero" href="../../index.html?lang={lang}" data-wsdc-back id="backLink">{esc_html(t["back_home"])}</a>\n    </div>\n    <div class="article-header-media"',
