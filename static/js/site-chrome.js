@@ -4,7 +4,7 @@
  * Attributes:
  *   data-active          home | dashboards | points
  *   data-lang            ru | en | es
- *   data-fixed           "true" for position:fixed (homepage)
+ *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       brand logo link (default index.html) — return home
  *   data-path-prefix     prefix for dashboard / points-summary hrefs (e.g. "../../" from nested pages)

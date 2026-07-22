@@ -32,7 +32,7 @@ Mount point:
 | --- | --- | --- |
 | `data-active` | `home` \| `dashboards` \| `points` | Highlights nav pill |
 | `data-lang` | `ru` \| `en` \| `es` | Initial language pills |
-| `data-fixed` | `true` | Fixed floating bar (homepage) |
+| `data-fixed` | `true` | Fixed floating bar (homepage **and magazine articles**) |
 | `data-brand` | `logo` (default) \| `text` | WSDC logo links home |
 | `data-home-href` | URL | Logo → home (default `index.html`) |
 | `data-lang-mode` | `callback` \| `navigate` | Per-lang navigation or callback |
@@ -61,4 +61,17 @@ window.WsdcChrome.onLangChange = function (lang) {
 };
 ```
 
-Add `wsdc-chrome-page-pad` when using `data-fixed="true"`.
+Add `wsdc-chrome-page-pad` when using `data-fixed="true"` (homepage and magazine articles).
+
+```html
+<div
+  data-site-chrome
+  data-fixed="true"
+  data-active="home"
+  data-lang="en"
+  data-home-href="index.html"
+></div>
+<div class="wsdc-chrome-page-pad magazine-container">
+  …
+</div>
+```
