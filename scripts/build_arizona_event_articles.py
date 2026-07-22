@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Build production article_ru/en/es from draft_ru.html + i18n.json.
-
-Does NOT link from homepage / articles.json (publish is a separate step).
-Keeps noindex until official publish.
-"""
+"""Build production article_ru/en/es from source_draft_ru.html + i18n.json."""
 from __future__ import annotations
 
 import json
@@ -103,8 +99,7 @@ def head_extras(t: dict) -> str:
     lang = t["lang"]
     page = f"article_{lang}.html"
     url = f"{BASE}/{page}"
-    return f"""  <meta name="robots" content="noindex,nofollow">
-  <link rel="canonical" href="{url}" />
+    return f"""  <link rel="canonical" href="{url}" />
   <link rel="alternate" hreflang="ru" href="{BASE}/article_ru.html" />
   <link rel="alternate" hreflang="en" href="{BASE}/article_en.html" />
   <link rel="alternate" hreflang="es" href="{BASE}/article_es.html" />
