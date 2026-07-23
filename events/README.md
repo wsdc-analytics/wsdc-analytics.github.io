@@ -14,11 +14,15 @@ Drafts under `events/` are **not** linked from the homepage or `static/data/arti
 
 **Published:** [`001-arizona-4th-of-july/`](001-arizona-4th-of-july/) (RU/EN/ES) — on homepage and in `articles.json` since 2026-07-22.
 
+**On site, not on homepage yet:** [`002-uk-wcs-championships/draft_ru.html`](002-uk-wcs-championships/draft_ru.html) (RU only; no EN/ES, not in `articles.json`).
+
 ## Naming
 
 `NNN-<region-or-state>-<event-slug>/`
 
-Example: `001-arizona-4th-of-july/` — Arizona is the state; the event is Phoenix 4th of July / 4th of July Convention.
+Examples:
+- `001-arizona-4th-of-july/` — Arizona is the state; the event is Phoenix 4th of July / 4th of July Convention.
+- `002-uk-wcs-championships/` — UK is the country; the event is UK WCS Championships (London).
 
 ## Hero (locked)
 
