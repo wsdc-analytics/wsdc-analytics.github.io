@@ -14,7 +14,7 @@ Drafts under `events/` are **not** linked from the homepage or `static/data/arti
 
 **Published:** [`001-arizona-4th-of-july/`](001-arizona-4th-of-july/) (RU/EN/ES) — on homepage and in `articles.json` since 2026-07-22.
 
-**On site, not on homepage yet:** [`002-uk-wcs-championships/draft_ru.html`](002-uk-wcs-championships/draft_ru.html) (RU only; no EN/ES, not in `articles.json`).
+**On site, not on homepage yet:** [`002-uk-wcs-championships/`](002-uk-wcs-championships/) (RU/EN/ES production articles; not in `articles.json`).
 
 ## Naming
 
@@ -44,3 +44,10 @@ Stack (bottom → top), same brightness family as other article heroes (`#2d3748
 - Rebuild from `source_draft_ru.html` + `i18n.json`: `python3 scripts/build_arizona_event_articles.py`
 - `draft_ru.html` redirects to `article_ru.html` (old URL)
 - **Published** on homepage (`static/data/articles.json`) since 2026-07-22
+
+## UK WCS Championships (002)
+
+- [`002-uk-wcs-championships/article_ru.html`](002-uk-wcs-championships/article_ru.html) · [`article_en.html`](002-uk-wcs-championships/article_en.html) · [`article_es.html`](002-uk-wcs-championships/article_es.html)
+- Rebuild from `source_draft_ru.html` + `i18n.json`: `python3 scripts/build_uk_event_articles.py`
+- `draft_ru.html` redirects to `article_ru.html`
+- **Not on homepage** until approved (`articles.json` unchanged)
