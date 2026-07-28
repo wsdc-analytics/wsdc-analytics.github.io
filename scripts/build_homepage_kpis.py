@@ -162,6 +162,30 @@ def count_catalog_events(source: Path) -> int | None:
 
 
 def load_editions(source: Path) -> list[Edition]:
+    sched_path = source / "scheduled_events.csv"
+    schedule_starts: dict[tuple[str, int, int], date] = {}
+    schedule_ends: dict[tuple[str, int, int], date] = {}
+    if sched_path.exists():
+        with sched_path.open("r", encoding="utf-8-sig", newline="") as sf:
+            for srow in csv.DictReader(sf):
+                name = (srow.get("canonical_name") or srow.get("event_name") or "").strip()
+                if not name:
+                    continue
+                try:
+                    sy = int(float((srow.get("results_year") or "").strip()))
+                    sm = int(float((srow.get("results_month") or "").strip()))
+                except ValueError:
+                    continue
+                s_start = parse_iso_date(srow.get("start_date") or "")
+                s_end = parse_iso_date(srow.get("end_date") or "") or s_start
+                if s_start is None:
+                    continue
+                key = (name, sy, sm)
+                # Keep earliest known start for the month bucket.
+                if key not in schedule_starts or s_start < schedule_starts[key]:
+                    schedule_starts[key] = s_start
+                    schedule_ends[key] = s_end or s_start
+
     path = source / "event_editions.csv"
     if not path.exists():
         raise FileNotFoundError(f"Missing editions CSV: {path}")
@@ -171,12 +195,26 @@ def load_editions(source: Path) -> list[Edition]:
             name = (row.get("event_name") or "").strip()
             start = parse_iso_date(row.get("start_date") or "")
             end = parse_iso_date(row.get("end_date") or "") or start
-            if not name or start is None:
+            if not name:
                 continue
             try:
                 year = int(float((row.get("event_year") or start.year)))
             except ValueError:
+                if start is None:
+                    continue
                 year = start.year
+            try:
+                month = int(float((row.get("event_month") or "").strip() or 1))
+            except ValueError:
+                month = start.month if start is not None else 1
+            if start is None:
+                # Fallback for month-level editions (e.g., Infinite Swing 2026-07):
+                # use schedule day dates so week KPI doesn't drop valid events.
+                key = (name, year, month)
+                start = schedule_starts.get(key)
+                end = schedule_ends.get(key, start)
+            if start is None:
+                continue
             try:
                 result_rows = int(float(row.get("result_rows") or 0))
             except ValueError:
