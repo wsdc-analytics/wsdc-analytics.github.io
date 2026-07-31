@@ -564,7 +564,7 @@
           html += `<h4>First points</h4><p>${eventParenLine(fp)}</p>`;
         }
         if (fa) {
-          html += `<h4>First All-Stars points</h4><p>${eventParenLine(fa)}</p>`;
+          html += `<h4>First All-Star points</h4><p>${eventParenLine(fa)}</p>`;
         }
         if (topEv.length) {
           html += '<h4>Top events by points</h4><ul>' +
@@ -572,7 +572,7 @@
             '</ul>';
         }
         if (topAls.length) {
-          html += '<h4>Top All-Stars events by points</h4><ul>' +
+          html += '<h4>Top events by All-Star points</h4><ul>' +
             topAls.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
             '</ul>';
         }
@@ -584,7 +584,7 @@
         const ct = continentLine(path.continents_total);
         const ca = continentLine(path.continents_all_stars);
         if (ct) html += `<h4>Total Points by continent</h4><p>${ct}</p>`;
-        if (ca) html += `<h4>All-Stars points by continent</h4><p>${ca}</p>`;
+        if (ca) html += `<h4>All-Star points by continent</h4><p>${ca}</p>`;
         return `<div class="path-label">Champion Path</div><div class="path-body">${html}</div>`;
       }
 
