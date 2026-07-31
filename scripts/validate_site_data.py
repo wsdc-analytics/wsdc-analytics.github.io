@@ -74,6 +74,35 @@ def validate_points_summaries() -> None:
     print("[OK] points_summaries.json")
 
 
+def validate_champion_news() -> None:
+    path = DATA_DIR / "champion_news.json"
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("champion_news.json must be an object")
+    summaries = data.get("summaries")
+    if not isinstance(summaries, list):
+        fail("champion_news.json must contain list field 'summaries'")
+
+    for idx, summary in enumerate(summaries):
+        if not isinstance(summary, dict):
+            fail(f"champion_news.summaries[{idx}] must be an object")
+        if "post_date" not in summary:
+            fail(f"champion_news.summaries[{idx}] missing post_date")
+        events = summary.get("events", [])
+        if not isinstance(events, list):
+            fail(f"champion_news.summaries[{idx}].events must be a list")
+        for ei, event in enumerate(events):
+            if not isinstance(event, dict):
+                fail(f"champion_news.summaries[{idx}].events[{ei}] must be an object")
+            for field in ("slug", "dancer_id", "role", "status"):
+                if field not in event:
+                    fail(
+                        f"champion_news.summaries[{idx}].events[{ei}] missing {field}"
+                    )
+
+    print("[OK] champion_news.json")
+
+
 def validate_homepage_kpis() -> None:
     path = DATA_DIR / "homepage_kpis.json"
     data = load_json(path)
@@ -113,6 +142,7 @@ def validate_homepage_kpis() -> None:
 def main() -> None:
     validate_articles()
     validate_points_summaries()
+    validate_champion_news()
     validate_homepage_kpis()
     print("[OK] Data validation passed.")
 

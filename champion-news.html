@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://wsdc-analytics.github.io/champion-news.html">
+    <meta name="description" content="Champion News — chronology of dancers who reached Allowed or Required to Champions (All-Stars / Champions thresholds).">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wsdc-analytics.github.io/champion-news.html">
+    <meta property="og:title" content="Champion News | WSDC Analytics">
+    <meta property="og:description" content="Chronology of Allowed and Required Champions transitions with Champion Path details.">
+    <title>Champion News | WSDC Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="preload" href="static/data/champion_news.json" as="fetch" crossorigin>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LMLCY5PE8Z');
+    </script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-soft: #f7fafc;
+            --text: #0B1221;
+            --muted: #4a5568;
+            --border: #e5e7eb;
+            --accent: #2563eb;
+            --allowed: #ca8a04;
+            --required: #16a34a;
+            --radius: 14px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-soft);
+            color: var(--text);
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wrap {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 28px 20px 64px;
+        }
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        .lede {
+            color: var(--muted);
+            font-size: 0.98rem;
+            margin-bottom: 28px;
+            max-width: 62ch;
+        }
+        .block-date {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin: 28px 0 12px;
+        }
+        .card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 18px 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-head {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 650;
+        }
+        .badge {
+            font-size: 0.72rem;
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+        .badge-allowed { background: #fef9c3; color: #854d0e; }
+        .badge-required { background: #dcfce7; color: #166534; }
+        .badge-role {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+        .meta {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        .meta strong { color: var(--text); font-weight: 600; }
+        .totals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            font-size: 0.9rem;
+            margin: 10px 0 4px;
+        }
+        details.path {
+            margin-top: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+        }
+        details.path summary {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--accent);
+            list-style: none;
+            user-select: none;
+        }
+        details.path summary::-webkit-details-marker { display: none; }
+        details.path summary::before {
+            content: "▸ ";
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+        details.path[open] summary::before { transform: rotate(90deg); }
+        .path-body {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        .path-body h4 {
+            color: var(--text);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 12px 0 4px;
+        }
+        .path-body ul {
+            list-style: none;
+            padding: 0;
+        }
+        .path-body li { margin: 2px 0; }
+        .empty {
+            padding: 40px 16px;
+            text-align: center;
+            color: var(--muted);
+            background: var(--bg);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+        }
+        .error {
+            color: #b91c1c;
+            padding: 16px;
+        }
+        @media (max-width: 560px) {
+            .wrap { padding: 20px 14px 48px; }
+            h1 { font-size: 1.45rem; }
+        }
+    </style>
+</head>
+<body>
+    <div data-site-chrome data-active="home"></div>
+    <main class="wrap">
+        <h1>Champion News</h1>
+        <p class="lede">
+            Chronology of dancers who crossed <strong>Allowed to Champions</strong>
+            (150+ All-Stars) or <strong>Required to Champions</strong>
+            (225+ All-Stars or 10+ Champions), by role. Expand a card for the Champion Path.
+        </p>
+        <div id="catalog" aria-live="polite">Loading…</div>
+    </main>
+    <script src="static/js/site-chrome.js" defer></script>
+    <script>
+    (function () {
+      const catalog = document.getElementById('catalog');
+
+      function esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+      }
+
+      function fmtDate(iso) {
+        if (!iso) return '';
+        const d = new Date(iso + 'T00:00:00Z');
+        if (Number.isNaN(d.getTime())) return esc(iso);
+        return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+      }
+
+      function continentLine(obj) {
+        if (!obj || typeof obj !== 'object') return '';
+        return Object.entries(obj)
+          .map(([k, v]) => `${esc(k)} ${esc(v)}`)
+          .join(' · ');
+      }
+
+      function pathHtml(path) {
+        if (!path) return '<p>No path data.</p>';
+        const fp = path.first_points;
+        const fa = path.first_all_stars;
+        const counts = path.event_counts || {};
+        const topEv = path.top_events || [];
+        const topAls = path.top_all_stars_events || [];
+        const topCities = path.top_cities || [];
+        let html = '';
+        if (fp) {
+          html += `<h4>First points</h4><p>${esc(fp.event_name)} (${fmtDate(fp.date)}${fp.location ? ', ' + esc(fp.location) : ''})</p>`;
+        }
+        if (fa) {
+          html += `<h4>First All-Stars points</h4><p>${esc(fa.event_name)} (${fmtDate(fa.date)}${fa.location ? ', ' + esc(fa.location) : ''})</p>`;
+        }
+        html += `<h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p>`;
+        if (topEv.length) {
+          html += '<h4>Top events (points)</h4><ul>' +
+            topEv.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
+            '</ul>';
+        }
+        if (topAls.length) {
+          html += '<h4>Top All-Stars events</h4><ul>' +
+            topAls.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
+            '</ul>';
+        }
+        if (topCities.length) {
+          html += '<h4>Top cities</h4><ul>' +
+            topCities.map(c => `<li>${esc(c.location)} (${esc(c.points)})</li>`).join('') +
+            '</ul>';
+        }
+        const ct = continentLine(path.continents_total);
+        const ca = continentLine(path.continents_all_stars);
+        if (ct) html += `<h4>Points by continent (total)</h4><p>${ct}</p>`;
+        if (ca) html += `<h4>Points by continent (All-Stars)</h4><p>${ca}</p>`;
+        return html;
+      }
+
+      function cardHtml(ev) {
+        const status = (ev.status || '').toLowerCase();
+        const badgeClass = status === 'required' ? 'badge-required' : 'badge-allowed';
+        const badgeLabel = status === 'required' ? 'Required' : 'Allowed';
+        const pathway = ev.required_pathway === 'chmp_10'
+          ? 'via Champions points'
+          : (ev.required_pathway === 'als_225' ? 'via All-Stars points' : '');
+        const loc = [ev.flag, ev.threshold_location].filter(Boolean).join(' ');
+        return `
+          <article class="card" id="${esc(ev.slug)}">
+            <div class="card-head">
+              <span class="card-title">${esc(ev.dancer_name || ev.title)} <span style="color:var(--muted);font-weight:500">(${esc(ev.dancer_id)})</span></span>
+              <span class="badge ${badgeClass}">${badgeLabel}</span>
+              <span class="badge badge-role">${esc(ev.role)}</span>
+            </div>
+            <p class="meta">
+              Threshold: <strong>${esc(ev.threshold_event)}</strong>
+              · ${fmtDate(ev.threshold_date)}
+              ${loc ? ' · ' + esc(loc) : ''}
+              ${pathway ? ' · ' + esc(pathway) : ''}
+            </p>
+            <div class="totals">
+              <span>⭐ All-Stars: <strong>${esc(ev.als_total)}</strong></span>
+              <span>👑 Champions: <strong>${esc(ev.chmp_total)}</strong></span>
+            </div>
+            <details class="path">
+              <summary>Champion Path</summary>
+              <div class="path-body">${pathHtml(ev.path)}</div>
+            </details>
+          </article>`;
+      }
+
+      fetch('static/data/champion_news.json')
+        .then(r => {
+          if (!r.ok) throw new Error('Failed to fetch champion_news.json');
+          return r.json();
+        })
+        .then(data => {
+          const summaries = data.summaries || [];
+          if (!summaries.length) {
+            catalog.innerHTML = '<div class="empty">No Champion News yet. New Allowed / Required transitions appear here after full-parse (cutoff 28&nbsp;Jul&nbsp;2026).</div>';
+            return;
+          }
+          let html = '';
+          summaries.forEach(block => {
+            html += `<div class="block-date">Posted ${esc(block.post_date)}</div>`;
+            (block.events || []).forEach(ev => { html += cardHtml(ev); });
+          });
+          catalog.innerHTML = html;
+        })
+        .catch(err => {
+          catalog.innerHTML = `<div class="error">${esc(err.message)}</div>`;
+        });
+    })();
+    </script>
+</body>
+</html>
