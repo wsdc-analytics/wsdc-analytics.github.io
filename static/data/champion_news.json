@@ -1,120 +1,9 @@
 {
   "summaries": [
     {
-      "post_date": "30-07-2026",
+      "post_date": "31-07-2026",
       "events_count": 2,
       "events": [
-        {
-          "status": "allowed",
-          "required_pathway": null,
-          "dancer_id": "13110",
-          "role": "leader",
-          "threshold_date": "2026-07-25",
-          "threshold_event": "Sea Sun and Swing",
-          "threshold_location": "La Grande Motte, France",
-          "threshold_city": "La Grande Motte",
-          "threshold_country": "France",
-          "continent": "Europe",
-          "flag": "🇫🇷",
-          "als_total": 152,
-          "chmp_total": 0,
-          "event_year": 2026,
-          "event_month": 8,
-          "slug": "2026-07-25-13110-leader-allowed",
-          "dancer_name": "Allan Thivoz",
-          "title": "Allan Thivoz — Allowed to Champions (leader)",
-          "path": {
-            "first_points": {
-              "event_name": "French Open West Coast Swing",
-              "date": "2015-05-01",
-              "location": "Paris, France",
-              "year": 2015,
-              "month": 5
-            },
-            "first_all_stars": {
-              "event_name": "Westy Nantes",
-              "date": "2022-04-01",
-              "location": "Nantes, France",
-              "year": 2022,
-              "month": 4
-            },
-            "event_counts": {
-              "total": 56,
-              "all_stars": 35,
-              "champions": 0
-            },
-            "top_events": [
-              {
-                "event_name": "French Open West Coast Swing",
-                "points": 12,
-                "location": "Paris, France",
-                "year": 2015,
-                "month": 5
-              },
-              {
-                "event_name": "BudaFest Open WCS Championships",
-                "points": 12,
-                "location": "Budapest, Hungary",
-                "year": 2019,
-                "month": 1
-              },
-              {
-                "event_name": "Italian Open",
-                "points": 10,
-                "location": "Milan, Italy",
-                "year": 2016,
-                "month": 10
-              }
-            ],
-            "top_all_stars_events": [
-              {
-                "event_name": "Liberty Swing Dance Championships",
-                "points": 10,
-                "location": "New Brunswick, NJ",
-                "year": 2022,
-                "month": 6
-              },
-              {
-                "event_name": "DC Swing eXperience (DCSX)",
-                "points": 10,
-                "location": "Venray, Netherlands",
-                "year": 2023,
-                "month": 11
-              },
-              {
-                "event_name": "UK WCS Championships",
-                "points": 10,
-                "location": "London, United Kingdom",
-                "year": 2025,
-                "month": 3
-              }
-            ],
-            "top_cities": [
-              {
-                "location": "Paris, France",
-                "points": 45
-              },
-              {
-                "location": "Lyon, France",
-                "points": 41
-              },
-              {
-                "location": "London, United Kingdom",
-                "points": 27
-              }
-            ],
-            "continents_total": {
-              "Europe": 225,
-              "America": 29
-            },
-            "continents_all_stars": {
-              "Europe": 127,
-              "America": 25
-            }
-          },
-          "notes": "Probe seed for Champion News site UX (Sea Sun and Swing 2026-07-25; published before CHAMPION_NEWS_CUTOFF window for review).",
-          "probe": true
-        },
         {
           "status": "allowed",
           "required_pathway": null,
@@ -226,8 +115,1068 @@
               "Asia": 10
             }
           },
-          "notes": "Probe seed for Champion News site UX (Sea Sun and Swing 2026-07-25; published before CHAMPION_NEWS_CUTOFF window for review).",
-          "probe": true
+          "notes": "Backfill from Telegram #ChampNews msg 216",
+          "telegram_msg_id": 216,
+          "probe": false
+        },
+        {
+          "status": "allowed",
+          "required_pathway": null,
+          "dancer_id": "13110",
+          "role": "leader",
+          "threshold_date": "2026-07-25",
+          "threshold_event": "Sea Sun and Swing",
+          "threshold_location": "La Grande Motte, France",
+          "threshold_city": "La Grande Motte",
+          "threshold_country": "France",
+          "continent": "Europe",
+          "flag": "🇫🇷",
+          "als_total": 152,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 8,
+          "slug": "2026-07-25-13110-leader-allowed",
+          "dancer_name": "Allan Thivoz",
+          "title": "Allan Thivoz — Allowed to Champions (leader)",
+          "path": {
+            "first_points": {
+              "event_name": "French Open West Coast Swing",
+              "date": "2015-05-01",
+              "location": "Paris, France",
+              "year": 2015,
+              "month": 5
+            },
+            "first_all_stars": {
+              "event_name": "Westy Nantes",
+              "date": "2022-04-01",
+              "location": "Nantes, France",
+              "year": 2022,
+              "month": 4
+            },
+            "event_counts": {
+              "total": 56,
+              "all_stars": 35,
+              "champions": 0
+            },
+            "top_events": [
+              {
+                "event_name": "French Open West Coast Swing",
+                "points": 12,
+                "location": "Paris, France",
+                "year": 2015,
+                "month": 5
+              },
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 12,
+                "location": "Budapest, Hungary",
+                "year": 2019,
+                "month": 1
+              },
+              {
+                "event_name": "Italian Open",
+                "points": 10,
+                "location": "Milan, Italy",
+                "year": 2016,
+                "month": 10
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "Liberty Swing Dance Championships",
+                "points": 10,
+                "location": "New Brunswick, NJ",
+                "year": 2022,
+                "month": 6
+              },
+              {
+                "event_name": "DC Swing eXperience (DCSX)",
+                "points": 10,
+                "location": "Venray, Netherlands",
+                "year": 2023,
+                "month": 11
+              },
+              {
+                "event_name": "UK WCS Championships",
+                "points": 10,
+                "location": "London, United Kingdom",
+                "year": 2025,
+                "month": 3
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Paris, France",
+                "points": 45
+              },
+              {
+                "location": "Lyon, France",
+                "points": 41
+              },
+              {
+                "location": "London, United Kingdom",
+                "points": 27
+              }
+            ],
+            "continents_total": {
+              "Europe": 225,
+              "America": 29
+            },
+            "continents_all_stars": {
+              "Europe": 127,
+              "America": 25
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 215",
+          "telegram_msg_id": 215,
+          "probe": false
+        }
+      ]
+    },
+    {
+      "post_date": "21-07-2026",
+      "events_count": 1,
+      "events": [
+        {
+          "status": "allowed",
+          "required_pathway": null,
+          "dancer_id": "22004",
+          "role": "leader",
+          "threshold_date": "2026-07-16",
+          "threshold_event": "Midwest Westie Fest",
+          "threshold_location": "Overland Park, KS",
+          "threshold_city": "Overland Park",
+          "threshold_country": "United States",
+          "continent": "America",
+          "flag": "🇺🇸",
+          "als_total": 151,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 7,
+          "slug": "2026-07-16-22004-leader-allowed",
+          "dancer_name": "Trenten Jackson",
+          "title": "Trenten Jackson — Allowed to Champions (leader)",
+          "path": {
+            "first_points": {
+              "event_name": "Midwest Westie Fest",
+              "date": "2023-07-01",
+              "location": "Overland Park, KS",
+              "year": 2023,
+              "month": 7
+            },
+            "first_all_stars": {
+              "event_name": "Swing City Chicago",
+              "date": "2024-10-01",
+              "location": "Chicago, IL",
+              "year": 2024,
+              "month": 10
+            },
+            "event_counts": {
+              "total": 68,
+              "all_stars": 40,
+              "champions": 0
+            },
+            "top_events": [
+              {
+                "event_name": "Meet Me In St Louis",
+                "points": 15,
+                "location": "St. Louis, MO",
+                "year": 2023,
+                "month": 9
+              },
+              {
+                "event_name": "The Chicago Classic",
+                "points": 15,
+                "location": "Chicago, IL",
+                "year": 2024,
+                "month": 3
+              },
+              {
+                "event_name": "Atlanta Swing Classic",
+                "points": 15,
+                "location": "Atlanta, GA, United States",
+                "year": 2024,
+                "month": 10
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "Wild Wild Westie",
+                "points": 15,
+                "location": "Dallas, TX",
+                "year": 2026,
+                "month": 7
+              },
+              {
+                "event_name": "MADjam",
+                "points": 10,
+                "location": "Washington, DC",
+                "year": 2026,
+                "month": 3
+              },
+              {
+                "event_name": "The Chicago Classic",
+                "points": 10,
+                "location": "Chicago, IL",
+                "year": 2026,
+                "month": 3
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Atlanta, GA, United States",
+                "points": 36
+              },
+              {
+                "location": "Chicago, IL",
+                "points": 30
+              },
+              {
+                "location": "St. Louis, MO",
+                "points": 27
+              }
+            ],
+            "continents_total": {
+              "Europe": 2,
+              "America": 336,
+              "Asia": 9
+            },
+            "continents_all_stars": {
+              "Europe": 2,
+              "America": 140,
+              "Asia": 9
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 207",
+          "telegram_msg_id": 207,
+          "probe": false
+        }
+      ]
+    },
+    {
+      "post_date": "16-07-2026",
+      "events_count": 1,
+      "events": [
+        {
+          "status": "allowed",
+          "required_pathway": null,
+          "dancer_id": "11197",
+          "role": "follower",
+          "threshold_date": "2026-07-10",
+          "threshold_event": "SwingLab Berlin",
+          "threshold_location": "Berlin, Germany",
+          "threshold_city": "Berlin",
+          "threshold_country": "Germany",
+          "continent": "Europe",
+          "flag": "🇩🇪",
+          "als_total": 155,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 7,
+          "slug": "2026-07-10-11197-follower-allowed",
+          "dancer_name": "Ekaterina Wolff",
+          "title": "Ekaterina Wolff — Allowed to Champions (follower)",
+          "path": {
+            "first_points": {
+              "event_name": "Russian Open WCS Championships",
+              "date": "2014-03-01",
+              "location": "Moscow, Russia",
+              "year": 2014,
+              "month": 3
+            },
+            "first_all_stars": {
+              "event_name": "Swing It Like It's Hot",
+              "date": "2018-07-01",
+              "location": "Tel Aviv, Israel",
+              "year": 2018,
+              "month": 7
+            },
+            "event_counts": {
+              "total": 79,
+              "all_stars": 50,
+              "champions": 0
+            },
+            "top_events": [
+              {
+                "event_name": "Russian Open WCS Championships",
+                "points": 15,
+                "location": "Moscow, Russia",
+                "year": 2014,
+                "month": 3
+              },
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 12,
+                "location": "Budapest, Hungary",
+                "year": 2023,
+                "month": 1
+              },
+              {
+                "event_name": "French Open West Coast Swing",
+                "points": 11,
+                "location": "Paris, France",
+                "year": 2023,
+                "month": 5
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "The After Party (TAP)",
+                "points": 10,
+                "location": "Orange County, CA",
+                "year": 2018,
+                "month": 12
+              },
+              {
+                "event_name": "Bavarian Open",
+                "points": 10,
+                "location": "Munich, Germany",
+                "year": 2024,
+                "month": 9
+              },
+              {
+                "event_name": "Autumn Swing Challenge",
+                "points": 10,
+                "location": "Budapest, Hungary",
+                "year": 2025,
+                "month": 11
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Paris, France",
+                "points": 32
+              },
+              {
+                "location": "London, United Kingdom",
+                "points": 30
+              },
+              {
+                "location": "Moscow, Russia",
+                "points": 27
+              }
+            ],
+            "continents_total": {
+              "Europe": 277,
+              "America": 17,
+              "Asia": 5,
+              "Australia": 1
+            },
+            "continents_all_stars": {
+              "Europe": 138,
+              "America": 13,
+              "Asia": 3,
+              "Australia": 1
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 204",
+          "telegram_msg_id": 204,
+          "probe": false
+        }
+      ]
+    },
+    {
+      "post_date": "17-06-2026",
+      "events_count": 1,
+      "events": [
+        {
+          "status": "required",
+          "required_pathway": "als_225",
+          "dancer_id": "11759",
+          "role": "leader",
+          "threshold_date": "2026-06-11",
+          "threshold_event": "Baltic Swing",
+          "threshold_location": "Gdańsk, Poland",
+          "threshold_city": "Gdańsk",
+          "threshold_country": "Poland",
+          "continent": "Europe",
+          "flag": "🇵🇱",
+          "als_total": 234,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 6,
+          "slug": "2026-06-11-11759-leader-required",
+          "dancer_name": "Sebastian Quinones",
+          "title": "Sebastian Quinones — Required to Champions (leader)",
+          "path": {
+            "first_points": {
+              "event_name": "Dance Mardi Gras",
+              "date": "2014-07-01",
+              "location": "New Orleans, LA",
+              "year": 2014,
+              "month": 7
+            },
+            "first_all_stars": {
+              "event_name": "Orange Blossom Dance Festival",
+              "date": "2019-06-01",
+              "location": "Orlando, FL",
+              "year": 2019,
+              "month": 6
+            },
+            "event_counts": {
+              "total": 75,
+              "all_stars": 49,
+              "champions": 1
+            },
+            "top_events": [
+              {
+                "event_name": "Wild Wild Westie",
+                "points": 12,
+                "location": "Dallas, TX",
+                "year": 2024,
+                "month": 7
+              },
+              {
+                "event_name": "The After Party (TAP)",
+                "points": 12,
+                "location": "Orange County, CA",
+                "year": 2024,
+                "month": 12
+              },
+              {
+                "event_name": "Dance Mardi Gras",
+                "points": 10,
+                "location": "New Orleans, LA",
+                "year": 2016,
+                "month": 7
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "Wild Wild Westie",
+                "points": 12,
+                "location": "Dallas, TX",
+                "year": 2024,
+                "month": 7
+              },
+              {
+                "event_name": "The After Party (TAP)",
+                "points": 12,
+                "location": "Orange County, CA",
+                "year": 2024,
+                "month": 12
+              },
+              {
+                "event_name": "Swingtime in the Rockies",
+                "points": 10,
+                "location": "Denver, CO",
+                "year": 2024,
+                "month": 8
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Orlando, FL",
+                "points": 60
+              },
+              {
+                "location": "Dallas, TX",
+                "points": 60
+              },
+              {
+                "location": "New Orleans, LA",
+                "points": 25
+              }
+            ],
+            "continents_total": {
+              "Europe": 29,
+              "America": 316
+            },
+            "continents_all_stars": {
+              "Europe": 29,
+              "America": 205
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 196",
+          "telegram_msg_id": 196,
+          "probe": false
+        }
+      ]
+    },
+    {
+      "post_date": "10-06-2026",
+      "events_count": 2,
+      "events": [
+        {
+          "status": "required",
+          "required_pathway": "als_225",
+          "dancer_id": "14487",
+          "role": "follower",
+          "threshold_date": "2026-06-04",
+          "threshold_event": "J&J O'Rama",
+          "threshold_location": "Anaheim, CA",
+          "threshold_city": "Anaheim",
+          "threshold_country": "United States",
+          "continent": "America",
+          "flag": "🇺🇸",
+          "als_total": 230,
+          "chmp_total": 2,
+          "event_year": 2026,
+          "event_month": 6,
+          "slug": "2026-06-04-14487-follower-required",
+          "dancer_name": "Kristen Wallace",
+          "title": "Kristen Wallace — Required to Champions (follower)",
+          "path": {
+            "first_points": {
+              "event_name": "Wild Wild Westie",
+              "date": "2016-07-01",
+              "location": "Dallas, TX",
+              "year": 2016,
+              "month": 7
+            },
+            "first_all_stars": {
+              "event_name": "Philly Swing Classic",
+              "date": "2021-09-01",
+              "location": "Wilmington, DE",
+              "year": 2021,
+              "month": 9
+            },
+            "event_counts": {
+              "total": 75,
+              "all_stars": 57,
+              "champions": 1
+            },
+            "top_events": [
+              {
+                "event_name": "Rose City Swing",
+                "points": 15,
+                "location": "Portland, OR",
+                "year": 2020,
+                "month": 2
+              },
+              {
+                "event_name": "Wild Wild Westie",
+                "points": 15,
+                "location": "Dallas, TX",
+                "year": 2025,
+                "month": 7
+              },
+              {
+                "event_name": "Boogie By The Bay",
+                "points": 15,
+                "location": "San Francisco, CA",
+                "year": 2025,
+                "month": 10
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "Wild Wild Westie",
+                "points": 15,
+                "location": "Dallas, TX",
+                "year": 2025,
+                "month": 7
+              },
+              {
+                "event_name": "Boogie By The Bay",
+                "points": 15,
+                "location": "San Francisco, CA",
+                "year": 2025,
+                "month": 10
+              },
+              {
+                "event_name": "US Open Swing Dance Championships",
+                "points": 12,
+                "location": "Los Angeles, CA",
+                "year": 2024,
+                "month": 12
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Dallas, TX",
+                "points": 52
+              },
+              {
+                "location": "Denver, CO",
+                "points": 47
+              },
+              {
+                "location": "San Francisco, CA",
+                "points": 31
+              }
+            ],
+            "continents_total": {
+              "Europe": 10,
+              "America": 328,
+              "Asia": 1
+            },
+            "continents_all_stars": {
+              "Europe": 10,
+              "America": 219,
+              "Asia": 1
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 193",
+          "telegram_msg_id": 193,
+          "probe": false
+        },
+        {
+          "status": "allowed",
+          "required_pathway": null,
+          "dancer_id": "9140",
+          "role": "follower",
+          "threshold_date": "2026-06-04",
+          "threshold_event": "J&J O'Rama",
+          "threshold_location": "Anaheim, CA",
+          "threshold_city": "Anaheim",
+          "threshold_country": "United States",
+          "continent": "America",
+          "flag": "🇺🇸",
+          "als_total": 150,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 6,
+          "slug": "2026-06-04-9140-follower-allowed",
+          "dancer_name": "Maddy Skinner",
+          "title": "Maddy Skinner — Allowed to Champions (follower)",
+          "path": {
+            "first_points": {
+              "event_name": "Swingapalooza",
+              "date": "2012-05-01",
+              "location": "Baton Rouge, LA",
+              "year": 2012,
+              "month": 5
+            },
+            "first_all_stars": {
+              "event_name": "Best of the Best WCS",
+              "date": "2016-09-01",
+              "location": "Sydney, Australia",
+              "year": 2016,
+              "month": 9
+            },
+            "event_counts": {
+              "total": 70,
+              "all_stars": 40,
+              "champions": 0
+            },
+            "top_events": [
+              {
+                "event_name": "J&J O'Rama",
+                "points": 15,
+                "location": "Anaheim, CA",
+                "year": 2026,
+                "month": 6
+              },
+              {
+                "event_name": "SwingIN Festival",
+                "points": 14,
+                "location": "Bonn, Germany",
+                "year": 2026,
+                "month": 4
+              },
+              {
+                "event_name": "US Open Swing Dance Championships",
+                "points": 12,
+                "location": "Los Angeles, CA",
+                "year": 2025,
+                "month": 11
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "J&J O'Rama",
+                "points": 15,
+                "location": "Anaheim, CA",
+                "year": 2026,
+                "month": 6
+              },
+              {
+                "event_name": "US Open Swing Dance Championships",
+                "points": 12,
+                "location": "Los Angeles, CA",
+                "year": 2025,
+                "month": 11
+              },
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 10,
+                "location": "Budapest, Hungary",
+                "year": 2025,
+                "month": 1
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Sydney, Australia",
+                "points": 39
+              },
+              {
+                "location": "Gold Coast, Australia",
+                "points": 37
+              },
+              {
+                "location": "Singapore, Singapore",
+                "points": 37
+              }
+            ],
+            "continents_total": {
+              "Europe": 56,
+              "America": 72,
+              "Asia": 37,
+              "Australia": 111
+            },
+            "continents_all_stars": {
+              "Europe": 36,
+              "America": 42,
+              "Asia": 28,
+              "Australia": 44
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 192",
+          "telegram_msg_id": 192,
+          "probe": false
+        }
+      ]
+    },
+    {
+      "post_date": "23-05-2026",
+      "events_count": 1,
+      "events": [
+        {
+          "status": "required",
+          "required_pathway": "chmp_10",
+          "dancer_id": "11629",
+          "role": "follower",
+          "threshold_date": "2026-05-13",
+          "threshold_event": "French Open West Coast Swing",
+          "threshold_location": "Paris, France",
+          "threshold_city": "Paris",
+          "threshold_country": "France",
+          "continent": "Europe",
+          "flag": "🇫🇷",
+          "als_total": 155,
+          "chmp_total": 10,
+          "event_year": 2026,
+          "event_month": 5,
+          "slug": "2026-05-13-11629-follower-required",
+          "dancer_name": "Igor Pitangui",
+          "title": "Igor Pitangui — Required to Champions (via Champions points) (follower)",
+          "path": {
+            "first_points": {
+              "event_name": "DC Swing eXperience (DCSX)",
+              "date": "2018-11-01",
+              "location": "Herndon, VA",
+              "year": 2018,
+              "month": 11
+            },
+            "first_all_stars": {
+              "event_name": "DC Swing eXperience (DCSX)",
+              "date": "2018-11-01",
+              "location": "Herndon, VA",
+              "year": 2018,
+              "month": 11
+            },
+            "event_counts": {
+              "total": 31,
+              "all_stars": 25,
+              "champions": 6
+            },
+            "top_events": [
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 15,
+                "location": "Budapest, Hungary",
+                "year": 2023,
+                "month": 1
+              },
+              {
+                "event_name": "DC Swing eXperience (DCSX)",
+                "points": 10,
+                "location": "Herndon, VA",
+                "year": 2018,
+                "month": 11
+              },
+              {
+                "event_name": "French Open West Coast Swing",
+                "points": 10,
+                "location": "Paris, France",
+                "year": 2019,
+                "month": 6
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 15,
+                "location": "Budapest, Hungary",
+                "year": 2023,
+                "month": 1
+              },
+              {
+                "event_name": "DC Swing eXperience (DCSX)",
+                "points": 10,
+                "location": "Herndon, VA",
+                "year": 2018,
+                "month": 11
+              },
+              {
+                "event_name": "French Open West Coast Swing",
+                "points": 10,
+                "location": "Paris, France",
+                "year": 2019,
+                "month": 6
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Budapest, Hungary",
+                "points": 28
+              },
+              {
+                "location": "Paris, France",
+                "points": 27
+              },
+              {
+                "location": "Stockholm, Sweden",
+                "points": 18
+              }
+            ],
+            "continents_total": {
+              "Europe": 149,
+              "America": 16
+            },
+            "continents_all_stars": {
+              "Europe": 139,
+              "America": 16
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 185",
+          "telegram_msg_id": 185,
+          "probe": false
+        }
+      ]
+    },
+    {
+      "post_date": "16-04-2026",
+      "events_count": 2,
+      "events": [
+        {
+          "status": "allowed",
+          "required_pathway": null,
+          "dancer_id": "17340",
+          "role": "follower",
+          "threshold_date": "2026-04-09",
+          "threshold_event": "City of Angels WCS",
+          "threshold_location": "Burbank, CA",
+          "threshold_city": "Burbank",
+          "threshold_country": "United States",
+          "continent": "America",
+          "flag": "🇺🇸",
+          "als_total": 154,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 4,
+          "slug": "2026-04-09-17340-follower-allowed",
+          "dancer_name": "Stefanie Tschom",
+          "title": "Stefanie Tschom — Allowed to Champions (follower)",
+          "path": {
+            "first_points": {
+              "event_name": "KIWI Fest",
+              "date": "2018-05-01",
+              "location": "Kiev, Ukraine",
+              "year": 2018,
+              "month": 5
+            },
+            "first_all_stars": {
+              "event_name": "Winter White",
+              "date": "2023-12-01",
+              "location": "Oslo, Norway",
+              "year": 2023,
+              "month": 12
+            },
+            "event_counts": {
+              "total": 58,
+              "all_stars": 36,
+              "champions": 0
+            },
+            "top_events": [
+              {
+                "event_name": "SwingVester",
+                "points": 15,
+                "location": "Wels, Austria",
+                "year": 2019,
+                "month": 1
+              },
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 15,
+                "location": "Budapest, Hungary",
+                "year": 2026,
+                "month": 1
+              },
+              {
+                "event_name": "King Swing",
+                "points": 12,
+                "location": "Kraków, Poland",
+                "year": 2023,
+                "month": 3
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "BudaFest Open WCS Championships",
+                "points": 15,
+                "location": "Budapest, Hungary",
+                "year": 2026,
+                "month": 1
+              },
+              {
+                "event_name": "King Swing",
+                "points": 10,
+                "location": "Kraków, Poland",
+                "year": 2025,
+                "month": 3
+              },
+              {
+                "event_name": "Finnfest",
+                "points": 10,
+                "location": "Helsinki, Finland",
+                "year": 2025,
+                "month": 9
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "Kraków, Poland",
+                "points": 38
+              },
+              {
+                "location": "Budapest, Hungary",
+                "points": 35
+              },
+              {
+                "location": "Wels, Austria",
+                "points": 33
+              }
+            ],
+            "continents_total": {
+              "Europe": 251,
+              "America": 23,
+              "Asia": 4
+            },
+            "continents_all_stars": {
+              "Europe": 144,
+              "America": 23
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 167",
+          "telegram_msg_id": 167,
+          "probe": false
+        },
+        {
+          "status": "allowed",
+          "required_pathway": null,
+          "dancer_id": "12417",
+          "role": "leader",
+          "threshold_date": "2026-04-09",
+          "threshold_event": "City of Angels WCS",
+          "threshold_location": "Burbank, CA",
+          "threshold_city": "Burbank",
+          "threshold_country": "United States",
+          "continent": "America",
+          "flag": "🇺🇸",
+          "als_total": 156,
+          "chmp_total": 0,
+          "event_year": 2026,
+          "event_month": 4,
+          "slug": "2026-04-09-12417-leader-allowed",
+          "dancer_name": "Joseph Tong",
+          "title": "Joseph Tong — Allowed to Champions (leader)",
+          "path": {
+            "first_points": {
+              "event_name": "Freedom Swing Dance Challenge",
+              "date": "2015-01-01",
+              "location": "Wilmington, DE",
+              "year": 2015,
+              "month": 1
+            },
+            "first_all_stars": {
+              "event_name": "Halloween SwingThing",
+              "date": "2019-10-01",
+              "location": "Costa Mesa, CA",
+              "year": 2019,
+              "month": 10
+            },
+            "event_counts": {
+              "total": 70,
+              "all_stars": 40,
+              "champions": 0
+            },
+            "top_events": [
+              {
+                "event_name": "Boogie By The Bay",
+                "points": 15,
+                "location": "San Francisco, CA",
+                "year": 2017,
+                "month": 10
+              },
+              {
+                "event_name": "Wild Wild Westie",
+                "points": 15,
+                "location": "Dallas, TX",
+                "year": 2019,
+                "month": 7
+              },
+              {
+                "event_name": "Capital Swing Dance Convention",
+                "points": 12,
+                "location": "Sacramento, CA",
+                "year": 2017,
+                "month": 2
+              }
+            ],
+            "top_all_stars_events": [
+              {
+                "event_name": "Halloween SwingThing",
+                "points": 10,
+                "location": "Costa Mesa, CA",
+                "year": 2019,
+                "month": 10
+              },
+              {
+                "event_name": "Spotlight New Year's Celebration",
+                "points": 10,
+                "location": "Nashville, TN",
+                "year": 2025,
+                "month": 1
+              },
+              {
+                "event_name": "Atlanta Swing Classic",
+                "points": 10,
+                "location": "Atlanta, GA, United States",
+                "year": 2025,
+                "month": 10
+              }
+            ],
+            "top_cities": [
+              {
+                "location": "San Francisco, CA",
+                "points": 36
+              },
+              {
+                "location": "Sacramento, CA",
+                "points": 27
+              },
+              {
+                "location": "Dallas, TX",
+                "points": 26
+              }
+            ],
+            "continents_total": {
+              "Europe": 9,
+              "America": 264,
+              "Asia": 6
+            },
+            "continents_all_stars": {
+              "Europe": 9,
+              "America": 147,
+              "Asia": 6
+            }
+          },
+          "notes": "Backfill from Telegram #ChampNews msg 166",
+          "telegram_msg_id": 166,
+          "probe": false
         }
       ]
     }

@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://wsdc-analytics.github.io/champion-news.html">
-    <meta name="description" content="Champion News - chronology of dancers who reached Allowed or Required to Champions (All-Stars / Champions thresholds).">
+    <meta name="description" content="New Champions - chronology of dancers who reached Allowed or Required to Champions (All-Stars / Champions thresholds).">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wsdc-analytics.github.io/champion-news.html">
-    <meta property="og:title" content="Champion News | WSDC Analytics">
+    <meta property="og:title" content="New Champions | WSDC Analytics">
     <meta property="og:description" content="Chronology of Allowed and Required Champions transitions with Champion Path details.">
-    <title>Champion News | WSDC Analytics</title>
+    <title>New Champions | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="static/css/tokens.css">
@@ -406,12 +406,12 @@
     </style>
 </head>
 <body>
-    <a href="#catalog" class="skip-link">Skip to Champion News catalog</a>
+    <a href="#catalog" class="skip-link">Skip to New Champions catalog</a>
     <div data-site-chrome data-active="home" data-lang="en" data-home-href="index.html"></div>
 
     <div class="container">
         <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
-        <h1>Champion News</h1>
+        <h1>New Champions</h1>
         <p class="subtitle">Threshold crossings toward Champions, organized by publication date.</p>
 
         <div class="page-search">
@@ -425,7 +425,7 @@
                 <input type="search" class="search-input" id="search-input"
                        placeholder="Dancer surname…"
                        autocomplete="off"
-                       aria-label="Search Champion News by dancer surname">
+                       aria-label="Search New Champions by dancer surname">
             </div>
         </div>
 
@@ -441,7 +441,7 @@
                     <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> - All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>. If both happen in the same event, the card records the All-Stars pathway.</li>
                     <li>Cards are grouped by <strong>publication date</strong> (when posted here), not only by the event date of the crossing.</li>
                     <li><strong>Click a card</strong> to expand the Champion Path (first points, counts, top events/cities, continents).</li>
-                    <li>English feed only. Telegram Champion News remains a separate editorial channel.</li>
+                    <li>English feed only. Telegram <code>#ChampNews</code> remains a separate editorial channel.</li>
                     <li>Automated creates use threshold dates on/after <code>28 Jul 2026</code>. Layout probes may appear temporarily.</li>
                 </ul>
             </div>
@@ -652,7 +652,7 @@
         .then(data => {
           const summaries = data.summaries || [];
           if (!summaries.length) {
-            catalog.innerHTML = '<div class="empty">No Champion News yet. New Allowed / Required transitions appear here after full-parse (cutoff 28&nbsp;Jul&nbsp;2026).</div>';
+            catalog.innerHTML = '<div class="empty">No New Champions yet. New Allowed / Required transitions appear here after full-parse (cutoff 28&nbsp;Jul&nbsp;2026).</div>';
             return;
           }
           let html = '';
