@@ -594,9 +594,6 @@
         const badgeClass = status === 'required' ? 'badge-required' : 'badge-allowed';
         const roleClass = (ev.role || '').toLowerCase() === 'follower' ? 'badge-follower' : 'badge-leader';
         const badgeLabel = status === 'required' ? 'Required' : 'Allowed';
-        const pathway = ev.required_pathway === 'chmp_10'
-          ? 'via Champions points'
-          : (ev.required_pathway === 'als_225' ? 'via All-Stars points' : '');
         const loc = [ev.flag, ev.threshold_location].filter(Boolean).join(' ');
         const name = ev.dancer_name || ev.title || '';
         const searchBlob = normalize([name, surnameOf(name), ev.dancer_id, ev.role, ev.status, ev.threshold_event].join(' '));
@@ -615,7 +612,6 @@
                   <strong>${esc(ev.threshold_event)}</strong>
                   · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
                   ${loc ? ' · ' + esc(loc) : ''}
-                  ${pathway ? ' · ' + esc(pathway) : ''}
                 </p>
                 <div class="news-badges">
                   <span class="badge ${badgeClass}">${badgeLabel}</span>
