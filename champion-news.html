@@ -665,7 +665,7 @@
           }
           let html = '';
           summaries.forEach(block => {
-            html += `<section class="date-block"><div class="summary-date">Posted ${esc(block.post_date)}</div>`;
+            html += `<section class="date-block"><div class="summary-date">${esc(block.post_date)}</div>`;
             (block.events || []).forEach(ev => { html += cardHtml(ev); });
             html += '</section>';
           });
