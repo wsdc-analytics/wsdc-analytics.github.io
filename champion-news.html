@@ -494,13 +494,29 @@
         return parts.length ? parts[parts.length - 1] : '';
       }
 
-      function fmtDate(iso) {
-        if (!iso) return '';
-        const d = new Date(iso + 'T00:00:00Z');
-        if (Number.isNaN(d.getTime())) return esc(iso);
-        return d.toLocaleDateString('en-GB', {
-          year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
-        });
+      function fmtMonthYear(iso, year, month) {
+        // Database-style month+year as "1 Mar 2014" (day fixed to 1)
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let y = year != null && year !== '' ? Number(year) : NaN;
+        let m = month != null && month !== '' ? Number(month) : NaN;
+        if ((!y || !m) && iso) {
+          const d = new Date(String(iso).slice(0, 10) + 'T00:00:00Z');
+          if (!Number.isNaN(d.getTime())) {
+            y = d.getUTCFullYear();
+            m = d.getUTCMonth() + 1;
+          }
+        }
+        if (!y || !m || m < 1 || m > 12) return esc(iso || '');
+        return `1 ${months[m - 1]} ${y}`;
+      }
+
+      function eventParenLine(ev) {
+        // e.g. The Brazilian Open (Mar 2014, Fortaleza, Brazil)
+        if (!ev) return '';
+        const when = fmtMonthYear(ev.date, ev.year, ev.month);
+        const loc = (ev.location || '').trim();
+        const inside = [when, loc].filter(Boolean).join(', ');
+        return `${esc(ev.event_name)}${inside ? ` (${inside})` : ''}`;
       }
 
       function continentLine(obj) {
@@ -532,10 +548,10 @@
         const topCities = path.top_cities || [];
         let html = '';
         if (fp) {
-          html += `<h4>First points</h4><p>${esc(fp.event_name)} (${fmtDate(fp.date)}${fp.location ? ', ' + esc(fp.location) : ''})</p>`;
+          html += `<h4>First points</h4><p>${eventParenLine(fp)}</p>`;
         }
         if (fa) {
-          html += `<h4>First All-Stars points</h4><p>${esc(fa.event_name)} (${fmtDate(fa.date)}${fa.location ? ', ' + esc(fa.location) : ''})</p>`;
+          html += `<h4>First All-Stars points</h4><p>${eventParenLine(fa)}</p>`;
         }
         html += `<h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p>`;
         if (topEv.length) {
@@ -581,7 +597,7 @@
                 <div class="news-name"><span class="dancer-name">${esc(name)}</span> <span class="news-id">(${esc(ev.dancer_id)})</span></div>
                 <p class="news-meta">
                   <strong>${esc(ev.threshold_event)}</strong>
-                  · ${fmtDate(ev.threshold_date)}
+                  · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
                   ${loc ? ' · ' + esc(loc) : ''}
                   ${pathway ? ' · ' + esc(pathway) : ''}
                 </p>
@@ -657,7 +673,11 @@
           }
           let html = '';
           summaries.forEach(block => {
-            html += `<section class="date-block"><div class="summary-date">${esc(block.post_date)}</div>`;
+            const raw = String(block.post_date || '').trim();
+            let header = esc(raw);
+            const m = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+            if (m) header = fmtMonthYear(`${m[3]}-${m[2]}-01`, Number(m[3]), Number(m[2]));
+            html += `<section class="date-block"><div class="summary-date">${header}</div>`;
             (block.events || []).forEach(ev => { html += cardHtml(ev); });
             html += '</section>';
           });
