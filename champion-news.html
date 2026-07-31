@@ -299,6 +299,11 @@
             margin-top: 6px;
             line-height: 1.45;
         }
+        .news-meta .meta-label {
+            display: block;
+            color: var(--text-tertiary);
+            margin-bottom: 2px;
+        }
         .news-meta strong { color: var(--text-primary); font-weight: 600; }
         .news-badges {
             display: flex;
@@ -556,32 +561,32 @@
         const topAls = path.top_all_stars_events || [];
         const topCities = path.top_cities || [];
         let html = '';
+        html += `<h4>Events with Points</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p>`;
         if (fp) {
           html += `<h4>First points</h4><p>${eventParenLine(fp)}</p>`;
         }
         if (fa) {
           html += `<h4>First All-Stars points</h4><p>${eventParenLine(fa)}</p>`;
         }
-        html += `<h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p>`;
         if (topEv.length) {
-          html += '<h4>Top events (points)</h4><ul>' +
+          html += '<h4>Top events by points</h4><ul>' +
             topEv.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
             '</ul>';
         }
         if (topAls.length) {
-          html += '<h4>Top All-Stars events</h4><ul>' +
+          html += '<h4>Top All-Stars events by points</h4><ul>' +
             topAls.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
             '</ul>';
         }
         if (topCities.length) {
-          html += '<h4>Top cities</h4><ul>' +
+          html += '<h4>Top cities by points</h4><ul>' +
             topCities.map(c => `<li>${esc(c.location)} (${esc(c.points)})</li>`).join('') +
             '</ul>';
         }
         const ct = continentLine(path.continents_total);
         const ca = continentLine(path.continents_all_stars);
-        if (ct) html += `<h4>Points by continent (total)</h4><p>${ct}</p>`;
-        if (ca) html += `<h4>Points by continent (All-Stars)</h4><p>${ca}</p>`;
+        if (ct) html += `<h4>Total Points by continent</h4><p>${ct}</p>`;
+        if (ca) html += `<h4>All-Stars points by continent</h4><p>${ca}</p>`;
         return `<div class="path-label">Champion Path</div><div class="path-body">${html}</div>`;
       }
 
@@ -606,6 +611,7 @@
               <div class="news-header-main">
                 <div class="news-name"><span class="dancer-name">${esc(name)}</span> <span class="news-id">(${esc(ev.dancer_id)})</span></div>
                 <p class="news-meta">
+                  <span class="meta-label">Threshold event</span>
                   <strong>${esc(ev.threshold_event)}</strong>
                   · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
                   ${loc ? ' · ' + esc(loc) : ''}
