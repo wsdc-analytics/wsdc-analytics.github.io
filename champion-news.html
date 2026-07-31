@@ -327,9 +327,8 @@
         }
         .news-totals strong { color: var(--text-primary); font-weight: 600; }
         .news-body {
-            padding: 0 22px 22px;
+            padding: 0 22px 20px;
             border-top: 1px solid var(--border-color);
-            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
         }
         .news-body.collapsed { display: none; }
         .news-body:not(.collapsed) {
@@ -339,39 +338,34 @@
             from { opacity: 0.55; }
             to { opacity: 1; }
         }
-        .path-grid {
-            display: grid;
-            gap: 14px;
-            padding-top: 18px;
+        .path-label {
+            margin-top: 14px;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 650;
+            color: var(--color-accent);
         }
-        .path-block {
-            background: var(--bg-primary);
-            border-radius: var(--radius-sm);
-            padding: 14px 16px;
-            border-left: 4px solid var(--color-accent);
-            box-shadow: var(--shadow-soft);
+        .path-body {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.55;
         }
-        .path-block.champions { border-left-color: var(--medal-gold); }
-        .path-block h4 {
+        .path-body h4 {
+            color: var(--text-primary);
             font-size: 12px;
             font-weight: 650;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--text-tertiary);
-            margin-bottom: 6px;
+            margin: 14px 0 4px;
         }
-        .path-block p,
-        .path-block li {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-        .path-block ul {
+        .path-body h4:first-child { margin-top: 0; }
+        .path-body p { margin: 0; }
+        .path-body ul {
             list-style: none;
             margin: 0;
             padding: 0;
         }
-        .path-block li + li { margin-top: 4px; }
+        .path-body li { margin: 2px 0; }
         mark.dancer-highlight {
             background: #fde047;
             color: #111827;
@@ -529,43 +523,41 @@
       }
 
       function pathHtml(path) {
-        if (!path) return '<div class="path-block"><p>No path data.</p></div>';
+        if (!path) return '<div class="path-label">Champion Path</div><div class="path-body"><p>No path data.</p></div>';
         const fp = path.first_points;
         const fa = path.first_all_stars;
         const counts = path.event_counts || {};
         const topEv = path.top_events || [];
         const topAls = path.top_all_stars_events || [];
         const topCities = path.top_cities || [];
-        let html = '<div class="path-grid">';
-
+        let html = '';
         if (fp) {
-          html += `<div class="path-block"><h4>First points</h4><p>${esc(fp.event_name)} (${fmtDate(fp.date)}${fp.location ? ', ' + esc(fp.location) : ''})</p></div>`;
+          html += `<h4>First points</h4><p>${esc(fp.event_name)} (${fmtDate(fp.date)}${fp.location ? ', ' + esc(fp.location) : ''})</p>`;
         }
         if (fa) {
-          html += `<div class="path-block"><h4>First All-Stars points</h4><p>${esc(fa.event_name)} (${fmtDate(fa.date)}${fa.location ? ', ' + esc(fa.location) : ''})</p></div>`;
+          html += `<h4>First All-Stars points</h4><p>${esc(fa.event_name)} (${fmtDate(fa.date)}${fa.location ? ', ' + esc(fa.location) : ''})</p>`;
         }
-        html += `<div class="path-block"><h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p></div>`;
+        html += `<h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p>`;
         if (topEv.length) {
-          html += '<div class="path-block"><h4>Top events (points)</h4><ul>' +
+          html += '<h4>Top events (points)</h4><ul>' +
             topEv.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
-            '</ul></div>';
+            '</ul>';
         }
         if (topAls.length) {
-          html += '<div class="path-block"><h4>Top All-Stars events</h4><ul>' +
+          html += '<h4>Top All-Stars events</h4><ul>' +
             topAls.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
-            '</ul></div>';
+            '</ul>';
         }
         if (topCities.length) {
-          html += '<div class="path-block"><h4>Top cities</h4><ul>' +
+          html += '<h4>Top cities</h4><ul>' +
             topCities.map(c => `<li>${esc(c.location)} (${esc(c.points)})</li>`).join('') +
-            '</ul></div>';
+            '</ul>';
         }
         const ct = continentLine(path.continents_total);
         const ca = continentLine(path.continents_all_stars);
-        if (ct) html += `<div class="path-block"><h4>Points by continent (total)</h4><p>${ct}</p></div>`;
-        if (ca) html += `<div class="path-block champions"><h4>Points by continent (All-Stars)</h4><p>${ca}</p></div>`;
-        html += '</div>';
-        return html;
+        if (ct) html += `<h4>Points by continent (total)</h4><p>${ct}</p>`;
+        if (ca) html += `<h4>Points by continent (All-Stars)</h4><p>${ca}</p>`;
+        return `<div class="path-label">Champion Path</div><div class="path-body">${html}</div>`;
       }
 
       function cardHtml(ev) {
@@ -598,8 +590,8 @@
                   <span class="badge badge-role">${esc(ev.role)}</span>
                 </div>
                 <div class="news-totals">
-                  <span>All-Stars <strong>${esc(ev.als_total)}</strong></span>
-                  <span>Champions <strong>${esc(ev.chmp_total)}</strong></span>
+                  <span>⭐ All-Stars: <strong>${esc(ev.als_total)}</strong></span>
+                  <span>👑 Champions: <strong>${esc(ev.chmp_total)}</strong></span>
                 </div>
               </div>
               ${chevronSvg}
