@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://wsdc-analytics.github.io/champion-news.html">
-    <meta name="description" content="Champion News — chronology of dancers who reached Allowed or Required to Champions (All-Stars / Champions thresholds).">
+    <meta name="description" content="Champion News - chronology of dancers who reached Allowed or Required to Champions (All-Stars / Champions thresholds).">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wsdc-analytics.github.io/champion-news.html">
     <meta property="og:title" content="Champion News | WSDC Analytics">
@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="static/css/tokens.css">
     <link rel="stylesheet" href="static/css/site-chrome.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/champion_news.json" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
@@ -25,25 +25,33 @@
     </script>
     <style>
         :root {
-            --bg: #ffffff;
-            --bg-soft: #f7fafc;
-            --text: #0B1221;
-            --muted: #4a5568;
-            --tertiary: #6B7280;
-            --border: #e5e7eb;
-            --accent: #2563eb;
-            --allowed: #ca8a04;
-            --required: #16a34a;
+            --color-primary: #2d3748;
+            --color-primary-dark: #0B1221;
+            --color-accent: #2563eb;
+            --color-accent-soft: rgba(37, 99, 235, 0.08);
+            --medal-gold: #c9a227;
+            --bg-primary: #ffffff;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #f7fafc;
+            --bg-card-hover: #fafbfc;
+            --text-primary: #0B1221;
+            --text-secondary: #4a5568;
+            --text-tertiary: #6B7280;
+            --border-color: #e5e7eb;
+            --shadow-soft: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+            --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
             --radius: 14px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.04);
-            --transition: 0.2s ease;
+            --radius-sm: 8px;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --transition: 180ms var(--ease-out);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-soft);
-            color: var(--text);
-            line-height: 1.55;
+            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
         .skip-link {
@@ -57,46 +65,40 @@
             z-index: 1000;
         }
         .skip-link:focus { left: 12px; top: 12px; }
-        .wrap {
-            max-width: 880px;
+        .container {
+            max-width: 860px;
             margin: 0 auto;
-            padding: 28px 20px 64px;
+            padding: 48px 24px 80px;
         }
-        .wsdc-back {
-            display: inline-block;
-            margin-bottom: 16px;
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.92rem;
-        }
-        .wsdc-back:hover { color: var(--accent); }
         h1 {
-            font-size: 1.75rem;
+            font-size: 30px;
             font-weight: 700;
             letter-spacing: -0.02em;
             margin-bottom: 8px;
+            color: var(--color-primary-dark);
         }
         .subtitle {
-            color: var(--muted);
-            font-size: 1rem;
-            margin-bottom: 18px;
-            max-width: 62ch;
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 24px;
         }
         .page-search {
-            margin: 4px 0 18px;
-            padding: 8px 0 14px;
-            border-bottom: 1px solid var(--border);
+            margin: 14px 0 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: flex-start;
             gap: 8px;
             max-width: 420px;
         }
+        .page-search .search-box { flex: 1; min-width: 0; position: relative; }
         .search-help {
             display: inline-flex;
             align-items: center;
             margin-top: 8px;
             flex-shrink: 0;
             position: relative;
+            overflow: visible;
         }
         .search-help .info-icon {
             display: inline-flex;
@@ -105,26 +107,36 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border: 1.5px solid var(--border);
-            color: var(--tertiary);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-tertiary);
             font-size: 11px;
             font-weight: 600;
             cursor: help;
-            background: var(--bg);
             position: relative;
+            background: var(--bg-primary);
+            box-sizing: border-box;
+            transition: border-color var(--transition), color var(--transition), transform 140ms var(--ease-out);
         }
+        .search-help .info-icon:hover,
+        .search-help .info-icon:focus-visible {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            outline: none;
+        }
+        .search-help .info-icon:active { transform: scale(0.97); }
         .search-help .info-tooltip {
             position: absolute;
             left: calc(100% + 8px);
             top: 50%;
             transform: translateY(-50%);
             padding: 10px 12px;
-            background: var(--text);
+            background: var(--color-primary);
             color: #fff;
             font-size: 12px;
             line-height: 1.45;
             border-radius: 8px;
-            width: min(280px, calc(100vw - 48px));
+            width: min(300px, calc(100vw - 48px));
+            box-shadow: var(--shadow-card);
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -136,35 +148,40 @@
             opacity: 1;
             visibility: visible;
         }
-        .search-box { flex: 1; min-width: 0; position: relative; }
-        .search-input {
+        .page-search .search-input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font: inherit;
-            font-size: 0.95rem;
-            background: var(--bg);
-            color: var(--text);
+            max-width: none;
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 0 center;
+            padding: 6px 8px 6px 28px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--text-primary);
         }
-        .search-input:focus {
+        .page-search .search-input:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            border-color: transparent;
+            box-shadow: none;
         }
-        .search-meta {
-            margin-top: 6px;
-            font-size: 0.82rem;
-            color: var(--tertiary);
-            min-height: 1.2em;
+        .page-search .search-input::placeholder { color: var(--text-tertiary); }
+        .search-no-results {
+            display: none;
+            color: var(--text-secondary);
+            padding: 24px 0;
+            margin: 0;
         }
+        .search-no-results.visible { display: block; }
         .how-to-read {
-            background: var(--bg);
-            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            margin-bottom: 28px;
+            margin: 24px 0 32px;
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-card);
         }
         .how-to-read.expanded { border-color: #cbd5e1; }
         .how-to-read-header {
@@ -175,22 +192,24 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            font-weight: 600;
             transition: background var(--transition);
+            font-weight: 600;
+            color: var(--text-primary);
         }
-        .how-to-read-header:hover { background: var(--bg-soft); }
+        .how-to-read-header:hover { background: var(--bg-tertiary); }
+        .how-to-read-header:active { transform: scale(0.995); }
         .how-to-read-header .chevron {
             flex-shrink: 0;
             width: 18px;
             height: 18px;
-            color: var(--tertiary);
+            color: var(--text-tertiary);
             transition: transform var(--transition);
         }
         .how-to-read.expanded .how-to-read-header .chevron { transform: rotate(180deg); }
         .how-to-read-body {
             padding: 0 22px 20px;
-            font-size: 0.92rem;
-            color: var(--muted);
+            font-size: 14px;
+            color: var(--text-secondary);
             line-height: 1.65;
         }
         .how-to-read-body.collapsed { display: none; }
@@ -199,125 +218,184 @@
         .how-to-read-body code {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             font-size: 0.92em;
-            background: var(--bg-soft);
+            background: var(--bg-tertiary);
             padding: 2px 6px;
             border-radius: 4px;
         }
-        .block-date {
-            font-size: 0.8rem;
+        .legend-pill {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .legend-pill-yellow { background: #fef9c3; box-shadow: inset 0 0 0 1px #eab30855; }
+        .legend-pill-green { background: #dcfce7; box-shadow: inset 0 0 0 1px #22c55e55; }
+        .summary-date {
+            font-size: 13px;
             font-weight: 600;
+            color: var(--text-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            color: var(--tertiary);
-            margin: 28px 0 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
+            margin: 40px 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
-        .block-date:first-child { margin-top: 0; }
-        .card {
-            background: var(--bg);
-            border: 1px solid var(--border);
+        .date-block:first-child .summary-date { margin-top: 0; }
+        .news-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 18px 18px 14px;
             margin-bottom: 12px;
-            box-shadow: var(--shadow);
-            scroll-margin-top: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            scroll-margin-top: 20px;
+            transition: box-shadow var(--transition), border-color var(--transition);
         }
-        .card.is-hidden { display: none; }
-        .card.is-match {
+        .news-card:hover { box-shadow: var(--shadow-card-hover); border-color: #cbd5e1; }
+        .news-card.expanded { border-color: #cbd5e1; box-shadow: var(--shadow-card-hover); }
+        .news-card.is-hidden { display: none; }
+        .news-card.is-match {
             border-color: #f59e0b;
-            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.22);
         }
-        .card-head {
+        .news-header {
+            padding: 18px 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            transition: background var(--transition);
+        }
+        .news-header:hover { background: var(--bg-card-hover); }
+        .news-header:active { transform: scale(0.997); }
+        .news-header .chevron {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            color: var(--text-tertiary);
+            transition: transform var(--transition), color var(--transition);
+        }
+        .news-card.expanded .news-header .chevron {
+            transform: rotate(180deg);
+            color: var(--color-accent);
+        }
+        .news-name {
+            font-weight: 600;
+            font-size: 17px;
+            letter-spacing: -0.01em;
+        }
+        .news-id {
+            color: var(--text-tertiary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .news-meta {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 6px;
+            line-height: 1.45;
+        }
+        .news-meta strong { color: var(--text-primary); font-weight: 600; }
+        .news-badges {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px 12px;
-            align-items: baseline;
-            margin-bottom: 8px;
-        }
-        .card-title {
-            font-size: 1.05rem;
-            font-weight: 650;
+            gap: 6px;
+            margin-top: 10px;
         }
         .badge {
-            font-size: 0.72rem;
+            font-size: 11px;
             font-weight: 650;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            padding: 3px 8px;
+            padding: 3px 9px;
             border-radius: 999px;
         }
         .badge-allowed { background: #fef9c3; color: #854d0e; }
         .badge-required { background: #dcfce7; color: #166534; }
-        .badge-role { background: #eff6ff; color: #1e40af; }
-        .meta {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-        }
-        .meta strong { color: var(--text); font-weight: 600; }
-        .totals {
+        .badge-role { background: var(--color-accent-soft); color: #1e40af; }
+        .news-totals {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px 18px;
-            font-size: 0.9rem;
-            margin: 10px 0 4px;
-        }
-        details.path {
+            gap: 8px 16px;
             margin-top: 10px;
-            border-top: 1px solid var(--border);
-            padding-top: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
         }
-        details.path summary {
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.92rem;
-            color: var(--accent);
-            list-style: none;
-            user-select: none;
+        .news-totals strong { color: var(--text-primary); font-weight: 600; }
+        .news-body {
+            padding: 0 22px 22px;
+            border-top: 1px solid var(--border-color);
+            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
         }
-        details.path summary::-webkit-details-marker { display: none; }
-        details.path summary::before {
-            content: "▸ ";
-            display: inline-block;
-            transition: transform 0.15s ease;
+        .news-body.collapsed { display: none; }
+        .news-body:not(.collapsed) {
+            animation: fadeSoft 180ms var(--ease-out);
         }
-        details.path[open] summary::before { transform: rotate(90deg); }
-        .path-body {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: var(--muted);
+        @keyframes fadeSoft {
+            from { opacity: 0.55; }
+            to { opacity: 1; }
         }
-        .path-body h4 {
-            color: var(--text);
-            font-size: 0.78rem;
+        .path-grid {
+            display: grid;
+            gap: 14px;
+            padding-top: 18px;
+        }
+        .path-block {
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            border-left: 4px solid var(--color-accent);
+            box-shadow: var(--shadow-soft);
+        }
+        .path-block.champions { border-left-color: var(--medal-gold); }
+        .path-block h4 {
+            font-size: 12px;
+            font-weight: 650;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin: 12px 0 4px;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
         }
-        .path-body ul { list-style: none; padding: 0; }
-        .path-body li { margin: 2px 0; }
+        .path-block p,
+        .path-block li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .path-block ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .path-block li + li { margin-top: 4px; }
         mark.dancer-highlight {
             background: #fde047;
             color: #111827;
             padding: 1px 3px;
             border-radius: 3px;
             font-weight: 700;
+            box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.45);
         }
-        .empty {
-            padding: 40px 16px;
+        .loading, .empty, .error {
             text-align: center;
-            color: var(--muted);
-            background: var(--bg);
-            border: 1px dashed var(--border);
-            border-radius: var(--radius);
+            padding: 64px 24px;
+            color: var(--text-secondary);
+            font-size: 16px;
         }
-        .error { color: #b91c1c; padding: 16px; }
+        .error { color: #b91c1c; }
         .date-block.is-hidden { display: none; }
-        @media (max-width: 560px) {
-            .wrap { padding: 20px 14px 48px; }
-            h1 { font-size: 1.45rem; }
+        @media (max-width: 640px) {
             .page-search { max-width: none; }
+            .container { padding: 24px 16px 48px; }
+            h1 { font-size: 26px; }
+            .how-to-read-header { padding: 14px 16px; }
+            .how-to-read-body { padding: 0 16px 16px; font-size: 13px; }
+            .news-header { padding: 14px 16px; }
+            .news-body { padding: 0 16px 18px; }
             .search-help .info-tooltip {
                 left: auto;
                 right: 0;
@@ -325,77 +403,75 @@
                 transform: none;
             }
         }
+        @media (prefers-reduced-motion: reduce) {
+            .news-body:not(.collapsed) { animation: none; }
+            .news-header:active,
+            .how-to-read-header:active,
+            .search-help .info-icon:active { transform: none; }
+        }
     </style>
 </head>
 <body>
     <a href="#catalog" class="skip-link">Skip to Champion News catalog</a>
     <div data-site-chrome data-active="home" data-lang="en" data-home-href="index.html"></div>
-    <main class="wrap">
-        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back>Back to home</a>
+
+    <div class="container">
+        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
         <h1>Champion News</h1>
-        <p class="subtitle">
-            Chronology of dancers who crossed <strong>Allowed</strong> or <strong>Required</strong>
-            to Champions, published by date. Expand a card for the Champion Path.
-        </p>
+        <p class="subtitle">Threshold crossings toward Champions, organized by publication date.</p>
 
         <div class="page-search">
             <div class="search-help">
-                <span class="info-icon" tabindex="0" role="img" aria-label="Search tip">
+                <span class="info-icon" tabindex="0" role="img" aria-label="Brief search instructions (hover or focus to read)">
                     <span aria-hidden="true">i</span>
-                    <span class="info-tooltip">Type a dancer surname (or given name). Matching cards stay visible; others hide. Clear the field to show the full chronology again.</span>
+                    <span class="info-tooltip">Type a dancer surname or given name. Matching cards stay visible; clear the field to show the full chronology again.</span>
                 </span>
             </div>
             <div class="search-box">
                 <input type="search" class="search-input" id="search-input"
-                       placeholder="Search by dancer surname…"
+                       placeholder="Dancer surname…"
                        autocomplete="off"
                        aria-label="Search Champion News by dancer surname">
-                <div class="search-meta" id="search-meta" aria-live="polite"></div>
             </div>
         </div>
 
         <div class="how-to-read" id="how-to-read">
             <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-read-body">
                 <span>How to read this page</span>
-                <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div class="how-to-read-body collapsed" id="how-to-read-body">
-                <p style="margin-bottom:10px">
-                    This page lists <strong>Champion News</strong> cards: one card = one threshold crossing
-                    for one dancer in one role (leader or follower).
-                </p>
                 <ul>
-                    <li><strong>Allowed</strong> — cumulative All-Stars points reach <code>150+</code>.</li>
-                    <li><strong>Required</strong> — All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>. If both happen in the same event, the card records the All-Stars pathway. Champions-only Required is possible without a prior Allowed card.</li>
-                    <li>Cards are grouped by <strong>publication date</strong> (when the item was posted here), not only by the event date of the crossing.</li>
-                    <li>Open <strong>Champion Path</strong> for first points, event counts, top events/cities, and continent splits.</li>
-                    <li>Use the search box to find a dancer by surname (or full name). This feed is English-only; Telegram Champion News remains a separate editorial channel.</li>
+                    <li>One card = one threshold crossing for one dancer in one role (leader or follower).</li>
+                    <li><span class="legend-pill legend-pill-yellow"></span><strong>Allowed</strong> - cumulative All-Stars points reach <code>150+</code>.</li>
+                    <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> - All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>. If both happen in the same event, the card records the All-Stars pathway.</li>
+                    <li>Cards are grouped by <strong>publication date</strong> (when posted here), not only by the event date of the crossing.</li>
+                    <li><strong>Click a card</strong> to expand the Champion Path (first points, counts, top events/cities, continents).</li>
+                    <li>English feed only. Telegram Champion News remains a separate editorial channel.</li>
+                    <li>Automated creates use threshold dates on/after <code>28 Jul 2026</code>. Layout probes may appear temporarily.</li>
                 </ul>
-                <p style="margin-top:12px">
-                    Automated updates after full-parse only create crossings with threshold date on/after
-                    <code>28 Jul 2026</code>. Cards marked as layout probes may appear temporarily while we review the page.
-                </p>
             </div>
         </div>
 
-        <div id="catalog" aria-live="polite">Loading…</div>
-    </main>
+        <p class="search-no-results" id="search-no-results">No dancers match your search.</p>
+        <main id="catalog" aria-live="polite"><div class="loading">Loading...</div></main>
+    </div>
+
     <script src="static/js/site-chrome.js" defer></script>
     <script>
     (function () {
       const catalog = document.getElementById('catalog');
       const searchInput = document.getElementById('search-input');
-      const searchMeta = document.getElementById('search-meta');
+      const searchNoResults = document.getElementById('search-no-results');
       const howTo = document.getElementById('how-to-read');
       const howHeader = howTo.querySelector('.how-to-read-header');
       const howBody = document.getElementById('how-to-read-body');
+      const chevronSvg = '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
 
       function toggleHowTo() {
         const open = howTo.classList.toggle('expanded');
         howBody.classList.toggle('collapsed', !open);
-        howHeader.setAttribute('aria-expanded', open ? 'true' : 'false');
+        howHeader.setAttribute('aria-expanded', String(open));
       }
       howHeader.addEventListener('click', toggleHowTo);
       howHeader.addEventListener('keydown', (e) => {
@@ -446,7 +522,6 @@
         const n = normalize(raw);
         const idx = n.indexOf(q);
         if (idx < 0) return esc(raw);
-        // Approximate highlight on original string by same index length (ASCII-safe for WSDC names).
         const end = Math.min(raw.length, idx + q.length);
         return esc(raw.slice(0, idx)) +
           '<mark class="dancer-highlight">' + esc(raw.slice(idx, end)) + '</mark>' +
@@ -454,40 +529,42 @@
       }
 
       function pathHtml(path) {
-        if (!path) return '<p>No path data.</p>';
+        if (!path) return '<div class="path-block"><p>No path data.</p></div>';
         const fp = path.first_points;
         const fa = path.first_all_stars;
         const counts = path.event_counts || {};
         const topEv = path.top_events || [];
         const topAls = path.top_all_stars_events || [];
         const topCities = path.top_cities || [];
-        let html = '';
+        let html = '<div class="path-grid">';
+
         if (fp) {
-          html += `<h4>First points</h4><p>${esc(fp.event_name)} (${fmtDate(fp.date)}${fp.location ? ', ' + esc(fp.location) : ''})</p>`;
+          html += `<div class="path-block"><h4>First points</h4><p>${esc(fp.event_name)} (${fmtDate(fp.date)}${fp.location ? ', ' + esc(fp.location) : ''})</p></div>`;
         }
         if (fa) {
-          html += `<h4>First All-Stars points</h4><p>${esc(fa.event_name)} (${fmtDate(fa.date)}${fa.location ? ', ' + esc(fa.location) : ''})</p>`;
+          html += `<div class="path-block"><h4>First All-Stars points</h4><p>${esc(fa.event_name)} (${fmtDate(fa.date)}${fa.location ? ', ' + esc(fa.location) : ''})</p></div>`;
         }
-        html += `<h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p>`;
+        html += `<div class="path-block"><h4>Point-bearing events</h4><p>Total ${esc(counts.total || 0)} · All-Stars ${esc(counts.all_stars || 0)} · Champions ${esc(counts.champions || 0)}</p></div>`;
         if (topEv.length) {
-          html += '<h4>Top events (points)</h4><ul>' +
+          html += '<div class="path-block"><h4>Top events (points)</h4><ul>' +
             topEv.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
-            '</ul>';
+            '</ul></div>';
         }
         if (topAls.length) {
-          html += '<h4>Top All-Stars events</h4><ul>' +
+          html += '<div class="path-block"><h4>Top All-Stars events</h4><ul>' +
             topAls.map(e => `<li>${esc(e.event_name)} (${esc(e.points)})</li>`).join('') +
-            '</ul>';
+            '</ul></div>';
         }
         if (topCities.length) {
-          html += '<h4>Top cities</h4><ul>' +
+          html += '<div class="path-block"><h4>Top cities</h4><ul>' +
             topCities.map(c => `<li>${esc(c.location)} (${esc(c.points)})</li>`).join('') +
-            '</ul>';
+            '</ul></div>';
         }
         const ct = continentLine(path.continents_total);
         const ca = continentLine(path.continents_all_stars);
-        if (ct) html += `<h4>Points by continent (total)</h4><p>${ct}</p>`;
-        if (ca) html += `<h4>Points by continent (All-Stars)</h4><p>${ca}</p>`;
+        if (ct) html += `<div class="path-block"><h4>Points by continent (total)</h4><p>${ct}</p></div>`;
+        if (ca) html += `<div class="path-block champions"><h4>Points by continent (All-Stars)</h4><p>${ca}</p></div>`;
+        html += '</div>';
         return html;
       }
 
@@ -502,36 +579,60 @@
         const name = ev.dancer_name || ev.title || '';
         const searchBlob = normalize([name, surnameOf(name), ev.dancer_id, ev.role, ev.status, ev.threshold_event].join(' '));
         return `
-          <article class="card"
+          <article class="news-card"
                    id="${esc(ev.slug)}"
                    data-search="${esc(searchBlob)}"
                    data-name="${esc(name)}"
                    data-surname="${esc(normalize(surnameOf(name)))}">
-            <div class="card-head">
-              <span class="card-title"><span class="dancer-name">${esc(name)}</span> <span style="color:var(--muted);font-weight:500">(${esc(ev.dancer_id)})</span></span>
-              <span class="badge ${badgeClass}">${badgeLabel}</span>
-              <span class="badge badge-role">${esc(ev.role)}</span>
+            <div class="news-header" role="button" tabindex="0" aria-expanded="false">
+              <div class="news-header-main">
+                <div class="news-name"><span class="dancer-name">${esc(name)}</span> <span class="news-id">(${esc(ev.dancer_id)})</span></div>
+                <p class="news-meta">
+                  <strong>${esc(ev.threshold_event)}</strong>
+                  · ${fmtDate(ev.threshold_date)}
+                  ${loc ? ' · ' + esc(loc) : ''}
+                  ${pathway ? ' · ' + esc(pathway) : ''}
+                </p>
+                <div class="news-badges">
+                  <span class="badge ${badgeClass}">${badgeLabel}</span>
+                  <span class="badge badge-role">${esc(ev.role)}</span>
+                </div>
+                <div class="news-totals">
+                  <span>All-Stars <strong>${esc(ev.als_total)}</strong></span>
+                  <span>Champions <strong>${esc(ev.chmp_total)}</strong></span>
+                </div>
+              </div>
+              ${chevronSvg}
             </div>
-            <p class="meta">
-              Threshold: <strong>${esc(ev.threshold_event)}</strong>
-              · ${fmtDate(ev.threshold_date)}
-              ${loc ? ' · ' + esc(loc) : ''}
-              ${pathway ? ' · ' + esc(pathway) : ''}
-            </p>
-            <div class="totals">
-              <span>⭐ All-Stars: <strong>${esc(ev.als_total)}</strong></span>
-              <span>👑 Champions: <strong>${esc(ev.chmp_total)}</strong></span>
+            <div class="news-body collapsed">
+              ${pathHtml(ev.path)}
             </div>
-            <details class="path">
-              <summary>Champion Path</summary>
-              <div class="path-body">${pathHtml(ev.path)}</div>
-            </details>
           </article>`;
+      }
+
+      function bindCardToggles() {
+        catalog.querySelectorAll('.news-card').forEach(card => {
+          const header = card.querySelector('.news-header');
+          const body = card.querySelector('.news-body');
+          if (!header || !body) return;
+          const toggle = () => {
+            const open = card.classList.toggle('expanded');
+            body.classList.toggle('collapsed', !open);
+            header.setAttribute('aria-expanded', String(open));
+          };
+          header.addEventListener('click', toggle);
+          header.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggle();
+            }
+          });
+        });
       }
 
       function applySearch() {
         const q = normalize(searchInput.value);
-        const cards = [...catalog.querySelectorAll('.card')];
+        const cards = [...catalog.querySelectorAll('.news-card')];
         let visible = 0;
         cards.forEach(card => {
           const blob = card.getAttribute('data-search') || '';
@@ -545,16 +646,10 @@
           if (match) visible += 1;
         });
         catalog.querySelectorAll('.date-block').forEach(block => {
-          const any = [...block.querySelectorAll('.card')].some(c => !c.classList.contains('is-hidden'));
+          const any = [...block.querySelectorAll('.news-card')].some(c => !c.classList.contains('is-hidden'));
           block.classList.toggle('is-hidden', !any);
         });
-        if (!q) {
-          searchMeta.textContent = '';
-        } else if (visible === 0) {
-          searchMeta.textContent = 'No dancers match this search.';
-        } else {
-          searchMeta.textContent = `${visible} match${visible === 1 ? '' : 'es'}`;
-        }
+        searchNoResults.classList.toggle('visible', Boolean(q) && visible === 0);
       }
 
       fetch('static/data/champion_news.json')
@@ -570,11 +665,12 @@
           }
           let html = '';
           summaries.forEach(block => {
-            html += `<section class="date-block"><div class="block-date">Posted ${esc(block.post_date)}</div>`;
+            html += `<section class="date-block"><div class="summary-date">Posted ${esc(block.post_date)}</div>`;
             (block.events || []).forEach(ev => { html += cardHtml(ev); });
             html += '</section>';
           });
           catalog.innerHTML = html;
+          bindCardToggles();
           searchInput.addEventListener('input', applySearch);
           searchInput.addEventListener('search', applySearch);
         })
