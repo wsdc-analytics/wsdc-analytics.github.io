@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -83,11 +84,19 @@ def validate_champion_news() -> None:
     if not isinstance(summaries, list):
         fail("champion_news.json must contain list field 'summaries'")
 
+    post_date_re = re.compile(r"^\d{2}-\d{2}-\d{4}$")
+    allowed_status = {"allowed", "required"}
+    seen_slugs: set[str] = set()
+
     for idx, summary in enumerate(summaries):
         if not isinstance(summary, dict):
             fail(f"champion_news.summaries[{idx}] must be an object")
-        if "post_date" not in summary:
-            fail(f"champion_news.summaries[{idx}] missing post_date")
+        post_date = summary.get("post_date")
+        if not isinstance(post_date, str) or not post_date_re.match(post_date.strip()):
+            fail(
+                f"champion_news.summaries[{idx}] post_date must be DD-MM-YYYY, "
+                f"got {post_date!r}"
+            )
         events = summary.get("events", [])
         if not isinstance(events, list):
             fail(f"champion_news.summaries[{idx}].events must be a list")
@@ -98,6 +107,24 @@ def validate_champion_news() -> None:
                 if field not in event:
                     fail(
                         f"champion_news.summaries[{idx}].events[{ei}] missing {field}"
+                    )
+            status = str(event.get("status") or "").lower()
+            if status not in allowed_status:
+                fail(
+                    f"champion_news.summaries[{idx}].events[{ei}] "
+                    f"status must be allowed|required, got {event.get('status')!r}"
+                )
+            slug = str(event.get("slug") or "").strip()
+            if not slug:
+                fail(f"champion_news.summaries[{idx}].events[{ei}] slug is empty")
+            if slug in seen_slugs:
+                fail(f"champion_news duplicate slug: {slug}")
+            seen_slugs.add(slug)
+            if "path" in event and event["path"] is not None:
+                if not isinstance(event["path"], dict):
+                    fail(
+                        f"champion_news.summaries[{idx}].events[{ei}].path "
+                        "must be an object when present"
                     )
 
     print("[OK] champion_news.json")
