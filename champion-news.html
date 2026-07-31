@@ -29,11 +29,14 @@
             --bg-soft: #f7fafc;
             --text: #0B1221;
             --muted: #4a5568;
+            --tertiary: #6B7280;
             --border: #e5e7eb;
             --accent: #2563eb;
             --allowed: #ca8a04;
             --required: #16a34a;
             --radius: 14px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04);
+            --transition: 0.2s ease;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -43,38 +46,187 @@
             line-height: 1.55;
             -webkit-font-smoothing: antialiased;
         }
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            background: #111827;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            z-index: 1000;
+        }
+        .skip-link:focus { left: 12px; top: 12px; }
         .wrap {
             max-width: 880px;
             margin: 0 auto;
             padding: 28px 20px 64px;
         }
+        .wsdc-back {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+        }
+        .wsdc-back:hover { color: var(--accent); }
         h1 {
             font-size: 1.75rem;
             font-weight: 700;
             letter-spacing: -0.02em;
             margin-bottom: 8px;
         }
-        .lede {
+        .subtitle {
             color: var(--muted);
-            font-size: 0.98rem;
-            margin-bottom: 28px;
+            font-size: 1rem;
+            margin-bottom: 18px;
             max-width: 62ch;
+        }
+        .page-search {
+            margin: 4px 0 18px;
+            padding: 8px 0 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            max-width: 420px;
+        }
+        .search-help {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 8px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .search-help .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            color: var(--tertiary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: help;
+            background: var(--bg);
+            position: relative;
+        }
+        .search-help .info-tooltip {
+            position: absolute;
+            left: calc(100% + 8px);
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 10px 12px;
+            background: var(--text);
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.45;
+            border-radius: 8px;
+            width: min(280px, calc(100vw - 48px));
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition), visibility var(--transition);
+            z-index: 200;
+        }
+        .search-help .info-icon:hover .info-tooltip,
+        .search-help .info-icon:focus-visible .info-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        .search-box { flex: 1; min-width: 0; position: relative; }
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font: inherit;
+            font-size: 0.95rem;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        .search-meta {
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: var(--tertiary);
+            min-height: 1.2em;
+        }
+        .how-to-read {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .how-to-read.expanded { border-color: #cbd5e1; }
+        .how-to-read-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            font-weight: 600;
+            transition: background var(--transition);
+        }
+        .how-to-read-header:hover { background: var(--bg-soft); }
+        .how-to-read-header .chevron {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            color: var(--tertiary);
+            transition: transform var(--transition);
+        }
+        .how-to-read.expanded .how-to-read-header .chevron { transform: rotate(180deg); }
+        .how-to-read-body {
+            padding: 0 22px 20px;
+            font-size: 0.92rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+        .how-to-read-body.collapsed { display: none; }
+        .how-to-read-body ul { margin: 0 0 0 18px; }
+        .how-to-read-body li { margin-bottom: 6px; }
+        .how-to-read-body code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.92em;
+            background: var(--bg-soft);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
         .block-date {
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            color: var(--muted);
+            color: var(--tertiary);
             margin: 28px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
         }
+        .block-date:first-child { margin-top: 0; }
         .card {
             background: var(--bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 18px 18px 14px;
             margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow);
+            scroll-margin-top: 24px;
+        }
+        .card.is-hidden { display: none; }
+        .card.is-match {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
         }
         .card-head {
             display: flex;
@@ -97,10 +249,7 @@
         }
         .badge-allowed { background: #fef9c3; color: #854d0e; }
         .badge-required { background: #dcfce7; color: #166534; }
-        .badge-role {
-            background: #eff6ff;
-            color: #1e40af;
-        }
+        .badge-role { background: #eff6ff; color: #1e40af; }
         .meta {
             color: var(--muted);
             font-size: 0.9rem;
@@ -146,11 +295,15 @@
             letter-spacing: 0.05em;
             margin: 12px 0 4px;
         }
-        .path-body ul {
-            list-style: none;
-            padding: 0;
-        }
+        .path-body ul { list-style: none; padding: 0; }
         .path-body li { margin: 2px 0; }
+        mark.dancer-highlight {
+            background: #fde047;
+            color: #111827;
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
         .empty {
             padding: 40px 16px;
             text-align: center;
@@ -159,31 +312,98 @@
             border: 1px dashed var(--border);
             border-radius: var(--radius);
         }
-        .error {
-            color: #b91c1c;
-            padding: 16px;
-        }
+        .error { color: #b91c1c; padding: 16px; }
+        .date-block.is-hidden { display: none; }
         @media (max-width: 560px) {
             .wrap { padding: 20px 14px 48px; }
             h1 { font-size: 1.45rem; }
+            .page-search { max-width: none; }
+            .search-help .info-tooltip {
+                left: auto;
+                right: 0;
+                top: calc(100% + 8px);
+                transform: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div data-site-chrome data-active="home"></div>
+    <a href="#catalog" class="skip-link">Skip to Champion News catalog</a>
+    <div data-site-chrome data-active="home" data-lang="en" data-home-href="index.html"></div>
     <main class="wrap">
+        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back>Back to home</a>
         <h1>Champion News</h1>
-        <p class="lede">
-            Chronology of dancers who crossed <strong>Allowed to Champions</strong>
-            (150+ All-Stars) or <strong>Required to Champions</strong>
-            (225+ All-Stars or 10+ Champions), by role. Expand a card for the Champion Path.
+        <p class="subtitle">
+            Chronology of dancers who crossed <strong>Allowed</strong> or <strong>Required</strong>
+            to Champions, published by date. Expand a card for the Champion Path.
         </p>
+
+        <div class="page-search">
+            <div class="search-help">
+                <span class="info-icon" tabindex="0" role="img" aria-label="Search tip">
+                    <span aria-hidden="true">i</span>
+                    <span class="info-tooltip">Type a dancer surname (or given name). Matching cards stay visible; others hide. Clear the field to show the full chronology again.</span>
+                </span>
+            </div>
+            <div class="search-box">
+                <input type="search" class="search-input" id="search-input"
+                       placeholder="Search by dancer surname…"
+                       autocomplete="off"
+                       aria-label="Search Champion News by dancer surname">
+                <div class="search-meta" id="search-meta" aria-live="polite"></div>
+            </div>
+        </div>
+
+        <div class="how-to-read" id="how-to-read">
+            <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-read-body">
+                <span>How to read this page</span>
+                <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="how-to-read-body collapsed" id="how-to-read-body">
+                <p style="margin-bottom:10px">
+                    This page lists <strong>Champion News</strong> cards: one card = one threshold crossing
+                    for one dancer in one role (leader or follower).
+                </p>
+                <ul>
+                    <li><strong>Allowed</strong> — cumulative All-Stars points reach <code>150+</code>.</li>
+                    <li><strong>Required</strong> — All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>.</li>
+                    <li>Cards are grouped by <strong>publication date</strong> (when the item was posted here), not only by the event date of the crossing.</li>
+                    <li>Open <strong>Champion Path</strong> for first points, event counts, top events/cities, and continent splits.</li>
+                    <li>Use the search box to find a dancer by surname (or full name). This feed is English-only; Telegram Champion News remains a separate editorial channel.</li>
+                </ul>
+                <p style="margin-top:12px">
+                    Automated updates after full-parse only create crossings with threshold date on/after
+                    <code>28 Jul 2026</code>. Older probe cards may appear while we review the layout.
+                </p>
+            </div>
+        </div>
+
         <div id="catalog" aria-live="polite">Loading…</div>
     </main>
     <script src="static/js/site-chrome.js" defer></script>
     <script>
     (function () {
       const catalog = document.getElementById('catalog');
+      const searchInput = document.getElementById('search-input');
+      const searchMeta = document.getElementById('search-meta');
+      const howTo = document.getElementById('how-to-read');
+      const howHeader = howTo.querySelector('.how-to-read-header');
+      const howBody = document.getElementById('how-to-read-body');
+
+      function toggleHowTo() {
+        const open = howTo.classList.toggle('expanded');
+        howBody.classList.toggle('collapsed', !open);
+        howHeader.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      howHeader.addEventListener('click', toggleHowTo);
+      howHeader.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleHowTo();
+        }
+      });
 
       function esc(s) {
         return String(s ?? '').replace(/[&<>"']/g, c => ({
@@ -191,11 +411,26 @@
         }[c]));
       }
 
+      function normalize(s) {
+        return String(s || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim();
+      }
+
+      function surnameOf(name) {
+        const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+        return parts.length ? parts[parts.length - 1] : '';
+      }
+
       function fmtDate(iso) {
         if (!iso) return '';
         const d = new Date(iso + 'T00:00:00Z');
         if (Number.isNaN(d.getTime())) return esc(iso);
-        return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+        return d.toLocaleDateString('en-GB', {
+          year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
+        });
       }
 
       function continentLine(obj) {
@@ -203,6 +438,19 @@
         return Object.entries(obj)
           .map(([k, v]) => `${esc(k)} ${esc(v)}`)
           .join(' · ');
+      }
+
+      function highlightName(name, q) {
+        const raw = String(name || '');
+        if (!q) return esc(raw);
+        const n = normalize(raw);
+        const idx = n.indexOf(q);
+        if (idx < 0) return esc(raw);
+        // Approximate highlight on original string by same index length (ASCII-safe for WSDC names).
+        const end = Math.min(raw.length, idx + q.length);
+        return esc(raw.slice(0, idx)) +
+          '<mark class="dancer-highlight">' + esc(raw.slice(idx, end)) + '</mark>' +
+          esc(raw.slice(end));
       }
 
       function pathHtml(path) {
@@ -251,10 +499,16 @@
           ? 'via Champions points'
           : (ev.required_pathway === 'als_225' ? 'via All-Stars points' : '');
         const loc = [ev.flag, ev.threshold_location].filter(Boolean).join(' ');
+        const name = ev.dancer_name || ev.title || '';
+        const searchBlob = normalize([name, surnameOf(name), ev.dancer_id, ev.role, ev.status, ev.threshold_event].join(' '));
         return `
-          <article class="card" id="${esc(ev.slug)}">
+          <article class="card"
+                   id="${esc(ev.slug)}"
+                   data-search="${esc(searchBlob)}"
+                   data-name="${esc(name)}"
+                   data-surname="${esc(normalize(surnameOf(name)))}">
             <div class="card-head">
-              <span class="card-title">${esc(ev.dancer_name || ev.title)} <span style="color:var(--muted);font-weight:500">(${esc(ev.dancer_id)})</span></span>
+              <span class="card-title"><span class="dancer-name">${esc(name)}</span> <span style="color:var(--muted);font-weight:500">(${esc(ev.dancer_id)})</span></span>
               <span class="badge ${badgeClass}">${badgeLabel}</span>
               <span class="badge badge-role">${esc(ev.role)}</span>
             </div>
@@ -275,6 +529,34 @@
           </article>`;
       }
 
+      function applySearch() {
+        const q = normalize(searchInput.value);
+        const cards = [...catalog.querySelectorAll('.card')];
+        let visible = 0;
+        cards.forEach(card => {
+          const blob = card.getAttribute('data-search') || '';
+          const surname = card.getAttribute('data-surname') || '';
+          const name = card.getAttribute('data-name') || '';
+          const match = !q || surname.includes(q) || blob.includes(q);
+          card.classList.toggle('is-hidden', !match);
+          card.classList.toggle('is-match', Boolean(q && match));
+          const nameEl = card.querySelector('.dancer-name');
+          if (nameEl) nameEl.innerHTML = highlightName(name, q);
+          if (match) visible += 1;
+        });
+        catalog.querySelectorAll('.date-block').forEach(block => {
+          const any = [...block.querySelectorAll('.card')].some(c => !c.classList.contains('is-hidden'));
+          block.classList.toggle('is-hidden', !any);
+        });
+        if (!q) {
+          searchMeta.textContent = '';
+        } else if (visible === 0) {
+          searchMeta.textContent = 'No dancers match this search.';
+        } else {
+          searchMeta.textContent = `${visible} match${visible === 1 ? '' : 'es'}`;
+        }
+      }
+
       fetch('static/data/champion_news.json')
         .then(r => {
           if (!r.ok) throw new Error('Failed to fetch champion_news.json');
@@ -288,10 +570,13 @@
           }
           let html = '';
           summaries.forEach(block => {
-            html += `<div class="block-date">Posted ${esc(block.post_date)}</div>`;
+            html += `<section class="date-block"><div class="block-date">Posted ${esc(block.post_date)}</div>`;
             (block.events || []).forEach(ev => { html += cardHtml(ev); });
+            html += '</section>';
           });
           catalog.innerHTML = html;
+          searchInput.addEventListener('input', applySearch);
+          searchInput.addEventListener('search', applySearch);
         })
         .catch(err => {
           catalog.innerHTML = `<div class="error">${esc(err.message)}</div>`;
