@@ -496,19 +496,27 @@
       }
 
       function fmtMonthYear(iso, year, month) {
-        // Database-style month+year as "1 Mar 2014" (day fixed to 1)
+        // Database-style month+year: "Mar 14"
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         let y = year != null && year !== '' ? Number(year) : NaN;
         let m = month != null && month !== '' ? Number(month) : NaN;
         if ((!y || !m) && iso) {
-          const d = new Date(String(iso).slice(0, 10) + 'T00:00:00Z');
-          if (!Number.isNaN(d.getTime())) {
-            y = d.getUTCFullYear();
-            m = d.getUTCMonth() + 1;
+          const raw = String(iso).trim();
+          const dmy = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+          if (dmy) {
+            y = Number(dmy[3]);
+            m = Number(dmy[2]);
+          } else {
+            const d = new Date(raw.slice(0, 10) + 'T00:00:00Z');
+            if (!Number.isNaN(d.getTime())) {
+              y = d.getUTCFullYear();
+              m = d.getUTCMonth() + 1;
+            }
           }
         }
         if (!y || !m || m < 1 || m > 12) return esc(iso || '');
-        return `1 ${months[m - 1]} ${y}`;
+        const yy = String(y).slice(-2);
+        return `${months[m - 1]} ${yy}`;
       }
 
       function eventParenLine(ev) {
