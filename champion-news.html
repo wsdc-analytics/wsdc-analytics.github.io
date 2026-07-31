@@ -424,14 +424,14 @@
             <div class="search-help">
                 <span class="info-icon" tabindex="0" role="img" aria-label="Brief search instructions (hover or focus to read)">
                     <span aria-hidden="true">i</span>
-                    <span class="info-tooltip">Type a dancer surname or given name. Matching cards stay visible; clear the field to show the full chronology again.</span>
+                    <span class="info-tooltip">Type a dancer surname, given name, or WSDC number. Matching cards stay visible; clear the field to show the full chronology again.</span>
                 </span>
             </div>
             <div class="search-box">
                 <input type="search" class="search-input" id="search-input"
-                       placeholder="Dancer surname…"
+                       placeholder="Surname or WSDC #…"
                        autocomplete="off"
-                       aria-label="Search New Champions by dancer surname">
+                       aria-label="Search New Champions by dancer surname, name, or WSDC number">
             </div>
         </div>
 
@@ -604,7 +604,8 @@
                    id="${esc(ev.slug)}"
                    data-search="${esc(searchBlob)}"
                    data-name="${esc(name)}"
-                   data-surname="${esc(normalize(surnameOf(name)))}">
+                   data-surname="${esc(normalize(surnameOf(name)))}"
+                   data-dancer-id="${esc(String(ev.dancer_id || ''))}">
             <div class="news-header" role="button" tabindex="0" aria-expanded="false">
               <div class="news-header-main">
                 <div class="news-name"><span class="dancer-name">${esc(name)}</span> <span class="news-id">(${esc(ev.dancer_id)})</span></div>
@@ -660,7 +661,8 @@
           const blob = card.getAttribute('data-search') || '';
           const surname = card.getAttribute('data-surname') || '';
           const name = card.getAttribute('data-name') || '';
-          const match = !q || surname.includes(q) || blob.includes(q);
+          const dancerId = normalize(card.getAttribute('data-dancer-id') || '');
+          const match = !q || surname.includes(q) || dancerId.includes(q) || blob.includes(q);
           card.classList.toggle('is-hidden', !match);
           card.classList.toggle('is-match', Boolean(q && match));
           const nameEl = card.querySelector('.dancer-name');
