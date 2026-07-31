@@ -685,8 +685,11 @@
           summaries.forEach(block => {
             const raw = String(block.post_date || '').trim();
             let header = esc(raw);
-            const m = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-            if (m) header = fmtMonthYear(`${m[3]}-${m[2]}-01`, Number(m[3]), Number(m[2]));
+            // Prefer full publication date YYYY-MM-DD; accept legacy DD-MM-YYYY.
+            const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            const legacy = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+            if (iso) header = esc(`${iso[1]}-${iso[2]}-${iso[3]}`);
+            else if (legacy) header = esc(`${legacy[3]}-${legacy[2]}-${legacy[1]}`);
             html += `<section class="date-block"><div class="summary-date">${header}</div>`;
             (block.events || []).forEach(ev => { html += cardHtml(ev); });
             html += '</section>';

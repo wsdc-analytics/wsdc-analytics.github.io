@@ -84,7 +84,7 @@ def validate_champion_news() -> None:
     if not isinstance(summaries, list):
         fail("champion_news.json must contain list field 'summaries'")
 
-    post_date_re = re.compile(r"^\d{2}-\d{2}-\d{4}$")
+    post_date_re = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     allowed_status = {"allowed", "required"}
     seen_slugs: set[str] = set()
 
@@ -94,7 +94,7 @@ def validate_champion_news() -> None:
         post_date = summary.get("post_date")
         if not isinstance(post_date, str) or not post_date_re.match(post_date.strip()):
             fail(
-                f"champion_news.summaries[{idx}] post_date must be DD-MM-YYYY, "
+                f"champion_news.summaries[{idx}] post_date must be YYYY-MM-DD, "
                 f"got {post_date!r}"
             )
         events = summary.get("events", [])
