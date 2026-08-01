@@ -325,7 +325,8 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px 16px;
-            margin-top: 10px;
+            margin-top: 14px;
+            margin-bottom: 14px;
             font-size: 13px;
             color: var(--text-secondary);
         }
@@ -341,13 +342,6 @@
         @keyframes fadeSoft {
             from { opacity: 0.55; }
             to { opacity: 1; }
-        }
-        .path-label {
-            margin-top: 14px;
-            margin-bottom: 4px;
-            font-size: 13px;
-            font-weight: 650;
-            color: var(--color-accent);
         }
         .path-body {
             font-size: 14px;
@@ -444,7 +438,7 @@
                     <li><span class="legend-pill legend-pill-yellow"></span><strong>Allowed</strong> - cumulative All-Stars points reach <code>150+</code>.</li>
                     <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> - All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>.</li>
                     <li>Cards are grouped by <strong>publication date</strong> (when posted here), not only by the event date of the crossing.</li>
-                    <li><strong>Click a card</strong> to expand the Champion Path (first points, counts, top events/cities, continents).</li>
+                    <li><strong>Click a card</strong> to expand totals and path details (first points, counts, top events/cities, continents).</li>
                 </ul>
             </div>
         </div>
@@ -549,8 +543,14 @@
           esc(raw.slice(end));
       }
 
-      function pathHtml(path) {
-        if (!path) return '<div class="path-label">Champion Path</div><div class="path-body"><p>No path data.</p></div>';
+      function pathHtml(path, alsTotal, chmpTotal) {
+        const totals = `<div class="news-totals">
+          <span>⭐ All-Stars: <strong>${esc(alsTotal)}</strong></span>
+          <span>👑 Champions: <strong>${esc(chmpTotal)}</strong></span>
+        </div>`;
+        if (!path) {
+          return `${totals}<div class="path-body"><p>No path data.</p></div>`;
+        }
         const fp = path.first_points;
         const fa = path.first_all_stars;
         const counts = path.event_counts || {};
@@ -584,7 +584,7 @@
         const ca = continentLine(path.continents_all_stars);
         if (ct) html += `<h4>Total Points by continent</h4><p>${ct}</p>`;
         if (ca) html += `<h4>All-Star points by continent</h4><p>${ca}</p>`;
-        return `<div class="path-label">Champion Path</div><div class="path-body">${html}</div>`;
+        return `${totals}<div class="path-body">${html}</div>`;
       }
 
       function cardHtml(ev) {
@@ -616,15 +616,11 @@
                   · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
                   ${loc ? ' · ' + esc(loc) : ''}
                 </p>
-                <div class="news-totals">
-                  <span>⭐ All-Stars: <strong>${esc(ev.als_total)}</strong></span>
-                  <span>👑 Champions: <strong>${esc(ev.chmp_total)}</strong></span>
-                </div>
               </div>
               ${chevronSvg}
             </div>
             <div class="news-body collapsed">
-              ${pathHtml(ev.path)}
+              ${pathHtml(ev.path, ev.als_total, ev.chmp_total)}
             </div>
           </article>`;
       }
