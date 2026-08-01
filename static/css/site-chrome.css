@@ -151,11 +151,12 @@
 
 .wsdc-chrome__tip-bubble {
   position: absolute;
-  left: calc(100% + 8px);
+  /* Below the tip: grow taller via wrap instead of spilling past the chrome bar */
+  top: calc(100% + 8px);
+  left: 0;
   right: auto;
-  top: 50%;
-  transform: translateY(-50%) scale(0.96);
-  transform-origin: left center;
+  transform: translateY(-2px) scale(0.96);
+  transform-origin: top left;
   min-height: 32px;
   display: flex;
   align-items: center;
@@ -166,7 +167,8 @@
   font-weight: 400;
   line-height: 1.35;
   border-radius: 8px;
-  max-width: min(280px, calc(100vw - 48px));
+  width: max-content;
+  max-width: min(200px, calc(100vw - 48px));
   white-space: normal;
   opacity: 0;
   visibility: hidden;
@@ -178,10 +180,18 @@
     visibility var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
 }
 
+/* Keep later tips inside the bar: grow left toward the center */
+.wsdc-chrome__cluster[data-chrome-nav="points"] .wsdc-chrome__tip-bubble,
+.wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__tip-bubble {
+  left: auto;
+  right: 0;
+  transform-origin: top right;
+}
+
 .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
   opacity: 1;
   visibility: visible;
-  transform: translateY(-50%) scale(1);
+  transform: translateY(0) scale(1);
   transition-duration: var(--wsdc-chrome-enter);
 }
 
@@ -194,7 +204,7 @@
   .wsdc-chrome__tip:hover .wsdc-chrome__tip-bubble {
     opacity: 1;
     visibility: visible;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(0) scale(1);
     transition-duration: var(--wsdc-chrome-enter);
   }
 }
@@ -516,21 +526,28 @@ a.back-link.is-on-hero:focus-visible {
   }
 
   .wsdc-chrome__tip-bubble {
-    left: calc(100% + 8px);
+    top: calc(100% + 8px);
+    left: 0;
     right: auto;
-    top: 50%;
-    transform: translateY(-50%) scale(0.96);
-    transform-origin: left center;
-    max-width: min(240px, calc(100vw - 64px));
+    transform: translateY(-2px) scale(0.96);
+    transform-origin: top left;
+    max-width: min(180px, calc(100vw - 48px));
+  }
+
+  .wsdc-chrome__cluster[data-chrome-nav="points"] .wsdc-chrome__tip-bubble,
+  .wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__tip-bubble {
+    left: auto;
+    right: 0;
+    transform-origin: top right;
   }
 
   .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
-    transform: translateY(-50%) scale(1);
+    transform: translateY(0) scale(1);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .wsdc-chrome__tip:hover .wsdc-chrome__tip-bubble {
-      transform: translateY(-50%) scale(1);
+      transform: translateY(0) scale(1);
     }
   }
 
