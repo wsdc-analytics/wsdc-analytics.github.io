@@ -287,6 +287,10 @@
             font-weight: 600;
             font-size: 17px;
             letter-spacing: -0.01em;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
         }
         .news-id {
             color: var(--text-tertiary);
@@ -305,15 +309,9 @@
             margin-bottom: 2px;
         }
         .news-meta strong { color: var(--text-primary); font-weight: 600; }
-        .news-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 10px;
-        }
         .badge {
             font-size: 11px;
-            font-weight: 650;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.04em;
             padding: 3px 9px;
@@ -606,17 +604,18 @@
                    data-dancer-id="${esc(String(ev.dancer_id || ''))}">
             <div class="news-header" role="button" tabindex="0" aria-expanded="false">
               <div class="news-header-main">
-                <div class="news-name"><span class="dancer-name">${esc(name)}</span> <span class="news-id">(${esc(ev.dancer_id)})</span></div>
+                <div class="news-name">
+                  <span class="dancer-name">${esc(name)}</span>
+                  <span class="news-id">(${esc(ev.dancer_id)})</span>
+                  <span class="badge ${roleClass}">${esc(ev.role)}</span>
+                  <span class="badge ${badgeClass}">${badgeLabel}</span>
+                </div>
                 <p class="news-meta">
                   <span class="meta-label">Threshold event</span>
                   <strong>${esc(ev.threshold_event)}</strong>
                   · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
                   ${loc ? ' · ' + esc(loc) : ''}
                 </p>
-                <div class="news-badges">
-                  <span class="badge ${badgeClass}">${badgeLabel}</span>
-                  <span class="badge ${roleClass}">${esc(ev.role)}</span>
-                </div>
                 <div class="news-totals">
                   <span>⭐ All-Stars: <strong>${esc(ev.als_total)}</strong></span>
                   <span>👑 Champions: <strong>${esc(ev.chmp_total)}</strong></span>
