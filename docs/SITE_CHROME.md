@@ -30,7 +30,7 @@ Mount point:
 
 | Attribute | Values | Notes |
 | --- | --- | --- |
-| `data-active` | `home` \| `dashboards` \| `points` | Highlights nav pill |
+| `data-active` | `home` \| `dashboards` \| `points` \| `champions` | Highlights nav pill |
 | `data-lang` | `ru` \| `en` \| `es` | Initial language pills |
 | `data-fixed` | `true` | Fixed floating bar (homepage **and magazine articles**) |
 | `data-brand` | `logo` (default) \| `text` | WSDC logo links home |
@@ -39,7 +39,7 @@ Mount point:
 | `data-lang-ru/en/es` | URL | Used with `data-lang-mode=navigate` |
 | `data-current-dash` | filename | Marks current Dashboards item |
 
-Includes quiet `i` tips for Dashboards and Summary Points (hover/focus).
+Includes quiet `i` tips for Dashboards, Summary Points, and New Champions (hover/focus).
 
 ### Back to home
 
