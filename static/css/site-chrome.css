@@ -1,6 +1,6 @@
 /**
  * Shared Evolved C site chrome - floating nav across homepage, Points Summary,
- * dashboards, and magazine articles.
+ * New Champions, dashboards, and magazine articles.
  */
 :root {
   --wsdc-chrome-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -472,54 +472,47 @@ a.back-link.is-on-hero:focus-visible {
   /*
    * Mobile chrome layout:
    *  Row 1 — logo (far left) | envelope + language pills (far right)
-   *  Row 2 — Dashboards + Summary Points
+   *  Row 2 — Dashboards + Summary Points + New Champions (symmetric tip+pill clusters)
    */
   .wsdc-chrome {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     column-gap: 4px;
     row-gap: 8px;
-    flex-wrap: nowrap;
   }
 
   .wsdc-chrome__brand {
-    grid-column: 1;
-    grid-row: 1;
+    order: 1;
     justify-self: start;
   }
 
-  .wsdc-chrome__spacer {
-    display: none;
+  .wsdc-chrome__brand + .wsdc-chrome__cluster {
+    margin-left: 0;
   }
 
   .wsdc-chrome__contact {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: end;
+    order: 2;
+    margin-left: auto;
   }
 
   .wsdc-chrome__langs {
-    grid-column: 4;
-    grid-row: 1;
-    justify-self: end;
+    order: 3;
     margin-left: 0;
   }
 
-  /* Dashboards cluster */
-  .wsdc-chrome__brand + .wsdc-chrome__cluster {
-    margin-left: 0;
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: start;
+  /* Flex line break between top row and nav clusters */
+  .wsdc-chrome__spacer {
+    order: 4;
+    flex: 1 0 100%;
+    height: 0;
+    min-width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
-  /* Summary Points cluster — sits next to Dashboards on row 2 */
-  .wsdc-chrome__brand + .wsdc-chrome__cluster + .wsdc-chrome__cluster {
-    grid-column: 2 / 5;
-    grid-row: 2;
-    justify-self: start;
+  .wsdc-chrome__cluster {
+    order: 5;
   }
 
   .wsdc-chrome__tip-bubble {

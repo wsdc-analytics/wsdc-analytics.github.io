@@ -62,10 +62,12 @@ def main() -> None:
     check_exists(
         "index.html",
         "points-summary.html",
+        "champion-news.html",
         "sitemap.xml",
         "robots.txt",
         "static/data/articles.json",
         "static/data/points_summaries.json",
+        "static/data/champion_news.json",
     )
     check_sitemap_links()
     check_index_data_references()

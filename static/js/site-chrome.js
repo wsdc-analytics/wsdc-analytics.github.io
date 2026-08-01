@@ -2,12 +2,12 @@
  * Mount Evolved C site chrome into [data-site-chrome] placeholders.
  *
  * Attributes:
- *   data-active          home | dashboards | points
+ *   data-active          home | dashboards | points | champions
  *   data-lang            ru | en | es
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       brand logo link (default index.html) — return home
- *   data-path-prefix     prefix for dashboard / points-summary hrefs (e.g. "../../" from nested pages)
+ *   data-path-prefix     prefix for dashboard / points-summary / champion-news hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
  *   data-current-dash    filename to mark current dashboard link
@@ -34,6 +34,7 @@
   var LABELS = {
     dashboards: { ru: "Дашборды", en: "Dashboards", es: "Paneles" },
     points: { ru: "Summary Points", en: "Summary Points", es: "Summary Points" },
+    champions: { ru: "New Champions", en: "New Champions", es: "New Champions" },
     contact: { ru: "Контакты", en: "Contacts", es: "Contacto" },
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
     facebook: { ru: "Написать в Facebook", en: "Message on Facebook", es: "Escribir en Facebook" },
@@ -47,6 +48,11 @@
       ru: "Очки, начисленные по ивентам",
       en: "Points awarded by event",
       es: "Puntos otorgados por evento",
+    },
+    championsTip: {
+      ru: "Хронология переходов Allowed и Required Champions",
+      en: "Chronology of Allowed and Required Champions transitions",
+      es: "Cronología de transiciones Allowed y Required Champions",
     },
   };
 
@@ -114,9 +120,11 @@
     var wrapClass = "wsdc-chrome-wrap" + (fixed ? " is-fixed" : "");
     var dashActive = active === "dashboards" ? " is-active" : "";
     var pointsActive = active === "points" ? " is-active" : "";
+    var championsActive = active === "champions" ? " is-active" : "";
     var homeLabel = LABELS.home[lang] || LABELS.home.en;
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
+    var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
 
     var brandHtml;
     if (brandMode === "text") {
@@ -182,7 +190,7 @@
       '">' +
       '<nav class="wsdc-chrome" aria-label="Site">' +
       brandHtml +
-      '<div class="wsdc-chrome__cluster">' +
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="dashboards">' +
       tipHtml(dashTip, 'data-chrome-dash-tip') +
       '<div class="wsdc-chrome__dd" data-chrome-dd>' +
       '<button type="button" class="wsdc-chrome__pill' +
@@ -198,14 +206,28 @@
       "</ul>" +
       "</div>" +
       "</div>" +
-      '<div class="wsdc-chrome__cluster">' +
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="points">' +
       tipHtml(pointsTip, 'data-chrome-points-tip') +
       '<a class="wsdc-chrome__pill' +
       pointsActive +
       '" href="' +
       esc(withPathPrefix(root, "points-summary.html")) +
       '" id="pointsSummaryBtn">' +
+      '<span data-chrome-points-label>' +
       esc(LABELS.points[lang] || LABELS.points.en) +
+      "</span>" +
+      "</a>" +
+      "</div>" +
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="champions">' +
+      tipHtml(championsTip, 'data-chrome-champions-tip') +
+      '<a class="wsdc-chrome__pill' +
+      championsActive +
+      '" href="' +
+      esc(withPathPrefix(root, "champion-news.html")) +
+      '" id="championNewsBtn">' +
+      '<span data-chrome-champions-label>' +
+      esc(LABELS.champions[lang] || LABELS.champions.en) +
+      "</span>" +
       "</a>" +
       "</div>" +
       '<div class="wsdc-chrome__spacer" aria-hidden="true"></div>' +
@@ -254,9 +276,14 @@
     var homeHref = withLangQuery(root.getAttribute("data-home-href") || "index.html", lang);
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
+    var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
 
     var dashLabel = root.querySelector("[data-chrome-dash-label]");
     if (dashLabel) dashLabel.textContent = LABELS.dashboards[lang] || LABELS.dashboards.en;
+    var pointsLabel = root.querySelector("[data-chrome-points-label]");
+    if (pointsLabel) pointsLabel.textContent = LABELS.points[lang] || LABELS.points.en;
+    var championsLabel = root.querySelector("[data-chrome-champions-label]");
+    if (championsLabel) championsLabel.textContent = LABELS.champions[lang] || LABELS.champions.en;
     var contactBtn = root.querySelector("[data-chrome-contact-btn]");
     if (contactBtn) contactBtn.setAttribute("aria-label", LABELS.contact[lang] || LABELS.contact.en);
     var email = root.querySelector("[data-chrome-email]");
@@ -283,6 +310,12 @@
       pointsTipEl.textContent = pointsTip;
       var tipWrap2 = pointsTipEl.closest(".wsdc-chrome__tip");
       if (tipWrap2) tipWrap2.setAttribute("aria-label", pointsTip);
+    }
+    var championsTipEl = root.querySelector("[data-chrome-champions-tip]");
+    if (championsTipEl) {
+      championsTipEl.textContent = championsTip;
+      var tipWrap3 = championsTipEl.closest(".wsdc-chrome__tip");
+      if (tipWrap3) tipWrap3.setAttribute("aria-label", championsTip);
     }
 
     root.querySelectorAll(".lang-btn").forEach(function (btn) {

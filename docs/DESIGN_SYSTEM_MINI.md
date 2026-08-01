@@ -14,7 +14,7 @@ Core tokens:
 Source of truth: `static/css/site-chrome.css` + `static/js/site-chrome.js`  
 Usage notes: `docs/SITE_CHROME.md`
 
-Mount with `<div data-site-chrome …>` — brand · Dashboards · Summary Points · quiet contact · RU/EN/ES.
+Mount with `<div data-site-chrome …>` — brand · Dashboards · Summary Points · New Champions · quiet contact · RU/EN/ES.
 
 ## Component primitives
 Use these shared patterns across pages:
