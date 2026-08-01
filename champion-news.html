@@ -776,7 +776,15 @@
 
       function continentLine(obj) {
         if (!obj || typeof obj !== 'object') return '';
-        return Object.entries(obj)
+        const merged = {};
+        Object.entries(obj).forEach(([k, v]) => {
+          const key = (k === 'South America' || k === 'North America' || k === 'Central America')
+            ? 'America'
+            : k;
+          merged[key] = (merged[key] || 0) + Number(v || 0);
+        });
+        return Object.entries(merged)
+          .filter(([, v]) => Number(v) > 0)
           .sort((a, b) => Number(b[1]) - Number(a[1]) || String(a[0]).localeCompare(String(b[0])))
           .map(([k, v]) => `${esc(k)} ${esc(v)}`)
           .join(' · ');
