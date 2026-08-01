@@ -474,7 +474,7 @@ a.back-link.is-on-hero:focus-visible {
   /*
    * Mobile chrome layout:
    *  Row 1 — logo (far left) | envelope + language pills (far right)
-   *  Row 2 — Dashboards + Summary Points + New Champions (symmetric tip+pill clusters)
+   *  Row 2 — Summary Points + New Champions centered (Dashboards hidden)
    */
   .wsdc-chrome {
     display: flex;
@@ -513,8 +513,22 @@ a.back-link.is-on-hero:focus-visible {
     padding: 0;
   }
 
-  .wsdc-chrome__cluster {
+  .wsdc-chrome__cluster[data-chrome-nav="dashboards"] {
+    display: none;
+  }
+
+  .wsdc-chrome__cluster[data-chrome-nav="points"],
+  .wsdc-chrome__cluster[data-chrome-nav="champions"] {
     order: 5;
+  }
+
+  /* Center the two visible nav clusters as a pair on row 2 */
+  .wsdc-chrome__cluster[data-chrome-nav="points"] {
+    margin-left: auto;
+  }
+
+  .wsdc-chrome__cluster[data-chrome-nav="champions"] {
+    margin-right: auto;
   }
 
   .wsdc-chrome__tip-bubble {
