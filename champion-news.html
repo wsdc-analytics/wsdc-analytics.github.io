@@ -426,6 +426,18 @@
             align-items: center;
             gap: 8px;
         }
+        .dancer-identity {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .news-badges {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
         .news-id {
             color: var(--text-tertiary);
             font-weight: 500;
@@ -443,6 +455,7 @@
             margin-bottom: 2px;
         }
         .news-meta strong { color: var(--text-primary); font-weight: 600; }
+        .news-meta .meta-location::before { content: ' · '; }
         .badge {
             font-size: 11px;
             font-weight: 500;
@@ -535,6 +548,16 @@
             .how-to-read-header { padding: 14px 16px; }
             .how-to-read-body { padding: 0 16px 16px; font-size: 13px; }
             .news-header { padding: 14px 16px; }
+            .news-name {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .news-meta .meta-location {
+                display: block;
+                margin-top: 2px;
+            }
+            .news-meta .meta-location::before { content: none; }
             .news-body { padding: 0 16px 18px; }
             .search-help .info-tooltip {
                 left: auto;
@@ -836,16 +859,20 @@
             <div class="news-header" role="button" tabindex="0" aria-expanded="false">
               <div class="news-header-main">
                 <div class="news-name">
-                  <span class="dancer-name">${esc(name)}</span>
-                  <span class="news-id">(${esc(ev.dancer_id)})</span>
-                  <span class="badge ${roleClass}">${esc(ev.role)}</span>
-                  <span class="badge ${badgeClass}">${badgeLabel}</span>
+                  <span class="dancer-identity">
+                    <span class="dancer-name">${esc(name)}</span>
+                    <span class="news-id">(${esc(ev.dancer_id)})</span>
+                  </span>
+                  <span class="news-badges">
+                    <span class="badge ${roleClass}">${esc(ev.role)}</span>
+                    <span class="badge ${badgeClass}">${badgeLabel}</span>
+                  </span>
                 </div>
                 <p class="news-meta">
                   <span class="meta-label">Threshold event</span>
                   <strong>${esc(ev.threshold_event)}</strong>
                   · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
-                  ${loc ? ' · ' + esc(loc) : ''}
+                  ${loc ? `<span class="meta-location">${esc(loc)}</span>` : ''}
                 </p>
               </div>
               ${chevronSvg}
