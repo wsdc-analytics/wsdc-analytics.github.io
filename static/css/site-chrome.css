@@ -151,7 +151,7 @@
 
 .wsdc-chrome__tip-bubble {
   position: absolute;
-  /* Wide horizontal bubble beside the tip — avoid a tall skinny column */
+  /* Wide horizontal bubble to the right of every tip icon */
   left: calc(100% + 8px);
   right: auto;
   top: 50%;
@@ -178,14 +178,6 @@
     opacity var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
     transform var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
     visibility var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
-}
-
-/* Later tips open left into the bar so a wide bubble stays inside */
-.wsdc-chrome__cluster[data-chrome-nav="points"] .wsdc-chrome__tip-bubble,
-.wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__tip-bubble {
-  left: auto;
-  right: calc(100% + 8px);
-  transform-origin: right center;
 }
 
 .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
@@ -532,13 +524,6 @@ a.back-link.is-on-hero:focus-visible {
     transform: translateY(-50%) scale(0.96);
     transform-origin: left center;
     max-width: min(280px, calc(100vw - 48px));
-  }
-
-  .wsdc-chrome__cluster[data-chrome-nav="points"] .wsdc-chrome__tip-bubble,
-  .wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__tip-bubble {
-    left: auto;
-    right: calc(100% + 8px);
-    transform-origin: right center;
   }
 
   .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
