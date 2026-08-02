@@ -274,8 +274,6 @@ h1 {
 .day.is-empty {
   background: #fff;
   pointer-events: none;
-  /* Only empty padding cells keep a light outline */
-  box-shadow: inset 0 0 0 1px #eceef1;
 }
 
 .day:disabled {
