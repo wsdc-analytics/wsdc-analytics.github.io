@@ -182,7 +182,7 @@ h1 {
 .swatch.expected { background: var(--status-expected); }
 .swatch.cancelled { background: var(--status-cancelled); }
 .swatch.hiatus { background: var(--status-hiatus); }
-.swatch.occupied { background: #1e3a5f; }
+.swatch.occupied { background: #b6c3d4; }
 
 /* —— Year grid: Tableau-style compact 4×3 —— */
 #calendarRoot {
@@ -291,8 +291,8 @@ h1 {
 }
 
 .day.is-occupied {
-  background: #1e3a5f;
-  color: #fff;
+  background: #e4eaf2;
+  color: #334155;
   font-weight: 600;
 }
 
@@ -303,18 +303,18 @@ h1 {
 }
 
 .day.is-occupied.is-selected {
-  background: #152a45;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  background: #cfd9e6;
+  box-shadow: inset 0 0 0 1px #94a3b8;
 }
 
 .day.has-events:active {
   transform: none;
-  filter: brightness(0.92);
+  filter: brightness(0.96);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .day.is-occupied:hover {
-    background: #274866;
+    background: #d5deea;
   }
 }
 
