@@ -202,15 +202,13 @@ h1 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(3, auto);
-  gap: 0;
-  border-top: 1px solid #e8eaed;
-  border-left: 1px solid #e8eaed;
-  background: #fff;
+  gap: 10px 12px;
+  border: none;
+  background: transparent;
 }
 
 .month {
-  border-right: 1px solid #e8eaed;
-  border-bottom: 1px solid #e8eaed;
+  border: none;
   border-radius: 0;
   padding: 4px 6px 6px;
   background: #fff;
@@ -249,14 +247,11 @@ h1 {
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(6, auto);
   gap: 0;
-  border-top: 1px solid #eceef1;
-  border-left: 1px solid #eceef1;
+  border: none;
 }
 
 .day {
   border: none;
-  border-right: 1px solid #eceef1;
-  border-bottom: 1px solid #eceef1;
   background: #fff;
   border-radius: 0;
   font: inherit;
@@ -279,6 +274,8 @@ h1 {
 .day.is-empty {
   background: #fff;
   pointer-events: none;
+  /* Only empty padding cells keep a light outline */
+  box-shadow: inset 0 0 0 1px #eceef1;
 }
 
 .day:disabled {
