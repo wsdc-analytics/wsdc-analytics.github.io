@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta name="description" content="WSDC year event calendar with weekend map drill-down — confirmed, expected, cancelled, and hiatus editions.">
+    <meta name="description" content="WSDC year event calendar with weekend map drill-down: confirmed, expected, cancelled, and hiatus editions.">
     <meta name="keywords" content="WSDC, events calendar, West Coast Swing, registry events, trial events, map">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
@@ -40,393 +40,37 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <style>
-        :root {
-            --color-primary-dark: #0B1221;
-            --color-accent: #2563eb;
-            --bg-secondary: #FFFFFF;
-            --bg-tertiary: #f7fafc;
-            --text-primary: #0B1221;
-            --text-secondary: #4a5568;
-            --text-tertiary: #6B7280;
-            --border-color: #e5e7eb;
-            --status-confirmed: #16a34a;
-            --status-expected: #9ca3af;
-            --status-cancelled: #dc2626;
-            --status-hiatus: #d97706;
-            --radius: 10px;
-            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            height: 100%;
-        }
-        body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.4;
-            -webkit-font-smoothing: antialiased;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100dvh;
-            height: 100vh;
-        }
-        .skip-link {
-            position: absolute; left: -9999px; top: 0;
-            background: #111827; color: #fff; padding: 10px 14px; border-radius: 6px; z-index: 1000;
-        }
-        .skip-link:focus { left: 12px; top: 12px; }
-        [data-site-chrome] {
-            flex: 0 0 auto;
-        }
-        .page-shell {
-            flex: 1 1 auto;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .container {
-            flex: 1;
-            min-height: 0;
-            width: 100%;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 10px 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .page-head {
-            flex: 0 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px 14px;
-        }
-        h1 {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--color-primary-dark);
-            margin: 0;
-            white-space: nowrap;
-        }
-        .subtitle {
-            display: none;
-        }
-        .disclaimer {
-            flex: 1 1 220px;
-            font-size: 11px;
-            color: var(--text-tertiary);
-            line-height: 1.35;
-            margin: 0;
-            min-width: 0;
-        }
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 12px;
-            align-items: center;
-            flex: 0 0 auto;
-        }
-        .toolbar label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
-        .toolbar select {
-            font: inherit;
-            font-size: 13px;
-            padding: 4px 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: #fff;
-            color: var(--text-primary);
-        }
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 10px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        .legend span { display: inline-flex; align-items: center; gap: 4px; }
-        .swatch {
-            width: 8px; height: 8px; border-radius: 50%;
-            display: inline-block;
-        }
-        .swatch.confirmed { background: var(--status-confirmed); }
-        .swatch.expected { background: var(--status-expected); }
-        .swatch.cancelled { background: var(--status-cancelled); }
-        .swatch.hiatus { background: var(--status-hiatus); }
-        .swatch.occupied { background: #64748b; }
-
-        #calendarRoot {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-        }
-        .year-grid {
-            flex: 1;
-            min-height: 0;
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            grid-template-rows: repeat(3, minmax(0, 1fr));
-            gap: 6px;
-            width: 100%;
-        }
-        .month {
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 4px 6px 6px;
-            background: #fff;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .month h2 {
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 2px;
-            color: var(--text-primary);
-            letter-spacing: 0.01em;
-        }
-        .dow {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            margin-bottom: 1px;
-            font-size: 9px;
-            color: var(--text-tertiary);
-            text-align: center;
-            flex: 0 0 auto;
-        }
-        .days {
-            flex: 1;
-            min-height: 0;
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            grid-template-rows: repeat(6, minmax(0, 1fr));
-            gap: 1px;
-        }
-        .day {
-            border: none;
-            background: transparent;
-            border-radius: 4px;
-            font: inherit;
-            font-size: 10px;
-            color: var(--text-secondary);
-            position: relative;
-            cursor: default;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1px;
-            min-height: 0;
-            padding: 0;
-            transition: background 140ms var(--ease-out);
-        }
-        .day.is-other { color: #d1d5db; }
-        .day.has-events {
-            cursor: pointer;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-        .day.has-events:hover,
-        .day.has-events:focus-visible {
-            background: rgba(37, 99, 235, 0.1);
-            outline: none;
-        }
-        .day.is-selected { background: rgba(37, 99, 235, 0.16); }
-        .day-dot {
-            width: 4px; height: 4px; border-radius: 50%;
-            background: #64748b;
-        }
-
-        .panel {
-            position: absolute;
-            inset: 0;
-            z-index: 40;
-            background: rgba(255, 255, 255, 0.98);
-            border: none;
-            border-radius: 0;
-            padding: 12px 16px 16px;
-            display: none;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .panel.is-open { display: block; animation: fadeUp 180ms var(--ease-out); }
-        .panel-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-            gap: 14px;
-            align-items: start;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .panel-head {
-            grid-column: 1 / -1;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 8px;
-            align-items: center;
-        }
-        .panel-head h2 { font-size: 16px; }
-        .panel-close {
-            border: 1px solid var(--border-color);
-            background: #fff;
-            border-radius: 8px;
-            padding: 5px 10px;
-            font: inherit;
-            font-size: 13px;
-            cursor: pointer;
-        }
-        .panel-map-col { min-width: 0; }
-        #weekendMap {
-            height: min(42vh, 340px);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 8px;
-        }
-        .no-geo {
-            font-size: 12px;
-            color: var(--text-tertiary);
-            margin-bottom: 8px;
-        }
-        .event-list {
-            display: grid;
-            gap: 8px;
-            max-height: min(70vh, 520px);
-            overflow: auto;
-        }
-        .event-card {
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 12px;
-            text-align: left;
-            background: var(--bg-tertiary);
-            cursor: pointer;
-            transition: box-shadow 140ms var(--ease-out);
-        }
-        .event-card:hover {
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-        }
-        .event-card.is-active {
-            border-color: var(--color-accent);
-            background: #fff;
-        }
-        .event-card h3 { font-size: 14px; margin-bottom: 2px; }
-        .event-meta { font-size: 12px; color: var(--text-secondary); }
-        .badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-        .badge {
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 7px;
-            border-radius: 999px;
-            background: #e5e7eb;
-            color: #374151;
-        }
-        .badge.confirmed { background: rgba(22, 163, 74, 0.12); color: #15803d; }
-        .badge.expected { background: rgba(156, 163, 175, 0.25); color: #4b5563; }
-        .badge.cancelled { background: rgba(220, 38, 38, 0.12); color: #b91c1c; }
-        .badge.hiatus { background: rgba(217, 119, 6, 0.15); color: #b45309; }
-        .badge.trial { background: rgba(37, 99, 235, 0.1); color: #1d4ed8; }
-        .detail {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border-color);
-            display: none;
-        }
-        .detail.is-open { display: block; }
-        .detail a { color: var(--color-accent); }
-        .empty-year {
-            padding: 24px;
-            text-align: center;
-            color: var(--text-tertiary);
-            border: 1px dashed var(--border-color);
-            border-radius: var(--radius);
-            width: 100%;
-            align-self: center;
-        }
-        .tooltip {
-            position: fixed;
-            z-index: 60;
-            max-width: 280px;
-            background: #0B1221;
-            color: #fff;
-            font-size: 12px;
-            line-height: 1.4;
-            padding: 8px 10px;
-            border-radius: 8px;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(4px);
-            transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out);
-        }
-        .tooltip.is-visible { opacity: 1; transform: translateY(0); }
-        .status-line { margin-top: 4px; font-size: 11px; opacity: 0.85; }
-        .error {
-            padding: 16px;
-            border-radius: 10px;
-            background: #fef2f2;
-            color: #991b1b;
-            margin-top: 16px;
-        }
-
-        @media (max-width: 960px) {
-            .year-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                grid-template-rows: repeat(4, minmax(0, 1fr));
-            }
-            .panel-inner {
-                grid-template-columns: 1fr;
-            }
-            #weekendMap { height: 28vh; }
-            .event-list { max-height: none; }
-        }
-        @media (max-width: 700px) {
-            body {
-                overflow: auto;
-                height: auto;
-                min-height: 100dvh;
-                display: block;
-            }
-            .page-shell {
-                min-height: calc(100dvh - 72px);
-            }
-            .container { min-height: 0; }
-            .year-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                grid-template-rows: none;
-                height: auto;
-            }
-            .month { min-height: 150px; }
-            .day { min-height: 22px; font-size: 11px; }
-            .panel { position: fixed; inset: 0; }
-        }
-        @media (max-width: 420px) {
-            .year-grid { grid-template-columns: 1fr; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .panel.is-open, .day, .event-card, .tooltip { animation: none; transition: none; }
-        }
-    </style>
+    <link rel="stylesheet" href="static/css/events-calendar.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <div data-site-chrome data-active="calendar" data-lang="en" data-current-dash="events-calendar.html"></div>
     <div class="page-shell">
     <main id="main" class="container">
-        <div class="page-head">
-            <h1 data-i18n="title">Events Calendar</h1>
-            <div class="toolbar">
-                <label for="yearSelect" data-i18n="year">Year</label>
-                <select id="yearSelect" aria-label="Year"></select>
+        <header class="page-head">
+            <div class="head-top">
+                <h1 data-i18n="title">Events Calendar</h1>
+            </div>
+            <p class="how-to" data-i18n="howTo">Dots mark Thu-Sun weekends with events. Click a marked Thursday to open the map and cards.</p>
+            <p class="disclaimer" id="disclaimer"></p>
+            <div class="filters" role="toolbar" aria-label="Filters">
+                <div class="filter-field">
+                    <label for="yearSelect" data-i18n="year">Year</label>
+                    <select id="yearSelect" aria-label="Year"></select>
+                </div>
+                <div class="filter-field">
+                    <label for="regionFilter" data-i18n="region">Region</label>
+                    <select id="regionFilter" disabled aria-disabled="true" title="Coming soon">
+                        <option data-i18n="allRegions">All regions</option>
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label for="statusFilter" data-i18n="status">Status</label>
+                    <select id="statusFilter" disabled aria-disabled="true" title="Coming soon">
+                        <option data-i18n="allStatuses">All statuses</option>
+                    </select>
+                </div>
+                <span class="filter-soon" data-i18n="filtersSoon">More filters soon</span>
                 <div class="legend" aria-hidden="true">
                     <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied</span></span>
                     <span><i class="swatch confirmed"></i> <span data-i18n="legConfirmed">Confirmed</span></span>
@@ -435,9 +79,7 @@
                     <span><i class="swatch hiatus"></i> <span data-i18n="legHiatus">Hiatus</span></span>
                 </div>
             </div>
-            <p class="disclaimer" id="disclaimer"></p>
-        </div>
-        <p class="subtitle" data-i18n="subtitle" hidden>Year view of WSDC events — click a Thursday marker to open that Thu–Sun weekend on the map.</p>
+        </header>
         <div id="calendarRoot"></div>
         <section class="panel" id="weekendPanel" aria-live="polite">
             <div class="panel-inner">
@@ -467,8 +109,13 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      subtitle: "Year view of WSDC events — click a Thursday marker to open that Thu–Sun weekend on the map.",
+      howTo: "Dots mark Thu-Sun weekends with events. Click a marked Thursday to open the map and cards.",
       year: "Year",
+      region: "Region",
+      status: "Status",
+      allRegions: "All regions",
+      allStatuses: "All statuses",
+      filtersSoon: "More filters soon",
       close: "Close",
       legOccupied: "Occupied weekend",
       legConfirmed: "Confirmed",
@@ -477,7 +124,7 @@
       legHiatus: "Hiatus",
       empty: "No day-precision events for this year yet.",
       weekend: "Weekend",
-      noGeo: "Some events have no coordinates — listed below only.",
+      noGeo: "Some events have no coordinates - listed below only.",
       website: "Event website",
       starts: "Starts",
       ends: "Ends",
@@ -490,8 +137,13 @@
     },
     ru: {
       title: "Календарь ивентов",
-      subtitle: "Год WSDC-ивентов — клик по дню открывает карту выходных (чт–вс).",
+      howTo: "Точки - выходные чт-вс с ивентами. Клик по отмеченному четвергу открывает карту и карточки.",
       year: "Год",
+      region: "Регион",
+      status: "Статус",
+      allRegions: "Все регионы",
+      allStatuses: "Все статусы",
+      filtersSoon: "Скоро больше фильтров",
       close: "Закрыть",
       legOccupied: "Занятые выходные",
       legConfirmed: "Подтверждён",
@@ -500,7 +152,7 @@
       legHiatus: "Hiatus",
       empty: "Для этого года пока нет дат с точностью до дня.",
       weekend: "Выходные",
-      noGeo: "У части ивентов нет координат — только список.",
+      noGeo: "У части ивентов нет координат - только список.",
       website: "Сайт ивента",
       starts: "Старт",
       ends: "Конец",
@@ -513,8 +165,13 @@
     },
     es: {
       title: "Calendario de eventos",
-      subtitle: "Vista anual de eventos WSDC — haz clic en un día para el mapa del fin de semana (jue–dom).",
+      howTo: "Los puntos marcan fines de semana (jue-dom). Haz clic en un jueves marcado para el mapa y las fichas.",
       year: "Año",
+      region: "Región",
+      status: "Estado",
+      allRegions: "Todas las regiones",
+      allStatuses: "Todos los estados",
+      filtersSoon: "Más filtros pronto",
       close: "Cerrar",
       legOccupied: "Fin de semana ocupado",
       legConfirmed: "Confirmado",
@@ -523,7 +180,7 @@
       legHiatus: "Hiatus",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       weekend: "Fin de semana",
-      noGeo: "Algunos eventos no tienen coordenadas — solo en la lista.",
+      noGeo: "Algunos eventos no tienen coordenadas - solo en la lista.",
       website: "Sitio del evento",
       starts: "Inicio",
       ends: "Fin",
@@ -568,8 +225,8 @@
     var wd = d.getDay(); // Sun=0
     var offset;
     if (wd === 0) offset = 3; // Sun → previous Thu
-    else if (wd >= 4) offset = wd - 4; // Thu–Sat
-    else offset = wd + 3; // Mon–Wed → previous Thu
+    else if (wd >= 4) offset = wd - 4; // Thu-Sat
+    else offset = wd + 3; // Mon-Wed → previous Thu
     var thu = new Date(d);
     thu.setDate(d.getDate() - offset);
     var sun = new Date(thu);
@@ -671,7 +328,7 @@
     tip.innerHTML = list.slice(0, 8).map(function (e) {
       var where = [e.city, e.country].filter(Boolean).join(", ");
       return "<div><strong>" + esc(e.name) + "</strong>" +
-        (where ? " — " + esc(where) : "") +
+        (where ? " - " + esc(where) : "") +
         '<div class="status-line">' + esc(e.start_date) + " · " + esc(e.status) + " · " + esc(e.kind) + "</div></div>";
     }).join("");
     if (list.length > 8) tip.innerHTML += "<div>… +" + (list.length - 8) + "</div>";
