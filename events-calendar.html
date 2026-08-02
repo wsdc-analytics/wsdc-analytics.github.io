@@ -359,10 +359,10 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      subtitle: "Year view of WSDC events — click a day to open that Thu–Sun weekend on the map.",
+      subtitle: "Year view of WSDC events — click a Thursday marker to open that Thu–Sun weekend on the map.",
       year: "Year",
       close: "Close",
-      legOccupied: "Occupied",
+      legOccupied: "Occupied weekend",
       legConfirmed: "Confirmed",
       legExpected: "Expected",
       legCancelled: "Cancelled",
@@ -385,7 +385,7 @@
       subtitle: "Год WSDC-ивентов — клик по дню открывает карту выходных (чт–вс).",
       year: "Год",
       close: "Закрыть",
-      legOccupied: "Занято",
+      legOccupied: "Занятые выходные",
       legConfirmed: "Подтверждён",
       legExpected: "Ожидается",
       legCancelled: "Отменён",
@@ -408,7 +408,7 @@
       subtitle: "Vista anual de eventos WSDC — haz clic en un día para el mapa del fin de semana (jue–dom).",
       year: "Año",
       close: "Cerrar",
-      legOccupied: "Ocupado",
+      legOccupied: "Fin de semana ocupado",
       legConfirmed: "Confirmado",
       legExpected: "Previsto",
       legCancelled: "Cancelado",
@@ -432,8 +432,8 @@
     lang: "en",
     data: null,
     year: null,
-    byDate: {},
-    selectedDate: null,
+    byWeekend: {},
+    selectedWeekend: null,
     map: null,
     markers: null
   };
@@ -476,10 +476,10 @@
     return (state.data.events || []).filter(function (e) { return e.year === year; });
   }
 
-  function indexByStartDate(events) {
+  function indexByWeekend(events) {
     var map = {};
     events.forEach(function (e) {
-      var k = e.start_date;
+      var k = e.weekend_key || weekendBounds(e.start_date).key;
       if (!map[k]) map[k] = [];
       map[k].push(e);
     });
@@ -501,7 +501,7 @@
   function renderCalendar() {
     var root = document.getElementById("calendarRoot");
     var events = eventsForYear(state.year);
-    state.byDate = indexByStartDate(events);
+    state.byWeekend = indexByWeekend(events);
     if (!events.length) {
       root.innerHTML = '<div class="empty-year">' + t("empty") + "</div>";
       return;
@@ -522,10 +522,13 @@
       }
       for (var day = 1; day <= daysInMonth; day++) {
         var iso = state.year + "-" + String(m + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
-        var list = state.byDate[iso] || [];
+        var wb = weekendBounds(iso);
+        // Marker only on Thursday = weekend anchor (less calendar noise)
+        var isAnchor = iso === wb.key;
+        var list = isAnchor ? (state.byWeekend[wb.key] || []) : [];
         var has = list.length > 0;
-        var selected = state.selectedDate === iso ? " is-selected" : "";
-        html += '<button type="button" class="day' + (has ? " has-events" : "") + selected + '" data-date="' + iso + '"' +
+        var selected = state.selectedWeekend === wb.key && isAnchor ? " is-selected" : "";
+        html += '<button type="button" class="day' + (has ? " has-events" : "") + selected + '" data-date="' + iso + '" data-weekend="' + wb.key + '"' +
           (has ? "" : " disabled") + ' aria-label="' + iso + (has ? ", " + list.length + " events" : "") + '">';
         html += "<span>" + day + "</span>";
         if (has) html += '<span class="day-dot" aria-hidden="true"></span>';
@@ -537,31 +540,31 @@
     root.innerHTML = html;
     root.querySelectorAll(".day.has-events").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        openWeekend(btn.getAttribute("data-date"));
+        openWeekend(btn.getAttribute("data-weekend") || btn.getAttribute("data-date"));
       });
       btn.addEventListener("mouseenter", function (ev) {
-        showTooltip(ev, btn.getAttribute("data-date"));
+        showTooltip(ev, btn.getAttribute("data-weekend"));
       });
       btn.addEventListener("mousemove", function (ev) {
         moveTooltip(ev);
       });
       btn.addEventListener("mouseleave", hideTooltip);
       btn.addEventListener("focus", function (ev) {
-        showTooltip(ev, btn.getAttribute("data-date"));
+        showTooltip(ev, btn.getAttribute("data-weekend"));
       });
       btn.addEventListener("blur", hideTooltip);
     });
   }
 
-  function showTooltip(ev, iso) {
+  function showTooltip(ev, weekendKey) {
     var tip = document.getElementById("tooltip");
-    var list = state.byDate[iso] || [];
+    var list = state.byWeekend[weekendKey] || [];
     if (!list.length) return;
     tip.innerHTML = list.slice(0, 8).map(function (e) {
       var where = [e.city, e.country].filter(Boolean).join(", ");
       return "<div><strong>" + esc(e.name) + "</strong>" +
         (where ? " — " + esc(where) : "") +
-        '<div class="status-line">' + esc(e.status) + " · " + esc(e.kind) + "</div></div>";
+        '<div class="status-line">' + esc(e.start_date) + " · " + esc(e.status) + " · " + esc(e.kind) + "</div></div>";
     }).join("");
     if (list.length > 8) tip.innerHTML += "<div>… +" + (list.length - 8) + "</div>";
     tip.classList.add("is-visible");
@@ -613,12 +616,14 @@
     return "#64748b";
   }
 
-  function openWeekend(iso) {
+  function openWeekend(isoOrKey) {
     hideTooltip();
-    state.selectedDate = iso;
+    var wb = weekendBounds(isoOrKey);
+    // Accept either a day inside the weekend or the Thursday key
+    var key = wb.key;
+    state.selectedWeekend = key;
     renderCalendar();
-    var wb = weekendBounds(iso);
-    var events = eventsForWeekend(iso);
+    var events = state.byWeekend[key] || eventsForWeekend(isoOrKey);
     var panel = document.getElementById("weekendPanel");
     panel.classList.add("is-open");
     document.getElementById("weekendTitle").textContent =
@@ -710,16 +715,16 @@
 
   function setYear(y) {
     state.year = y;
-    state.selectedDate = null;
+    state.selectedWeekend = null;
     document.getElementById("weekendPanel").classList.remove("is-open");
     renderCalendar();
   }
 
   function boot(data) {
     state.data = data;
-    state.year = data.default_year || (data.years && data.years[2]) || new Date().getFullYear();
+    state.year = data.default_year || (data.years && data.years[0]) || new Date().getFullYear();
     if ((data.years || []).indexOf(state.year) === -1 && data.years && data.years.length) {
-      state.year = data.years[Math.min(2, data.years.length - 1)];
+      state.year = data.years[0];
     }
     applyStaticI18n();
     renderYearSelect();
@@ -731,7 +736,7 @@
   });
   document.getElementById("closePanel").addEventListener("click", function () {
     document.getElementById("weekendPanel").classList.remove("is-open");
-    state.selectedDate = null;
+    state.selectedWeekend = null;
     renderCalendar();
   });
 
@@ -740,14 +745,14 @@
     state.lang = lang;
     applyStaticI18n();
     renderCalendar();
-    if (state.selectedDate) openWeekend(state.selectedDate);
+    if (state.selectedWeekend) openWeekend(state.selectedWeekend);
   };
   document.addEventListener("wsdc:langchange", function (ev) {
     if (ev.detail && ev.detail.lang) {
       state.lang = ev.detail.lang;
       applyStaticI18n();
       renderCalendar();
-      if (state.selectedDate) openWeekend(state.selectedDate);
+      if (state.selectedWeekend) openWeekend(state.selectedWeekend);
     }
   });
 
