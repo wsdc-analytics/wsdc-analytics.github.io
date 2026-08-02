@@ -191,7 +191,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow: auto;
+  overflow: hidden;
   padding-top: 2px;
 }
 
@@ -202,7 +202,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(3, auto);
-  gap: 10px 12px;
+  gap: 6px 8px;
   border: none;
   background: transparent;
 }
