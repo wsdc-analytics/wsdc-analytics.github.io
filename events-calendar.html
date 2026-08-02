@@ -51,7 +51,7 @@
             <div class="head-top">
                 <h1 data-i18n="title">Events Calendar</h1>
             </div>
-            <p class="how-to" data-i18n="howTo">Dots mark Thu-Sun weekends with events. Click a marked Thursday to open the map and cards.</p>
+            <p class="how-to" data-i18n="howTo">Blue blocks mark Thu-Sun weekends with events. Click a highlighted day to open the map and cards.</p>
             <p class="disclaimer" id="disclaimer"></p>
             <div class="filters" role="toolbar" aria-label="Filters">
                 <div class="filter-field">
@@ -109,7 +109,7 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      howTo: "Dots mark Thu-Sun weekends with events. Click a marked Thursday to open the map and cards.",
+      howTo: "Blue blocks mark Thu-Sun weekends with events. Click a highlighted day to open the map and cards.",
       year: "Year",
       region: "Region",
       status: "Status",
@@ -137,7 +137,7 @@
     },
     ru: {
       title: "Календарь ивентов",
-      howTo: "Точки - выходные чт-вс с ивентами. Клик по отмеченному четвергу открывает карту и карточки.",
+      howTo: "Синие блоки - выходные чт-вс с ивентами. Клик по выделенному дню открывает карту и карточки.",
       year: "Год",
       region: "Регион",
       status: "Статус",
@@ -165,7 +165,7 @@
     },
     es: {
       title: "Calendario de eventos",
-      howTo: "Los puntos marcan fines de semana (jue-dom). Haz clic en un jueves marcado para el mapa y las fichas.",
+      howTo: "Los bloques azules marcan fines de semana (jue-dom). Haz clic en un dia marcado para el mapa y las fichas.",
       year: "Año",
       region: "Región",
       status: "Estado",
@@ -263,6 +263,11 @@
     });
   }
 
+  function isWeekendDay(iso) {
+    var wd = new Date(iso + "T12:00:00").getDay();
+    return wd === 0 || wd >= 4; // Thu-Sun
+  }
+
   function renderCalendar() {
     var root = document.getElementById("calendarRoot");
     var events = eventsForYear(state.year);
@@ -276,27 +281,45 @@
     var html = '<div class="year-grid">';
     for (var m = 0; m < 12; m++) {
       html += '<section class="month"><h2>' + months[m] + "</h2>";
-      html += '<div class="dow">' + dow.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div>";
+      html += '<div class="dow" aria-hidden="true">' + dow.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div>";
       html += '<div class="days">';
       var first = new Date(state.year, m, 1);
       var startPad = (first.getDay() + 6) % 7; // Mon-first
       var daysInMonth = new Date(state.year, m + 1, 0).getDate();
+      var cells = [];
       var i;
       for (i = 0; i < startPad; i++) {
-        html += '<div class="day is-other" aria-hidden="true"></div>';
+        cells.push({ empty: true });
       }
       for (var day = 1; day <= daysInMonth; day++) {
         var iso = state.year + "-" + String(m + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
         var wb = weekendBounds(iso);
-        // Marker only on Thursday = weekend anchor (less calendar noise)
-        var isAnchor = iso === wb.key;
-        var list = isAnchor ? (state.byWeekend[wb.key] || []) : [];
-        var has = list.length > 0;
-        var selected = state.selectedWeekend === wb.key && isAnchor ? " is-selected" : "";
-        html += '<button type="button" class="day' + (has ? " has-events" : "") + selected + '" data-date="' + iso + '" data-weekend="' + wb.key + '"' +
-          (has ? "" : " disabled") + ' aria-label="' + iso + (has ? ", " + list.length + " events" : "") + '">';
-        html += "<span>" + day + "</span>";
-        if (has) html += '<span class="day-dot" aria-hidden="true"></span>';
+        var list = state.byWeekend[wb.key] || [];
+        var occupied = isWeekendDay(iso) && list.length > 0;
+        cells.push({
+          empty: false,
+          day: day,
+          iso: iso,
+          weekend: wb.key,
+          occupied: occupied,
+          count: list.length,
+          selected: occupied && state.selectedWeekend === wb.key
+        });
+      }
+      while (cells.length < 42) {
+        cells.push({ empty: true });
+      }
+      for (i = 0; i < cells.length; i++) {
+        var c = cells[i];
+        if (c.empty) {
+          html += '<div class="day is-empty" aria-hidden="true"></div>';
+          continue;
+        }
+        var cls = "day" + (c.occupied ? " has-events is-occupied" : "") + (c.selected ? " is-selected" : "");
+        html += '<button type="button" class="' + cls + '" data-date="' + c.iso + '" data-weekend="' + c.weekend + '"' +
+          (c.occupied ? "" : " disabled") +
+          ' aria-label="' + c.iso + (c.occupied ? ", " + c.count + " events" : "") + '">';
+        html += "<span>" + c.day + "</span>";
         html += "</button>";
       }
       html += "</div></section>";
