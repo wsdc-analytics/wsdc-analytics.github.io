@@ -54,71 +54,104 @@
             --status-expected: #9ca3af;
             --status-cancelled: #dc2626;
             --status-hiatus: #d97706;
-            --radius: 14px;
+            --radius: 10px;
             --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+        }
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            line-height: 1.55;
+            line-height: 1.4;
             -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            height: 100vh;
         }
         .skip-link {
             position: absolute; left: -9999px; top: 0;
             background: #111827; color: #fff; padding: 10px 14px; border-radius: 6px; z-index: 1000;
         }
         .skip-link:focus { left: 12px; top: 12px; }
+        [data-site-chrome] {
+            flex: 0 0 auto;
+        }
+        .page-shell {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
         .container {
-            max-width: 1100px;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 48px 24px 80px;
+            padding: 10px 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .page-head {
+            flex: 0 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 14px;
         }
         h1 {
-            font-size: 30px;
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: -0.02em;
-            margin-bottom: 8px;
             color: var(--color-primary-dark);
+            margin: 0;
+            white-space: nowrap;
         }
-        .subtitle { color: var(--text-secondary); font-size: 16px; margin-bottom: 12px; }
+        .subtitle {
+            display: none;
+        }
         .disclaimer {
-            font-size: 13px;
+            flex: 1 1 220px;
+            font-size: 11px;
             color: var(--text-tertiary);
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 20px;
+            line-height: 1.35;
+            margin: 0;
+            min-width: 0;
         }
         .toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px 12px;
             align-items: center;
-            margin-bottom: 20px;
+            flex: 0 0 auto;
         }
-        .toolbar label { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+        .toolbar label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
         .toolbar select {
             font: inherit;
-            font-size: 14px;
-            padding: 8px 12px;
+            font-size: 13px;
+            padding: 4px 8px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 6px;
             background: #fff;
             color: var(--text-primary);
         }
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
-            font-size: 12px;
+            gap: 8px 10px;
+            font-size: 11px;
             color: var(--text-secondary);
         }
-        .legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .legend span { display: inline-flex; align-items: center; gap: 4px; }
         .swatch {
-            width: 10px; height: 10px; border-radius: 50%;
+            width: 8px; height: 8px; border-radius: 50%;
             display: inline-block;
         }
         .swatch.confirmed { background: var(--status-confirmed); }
@@ -127,51 +160,60 @@
         .swatch.hiatus { background: var(--status-hiatus); }
         .swatch.occupied { background: #64748b; }
 
+        #calendarRoot {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+        }
         .year-grid {
+            flex: 1;
+            min-height: 0;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-        @media (max-width: 900px) {
-            .year-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 560px) {
-            .year-grid { grid-template-columns: 1fr; }
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            width: 100%;
         }
         .month {
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 12px;
+            padding: 4px 6px 6px;
             background: #fff;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
         }
         .month h2 {
-            font-size: 14px;
+            font-size: 11px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
             color: var(--text-primary);
+            letter-spacing: 0.01em;
         }
         .dow {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-bottom: 4px;
-            font-size: 10px;
+            gap: 1px;
+            margin-bottom: 1px;
+            font-size: 9px;
             color: var(--text-tertiary);
             text-align: center;
+            flex: 0 0 auto;
         }
         .days {
+            flex: 1;
+            min-height: 0;
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
+            grid-template-rows: repeat(6, minmax(0, 1fr));
+            gap: 1px;
         }
         .day {
-            aspect-ratio: 1;
-            min-height: 34px;
             border: none;
             background: transparent;
-            border-radius: 8px;
+            border-radius: 4px;
             font: inherit;
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-secondary);
             position: relative;
             cursor: default;
@@ -179,8 +221,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
-            transition: background 160ms var(--ease-out);
+            gap: 1px;
+            min-height: 0;
+            padding: 0;
+            transition: background 140ms var(--ease-out);
         }
         .day.is-other { color: #d1d5db; }
         .day.has-events {
@@ -190,85 +234,99 @@
         }
         .day.has-events:hover,
         .day.has-events:focus-visible {
-            background: rgba(37, 99, 235, 0.08);
+            background: rgba(37, 99, 235, 0.1);
             outline: none;
         }
-        .day.is-selected { background: rgba(37, 99, 235, 0.14); }
+        .day.is-selected { background: rgba(37, 99, 235, 0.16); }
         .day-dot {
-            width: 6px; height: 6px; border-radius: 50%;
+            width: 4px; height: 4px; border-radius: 50%;
             background: #64748b;
         }
 
         .panel {
-            margin-top: 28px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 16px;
-            background: #fff;
+            position: absolute;
+            inset: 0;
+            z-index: 40;
+            background: rgba(255, 255, 255, 0.98);
+            border: none;
+            border-radius: 0;
+            padding: 12px 16px 16px;
             display: none;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .panel.is-open { display: block; animation: fadeUp 220ms var(--ease-out); }
+        .panel.is-open { display: block; animation: fadeUp 180ms var(--ease-out); }
+        .panel-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 14px;
+            align-items: start;
+        }
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .panel-head {
+            grid-column: 1 / -1;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
-            margin-bottom: 12px;
         }
-        .panel-head h2 { font-size: 18px; }
+        .panel-head h2 { font-size: 16px; }
         .panel-close {
             border: 1px solid var(--border-color);
             background: #fff;
             border-radius: 8px;
-            padding: 6px 10px;
+            padding: 5px 10px;
             font: inherit;
             font-size: 13px;
             cursor: pointer;
         }
+        .panel-map-col { min-width: 0; }
         #weekendMap {
-            height: 360px;
-            border-radius: 12px;
+            height: min(42vh, 340px);
+            border-radius: 10px;
             border: 1px solid var(--border-color);
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
         .no-geo {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-tertiary);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .event-list {
             display: grid;
-            gap: 10px;
+            gap: 8px;
+            max-height: min(70vh, 520px);
+            overflow: auto;
         }
         .event-card {
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 14px;
+            border-radius: 10px;
+            padding: 10px 12px;
             text-align: left;
             background: var(--bg-tertiary);
             cursor: pointer;
-            transition: box-shadow 160ms var(--ease-out), transform 160ms var(--ease-out);
+            transition: box-shadow 140ms var(--ease-out);
         }
         .event-card:hover {
-            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
         }
         .event-card.is-active {
             border-color: var(--color-accent);
             background: #fff;
         }
-        .event-card h3 { font-size: 15px; margin-bottom: 4px; }
-        .event-meta { font-size: 13px; color: var(--text-secondary); }
-        .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .event-card h3 { font-size: 14px; margin-bottom: 2px; }
+        .event-meta { font-size: 12px; color: var(--text-secondary); }
+        .badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
         .badge {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
-            padding: 2px 8px;
+            padding: 2px 7px;
             border-radius: 999px;
             background: #e5e7eb;
             color: #374151;
@@ -279,8 +337,8 @@
         .badge.hiatus { background: rgba(217, 119, 6, 0.15); color: #b45309; }
         .badge.trial { background: rgba(37, 99, 235, 0.1); color: #1d4ed8; }
         .detail {
-            margin-top: 14px;
-            padding-top: 14px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px solid var(--border-color);
             display: none;
         }
@@ -292,10 +350,12 @@
             color: var(--text-tertiary);
             border: 1px dashed var(--border-color);
             border-radius: var(--radius);
+            width: 100%;
+            align-self: center;
         }
         .tooltip {
             position: fixed;
-            z-index: 50;
+            z-index: 60;
             max-width: 280px;
             background: #0B1221;
             color: #fff;
@@ -317,38 +377,86 @@
             color: #991b1b;
             margin-top: 16px;
         }
+
+        @media (max-width: 960px) {
+            .year-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-rows: repeat(4, minmax(0, 1fr));
+            }
+            .panel-inner {
+                grid-template-columns: 1fr;
+            }
+            #weekendMap { height: 28vh; }
+            .event-list { max-height: none; }
+        }
+        @media (max-width: 700px) {
+            body {
+                overflow: auto;
+                height: auto;
+                min-height: 100dvh;
+                display: block;
+            }
+            .page-shell {
+                min-height: calc(100dvh - 72px);
+            }
+            .container { min-height: 0; }
+            .year-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-rows: none;
+                height: auto;
+            }
+            .month { min-height: 150px; }
+            .day { min-height: 22px; font-size: 11px; }
+            .panel { position: fixed; inset: 0; }
+        }
+        @media (max-width: 420px) {
+            .year-grid { grid-template-columns: 1fr; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .panel.is-open, .day, .event-card, .tooltip { animation: none; transition: none; }
+        }
     </style>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <div data-site-chrome data-active="calendar" data-lang="en" data-current-dash="events-calendar.html"></div>
+    <div class="page-shell">
     <main id="main" class="container">
-        <h1 data-i18n="title">Events Calendar</h1>
-        <p class="subtitle" data-i18n="subtitle">Year view of WSDC events — click a day to open that Thu–Sun weekend on the map.</p>
-        <p class="disclaimer" id="disclaimer"></p>
-        <div class="toolbar">
-            <label for="yearSelect" data-i18n="year">Year</label>
-            <select id="yearSelect" aria-label="Year"></select>
-            <div class="legend" aria-hidden="true">
-                <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied</span></span>
-                <span><i class="swatch confirmed"></i> <span data-i18n="legConfirmed">Confirmed</span></span>
-                <span><i class="swatch expected"></i> <span data-i18n="legExpected">Expected</span></span>
-                <span><i class="swatch cancelled"></i> <span data-i18n="legCancelled">Cancelled</span></span>
-                <span><i class="swatch hiatus"></i> <span data-i18n="legHiatus">Hiatus</span></span>
+        <div class="page-head">
+            <h1 data-i18n="title">Events Calendar</h1>
+            <div class="toolbar">
+                <label for="yearSelect" data-i18n="year">Year</label>
+                <select id="yearSelect" aria-label="Year"></select>
+                <div class="legend" aria-hidden="true">
+                    <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied</span></span>
+                    <span><i class="swatch confirmed"></i> <span data-i18n="legConfirmed">Confirmed</span></span>
+                    <span><i class="swatch expected"></i> <span data-i18n="legExpected">Expected</span></span>
+                    <span><i class="swatch cancelled"></i> <span data-i18n="legCancelled">Cancelled</span></span>
+                    <span><i class="swatch hiatus"></i> <span data-i18n="legHiatus">Hiatus</span></span>
+                </div>
             </div>
+            <p class="disclaimer" id="disclaimer"></p>
         </div>
+        <p class="subtitle" data-i18n="subtitle" hidden>Year view of WSDC events — click a Thursday marker to open that Thu–Sun weekend on the map.</p>
         <div id="calendarRoot"></div>
         <section class="panel" id="weekendPanel" aria-live="polite">
+            <div class="panel-inner">
             <div class="panel-head">
                 <h2 id="weekendTitle"></h2>
                 <button type="button" class="panel-close" id="closePanel" data-i18n="close">Close</button>
             </div>
+            <div class="panel-map-col">
             <div id="noGeoNote" class="no-geo" hidden></div>
             <div id="weekendMap" role="img" aria-label="Weekend events map"></div>
+            </div>
+            <div class="panel-list-col">
             <div class="event-list" id="eventList"></div>
             <div class="detail" id="eventDetail"></div>
+            </div>
+            </div>
         </section>
     </main>
+    </div>
     <div class="tooltip" id="tooltip" role="tooltip"></div>
     <script src="static/js/site-chrome.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -626,6 +734,7 @@
     var events = state.byWeekend[key] || eventsForWeekend(isoOrKey);
     var panel = document.getElementById("weekendPanel");
     panel.classList.add("is-open");
+    document.body.classList.add("panel-open");
     document.getElementById("weekendTitle").textContent =
       t("weekend") + " " + wb.start + " → " + wb.end;
 
@@ -681,7 +790,6 @@
     });
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
-    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   function selectEvent(id) {
@@ -717,6 +825,7 @@
     state.year = y;
     state.selectedWeekend = null;
     document.getElementById("weekendPanel").classList.remove("is-open");
+    document.body.classList.remove("panel-open");
     renderCalendar();
   }
 
@@ -736,6 +845,7 @@
   });
   document.getElementById("closePanel").addEventListener("click", function () {
     document.getElementById("weekendPanel").classList.remove("is-open");
+    document.body.classList.remove("panel-open");
     state.selectedWeekend = null;
     renderCalendar();
   });
