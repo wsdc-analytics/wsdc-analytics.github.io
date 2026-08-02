@@ -130,6 +130,54 @@ def validate_champion_news() -> None:
     print("[OK] champion_news.json")
 
 
+def validate_events_year_calendar() -> None:
+    path = DATA_DIR / "events_year_calendar.json"
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("events_year_calendar.json must be an object")
+    for field in ("as_of", "years", "default_year", "events", "disclaimer"):
+        if field not in data:
+            fail(f"events_year_calendar.json missing field: {field}")
+    if not isinstance(data["years"], list) or not data["years"]:
+        fail("events_year_calendar.json.years must be a non-empty list")
+    if not isinstance(data["events"], list):
+        fail("events_year_calendar.json.events must be a list")
+    disclaimer = data["disclaimer"]
+    if not isinstance(disclaimer, dict):
+        fail("events_year_calendar.json.disclaimer must be an object")
+    for lang in ("en", "ru", "es"):
+        if lang not in disclaimer:
+            fail(f"events_year_calendar.json.disclaimer missing {lang}")
+    allowed_status = {"confirmed", "expected", "cancelled", "hiatus"}
+    allowed_kind = {"registry", "trial"}
+    date_re = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+    for idx, event in enumerate(data["events"]):
+        if not isinstance(event, dict):
+            fail(f"events_year_calendar.events[{idx}] must be an object")
+        for field in (
+            "id",
+            "name",
+            "start_date",
+            "weekend_key",
+            "status",
+            "kind",
+            "year",
+        ):
+            if field not in event:
+                fail(f"events_year_calendar.events[{idx}] missing {field}")
+        if str(event.get("status")) not in allowed_status:
+            fail(
+                f"events_year_calendar.events[{idx}] bad status: {event.get('status')!r}"
+            )
+        if str(event.get("kind")) not in allowed_kind:
+            fail(f"events_year_calendar.events[{idx}] bad kind: {event.get('kind')!r}")
+        if not date_re.match(str(event.get("start_date") or "")):
+            fail(f"events_year_calendar.events[{idx}] start_date must be YYYY-MM-DD")
+        if not date_re.match(str(event.get("weekend_key") or "")):
+            fail(f"events_year_calendar.events[{idx}] weekend_key must be YYYY-MM-DD")
+    print("[OK] events_year_calendar.json")
+
+
 def validate_homepage_kpis() -> None:
     path = DATA_DIR / "homepage_kpis.json"
     data = load_json(path)
@@ -171,6 +219,7 @@ def main() -> None:
     validate_points_summaries()
     validate_champion_news()
     validate_homepage_kpis()
+    validate_events_year_calendar()
     print("[OK] Data validation passed.")
 
 if __name__ == "__main__":

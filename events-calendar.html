@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://wsdc-analytics.github.io/events-calendar.html">
+    <meta name="description" content="WSDC year event calendar with weekend map drill-down — confirmed, expected, cancelled, and hiatus editions.">
+    <meta name="keywords" content="WSDC, events calendar, West Coast Swing, registry events, trial events, map">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
+    <meta property="og:title" content="Events Calendar | WSDC Analytics">
+    <meta property="og:description" content="Year calendar of WSDC events with weekend geography and event cards.">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://wsdc-analytics.github.io/events-calendar.html">
+    <meta property="twitter:title" content="Events Calendar | WSDC Analytics">
+    <meta property="twitter:description" content="Year calendar of WSDC events with weekend geography and event cards.">
+    <title>Events Calendar | WSDC Analytics</title>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Events Calendar | WSDC Analytics",
+      "url": "https://wsdc-analytics.github.io/events-calendar.html",
+      "description": "Year calendar of WSDC events with weekend geography and event cards.",
+      "publisher": { "@type": "Organization", "name": "WSDC Analytics" }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="preload" href="static/data/events_year_calendar.json" as="fetch" crossorigin>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LMLCY5PE8Z');
+    </script>
+    <style>
+        :root {
+            --color-primary-dark: #0B1221;
+            --color-accent: #2563eb;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #f7fafc;
+            --text-primary: #0B1221;
+            --text-secondary: #4a5568;
+            --text-tertiary: #6B7280;
+            --border-color: #e5e7eb;
+            --status-confirmed: #16a34a;
+            --status-expected: #9ca3af;
+            --status-cancelled: #dc2626;
+            --status-hiatus: #d97706;
+            --radius: 14px;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+        .skip-link {
+            position: absolute; left: -9999px; top: 0;
+            background: #111827; color: #fff; padding: 10px 14px; border-radius: 6px; z-index: 1000;
+        }
+        .skip-link:focus { left: 12px; top: 12px; }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+        h1 {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            color: var(--color-primary-dark);
+        }
+        .subtitle { color: var(--text-secondary); font-size: 16px; margin-bottom: 12px; }
+        .disclaimer {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .toolbar label { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+        .toolbar select {
+            font: inherit;
+            font-size: 14px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-primary);
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .swatch {
+            width: 10px; height: 10px; border-radius: 50%;
+            display: inline-block;
+        }
+        .swatch.confirmed { background: var(--status-confirmed); }
+        .swatch.expected { background: var(--status-expected); }
+        .swatch.cancelled { background: var(--status-cancelled); }
+        .swatch.hiatus { background: var(--status-hiatus); }
+        .swatch.occupied { background: #64748b; }
+
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .year-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 560px) {
+            .year-grid { grid-template-columns: 1fr; }
+        }
+        .month {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 12px;
+            background: #fff;
+        }
+        .month h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .dow {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            text-align: center;
+        }
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .day {
+            aspect-ratio: 1;
+            min-height: 34px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 12px;
+            color: var(--text-secondary);
+            position: relative;
+            cursor: default;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: background 160ms var(--ease-out);
+        }
+        .day.is-other { color: #d1d5db; }
+        .day.has-events {
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .day.has-events:hover,
+        .day.has-events:focus-visible {
+            background: rgba(37, 99, 235, 0.08);
+            outline: none;
+        }
+        .day.is-selected { background: rgba(37, 99, 235, 0.14); }
+        .day-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #64748b;
+        }
+
+        .panel {
+            margin-top: 28px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 16px;
+            background: #fff;
+            display: none;
+        }
+        .panel.is-open { display: block; animation: fadeUp 220ms var(--ease-out); }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .panel-head {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .panel-head h2 { font-size: 18px; }
+        .panel-close {
+            border: 1px solid var(--border-color);
+            background: #fff;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        #weekendMap {
+            height: 360px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 14px;
+        }
+        .no-geo {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: 10px;
+        }
+        .event-list {
+            display: grid;
+            gap: 10px;
+        }
+        .event-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: left;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: box-shadow 160ms var(--ease-out), transform 160ms var(--ease-out);
+        }
+        .event-card:hover {
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+            transform: translateY(-1px);
+        }
+        .event-card.is-active {
+            border-color: var(--color-accent);
+            background: #fff;
+        }
+        .event-card h3 { font-size: 15px; margin-bottom: 4px; }
+        .event-meta { font-size: 13px; color: var(--text-secondary); }
+        .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .badge.confirmed { background: rgba(22, 163, 74, 0.12); color: #15803d; }
+        .badge.expected { background: rgba(156, 163, 175, 0.25); color: #4b5563; }
+        .badge.cancelled { background: rgba(220, 38, 38, 0.12); color: #b91c1c; }
+        .badge.hiatus { background: rgba(217, 119, 6, 0.15); color: #b45309; }
+        .badge.trial { background: rgba(37, 99, 235, 0.1); color: #1d4ed8; }
+        .detail {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-color);
+            display: none;
+        }
+        .detail.is-open { display: block; }
+        .detail a { color: var(--color-accent); }
+        .empty-year {
+            padding: 24px;
+            text-align: center;
+            color: var(--text-tertiary);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius);
+        }
+        .tooltip {
+            position: fixed;
+            z-index: 50;
+            max-width: 280px;
+            background: #0B1221;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.4;
+            padding: 8px 10px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out);
+        }
+        .tooltip.is-visible { opacity: 1; transform: translateY(0); }
+        .status-line { margin-top: 4px; font-size: 11px; opacity: 0.85; }
+        .error {
+            padding: 16px;
+            border-radius: 10px;
+            background: #fef2f2;
+            color: #991b1b;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div data-site-chrome data-active="calendar" data-lang="en" data-current-dash="events-calendar.html"></div>
+    <main id="main" class="container">
+        <h1 data-i18n="title">Events Calendar</h1>
+        <p class="subtitle" data-i18n="subtitle">Year view of WSDC events — click a day to open that Thu–Sun weekend on the map.</p>
+        <p class="disclaimer" id="disclaimer"></p>
+        <div class="toolbar">
+            <label for="yearSelect" data-i18n="year">Year</label>
+            <select id="yearSelect" aria-label="Year"></select>
+            <div class="legend" aria-hidden="true">
+                <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied</span></span>
+                <span><i class="swatch confirmed"></i> <span data-i18n="legConfirmed">Confirmed</span></span>
+                <span><i class="swatch expected"></i> <span data-i18n="legExpected">Expected</span></span>
+                <span><i class="swatch cancelled"></i> <span data-i18n="legCancelled">Cancelled</span></span>
+                <span><i class="swatch hiatus"></i> <span data-i18n="legHiatus">Hiatus</span></span>
+            </div>
+        </div>
+        <div id="calendarRoot"></div>
+        <section class="panel" id="weekendPanel" aria-live="polite">
+            <div class="panel-head">
+                <h2 id="weekendTitle"></h2>
+                <button type="button" class="panel-close" id="closePanel" data-i18n="close">Close</button>
+            </div>
+            <div id="noGeoNote" class="no-geo" hidden></div>
+            <div id="weekendMap" role="img" aria-label="Weekend events map"></div>
+            <div class="event-list" id="eventList"></div>
+            <div class="detail" id="eventDetail"></div>
+        </section>
+    </main>
+    <div class="tooltip" id="tooltip" role="tooltip"></div>
+    <script src="static/js/site-chrome.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+(function () {
+  "use strict";
+
+  var I18N = {
+    en: {
+      title: "Events Calendar",
+      subtitle: "Year view of WSDC events — click a day to open that Thu–Sun weekend on the map.",
+      year: "Year",
+      close: "Close",
+      legOccupied: "Occupied",
+      legConfirmed: "Confirmed",
+      legExpected: "Expected",
+      legCancelled: "Cancelled",
+      legHiatus: "Hiatus",
+      empty: "No day-precision events for this year yet.",
+      weekend: "Weekend",
+      noGeo: "Some events have no coordinates — listed below only.",
+      website: "Event website",
+      starts: "Starts",
+      ends: "Ends",
+      location: "Location",
+      projected: "Projected from",
+      registry: "Registry Event",
+      trial: "Trial Event",
+      months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+      dow: ["M","T","W","T","F","S","S"]
+    },
+    ru: {
+      title: "Календарь ивентов",
+      subtitle: "Год WSDC-ивентов — клик по дню открывает карту выходных (чт–вс).",
+      year: "Год",
+      close: "Закрыть",
+      legOccupied: "Занято",
+      legConfirmed: "Подтверждён",
+      legExpected: "Ожидается",
+      legCancelled: "Отменён",
+      legHiatus: "Hiatus",
+      empty: "Для этого года пока нет дат с точностью до дня.",
+      weekend: "Выходные",
+      noGeo: "У части ивентов нет координат — только список.",
+      website: "Сайт ивента",
+      starts: "Старт",
+      ends: "Конец",
+      location: "Локация",
+      projected: "Проекция с",
+      registry: "Registry Event",
+      trial: "Trial Event",
+      months: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
+      dow: ["П","В","С","Ч","П","С","В"]
+    },
+    es: {
+      title: "Calendario de eventos",
+      subtitle: "Vista anual de eventos WSDC — haz clic en un día para el mapa del fin de semana (jue–dom).",
+      year: "Año",
+      close: "Cerrar",
+      legOccupied: "Ocupado",
+      legConfirmed: "Confirmado",
+      legExpected: "Previsto",
+      legCancelled: "Cancelado",
+      legHiatus: "Hiatus",
+      empty: "Aún no hay eventos con fecha exacta para este año.",
+      weekend: "Fin de semana",
+      noGeo: "Algunos eventos no tienen coordenadas — solo en la lista.",
+      website: "Sitio del evento",
+      starts: "Inicio",
+      ends: "Fin",
+      location: "Ubicación",
+      projected: "Proyectado desde",
+      registry: "Registry Event",
+      trial: "Trial Event",
+      months: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
+      dow: ["L","M","X","J","V","S","D"]
+    }
+  };
+
+  var state = {
+    lang: "en",
+    data: null,
+    year: null,
+    byDate: {},
+    selectedDate: null,
+    map: null,
+    markers: null
+  };
+
+  function t(key) {
+    var pack = I18N[state.lang] || I18N.en;
+    return pack[key] || I18N.en[key] || key;
+  }
+
+  function applyStaticI18n() {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      el.textContent = t(key);
+    });
+    document.documentElement.lang = state.lang;
+    if (state.data && state.data.disclaimer) {
+      document.getElementById("disclaimer").textContent =
+        state.data.disclaimer[state.lang] || state.data.disclaimer.en || "";
+    }
+  }
+
+  function weekendBounds(iso) {
+    var d = new Date(iso + "T12:00:00");
+    var wd = d.getDay(); // Sun=0
+    var offset;
+    if (wd === 0) offset = 3; // Sun → previous Thu
+    else if (wd >= 4) offset = wd - 4; // Thu–Sat
+    else offset = wd + 3; // Mon–Wed → previous Thu
+    var thu = new Date(d);
+    thu.setDate(d.getDate() - offset);
+    var sun = new Date(thu);
+    sun.setDate(thu.getDate() + 3);
+    function fmt(x) {
+      return x.toISOString().slice(0, 10);
+    }
+    return { start: fmt(thu), end: fmt(sun), key: fmt(thu) };
+  }
+
+  function eventsForYear(year) {
+    return (state.data.events || []).filter(function (e) { return e.year === year; });
+  }
+
+  function indexByStartDate(events) {
+    var map = {};
+    events.forEach(function (e) {
+      var k = e.start_date;
+      if (!map[k]) map[k] = [];
+      map[k].push(e);
+    });
+    return map;
+  }
+
+  function renderYearSelect() {
+    var sel = document.getElementById("yearSelect");
+    sel.innerHTML = "";
+    (state.data.years || []).forEach(function (y) {
+      var opt = document.createElement("option");
+      opt.value = String(y);
+      opt.textContent = String(y);
+      if (y === state.year) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  function renderCalendar() {
+    var root = document.getElementById("calendarRoot");
+    var events = eventsForYear(state.year);
+    state.byDate = indexByStartDate(events);
+    if (!events.length) {
+      root.innerHTML = '<div class="empty-year">' + t("empty") + "</div>";
+      return;
+    }
+    var months = t("months");
+    var dow = t("dow");
+    var html = '<div class="year-grid">';
+    for (var m = 0; m < 12; m++) {
+      html += '<section class="month"><h2>' + months[m] + "</h2>";
+      html += '<div class="dow">' + dow.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div>";
+      html += '<div class="days">';
+      var first = new Date(state.year, m, 1);
+      var startPad = (first.getDay() + 6) % 7; // Mon-first
+      var daysInMonth = new Date(state.year, m + 1, 0).getDate();
+      var i;
+      for (i = 0; i < startPad; i++) {
+        html += '<div class="day is-other" aria-hidden="true"></div>';
+      }
+      for (var day = 1; day <= daysInMonth; day++) {
+        var iso = state.year + "-" + String(m + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+        var list = state.byDate[iso] || [];
+        var has = list.length > 0;
+        var selected = state.selectedDate === iso ? " is-selected" : "";
+        html += '<button type="button" class="day' + (has ? " has-events" : "") + selected + '" data-date="' + iso + '"' +
+          (has ? "" : " disabled") + ' aria-label="' + iso + (has ? ", " + list.length + " events" : "") + '">';
+        html += "<span>" + day + "</span>";
+        if (has) html += '<span class="day-dot" aria-hidden="true"></span>';
+        html += "</button>";
+      }
+      html += "</div></section>";
+    }
+    html += "</div>";
+    root.innerHTML = html;
+    root.querySelectorAll(".day.has-events").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openWeekend(btn.getAttribute("data-date"));
+      });
+      btn.addEventListener("mouseenter", function (ev) {
+        showTooltip(ev, btn.getAttribute("data-date"));
+      });
+      btn.addEventListener("mousemove", function (ev) {
+        moveTooltip(ev);
+      });
+      btn.addEventListener("mouseleave", hideTooltip);
+      btn.addEventListener("focus", function (ev) {
+        showTooltip(ev, btn.getAttribute("data-date"));
+      });
+      btn.addEventListener("blur", hideTooltip);
+    });
+  }
+
+  function showTooltip(ev, iso) {
+    var tip = document.getElementById("tooltip");
+    var list = state.byDate[iso] || [];
+    if (!list.length) return;
+    tip.innerHTML = list.slice(0, 8).map(function (e) {
+      var where = [e.city, e.country].filter(Boolean).join(", ");
+      return "<div><strong>" + esc(e.name) + "</strong>" +
+        (where ? " — " + esc(where) : "") +
+        '<div class="status-line">' + esc(e.status) + " · " + esc(e.kind) + "</div></div>";
+    }).join("");
+    if (list.length > 8) tip.innerHTML += "<div>… +" + (list.length - 8) + "</div>";
+    tip.classList.add("is-visible");
+    moveTooltip(ev);
+  }
+
+  function moveTooltip(ev) {
+    var tip = document.getElementById("tooltip");
+    var x = (ev.clientX || 0) + 12;
+    var y = (ev.clientY || 0) + 12;
+    tip.style.left = x + "px";
+    tip.style.top = y + "px";
+  }
+
+  function hideTooltip() {
+    document.getElementById("tooltip").classList.remove("is-visible");
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function eventsForWeekend(iso) {
+    var wb = weekendBounds(iso);
+    return eventsForYear(state.year).filter(function (e) {
+      return e.weekend_key === wb.key || (e.start_date >= wb.start && e.start_date <= wb.end);
+    });
+  }
+
+  function ensureMap() {
+    if (state.map) return;
+    state.map = L.map("weekendMap", { scrollWheelZoom: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap",
+      maxZoom: 18
+    }).addTo(state.map);
+    state.markers = L.layerGroup().addTo(state.map);
+  }
+
+  function statusColor(status) {
+    if (status === "confirmed") return "#16a34a";
+    if (status === "expected") return "#9ca3af";
+    if (status === "cancelled") return "#dc2626";
+    if (status === "hiatus") return "#d97706";
+    return "#64748b";
+  }
+
+  function openWeekend(iso) {
+    hideTooltip();
+    state.selectedDate = iso;
+    renderCalendar();
+    var wb = weekendBounds(iso);
+    var events = eventsForWeekend(iso);
+    var panel = document.getElementById("weekendPanel");
+    panel.classList.add("is-open");
+    document.getElementById("weekendTitle").textContent =
+      t("weekend") + " " + wb.start + " → " + wb.end;
+
+    ensureMap();
+    state.markers.clearLayers();
+    var withGeo = events.filter(function (e) {
+      return typeof e.lat === "number" && typeof e.lon === "number";
+    });
+    var note = document.getElementById("noGeoNote");
+    if (withGeo.length < events.length) {
+      note.hidden = false;
+      note.textContent = t("noGeo");
+    } else {
+      note.hidden = true;
+    }
+    if (withGeo.length) {
+      var bounds = [];
+      withGeo.forEach(function (e) {
+        var m = L.circleMarker([e.lat, e.lon], {
+          radius: 8,
+          color: "#fff",
+          weight: 1,
+          fillColor: statusColor(e.status),
+          fillOpacity: 0.9
+        });
+        m.bindPopup(esc(e.name));
+        m.on("click", function () { selectEvent(e.id); });
+        state.markers.addLayer(m);
+        bounds.push([e.lat, e.lon]);
+      });
+      state.map.fitBounds(bounds, { padding: [28, 28], maxZoom: 5 });
+    } else {
+      state.map.setView([20, 0], 1);
+    }
+    setTimeout(function () { state.map.invalidateSize(); }, 50);
+
+    var list = document.getElementById("eventList");
+    list.innerHTML = events.map(function (e) {
+      var where = [e.city, e.country].filter(Boolean).join(", ");
+      return '<button type="button" class="event-card" data-id="' + esc(e.id) + '">' +
+        "<h3>" + esc(e.name) + "</h3>" +
+        '<div class="event-meta">' + esc(e.start_date) + (where ? " · " + esc(where) : "") + "</div>" +
+        '<div class="badges">' +
+        '<span class="badge ' + esc(e.status) + '">' + esc(e.status) + "</span>" +
+        '<span class="badge ' + (e.kind === "trial" ? "trial" : "") + '">' +
+        esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span>" +
+        "</div></button>";
+    }).join("");
+    list.querySelectorAll(".event-card").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        selectEvent(btn.getAttribute("data-id"));
+      });
+    });
+    document.getElementById("eventDetail").classList.remove("is-open");
+    document.getElementById("eventDetail").innerHTML = "";
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function selectEvent(id) {
+    var events = eventsForYear(state.year);
+    var e = events.find(function (x) { return x.id === id; });
+    if (!e) return;
+    document.querySelectorAll(".event-card").forEach(function (c) {
+      c.classList.toggle("is-active", c.getAttribute("data-id") === id);
+    });
+    var detail = document.getElementById("eventDetail");
+    var where = [e.city, e.country].filter(Boolean).join(", ");
+    var html = "<h3>" + esc(e.name) + "</h3>" +
+      '<p class="event-meta">' + t("starts") + ": " + esc(e.start_date) +
+      (e.end_date ? " · " + t("ends") + ": " + esc(e.end_date) : "") + "</p>";
+    if (where) html += '<p class="event-meta">' + t("location") + ": " + esc(where) + "</p>";
+    html += '<div class="badges">' +
+      '<span class="badge ' + esc(e.status) + '">' + esc(e.status) + "</span>" +
+      '<span class="badge ' + (e.kind === "trial" ? "trial" : "") + '">' +
+      esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
+    if (e.projected_from_year) {
+      html += '<p class="event-meta" style="margin-top:8px">' + t("projected") + " " +
+        esc(String(e.projected_from_year)) + " (" + esc(e.projected_from_start || "") + ")</p>";
+    }
+    if (e.url) {
+      html += '<p style="margin-top:10px"><a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
+        t("website") + "</a></p>";
+    }
+    detail.innerHTML = html;
+    detail.classList.add("is-open");
+  }
+
+  function setYear(y) {
+    state.year = y;
+    state.selectedDate = null;
+    document.getElementById("weekendPanel").classList.remove("is-open");
+    renderCalendar();
+  }
+
+  function boot(data) {
+    state.data = data;
+    state.year = data.default_year || (data.years && data.years[2]) || new Date().getFullYear();
+    if ((data.years || []).indexOf(state.year) === -1 && data.years && data.years.length) {
+      state.year = data.years[Math.min(2, data.years.length - 1)];
+    }
+    applyStaticI18n();
+    renderYearSelect();
+    renderCalendar();
+  }
+
+  document.getElementById("yearSelect").addEventListener("change", function (e) {
+    setYear(parseInt(e.target.value, 10));
+  });
+  document.getElementById("closePanel").addEventListener("click", function () {
+    document.getElementById("weekendPanel").classList.remove("is-open");
+    state.selectedDate = null;
+    renderCalendar();
+  });
+
+  window.WsdcChrome = window.WsdcChrome || {};
+  window.WsdcChrome.onLangChange = function (lang) {
+    state.lang = lang;
+    applyStaticI18n();
+    renderCalendar();
+    if (state.selectedDate) openWeekend(state.selectedDate);
+  };
+  document.addEventListener("wsdc:langchange", function (ev) {
+    if (ev.detail && ev.detail.lang) {
+      state.lang = ev.detail.lang;
+      applyStaticI18n();
+      renderCalendar();
+      if (state.selectedDate) openWeekend(state.selectedDate);
+    }
+  });
+
+  var stored = localStorage.getItem("wsdc-lang");
+  if (stored && I18N[stored]) state.lang = stored;
+  var params = new URLSearchParams(window.location.search);
+  if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
+
+  fetch("static/data/events_year_calendar.json")
+    .then(function (r) {
+      if (!r.ok) throw new Error("Failed to load calendar data");
+      return r.json();
+    })
+    .then(boot)
+    .catch(function (err) {
+      var el = document.createElement("div");
+      el.className = "error";
+      el.textContent = String(err.message || err);
+      document.getElementById("calendarRoot").appendChild(el);
+    });
+})();
+    </script>
+</body>
+</html>
