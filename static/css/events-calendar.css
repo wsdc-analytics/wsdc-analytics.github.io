@@ -335,9 +335,9 @@ h1 {
 /* Float in the empty gutter left of the centered 820px grid — does not shift the calendar */
 .cal-stats {
   position: absolute;
-  top: 50%;
+  top: 8px;
   left: max(4px, calc(50% - 410px - 96px));
-  transform: translateY(-50%);
+  transform: none;
   z-index: 2;
   width: 84px;
   display: flex;
@@ -466,9 +466,9 @@ h1 {
 }
 
 .cal-stats__value {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   line-height: 1.1;
   color: var(--color-primary-dark);
   font-variant-numeric: tabular-nums;
@@ -906,7 +906,7 @@ h1 {
     min-width: 4.5rem;
   }
   .cal-stats__value {
-    font-size: 16px;
+    font-size: 14px;
   }
   .calendar-stage {
     flex-direction: column;
