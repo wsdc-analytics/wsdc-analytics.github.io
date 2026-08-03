@@ -49,7 +49,7 @@
     <main id="main" class="container">
         <header class="page-head">
             <h1 data-i18n="title">Events Calendar</h1>
-            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Occupied days have at least one event in range — click a day for the map and cards.</p>
+            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and cards. Past years and past days are muted; today is outlined.</p>
             <p class="disclaimer" id="disclaimer"></p>
             <div class="toolbar">
                 <div class="filters" role="toolbar" aria-label="Filters">
@@ -117,7 +117,7 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and cards. Past days in the current year are muted; today is outlined.",
+      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and cards. Past years and past days are muted; today is outlined.",
       year: "Year",
       continent: "Continent",
       country: "Country",
@@ -149,7 +149,7 @@
     },
     ru: {
       title: "Календарь ивентов",
-      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и карточки. В текущем году прошедшие дни приглушены, сегодня — обведено.",
+      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и карточки. Прошлые годы и прошедшие дни приглушены, сегодня — обведено.",
       year: "Год",
       continent: "Континент",
       country: "Страна",
@@ -181,7 +181,7 @@
     },
     es: {
       title: "Calendario de eventos",
-      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y las fichas. En el año actual, los dias pasados se atenúan y hoy va marcado.",
+      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y las fichas. Los años y dias pasados se atenúan; hoy va marcado.",
       year: "Año",
       continent: "Continente",
       country: "País",
@@ -319,8 +319,12 @@
       t("allCountries")
     );
 
+    var statusPool = yearEvents.filter(function (e) {
+      if (state.country && e.country !== state.country) return false;
+      return true;
+    });
     var statusPresent = {};
-    eventsInYearRaw(state.year).forEach(function (e) {
+    statusPool.forEach(function (e) {
       if (e.status) statusPresent[e.status] = true;
     });
     var statusOpts = STATUSES.filter(function (s) { return statusPresent[s]; }).map(function (s) {
@@ -393,10 +397,12 @@
     var dow = t("dow");
     var now = new Date();
     var todayIso = isoFromDate(now);
-    var markTimeline = state.year === now.getFullYear();
+    var currentYear = now.getFullYear();
+    var yearIsPast = state.year < currentYear;
+    var yearIsCurrent = state.year === currentYear;
     var html = '<div class="year-grid">';
     for (var m = 0; m < 12; m++) {
-      var monthPast = markTimeline && m < now.getMonth();
+      var monthPast = yearIsPast || (yearIsCurrent && m < now.getMonth());
       html += '<section class="month' + (monthPast ? " is-past-month" : "") + '"><h2>' + months[m] + "</h2>";
       html += '<div class="dow" aria-hidden="true">' + dow.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div>";
       html += '<div class="days">';
@@ -426,8 +432,8 @@
           dens: dens,
           count: list.length,
           selected: occupied && state.selectedDay === iso,
-          today: markTimeline && iso === todayIso,
-          past: markTimeline && iso < todayIso
+          today: yearIsCurrent && iso === todayIso,
+          past: yearIsPast || (yearIsCurrent && iso < todayIso)
         });
       }
       while (cells.length < 42) {
