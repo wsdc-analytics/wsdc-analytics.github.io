@@ -455,10 +455,29 @@
 
   function moveTooltip(ev) {
     var tip = document.getElementById("tooltip");
-    var x = (ev.clientX || 0) + 12;
-    var y = (ev.clientY || 0) + 12;
-    tip.style.left = x + "px";
-    tip.style.top = y + "px";
+    if (!tip.classList.contains("is-visible")) return;
+    var pad = 8;
+    var gap = 12;
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var cx = ev.clientX || 0;
+    var cy = ev.clientY || 0;
+    // Place off-screen first so layout size is measurable without flicker jump
+    tip.style.left = "0px";
+    tip.style.top = "0px";
+    var w = tip.offsetWidth;
+    var h = tip.offsetHeight;
+    var x = cx + gap;
+    var y = cy + gap;
+    if (x + w > vw - pad) x = cx - w - gap;
+    if (x < pad) x = pad;
+    if (x + w > vw - pad) x = Math.max(pad, vw - pad - w);
+    if (y + h > vh - pad) y = cy - h - gap;
+    if (y < pad) y = pad;
+    if (y + h > vh - pad) y = Math.max(pad, vh - pad - h);
+    tip.style.left = Math.round(x) + "px";
+    tip.style.top = Math.round(y) + "px";
+    tip.style.transformOrigin = (y < cy ? "bottom left" : "top left");
   }
 
   function hideTooltip() {
