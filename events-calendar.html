@@ -70,9 +70,15 @@
                         </select>
                     </div>
                     <div class="filter-field">
-                        <label for="statusFilter" data-i18n="status">Status</label>
-                        <select id="statusFilter" aria-label="Status">
-                            <option value="" data-i18n="allStatuses">All statuses</option>
+                        <label for="statusFilter" data-i18n="confirmStatus">Confirm status</label>
+                        <select id="statusFilter" aria-label="Confirm status">
+                            <option value="" data-i18n="allConfirmStatuses">All confirm statuses</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="kindFilter" data-i18n="eventType">Event type</label>
+                        <select id="kindFilter" aria-label="Event type">
+                            <option value="" data-i18n="allEventTypes">All event types</option>
                         </select>
                     </div>
                 </div>
@@ -121,10 +127,12 @@
       year: "Year",
       continent: "Continent",
       country: "Country",
-      status: "Status",
+      confirmStatus: "Confirm status",
+      eventType: "Event type",
       allContinents: "All continents",
       allCountries: "All countries",
-      allStatuses: "All statuses",
+      allConfirmStatuses: "All confirm statuses",
+      allEventTypes: "All event types",
       close: "Close",
       legDens1: "1–2",
       legDens2: "3–4",
@@ -153,10 +161,12 @@
       year: "Год",
       continent: "Континент",
       country: "Страна",
-      status: "Статус",
+      confirmStatus: "Подтверждение",
+      eventType: "Тип ивента",
       allContinents: "Все континенты",
       allCountries: "Все страны",
-      allStatuses: "Все статусы",
+      allConfirmStatuses: "Все статусы подтверждения",
+      allEventTypes: "Все типы",
       close: "Закрыть",
       legDens1: "1–2",
       legDens2: "3–4",
@@ -185,10 +195,12 @@
       year: "Año",
       continent: "Continente",
       country: "País",
-      status: "Estado",
+      confirmStatus: "Confirmación",
+      eventType: "Tipo de evento",
       allContinents: "Todos los continentes",
       allCountries: "Todos los países",
-      allStatuses: "Todos los estados",
+      allConfirmStatuses: "Todas las confirmaciones",
+      allEventTypes: "Todos los tipos",
       close: "Cerrar",
       legDens1: "1–2",
       legDens2: "3–4",
@@ -215,6 +227,7 @@
 
   var CONTINENTS = ["America", "Europe", "Asia", "Australia"];
   var STATUSES = ["confirmed", "expected", "cancelled", "hiatus"];
+  var KINDS = ["registry", "trial"];
 
   var state = {
     lang: "en",
@@ -223,6 +236,7 @@
     continent: "",
     country: "",
     status: "",
+    kind: "",
     byDay: {},
     selectedDay: null,
     map: null,
@@ -252,6 +266,7 @@
       if (state.continent && e.continent !== state.continent) return false;
       if (state.country && e.country !== state.country) return false;
       if (state.status && e.status !== state.status) return false;
+      if (state.kind && e.kind !== state.kind) return false;
       return true;
     });
   }
@@ -268,6 +283,12 @@
   function statusLabel(key) {
     var pack = (I18N[state.lang] || I18N.en).statuses || {};
     return pack[key] || key;
+  }
+
+  function kindLabel(key) {
+    if (key === "trial") return t("trial");
+    if (key === "registry") return t("registry");
+    return key;
   }
 
   function fillSelect(sel, options, selected, allLabel) {
@@ -321,6 +342,7 @@
 
     var statusPool = yearEvents.filter(function (e) {
       if (state.country && e.country !== state.country) return false;
+      if (state.kind && e.kind !== state.kind) return false;
       return true;
     });
     var statusPresent = {};
@@ -337,7 +359,29 @@
       document.getElementById("statusFilter"),
       statusOpts,
       state.status,
-      t("allStatuses")
+      t("allConfirmStatuses")
+    );
+
+    var kindPool = yearEvents.filter(function (e) {
+      if (state.country && e.country !== state.country) return false;
+      if (state.status && e.status !== state.status) return false;
+      return true;
+    });
+    var kindPresent = {};
+    kindPool.forEach(function (e) {
+      if (e.kind) kindPresent[e.kind] = true;
+    });
+    var kindOpts = KINDS.filter(function (k) { return kindPresent[k]; }).map(function (k) {
+      return { value: k, label: kindLabel(k) };
+    });
+    if (state.kind && kindPresent[state.kind] !== true) {
+      state.kind = "";
+    }
+    fillSelect(
+      document.getElementById("kindFilter"),
+      kindOpts,
+      state.kind,
+      t("allEventTypes")
     );
   }
 
@@ -657,6 +701,8 @@
     state.year = y;
     state.selectedDay = null;
     state.country = "";
+    state.status = "";
+    state.kind = "";
     document.getElementById("weekendPanel").classList.remove("is-open");
     document.body.classList.remove("panel-open");
     refreshFilterOptions();
@@ -689,14 +735,23 @@
   document.getElementById("continentFilter").addEventListener("change", function (e) {
     state.continent = e.target.value || "";
     state.country = "";
+    state.status = "";
+    state.kind = "";
     applyFiltersAndRender();
   });
   document.getElementById("countryFilter").addEventListener("change", function (e) {
     state.country = e.target.value || "";
+    state.status = "";
+    state.kind = "";
     applyFiltersAndRender();
   });
   document.getElementById("statusFilter").addEventListener("change", function (e) {
     state.status = e.target.value || "";
+    state.kind = "";
+    applyFiltersAndRender();
+  });
+  document.getElementById("kindFilter").addEventListener("change", function (e) {
+    state.kind = e.target.value || "";
     applyFiltersAndRender();
   });
   document.getElementById("closePanel").addEventListener("click", function () {
