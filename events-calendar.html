@@ -111,28 +111,43 @@
                 <div class="cal-stats__head">
                     <button type="button" class="cal-stats__tip" id="calStatsTip" aria-label="About these counts">
                         <span class="cal-stats__tip-mark" aria-hidden="true">i</span>
-                        <span class="cal-stats__tip-bubble" id="calStatsTipText" role="tooltip" data-i18n="statTip">Counts for the current year after filters: confirm status and event type breakdown of the visible selection.</span>
+                        <span class="cal-stats__tip-bubble" id="calStatsTipText" role="tooltip" data-i18n="statTip">For the current year, remaining counts with muted year totals; past and future years show full-year totals.</span>
                     </button>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statConfirmed">Confirmed</span>
-                    <span class="cal-stats__value" data-stat="confirmed">0</span>
+                    <span class="cal-stats__nums" data-stat="confirmed">
+                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__of" hidden></span>
+                    </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statExpected">Expected</span>
-                    <span class="cal-stats__value" data-stat="expected">0</span>
+                    <span class="cal-stats__nums" data-stat="expected">
+                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__of" hidden></span>
+                    </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statPaused">Hiatus / Cancelled</span>
-                    <span class="cal-stats__value" data-stat="paused">0</span>
+                    <span class="cal-stats__nums" data-stat="paused">
+                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__of" hidden></span>
+                    </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statRegistry">Registry</span>
-                    <span class="cal-stats__value" data-stat="registry">0</span>
+                    <span class="cal-stats__nums" data-stat="registry">
+                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__of" hidden></span>
+                    </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statTrial">Trial</span>
-                    <span class="cal-stats__value" data-stat="trial">0</span>
+                    <span class="cal-stats__nums" data-stat="trial">
+                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__of" hidden></span>
+                    </span>
                 </div>
             </aside>
             <div id="calendarRoot"></div>
@@ -213,7 +228,8 @@
       statPaused: "Hiatus / Cancelled",
       statRegistry: "Registry",
       statTrial: "Trial",
-      statTip: "Live counts for the selected year after all filters. Confirm status and event type of the events currently shown on the calendar.",
+      statOf: "of {n}",
+      statTip: "After filters. Past and future years show full-year totals. For the current year, Confirmed / Expected / Registry / Trial show remaining (not yet ended as of the data date), with the year total in quieter type — not a separate highlight. Hiatus / Cancelled is always the full-year count.",
       statAria: "Selection counts",
       empty: "No day-precision events for this year yet.",
       day: "Day",
@@ -254,7 +270,8 @@
       statPaused: "Hiatus / Cancelled",
       statRegistry: "Registry",
       statTrial: "Trial",
-      statTip: "Живые цифры за выбранный год после всех фильтров: confirm status и тип ивента в текущей выборке на календаре.",
+      statOf: "из {n}",
+      statTip: "После фильтров. Прошлый и будущий год — полные итоги. Для текущего года Confirmed / Expected / Registry / Trial показывают остаток (ещё не закончились на дату данных), а итог года — приглушённо, без отдельной подсветки. Hiatus / Cancelled всегда за весь год.",
       statAria: "Счётчики выборки",
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
@@ -295,7 +312,8 @@
       statPaused: "Hiatus / Cancelled",
       statRegistry: "Registry",
       statTrial: "Trial",
-      statTip: "Conteos en vivo del año seleccionado tras los filtros: estado de confirmación y tipo de evento de la selección visible.",
+      statOf: "de {n}",
+      statTip: "Tras los filtros. Años pasados y futuros: totales del año. En el año actual, Confirmed / Expected / Registry / Trial muestran lo que queda (aún no terminados a la fecha de los datos), con el total del año en tipografía más discreta. Hiatus / Cancelled es siempre el total del año.",
       statAria: "Conteos de la selección",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
@@ -353,29 +371,89 @@
     if (tip) tip.setAttribute("aria-label", t("statTip"));
   }
 
-  function countFilterStats(events) {
+  function dataAsOf() {
+    var raw = state.data && state.data.as_of;
+    if (raw && /^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
+  function eventEndDate(e) {
+    return (e && (e.end_date || e.start_date)) || "";
+  }
+
+  function isEventRemaining(e, asOf) {
+    var end = eventEndDate(e);
+    return !!end && end >= asOf;
+  }
+
+  function emptyStatBucket() {
+    return { total: 0, remaining: 0 };
+  }
+
+  function countFilterStats(events, asOf) {
     var out = {
-      confirmed: 0,
-      expected: 0,
-      paused: 0,
-      registry: 0,
-      trial: 0
+      confirmed: emptyStatBucket(),
+      expected: emptyStatBucket(),
+      paused: emptyStatBucket(),
+      registry: emptyStatBucket(),
+      trial: emptyStatBucket()
     };
     (events || []).forEach(function (e) {
-      if (e.status === "confirmed") out.confirmed += 1;
-      else if (e.status === "expected") out.expected += 1;
-      else if (e.status === "hiatus" || e.status === "cancelled") out.paused += 1;
-      if (e.kind === "trial") out.trial += 1;
-      else out.registry += 1;
+      var rem = isEventRemaining(e, asOf);
+      if (e.status === "confirmed") {
+        out.confirmed.total += 1;
+        if (rem) out.confirmed.remaining += 1;
+      } else if (e.status === "expected") {
+        out.expected.total += 1;
+        if (rem) out.expected.remaining += 1;
+      } else if (e.status === "hiatus" || e.status === "cancelled") {
+        out.paused.total += 1;
+        if (rem) out.paused.remaining += 1;
+      }
+      if (e.kind === "trial") {
+        out.trial.total += 1;
+        if (rem) out.trial.remaining += 1;
+      } else {
+        out.registry.total += 1;
+        if (rem) out.registry.remaining += 1;
+      }
     });
     return out;
   }
 
   function renderFilterStats(events) {
-    var counts = countFilterStats(events);
-    document.querySelectorAll("[data-stat]").forEach(function (el) {
-      var key = el.getAttribute("data-stat");
-      el.textContent = String(counts[key] || 0);
+    var asOf = dataAsOf();
+    var splitYear = Number(String(asOf).slice(0, 4)) === state.year;
+    var counts = countFilterStats(events, asOf);
+    var splitKeys = { confirmed: 1, expected: 1, registry: 1, trial: 1 };
+    document.querySelectorAll("[data-stat]").forEach(function (wrap) {
+      var key = wrap.getAttribute("data-stat");
+      var bucket = counts[key] || emptyStatBucket();
+      var valueEl = wrap.querySelector(".cal-stats__value");
+      var ofEl = wrap.querySelector(".cal-stats__of");
+      if (!valueEl) return;
+      var useSplit = splitYear && splitKeys[key] && bucket.total > 0;
+      if (useSplit) {
+        valueEl.textContent = String(bucket.remaining);
+        if (ofEl) {
+          ofEl.hidden = false;
+          ofEl.textContent = t("statOf").replace("{n}", String(bucket.total));
+        }
+        wrap.setAttribute(
+          "aria-label",
+          bucket.remaining + " " + t("statOf").replace("{n}", String(bucket.total))
+        );
+      } else {
+        valueEl.textContent = String(bucket.total);
+        if (ofEl) {
+          ofEl.hidden = true;
+          ofEl.textContent = "";
+        }
+        wrap.removeAttribute("aria-label");
+      }
     });
   }
 
