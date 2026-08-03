@@ -457,8 +457,10 @@ h1 {
 
 .tooltip {
   position: fixed;
-  z-index: 60;
-  max-width: 260px;
+  z-index: 80;
+  max-width: min(280px, calc(100vw - 16px));
+  max-height: min(50vh, calc(100dvh - 16px));
+  overflow: auto;
   background: #0B1221;
   color: #fff;
   font-size: 11px;
