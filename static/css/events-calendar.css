@@ -165,17 +165,18 @@ h1 {
 
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 
-.legend-density { gap: 4px; }
+.legend-density { gap: 8px; }
+.legend-dens-item { display: inline-flex; align-items: center; gap: 4px; }
+.legend-dens-label { color: var(--text-tertiary); font-size: 11px; }
 
 .swatch {
   width: 10px; height: 10px; border-radius: 2px;
   display: inline-block;
   box-sizing: border-box;
 }
-.swatch.occupied,
-.swatch.dens-3 { background: #e0e7f0; border: 1px solid #c5d0de; }
 .swatch.dens-1 { background: #eef2f6; border: 1px solid #d5dde8; }
-.swatch.dens-6 { background: #bfccdc; border: 1px solid #9aabbf; }
+.swatch.dens-2 { background: #d5dee9; border: 1px solid #b7c4d4; }
+.swatch.dens-3 { background: #bfccdc; border: 1px solid #9aabbf; }
 .swatch.empty-day { background: #fff; border: 1px solid #d1d5db; }
 .swatch.today {
   background: #fff;
@@ -291,11 +292,8 @@ h1 {
 
 .day.is-occupied { color: #334155; font-weight: 600; }
 .day.is-occupied.dens-1 { background: #eef2f6; }
-.day.is-occupied.dens-2 { background: #e7edf4; }
-.day.is-occupied.dens-3 { background: #e0e7f0; }
-.day.is-occupied.dens-4 { background: #d5dee9; }
-.day.is-occupied.dens-5 { background: #cbd6e4; }
-.day.is-occupied.dens-6 { background: #bfccdc; }
+.day.is-occupied.dens-2 { background: #d5dee9; }
+.day.is-occupied.dens-3 { background: #bfccdc; }
 
 .day.is-past {
   opacity: 0.5;
