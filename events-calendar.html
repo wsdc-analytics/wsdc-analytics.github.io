@@ -390,21 +390,9 @@
       t("allCountries")
     );
 
-    var statusPool = yearEvents.filter(function (e) {
-      if (state.country && e.country !== state.country) return false;
-      if (state.kind && e.kind !== state.kind) return false;
-      return true;
-    });
-    var statusPresent = {};
-    statusPool.forEach(function (e) {
-      if (e.status) statusPresent[e.status] = true;
-    });
-    var statusOpts = STATUSES.filter(function (s) { return statusPresent[s]; }).map(function (s) {
+    var statusOpts = STATUSES.map(function (s) {
       return { value: s, label: statusLabel(s) };
     });
-    if (state.status && statusPresent[state.status] !== true) {
-      state.status = "";
-    }
     fillDropdown(
       document.getElementById("statusFilterMenu"),
       document.getElementById("statusFilterValue"),
