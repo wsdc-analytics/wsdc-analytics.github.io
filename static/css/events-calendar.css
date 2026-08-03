@@ -320,15 +320,159 @@ h1 {
   border: 1.5px solid var(--color-accent);
 }
 
-/* —— Year grid: Tableau-style compact 4×3 (fits remaining viewport) —— */
+/* —— Year grid + left filter stats —— */
+.calendar-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  overflow: hidden;
+  padding: 2px 0 8px;
+}
+
+.cal-stats {
+  flex: 0 0 92px;
+  width: 92px;
+  max-width: 92px;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 2px 4px 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+.cal-stats__head {
+  display: flex;
+  justify-content: flex-start;
+  min-height: 18px;
+}
+
+.cal-stats__tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-color);
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1;
+  cursor: help;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 0;
+  font-family: inherit;
+}
+
+.cal-stats__tip-mark {
+  display: block;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+.cal-stats__tip:focus {
+  outline: none;
+}
+
+.cal-stats__tip:focus-visible {
+  outline: 2px solid var(--color-primary-dark);
+  outline-offset: 2px;
+  border-color: var(--color-primary-dark);
+  color: var(--text-primary);
+}
+
+.cal-stats__tip-bubble {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%) scale(0.96);
+  transform-origin: left center;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--color-primary-dark);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  border-radius: 8px;
+  width: max-content;
+  max-width: min(260px, calc(100vw - 48px));
+  white-space: normal;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 30;
+  transition:
+    opacity 120ms var(--ease-out),
+    transform 120ms var(--ease-out),
+    visibility 120ms var(--ease-out);
+}
+
+.cal-stats__tip:focus-visible .cal-stats__tip-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) scale(1);
+  transition-duration: 180ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cal-stats__tip:hover {
+    border-color: var(--color-primary-dark);
+    color: var(--text-primary);
+  }
+  .cal-stats__tip:hover .cal-stats__tip-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) scale(1);
+    transition-duration: 180ms;
+  }
+}
+
+.cal-stats__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cal-stats__label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: var(--text-tertiary);
+  text-wrap: balance;
+}
+
+.cal-stats__value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-primary-dark);
+  font-variant-numeric: tabular-nums;
+}
+
 #calendarRoot {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   display: flex;
   justify-content: center;
   align-items: stretch;
   overflow: hidden;
-  padding: 2px 0 8px;
 }
 
 .year-grid {
@@ -661,6 +805,14 @@ h1 {
 }
 
 @media (max-width: 960px) {
+  .calendar-stage {
+    overflow: auto;
+    align-items: flex-start;
+  }
+  .cal-stats {
+    align-self: flex-start;
+    padding-top: 8px;
+  }
   #calendarRoot {
     overflow-y: auto;
     align-items: flex-start;
@@ -711,6 +863,41 @@ h1 {
     --cal-dd-width: 100%;
   }
   .cal-dd__btn { width: 100%; }
+  .calendar-stage {
+    flex-direction: column;
+    gap: 8px;
+    overflow: visible;
+  }
+  .cal-stats {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 14px;
+    padding: 0;
+  }
+  .cal-stats__head {
+    width: 100%;
+    min-height: 0;
+  }
+  .cal-stats__tip-bubble {
+    left: 0;
+    top: calc(100% + 8px);
+    transform: translateY(-4px) scale(0.96);
+    transform-origin: top left;
+  }
+  .cal-stats__tip:focus-visible .cal-stats__tip-bubble,
+  .cal-stats__tip:hover .cal-stats__tip-bubble {
+    transform: translateY(0) scale(1);
+  }
+  .cal-stats__item {
+    min-width: 4.5rem;
+  }
+  .cal-stats__value {
+    font-size: 1.1rem;
+  }
   .year-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: none;
@@ -736,7 +923,8 @@ h1 {
   .panel-close,
   .tooltip,
   .cal-dd__btn,
-  .cal-dd__menu {
+  .cal-dd__menu,
+  .cal-stats__tip-bubble {
     transition: none;
   }
   .tooltip.is-visible {
