@@ -77,11 +77,11 @@
                     </div>
                 </div>
                 <div class="legend" aria-label="Calendar legend">
-                    <span class="legend-density" title="More events → darker fill">
-                        <i class="swatch dens-1"></i>
-                        <i class="swatch dens-3"></i>
-                        <i class="swatch dens-6"></i>
-                        <span data-i18n="legDensity">Busy weekend</span>
+                    <span class="legend-density" title="Events overlapping that calendar day">
+                        <span class="legend-dens-item"><i class="swatch dens-1"></i><span data-i18n="legDens1">1–2</span></span>
+                        <span class="legend-dens-item"><i class="swatch dens-2"></i><span data-i18n="legDens2">3–4</span></span>
+                        <span class="legend-dens-item"><i class="swatch dens-3"></i><span data-i18n="legDens3">5+</span></span>
+                        <span class="legend-dens-label" data-i18n="legDensity">events/day</span>
                     </span>
                     <span><i class="swatch empty-day"></i> <span data-i18n="legEmpty">Empty day</span></span>
                     <span><i class="swatch today"></i> <span data-i18n="legToday">Today</span></span>
@@ -117,7 +117,7 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      subtitle: "Year overview of WSDC registry and trial events. Darker days mean more overlapping events — click a day for the map and cards. Past days in the current year are muted; today is outlined.",
+      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and cards. Past days in the current year are muted; today is outlined.",
       year: "Year",
       continent: "Continent",
       country: "Country",
@@ -126,7 +126,10 @@
       allCountries: "All countries",
       allStatuses: "All statuses",
       close: "Close",
-      legDensity: "Fewer → more events",
+      legDens1: "1–2",
+      legDens2: "3–4",
+      legDens3: "5+",
+      legDensity: "events/day",
       legEmpty: "Empty day",
       legToday: "Today",
       empty: "No day-precision events for this year yet.",
@@ -146,7 +149,7 @@
     },
     ru: {
       title: "Календарь ивентов",
-      subtitle: "Годовой обзор registry и trial ивентов WSDC. Чем темнее день — тем больше ивентов в этот день; клик открывает карту и карточки. В текущем году прошедшие дни приглушены, сегодня — обведено.",
+      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и карточки. В текущем году прошедшие дни приглушены, сегодня — обведено.",
       year: "Год",
       continent: "Континент",
       country: "Страна",
@@ -155,7 +158,10 @@
       allCountries: "Все страны",
       allStatuses: "Все статусы",
       close: "Закрыть",
-      legDensity: "Меньше → больше ивентов",
+      legDens1: "1–2",
+      legDens2: "3–4",
+      legDens3: "5+",
+      legDensity: "ивентов/день",
       legEmpty: "Пустой день",
       legToday: "Сегодня",
       empty: "Для этого года пока нет дат с точностью до дня.",
@@ -175,7 +181,7 @@
     },
     es: {
       title: "Calendario de eventos",
-      subtitle: "Vista anual de eventos registry y trial de WSDC. Los dias más oscuros tienen más eventos — haz clic para el mapa y las fichas. En el año actual, los dias pasados se atenúan y hoy va marcado.",
+      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y las fichas. En el año actual, los dias pasados se atenúan y hoy va marcado.",
       year: "Año",
       continent: "Continente",
       country: "País",
@@ -184,7 +190,10 @@
       allCountries: "Todos los países",
       allStatuses: "Todos los estados",
       close: "Cerrar",
-      legDensity: "Menos → más eventos",
+      legDens1: "1–2",
+      legDens2: "3–4",
+      legDens3: "5+",
+      legDensity: "eventos/día",
       legEmpty: "Dia vacío",
       legToday: "Hoy",
       empty: "Aún no hay eventos con fecha exacta para este año.",
@@ -403,7 +412,12 @@
         var iso = state.year + "-" + String(m + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
         var list = state.byDay[iso] || [];
         var occupied = list.length > 0;
-        var dens = occupied ? Math.min(6, Math.max(1, list.length)) : 0;
+        var dens = 0;
+        if (occupied) {
+          if (list.length >= 5) dens = 3;
+          else if (list.length >= 3) dens = 2;
+          else dens = 1;
+        }
         cells.push({
           empty: false,
           day: day,
