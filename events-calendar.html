@@ -77,8 +77,14 @@
                     </div>
                 </div>
                 <div class="legend" aria-label="Calendar legend">
-                    <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied day</span></span>
+                    <span class="legend-density" title="More events → darker fill">
+                        <i class="swatch dens-1"></i>
+                        <i class="swatch dens-3"></i>
+                        <i class="swatch dens-6"></i>
+                        <span data-i18n="legDensity">Busy weekend</span>
+                    </span>
                     <span><i class="swatch empty-day"></i> <span data-i18n="legEmpty">Empty day</span></span>
+                    <span><i class="swatch today"></i> <span data-i18n="legToday">Today</span></span>
                 </div>
             </div>
         </header>
@@ -111,7 +117,7 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      subtitle: "Year overview of WSDC registry and trial events. Occupied days have at least one event in range — click a day for the map and cards.",
+      subtitle: "Year overview of WSDC registry and trial events. Darker days mean more overlapping events — click a day for the map and cards. Past days in the current year are muted; today is outlined.",
       year: "Year",
       continent: "Continent",
       country: "Country",
@@ -120,8 +126,9 @@
       allCountries: "All countries",
       allStatuses: "All statuses",
       close: "Close",
-      legOccupied: "Occupied day",
+      legDensity: "Fewer → more events",
       legEmpty: "Empty day",
+      legToday: "Today",
       empty: "No day-precision events for this year yet.",
       day: "Day",
       noGeo: "Some events have no coordinates - listed below only.",
@@ -139,7 +146,7 @@
     },
     ru: {
       title: "Календарь ивентов",
-      subtitle: "Годовой обзор registry и trial ивентов WSDC. Занятые дни входят в период ивента — клик открывает карту и карточки.",
+      subtitle: "Годовой обзор registry и trial ивентов WSDC. Чем темнее день — тем больше ивентов в этот день; клик открывает карту и карточки. В текущем году прошедшие дни приглушены, сегодня — обведено.",
       year: "Год",
       continent: "Континент",
       country: "Страна",
@@ -148,8 +155,9 @@
       allCountries: "Все страны",
       allStatuses: "Все статусы",
       close: "Закрыть",
-      legOccupied: "Занятый день",
+      legDensity: "Меньше → больше ивентов",
       legEmpty: "Пустой день",
+      legToday: "Сегодня",
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
       noGeo: "У части ивентов нет координат - только список.",
@@ -167,7 +175,7 @@
     },
     es: {
       title: "Calendario de eventos",
-      subtitle: "Vista anual de eventos registry y trial de WSDC. Los dias ocupados tienen al menos un evento en rango — haz clic para el mapa y las fichas.",
+      subtitle: "Vista anual de eventos registry y trial de WSDC. Los dias más oscuros tienen más eventos — haz clic para el mapa y las fichas. En el año actual, los dias pasados se atenúan y hoy va marcado.",
       year: "Año",
       continent: "Continente",
       country: "País",
@@ -176,8 +184,9 @@
       allCountries: "Todos los países",
       allStatuses: "Todos los estados",
       close: "Cerrar",
-      legOccupied: "Dia ocupado",
+      legDensity: "Menos → más eventos",
       legEmpty: "Dia vacío",
+      legToday: "Hoy",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
       noGeo: "Algunos eventos no tienen coordenadas - solo en la lista.",
@@ -373,9 +382,13 @@
     }
     var months = t("months");
     var dow = t("dow");
+    var now = new Date();
+    var todayIso = isoFromDate(now);
+    var markTimeline = state.year === now.getFullYear();
     var html = '<div class="year-grid">';
     for (var m = 0; m < 12; m++) {
-      html += '<section class="month"><h2>' + months[m] + "</h2>";
+      var monthPast = markTimeline && m < now.getMonth();
+      html += '<section class="month' + (monthPast ? " is-past-month" : "") + '"><h2>' + months[m] + "</h2>";
       html += '<div class="dow" aria-hidden="true">' + dow.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div>";
       html += '<div class="days">';
       var first = new Date(state.year, m, 1);
@@ -390,13 +403,17 @@
         var iso = state.year + "-" + String(m + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
         var list = state.byDay[iso] || [];
         var occupied = list.length > 0;
+        var dens = occupied ? Math.min(6, Math.max(1, list.length)) : 0;
         cells.push({
           empty: false,
           day: day,
           iso: iso,
           occupied: occupied,
+          dens: dens,
           count: list.length,
-          selected: occupied && state.selectedDay === iso
+          selected: occupied && state.selectedDay === iso,
+          today: markTimeline && iso === todayIso,
+          past: markTimeline && iso < todayIso
         });
       }
       while (cells.length < 42) {
@@ -408,10 +425,15 @@
           html += '<div class="day is-empty" aria-hidden="true"></div>';
           continue;
         }
-        var cls = "day" + (c.occupied ? " has-events is-occupied" : "") + (c.selected ? " is-selected" : "");
+        var cls = "day";
+        if (c.occupied) cls += " has-events is-occupied dens-" + c.dens;
+        if (c.selected) cls += " is-selected";
+        if (c.today) cls += " is-today";
+        if (c.past) cls += " is-past";
         html += '<button type="button" class="' + cls + '" data-date="' + c.iso + '"' +
           (c.occupied ? "" : " disabled") +
-          ' aria-label="' + c.iso + (c.occupied ? ", " + c.count + " events" : "") + '">';
+          ' aria-label="' + c.iso + (c.occupied ? ", " + c.count + " events" : "") +
+          (c.today ? ", today" : "") + '">';
         html += "<span>" + c.day + "</span>";
         html += "</button>";
       }
