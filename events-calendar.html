@@ -53,33 +53,55 @@
             <p class="disclaimer" id="disclaimer"></p>
             <div class="toolbar">
                 <div class="filters" role="toolbar" aria-label="Filters">
-                    <div class="filter-field">
-                        <label for="yearSelect" data-i18n="year">Year</label>
-                        <select id="yearSelect" aria-label="Year"></select>
+                    <div class="filter-field" data-cal-dd>
+                        <span class="filter-label" id="yearFilterLabel" data-i18n="year">Year</span>
+                        <div class="cal-dd" id="yearSelectDd">
+                            <button type="button" class="cal-dd__btn" id="yearSelectBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="yearSelectMenu" aria-labelledby="yearFilterLabel yearSelectValue">
+                                <span class="cal-dd__value" id="yearSelectValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="cal-dd__menu" id="yearSelectMenu" role="listbox" aria-labelledby="yearFilterLabel" aria-hidden="true"></ul>
+                        </div>
                     </div>
-                    <div class="filter-field">
-                        <label for="continentFilter" data-i18n="continent">Continent</label>
-                        <select id="continentFilter" aria-label="Continent">
-                            <option value="" data-i18n="allContinents">All continents</option>
-                        </select>
+                    <div class="filter-field" data-cal-dd>
+                        <span class="filter-label" id="continentFilterLabel" data-i18n="continent">Continent</span>
+                        <div class="cal-dd" id="continentFilterDd">
+                            <button type="button" class="cal-dd__btn" id="continentFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="continentFilterMenu" aria-labelledby="continentFilterLabel continentFilterValue">
+                                <span class="cal-dd__value" id="continentFilterValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="cal-dd__menu" id="continentFilterMenu" role="listbox" aria-labelledby="continentFilterLabel" aria-hidden="true"></ul>
+                        </div>
                     </div>
-                    <div class="filter-field">
-                        <label for="countryFilter" data-i18n="country">Country</label>
-                        <select id="countryFilter" aria-label="Country">
-                            <option value="" data-i18n="allCountries">All countries</option>
-                        </select>
+                    <div class="filter-field" data-cal-dd>
+                        <span class="filter-label" id="countryFilterLabel" data-i18n="country">Country</span>
+                        <div class="cal-dd" id="countryFilterDd">
+                            <button type="button" class="cal-dd__btn" id="countryFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="countryFilterMenu" aria-labelledby="countryFilterLabel countryFilterValue">
+                                <span class="cal-dd__value" id="countryFilterValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="cal-dd__menu" id="countryFilterMenu" role="listbox" aria-labelledby="countryFilterLabel" aria-hidden="true"></ul>
+                        </div>
                     </div>
-                    <div class="filter-field">
-                        <label for="statusFilter" data-i18n="confirmStatus">Confirm status</label>
-                        <select id="statusFilter" aria-label="Confirm status">
-                            <option value="" data-i18n="allConfirmStatuses">All confirm statuses</option>
-                        </select>
+                    <div class="filter-field" data-cal-dd>
+                        <span class="filter-label" id="statusFilterLabel" data-i18n="confirmStatus">Confirm status</span>
+                        <div class="cal-dd" id="statusFilterDd">
+                            <button type="button" class="cal-dd__btn" id="statusFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="statusFilterMenu" aria-labelledby="statusFilterLabel statusFilterValue">
+                                <span class="cal-dd__value" id="statusFilterValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="cal-dd__menu" id="statusFilterMenu" role="listbox" aria-labelledby="statusFilterLabel" aria-hidden="true"></ul>
+                        </div>
                     </div>
-                    <div class="filter-field">
-                        <label for="kindFilter" data-i18n="eventType">Event type</label>
-                        <select id="kindFilter" aria-label="Event type">
-                            <option value="" data-i18n="allEventTypes">All event types</option>
-                        </select>
+                    <div class="filter-field" data-cal-dd>
+                        <span class="filter-label" id="kindFilterLabel" data-i18n="eventType">Event type</span>
+                        <div class="cal-dd" id="kindFilterDd">
+                            <button type="button" class="cal-dd__btn" id="kindFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="kindFilterMenu" aria-labelledby="kindFilterLabel kindFilterValue">
+                                <span class="cal-dd__value" id="kindFilterValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="cal-dd__menu" id="kindFilterMenu" role="listbox" aria-labelledby="kindFilterLabel" aria-hidden="true"></ul>
+                        </div>
                     </div>
                 </div>
                 <div class="legend" aria-label="Calendar legend">
@@ -291,29 +313,56 @@
     return key;
   }
 
-  function fillSelect(sel, options, selected, allLabel) {
-    sel.innerHTML = "";
-    var all = document.createElement("option");
-    all.value = "";
-    all.textContent = allLabel;
-    sel.appendChild(all);
-    options.forEach(function (opt) {
-      var el = document.createElement("option");
-      el.value = opt.value;
-      el.textContent = opt.label;
-      if (opt.value === selected) el.selected = true;
-      sel.appendChild(el);
-    });
-    if (selected && !options.some(function (o) { return o.value === selected; })) {
-      all.selected = true;
+  function fillDropdown(menuEl, valueEl, options, selected, allLabel) {
+    menuEl.innerHTML = "";
+    var items = [];
+    if (allLabel != null) {
+      items.push({ value: "", label: allLabel });
     }
+    options.forEach(function (opt) {
+      items.push(opt);
+    });
+    var effective = selected;
+    if (effective && !items.some(function (o) { return o.value === effective; })) {
+      effective = "";
+    }
+    var currentLabel = allLabel || "";
+    items.forEach(function (opt) {
+      var li = document.createElement("li");
+      li.setAttribute("role", "none");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("role", "option");
+      btn.setAttribute("data-value", opt.value);
+      btn.textContent = opt.label;
+      if (opt.value === effective) {
+        btn.classList.add("is-current");
+        btn.setAttribute("aria-selected", "true");
+        currentLabel = opt.label;
+      } else {
+        btn.setAttribute("aria-selected", "false");
+      }
+      li.appendChild(btn);
+      menuEl.appendChild(li);
+    });
+    valueEl.textContent = currentLabel;
+  }
+
+  function closeAllFilterDropdowns() {
+    document.querySelectorAll(".cal-dd.is-open").forEach(function (dd) {
+      dd.classList.remove("is-open");
+      var btn = dd.querySelector(".cal-dd__btn");
+      var menu = dd.querySelector(".cal-dd__menu");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      if (menu) menu.setAttribute("aria-hidden", "true");
+    });
   }
 
   function refreshFilterOptions() {
     var continents = (state.data && state.data.continents) || CONTINENTS;
-    var contSel = document.getElementById("continentFilter");
-    fillSelect(
-      contSel,
+    fillDropdown(
+      document.getElementById("continentFilterMenu"),
+      document.getElementById("continentFilterValue"),
       continents.map(function (c) { return { value: c, label: continentLabel(c) }; }),
       state.continent,
       t("allContinents")
@@ -333,8 +382,9 @@
     if (state.country && countries[state.country] !== true) {
       state.country = "";
     }
-    fillSelect(
-      document.getElementById("countryFilter"),
+    fillDropdown(
+      document.getElementById("countryFilterMenu"),
+      document.getElementById("countryFilterValue"),
       countryList.map(function (c) { return { value: c, label: c }; }),
       state.country,
       t("allCountries")
@@ -355,8 +405,9 @@
     if (state.status && statusPresent[state.status] !== true) {
       state.status = "";
     }
-    fillSelect(
-      document.getElementById("statusFilter"),
+    fillDropdown(
+      document.getElementById("statusFilterMenu"),
+      document.getElementById("statusFilterValue"),
       statusOpts,
       state.status,
       t("allConfirmStatuses")
@@ -377,8 +428,9 @@
     if (state.kind && kindPresent[state.kind] !== true) {
       state.kind = "";
     }
-    fillSelect(
-      document.getElementById("kindFilter"),
+    fillDropdown(
+      document.getElementById("kindFilterMenu"),
+      document.getElementById("kindFilterValue"),
       kindOpts,
       state.kind,
       t("allEventTypes")
@@ -418,15 +470,16 @@
   }
 
   function renderYearSelect() {
-    var sel = document.getElementById("yearSelect");
-    sel.innerHTML = "";
-    (state.data.years || []).forEach(function (y) {
-      var opt = document.createElement("option");
-      opt.value = String(y);
-      opt.textContent = String(y);
-      if (y === state.year) opt.selected = true;
-      sel.appendChild(opt);
+    var years = (state.data.years || []).map(function (y) {
+      return { value: String(y), label: String(y) };
     });
+    fillDropdown(
+      document.getElementById("yearSelectMenu"),
+      document.getElementById("yearSelectValue"),
+      years,
+      String(state.year),
+      null
+    );
   }
 
   function renderCalendar() {
@@ -705,6 +758,7 @@
     state.kind = "";
     document.getElementById("weekendPanel").classList.remove("is-open");
     document.body.classList.remove("panel-open");
+    renderYearSelect();
     refreshFilterOptions();
     renderCalendar();
   }
@@ -729,31 +783,78 @@
     renderCalendar();
   }
 
-  document.getElementById("yearSelect").addEventListener("change", function (e) {
-    setYear(parseInt(e.target.value, 10));
+  document.getElementById("yearSelectMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    setYear(parseInt(btn.getAttribute("data-value"), 10));
   });
-  document.getElementById("continentFilter").addEventListener("change", function (e) {
-    state.continent = e.target.value || "";
+  document.getElementById("continentFilterMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    state.continent = btn.getAttribute("data-value") || "";
     state.country = "";
     state.status = "";
     state.kind = "";
     applyFiltersAndRender();
   });
-  document.getElementById("countryFilter").addEventListener("change", function (e) {
-    state.country = e.target.value || "";
+  document.getElementById("countryFilterMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    state.country = btn.getAttribute("data-value") || "";
     state.status = "";
     state.kind = "";
     applyFiltersAndRender();
   });
-  document.getElementById("statusFilter").addEventListener("change", function (e) {
-    state.status = e.target.value || "";
+  document.getElementById("statusFilterMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    state.status = btn.getAttribute("data-value") || "";
     state.kind = "";
     applyFiltersAndRender();
   });
-  document.getElementById("kindFilter").addEventListener("change", function (e) {
-    state.kind = e.target.value || "";
+  document.getElementById("kindFilterMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    state.kind = btn.getAttribute("data-value") || "";
     applyFiltersAndRender();
   });
+
+  document.querySelectorAll(".cal-dd").forEach(function (dd) {
+    var toggle = dd.querySelector(".cal-dd__btn");
+    var menu = dd.querySelector(".cal-dd__menu");
+    if (!toggle || !menu) return;
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = !dd.classList.contains("is-open");
+      closeAllFilterDropdowns();
+      if (open) {
+        dd.classList.add("is-open");
+        toggle.setAttribute("aria-expanded", "true");
+        menu.setAttribute("aria-hidden", "false");
+      }
+    });
+    dd.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener("click", function () {
+    closeAllFilterDropdowns();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeAllFilterDropdowns();
+  });
+
   document.getElementById("closePanel").addEventListener("click", function () {
     document.getElementById("weekendPanel").classList.remove("is-open");
     document.body.classList.remove("panel-open");
@@ -765,6 +866,7 @@
   window.WsdcChrome.onLangChange = function (lang) {
     state.lang = lang;
     applyStaticI18n();
+    renderYearSelect();
     refreshFilterOptions();
     renderCalendar();
     if (state.selectedDay) openDay(state.selectedDay);
@@ -773,6 +875,7 @@
     if (ev.detail && ev.detail.lang) {
       state.lang = ev.detail.lang;
       applyStaticI18n();
+      renderYearSelect();
       refreshFilterOptions();
       renderCalendar();
       if (state.selectedDay) openDay(state.selectedDay);

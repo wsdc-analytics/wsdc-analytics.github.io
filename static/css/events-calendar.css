@@ -72,6 +72,10 @@ body {
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border-color);
   min-width: 0;
+  /* 100px inset each side vs container content width */
+  width: calc(100% - 200px);
+  max-width: calc(100% - 200px);
+  margin-inline: auto;
 }
 
 h1 {
@@ -114,43 +118,162 @@ h1 {
 .filters {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 8px 12px;
+  align-items: flex-start;
+  gap: 8px 10px;
   min-width: 0;
 }
 
 .filter-field {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 4px;
   min-width: 0;
 }
 
-.filter-field label {
+.filter-label {
+  display: block;
+  width: 100%;
+  text-align: center;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-tertiary);
+  line-height: 1.2;
 }
 
-.filters select {
+/* Chrome-matched pill dropdowns (Dashboards pattern) */
+.cal-dd {
+  position: relative;
+  display: inline-flex;
+}
+
+.cal-dd__btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 14rem;
+  transition:
+    transform 140ms var(--ease-out),
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.cal-dd__btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.cal-dd.is-open .cal-dd__btn {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.cal-dd__btn:focus {
+  outline: none;
+}
+
+.cal-dd__btn:focus-visible {
+  outline: 2px solid var(--color-primary-dark);
+  outline-offset: 2px;
+}
+
+.cal-dd__btn:active {
+  transform: scale(0.97);
+}
+
+.cal-dd__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-dd__btn svg {
+  flex-shrink: 0;
+  transition: transform 180ms var(--ease-out);
+}
+
+.cal-dd.is-open .cal-dd__btn svg {
+  transform: rotate(180deg);
+}
+
+.cal-dd__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 20;
+  min-width: max(100%, 160px);
+  max-width: min(280px, calc(100vw - 32px));
+  max-height: min(280px, 50vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: #fff;
+  transform-origin: top center;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity 120ms var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+
+.cal-dd.is-open .cal-dd__menu {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  pointer-events: auto;
+  transition-duration: 180ms;
+}
+
+.cal-dd__menu li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.cal-dd__menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
   font: inherit;
   font-size: 13px;
-  padding: 6px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--text-primary);
-  min-width: 7rem;
-  max-width: 14rem;
-  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.filters select:focus-visible {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+.cal-dd__menu button:hover {
+  background: var(--bg-tertiary);
+}
+
+.cal-dd__menu button.is-current {
+  font-weight: 600;
 }
 
 .legend {
@@ -562,10 +685,15 @@ h1 {
   }
   .page-shell { min-height: calc(100dvh - 72px); }
   .container { min-height: 0; padding: 12px 14px 16px; }
+  .page-head {
+    width: 100%;
+    max-width: 100%;
+  }
   h1 { font-size: 1.25rem; }
   .subtitle { font-size: 13px; }
-  .filters select { max-width: none; min-width: 0; flex: 1; }
   .filter-field { flex: 1 1 42%; }
+  .cal-dd { width: 100%; }
+  .cal-dd__btn { width: 100%; max-width: none; }
   .year-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: none;
@@ -590,7 +718,8 @@ h1 {
   .event-card,
   .panel-close,
   .tooltip,
-  .filters select {
+  .cal-dd__btn,
+  .cal-dd__menu {
     transition: none;
   }
   .tooltip.is-visible {
