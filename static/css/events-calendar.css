@@ -321,10 +321,10 @@ h1 {
 .cal-stats {
   position: absolute;
   top: 8px;
-  left: max(4px, calc(50% - 410px - 96px));
+  left: max(4px, calc(50% - 410px - 104px));
   transform: none;
   z-index: 2;
-  width: 84px;
+  width: 92px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -456,6 +456,22 @@ h1 {
   letter-spacing: -0.01em;
   line-height: 1.1;
   color: var(--color-primary-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.cal-stats__nums {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.cal-stats__of {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
 }
 
