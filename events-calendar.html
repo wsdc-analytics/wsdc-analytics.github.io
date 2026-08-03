@@ -137,19 +137,22 @@
             </aside>
             <div id="calendarRoot"></div>
             <aside class="cal-legend" aria-label="Calendar legend">
-                <div class="cal-legend__item" title="Events overlapping that calendar day">
-                    <i class="swatch dens-1"></i>
-                    <span data-i18n="legDens1">1–2</span>
+                <div class="cal-legend__title"><span data-i18n="legDensity">Events/day</span>:</div>
+                <div class="cal-legend__group">
+                    <div class="cal-legend__item" title="Events overlapping that calendar day">
+                        <i class="swatch dens-1"></i>
+                        <span data-i18n="legDens1">1–2</span>
+                    </div>
+                    <div class="cal-legend__item" title="Events overlapping that calendar day">
+                        <i class="swatch dens-2"></i>
+                        <span data-i18n="legDens2">3–4</span>
+                    </div>
+                    <div class="cal-legend__item" title="Events overlapping that calendar day">
+                        <i class="swatch dens-3"></i>
+                        <span data-i18n="legDens3">5+</span>
+                    </div>
                 </div>
-                <div class="cal-legend__item" title="Events overlapping that calendar day">
-                    <i class="swatch dens-2"></i>
-                    <span data-i18n="legDens2">3–4</span>
-                </div>
-                <div class="cal-legend__item" title="Events overlapping that calendar day">
-                    <i class="swatch dens-3"></i>
-                    <span data-i18n="legDens3">5+</span>
-                </div>
-                <div class="cal-legend__note" data-i18n="legDensity">events/day</div>
+                <div class="cal-legend__gap" aria-hidden="true"></div>
                 <div class="cal-legend__item">
                     <i class="swatch empty-day"></i>
                     <span data-i18n="legEmpty">Empty day</span>
@@ -202,7 +205,7 @@
       legDens1: "1–2",
       legDens2: "3–4",
       legDens3: "5+",
-      legDensity: "events/day",
+      legDensity: "Events/day",
       legEmpty: "Empty day",
       legToday: "Today",
       statConfirmed: "Confirmed",
@@ -243,7 +246,7 @@
       legDens1: "1–2",
       legDens2: "3–4",
       legDens3: "5+",
-      legDensity: "ивентов/день",
+      legDensity: "Ивентов/день",
       legEmpty: "Пустой день",
       legToday: "Сегодня",
       statConfirmed: "Confirmed",
@@ -284,7 +287,7 @@
       legDens1: "1–2",
       legDens2: "3–4",
       legDens3: "5+",
-      legDensity: "eventos/día",
+      legDensity: "Eventos/día",
       legEmpty: "Dia vacío",
       legToday: "Hoy",
       statConfirmed: "Confirmed",

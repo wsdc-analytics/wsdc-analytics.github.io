@@ -486,12 +486,24 @@ h1 {
   min-width: 0;
 }
 
-.cal-legend__note {
+.cal-legend__title {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-tertiary);
-  margin: -2px 0 2px 16px;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.cal-legend__group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cal-legend__gap {
+  height: 10px;
+  flex-shrink: 0;
 }
 
 #calendarRoot {
@@ -942,9 +954,17 @@ h1 {
     align-items: center;
     gap: 8px 12px;
   }
-  .cal-legend__note {
-    margin: 0;
+  .cal-legend__title {
     width: 100%;
+    margin-bottom: 0;
+  }
+  .cal-legend__group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .cal-legend__gap {
+    display: none;
   }
   .calendar-stage {
     flex-direction: column;
