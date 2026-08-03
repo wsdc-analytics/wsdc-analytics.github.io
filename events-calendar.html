@@ -48,35 +48,37 @@
     <div class="page-shell">
     <main id="main" class="container">
         <header class="page-head">
-            <div class="head-top">
-                <h1 data-i18n="title">Events Calendar</h1>
-            </div>
-            <p class="how-to" data-i18n="howTo">Highlighted days fall inside an event start-end range. Click a day to open the map and cards.</p>
+            <h1 data-i18n="title">Events Calendar</h1>
+            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Occupied days have at least one event in range — click a day for the map and cards.</p>
             <p class="disclaimer" id="disclaimer"></p>
-            <div class="filters" role="toolbar" aria-label="Filters">
-                <div class="filter-field">
-                    <label for="yearSelect" data-i18n="year">Year</label>
-                    <select id="yearSelect" aria-label="Year"></select>
+            <div class="toolbar">
+                <div class="filters" role="toolbar" aria-label="Filters">
+                    <div class="filter-field">
+                        <label for="yearSelect" data-i18n="year">Year</label>
+                        <select id="yearSelect" aria-label="Year"></select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="continentFilter" data-i18n="continent">Continent</label>
+                        <select id="continentFilter" aria-label="Continent">
+                            <option value="" data-i18n="allContinents">All continents</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="countryFilter" data-i18n="country">Country</label>
+                        <select id="countryFilter" aria-label="Country">
+                            <option value="" data-i18n="allCountries">All countries</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="statusFilter" data-i18n="status">Status</label>
+                        <select id="statusFilter" aria-label="Status">
+                            <option value="" data-i18n="allStatuses">All statuses</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-field">
-                    <label for="regionFilter" data-i18n="region">Region</label>
-                    <select id="regionFilter" disabled aria-disabled="true" title="Coming soon">
-                        <option data-i18n="allRegions">All regions</option>
-                    </select>
-                </div>
-                <div class="filter-field">
-                    <label for="statusFilter" data-i18n="status">Status</label>
-                    <select id="statusFilter" disabled aria-disabled="true" title="Coming soon">
-                        <option data-i18n="allStatuses">All statuses</option>
-                    </select>
-                </div>
-                <span class="filter-soon" data-i18n="filtersSoon">More filters soon</span>
-                <div class="legend" aria-hidden="true">
-                    <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied</span></span>
-                    <span><i class="swatch confirmed"></i> <span data-i18n="legConfirmed">Confirmed</span></span>
-                    <span><i class="swatch expected"></i> <span data-i18n="legExpected">Expected</span></span>
-                    <span><i class="swatch cancelled"></i> <span data-i18n="legCancelled">Cancelled</span></span>
-                    <span><i class="swatch hiatus"></i> <span data-i18n="legHiatus">Hiatus</span></span>
+                <div class="legend" aria-label="Calendar legend">
+                    <span><i class="swatch occupied"></i> <span data-i18n="legOccupied">Occupied day</span></span>
+                    <span><i class="swatch empty-day"></i> <span data-i18n="legEmpty">Empty day</span></span>
                 </div>
             </div>
         </header>
@@ -109,19 +111,17 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      howTo: "Highlighted days fall inside an event start-end range. Click a day to open the map and cards.",
+      subtitle: "Year overview of WSDC registry and trial events. Occupied days have at least one event in range — click a day for the map and cards.",
       year: "Year",
-      region: "Region",
+      continent: "Continent",
+      country: "Country",
       status: "Status",
-      allRegions: "All regions",
+      allContinents: "All continents",
+      allCountries: "All countries",
       allStatuses: "All statuses",
-      filtersSoon: "More filters soon",
       close: "Close",
       legOccupied: "Occupied day",
-      legConfirmed: "Confirmed",
-      legExpected: "Expected",
-      legCancelled: "Cancelled",
-      legHiatus: "Hiatus",
+      legEmpty: "Empty day",
       empty: "No day-precision events for this year yet.",
       day: "Day",
       noGeo: "Some events have no coordinates - listed below only.",
@@ -132,24 +132,24 @@
       projected: "Projected from",
       registry: "Registry Event",
       trial: "Trial Event",
+      continents: { America: "America", Europe: "Europe", Asia: "Asia", Australia: "Australia" },
+      statuses: { confirmed: "Confirmed", expected: "Expected", cancelled: "Cancelled", hiatus: "Hiatus" },
       months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
       dow: ["M","T","W","T","F","S","S"]
     },
     ru: {
       title: "Календарь ивентов",
-      howTo: "Подсвеченные дни входят в период ивента (start-end). Клик по дню открывает карту и карточки.",
+      subtitle: "Годовой обзор registry и trial ивентов WSDC. Занятые дни входят в период ивента — клик открывает карту и карточки.",
       year: "Год",
-      region: "Регион",
+      continent: "Континент",
+      country: "Страна",
       status: "Статус",
-      allRegions: "Все регионы",
+      allContinents: "Все континенты",
+      allCountries: "Все страны",
       allStatuses: "Все статусы",
-      filtersSoon: "Скоро больше фильтров",
       close: "Закрыть",
       legOccupied: "Занятый день",
-      legConfirmed: "Подтверждён",
-      legExpected: "Ожидается",
-      legCancelled: "Отменён",
-      legHiatus: "Hiatus",
+      legEmpty: "Пустой день",
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
       noGeo: "У части ивентов нет координат - только список.",
@@ -160,24 +160,24 @@
       projected: "Проекция с",
       registry: "Registry Event",
       trial: "Trial Event",
+      continents: { America: "Америка", Europe: "Европа", Asia: "Азия", Australia: "Австралия" },
+      statuses: { confirmed: "Подтверждён", expected: "Ожидается", cancelled: "Отменён", hiatus: "Hiatus" },
       months: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
       dow: ["П","В","С","Ч","П","С","В"]
     },
     es: {
       title: "Calendario de eventos",
-      howTo: "Los dias resaltados estan dentro del rango inicio-fin del evento. Haz clic para el mapa y las fichas.",
+      subtitle: "Vista anual de eventos registry y trial de WSDC. Los dias ocupados tienen al menos un evento en rango — haz clic para el mapa y las fichas.",
       year: "Año",
-      region: "Región",
+      continent: "Continente",
+      country: "País",
       status: "Estado",
-      allRegions: "Todas las regiones",
+      allContinents: "Todos los continentes",
+      allCountries: "Todos los países",
       allStatuses: "Todos los estados",
-      filtersSoon: "Más filtros pronto",
       close: "Cerrar",
       legOccupied: "Dia ocupado",
-      legConfirmed: "Confirmado",
-      legExpected: "Previsto",
-      legCancelled: "Cancelado",
-      legHiatus: "Hiatus",
+      legEmpty: "Dia vacío",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
       noGeo: "Algunos eventos no tienen coordenadas - solo en la lista.",
@@ -188,15 +188,23 @@
       projected: "Proyectado desde",
       registry: "Registry Event",
       trial: "Trial Event",
+      continents: { America: "América", Europe: "Europa", Asia: "Asia", Australia: "Australia" },
+      statuses: { confirmed: "Confirmado", expected: "Previsto", cancelled: "Cancelado", hiatus: "Hiatus" },
       months: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
       dow: ["L","M","X","J","V","S","D"]
     }
   };
 
+  var CONTINENTS = ["America", "Europe", "Asia", "Australia"];
+  var STATUSES = ["confirmed", "expected", "cancelled", "hiatus"];
+
   var state = {
     lang: "en",
     data: null,
     year: null,
+    continent: "",
+    country: "",
+    status: "",
     byDay: {},
     selectedDay: null,
     map: null,
@@ -221,7 +229,94 @@
   }
 
   function eventsForYear(year) {
+    return (state.data.events || []).filter(function (e) {
+      if (e.year !== year) return false;
+      if (state.continent && e.continent !== state.continent) return false;
+      if (state.country && e.country !== state.country) return false;
+      if (state.status && e.status !== state.status) return false;
+      return true;
+    });
+  }
+
+  function eventsInYearRaw(year) {
     return (state.data.events || []).filter(function (e) { return e.year === year; });
+  }
+
+  function continentLabel(key) {
+    var pack = (I18N[state.lang] || I18N.en).continents || {};
+    return pack[key] || key;
+  }
+
+  function statusLabel(key) {
+    var pack = (I18N[state.lang] || I18N.en).statuses || {};
+    return pack[key] || key;
+  }
+
+  function fillSelect(sel, options, selected, allLabel) {
+    sel.innerHTML = "";
+    var all = document.createElement("option");
+    all.value = "";
+    all.textContent = allLabel;
+    sel.appendChild(all);
+    options.forEach(function (opt) {
+      var el = document.createElement("option");
+      el.value = opt.value;
+      el.textContent = opt.label;
+      if (opt.value === selected) el.selected = true;
+      sel.appendChild(el);
+    });
+    if (selected && !options.some(function (o) { return o.value === selected; })) {
+      all.selected = true;
+    }
+  }
+
+  function refreshFilterOptions() {
+    var continents = (state.data && state.data.continents) || CONTINENTS;
+    var contSel = document.getElementById("continentFilter");
+    fillSelect(
+      contSel,
+      continents.map(function (c) { return { value: c, label: continentLabel(c) }; }),
+      state.continent,
+      t("allContinents")
+    );
+
+    var yearEvents = eventsInYearRaw(state.year).filter(function (e) {
+      if (state.continent && e.continent !== state.continent) return false;
+      return true;
+    });
+    var countries = {};
+    yearEvents.forEach(function (e) {
+      if (e.country) countries[e.country] = true;
+    });
+    var countryList = Object.keys(countries).sort(function (a, b) {
+      return a.localeCompare(b);
+    });
+    if (state.country && countries[state.country] !== true) {
+      state.country = "";
+    }
+    fillSelect(
+      document.getElementById("countryFilter"),
+      countryList.map(function (c) { return { value: c, label: c }; }),
+      state.country,
+      t("allCountries")
+    );
+
+    var statusPresent = {};
+    eventsInYearRaw(state.year).forEach(function (e) {
+      if (e.status) statusPresent[e.status] = true;
+    });
+    var statusOpts = STATUSES.filter(function (s) { return statusPresent[s]; }).map(function (s) {
+      return { value: s, label: statusLabel(s) };
+    });
+    if (state.status && statusPresent[state.status] !== true) {
+      state.status = "";
+    }
+    fillSelect(
+      document.getElementById("statusFilter"),
+      statusOpts,
+      state.status,
+      t("allStatuses")
+    );
   }
 
   function isoFromDate(d) {
@@ -451,7 +546,7 @@
         "<h3>" + esc(e.name) + "</h3>" +
         '<div class="event-meta">' + span + (where ? " · " + esc(where) : "") + "</div>" +
         '<div class="badges">' +
-        '<span class="badge ' + esc(e.status) + '">' + esc(e.status) + "</span>" +
+        '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
         '<span class="badge ' + (e.kind === "trial" ? "trial" : "") + '">' +
         esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span>" +
         "</div></button>";
@@ -468,6 +563,9 @@
   function selectEvent(id) {
     var events = eventsForYear(state.year);
     var e = events.find(function (x) { return x.id === id; });
+    if (!e) {
+      e = eventsInYearRaw(state.year).find(function (x) { return x.id === id; });
+    }
     if (!e) return;
     document.querySelectorAll(".event-card").forEach(function (c) {
       c.classList.toggle("is-active", c.getAttribute("data-id") === id);
@@ -479,7 +577,7 @@
       (e.end_date ? " · " + t("ends") + ": " + esc(e.end_date) : "") + "</p>";
     if (where) html += '<p class="event-meta">' + t("location") + ": " + esc(where) + "</p>";
     html += '<div class="badges">' +
-      '<span class="badge ' + esc(e.status) + '">' + esc(e.status) + "</span>" +
+      '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
       '<span class="badge ' + (e.kind === "trial" ? "trial" : "") + '">' +
       esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
     if (e.projected_from_year) {
@@ -497,8 +595,18 @@
   function setYear(y) {
     state.year = y;
     state.selectedDay = null;
+    state.country = "";
     document.getElementById("weekendPanel").classList.remove("is-open");
     document.body.classList.remove("panel-open");
+    refreshFilterOptions();
+    renderCalendar();
+  }
+
+  function applyFiltersAndRender() {
+    state.selectedDay = null;
+    document.getElementById("weekendPanel").classList.remove("is-open");
+    document.body.classList.remove("panel-open");
+    refreshFilterOptions();
     renderCalendar();
   }
 
@@ -510,11 +618,25 @@
     }
     applyStaticI18n();
     renderYearSelect();
+    refreshFilterOptions();
     renderCalendar();
   }
 
   document.getElementById("yearSelect").addEventListener("change", function (e) {
     setYear(parseInt(e.target.value, 10));
+  });
+  document.getElementById("continentFilter").addEventListener("change", function (e) {
+    state.continent = e.target.value || "";
+    state.country = "";
+    applyFiltersAndRender();
+  });
+  document.getElementById("countryFilter").addEventListener("change", function (e) {
+    state.country = e.target.value || "";
+    applyFiltersAndRender();
+  });
+  document.getElementById("statusFilter").addEventListener("change", function (e) {
+    state.status = e.target.value || "";
+    applyFiltersAndRender();
   });
   document.getElementById("closePanel").addEventListener("click", function () {
     document.getElementById("weekendPanel").classList.remove("is-open");
@@ -527,6 +649,7 @@
   window.WsdcChrome.onLangChange = function (lang) {
     state.lang = lang;
     applyStaticI18n();
+    refreshFilterOptions();
     renderCalendar();
     if (state.selectedDay) openDay(state.selectedDay);
   };
@@ -534,6 +657,7 @@
     if (ev.detail && ev.detail.lang) {
       state.lang = ev.detail.lang;
       applyStaticI18n();
+      refreshFilterOptions();
       renderCalendar();
       if (state.selectedDay) openDay(state.selectedDay);
     }
