@@ -803,6 +803,18 @@
     return kind === "trial" ? "trial" : "registry";
   }
 
+  function tipGroupLabel(key) {
+    if (key === "expected") return t("statExpected");
+    if (key === "paused") return t("statPaused");
+    return t("statConfirmed");
+  }
+
+  function tipGroupBadgeClass(key) {
+    if (key === "expected") return "expected";
+    if (key === "paused") return "paused";
+    return "confirmed";
+  }
+
   function buildDayTooltipHtml(list) {
     var buckets = { confirmed: [], expected: [], paused: [] };
     (list || []).forEach(function (e) {
@@ -825,6 +837,11 @@
       var rows = shown[key];
       if (!rows.length) return;
       html += '<div class="tooltip-group tooltip-group--' + key + '">';
+      html +=
+        '<div class="tooltip-group__label">' +
+        '<span class="badge ' + tipGroupBadgeClass(key) + '">' +
+        esc(tipGroupLabel(key)) +
+        "</span></div>";
       rows.forEach(function (e) {
         var where = [e.city, e.country].filter(Boolean).join(", ");
         html +=
@@ -834,8 +851,9 @@
           '<div class="tooltip-row__where">' + esc(where) + "</div>" +
           "</div>" +
           '<div class="tooltip-row__meta">' +
-          '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
-          '<span class="badge ' + tipKindClass(e.kind) + '">' + esc(tipKindLabel(e.kind)) + "</span>" +
+          '<span class="badge ' + tipKindClass(e.kind) + '">' +
+          esc(tipKindLabel(e.kind)) +
+          "</span>" +
           "</div></div>";
       });
       html += "</div>";
