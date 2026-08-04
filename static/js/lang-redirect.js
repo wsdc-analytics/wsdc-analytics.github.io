@@ -57,13 +57,17 @@
     if (!current) return;
 
     var params = new URLSearchParams(window.location.search);
-    var forced = params.get("setlang");
+    // Treat both setlang and lang as explicit user choice.
+    // If present, do not run auto language detection redirect.
+    var forced = params.get("setlang") || params.get("lang");
     if (forced && ["ru", "en", "es"].indexOf(forced) !== -1) {
       localStorage.setItem("wsdc-lang", forced);
       params.delete("setlang");
+      params.delete("lang");
       var cleanQuery = params.toString();
       var forcedTarget = buildTarget(current.base, forced);
       var forcedUrl = forcedTarget + (cleanQuery ? "?" + cleanQuery : "") + window.location.hash;
+      if (forcedTarget === current.file && !cleanQuery) return;
       window.location.replace(forcedUrl);
       return;
     }
