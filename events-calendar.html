@@ -648,9 +648,15 @@
   }
 
   function renderYearSelect() {
-    var years = (state.data.years || []).map(function (y) {
+    var years = (state.data.years || []).filter(function (y) {
+      return Number(y) >= 2025;
+    }).map(function (y) {
       return { value: String(y), label: String(y) };
     });
+    if (!years.length) return;
+    if (!years.some(function (opt) { return Number(opt.value) === state.year; })) {
+      state.year = Number(years[0].value);
+    }
     fillDropdown(
       document.getElementById("yearSelectMenu"),
       document.getElementById("yearSelectValue"),
