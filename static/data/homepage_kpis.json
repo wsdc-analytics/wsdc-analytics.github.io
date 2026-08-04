@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-30",
-  "as_of": "2026-07-30",
+  "generated_at": "2026-08-04",
+  "as_of": "2026-08-04",
   "data_through": "2026-08-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,53 +17,53 @@
     "year_note": "Year increment uses WSDC event_year (not calendar start_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2642,
-    "points": 712810.0,
-    "dancers": 27222
+    "events": 2643,
+    "points": 713273.0,
+    "dancers": 27231
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-07-20",
-        "end": "2026-07-26",
-        "since_previous_ended": "2026-06-30",
-        "iso_week": "2026-W30",
+        "start": "2026-07-27",
+        "end": "2026-08-02",
+        "since_previous_ended": "2026-07-31",
+        "iso_week": "2026-W31",
         "bucket": "edition_start_date",
-        "event_names": "Florida Dance Magic, Infinite Swing, Saint Petersburg WCS Nights, Sea Sun and Swing"
+        "event_names": "Lisbon Westie Fest"
       },
       "increment": {
-        "events": 4,
-        "points": 1393.0,
-        "dancers": 67
+        "events": 1,
+        "points": 463.0,
+        "dancers": 10
       }
     },
     "month": {
       "label": "Month",
       "period": {
-        "start": "2026-07-01",
-        "end": "2026-07-30",
-        "since_previous_ended": "2026-06-30",
+        "start": "2026-08-01",
+        "end": "2026-08-04",
+        "since_previous_ended": "2026-07-31",
         "bucket": "edition_start_date"
       },
       "increment": {
-        "events": 17,
-        "points": 6765.0,
-        "dancers": 261
+        "events": 0,
+        "points": 0.0,
+        "dancers": 0
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-07-30",
+        "end": "2026-08-04",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 103,
-        "points": 43336.0,
-        "dancers": 1443
+        "events": 104,
+        "points": 43799.0,
+        "dancers": 1452
       }
     }
   }
