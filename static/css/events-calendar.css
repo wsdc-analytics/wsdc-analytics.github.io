@@ -4,7 +4,6 @@
   --color-accent: #2563eb;
   --bg-secondary: #FFFFFF;
   --bg-tertiary: #f7fafc;
-  --tip-bg: #F8F5F0;
   --text-primary: #0B1221;
   --text-secondary: #4a5568;
   --text-tertiary: #6B7280;
@@ -851,7 +850,7 @@ h1 {
   position: fixed;
   z-index: 80;
   max-width: min(360px, calc(100vw - 16px));
-  background: var(--tip-bg);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
   border: 1px solid rgba(15, 23, 42, 0.08);
   box-shadow: var(--shadow-tip);
