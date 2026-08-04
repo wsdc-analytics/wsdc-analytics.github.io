@@ -15,16 +15,19 @@ Uses event_editions.csv precise calendar dates:
   start_date, end_date, calendar_status, event_occurred
 (edition_date stays YYYY-MM-01 for Tableau.)
 
-- week: editions bucketed by ISO week of start_date; latest non-empty week
+Week/month buckets use end_date (WSDC points month attribution follows
+event end; cross-month weekends land in the month they finish).
+
+- week: editions bucketed by ISO week of end_date; latest non-empty week
   at/before as_of (do not advance into a week with no occurred events yet)
-- month: occurred editions with start_date in the current month (through as_of)
-- year: WSDC results year (event_year), not calendar start_date year — so
+- month: occurred editions with end_date in the current month (through as_of)
+- year: WSDC results year (event_year), not calendar end_date year — so
   New Year events that start in late December still count toward the new year
 
 Within each window:
 - events / points: activity in the window (year = all results with that event_year)
 - dancers: NEW dancers — unique dancer_id whose first WSDC points fall in
-  the window (week/month: by first edition start_date; year: by first event_year)
+  the window (week/month: by first edition end_date; year: by first event_year)
 
 Optional reference: edition_calendar_dates.csv (planned calendar incl. future/hiatus).
 
@@ -238,20 +241,20 @@ def load_editions(source: Path) -> list[Edition]:
     return editions
 
 
-def edition_start_index(editions: list[Edition]) -> dict[tuple[str, int], date]:
-    """(event_name, event_year) -> earliest start_date for that edition key."""
+def edition_end_index(editions: list[Edition]) -> dict[tuple[str, int], date]:
+    """(event_name, event_year) -> earliest end_date for that edition key."""
     index: dict[tuple[str, int], date] = {}
     for ed in editions:
         key = (ed.event_name, ed.event_year)
         prev = index.get(key)
-        if prev is None or ed.start_date < prev:
-            index[key] = ed.start_date
+        if prev is None or ed.end_date < prev:
+            index[key] = ed.end_date
     return index
 
 
 def load_result_aggs(
     source: Path,
-    edition_starts: dict[tuple[str, int], date],
+    edition_ends: dict[tuple[str, int], date],
 ) -> tuple[
     dict[tuple[str, int], ResultAgg],
     dict[str, int | float],
@@ -290,7 +293,8 @@ def load_result_aggs(
             by_event[(name, year)].add(dancer_id, points)
             if dancer_id:
                 all_dancers.add(dancer_id)
-                event_day = edition_starts.get((name, year))
+                # Align first-points day with WSDC month attribution (event end).
+                event_day = edition_ends.get((name, year))
                 if event_day is None:
                     event_day = date(year, max(1, min(12, month)), 1)
                 prev = first_points.get(dancer_id)
@@ -368,12 +372,12 @@ def build_week_increment(
     first_points: dict[str, date],
     as_of: date,
 ) -> dict:
-    """Latest non-empty ISO week by edition start_date (occurred events only)."""
+    """Latest non-empty ISO week by edition end_date (occurred events only)."""
     by_week: dict[tuple[int, int], list[Edition]] = defaultdict(list)
     for ed in editions:
-        if not ed.occurred or ed.start_date > as_of:
+        if not ed.occurred or ed.end_date > as_of:
             continue
-        iso = ed.start_date.isocalendar()
+        iso = ed.end_date.isocalendar()
         by_week[(int(iso.year), int(iso.week))].append(ed)
 
     as_of_week = as_of.isocalendar()
@@ -405,7 +409,7 @@ def build_week_increment(
         since=since,
         extra={
             "iso_week": f"{cur[0]}-W{cur[1]:02d}",
-            "bucket": "edition_start_date",
+            "bucket": "edition_end_date",
             "event_names": ", ".join(sorted({e.event_name for e in week_editions})),
         },
     )
@@ -423,9 +427,9 @@ def build_month_increment(
         ed
         for ed in editions
         if ed.occurred
-        and ed.start_date.year == as_of.year
-        and ed.start_date.month == as_of.month
-        and ed.start_date <= as_of
+        and ed.end_date.year == as_of.year
+        and ed.end_date.month == as_of.month
+        and ed.end_date <= as_of
     ]
     period_start = month_start(*cur)
     new_dancers = count_new_dancers(first_points, period_start, as_of)
@@ -436,7 +440,10 @@ def build_month_increment(
         end=as_of,
         snap=snap,
         since=month_end(*prev),
-        extra={"bucket": "edition_start_date"},
+        extra={
+            "bucket": "edition_end_date",
+            "event_names": ", ".join(sorted({e.event_name for e in month_editions})),
+        },
     )
 
 
@@ -475,9 +482,9 @@ def main() -> None:
     as_of_arg = date.fromisoformat(args.as_of) if args.as_of else None
 
     editions = load_editions(source)
-    edition_starts = edition_start_index(editions)
+    edition_ends = edition_end_index(editions)
     by_event, result_totals, first_points, first_wsdc_year, data_through = load_result_aggs(
-        source, edition_starts
+        source, edition_ends
     )
     occurred_editions = count_occurred_editions(source)
 
@@ -485,9 +492,9 @@ def main() -> None:
     if as_of > data_through:
         # allow as_of up to today even if results month-end is later via editions
         pass
-    # Cap only if beyond latest edition start we know about
-    latest_start = max((ed.start_date for ed in editions if ed.occurred), default=data_through)
-    if as_of > max(data_through, latest_start) and as_of > date.today():
+    # Cap only if beyond latest edition end we know about
+    latest_end = max((ed.end_date for ed in editions if ed.occurred), default=data_through)
+    if as_of > max(data_through, latest_end) and as_of > date.today():
         as_of = date.today()
 
     totals = {
@@ -521,19 +528,27 @@ def main() -> None:
             "dancers_total": "count of unique dancer_id in dancers_results_info.csv",
             "dancers_increment": (
                 "new dancers = unique dancer_id whose first WSDC points fall in the window "
-                "(week/month: earliest edition start_date; year: event_year of that first event)"
+                "(week/month: earliest edition end_date; year: event_year of that first event)"
             ),
             "edition_dates": "event_editions.csv start_date/end_date (edition_date remains YYYY-MM-01 for Tableau)",
             "calendar_archive": str(calendar_path) if calendar_path.exists() else None,
             "as_of_note": "as_of defaults to today.",
             "increment_note": (
                 "Events/points increments count activity in the window. "
-                "Dancers increment counts new dancers (first WSDC points), not unique participants."
+                "Dancers increment counts new dancers (first WSDC points), not unique participants. "
+                "Week/month windows use edition end_date to match WSDC points-month attribution."
             ),
-            "week_note": "Week uses ISO week of edition start_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
-            "month_note": "Month increment = occurred editions with start_date in the current month through as_of; new dancers with first points in that window.",
+            "week_note": (
+                "Week uses ISO week of edition end_date for occurred events. Never advances to a week "
+                "with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline "
+                "since_previous_ended is end of previous calendar month."
+            ),
+            "month_note": (
+                "Month increment = occurred editions with end_date in the current month through as_of "
+                "(aligns with WSDC end-date month for points); new dancers with first points in that window."
+            ),
             "year_note": (
-                "Year increment uses WSDC event_year (not calendar start_date year), so late-December "
+                "Year increment uses WSDC event_year (not calendar end_date year), so late-December "
                 "New Year events count toward the new year. Events = distinct event_name in results "
                 "for that event_year; points = sum for those events; dancers = new dancers whose "
                 "first points were at an event_year in this year."
