@@ -795,6 +795,16 @@
     });
   }
 
+  function tipKindRank(kind) {
+    return kind === "trial" ? 1 : 0;
+  }
+
+  function sortConfirmedTipEvents(a, b) {
+    var kindDiff = tipKindRank(a.kind) - tipKindRank(b.kind);
+    if (kindDiff !== 0) return kindDiff;
+    return sortEventsByName(a, b);
+  }
+
   function tipKindLabel(kind) {
     return kind === "trial" ? t("statTrial") : t("statRegistry");
   }
@@ -820,9 +830,9 @@
     (list || []).forEach(function (e) {
       buckets[tipGroupKey(e.status)].push(e);
     });
-    ["confirmed", "expected", "paused"].forEach(function (key) {
-      buckets[key].sort(sortEventsByName);
-    });
+    buckets.confirmed.sort(sortConfirmedTipEvents);
+    buckets.expected.sort(sortEventsByName);
+    buckets.paused.sort(sortEventsByName);
     var ordered = buckets.confirmed.concat(buckets.expected, buckets.paused);
     var more = Math.max(0, ordered.length - 10);
     ordered = ordered.slice(0, 10);
