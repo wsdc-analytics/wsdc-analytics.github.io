@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Best of the Best WCS (Сидней): портрет события через поинты Jack&amp;Jill WSDC">
+  <title>Best of the Best WCS: портрет события | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1f2e;
+      --ink-soft: #3d4659;
+      --muted: #6b7280;
+      --line: #e6e8ee;
+      --paper: #ffffff;
+      --wash: #f4f5f8;
+      --accent: #0f766e;
+      --hero-tint: rgba(17, 24, 39, 0.62);
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shell-max: 980px;
+      --rail-max: 700px;
+      --pad-x: clamp(1rem, 4vw, 5rem);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "DM Sans", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.7;
+      color: var(--ink);
+      background: var(--paper);
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      text-align: left;
+    }
+    .magazine-container {
+      max-width: var(--shell-max);
+      margin-left: auto;
+      margin-right: auto;
+      background: var(--paper);
+    }
+
+    /* Hero stack (series):
+       1) event asset from site (blurred) — bottom
+       2) locked ChatGPT underlay — middle, brightness matched to other articles
+       3) slate wash like article_3year_rule (::before opacity ~0.5)
+       4) title / subtitle — top */
+    .article-header {
+      --hero-slate: #2d3748;
+      background: var(--hero-slate);
+      color: #fff;
+      padding: 100px var(--pad-x) 80px;
+      position: relative;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+    }
+    .article-header-media {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .article-header-event,
+    .article-header-underlay,
+    .article-header-wash {
+      position: absolute;
+      inset: 0;
+    }
+    /* Simple: event logo centered on series underlay (same stack as Arizona) */
+    .article-header-event {
+      inset: 0;
+      background: url("assets/logo_icon.png") center 34% / auto 90% no-repeat;
+      filter: none;
+      opacity: 0.95;
+      transform: none;
+    }
+    .article-header-underlay {
+      background: url("../assets/hero_underlay.png") center / cover no-repeat;
+      opacity: 0.87;
+      mix-blend-mode: screen;
+    }
+    .article-header-wash {
+      background:
+        linear-gradient(180deg, rgba(45, 55, 72, 0.28) 0%, rgba(45, 55, 72, 0.48) 42%, rgba(20, 28, 42, 0.72) 100%);
+      opacity: 1;
+    }
+    .article-header > *:not(.article-header-media) { position: relative; z-index: 1; }
+    .article-eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      opacity: 0.78;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+    .article-title {
+      font-family: inherit;
+      font-size: clamp(2.1rem, 4.5vw, 2.875rem);
+      font-weight: 700;
+      line-height: 1.05;
+      margin: 0 0 18px;
+      letter-spacing: -0.04em;
+      max-width: 18ch;
+    }
+    .article-subtitle {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      max-width: 40rem;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .article-content {
+      padding: 4rem var(--pad-x) 2.5rem;
+    }
+    /* Same as article_3year_rule / secondary_role: narrow 700px text column */
+    .article-rail {
+      width: 100%;
+      max-width: var(--rail-max);
+      margin-left: auto;
+      margin-right: auto;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+      -ms-hyphens: none;
+      word-break: normal;
+      overflow-wrap: normal;
+    }
+    .article-rail .section-title,
+    .article-rail .snapshot,
+    .article-rail .insight-kpis,
+    .article-rail .bar-chart,
+    .article-rail .hbar-meta,
+    .article-rail .metric-toggles,
+    .article-rail .name-list,
+    .article-rail .chart-caption,
+    .article-rail .article-links {
+      text-align: left;
+    }
+    .article-rail p,
+    .article-rail .intro,
+    .article-rail .series-lede,
+    .article-rail .article-links,
+    .article-rail .footnote,
+    .article-rail .closing,
+    .article-rail .section-title,
+    .article-rail .bar-chart,
+    .article-rail .figure,
+    .article-rail .snapshot,
+    .article-rail .insight-kpis,
+    .article-rail .name-list {
+      max-width: none;
+      width: 100%;
+    }
+    .intro {
+      font-size: 1.125rem;
+      line-height: 1.7;
+      margin: 0 0 1.25rem;
+    }
+    .series-lede {
+      font-size: 1.125rem;
+      line-height: 1.7;
+      margin: 0 0 1.1rem;
+      color: var(--ink);
+    }
+    .series-lede + .intro {
+      margin-top: 0.35rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+    }
+    .section { margin: 3.25rem 0; }
+    .section-title {
+      font-family: inherit;
+      font-size: 1.45rem;
+      font-weight: 650;
+      margin: 0 0 0.85rem;
+      letter-spacing: -0.02em;
+    }
+    p { margin-bottom: 1rem; }
+    .footnote {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 0.65rem;
+      line-height: 1.55;
+    }
+    a { color: var(--accent); text-underline-offset: 2px; }
+
+    .snapshot {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      margin: 1.5rem 0 0.25rem;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      overflow: visible;
+      width: 100%;
+    }
+    .snapshot-item {
+      padding: 1rem 0.55rem 0.9rem 0;
+      border-right: 1px solid var(--line);
+      overflow: visible;
+      min-width: 0;
+    }
+    .snapshot-item:last-child { border-right: 0; padding-right: 0; }
+    .snapshot-item:not(:first-child) { padding-left: 0.55rem; }
+    .snapshot-label {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.28rem;
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+      line-height: 1.25;
+    }
+    .snapshot-value {
+      font-family: var(--mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .snapshot-info {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+    .snapshot-info .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      font-style: normal;
+      font-family: inherit;
+      letter-spacing: 0;
+      text-transform: none;
+      line-height: 1;
+      cursor: help;
+      position: relative;
+      transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+    }
+    .snapshot-info .info-icon:hover,
+    .snapshot-info .info-icon:focus-visible {
+      color: var(--accent);
+      border-color: var(--accent);
+      outline: none;
+    }
+    .snapshot-info .info-tooltip {
+      position: absolute;
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      min-width: 12.5rem;
+      max-width: min(15.5rem, 70vw);
+      padding: 0.55rem 0.7rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+      line-height: 1.4;
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s var(--ease-out), visibility 0.18s var(--ease-out);
+      z-index: 20;
+      white-space: normal;
+    }
+    .snapshot-info .info-icon:hover .info-tooltip,
+    .snapshot-info .info-icon:focus-visible .info-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+    .snapshot-note { font-size: 0.6875rem; color: var(--muted); line-height: 1.35; }
+
+    .article-links {
+      margin: 0 0 1.25rem;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      text-align: left;
+    }
+    .article-links > summary {
+      cursor: pointer;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--accent);
+      font-weight: 600;
+      user-select: none;
+    }
+    .article-links > summary::-webkit-details-marker { display: none; }
+    .article-links > summary::before {
+      content: "▸";
+      display: inline-block;
+      font-size: 0.75em;
+      transition: transform 0.15s var(--ease-out);
+    }
+    .article-links[open] > summary::before { transform: rotate(90deg); }
+    .article-links > summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+    .article-links-list {
+      margin: 0.55rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .article-links-list li {
+      margin: 0 0 0.35rem;
+    }
+    .article-links-list li:last-child { margin-bottom: 0; }
+    .article-links-list a { font-weight: 500; }
+
+
+    .peer-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem 1rem;
+      margin: 0 0 1rem;
+    }
+    .peer-toolbar .metric-toggles { margin: 0; }
+    .metric-toggles {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 3px;
+      margin: 0 0 1rem;
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .metric-toggles button {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      font: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 160ms var(--ease-out), color 160ms var(--ease-out), transform 140ms var(--ease-out);
+    }
+    .metric-toggles button:hover { color: var(--ink); }
+    .metric-toggles button.is-active {
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
+    }
+    .metric-toggles button:active { transform: scale(0.97); }
+    .metric-toggles button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .metric-toggles button:hover:not(.is-active) { background: rgba(255, 255, 255, 0.55); }
+    }
+
+    /* Figures: no cards, same width as the text column */
+    .figure {
+      margin: 1.15rem 0 0.85rem;
+      padding: 0;
+      width: 100%;
+    }
+    .figure-chart {
+      padding: 0.75rem 0 0.35rem;
+    }
+    .figure svg { width: 100%; height: auto; display: block; }
+    .chart-caption {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin: 0.5rem 0 0;
+      line-height: 1.45;
+    }
+
+    /* Bars: meta on top, track spans the full column width */
+    .bar-chart { margin: 1rem 0 0.5rem; width: 100%; }
+    .bar-chart + p,
+    .figure + p {
+      margin-top: 1.7em;
+    }
+    .hbar {
+      margin-bottom: 0.7rem;
+    }
+    .hbar:last-child { margin-bottom: 0; }
+    .hbar-meta {
+      margin-bottom: 0.28rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--ink-soft);
+    }
+    .hbar-label { color: inherit; }
+    .hbar-value {
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .hbar-track {
+      height: 7px;
+      background: rgba(26, 31, 46, 0.07);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .hbar-fill {
+      height: 100%;
+      width: 0;
+      background: var(--ink);
+      border-radius: 999px;
+      transition: width 280ms var(--ease-out);
+    }
+    .hbar.is-focus .hbar-track { height: 10px; }
+    .hbar.is-focus .hbar-fill { background: var(--accent); }
+    .hbar.is-focus .hbar-meta { color: var(--accent); }
+    .hbar.is-focus .hbar-value { color: var(--accent); }
+    .hbar.is-muted .hbar-fill { background: rgba(26, 31, 46, 0.28); }
+    .hbar.is-muted .hbar-meta { color: var(--muted); font-weight: 500; }
+    .peer-gap {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 0.15rem 0 0.55rem;
+      padding-left: 0.15rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .insight-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin: 0.75rem 0 1.15rem;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .insight-kpis .snapshot-item { padding: 0.95rem 0.65rem 0.85rem 0; }
+    .insight-kpis .snapshot-item:not(:first-child) { padding-left: 0.65rem; }
+    .insight-kpis .snapshot-value { font-size: 1.4rem; }
+
+    .name-list {
+      margin: 0 0 1rem;
+      padding-left: 1.15rem;
+    }
+    .name-list li { margin-bottom: 0.35rem; }
+
+    .closing {
+      font-size: 1.05rem;
+    }
+
+    .article-footer {
+      background: var(--paper);
+      padding: 2rem var(--pad-x) 2.5rem;
+      border-top: 1px solid var(--line);
+    }
+    .article-footer > * {
+      max-width: var(--rail-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .data-note {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+      width: 100%;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+      word-break: normal;
+      overflow-wrap: normal;
+      margin-bottom: 0.85rem;
+    }
+    .data-note:last-child { margin-bottom: 0; }
+    .sources-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 0 0 0.45rem;
+    }
+    .sources-list {
+      margin: 0 0 0.85rem;
+      padding-left: 1.15rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .sources-list:last-child { margin-bottom: 0; }
+    .sources-list li { margin-bottom: 0.35rem; }
+    .sources-list a { word-break: break-word; }
+
+    .line-tip {
+      position: absolute;
+      pointer-events: none;
+      background: var(--ink);
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 9px;
+      border-radius: 5px;
+      opacity: 0;
+      transform: translate(-50%, -120%) scale(0.97);
+      transition: opacity 140ms var(--ease-out), transform 140ms var(--ease-out);
+      white-space: nowrap;
+      z-index: 5;
+      text-align: left;
+      line-height: 1.35;
+    }
+    .line-tip.is-on {
+      opacity: 1;
+      transform: translate(-50%, -120%) scale(1);
+    }
+    .line-tip-main { display: block; }
+    .line-tip-yoy {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .line-tip-yoy.is-up { color: #5eead4; }
+    .line-tip-yoy.is-down { color: #fb7185; }
+    .line-tip-yoy.is-flat { color: #94a3b8; }
+    .chart-wrap { position: relative; }
+
+    @media (max-width: 900px) {
+      .snapshot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .snapshot-item:nth-child(2n) { border-right: 0; padding-right: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .article-header { padding: 72px var(--pad-x) 48px; min-height: 320px; }
+      .article-content { padding: 2.25rem var(--pad-x) 1.5rem; }
+      .article-title { max-width: none; }
+      .intro { font-size: 1.05rem; }
+      .peer-toolbar { flex-direction: column; align-items: stretch; }
+      .peer-toolbar .metric-toggles { width: 100%; }
+      .snapshot, .insight-kpis { grid-template-columns: 1fr; }
+      .snapshot-item, .insight-kpis .snapshot-item {
+        border-right: 0;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .snapshot-item:last-child,
+      .insight-kpis .snapshot-item:last-child { border-bottom: 0; }
+      .snapshot-item:not(:first-child),
+      .insight-kpis .snapshot-item:not(:first-child) { padding-left: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .metric-toggles button,
+      .hbar-fill,
+      .line-tip { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="magazine-container">
+  <header class="article-header">
+    <div class="article-header-media" aria-hidden="true">
+      <div class="article-header-event"></div>
+      <div class="article-header-underlay"></div>
+      <div class="article-header-wash"></div>
+    </div>
+    <div class="article-eyebrow">Цикл · портрет ивента</div>
+    <h1 class="article-title">Best of the Best WCS</h1>
+    <p class="article-subtitle">Сидней, Австралия · 2011-2025</p>
+  </header>
+
+  <main class="article-content">
+    <div class="article-rail">
+    <p class="series-lede">
+      Этот текст продолжает цикл портретов ивентов WSDC по реестру поинтов. После США и Европы смотрим на Океанию.
+    </p>
+    <p class="series-lede">
+      Best of the Best WCS в Сиднее — старейший австралийский ивент в реестре Skill Level. С 2011 по 2025 год он прошёл 13 раз с пропуском 2020-2021.
+    </p>
+
+    <p class="intro">
+      Это камерный ивент: сотни, а не тысячи танцоров за всю историю, но почти каждый третий из них получил здесь свои первые поинты WSDC. В Океании по дебютантам он первый, по танцорам и сумме поинтов — второй.
+    </p>
+
+    <details class="article-links">
+      <summary>Ссылки</summary>
+      <ul class="article-links-list">
+        <li>
+          Сайт ивента:
+          <a href="https://www.bestofthebestwcs.com/" rel="noopener noreferrer" target="_blank">bestofthebestwcs.com</a>
+        </li>
+        <li>
+          Следующее заявленное издание в каталоге: 2026-09-24, Sydney, NSW, Australia
+        </li>
+      </ul>
+    </details>
+
+    <div class="snapshot">
+      <div class="snapshot-item">
+        <div class="snapshot-label">Издания</div>
+        <div class="snapshot-value">13</div>
+        <div class="snapshot-note">2011-2025, пропуск 2020-2021</div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">
+          Танцоры
+          <span class="snapshot-info">
+            <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение: уникальные танцоры с поинтами на этом ивенте">
+              <span aria-hidden="true">i</span>
+              <span class="info-tooltip">Количество уникальных танцоров, которые когда-либо получали поинты на этом ивенте в Skill Level номинациях.</span>
+            </span>
+          </span>
+        </div>
+        <div class="snapshot-value">335</div>
+        <div class="snapshot-note">топ-122 среди всех ивентов</div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">
+          Новые танцоры
+          <span class="snapshot-info">
+            <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение: первые поинты WSDC на этом ивенте в Skill Level номинациях">
+              <span aria-hidden="true">i</span>
+              <span class="info-tooltip">Количество танцоров, получивших свои первые поинты WSDC на этом ивенте в Skill Level номинациях.</span>
+            </span>
+          </span>
+        </div>
+        <div class="snapshot-value">122</div>
+        <div class="snapshot-note">топ-83 среди всех ивентов</div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">
+          Поинты
+          <span class="snapshot-info">
+            <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение: сумма Skill-Level поинтов на этом ивенте">
+              <span aria-hidden="true">i</span>
+              <span class="info-tooltip">Количество поинтов, набранных на ивенте всеми танцорами в Skill-Level номинациях.</span>
+            </span>
+          </span>
+        </div>
+        <div class="snapshot-value">2 032</div>
+        <div class="snapshot-note">топ-111 среди всех ивентов</div>
+      </div>
+    </div>
+
+
+
+    
+    <section class="section" aria-labelledby="peer-title">
+      <h2 class="section-title" id="peer-title">Место в рейтингах ивентов</h2>
+
+      <p>
+        Сейчас Best of the Best WCS по танцорам с поинтами на 122 месте среди всех ивентов
+        и на 2 среди ивентов Океании (335), по новым танцорам 83-й и 1-й (122),
+        по сумме Skill Level поинтов 111-й и 2-й (2 032).
+      </p>
+
+      <div class="peer-toolbar">
+        <div class="metric-toggles" id="peerToggles" role="tablist" aria-label="Метрика сравнения ивентов">
+          <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
+          <button type="button" role="tab" data-metric="first_points_here" aria-selected="false">Новые танцоры</button>
+          <button type="button" role="tab" data-metric="total_points" aria-selected="false">Поинты</button>
+        </div>
+        <div class="metric-toggles" id="peerScopeToggles" role="tablist" aria-label="Охват сравнения ивентов">
+          <button type="button" role="tab" data-scope="all" class="is-active" aria-selected="true">Все ивенты</button>
+          <button type="button" role="tab" data-scope="oceania" aria-selected="false">Ивенты Океании</button>
+        </div>
+      </div>
+      <div class="bar-chart" id="peerBars" aria-label="Ивенты по выбранной метрике"></div>
+    </section>
+
+    <section class="section" aria-labelledby="traj-title">
+      <h2 class="section-title" id="traj-title">Как менялся ивент</h2>
+
+      <p>
+        До 2017 года ивент плавно рос и вышел на пик (60 танцоров, 200 поинтов), затем 2018-2019
+        заметно сжались. После пропуска 2020-2021 возврат шёл без рывка, а к 2024-2025 метрики
+        снова рядом с историческими максимумами.
+      </p>
+      <p>
+        Новые танцоры были сильнее всего в стартовые годы (31 в 2011), потом поток дебютов
+        стал тонким и лишь после паузы снова поднялся до 6-9 человек в год.
+      </p>
+
+
+
+
+      <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Метрика траектории">
+        <button type="button" role="tab" data-metric="unique_dancers" class="is-active" aria-selected="true">Танцоры</button>
+        <button type="button" role="tab" data-metric="total_points" aria-selected="false">Поинты</button>
+        <button type="button" role="tab" data-metric="new_dancers" aria-selected="false">Новые танцоры</button>
+      </div>
+      <div class="figure figure-chart chart-wrap">
+        <div class="line-tip" id="trajTip" aria-hidden="true"></div>
+        <svg id="trajChart" viewBox="0 0 720 280" role="img" aria-label="Траектория метрики по годам"></svg>
+        <p class="chart-caption" id="trajCaption">Наведите на точку: год, значение и изменение к предыдущему году.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="launch-title">
+      <h2 class="section-title" id="launch-title">Кто начинал здесь</h2>
+      <p>
+        Доля новых танцоров среди тех, кто получил здесь поинты, заметно высокая:
+        211 из 752, около 28%, почти каждый четвёртый. Вероятно, это связано
+        с высокой привлекательностью ивента в самом начале и с некоторой стабильностью состава
+        участников.
+      </p>
+      <div class="insight-kpis" id="launchKpis"></div>
+      <p>
+        Большинство стартовавших здесь остаются в Newcomer-Novice: около 42% в Newcomer и ещё ~20% в Novice.
+        До Intermediate дошёл примерно каждый пятый, до Advanced каждый десятый.
+        До All-Star и выше примерно каждый четырнадцатый, до Champion дошло 5 человек.
+      </p>
+      <div class="bar-chart" id="launchBars" aria-label="Высший дивизион стартовавших здесь"></div>
+
+      <p>Топ по карьерным All-Star поинтам среди стартовавших здесь:</p>
+      <ul class="name-list">
+        <li>Larissa Thayane: первые поинты в 2014</li>
+        <li>Ani Fuller: первые поинты в 2011</li>
+        <li>Elysia King: первые поинты в 2013</li>
+        <li>Kylie Davey: первые поинты в 2011</li>
+        <li>Craig Schubert: первые поинты в 2011</li>
+      </ul>
+
+    <p>
+        Также можно отметить Ibirocay Alsén и Mathieu Compagnon, которые получили здесь свои
+        первые поинты в 2012 году.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="ret-title">
+      <h2 class="section-title" id="ret-title">Как часто танцоры получают тут поинты</h2>
+
+      <p>
+        62,4% танцоров набрали поинты только в одном издании; 19,4% возвращались три и более раза.
+        Год к году удержание скачет в диапазоне 17,9–47,5%.
+      </p>
+
+
+
+
+      <div class="figure figure-chart chart-wrap">
+        <div class="line-tip" id="retTip" aria-hidden="true"></div>
+        <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Доля повторного набора поинтов год к году"></svg>
+        <p class="chart-caption" id="retCaption">Доля танцоров с поинтами в году Y, которые снова набрали поинты в Y+1 (2011-2025).</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="people-title">
+      <h2 class="section-title" id="people-title">Наиболее успешные танцоры ивента</h2>
+
+      <p>
+        По сумме поинтов лидирует John-Paul Masson (34). Bianca Davis набрала 33 поинта
+        и три победы за четыре визита. Zachary Skinner — девять побед, в основном в All-Star.
+        Craig Schubert отметился в 11 из 13 изданий.
+      </p>
+
+
+
+
+      <div class="metric-toggles" id="peopleToggles" role="tablist" aria-label="Метрика топ-5">
+        <button type="button" role="tab" data-metric="points" class="is-active" aria-selected="true">Поинты</button>
+        <button type="button" role="tab" data-metric="editions" aria-selected="false">Участия</button>
+        <button type="button" role="tab" data-metric="wins" aria-selected="false">Победы</button>
+      </div>
+      <div class="bar-chart" id="peopleBars" aria-label="Топ-5 танцоров"></div>
+
+      <p>
+        Чаще и успешнее всего совпадали Zachary Skinner и Maddy Skinner
+        (четыре финала, четыре победы в All-Star).
+        Ещё два финала с двумя победами у Zachary Skinner и Emma Collyer.
+        По два финала с одной совместной победой у Nathan Walsh и Louise Capps,
+        Grant Walker и Samantha Pugmire, Ajay Ranipeta и Ani Fuller.
+      </p>
+
+    </section>
+
+    <section class="section" aria-labelledby="closing-title">
+      <h2 class="section-title" id="closing-title">Заключение</h2>
+
+      <p>
+        Best of the Best WCS — небольшой сиднейский ивент с длинной локальной историей:
+        не гонка за массой, а устойчивая точка входа и регулярных поинтов для австралийской сцены.
+        После ковидного пропуска он снова держится у своих лучших уровней.
+      </p>
+
+    
+    </section>
+    </div>
+  </main>
+
+  <footer class="article-footer">
+    <p class="data-note">
+      В статье использованы данные
+      <a href="https://worldsdc.com/registry/" rel="noopener noreferrer" target="_blank">реестра поинтов WSDC</a>
+      и информация с
+      <a href="https://www.bestofthebestwcs.com/" rel="noopener noreferrer" target="_blank">сайта ивента</a>.
+    </p>
+  </footer>
+</div>
+
+
+<script id="event-metrics" type="application/json">{"event_id":167,"generated":"2026-08-04","definitions":{"skill_jj":"West Coast Swing + Newcomer/Novice/Intermediate/Advanced/All-Star/Champion, points > 0","new_dancers":"dancers whose first-ever WSDC points row (Skill JJ) falls on this event date (event_year_and_month)","wins":"result_standardized = '1' at this event (Skill JJ)","started_here_notable":"first WSDC points at this event; Champion pts since 2009 + top All-Star pts since 2009","pairs":"Place-matched Leader+Follower (same place 1-5) in any Skill Level JJ division at this event","peer_context":"Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years","launchpad":"first-ever WSDC Skill JJ points at this event; highest division and career points share outside","division_era_mix":"Share of Skill JJ points by division, by era (gaps excluded)","retention":"Return = points in Y and Y+1; editions = distinct years with points here","peer_oceania":"Among Oceania (Australia + New Zealand + Pacific) Skill JJ events (typical_country / mode location)"},"catalog":{"canonical_name":"Best of the Best WCS","url":"https://www.bestofthebestwcs.com/","typical_location":"Sydney, Australia","typical_city":"Sydney","typical_state":null,"typical_country":"Australia","first_edition_year":2011,"last_edition_year":2025,"edition_count":13,"unique_dancers_all_divisions":342,"total_result_rows_all_divisions":690,"upcoming_start_date":"2026-09-24","upcoming_location":"Sydney, NSW, Australia"},"skill_jj_kpi":{"unique_dancers":335,"total_points":2032,"result_rows":620,"editions_with_results":13,"wins":102,"first_points_here":122,"first_points_share_pct":36.4,"peak_year_dancers":2017,"peak_dancers":60,"peak_year_points":2017,"peak_points":200,"peak_year_new_dancers":2011,"peak_new_dancers":31},"year_gaps":[2020,2021],"champ_window_from_year":2009,"timeseries":[{"event_year":2011,"unique_dancers":40,"total_points":154,"new_dancers":31},{"event_year":2012,"unique_dancers":40,"total_points":130,"new_dancers":12},{"event_year":2013,"unique_dancers":47,"total_points":194,"new_dancers":17},{"event_year":2014,"unique_dancers":50,"total_points":176,"new_dancers":16},{"event_year":2015,"unique_dancers":50,"total_points":170,"new_dancers":4},{"event_year":2016,"unique_dancers":53,"total_points":178,"new_dancers":3},{"event_year":2017,"unique_dancers":60,"total_points":200,"new_dancers":4},{"event_year":2018,"unique_dancers":39,"total_points":109,"new_dancers":4},{"event_year":2019,"unique_dancers":35,"total_points":96,"new_dancers":3},{"event_year":2022,"unique_dancers":41,"total_points":120,"new_dancers":9},{"event_year":2023,"unique_dancers":39,"total_points":119,"new_dancers":4},{"event_year":2024,"unique_dancers":55,"total_points":196,"new_dancers":9},{"event_year":2025,"unique_dancers":52,"total_points":190,"new_dancers":6}],"division_cuts":[{"division":"Newcomer","unique_dancers":70,"total_points":218},{"division":"Novice","unique_dancers":204,"total_points":933},{"division":"Intermediate","unique_dancers":117,"total_points":579},{"division":"Advanced","unique_dancers":36,"total_points":172},{"division":"All-Star","unique_dancers":23,"total_points":130}],"top5_by_metric":{"points":[{"dancer_name":"John-Paul Masson","points_here":34,"editions":9,"wins":3},{"dancer_name":"Bianca Davis","points_here":33,"editions":4,"wins":3},{"dancer_name":"Zachary Skinner","points_here":31,"editions":8,"wins":9},{"dancer_name":"Craig Schubert","points_here":30,"editions":11,"wins":1},{"dancer_name":"Emma Collyer","points_here":29,"editions":9,"wins":3}],"editions":[{"dancer_name":"Craig Schubert","points_here":30,"editions":11,"wins":1},{"dancer_name":"John-Paul Masson","points_here":34,"editions":9,"wins":3},{"dancer_name":"Emma Collyer","points_here":29,"editions":9,"wins":3},{"dancer_name":"Zachary Skinner","points_here":31,"editions":8,"wins":9},{"dancer_name":"Maddy Skinner","points_here":21,"editions":7,"wins":4}],"wins":[{"dancer_name":"Zachary Skinner","points_here":31,"editions":8,"wins":9},{"dancer_name":"Maddy Skinner","points_here":21,"editions":7,"wins":4},{"dancer_name":"John-Paul Masson","points_here":34,"editions":9,"wins":3},{"dancer_name":"Bianca Davis","points_here":33,"editions":4,"wins":3},{"dancer_name":"Emma Collyer","points_here":29,"editions":9,"wins":3}]},"pairs_as_champ":{"method_note":"Place-matched Leader+Follower (same place 1-5) in any Skill Level JJ division at this event","repeat_pairs_n":7,"pairs_total":222,"max_together":4,"by_wins":[{"leader_name":"Zachary Skinner","follower_name":"Maddy Skinner","placed_together":4,"wins_together":4,"years":4,"divisions":["All-Star"]},{"leader_name":"Zachary Skinner","follower_name":"Emma Collyer","placed_together":2,"wins_together":2,"years":2,"divisions":["All-Star"]},{"leader_name":"Nathan Walsh","follower_name":"Louise Capps","placed_together":2,"wins_together":1,"years":2,"divisions":["Advanced"]},{"leader_name":"Grant Walker","follower_name":"Samantha Pugmire","placed_together":2,"wins_together":1,"years":2,"divisions":["Advanced"]},{"leader_name":"Ajay Ranipeta","follower_name":"Ani Fuller","placed_together":2,"wins_together":1,"years":2,"divisions":["Intermediate","Novice"]},{"leader_name":"John-Paul Masson","follower_name":"Emma Collyer","placed_together":2,"wins_together":1,"years":2,"divisions":["All-Star","Intermediate"]},{"leader_name":"Jordan Fox","follower_name":"Annaleise Chalmers","placed_together":1,"wins_together":1,"years":1,"divisions":["Novice"]},{"leader_name":"Trevor Hobbs","follower_name":"Kimberley Patrick","placed_together":1,"wins_together":1,"years":1,"divisions":["Newcomer"]},{"leader_name":"Darryn Solomon","follower_name":"Reasmey Tith","placed_together":1,"wins_together":1,"years":1,"divisions":["Intermediate"]},{"leader_name":"Darryn Solomon","follower_name":"Janine Martin","placed_together":1,"wins_together":1,"years":1,"divisions":["Intermediate"]},{"leader_name":"Arthur Wang","follower_name":"Bianca Davis","placed_together":1,"wins_together":1,"years":1,"divisions":["Intermediate"]},{"leader_name":"William Wu","follower_name":"Zachary Skinner","placed_together":1,"wins_together":1,"years":1,"divisions":["Advanced"]}]},"started_here_notable_examples":[],"started_here_notable_champ_since_2009":[],"started_here_notable_allstar_top3_since_2009":[{"dancer_name":"Larissa Thayane","event_year":2014,"allstar_pts_since_2009":101,"last_as_year":2026},{"dancer_name":"Ani Fuller","event_year":2011,"allstar_pts_since_2009":46,"last_as_year":2023},{"dancer_name":"Elysia King","event_year":2013,"allstar_pts_since_2009":9,"last_as_year":2025}],"other_divisions_present":["Master","Sophisticated"],"header_candidates":[],"insights":{"peer_context":{"definition":"Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years","this_event":"Best of the Best WCS","events_total_n":345,"long_events_n":101,"unique_dancers":335,"first_points_here":122,"total_points":2032,"editions":13,"rank_by_unique_all":122,"rank_by_first_points_all":83,"rank_by_total_points_all":111,"rank_by_editions":64,"rank_by_unique_among_long":94,"peers_top12_by_unique":[{"event_id":92,"event_name":"MADjam","name":"MADjam","editions":21,"unique_dancers":1652,"first_points_here":389,"total_points":11367,"value":1652,"is_this_event":false},{"event_id":12,"event_name":"Capital Swing Dance Convention","name":"Capital Swing Dance Convention","editions":30,"unique_dancers":1518,"first_points_here":340,"total_points":9210,"value":1518,"is_this_event":false},{"event_id":8,"event_name":"Boogie By The Bay","name":"Boogie By The Bay","editions":31,"unique_dancers":1476,"first_points_here":198,"total_points":10682,"value":1476,"is_this_event":false},{"event_id":96,"event_name":"Liberty Swing Dance Championships","name":"Liberty Swing Dance Championships","editions":21,"unique_dancers":1418,"first_points_here":248,"total_points":8356,"value":1418,"is_this_event":false},{"event_id":53,"event_name":"Summer Hummer","name":"Summer Hummer","editions":25,"unique_dancers":1413,"first_points_here":367,"total_points":8468,"value":1413,"is_this_event":false},{"event_id":1,"event_name":"4TH of July Convention","name":"4TH of July Convention","editions":34,"unique_dancers":1364,"first_points_here":257,"total_points":8284,"value":1364,"is_this_event":false},{"event_id":18,"event_name":"Easter Swing","name":"Easter Swing","editions":30,"unique_dancers":1359,"first_points_here":267,"total_points":9226,"value":1359,"is_this_event":false},{"event_id":59,"event_name":"Swing Fling","name":"Swing Fling","editions":29,"unique_dancers":1336,"first_points_here":419,"total_points":8138,"value":1336,"is_this_event":false},{"event_id":9,"event_name":"Boston Tea Party","name":"Boston Tea Party","editions":26,"unique_dancers":1281,"first_points_here":415,"total_points":7796,"value":1281,"is_this_event":false},{"event_id":25,"event_name":"J&J O'Rama","name":"J&J O'Rama","editions":28,"unique_dancers":1279,"first_points_here":156,"total_points":8554,"value":1279,"is_this_event":false},{"event_id":47,"event_name":"Swingtime in the Rockies","name":"Swingtime in the Rockies","editions":31,"unique_dancers":1265,"first_points_here":260,"total_points":7535,"value":1265,"is_this_event":false},{"event_id":62,"event_name":"Monterey SwingFest","name":"Monterey SwingFest","editions":31,"unique_dancers":1154,"first_points_here":210,"total_points":7804,"value":1154,"is_this_event":false},{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":335,"is_this_event":true}],"peers_top12_by_first_points":[{"event_id":59,"event_name":"Swing Fling","name":"Swing Fling","editions":29,"unique_dancers":1336,"first_points_here":419,"total_points":8138,"value":419,"is_this_event":false},{"event_id":9,"event_name":"Boston Tea Party","name":"Boston Tea Party","editions":26,"unique_dancers":1281,"first_points_here":415,"total_points":7796,"value":415,"is_this_event":false},{"event_id":92,"event_name":"MADjam","name":"MADjam","editions":21,"unique_dancers":1652,"first_points_here":389,"total_points":11367,"value":389,"is_this_event":false},{"event_id":53,"event_name":"Summer Hummer","name":"Summer Hummer","editions":25,"unique_dancers":1413,"first_points_here":367,"total_points":8468,"value":367,"is_this_event":false},{"event_id":184,"event_name":"BudaFest Open WCS Championships","name":"BudaFest Open WCS Championships","editions":14,"unique_dancers":1112,"first_points_here":345,"total_points":7753,"value":345,"is_this_event":false},{"event_id":12,"event_name":"Capital Swing Dance Convention","name":"Capital Swing Dance Convention","editions":30,"unique_dancers":1518,"first_points_here":340,"total_points":9210,"value":340,"is_this_event":false},{"event_id":186,"event_name":"West in Lyon","name":"West in Lyon","editions":13,"unique_dancers":746,"first_points_here":325,"total_points":5104,"value":325,"is_this_event":false},{"event_id":334,"event_name":"Countdown Swing Boston","name":"Countdown Swing Boston","editions":22,"unique_dancers":937,"first_points_here":324,"total_points":5463,"value":324,"is_this_event":false},{"event_id":220,"event_name":"D-Town Swing","name":"D-Town Swing","editions":11,"unique_dancers":698,"first_points_here":271,"total_points":3785,"value":271,"is_this_event":false},{"event_id":18,"event_name":"Easter Swing","name":"Easter Swing","editions":30,"unique_dancers":1359,"first_points_here":267,"total_points":9226,"value":267,"is_this_event":false},{"event_id":175,"event_name":"French Open West Coast Swing","name":"French Open West Coast Swing","editions":14,"unique_dancers":840,"first_points_here":265,"total_points":5724,"value":265,"is_this_event":false},{"event_id":47,"event_name":"Swingtime in the Rockies","name":"Swingtime in the Rockies","editions":31,"unique_dancers":1265,"first_points_here":260,"total_points":7535,"value":260,"is_this_event":false},{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":122,"is_this_event":true}],"peers_top12_by_total_points":[{"event_id":92,"event_name":"MADjam","name":"MADjam","editions":21,"unique_dancers":1652,"first_points_here":389,"total_points":11367,"value":11367,"is_this_event":false},{"event_id":8,"event_name":"Boogie By The Bay","name":"Boogie By The Bay","editions":31,"unique_dancers":1476,"first_points_here":198,"total_points":10682,"value":10682,"is_this_event":false},{"event_id":18,"event_name":"Easter Swing","name":"Easter Swing","editions":30,"unique_dancers":1359,"first_points_here":267,"total_points":9226,"value":9226,"is_this_event":false},{"event_id":12,"event_name":"Capital Swing Dance Convention","name":"Capital Swing Dance Convention","editions":30,"unique_dancers":1518,"first_points_here":340,"total_points":9210,"value":9210,"is_this_event":false},{"event_id":25,"event_name":"J&J O'Rama","name":"J&J O'Rama","editions":28,"unique_dancers":1279,"first_points_here":156,"total_points":8554,"value":8554,"is_this_event":false},{"event_id":53,"event_name":"Summer Hummer","name":"Summer Hummer","editions":25,"unique_dancers":1413,"first_points_here":367,"total_points":8468,"value":8468,"is_this_event":false},{"event_id":96,"event_name":"Liberty Swing Dance Championships","name":"Liberty Swing Dance Championships","editions":21,"unique_dancers":1418,"first_points_here":248,"total_points":8356,"value":8356,"is_this_event":false},{"event_id":1,"event_name":"4TH of July Convention","name":"4TH of July Convention","editions":34,"unique_dancers":1364,"first_points_here":257,"total_points":8284,"value":8284,"is_this_event":false},{"event_id":59,"event_name":"Swing Fling","name":"Swing Fling","editions":29,"unique_dancers":1336,"first_points_here":419,"total_points":8138,"value":8138,"is_this_event":false},{"event_id":62,"event_name":"Monterey SwingFest","name":"Monterey SwingFest","editions":31,"unique_dancers":1154,"first_points_here":210,"total_points":7804,"value":7804,"is_this_event":false},{"event_id":9,"event_name":"Boston Tea Party","name":"Boston Tea Party","editions":26,"unique_dancers":1281,"first_points_here":415,"total_points":7796,"value":7796,"is_this_event":false},{"event_id":184,"event_name":"BudaFest Open WCS Championships","name":"BudaFest Open WCS Championships","editions":14,"unique_dancers":1112,"first_points_here":345,"total_points":7753,"value":7753,"is_this_event":false},{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":2032,"is_this_event":true}],"peers_top15_by_first_points":[{"event_id":59,"event_name":"Swing Fling","name":"Swing Fling","editions":29,"unique_dancers":1336,"first_points_here":419,"total_points":8138,"value":419,"is_this_event":false},{"event_id":9,"event_name":"Boston Tea Party","name":"Boston Tea Party","editions":26,"unique_dancers":1281,"first_points_here":415,"total_points":7796,"value":415,"is_this_event":false},{"event_id":92,"event_name":"MADjam","name":"MADjam","editions":21,"unique_dancers":1652,"first_points_here":389,"total_points":11367,"value":389,"is_this_event":false},{"event_id":53,"event_name":"Summer Hummer","name":"Summer Hummer","editions":25,"unique_dancers":1413,"first_points_here":367,"total_points":8468,"value":367,"is_this_event":false},{"event_id":184,"event_name":"BudaFest Open WCS Championships","name":"BudaFest Open WCS Championships","editions":14,"unique_dancers":1112,"first_points_here":345,"total_points":7753,"value":345,"is_this_event":false},{"event_id":12,"event_name":"Capital Swing Dance Convention","name":"Capital Swing Dance Convention","editions":30,"unique_dancers":1518,"first_points_here":340,"total_points":9210,"value":340,"is_this_event":false},{"event_id":186,"event_name":"West in Lyon","name":"West in Lyon","editions":13,"unique_dancers":746,"first_points_here":325,"total_points":5104,"value":325,"is_this_event":false},{"event_id":334,"event_name":"Countdown Swing Boston","name":"Countdown Swing Boston","editions":22,"unique_dancers":937,"first_points_here":324,"total_points":5463,"value":324,"is_this_event":false},{"event_id":220,"event_name":"D-Town Swing","name":"D-Town Swing","editions":11,"unique_dancers":698,"first_points_here":271,"total_points":3785,"value":271,"is_this_event":false},{"event_id":18,"event_name":"Easter Swing","name":"Easter Swing","editions":30,"unique_dancers":1359,"first_points_here":267,"total_points":9226,"value":267,"is_this_event":false},{"event_id":175,"event_name":"French Open West Coast Swing","name":"French Open West Coast Swing","editions":14,"unique_dancers":840,"first_points_here":265,"total_points":5724,"value":265,"is_this_event":false},{"event_id":47,"event_name":"Swingtime in the Rockies","name":"Swingtime in the Rockies","editions":31,"unique_dancers":1265,"first_points_here":260,"total_points":7535,"value":260,"is_this_event":false},{"event_id":1,"event_name":"4TH of July Convention","name":"4TH of July Convention","editions":34,"unique_dancers":1364,"first_points_here":257,"total_points":8284,"value":257,"is_this_event":false},{"event_id":96,"event_name":"Liberty Swing Dance Championships","name":"Liberty Swing Dance Championships","editions":21,"unique_dancers":1418,"first_points_here":248,"total_points":8356,"value":248,"is_this_event":false},{"event_id":225,"event_name":"Wild Wild Westie","name":"Wild Wild Westie","editions":12,"unique_dancers":947,"first_points_here":223,"total_points":6526,"value":223,"is_this_event":false},{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":122,"is_this_event":true}],"oceania":{"definition":"Among Oceania (Australia + New Zealand + Pacific) Skill JJ events (typical_country / mode location)","events_n":20,"rank_by_unique":2,"rank_by_first_points":1,"rank_by_total_points":2,"peers_top12_by_unique":[{"event_id":174,"event_name":"Swingsation","name":"Swingsation","editions":14,"unique_dancers":408,"first_points_here":104,"total_points":2908,"value":408,"is_this_event":false},{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":335,"is_this_event":true},{"event_id":179,"event_name":"New Zealand Open Swing Dance Championships","name":"New Zealand Open Swing Dance Championships","editions":14,"unique_dancers":287,"first_points_here":118,"total_points":1778,"value":287,"is_this_event":false},{"event_id":213,"event_name":"Swingtimate","name":"Swingtimate","editions":8,"unique_dancers":222,"first_points_here":41,"total_points":1186,"value":222,"is_this_event":false},{"event_id":188,"event_name":"NSW West Coast Swing Dance Championships","name":"NSW West Coast Swing Dance Championships","editions":8,"unique_dancers":193,"first_points_here":63,"total_points":1165,"value":193,"is_this_event":false},{"event_id":330,"event_name":"Simply Adelaide West Coast Swing","name":"Simply Adelaide West Coast Swing","editions":6,"unique_dancers":161,"first_points_here":46,"total_points":803,"value":161,"is_this_event":false},{"event_id":180,"event_name":"Australian Open Swing Dance Championships","name":"Australian Open Swing Dance Championships","editions":5,"unique_dancers":155,"first_points_here":54,"total_points":851,"value":155,"is_this_event":false},{"event_id":246,"event_name":"Swing Escape","name":"Swing Escape","editions":5,"unique_dancers":127,"first_points_here":22,"total_points":698,"value":127,"is_this_event":false},{"event_id":374,"event_name":"Barock Swing Ludwigsburg","name":"Barock Swing Ludwigsburg","editions":2,"unique_dancers":124,"first_points_here":35,"total_points":572,"value":124,"is_this_event":false},{"event_id":298,"event_name":"Shakedown Swing","name":"Shakedown Swing","editions":5,"unique_dancers":115,"first_points_here":38,"total_points":616,"value":115,"is_this_event":false},{"event_id":385,"event_name":"Revitalise WCS","name":"Revitalise WCS","editions":2,"unique_dancers":106,"first_points_here":30,"total_points":476,"value":106,"is_this_event":false},{"event_id":302,"event_name":"WesterOz Swing","name":"WesterOz Swing","editions":4,"unique_dancers":103,"first_points_here":26,"total_points":434,"value":103,"is_this_event":false}],"peers_top12_by_first_points":[{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":122,"is_this_event":true},{"event_id":179,"event_name":"New Zealand Open Swing Dance Championships","name":"New Zealand Open Swing Dance Championships","editions":14,"unique_dancers":287,"first_points_here":118,"total_points":1778,"value":118,"is_this_event":false},{"event_id":174,"event_name":"Swingsation","name":"Swingsation","editions":14,"unique_dancers":408,"first_points_here":104,"total_points":2908,"value":104,"is_this_event":false},{"event_id":188,"event_name":"NSW West Coast Swing Dance Championships","name":"NSW West Coast Swing Dance Championships","editions":8,"unique_dancers":193,"first_points_here":63,"total_points":1165,"value":63,"is_this_event":false},{"event_id":180,"event_name":"Australian Open Swing Dance Championships","name":"Australian Open Swing Dance Championships","editions":5,"unique_dancers":155,"first_points_here":54,"total_points":851,"value":54,"is_this_event":false},{"event_id":330,"event_name":"Simply Adelaide West Coast Swing","name":"Simply Adelaide West Coast Swing","editions":6,"unique_dancers":161,"first_points_here":46,"total_points":803,"value":46,"is_this_event":false},{"event_id":213,"event_name":"Swingtimate","name":"Swingtimate","editions":8,"unique_dancers":222,"first_points_here":41,"total_points":1186,"value":41,"is_this_event":false},{"event_id":298,"event_name":"Shakedown Swing","name":"Shakedown Swing","editions":5,"unique_dancers":115,"first_points_here":38,"total_points":616,"value":38,"is_this_event":false},{"event_id":374,"event_name":"Barock Swing Ludwigsburg","name":"Barock Swing Ludwigsburg","editions":2,"unique_dancers":124,"first_points_here":35,"total_points":572,"value":35,"is_this_event":false},{"event_id":367,"event_name":"Go West SwingFest","name":"Go West SwingFest","editions":2,"unique_dancers":43,"first_points_here":32,"total_points":178,"value":32,"is_this_event":false},{"event_id":385,"event_name":"Revitalise WCS","name":"Revitalise WCS","editions":2,"unique_dancers":106,"first_points_here":30,"total_points":476,"value":30,"is_this_event":false},{"event_id":302,"event_name":"WesterOz Swing","name":"WesterOz Swing","editions":4,"unique_dancers":103,"first_points_here":26,"total_points":434,"value":26,"is_this_event":false}],"peers_top12_by_total_points":[{"event_id":174,"event_name":"Swingsation","name":"Swingsation","editions":14,"unique_dancers":408,"first_points_here":104,"total_points":2908,"value":2908,"is_this_event":false},{"event_id":167,"event_name":"Best of the Best WCS","name":"Best of the Best WCS","editions":13,"unique_dancers":335,"first_points_here":122,"total_points":2032,"value":2032,"is_this_event":true},{"event_id":179,"event_name":"New Zealand Open Swing Dance Championships","name":"New Zealand Open Swing Dance Championships","editions":14,"unique_dancers":287,"first_points_here":118,"total_points":1778,"value":1778,"is_this_event":false},{"event_id":213,"event_name":"Swingtimate","name":"Swingtimate","editions":8,"unique_dancers":222,"first_points_here":41,"total_points":1186,"value":1186,"is_this_event":false},{"event_id":188,"event_name":"NSW West Coast Swing Dance Championships","name":"NSW West Coast Swing Dance Championships","editions":8,"unique_dancers":193,"first_points_here":63,"total_points":1165,"value":1165,"is_this_event":false},{"event_id":180,"event_name":"Australian Open Swing Dance Championships","name":"Australian Open Swing Dance Championships","editions":5,"unique_dancers":155,"first_points_here":54,"total_points":851,"value":851,"is_this_event":false},{"event_id":330,"event_name":"Simply Adelaide West Coast Swing","name":"Simply Adelaide West Coast Swing","editions":6,"unique_dancers":161,"first_points_here":46,"total_points":803,"value":803,"is_this_event":false},{"event_id":246,"event_name":"Swing Escape","name":"Swing Escape","editions":5,"unique_dancers":127,"first_points_here":22,"total_points":698,"value":698,"is_this_event":false},{"event_id":298,"event_name":"Shakedown Swing","name":"Shakedown Swing","editions":5,"unique_dancers":115,"first_points_here":38,"total_points":616,"value":616,"is_this_event":false},{"event_id":374,"event_name":"Barock Swing Ludwigsburg","name":"Barock Swing Ludwigsburg","editions":2,"unique_dancers":124,"first_points_here":35,"total_points":572,"value":572,"is_this_event":false},{"event_id":385,"event_name":"Revitalise WCS","name":"Revitalise WCS","editions":2,"unique_dancers":106,"first_points_here":30,"total_points":476,"value":476,"is_this_event":false},{"event_id":333,"event_name":"Swingvasion","name":"Swingvasion","editions":3,"unique_dancers":90,"first_points_here":22,"total_points":443,"value":443,"is_this_event":false}]}},"launchpad":{"definition":"first-ever WSDC Skill JJ points at this event","starters_n":122,"reached_allstar_plus_n":7,"reached_allstar_plus_pct":5.7,"reached_champion_n":0,"reached_champion_pct":0.0,"median_months_to_allstar":76.0,"median_months_to_champion":null,"highest_division_counts":[{"division":"Newcomer","n":29},{"division":"Novice","n":50},{"division":"Intermediate","n":24},{"division":"Advanced","n":12},{"division":"All-Star","n":7},{"division":"Champion","n":0}],"notable_allstar_starters":[{"dancer_name":"Larissa Thayane","dancer_id":"11004","event_year":2014,"allstar_pts_since_2009":101,"last_as_year":2026},{"dancer_name":"Ani Fuller","dancer_id":"8049","event_year":2011,"allstar_pts_since_2009":46,"last_as_year":2023},{"dancer_name":"Elysia King","dancer_id":"9913","event_year":2013,"allstar_pts_since_2009":9,"last_as_year":2025},{"dancer_name":"Kylie Davey","dancer_id":"8053","event_year":2011,"allstar_pts_since_2009":7,"last_as_year":2024},{"dancer_name":"Craig Schubert","dancer_id":"8077","event_year":2011,"allstar_pts_since_2009":7,"last_as_year":2025},{"dancer_name":"Anthony Truong","dancer_id":"9900","event_year":2013,"allstar_pts_since_2009":3,"last_as_year":2023},{"dancer_name":"Kate McGregor","dancer_id":"8056","event_year":2011,"allstar_pts_since_2009":2,"last_as_year":2026}],"notable_champion_starters":[],"median_career_points_share_outside_pct":61.9,"as_plus_median_career_points_share_outside_pct":87.5},"division_era_mix":{"definition":"Share of Skill JJ points by division by era; gap 2020-2021 excluded","eras":[{"era":"2011–2019","total_points":1407,"points":{"Newcomer":150,"Novice":667,"Intermediate":394,"Advanced":114,"All-Star":82},"share_pct":{"Newcomer":10.7,"Novice":47.4,"Intermediate":28.0,"Advanced":8.1,"All-Star":5.8}},{"era":"2022–2025","total_points":625,"points":{"Newcomer":68,"Novice":266,"Intermediate":185,"Advanced":58,"All-Star":48},"share_pct":{"Newcomer":10.9,"Novice":42.6,"Intermediate":29.6,"Advanced":9.3,"All-Star":7.7}}]},"retention":{"definition":"Return = scored points at this event in year Y and again in Y+1; editions = distinct years with points here","unique_dancers":335,"one_edition_n":209,"one_edition_pct":62.4,"three_plus_editions_n":65,"three_plus_editions_pct":19.4,"five_plus_editions_n":18,"one_edition_points_share_pct":34.2,"five_plus_points_share_pct":19.1,"edition_histogram":[{"editions":1,"dancers":209,"dancers_share_pct":62.4,"points":694,"points_share_pct":34.2},{"editions":2,"dancers":61,"dancers_share_pct":18.2,"points":403,"points_share_pct":19.8},{"editions":3,"dancers":34,"dancers_share_pct":10.1,"points":359,"points_share_pct":17.7},{"editions":4,"dancers":13,"dancers_share_pct":3.9,"points":187,"points_share_pct":9.2},{"editions":5,"dancers":6,"dancers_share_pct":1.8,"points":107,"points_share_pct":5.3},{"editions":6,"dancers":7,"dancers_share_pct":2.1,"points":137,"points_share_pct":6.7},{"editions":7,"dancers":1,"dancers_share_pct":0.3,"points":21,"points_share_pct":1.0},{"editions":8,"dancers":1,"dancers_share_pct":0.3,"points":31,"points_share_pct":1.5},{"editions":9,"dancers":2,"dancers_share_pct":0.6,"points":63,"points_share_pct":3.1},{"editions":10,"dancers":0,"dancers_share_pct":0.0,"points":0,"points_share_pct":0.0},{"editions":11,"dancers":1,"dancers_share_pct":0.3,"points":30,"points_share_pct":1.5}],"next_year_return":[{"from_year":2011,"to_year":2012,"base":40,"returned":19,"rate_pct":47.5},{"from_year":2012,"to_year":2013,"base":40,"returned":12,"rate_pct":30.0},{"from_year":2013,"to_year":2014,"base":47,"returned":12,"rate_pct":25.5},{"from_year":2014,"to_year":2015,"base":50,"returned":12,"rate_pct":24.0},{"from_year":2015,"to_year":2016,"base":50,"returned":18,"rate_pct":36.0},{"from_year":2016,"to_year":2017,"base":53,"returned":24,"rate_pct":45.3},{"from_year":2017,"to_year":2018,"base":60,"returned":14,"rate_pct":23.3},{"from_year":2018,"to_year":2019,"base":39,"returned":7,"rate_pct":17.9},{"from_year":2022,"to_year":2023,"base":41,"returned":9,"rate_pct":22.0},{"from_year":2023,"to_year":2024,"base":39,"returned":16,"rate_pct":41.0},{"from_year":2024,"to_year":2025,"base":55,"returned":20,"rate_pct":36.4}],"return_after_gap":{"from_year":2019,"to_year":2022,"base":35,"returned":null,"rate_pct":null,"note":"after multi-year gap 2020-2021; consecutive YoY N/A","returned_after_gap_n":7,"returned_after_gap_pct":20.0},"return_rate_range_pct":[17.9,47.5],"recent_return_rate_range_pct":[22.0,41.0]}}}</script>
+<script>
+
+(function () {
+  const M = JSON.parse(document.getElementById("event-metrics").textContent);
+  const gaps = new Set(M.year_gaps || []);
+
+  function bindToggles(rootId, onChange) {
+    const root = document.getElementById(rootId);
+    root.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-metric]");
+      if (!btn) return;
+      root.querySelectorAll("button").forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      onChange(btn.dataset.metric);
+    });
+  }
+
+  function shortEventName(name) {
+    if (!name) return "";
+    if (name === "Phoenix 4th of July" || name === "4TH of July Convention") {
+      return "4TH of July Convention";
+    }
+    if (name === "UK WCS Championships" || name === "UK Championships") {
+      return "UK WCS Championships";
+    }
+    return String(name)
+      .replace("Mid-Atlantic Dance Jam", "MADjam")
+      .replace(" Dance Championships", "")
+      .replace(" Championships", "")
+      .replace(" Dance Convention", "")
+      .replace(" Convention", "")
+      .trim();
+  }
+
+  function hbar(label, valueText, pct, focus, muted) {
+    const cls = focus ? " is-focus" : muted ? " is-muted" : "";
+    return (
+      `<div class="hbar${cls}">` +
+      `<div class="hbar-meta"><span class="hbar-label">${label}</span>` +
+      (valueText ? ` · <span class="hbar-value">${valueText}</span>` : "") +
+      `</div>` +
+      `<div class="hbar-track"><div class="hbar-fill" style="width:${pct}%"></div></div>` +
+      `</div>`
+    );
+  }
+
+  let peerMetric = "unique_dancers";
+  let peerScope = "all";
+
+  function activePeerMetric() {
+    const on = document.querySelector("#peerToggles button.is-active");
+    return (on && on.dataset.metric) || peerMetric;
+  }
+
+  function renderPeerBars(metric) {
+    if (metric) peerMetric = metric;
+    else peerMetric = activePeerMetric();
+    const key = peerMetric === "first_points_here"
+      ? "first_points_here"
+      : peerMetric === "total_points"
+        ? "total_points"
+        : "unique_dancers";
+    const pc = M.insights.peer_context;
+    const eu = pc.oceania || {};
+    const useEu = peerScope === "oceania" && eu.peers_top12_by_unique;
+    const src = useEu ? eu : pc;
+    const all = key === "first_points_here"
+      ? (src.peers_top12_by_first_points || [])
+      : key === "total_points"
+        ? (src.peers_top12_by_total_points || [])
+        : (src.peers_top12_by_unique || []);
+    const rank = useEu
+      ? (key === "first_points_here"
+          ? (eu.rank_by_first_points || 6)
+          : key === "total_points"
+            ? (eu.rank_by_total_points || 5)
+            : (eu.rank_by_unique || 4))
+      : (key === "first_points_here"
+          ? (pc.rank_by_first_points_all || 13)
+          : key === "total_points"
+            ? (pc.rank_by_total_points_all || 8)
+            : (pc.rank_by_unique_all || 6));
+    const self = all.find((r) => r.is_this_event) || {
+      event_name: pc.this_event || "Best of the Best WCS",
+      editions: pc.editions,
+      unique_dancers: pc.unique_dancers,
+      first_points_here: pc.first_points_here || M.skill_jj_kpi.first_points_here,
+      total_points: pc.total_points || M.skill_jj_kpi.total_points,
+      is_this_event: true
+    };
+    const topN = 5;
+    const leaders = all.filter((r) => !r.is_this_event).slice(0, topN);
+    const selfInTop = rank <= topN;
+    const rows = selfInTop
+      ? all.slice(0, topN).map((r, i) => ({ ...r, _rank: i + 1 }))
+      : leaders.map((r, i) => ({ ...r, _rank: i + 1 })).concat([{ ...self, _rank: rank }]);
+    const max = Math.max(...rows.map((r) => r[key] || 0), 1);
+    const showGap = !selfInTop && rank > topN + 1;
+    const parts = [];
+    rows.forEach((r, idx) => {
+      if (showGap && idx === topN) {
+        parts.push(`<div class="peer-gap" aria-hidden="true">···</div>`);
+      }
+      const v = r[key] || 0;
+      const w = ((100 * v) / max).toFixed(1);
+      const label = `#${r._rank} ${shortEventName(r.event_name)}`;
+      parts.push(hbar(label, String(v), w, !!r.is_this_event, false));
+    });
+    document.getElementById("peerBars").innerHTML = parts.join("");
+  }
+
+  function bindScopeToggles() {
+    const root = document.getElementById("peerScopeToggles");
+    if (!root) return;
+    root.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-scope]");
+      if (!btn) return;
+      root.querySelectorAll("button").forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      peerScope = btn.dataset.scope;
+      renderPeerBars();
+    });
+  }
+
+  function renderLaunch() {
+    const L = M.insights.launchpad;
+    document.getElementById("launchKpis").innerHTML = [
+      ["Новые танцоры", L.starters_n, ""],
+      ["Дошли до All-Star+", `${String(L.reached_allstar_plus_pct).replace(".", ",")}%`, `${L.reached_allstar_plus_n} из ${L.starters_n}`],
+      ["Дошли до Champion", `${String(L.reached_champion_pct).replace(".", ",")}%`, `${L.reached_champion_n} из ${L.starters_n}`]
+    ].map(([lab, val, note]) =>
+      `<div class="snapshot-item"><div class="snapshot-label">${lab}</div><div class="snapshot-value">${val}</div>` +
+      (note ? `<div class="snapshot-note">${note}</div>` : "") +
+      `</div>`
+    ).join("");
+
+    const ladder = L.highest_division_counts.slice();
+    const base = L.starters_n || ladder.reduce((s, d) => s + d.n, 0) || 1;
+    const max = Math.max(...ladder.map((d) => d.n), 1);
+    document.getElementById("launchBars").innerHTML = ladder.map((d) => {
+      const w = ((100 * d.n) / max).toFixed(1);
+      const pct = (Math.round((1000 * d.n) / base) / 10).toFixed(1).replace(".", ",");
+      return hbar(d.division, `${d.n} · ${pct}%`, w, false);
+    }).join("");
+  }
+
+  function renderRetention() {
+    const R = M.insights.retention;
+    const hist = R.edition_histogram;
+    const base = R.unique_dancers || hist.reduce((s, h) => s + h.dancers, 0);
+    const low = [];
+    let fivePlusDancers = 0;
+    hist.forEach((h) => {
+      if (Number(h.editions) >= 5) {
+        fivePlusDancers += h.dancers;
+      } else {
+        low.push(h);
+      }
+    });
+    if (fivePlusDancers > 0) {
+      low.push({
+        editions: "5+",
+        dancers: fivePlusDancers,
+        dancers_share_pct: Math.round((1000 * fivePlusDancers) / base) / 10,
+        points_share_pct: R.five_plus_points_share_pct
+      });
+    }
+    const max = Math.max(...low.map((h) => h.dancers), 1);
+    const participationLabel = (editions) => {
+      if (editions === 1) return "1 успешное участие";
+      if (editions === "5+") return "5+ успешных участий";
+      const n = Number(editions);
+      if (n >= 2 && n <= 4) return `${n} успешных участия`;
+      return `${editions} успешных участий`;
+    };
+    const fmtPct = (v) => String(v).replace(".", ",");
+    document.getElementById("retBars").innerHTML = low.map((h) => {
+      const w = ((100 * h.dancers) / max).toFixed(1);
+      const peoplePct = h.dancers_share_pct != null
+        ? h.dancers_share_pct
+        : Math.round((1000 * h.dancers) / base) / 10;
+      const pointsPct = h.points_share_pct;
+      const valueText = pointsPct != null
+        ? `${h.dancers} · ${fmtPct(peoplePct)}% танцоров набрали ${fmtPct(pointsPct)}% поинтов`
+        : `${h.dancers} · ${fmtPct(peoplePct)}% танцоров`;
+      const focus = h.editions === 1;
+      return hbar(participationLabel(h.editions), valueText, w, focus, h.editions === "5+");
+    }).join("");
+    renderReturnRateChart();
+  }
+
+  function buildReturnSeries() {
+    const rows = M.insights.retention.next_year_return || [];
+    const byTo = Object.fromEntries(rows.map((r) => [r.to_year, r]));
+    if (!rows.length) return [];
+    const y0 = Math.min(...rows.map((r) => r.to_year));
+    const y1 = Math.max(...rows.map((r) => r.to_year));
+    const series = [];
+    for (let y = y0; y <= y1; y++) {
+      if (gaps.has(y)) {
+        series.push({ year: y, value: null, gap: true, from_year: null, returned: null, base: null });
+        continue;
+      }
+      const row = byTo[y];
+      if (!row) {
+        // Years without a consecutive Y-1→Y pair (e.g. 2022 after COVID gap)
+        series.push({ year: y, value: null, gap: false, from_year: null, returned: null, base: null });
+        continue;
+      }
+      series.push({
+        year: y,
+        value: row.rate_pct,
+        gap: false,
+        from_year: row.from_year,
+        returned: row.returned,
+        base: row.base
+      });
+    }
+    return series;
+  }
+
+  function renderReturnRateChart() {
+    const svg = document.getElementById("retChart");
+    const tip = document.getElementById("retTip");
+    if (!svg || !tip) return;
+    const series = buildReturnSeries();
+    if (!series.length) {
+      svg.innerHTML = "";
+      return;
+    }
+
+    const W = 720, H = 280;
+    const pad = { t: 16, r: 16, b: 36, l: 42 };
+    const iw = W - pad.l - pad.r;
+    const ih = H - pad.t - pad.b;
+    const vals = series.map((s) => s.value).filter((v) => v != null);
+    const vmax = Math.max(Math.ceil(Math.max(...vals, 1) / 10) * 10, 10);
+    const n = series.length;
+    const xAt = (i) => pad.l + (n === 1 ? iw / 2 : (i / (n - 1)) * iw);
+    const yAt = (v) => pad.t + ih - (v / vmax) * ih;
+
+    let path = "";
+    let started = false;
+    series.forEach((s, i) => {
+      if (s.value == null) {
+        started = false;
+        return;
+      }
+      const cmd = started ? "L" : "M";
+      path += `${cmd}${xAt(i).toFixed(1)},${yAt(s.value).toFixed(1)} `;
+      started = true;
+    });
+
+    const yTicks = 4;
+    let grid = "";
+    for (let i = 0; i <= yTicks; i++) {
+      const v = Math.round((vmax * i) / yTicks);
+      const y = yAt(v);
+      grid += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="#dde1e8" stroke-width="1"/>`;
+      grid += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${v}%</text>`;
+    }
+
+    let gapRects = "";
+    series.forEach((s, i) => {
+      if (!s.gap) return;
+      const x0 = i === 0 ? xAt(0) : (xAt(i - 1) + xAt(i)) / 2;
+      const x1 = i === n - 1 ? xAt(i) : (xAt(i) + xAt(i + 1)) / 2;
+      gapRects += `<rect x="${x0}" y="${pad.t}" width="${Math.max(x1 - x0, 2)}" height="${ih}" fill="#e8ebf0"/>`;
+    });
+
+    const y0 = series[0].year;
+    const y1 = series[n - 1].year;
+    const yearTicks = new Set(pickYearTicks(y0, y1, 8));
+    let xLabels = "";
+    series.forEach((s, i) => {
+      if (!yearTicks.has(s.year)) return;
+      const anchor = i === 0 ? "start" : i === n - 1 ? "end" : "middle";
+      xLabels += `<text x="${xAt(i)}" y="${H - 14}" text-anchor="${anchor}" font-size="11" fill="#6b7280">${s.year}</text>`;
+    });
+
+    const dots = series.map((s, i) => {
+      if (s.value == null) return "";
+      return `<circle class="ret-dot" data-i="${i}" cx="${xAt(i)}" cy="${yAt(s.value)}" r="4" fill="#1a1f2e" stroke="#fff" stroke-width="1.5" style="cursor:pointer"/>`;
+    }).join("");
+
+    svg.innerHTML = `${gapRects}${grid}<path d="${path.trim()}" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${dots}${xLabels}`;
+
+    svg.querySelectorAll(".ret-dot").forEach((dot) => {
+      dot.addEventListener("mouseenter", () => {
+        const i = +dot.dataset.i;
+        const s = series[i];
+        const rect = svg.getBoundingClientRect();
+        const cx = +dot.getAttribute("cx");
+        const cy = +dot.getAttribute("cy");
+        const rate = String(s.value).replace(".", ",");
+        tip.innerHTML =
+          `<span class="line-tip-main">${rate}%</span>` +
+          `<span class="line-tip-main">${s.returned} из ${s.base}</span>`;
+        tip.style.left = (cx / W) * rect.width + "px";
+        tip.style.top = (cy / H) * rect.height + "px";
+        tip.classList.add("is-on");
+      });
+      dot.addEventListener("mouseleave", () => tip.classList.remove("is-on"));
+    });
+  }
+
+  function renderPeople(metric) {
+    const key = metric === "editions" ? "editions" : metric === "wins" ? "wins" : "points";
+    const rows = M.top5_by_metric[key];
+    const valKey = key === "points" ? "points_here" : key;
+    const max = Math.max(...rows.map((r) => r[valKey]));
+    document.getElementById("peopleBars").innerHTML = rows.map((r) => {
+      const v = r[valKey];
+      const w = ((100 * v) / max).toFixed(1);
+      const focus = v === max;
+      return hbar(r.dancer_name, String(v), w, focus, false);
+    }).join("");
+  }
+
+  function buildSeries(metric) {
+    const byYear = Object.fromEntries(M.timeseries.map((t) => [t.event_year, t]));
+    const y0 = M.catalog.first_edition_year;
+    const y1 = M.catalog.last_edition_year;
+    const series = [];
+    for (let y = y0; y <= y1; y++) {
+      if (gaps.has(y)) {
+        series.push({ year: y, value: null, gap: true });
+        continue;
+      }
+      const row = byYear[y];
+      series.push({ year: y, value: row ? row[metric] : null, gap: false });
+    }
+    return series;
+  }
+
+  function yoyChange(series, index) {
+    const cur = series[index];
+    if (cur == null || cur.value == null) return null;
+    let prev = null;
+    for (let j = index - 1; j >= 0; j--) {
+      if (series[j].value != null) {
+        prev = series[j];
+        break;
+      }
+    }
+    if (!prev || prev.value === 0) return null;
+    return ((cur.value - prev.value) / prev.value) * 100;
+  }
+
+  function formatYoy(pct) {
+    if (pct == null || !Number.isFinite(pct)) return null;
+    const rounded = Math.round(pct);
+    if (rounded === 0) return { text: "0% год к году", cls: "is-flat" };
+    const sign = rounded > 0 ? "+" : "−";
+    return { text: `${sign}${Math.abs(rounded)}% год к году`, cls: rounded > 0 ? "is-up" : "is-down" };
+  }
+
+  /** Year ticks: always endpoints; evenly spaced intermediates that do not crowd the ends. */
+  function pickYearTicks(y0, y1, maxLabels) {
+    const span = y1 - y0;
+    if (span <= 0) return [y0];
+    const steps = [5, 10, 4, 8, 2];
+    let best = [y0, y1];
+    for (const step of steps) {
+      const mid = [];
+      const first = Math.ceil((y0 + 1) / step) * step;
+      for (let y = first; y < y1; y += step) mid.push(y);
+      const minEdge = Math.max(3, Math.ceil(step * 0.75));
+      const kept = mid.filter((y) => y - y0 >= minEdge && y1 - y >= minEdge);
+      const ticks = [y0, ...kept, y1];
+      if (ticks.length <= maxLabels && ticks.length >= best.length) best = ticks;
+    }
+    return best;
+  }
+
+  function renderTraj(metric) {
+    const svg = document.getElementById("trajChart");
+    const tip = document.getElementById("trajTip");
+    const series = buildSeries(metric);
+
+    const W = 720, H = 280;
+    const pad = { t: 16, r: 16, b: 36, l: 36 };
+    const iw = W - pad.l - pad.r;
+    const ih = H - pad.t - pad.b;
+    const vals = series.map((s) => s.value).filter((v) => v != null);
+    const vmax = Math.max(...vals, 1);
+    const n = series.length;
+    const xAt = (i) => pad.l + (n === 1 ? iw / 2 : (i / (n - 1)) * iw);
+    const yAt = (v) => pad.t + ih - (v / vmax) * ih;
+
+    let path = "";
+    let started = false;
+    series.forEach((s, i) => {
+      if (s.value == null) {
+        started = false;
+        return;
+      }
+      const cmd = started ? "L" : "M";
+      path += `${cmd}${xAt(i).toFixed(1)},${yAt(s.value).toFixed(1)} `;
+      started = true;
+    });
+
+    const yTicks = 4;
+    let grid = "";
+    for (let i = 0; i <= yTicks; i++) {
+      const v = Math.round((vmax * i) / yTicks);
+      const y = yAt(v);
+      grid += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="#dde1e8" stroke-width="1"/>`;
+      grid += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${v}</text>`;
+    }
+
+    let gapRects = "";
+    series.forEach((s, i) => {
+      if (!s.gap) return;
+      const x0 = i === 0 ? xAt(0) : (xAt(i - 1) + xAt(i)) / 2;
+      const x1 = i === n - 1 ? xAt(i) : (xAt(i) + xAt(i + 1)) / 2;
+      gapRects += `<rect x="${x0}" y="${pad.t}" width="${Math.max(x1 - x0, 2)}" height="${ih}" fill="#e8ebf0"/>`;
+    });
+
+    const y0 = series[0].year;
+    const y1 = series[n - 1].year;
+    const yearTicks = new Set(pickYearTicks(y0, y1, 8));
+    let xLabels = "";
+    series.forEach((s, i) => {
+      if (!yearTicks.has(s.year)) return;
+      const anchor = i === 0 ? "start" : i === n - 1 ? "end" : "middle";
+      xLabels += `<text x="${xAt(i)}" y="${H - 14}" text-anchor="${anchor}" font-size="11" fill="#6b7280">${s.year}</text>`;
+    });
+
+    const dots = series.map((s, i) => {
+      if (s.value == null) return "";
+      return `<circle class="traj-dot" data-i="${i}" cx="${xAt(i)}" cy="${yAt(s.value)}" r="4" fill="#1a1f2e" stroke="#fff" stroke-width="1.5" style="cursor:pointer"/>`;
+    }).join("");
+
+    svg.innerHTML = `${gapRects}${grid}<path d="${path.trim()}" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${dots}${xLabels}`;
+
+    svg.querySelectorAll(".traj-dot").forEach((dot) => {
+      dot.addEventListener("mouseenter", () => {
+        const i = +dot.dataset.i;
+        const s = series[i];
+        const rect = svg.getBoundingClientRect();
+        const cx = +dot.getAttribute("cx");
+        const cy = +dot.getAttribute("cy");
+        const yoy = formatYoy(yoyChange(series, i));
+        tip.innerHTML =
+          `<span class="line-tip-main">${s.year}: ${s.value}</span>` +
+          (yoy ? `<span class="line-tip-yoy ${yoy.cls}">${yoy.text}</span>` : "");
+        tip.style.left = (cx / W) * rect.width + "px";
+        tip.style.top = (cy / H) * rect.height + "px";
+        tip.classList.add("is-on");
+      });
+      dot.addEventListener("mouseleave", () => tip.classList.remove("is-on"));
+    });
+  }
+
+  bindToggles("peerToggles", renderPeerBars);
+  bindScopeToggles();
+  bindToggles("trajToggles", renderTraj);
+  bindToggles("peopleToggles", renderPeople);
+
+  renderPeerBars("unique_dancers");
+  renderLaunch();
+  renderRetention();
+  renderTraj("unique_dancers");
+  renderPeople("points");
+})();
+
+</script>
+</body>
+</html>
