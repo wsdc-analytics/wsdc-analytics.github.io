@@ -424,11 +424,25 @@
     return out;
   }
 
+  function countPastConfirmedOccurred(events) {
+    var ids = Object.create(null);
+    (events || []).forEach(function (e) {
+      if (e.status !== "confirmed") return;
+      if (!e.has_results) return;
+      if (e.event_id === null || e.event_id === undefined) return;
+      ids[String(e.event_id)] = 1;
+    });
+    return Object.keys(ids).length;
+  }
+
   function renderFilterStats(events) {
     var asOf = dataAsOf();
-    var splitYear = Number(String(asOf).slice(0, 4)) === state.year;
+    var asOfYear = Number(String(asOf).slice(0, 4));
+    var splitYear = asOfYear === state.year;
+    var isPastYear = state.year < asOfYear;
     var counts = countFilterStats(events, asOf);
     var splitKeys = { confirmed: 1, expected: 1, registry: 1, trial: 1 };
+    var pastOccurredConfirmed = isPastYear ? countPastConfirmedOccurred(events) : null;
     document.querySelectorAll("[data-stat]").forEach(function (wrap) {
       var key = wrap.getAttribute("data-stat");
       var bucket = counts[key] || emptyStatBucket();
@@ -447,7 +461,11 @@
           bucket.remaining + " " + t("statOf").replace("{n}", String(bucket.total))
         );
       } else {
-        valueEl.textContent = String(bucket.total);
+        if (isPastYear && key === "confirmed" && pastOccurredConfirmed !== null) {
+          valueEl.textContent = String(pastOccurredConfirmed);
+        } else {
+          valueEl.textContent = String(bucket.total);
+        }
         if (ofEl) {
           ofEl.hidden = true;
           ofEl.textContent = "";
@@ -620,6 +638,7 @@
   function indexByDay(events, year) {
     var map = {};
     events.forEach(function (e) {
+      if (e && e.stats_only) return;
       var start = e.start_date;
       if (!start) return;
       var end = e.end_date || e.start_date;
@@ -648,9 +667,10 @@
   function renderCalendar() {
     var root = document.getElementById("calendarRoot");
     var events = eventsForYear(state.year);
-    state.byDay = indexByDay(events, state.year);
+    var dayEvents = events.filter(function (e) { return !e.stats_only; });
+    state.byDay = indexByDay(dayEvents, state.year);
     renderFilterStats(events);
-    if (!events.length) {
+    if (!events.length || !Object.keys(state.byDay).length) {
       root.innerHTML = '<div class="empty-year">' + t("empty") + "</div>";
       return;
     }
