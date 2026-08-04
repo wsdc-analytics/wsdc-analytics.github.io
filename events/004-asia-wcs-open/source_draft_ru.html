@@ -726,16 +726,13 @@
     <section class="section" aria-labelledby="launch-title">
       <h2 class="section-title" id="launch-title">Кто начинал здесь</h2>
       <p>
-        Доля новых танцоров среди тех, кто получил здесь поинты, заметно высокая:
-        211 из 752, около 28%, почти каждый четвёртый. Вероятно, это связано
-        с высокой привлекательностью ивента в самом начале и с некоторой стабильностью состава
-        участников.
+        222 из 528 танцоров (42,0%) получили здесь первые Skill Level поинты.
+        До Champion из стартовавших здесь никто не дошёл; до All-Star+ — 6 человек (2,7%).
       </p>
       <div class="insight-kpis" id="launchKpis"></div>
       <p>
-        Большинство стартовавших здесь остаются в Newcomer-Novice: около 42% в Newcomer и ещё ~20% в Novice.
-        До Intermediate дошёл примерно каждый пятый, до Advanced каждый десятый.
-        До All-Star и выше примерно каждый четырнадцатый, до Champion дошло 5 человек.
+        Большинство стартовавших здесь остаются в Newcomer-Novice: около 32,0% в Newcomer и ещё ~38,7% в Novice.
+        До Intermediate дошли 43 (19,4%), до Advanced — 16 (7,2%).
       </p>
       <div class="bar-chart" id="launchBars" aria-label="Высший дивизион стартовавших здесь"></div>
 
@@ -747,11 +744,6 @@
         <li>Barry Goh: первые поинты в 2013</li>
         <li>David Kono: первые поинты в 2014</li>
       </ul>
-
-    <p>
-        Также можно отметить Ibirocay Alsén и Mathieu Compagnon, которые получили здесь свои
-        первые поинты в 2012 году.
-      </p>
     </section>
 
     <section class="section" aria-labelledby="ret-title">
@@ -766,6 +758,7 @@
 
 
 
+      <div class="bar-chart" id="retBars" aria-label="Число успешных участий на танцора"></div>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="retTip" aria-hidden="true"></div>
         <svg id="retChart" viewBox="0 0 720 280" role="img" aria-label="Доля повторного набора поинтов год к году"></svg>
@@ -1009,7 +1002,8 @@
       return `${editions} успешных участий`;
     };
     const fmtPct = (v) => String(v).replace(".", ",");
-    document.getElementById("retBars").innerHTML = low.map((h) => {
+    const retBarsEl = document.getElementById("retBars");
+    if (retBarsEl) retBarsEl.innerHTML = low.map((h) => {
       const w = ((100 * h.dancers) / max).toFixed(1);
       const peoplePct = h.dancers_share_pct != null
         ? h.dancers_share_pct
