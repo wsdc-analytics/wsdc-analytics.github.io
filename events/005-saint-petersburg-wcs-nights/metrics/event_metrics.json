@@ -1,0 +1,1684 @@
+{
+  "event_id": 280,
+  "generated": "2026-08-04",
+  "definitions": {
+    "skill_jj": "West Coast Swing + Newcomer/Novice/Intermediate/Advanced/All-Star/Champion, points > 0",
+    "new_dancers": "dancers whose first-ever WSDC points row (Skill JJ) falls on this event date (event_year_and_month)",
+    "wins": "result_standardized = '1' at this event (Skill JJ)",
+    "started_here_notable": "first WSDC points at this event; Champion pts since 2009 + top All-Star pts since 2009",
+    "pairs": "Place-matched Leader+Follower (same place 1-5) in any Skill Level JJ division at this event",
+    "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
+    "launchpad": "first-ever WSDC Skill JJ points at this event; highest division and career points share outside",
+    "division_era_mix": "Share of Skill JJ points by division, by era (gaps excluded)",
+    "retention": "Return = points in Y and Y+1; editions = distinct years with points here",
+    "peer_europe": "Among Europe Skill JJ events (typical_country / mode location)"
+  },
+  "catalog": {
+    "canonical_name": "Saint Petersburg WCS Nights",
+    "url": "http://wcsnights.ru",
+    "typical_location": "St. Petersburg, Russia",
+    "typical_city": "St. Petersburg",
+    "typical_state": null,
+    "typical_country": "Russia",
+    "first_edition_year": 2017,
+    "last_edition_year": 2026,
+    "edition_count": 9,
+    "unique_dancers_all_divisions": 379,
+    "total_result_rows_all_divisions": 712,
+    "upcoming_start_date": null,
+    "upcoming_location": null
+  },
+  "skill_jj_kpi": {
+    "unique_dancers": 372,
+    "total_points": 2315,
+    "result_rows": 649,
+    "editions_with_results": 9,
+    "wins": 78,
+    "first_points_here": 114,
+    "first_points_share_pct": 30.6,
+    "peak_year_dancers": 2025,
+    "peak_dancers": 98,
+    "peak_year_points": 2025,
+    "peak_points": 428,
+    "peak_year_new_dancers": 2025,
+    "peak_new_dancers": 27
+  },
+  "year_gaps": [
+    2020
+  ],
+  "champ_window_from_year": 2009,
+  "timeseries": [
+    {
+      "event_year": 2017,
+      "unique_dancers": 67,
+      "total_points": 226,
+      "new_dancers": 16
+    },
+    {
+      "event_year": 2018,
+      "unique_dancers": 51,
+      "total_points": 180,
+      "new_dancers": 6
+    },
+    {
+      "event_year": 2019,
+      "unique_dancers": 62,
+      "total_points": 195,
+      "new_dancers": 4
+    },
+    {
+      "event_year": 2021,
+      "unique_dancers": 60,
+      "total_points": 172,
+      "new_dancers": 3
+    },
+    {
+      "event_year": 2022,
+      "unique_dancers": 61,
+      "total_points": 204,
+      "new_dancers": 6
+    },
+    {
+      "event_year": 2023,
+      "unique_dancers": 71,
+      "total_points": 258,
+      "new_dancers": 19
+    },
+    {
+      "event_year": 2024,
+      "unique_dancers": 92,
+      "total_points": 342,
+      "new_dancers": 12
+    },
+    {
+      "event_year": 2025,
+      "unique_dancers": 98,
+      "total_points": 428,
+      "new_dancers": 27
+    },
+    {
+      "event_year": 2026,
+      "unique_dancers": 80,
+      "total_points": 310,
+      "new_dancers": 21
+    }
+  ],
+  "division_cuts": [
+    {
+      "division": "Newcomer",
+      "unique_dancers": 66,
+      "total_points": 223
+    },
+    {
+      "division": "Novice",
+      "unique_dancers": 186,
+      "total_points": 947
+    },
+    {
+      "division": "Intermediate",
+      "unique_dancers": 137,
+      "total_points": 674
+    },
+    {
+      "division": "Advanced",
+      "unique_dancers": 60,
+      "total_points": 341
+    },
+    {
+      "division": "All-Star",
+      "unique_dancers": 27,
+      "total_points": 130
+    }
+  ],
+  "top5_by_metric": {
+    "points": [
+      {
+        "dancer_name": "Evgeniya Akhmadeeva",
+        "points_here": 33,
+        "editions": 5,
+        "wins": 1
+      },
+      {
+        "dancer_name": "Natalya Bykova",
+        "points_here": 33,
+        "editions": 5,
+        "wins": 1
+      },
+      {
+        "dancer_name": "Ekaterina Gorianaya",
+        "points_here": 32,
+        "editions": 6,
+        "wins": 2
+      },
+      {
+        "dancer_name": "Fedor Mayboroda",
+        "points_here": 31,
+        "editions": 3,
+        "wins": 2
+      },
+      {
+        "dancer_name": "Inna Nechaeva",
+        "points_here": 28,
+        "editions": 3,
+        "wins": 0
+      }
+    ],
+    "editions": [
+      {
+        "dancer_name": "Ekaterina Gorianaya",
+        "points_here": 32,
+        "editions": 6,
+        "wins": 2
+      },
+      {
+        "dancer_name": "Artem Shapovalov",
+        "points_here": 22,
+        "editions": 6,
+        "wins": 4
+      },
+      {
+        "dancer_name": "Maria Arkhandopulo",
+        "points_here": 15,
+        "editions": 6,
+        "wins": 1
+      },
+      {
+        "dancer_name": "Yevgeniya Karachentsova",
+        "points_here": 13,
+        "editions": 6,
+        "wins": 0
+      },
+      {
+        "dancer_name": "Ilmira Galieva",
+        "points_here": 11,
+        "editions": 6,
+        "wins": 2
+      }
+    ],
+    "wins": [
+      {
+        "dancer_name": "Artem Shapovalov",
+        "points_here": 22,
+        "editions": 6,
+        "wins": 4
+      },
+      {
+        "dancer_name": "Irina Popovichenko",
+        "points_here": 19,
+        "editions": 3,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Ekaterina Gorianaya",
+        "points_here": 32,
+        "editions": 6,
+        "wins": 2
+      },
+      {
+        "dancer_name": "Fedor Mayboroda",
+        "points_here": 31,
+        "editions": 3,
+        "wins": 2
+      },
+      {
+        "dancer_name": "Anastasiya Yuzhakova",
+        "points_here": 26,
+        "editions": 5,
+        "wins": 2
+      }
+    ]
+  },
+  "pairs_as_champ": {
+    "method_note": "Place-matched Leader+Follower (same place 1-5) in any Skill Level JJ division at this event",
+    "repeat_pairs_n": 1,
+    "pairs_total": 176,
+    "max_together": 2,
+    "by_wins": [
+      {
+        "leader_name": "Sergey Smirnov",
+        "follower_name": "Natalya Bykova",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Aleksey Vorotnikov",
+        "follower_name": "Maria Arkhandopulo",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Andrey Shenayev",
+        "follower_name": "Anna DmiTRieva",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Andrey Shenayev",
+        "follower_name": "Ilmira Galieva",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "All-Star"
+        ]
+      },
+      {
+        "leader_name": "Andrey Navolotskiy",
+        "follower_name": "Irina Popovichenko",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "All-Star"
+        ]
+      },
+      {
+        "leader_name": "Vitaliy Zakharov",
+        "follower_name": "Mikhalina Malinovskaya",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Pavel Kozlov",
+        "follower_name": "Aleksandra Telenkova",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Intermediate"
+        ]
+      },
+      {
+        "leader_name": "Valentina Kholina",
+        "follower_name": "Tatiana Miaskovskaia",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Newcomer"
+        ]
+      },
+      {
+        "leader_name": "Artem Shapovalov",
+        "follower_name": "Elena Logashina",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Intermediate"
+        ]
+      },
+      {
+        "leader_name": "Artem Shapovalov",
+        "follower_name": "Ekaterina Gorianaya",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Artem Shapovalov",
+        "follower_name": "Natallia Mironova",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Artem Shapovalov",
+        "follower_name": "Anastasiya Yuzhakova",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "All-Star"
+        ]
+      }
+    ]
+  },
+  "started_here_notable_examples": [],
+  "started_here_notable_champ_since_2009": [],
+  "started_here_notable_allstar_top3_since_2009": [
+    {
+      "dancer_name": "Anastasiia Babakhan",
+      "event_year": 2017,
+      "allstar_pts_since_2009": 19,
+      "last_as_year": 2026
+    },
+    {
+      "dancer_name": "Anastasiya Yuzhakova",
+      "event_year": 2022,
+      "allstar_pts_since_2009": 14,
+      "last_as_year": 2026
+    },
+    {
+      "dancer_name": "Maria Arkhandopulo",
+      "event_year": 2018,
+      "allstar_pts_since_2009": 13,
+      "last_as_year": 2026
+    }
+  ],
+  "other_divisions_present": [
+    "Sophisticated"
+  ],
+  "header_candidates": [],
+  "insights": {
+    "peer_context": {
+      "definition": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
+      "this_event": "Saint Petersburg WCS Nights",
+      "events_total_n": 345,
+      "long_events_n": 101,
+      "unique_dancers": 372,
+      "first_points_here": 114,
+      "total_points": 2315,
+      "editions": 9,
+      "rank_by_unique_all": 113,
+      "rank_by_first_points_all": 89,
+      "rank_by_total_points_all": 97,
+      "rank_by_editions": 102,
+      "rank_by_unique_among_long": null,
+      "peers_top12_by_unique": [
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 1652,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 1518,
+          "is_this_event": false
+        },
+        {
+          "event_id": 8,
+          "event_name": "Boogie By The Bay",
+          "name": "Boogie By The Bay",
+          "editions": 31,
+          "unique_dancers": 1476,
+          "first_points_here": 198,
+          "total_points": 10682,
+          "value": 1476,
+          "is_this_event": false
+        },
+        {
+          "event_id": 96,
+          "event_name": "Liberty Swing Dance Championships",
+          "name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 248,
+          "total_points": 8356,
+          "value": 1418,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 1413,
+          "is_this_event": false
+        },
+        {
+          "event_id": 1,
+          "event_name": "4TH of July Convention",
+          "name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 257,
+          "total_points": 8284,
+          "value": 1364,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 1359,
+          "is_this_event": false
+        },
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 1336,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 1281,
+          "is_this_event": false
+        },
+        {
+          "event_id": 25,
+          "event_name": "J&J O'Rama",
+          "name": "J&J O'Rama",
+          "editions": 28,
+          "unique_dancers": 1279,
+          "first_points_here": 156,
+          "total_points": 8554,
+          "value": 1279,
+          "is_this_event": false
+        },
+        {
+          "event_id": 47,
+          "event_name": "Swingtime in the Rockies",
+          "name": "Swingtime in the Rockies",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 260,
+          "total_points": 7535,
+          "value": 1265,
+          "is_this_event": false
+        },
+        {
+          "event_id": 62,
+          "event_name": "Monterey SwingFest",
+          "name": "Monterey SwingFest",
+          "editions": 31,
+          "unique_dancers": 1154,
+          "first_points_here": 210,
+          "total_points": 7804,
+          "value": 1154,
+          "is_this_event": false
+        },
+        {
+          "event_id": 280,
+          "event_name": "Saint Petersburg WCS Nights",
+          "name": "Saint Petersburg WCS Nights",
+          "editions": 9,
+          "unique_dancers": 372,
+          "first_points_here": 114,
+          "total_points": 2315,
+          "value": 372,
+          "is_this_event": true
+        }
+      ],
+      "peers_top12_by_first_points": [
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 419,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 415,
+          "is_this_event": false
+        },
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 389,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 367,
+          "is_this_event": false
+        },
+        {
+          "event_id": 184,
+          "event_name": "BudaFest Open WCS Championships",
+          "name": "BudaFest Open WCS Championships",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "value": 345,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 340,
+          "is_this_event": false
+        },
+        {
+          "event_id": 186,
+          "event_name": "West in Lyon",
+          "name": "West in Lyon",
+          "editions": 13,
+          "unique_dancers": 746,
+          "first_points_here": 325,
+          "total_points": 5104,
+          "value": 325,
+          "is_this_event": false
+        },
+        {
+          "event_id": 334,
+          "event_name": "Countdown Swing Boston",
+          "name": "Countdown Swing Boston",
+          "editions": 22,
+          "unique_dancers": 937,
+          "first_points_here": 324,
+          "total_points": 5463,
+          "value": 324,
+          "is_this_event": false
+        },
+        {
+          "event_id": 220,
+          "event_name": "D-Town Swing",
+          "name": "D-Town Swing",
+          "editions": 11,
+          "unique_dancers": 698,
+          "first_points_here": 271,
+          "total_points": 3785,
+          "value": 271,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 267,
+          "is_this_event": false
+        },
+        {
+          "event_id": 175,
+          "event_name": "French Open West Coast Swing",
+          "name": "French Open West Coast Swing",
+          "editions": 14,
+          "unique_dancers": 840,
+          "first_points_here": 265,
+          "total_points": 5724,
+          "value": 265,
+          "is_this_event": false
+        },
+        {
+          "event_id": 47,
+          "event_name": "Swingtime in the Rockies",
+          "name": "Swingtime in the Rockies",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 260,
+          "total_points": 7535,
+          "value": 260,
+          "is_this_event": false
+        },
+        {
+          "event_id": 280,
+          "event_name": "Saint Petersburg WCS Nights",
+          "name": "Saint Petersburg WCS Nights",
+          "editions": 9,
+          "unique_dancers": 372,
+          "first_points_here": 114,
+          "total_points": 2315,
+          "value": 114,
+          "is_this_event": true
+        }
+      ],
+      "peers_top12_by_total_points": [
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 11367,
+          "is_this_event": false
+        },
+        {
+          "event_id": 8,
+          "event_name": "Boogie By The Bay",
+          "name": "Boogie By The Bay",
+          "editions": 31,
+          "unique_dancers": 1476,
+          "first_points_here": 198,
+          "total_points": 10682,
+          "value": 10682,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 9226,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 9210,
+          "is_this_event": false
+        },
+        {
+          "event_id": 25,
+          "event_name": "J&J O'Rama",
+          "name": "J&J O'Rama",
+          "editions": 28,
+          "unique_dancers": 1279,
+          "first_points_here": 156,
+          "total_points": 8554,
+          "value": 8554,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 8468,
+          "is_this_event": false
+        },
+        {
+          "event_id": 96,
+          "event_name": "Liberty Swing Dance Championships",
+          "name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 248,
+          "total_points": 8356,
+          "value": 8356,
+          "is_this_event": false
+        },
+        {
+          "event_id": 1,
+          "event_name": "4TH of July Convention",
+          "name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 257,
+          "total_points": 8284,
+          "value": 8284,
+          "is_this_event": false
+        },
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 8138,
+          "is_this_event": false
+        },
+        {
+          "event_id": 62,
+          "event_name": "Monterey SwingFest",
+          "name": "Monterey SwingFest",
+          "editions": 31,
+          "unique_dancers": 1154,
+          "first_points_here": 210,
+          "total_points": 7804,
+          "value": 7804,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 7796,
+          "is_this_event": false
+        },
+        {
+          "event_id": 184,
+          "event_name": "BudaFest Open WCS Championships",
+          "name": "BudaFest Open WCS Championships",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "value": 7753,
+          "is_this_event": false
+        },
+        {
+          "event_id": 280,
+          "event_name": "Saint Petersburg WCS Nights",
+          "name": "Saint Petersburg WCS Nights",
+          "editions": 9,
+          "unique_dancers": 372,
+          "first_points_here": 114,
+          "total_points": 2315,
+          "value": 2315,
+          "is_this_event": true
+        }
+      ],
+      "peers_top15_by_first_points": [
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 419,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 415,
+          "is_this_event": false
+        },
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 389,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 367,
+          "is_this_event": false
+        },
+        {
+          "event_id": 184,
+          "event_name": "BudaFest Open WCS Championships",
+          "name": "BudaFest Open WCS Championships",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "value": 345,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 340,
+          "is_this_event": false
+        },
+        {
+          "event_id": 186,
+          "event_name": "West in Lyon",
+          "name": "West in Lyon",
+          "editions": 13,
+          "unique_dancers": 746,
+          "first_points_here": 325,
+          "total_points": 5104,
+          "value": 325,
+          "is_this_event": false
+        },
+        {
+          "event_id": 334,
+          "event_name": "Countdown Swing Boston",
+          "name": "Countdown Swing Boston",
+          "editions": 22,
+          "unique_dancers": 937,
+          "first_points_here": 324,
+          "total_points": 5463,
+          "value": 324,
+          "is_this_event": false
+        },
+        {
+          "event_id": 220,
+          "event_name": "D-Town Swing",
+          "name": "D-Town Swing",
+          "editions": 11,
+          "unique_dancers": 698,
+          "first_points_here": 271,
+          "total_points": 3785,
+          "value": 271,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 267,
+          "is_this_event": false
+        },
+        {
+          "event_id": 175,
+          "event_name": "French Open West Coast Swing",
+          "name": "French Open West Coast Swing",
+          "editions": 14,
+          "unique_dancers": 840,
+          "first_points_here": 265,
+          "total_points": 5724,
+          "value": 265,
+          "is_this_event": false
+        },
+        {
+          "event_id": 47,
+          "event_name": "Swingtime in the Rockies",
+          "name": "Swingtime in the Rockies",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 260,
+          "total_points": 7535,
+          "value": 260,
+          "is_this_event": false
+        },
+        {
+          "event_id": 1,
+          "event_name": "4TH of July Convention",
+          "name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 257,
+          "total_points": 8284,
+          "value": 257,
+          "is_this_event": false
+        },
+        {
+          "event_id": 96,
+          "event_name": "Liberty Swing Dance Championships",
+          "name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 248,
+          "total_points": 8356,
+          "value": 248,
+          "is_this_event": false
+        },
+        {
+          "event_id": 225,
+          "event_name": "Wild Wild Westie",
+          "name": "Wild Wild Westie",
+          "editions": 12,
+          "unique_dancers": 947,
+          "first_points_here": 223,
+          "total_points": 6526,
+          "value": 223,
+          "is_this_event": false
+        },
+        {
+          "event_id": 280,
+          "event_name": "Saint Petersburg WCS Nights",
+          "name": "Saint Petersburg WCS Nights",
+          "editions": 9,
+          "unique_dancers": 372,
+          "first_points_here": 114,
+          "total_points": 2315,
+          "value": 114,
+          "is_this_event": true
+        }
+      ],
+      "europe": {
+        "definition": "Among Europe Skill JJ events (typical_country / mode location)",
+        "events_n": 105,
+        "rank_by_unique": 34,
+        "rank_by_first_points": 27,
+        "rank_by_total_points": 25,
+        "peers_top12_by_unique": [
+          {
+            "event_id": 184,
+            "event_name": "BudaFest Open WCS Championships",
+            "name": "BudaFest Open WCS Championships",
+            "editions": 14,
+            "unique_dancers": 1112,
+            "first_points_here": 345,
+            "total_points": 7753,
+            "value": 1112,
+            "is_this_event": false
+          },
+          {
+            "event_id": 236,
+            "event_name": "Warsaw Halloween Swing",
+            "name": "Warsaw Halloween Swing",
+            "editions": 13,
+            "unique_dancers": 851,
+            "first_points_here": 222,
+            "total_points": 4712,
+            "value": 851,
+            "is_this_event": false
+          },
+          {
+            "event_id": 175,
+            "event_name": "French Open West Coast Swing",
+            "name": "French Open West Coast Swing",
+            "editions": 14,
+            "unique_dancers": 840,
+            "first_points_here": 265,
+            "total_points": 5724,
+            "value": 840,
+            "is_this_event": false
+          },
+          {
+            "event_id": 154,
+            "event_name": "UK WCS Championships",
+            "name": "UK WCS Championships",
+            "editions": 13,
+            "unique_dancers": 752,
+            "first_points_here": 211,
+            "total_points": 4338,
+            "value": 752,
+            "is_this_event": false
+          },
+          {
+            "event_id": 186,
+            "event_name": "West in Lyon",
+            "name": "West in Lyon",
+            "editions": 13,
+            "unique_dancers": 746,
+            "first_points_here": 325,
+            "total_points": 5104,
+            "value": 746,
+            "is_this_event": false
+          },
+          {
+            "event_id": 222,
+            "event_name": "Baltic Swing",
+            "name": "Baltic Swing",
+            "editions": 11,
+            "unique_dancers": 735,
+            "first_points_here": 178,
+            "total_points": 3950,
+            "value": 735,
+            "is_this_event": false
+          },
+          {
+            "event_id": 220,
+            "event_name": "D-Town Swing",
+            "name": "D-Town Swing",
+            "editions": 11,
+            "unique_dancers": 698,
+            "first_points_here": 271,
+            "total_points": 3785,
+            "value": 698,
+            "is_this_event": false
+          },
+          {
+            "event_id": 229,
+            "event_name": "Scandinavian Open",
+            "name": "Scandinavian Open",
+            "editions": 10,
+            "unique_dancers": 678,
+            "first_points_here": 176,
+            "total_points": 3698,
+            "value": 678,
+            "is_this_event": false
+          },
+          {
+            "event_id": 253,
+            "event_name": "Nordic WCS Championships",
+            "name": "Nordic WCS Championships",
+            "editions": 10,
+            "unique_dancers": 677,
+            "first_points_here": 147,
+            "total_points": 3833,
+            "value": 677,
+            "is_this_event": false
+          },
+          {
+            "event_id": 233,
+            "event_name": "Bavarian Open",
+            "name": "Bavarian Open",
+            "editions": 10,
+            "unique_dancers": 657,
+            "first_points_here": 165,
+            "total_points": 3402,
+            "value": 657,
+            "is_this_event": false
+          },
+          {
+            "event_id": 165,
+            "event_name": "Midland Swing Open",
+            "name": "Midland Swing Open",
+            "editions": 15,
+            "unique_dancers": 624,
+            "first_points_here": 136,
+            "total_points": 3336,
+            "value": 624,
+            "is_this_event": false
+          },
+          {
+            "event_id": 272,
+            "event_name": "Paris Westie Fest",
+            "name": "Paris Westie Fest",
+            "editions": 8,
+            "unique_dancers": 602,
+            "first_points_here": 145,
+            "total_points": 3270,
+            "value": 602,
+            "is_this_event": false
+          },
+          {
+            "event_id": 280,
+            "event_name": "Saint Petersburg WCS Nights",
+            "name": "Saint Petersburg WCS Nights",
+            "editions": 9,
+            "unique_dancers": 372,
+            "first_points_here": 114,
+            "total_points": 2315,
+            "value": 372,
+            "is_this_event": true
+          }
+        ],
+        "peers_top12_by_first_points": [
+          {
+            "event_id": 184,
+            "event_name": "BudaFest Open WCS Championships",
+            "name": "BudaFest Open WCS Championships",
+            "editions": 14,
+            "unique_dancers": 1112,
+            "first_points_here": 345,
+            "total_points": 7753,
+            "value": 345,
+            "is_this_event": false
+          },
+          {
+            "event_id": 186,
+            "event_name": "West in Lyon",
+            "name": "West in Lyon",
+            "editions": 13,
+            "unique_dancers": 746,
+            "first_points_here": 325,
+            "total_points": 5104,
+            "value": 325,
+            "is_this_event": false
+          },
+          {
+            "event_id": 220,
+            "event_name": "D-Town Swing",
+            "name": "D-Town Swing",
+            "editions": 11,
+            "unique_dancers": 698,
+            "first_points_here": 271,
+            "total_points": 3785,
+            "value": 271,
+            "is_this_event": false
+          },
+          {
+            "event_id": 175,
+            "event_name": "French Open West Coast Swing",
+            "name": "French Open West Coast Swing",
+            "editions": 14,
+            "unique_dancers": 840,
+            "first_points_here": 265,
+            "total_points": 5724,
+            "value": 265,
+            "is_this_event": false
+          },
+          {
+            "event_id": 236,
+            "event_name": "Warsaw Halloween Swing",
+            "name": "Warsaw Halloween Swing",
+            "editions": 13,
+            "unique_dancers": 851,
+            "first_points_here": 222,
+            "total_points": 4712,
+            "value": 222,
+            "is_this_event": false
+          },
+          {
+            "event_id": 154,
+            "event_name": "UK WCS Championships",
+            "name": "UK WCS Championships",
+            "editions": 13,
+            "unique_dancers": 752,
+            "first_points_here": 211,
+            "total_points": 4338,
+            "value": 211,
+            "is_this_event": false
+          },
+          {
+            "event_id": 194,
+            "event_name": "Moscow Westie Fest",
+            "name": "Moscow Westie Fest",
+            "editions": 13,
+            "unique_dancers": 493,
+            "first_points_here": 208,
+            "total_points": 3317,
+            "value": 208,
+            "is_this_event": false
+          },
+          {
+            "event_id": 164,
+            "event_name": "Sea Sun and Swing",
+            "name": "Sea Sun and Swing",
+            "editions": 11,
+            "unique_dancers": 535,
+            "first_points_here": 189,
+            "total_points": 2671,
+            "value": 189,
+            "is_this_event": false
+          },
+          {
+            "event_id": 215,
+            "event_name": "Swing & Snow",
+            "name": "Swing & Snow",
+            "editions": 13,
+            "unique_dancers": 580,
+            "first_points_here": 180,
+            "total_points": 3851,
+            "value": 180,
+            "is_this_event": false
+          },
+          {
+            "event_id": 222,
+            "event_name": "Baltic Swing",
+            "name": "Baltic Swing",
+            "editions": 11,
+            "unique_dancers": 735,
+            "first_points_here": 178,
+            "total_points": 3950,
+            "value": 178,
+            "is_this_event": false
+          },
+          {
+            "event_id": 229,
+            "event_name": "Scandinavian Open",
+            "name": "Scandinavian Open",
+            "editions": 10,
+            "unique_dancers": 678,
+            "first_points_here": 176,
+            "total_points": 3698,
+            "value": 176,
+            "is_this_event": false
+          },
+          {
+            "event_id": 206,
+            "event_name": "Hungarian Open",
+            "name": "Hungarian Open",
+            "editions": 11,
+            "unique_dancers": 553,
+            "first_points_here": 169,
+            "total_points": 2928,
+            "value": 169,
+            "is_this_event": false
+          },
+          {
+            "event_id": 280,
+            "event_name": "Saint Petersburg WCS Nights",
+            "name": "Saint Petersburg WCS Nights",
+            "editions": 9,
+            "unique_dancers": 372,
+            "first_points_here": 114,
+            "total_points": 2315,
+            "value": 114,
+            "is_this_event": true
+          }
+        ],
+        "peers_top12_by_total_points": [
+          {
+            "event_id": 184,
+            "event_name": "BudaFest Open WCS Championships",
+            "name": "BudaFest Open WCS Championships",
+            "editions": 14,
+            "unique_dancers": 1112,
+            "first_points_here": 345,
+            "total_points": 7753,
+            "value": 7753,
+            "is_this_event": false
+          },
+          {
+            "event_id": 175,
+            "event_name": "French Open West Coast Swing",
+            "name": "French Open West Coast Swing",
+            "editions": 14,
+            "unique_dancers": 840,
+            "first_points_here": 265,
+            "total_points": 5724,
+            "value": 5724,
+            "is_this_event": false
+          },
+          {
+            "event_id": 186,
+            "event_name": "West in Lyon",
+            "name": "West in Lyon",
+            "editions": 13,
+            "unique_dancers": 746,
+            "first_points_here": 325,
+            "total_points": 5104,
+            "value": 5104,
+            "is_this_event": false
+          },
+          {
+            "event_id": 236,
+            "event_name": "Warsaw Halloween Swing",
+            "name": "Warsaw Halloween Swing",
+            "editions": 13,
+            "unique_dancers": 851,
+            "first_points_here": 222,
+            "total_points": 4712,
+            "value": 4712,
+            "is_this_event": false
+          },
+          {
+            "event_id": 154,
+            "event_name": "UK WCS Championships",
+            "name": "UK WCS Championships",
+            "editions": 13,
+            "unique_dancers": 752,
+            "first_points_here": 211,
+            "total_points": 4338,
+            "value": 4338,
+            "is_this_event": false
+          },
+          {
+            "event_id": 222,
+            "event_name": "Baltic Swing",
+            "name": "Baltic Swing",
+            "editions": 11,
+            "unique_dancers": 735,
+            "first_points_here": 178,
+            "total_points": 3950,
+            "value": 3950,
+            "is_this_event": false
+          },
+          {
+            "event_id": 215,
+            "event_name": "Swing & Snow",
+            "name": "Swing & Snow",
+            "editions": 13,
+            "unique_dancers": 580,
+            "first_points_here": 180,
+            "total_points": 3851,
+            "value": 3851,
+            "is_this_event": false
+          },
+          {
+            "event_id": 253,
+            "event_name": "Nordic WCS Championships",
+            "name": "Nordic WCS Championships",
+            "editions": 10,
+            "unique_dancers": 677,
+            "first_points_here": 147,
+            "total_points": 3833,
+            "value": 3833,
+            "is_this_event": false
+          },
+          {
+            "event_id": 220,
+            "event_name": "D-Town Swing",
+            "name": "D-Town Swing",
+            "editions": 11,
+            "unique_dancers": 698,
+            "first_points_here": 271,
+            "total_points": 3785,
+            "value": 3785,
+            "is_this_event": false
+          },
+          {
+            "event_id": 229,
+            "event_name": "Scandinavian Open",
+            "name": "Scandinavian Open",
+            "editions": 10,
+            "unique_dancers": 678,
+            "first_points_here": 176,
+            "total_points": 3698,
+            "value": 3698,
+            "is_this_event": false
+          },
+          {
+            "event_id": 233,
+            "event_name": "Bavarian Open",
+            "name": "Bavarian Open",
+            "editions": 10,
+            "unique_dancers": 657,
+            "first_points_here": 165,
+            "total_points": 3402,
+            "value": 3402,
+            "is_this_event": false
+          },
+          {
+            "event_id": 165,
+            "event_name": "Midland Swing Open",
+            "name": "Midland Swing Open",
+            "editions": 15,
+            "unique_dancers": 624,
+            "first_points_here": 136,
+            "total_points": 3336,
+            "value": 3336,
+            "is_this_event": false
+          },
+          {
+            "event_id": 280,
+            "event_name": "Saint Petersburg WCS Nights",
+            "name": "Saint Petersburg WCS Nights",
+            "editions": 9,
+            "unique_dancers": 372,
+            "first_points_here": 114,
+            "total_points": 2315,
+            "value": 2315,
+            "is_this_event": true
+          }
+        ]
+      }
+    },
+    "launchpad": {
+      "definition": "first-ever WSDC Skill JJ points at this event",
+      "starters_n": 114,
+      "reached_allstar_plus_n": 3,
+      "reached_allstar_plus_pct": 2.6,
+      "reached_champion_n": 0,
+      "reached_champion_pct": 0.0,
+      "median_months_to_allstar": 67.0,
+      "median_months_to_champion": null,
+      "highest_division_counts": [
+        {
+          "division": "Newcomer",
+          "n": 57
+        },
+        {
+          "division": "Novice",
+          "n": 38
+        },
+        {
+          "division": "Intermediate",
+          "n": 11
+        },
+        {
+          "division": "Advanced",
+          "n": 5
+        },
+        {
+          "division": "All-Star",
+          "n": 3
+        },
+        {
+          "division": "Champion",
+          "n": 0
+        }
+      ],
+      "notable_allstar_starters": [
+        {
+          "dancer_name": "Anastasiia Babakhan",
+          "dancer_id": "16091",
+          "event_year": 2017,
+          "allstar_pts_since_2009": 19,
+          "last_as_year": 2026
+        },
+        {
+          "dancer_name": "Anastasiya Yuzhakova",
+          "dancer_id": "20719",
+          "event_year": 2022,
+          "allstar_pts_since_2009": 14,
+          "last_as_year": 2026
+        },
+        {
+          "dancer_name": "Maria Arkhandopulo",
+          "dancer_id": "17573",
+          "event_year": 2018,
+          "allstar_pts_since_2009": 13,
+          "last_as_year": 2026
+        }
+      ],
+      "notable_champion_starters": [],
+      "median_career_points_share_outside_pct": 0.0,
+      "as_plus_median_career_points_share_outside_pct": 89.2
+    },
+    "division_era_mix": {
+      "definition": "Share of Skill JJ points by division by era; gap 2020 excluded",
+      "eras": [
+        {
+          "era": "2017–2019",
+          "total_points": 601,
+          "points": {
+            "Newcomer": 48,
+            "Novice": 265,
+            "Intermediate": 174,
+            "Advanced": 74,
+            "All-Star": 40
+          },
+          "share_pct": {
+            "Newcomer": 8.0,
+            "Novice": 44.1,
+            "Intermediate": 29.0,
+            "Advanced": 12.3,
+            "All-Star": 6.7
+          }
+        },
+        {
+          "era": "2021–2026",
+          "total_points": 1714,
+          "points": {
+            "Newcomer": 175,
+            "Novice": 682,
+            "Intermediate": 500,
+            "Advanced": 267,
+            "All-Star": 90
+          },
+          "share_pct": {
+            "Newcomer": 10.2,
+            "Novice": 39.8,
+            "Intermediate": 29.2,
+            "Advanced": 15.6,
+            "All-Star": 5.3
+          }
+        }
+      ]
+    },
+    "retention": {
+      "definition": "Return = scored points at this event in year Y and again in Y+1; editions = distinct years with points here",
+      "unique_dancers": 372,
+      "one_edition_n": 235,
+      "one_edition_pct": 63.2,
+      "three_plus_editions_n": 69,
+      "three_plus_editions_pct": 18.5,
+      "five_plus_editions_n": 18,
+      "one_edition_points_share_pct": 36.6,
+      "five_plus_points_share_pct": 12.8,
+      "edition_histogram": [
+        {
+          "editions": 1,
+          "dancers": 235,
+          "dancers_share_pct": 63.2,
+          "points": 848,
+          "points_share_pct": 36.6
+        },
+        {
+          "editions": 2,
+          "dancers": 68,
+          "dancers_share_pct": 18.3,
+          "points": 539,
+          "points_share_pct": 23.3
+        },
+        {
+          "editions": 3,
+          "dancers": 28,
+          "dancers_share_pct": 7.5,
+          "points": 328,
+          "points_share_pct": 14.2
+        },
+        {
+          "editions": 4,
+          "dancers": 23,
+          "dancers_share_pct": 6.2,
+          "points": 303,
+          "points_share_pct": 13.1
+        },
+        {
+          "editions": 5,
+          "dancers": 13,
+          "dancers_share_pct": 3.5,
+          "points": 204,
+          "points_share_pct": 8.8
+        },
+        {
+          "editions": 6,
+          "dancers": 5,
+          "dancers_share_pct": 1.3,
+          "points": 93,
+          "points_share_pct": 4.0
+        }
+      ],
+      "next_year_return": [
+        {
+          "from_year": 2017,
+          "to_year": 2018,
+          "base": 67,
+          "returned": 17,
+          "rate_pct": 25.4
+        },
+        {
+          "from_year": 2018,
+          "to_year": 2019,
+          "base": 51,
+          "returned": 16,
+          "rate_pct": 31.4
+        },
+        {
+          "from_year": 2021,
+          "to_year": 2022,
+          "base": 60,
+          "returned": 19,
+          "rate_pct": 31.7
+        },
+        {
+          "from_year": 2022,
+          "to_year": 2023,
+          "base": 61,
+          "returned": 19,
+          "rate_pct": 31.1
+        },
+        {
+          "from_year": 2023,
+          "to_year": 2024,
+          "base": 71,
+          "returned": 25,
+          "rate_pct": 35.2
+        },
+        {
+          "from_year": 2024,
+          "to_year": 2025,
+          "base": 92,
+          "returned": 34,
+          "rate_pct": 37.0
+        },
+        {
+          "from_year": 2025,
+          "to_year": 2026,
+          "base": 98,
+          "returned": 28,
+          "rate_pct": 28.6
+        }
+      ],
+      "return_after_gap": {
+        "from_year": 2019,
+        "to_year": 2021,
+        "base": 62,
+        "returned": null,
+        "rate_pct": null,
+        "note": "after gap year 2020; consecutive YoY N/A",
+        "returned_after_gap_n": 16,
+        "returned_after_gap_pct": 25.8
+      },
+      "return_rate_range_pct": [
+        25.4,
+        37.0
+      ],
+      "recent_return_rate_range_pct": [
+        28.6,
+        37.0
+      ]
+    }
+  }
+}

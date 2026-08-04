@@ -1,0 +1,1770 @@
+{
+  "event_id": 167,
+  "generated": "2026-08-04",
+  "definitions": {
+    "skill_jj": "West Coast Swing + Newcomer/Novice/Intermediate/Advanced/All-Star/Champion, points > 0",
+    "new_dancers": "dancers whose first-ever WSDC points row (Skill JJ) falls on this event date (event_year_and_month)",
+    "wins": "result_standardized = '1' at this event (Skill JJ)",
+    "started_here_notable": "first WSDC points at this event; Champion pts since 2009 + top All-Star pts since 2009",
+    "pairs": "Place-matched Leader+Follower (same place 1-5) in any Skill Level JJ division at this event",
+    "peer_context": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
+    "launchpad": "first-ever WSDC Skill JJ points at this event; highest division and career points share outside",
+    "division_era_mix": "Share of Skill JJ points by division, by era (gaps excluded)",
+    "retention": "Return = points in Y and Y+1; editions = distinct years with points here",
+    "peer_oceania": "Among Oceania (Australia + New Zealand + Pacific) Skill JJ events (typical_country / mode location)"
+  },
+  "catalog": {
+    "canonical_name": "Best of the Best WCS",
+    "url": "https://www.bestofthebestwcs.com/",
+    "typical_location": "Sydney, Australia",
+    "typical_city": "Sydney",
+    "typical_state": null,
+    "typical_country": "Australia",
+    "first_edition_year": 2011,
+    "last_edition_year": 2025,
+    "edition_count": 13,
+    "unique_dancers_all_divisions": 342,
+    "total_result_rows_all_divisions": 690,
+    "upcoming_start_date": "2026-09-24",
+    "upcoming_location": "Sydney, NSW, Australia"
+  },
+  "skill_jj_kpi": {
+    "unique_dancers": 335,
+    "total_points": 2032,
+    "result_rows": 620,
+    "editions_with_results": 13,
+    "wins": 102,
+    "first_points_here": 122,
+    "first_points_share_pct": 36.4,
+    "peak_year_dancers": 2017,
+    "peak_dancers": 60,
+    "peak_year_points": 2017,
+    "peak_points": 200,
+    "peak_year_new_dancers": 2011,
+    "peak_new_dancers": 31
+  },
+  "year_gaps": [
+    2020,
+    2021
+  ],
+  "champ_window_from_year": 2009,
+  "timeseries": [
+    {
+      "event_year": 2011,
+      "unique_dancers": 40,
+      "total_points": 154,
+      "new_dancers": 31
+    },
+    {
+      "event_year": 2012,
+      "unique_dancers": 40,
+      "total_points": 130,
+      "new_dancers": 12
+    },
+    {
+      "event_year": 2013,
+      "unique_dancers": 47,
+      "total_points": 194,
+      "new_dancers": 17
+    },
+    {
+      "event_year": 2014,
+      "unique_dancers": 50,
+      "total_points": 176,
+      "new_dancers": 16
+    },
+    {
+      "event_year": 2015,
+      "unique_dancers": 50,
+      "total_points": 170,
+      "new_dancers": 4
+    },
+    {
+      "event_year": 2016,
+      "unique_dancers": 53,
+      "total_points": 178,
+      "new_dancers": 3
+    },
+    {
+      "event_year": 2017,
+      "unique_dancers": 60,
+      "total_points": 200,
+      "new_dancers": 4
+    },
+    {
+      "event_year": 2018,
+      "unique_dancers": 39,
+      "total_points": 109,
+      "new_dancers": 4
+    },
+    {
+      "event_year": 2019,
+      "unique_dancers": 35,
+      "total_points": 96,
+      "new_dancers": 3
+    },
+    {
+      "event_year": 2022,
+      "unique_dancers": 41,
+      "total_points": 120,
+      "new_dancers": 9
+    },
+    {
+      "event_year": 2023,
+      "unique_dancers": 39,
+      "total_points": 119,
+      "new_dancers": 4
+    },
+    {
+      "event_year": 2024,
+      "unique_dancers": 55,
+      "total_points": 196,
+      "new_dancers": 9
+    },
+    {
+      "event_year": 2025,
+      "unique_dancers": 52,
+      "total_points": 190,
+      "new_dancers": 6
+    }
+  ],
+  "division_cuts": [
+    {
+      "division": "Newcomer",
+      "unique_dancers": 70,
+      "total_points": 218
+    },
+    {
+      "division": "Novice",
+      "unique_dancers": 204,
+      "total_points": 933
+    },
+    {
+      "division": "Intermediate",
+      "unique_dancers": 117,
+      "total_points": 579
+    },
+    {
+      "division": "Advanced",
+      "unique_dancers": 36,
+      "total_points": 172
+    },
+    {
+      "division": "All-Star",
+      "unique_dancers": 23,
+      "total_points": 130
+    }
+  ],
+  "top5_by_metric": {
+    "points": [
+      {
+        "dancer_name": "John-Paul Masson",
+        "points_here": 34,
+        "editions": 9,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Bianca Davis",
+        "points_here": 33,
+        "editions": 4,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Zachary Skinner",
+        "points_here": 31,
+        "editions": 8,
+        "wins": 9
+      },
+      {
+        "dancer_name": "Craig Schubert",
+        "points_here": 30,
+        "editions": 11,
+        "wins": 1
+      },
+      {
+        "dancer_name": "Emma Collyer",
+        "points_here": 29,
+        "editions": 9,
+        "wins": 3
+      }
+    ],
+    "editions": [
+      {
+        "dancer_name": "Craig Schubert",
+        "points_here": 30,
+        "editions": 11,
+        "wins": 1
+      },
+      {
+        "dancer_name": "John-Paul Masson",
+        "points_here": 34,
+        "editions": 9,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Emma Collyer",
+        "points_here": 29,
+        "editions": 9,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Zachary Skinner",
+        "points_here": 31,
+        "editions": 8,
+        "wins": 9
+      },
+      {
+        "dancer_name": "Maddy Skinner",
+        "points_here": 21,
+        "editions": 7,
+        "wins": 4
+      }
+    ],
+    "wins": [
+      {
+        "dancer_name": "Zachary Skinner",
+        "points_here": 31,
+        "editions": 8,
+        "wins": 9
+      },
+      {
+        "dancer_name": "Maddy Skinner",
+        "points_here": 21,
+        "editions": 7,
+        "wins": 4
+      },
+      {
+        "dancer_name": "John-Paul Masson",
+        "points_here": 34,
+        "editions": 9,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Bianca Davis",
+        "points_here": 33,
+        "editions": 4,
+        "wins": 3
+      },
+      {
+        "dancer_name": "Emma Collyer",
+        "points_here": 29,
+        "editions": 9,
+        "wins": 3
+      }
+    ]
+  },
+  "pairs_as_champ": {
+    "method_note": "Place-matched Leader+Follower (same place 1-5) in any Skill Level JJ division at this event",
+    "repeat_pairs_n": 7,
+    "pairs_total": 222,
+    "max_together": 4,
+    "by_wins": [
+      {
+        "leader_name": "Zachary Skinner",
+        "follower_name": "Maddy Skinner",
+        "placed_together": 4,
+        "wins_together": 4,
+        "years": 4,
+        "divisions": [
+          "All-Star"
+        ]
+      },
+      {
+        "leader_name": "Zachary Skinner",
+        "follower_name": "Emma Collyer",
+        "placed_together": 2,
+        "wins_together": 2,
+        "years": 2,
+        "divisions": [
+          "All-Star"
+        ]
+      },
+      {
+        "leader_name": "Nathan Walsh",
+        "follower_name": "Louise Capps",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Grant Walker",
+        "follower_name": "Samantha Pugmire",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2,
+        "divisions": [
+          "Advanced"
+        ]
+      },
+      {
+        "leader_name": "Ajay Ranipeta",
+        "follower_name": "Ani Fuller",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2,
+        "divisions": [
+          "Intermediate",
+          "Novice"
+        ]
+      },
+      {
+        "leader_name": "John-Paul Masson",
+        "follower_name": "Emma Collyer",
+        "placed_together": 2,
+        "wins_together": 1,
+        "years": 2,
+        "divisions": [
+          "All-Star",
+          "Intermediate"
+        ]
+      },
+      {
+        "leader_name": "Jordan Fox",
+        "follower_name": "Annaleise Chalmers",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Novice"
+        ]
+      },
+      {
+        "leader_name": "Trevor Hobbs",
+        "follower_name": "Kimberley Patrick",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Newcomer"
+        ]
+      },
+      {
+        "leader_name": "Darryn Solomon",
+        "follower_name": "Reasmey Tith",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Intermediate"
+        ]
+      },
+      {
+        "leader_name": "Darryn Solomon",
+        "follower_name": "Janine Martin",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Intermediate"
+        ]
+      },
+      {
+        "leader_name": "Arthur Wang",
+        "follower_name": "Bianca Davis",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Intermediate"
+        ]
+      },
+      {
+        "leader_name": "William Wu",
+        "follower_name": "Zachary Skinner",
+        "placed_together": 1,
+        "wins_together": 1,
+        "years": 1,
+        "divisions": [
+          "Advanced"
+        ]
+      }
+    ]
+  },
+  "started_here_notable_examples": [],
+  "started_here_notable_champ_since_2009": [],
+  "started_here_notable_allstar_top3_since_2009": [
+    {
+      "dancer_name": "Larissa Thayane",
+      "event_year": 2014,
+      "allstar_pts_since_2009": 101,
+      "last_as_year": 2026
+    },
+    {
+      "dancer_name": "Ani Fuller",
+      "event_year": 2011,
+      "allstar_pts_since_2009": 46,
+      "last_as_year": 2023
+    },
+    {
+      "dancer_name": "Elysia King",
+      "event_year": 2013,
+      "allstar_pts_since_2009": 9,
+      "last_as_year": 2025
+    }
+  ],
+  "other_divisions_present": [
+    "Master",
+    "Sophisticated"
+  ],
+  "header_candidates": [],
+  "insights": {
+    "peer_context": {
+      "definition": "Among all Skill JJ events; ranks by unique dancers / first-ever WSDC points at this event / total Skill JJ points / edition years",
+      "this_event": "Best of the Best WCS",
+      "events_total_n": 345,
+      "long_events_n": 101,
+      "unique_dancers": 335,
+      "first_points_here": 122,
+      "total_points": 2032,
+      "editions": 13,
+      "rank_by_unique_all": 122,
+      "rank_by_first_points_all": 83,
+      "rank_by_total_points_all": 111,
+      "rank_by_editions": 64,
+      "rank_by_unique_among_long": 94,
+      "peers_top12_by_unique": [
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 1652,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 1518,
+          "is_this_event": false
+        },
+        {
+          "event_id": 8,
+          "event_name": "Boogie By The Bay",
+          "name": "Boogie By The Bay",
+          "editions": 31,
+          "unique_dancers": 1476,
+          "first_points_here": 198,
+          "total_points": 10682,
+          "value": 1476,
+          "is_this_event": false
+        },
+        {
+          "event_id": 96,
+          "event_name": "Liberty Swing Dance Championships",
+          "name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 248,
+          "total_points": 8356,
+          "value": 1418,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 1413,
+          "is_this_event": false
+        },
+        {
+          "event_id": 1,
+          "event_name": "4TH of July Convention",
+          "name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 257,
+          "total_points": 8284,
+          "value": 1364,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 1359,
+          "is_this_event": false
+        },
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 1336,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 1281,
+          "is_this_event": false
+        },
+        {
+          "event_id": 25,
+          "event_name": "J&J O'Rama",
+          "name": "J&J O'Rama",
+          "editions": 28,
+          "unique_dancers": 1279,
+          "first_points_here": 156,
+          "total_points": 8554,
+          "value": 1279,
+          "is_this_event": false
+        },
+        {
+          "event_id": 47,
+          "event_name": "Swingtime in the Rockies",
+          "name": "Swingtime in the Rockies",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 260,
+          "total_points": 7535,
+          "value": 1265,
+          "is_this_event": false
+        },
+        {
+          "event_id": 62,
+          "event_name": "Monterey SwingFest",
+          "name": "Monterey SwingFest",
+          "editions": 31,
+          "unique_dancers": 1154,
+          "first_points_here": 210,
+          "total_points": 7804,
+          "value": 1154,
+          "is_this_event": false
+        },
+        {
+          "event_id": 167,
+          "event_name": "Best of the Best WCS",
+          "name": "Best of the Best WCS",
+          "editions": 13,
+          "unique_dancers": 335,
+          "first_points_here": 122,
+          "total_points": 2032,
+          "value": 335,
+          "is_this_event": true
+        }
+      ],
+      "peers_top12_by_first_points": [
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 419,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 415,
+          "is_this_event": false
+        },
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 389,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 367,
+          "is_this_event": false
+        },
+        {
+          "event_id": 184,
+          "event_name": "BudaFest Open WCS Championships",
+          "name": "BudaFest Open WCS Championships",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "value": 345,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 340,
+          "is_this_event": false
+        },
+        {
+          "event_id": 186,
+          "event_name": "West in Lyon",
+          "name": "West in Lyon",
+          "editions": 13,
+          "unique_dancers": 746,
+          "first_points_here": 325,
+          "total_points": 5104,
+          "value": 325,
+          "is_this_event": false
+        },
+        {
+          "event_id": 334,
+          "event_name": "Countdown Swing Boston",
+          "name": "Countdown Swing Boston",
+          "editions": 22,
+          "unique_dancers": 937,
+          "first_points_here": 324,
+          "total_points": 5463,
+          "value": 324,
+          "is_this_event": false
+        },
+        {
+          "event_id": 220,
+          "event_name": "D-Town Swing",
+          "name": "D-Town Swing",
+          "editions": 11,
+          "unique_dancers": 698,
+          "first_points_here": 271,
+          "total_points": 3785,
+          "value": 271,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 267,
+          "is_this_event": false
+        },
+        {
+          "event_id": 175,
+          "event_name": "French Open West Coast Swing",
+          "name": "French Open West Coast Swing",
+          "editions": 14,
+          "unique_dancers": 840,
+          "first_points_here": 265,
+          "total_points": 5724,
+          "value": 265,
+          "is_this_event": false
+        },
+        {
+          "event_id": 47,
+          "event_name": "Swingtime in the Rockies",
+          "name": "Swingtime in the Rockies",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 260,
+          "total_points": 7535,
+          "value": 260,
+          "is_this_event": false
+        },
+        {
+          "event_id": 167,
+          "event_name": "Best of the Best WCS",
+          "name": "Best of the Best WCS",
+          "editions": 13,
+          "unique_dancers": 335,
+          "first_points_here": 122,
+          "total_points": 2032,
+          "value": 122,
+          "is_this_event": true
+        }
+      ],
+      "peers_top12_by_total_points": [
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 11367,
+          "is_this_event": false
+        },
+        {
+          "event_id": 8,
+          "event_name": "Boogie By The Bay",
+          "name": "Boogie By The Bay",
+          "editions": 31,
+          "unique_dancers": 1476,
+          "first_points_here": 198,
+          "total_points": 10682,
+          "value": 10682,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 9226,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 9210,
+          "is_this_event": false
+        },
+        {
+          "event_id": 25,
+          "event_name": "J&J O'Rama",
+          "name": "J&J O'Rama",
+          "editions": 28,
+          "unique_dancers": 1279,
+          "first_points_here": 156,
+          "total_points": 8554,
+          "value": 8554,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 8468,
+          "is_this_event": false
+        },
+        {
+          "event_id": 96,
+          "event_name": "Liberty Swing Dance Championships",
+          "name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 248,
+          "total_points": 8356,
+          "value": 8356,
+          "is_this_event": false
+        },
+        {
+          "event_id": 1,
+          "event_name": "4TH of July Convention",
+          "name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 257,
+          "total_points": 8284,
+          "value": 8284,
+          "is_this_event": false
+        },
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 8138,
+          "is_this_event": false
+        },
+        {
+          "event_id": 62,
+          "event_name": "Monterey SwingFest",
+          "name": "Monterey SwingFest",
+          "editions": 31,
+          "unique_dancers": 1154,
+          "first_points_here": 210,
+          "total_points": 7804,
+          "value": 7804,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 7796,
+          "is_this_event": false
+        },
+        {
+          "event_id": 184,
+          "event_name": "BudaFest Open WCS Championships",
+          "name": "BudaFest Open WCS Championships",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "value": 7753,
+          "is_this_event": false
+        },
+        {
+          "event_id": 167,
+          "event_name": "Best of the Best WCS",
+          "name": "Best of the Best WCS",
+          "editions": 13,
+          "unique_dancers": 335,
+          "first_points_here": 122,
+          "total_points": 2032,
+          "value": 2032,
+          "is_this_event": true
+        }
+      ],
+      "peers_top15_by_first_points": [
+        {
+          "event_id": 59,
+          "event_name": "Swing Fling",
+          "name": "Swing Fling",
+          "editions": 29,
+          "unique_dancers": 1336,
+          "first_points_here": 419,
+          "total_points": 8138,
+          "value": 419,
+          "is_this_event": false
+        },
+        {
+          "event_id": 9,
+          "event_name": "Boston Tea Party",
+          "name": "Boston Tea Party",
+          "editions": 26,
+          "unique_dancers": 1281,
+          "first_points_here": 415,
+          "total_points": 7796,
+          "value": 415,
+          "is_this_event": false
+        },
+        {
+          "event_id": 92,
+          "event_name": "MADjam",
+          "name": "MADjam",
+          "editions": 21,
+          "unique_dancers": 1652,
+          "first_points_here": 389,
+          "total_points": 11367,
+          "value": 389,
+          "is_this_event": false
+        },
+        {
+          "event_id": 53,
+          "event_name": "Summer Hummer",
+          "name": "Summer Hummer",
+          "editions": 25,
+          "unique_dancers": 1413,
+          "first_points_here": 367,
+          "total_points": 8468,
+          "value": 367,
+          "is_this_event": false
+        },
+        {
+          "event_id": 184,
+          "event_name": "BudaFest Open WCS Championships",
+          "name": "BudaFest Open WCS Championships",
+          "editions": 14,
+          "unique_dancers": 1112,
+          "first_points_here": 345,
+          "total_points": 7753,
+          "value": 345,
+          "is_this_event": false
+        },
+        {
+          "event_id": 12,
+          "event_name": "Capital Swing Dance Convention",
+          "name": "Capital Swing Dance Convention",
+          "editions": 30,
+          "unique_dancers": 1518,
+          "first_points_here": 340,
+          "total_points": 9210,
+          "value": 340,
+          "is_this_event": false
+        },
+        {
+          "event_id": 186,
+          "event_name": "West in Lyon",
+          "name": "West in Lyon",
+          "editions": 13,
+          "unique_dancers": 746,
+          "first_points_here": 325,
+          "total_points": 5104,
+          "value": 325,
+          "is_this_event": false
+        },
+        {
+          "event_id": 334,
+          "event_name": "Countdown Swing Boston",
+          "name": "Countdown Swing Boston",
+          "editions": 22,
+          "unique_dancers": 937,
+          "first_points_here": 324,
+          "total_points": 5463,
+          "value": 324,
+          "is_this_event": false
+        },
+        {
+          "event_id": 220,
+          "event_name": "D-Town Swing",
+          "name": "D-Town Swing",
+          "editions": 11,
+          "unique_dancers": 698,
+          "first_points_here": 271,
+          "total_points": 3785,
+          "value": 271,
+          "is_this_event": false
+        },
+        {
+          "event_id": 18,
+          "event_name": "Easter Swing",
+          "name": "Easter Swing",
+          "editions": 30,
+          "unique_dancers": 1359,
+          "first_points_here": 267,
+          "total_points": 9226,
+          "value": 267,
+          "is_this_event": false
+        },
+        {
+          "event_id": 175,
+          "event_name": "French Open West Coast Swing",
+          "name": "French Open West Coast Swing",
+          "editions": 14,
+          "unique_dancers": 840,
+          "first_points_here": 265,
+          "total_points": 5724,
+          "value": 265,
+          "is_this_event": false
+        },
+        {
+          "event_id": 47,
+          "event_name": "Swingtime in the Rockies",
+          "name": "Swingtime in the Rockies",
+          "editions": 31,
+          "unique_dancers": 1265,
+          "first_points_here": 260,
+          "total_points": 7535,
+          "value": 260,
+          "is_this_event": false
+        },
+        {
+          "event_id": 1,
+          "event_name": "4TH of July Convention",
+          "name": "4TH of July Convention",
+          "editions": 34,
+          "unique_dancers": 1364,
+          "first_points_here": 257,
+          "total_points": 8284,
+          "value": 257,
+          "is_this_event": false
+        },
+        {
+          "event_id": 96,
+          "event_name": "Liberty Swing Dance Championships",
+          "name": "Liberty Swing Dance Championships",
+          "editions": 21,
+          "unique_dancers": 1418,
+          "first_points_here": 248,
+          "total_points": 8356,
+          "value": 248,
+          "is_this_event": false
+        },
+        {
+          "event_id": 225,
+          "event_name": "Wild Wild Westie",
+          "name": "Wild Wild Westie",
+          "editions": 12,
+          "unique_dancers": 947,
+          "first_points_here": 223,
+          "total_points": 6526,
+          "value": 223,
+          "is_this_event": false
+        },
+        {
+          "event_id": 167,
+          "event_name": "Best of the Best WCS",
+          "name": "Best of the Best WCS",
+          "editions": 13,
+          "unique_dancers": 335,
+          "first_points_here": 122,
+          "total_points": 2032,
+          "value": 122,
+          "is_this_event": true
+        }
+      ],
+      "oceania": {
+        "definition": "Among Oceania (Australia + New Zealand + Pacific) Skill JJ events (typical_country / mode location)",
+        "events_n": 20,
+        "rank_by_unique": 2,
+        "rank_by_first_points": 1,
+        "rank_by_total_points": 2,
+        "peers_top12_by_unique": [
+          {
+            "event_id": 174,
+            "event_name": "Swingsation",
+            "name": "Swingsation",
+            "editions": 14,
+            "unique_dancers": 408,
+            "first_points_here": 104,
+            "total_points": 2908,
+            "value": 408,
+            "is_this_event": false
+          },
+          {
+            "event_id": 167,
+            "event_name": "Best of the Best WCS",
+            "name": "Best of the Best WCS",
+            "editions": 13,
+            "unique_dancers": 335,
+            "first_points_here": 122,
+            "total_points": 2032,
+            "value": 335,
+            "is_this_event": true
+          },
+          {
+            "event_id": 179,
+            "event_name": "New Zealand Open Swing Dance Championships",
+            "name": "New Zealand Open Swing Dance Championships",
+            "editions": 14,
+            "unique_dancers": 287,
+            "first_points_here": 118,
+            "total_points": 1778,
+            "value": 287,
+            "is_this_event": false
+          },
+          {
+            "event_id": 213,
+            "event_name": "Swingtimate",
+            "name": "Swingtimate",
+            "editions": 8,
+            "unique_dancers": 222,
+            "first_points_here": 41,
+            "total_points": 1186,
+            "value": 222,
+            "is_this_event": false
+          },
+          {
+            "event_id": 188,
+            "event_name": "NSW West Coast Swing Dance Championships",
+            "name": "NSW West Coast Swing Dance Championships",
+            "editions": 8,
+            "unique_dancers": 193,
+            "first_points_here": 63,
+            "total_points": 1165,
+            "value": 193,
+            "is_this_event": false
+          },
+          {
+            "event_id": 330,
+            "event_name": "Simply Adelaide West Coast Swing",
+            "name": "Simply Adelaide West Coast Swing",
+            "editions": 6,
+            "unique_dancers": 161,
+            "first_points_here": 46,
+            "total_points": 803,
+            "value": 161,
+            "is_this_event": false
+          },
+          {
+            "event_id": 180,
+            "event_name": "Australian Open Swing Dance Championships",
+            "name": "Australian Open Swing Dance Championships",
+            "editions": 5,
+            "unique_dancers": 155,
+            "first_points_here": 54,
+            "total_points": 851,
+            "value": 155,
+            "is_this_event": false
+          },
+          {
+            "event_id": 246,
+            "event_name": "Swing Escape",
+            "name": "Swing Escape",
+            "editions": 5,
+            "unique_dancers": 127,
+            "first_points_here": 22,
+            "total_points": 698,
+            "value": 127,
+            "is_this_event": false
+          },
+          {
+            "event_id": 374,
+            "event_name": "Barock Swing Ludwigsburg",
+            "name": "Barock Swing Ludwigsburg",
+            "editions": 2,
+            "unique_dancers": 124,
+            "first_points_here": 35,
+            "total_points": 572,
+            "value": 124,
+            "is_this_event": false
+          },
+          {
+            "event_id": 298,
+            "event_name": "Shakedown Swing",
+            "name": "Shakedown Swing",
+            "editions": 5,
+            "unique_dancers": 115,
+            "first_points_here": 38,
+            "total_points": 616,
+            "value": 115,
+            "is_this_event": false
+          },
+          {
+            "event_id": 385,
+            "event_name": "Revitalise WCS",
+            "name": "Revitalise WCS",
+            "editions": 2,
+            "unique_dancers": 106,
+            "first_points_here": 30,
+            "total_points": 476,
+            "value": 106,
+            "is_this_event": false
+          },
+          {
+            "event_id": 302,
+            "event_name": "WesterOz Swing",
+            "name": "WesterOz Swing",
+            "editions": 4,
+            "unique_dancers": 103,
+            "first_points_here": 26,
+            "total_points": 434,
+            "value": 103,
+            "is_this_event": false
+          }
+        ],
+        "peers_top12_by_first_points": [
+          {
+            "event_id": 167,
+            "event_name": "Best of the Best WCS",
+            "name": "Best of the Best WCS",
+            "editions": 13,
+            "unique_dancers": 335,
+            "first_points_here": 122,
+            "total_points": 2032,
+            "value": 122,
+            "is_this_event": true
+          },
+          {
+            "event_id": 179,
+            "event_name": "New Zealand Open Swing Dance Championships",
+            "name": "New Zealand Open Swing Dance Championships",
+            "editions": 14,
+            "unique_dancers": 287,
+            "first_points_here": 118,
+            "total_points": 1778,
+            "value": 118,
+            "is_this_event": false
+          },
+          {
+            "event_id": 174,
+            "event_name": "Swingsation",
+            "name": "Swingsation",
+            "editions": 14,
+            "unique_dancers": 408,
+            "first_points_here": 104,
+            "total_points": 2908,
+            "value": 104,
+            "is_this_event": false
+          },
+          {
+            "event_id": 188,
+            "event_name": "NSW West Coast Swing Dance Championships",
+            "name": "NSW West Coast Swing Dance Championships",
+            "editions": 8,
+            "unique_dancers": 193,
+            "first_points_here": 63,
+            "total_points": 1165,
+            "value": 63,
+            "is_this_event": false
+          },
+          {
+            "event_id": 180,
+            "event_name": "Australian Open Swing Dance Championships",
+            "name": "Australian Open Swing Dance Championships",
+            "editions": 5,
+            "unique_dancers": 155,
+            "first_points_here": 54,
+            "total_points": 851,
+            "value": 54,
+            "is_this_event": false
+          },
+          {
+            "event_id": 330,
+            "event_name": "Simply Adelaide West Coast Swing",
+            "name": "Simply Adelaide West Coast Swing",
+            "editions": 6,
+            "unique_dancers": 161,
+            "first_points_here": 46,
+            "total_points": 803,
+            "value": 46,
+            "is_this_event": false
+          },
+          {
+            "event_id": 213,
+            "event_name": "Swingtimate",
+            "name": "Swingtimate",
+            "editions": 8,
+            "unique_dancers": 222,
+            "first_points_here": 41,
+            "total_points": 1186,
+            "value": 41,
+            "is_this_event": false
+          },
+          {
+            "event_id": 298,
+            "event_name": "Shakedown Swing",
+            "name": "Shakedown Swing",
+            "editions": 5,
+            "unique_dancers": 115,
+            "first_points_here": 38,
+            "total_points": 616,
+            "value": 38,
+            "is_this_event": false
+          },
+          {
+            "event_id": 374,
+            "event_name": "Barock Swing Ludwigsburg",
+            "name": "Barock Swing Ludwigsburg",
+            "editions": 2,
+            "unique_dancers": 124,
+            "first_points_here": 35,
+            "total_points": 572,
+            "value": 35,
+            "is_this_event": false
+          },
+          {
+            "event_id": 367,
+            "event_name": "Go West SwingFest",
+            "name": "Go West SwingFest",
+            "editions": 2,
+            "unique_dancers": 43,
+            "first_points_here": 32,
+            "total_points": 178,
+            "value": 32,
+            "is_this_event": false
+          },
+          {
+            "event_id": 385,
+            "event_name": "Revitalise WCS",
+            "name": "Revitalise WCS",
+            "editions": 2,
+            "unique_dancers": 106,
+            "first_points_here": 30,
+            "total_points": 476,
+            "value": 30,
+            "is_this_event": false
+          },
+          {
+            "event_id": 302,
+            "event_name": "WesterOz Swing",
+            "name": "WesterOz Swing",
+            "editions": 4,
+            "unique_dancers": 103,
+            "first_points_here": 26,
+            "total_points": 434,
+            "value": 26,
+            "is_this_event": false
+          }
+        ],
+        "peers_top12_by_total_points": [
+          {
+            "event_id": 174,
+            "event_name": "Swingsation",
+            "name": "Swingsation",
+            "editions": 14,
+            "unique_dancers": 408,
+            "first_points_here": 104,
+            "total_points": 2908,
+            "value": 2908,
+            "is_this_event": false
+          },
+          {
+            "event_id": 167,
+            "event_name": "Best of the Best WCS",
+            "name": "Best of the Best WCS",
+            "editions": 13,
+            "unique_dancers": 335,
+            "first_points_here": 122,
+            "total_points": 2032,
+            "value": 2032,
+            "is_this_event": true
+          },
+          {
+            "event_id": 179,
+            "event_name": "New Zealand Open Swing Dance Championships",
+            "name": "New Zealand Open Swing Dance Championships",
+            "editions": 14,
+            "unique_dancers": 287,
+            "first_points_here": 118,
+            "total_points": 1778,
+            "value": 1778,
+            "is_this_event": false
+          },
+          {
+            "event_id": 213,
+            "event_name": "Swingtimate",
+            "name": "Swingtimate",
+            "editions": 8,
+            "unique_dancers": 222,
+            "first_points_here": 41,
+            "total_points": 1186,
+            "value": 1186,
+            "is_this_event": false
+          },
+          {
+            "event_id": 188,
+            "event_name": "NSW West Coast Swing Dance Championships",
+            "name": "NSW West Coast Swing Dance Championships",
+            "editions": 8,
+            "unique_dancers": 193,
+            "first_points_here": 63,
+            "total_points": 1165,
+            "value": 1165,
+            "is_this_event": false
+          },
+          {
+            "event_id": 180,
+            "event_name": "Australian Open Swing Dance Championships",
+            "name": "Australian Open Swing Dance Championships",
+            "editions": 5,
+            "unique_dancers": 155,
+            "first_points_here": 54,
+            "total_points": 851,
+            "value": 851,
+            "is_this_event": false
+          },
+          {
+            "event_id": 330,
+            "event_name": "Simply Adelaide West Coast Swing",
+            "name": "Simply Adelaide West Coast Swing",
+            "editions": 6,
+            "unique_dancers": 161,
+            "first_points_here": 46,
+            "total_points": 803,
+            "value": 803,
+            "is_this_event": false
+          },
+          {
+            "event_id": 246,
+            "event_name": "Swing Escape",
+            "name": "Swing Escape",
+            "editions": 5,
+            "unique_dancers": 127,
+            "first_points_here": 22,
+            "total_points": 698,
+            "value": 698,
+            "is_this_event": false
+          },
+          {
+            "event_id": 298,
+            "event_name": "Shakedown Swing",
+            "name": "Shakedown Swing",
+            "editions": 5,
+            "unique_dancers": 115,
+            "first_points_here": 38,
+            "total_points": 616,
+            "value": 616,
+            "is_this_event": false
+          },
+          {
+            "event_id": 374,
+            "event_name": "Barock Swing Ludwigsburg",
+            "name": "Barock Swing Ludwigsburg",
+            "editions": 2,
+            "unique_dancers": 124,
+            "first_points_here": 35,
+            "total_points": 572,
+            "value": 572,
+            "is_this_event": false
+          },
+          {
+            "event_id": 385,
+            "event_name": "Revitalise WCS",
+            "name": "Revitalise WCS",
+            "editions": 2,
+            "unique_dancers": 106,
+            "first_points_here": 30,
+            "total_points": 476,
+            "value": 476,
+            "is_this_event": false
+          },
+          {
+            "event_id": 333,
+            "event_name": "Swingvasion",
+            "name": "Swingvasion",
+            "editions": 3,
+            "unique_dancers": 90,
+            "first_points_here": 22,
+            "total_points": 443,
+            "value": 443,
+            "is_this_event": false
+          }
+        ]
+      }
+    },
+    "launchpad": {
+      "definition": "first-ever WSDC Skill JJ points at this event",
+      "starters_n": 122,
+      "reached_allstar_plus_n": 7,
+      "reached_allstar_plus_pct": 5.7,
+      "reached_champion_n": 0,
+      "reached_champion_pct": 0.0,
+      "median_months_to_allstar": 76.0,
+      "median_months_to_champion": null,
+      "highest_division_counts": [
+        {
+          "division": "Newcomer",
+          "n": 29
+        },
+        {
+          "division": "Novice",
+          "n": 50
+        },
+        {
+          "division": "Intermediate",
+          "n": 24
+        },
+        {
+          "division": "Advanced",
+          "n": 12
+        },
+        {
+          "division": "All-Star",
+          "n": 7
+        },
+        {
+          "division": "Champion",
+          "n": 0
+        }
+      ],
+      "notable_allstar_starters": [
+        {
+          "dancer_name": "Larissa Thayane",
+          "dancer_id": "11004",
+          "event_year": 2014,
+          "allstar_pts_since_2009": 101,
+          "last_as_year": 2026
+        },
+        {
+          "dancer_name": "Ani Fuller",
+          "dancer_id": "8049",
+          "event_year": 2011,
+          "allstar_pts_since_2009": 46,
+          "last_as_year": 2023
+        },
+        {
+          "dancer_name": "Elysia King",
+          "dancer_id": "9913",
+          "event_year": 2013,
+          "allstar_pts_since_2009": 9,
+          "last_as_year": 2025
+        },
+        {
+          "dancer_name": "Kylie Davey",
+          "dancer_id": "8053",
+          "event_year": 2011,
+          "allstar_pts_since_2009": 7,
+          "last_as_year": 2024
+        },
+        {
+          "dancer_name": "Craig Schubert",
+          "dancer_id": "8077",
+          "event_year": 2011,
+          "allstar_pts_since_2009": 7,
+          "last_as_year": 2025
+        },
+        {
+          "dancer_name": "Anthony Truong",
+          "dancer_id": "9900",
+          "event_year": 2013,
+          "allstar_pts_since_2009": 3,
+          "last_as_year": 2023
+        },
+        {
+          "dancer_name": "Kate McGregor",
+          "dancer_id": "8056",
+          "event_year": 2011,
+          "allstar_pts_since_2009": 2,
+          "last_as_year": 2026
+        }
+      ],
+      "notable_champion_starters": [],
+      "median_career_points_share_outside_pct": 61.9,
+      "as_plus_median_career_points_share_outside_pct": 87.5
+    },
+    "division_era_mix": {
+      "definition": "Share of Skill JJ points by division by era; gap 2020-2021 excluded",
+      "eras": [
+        {
+          "era": "2011–2019",
+          "total_points": 1407,
+          "points": {
+            "Newcomer": 150,
+            "Novice": 667,
+            "Intermediate": 394,
+            "Advanced": 114,
+            "All-Star": 82
+          },
+          "share_pct": {
+            "Newcomer": 10.7,
+            "Novice": 47.4,
+            "Intermediate": 28.0,
+            "Advanced": 8.1,
+            "All-Star": 5.8
+          }
+        },
+        {
+          "era": "2022–2025",
+          "total_points": 625,
+          "points": {
+            "Newcomer": 68,
+            "Novice": 266,
+            "Intermediate": 185,
+            "Advanced": 58,
+            "All-Star": 48
+          },
+          "share_pct": {
+            "Newcomer": 10.9,
+            "Novice": 42.6,
+            "Intermediate": 29.6,
+            "Advanced": 9.3,
+            "All-Star": 7.7
+          }
+        }
+      ]
+    },
+    "retention": {
+      "definition": "Return = scored points at this event in year Y and again in Y+1; editions = distinct years with points here",
+      "unique_dancers": 335,
+      "one_edition_n": 209,
+      "one_edition_pct": 62.4,
+      "three_plus_editions_n": 65,
+      "three_plus_editions_pct": 19.4,
+      "five_plus_editions_n": 18,
+      "one_edition_points_share_pct": 34.2,
+      "five_plus_points_share_pct": 19.1,
+      "edition_histogram": [
+        {
+          "editions": 1,
+          "dancers": 209,
+          "dancers_share_pct": 62.4,
+          "points": 694,
+          "points_share_pct": 34.2
+        },
+        {
+          "editions": 2,
+          "dancers": 61,
+          "dancers_share_pct": 18.2,
+          "points": 403,
+          "points_share_pct": 19.8
+        },
+        {
+          "editions": 3,
+          "dancers": 34,
+          "dancers_share_pct": 10.1,
+          "points": 359,
+          "points_share_pct": 17.7
+        },
+        {
+          "editions": 4,
+          "dancers": 13,
+          "dancers_share_pct": 3.9,
+          "points": 187,
+          "points_share_pct": 9.2
+        },
+        {
+          "editions": 5,
+          "dancers": 6,
+          "dancers_share_pct": 1.8,
+          "points": 107,
+          "points_share_pct": 5.3
+        },
+        {
+          "editions": 6,
+          "dancers": 7,
+          "dancers_share_pct": 2.1,
+          "points": 137,
+          "points_share_pct": 6.7
+        },
+        {
+          "editions": 7,
+          "dancers": 1,
+          "dancers_share_pct": 0.3,
+          "points": 21,
+          "points_share_pct": 1.0
+        },
+        {
+          "editions": 8,
+          "dancers": 1,
+          "dancers_share_pct": 0.3,
+          "points": 31,
+          "points_share_pct": 1.5
+        },
+        {
+          "editions": 9,
+          "dancers": 2,
+          "dancers_share_pct": 0.6,
+          "points": 63,
+          "points_share_pct": 3.1
+        },
+        {
+          "editions": 10,
+          "dancers": 0,
+          "dancers_share_pct": 0.0,
+          "points": 0,
+          "points_share_pct": 0.0
+        },
+        {
+          "editions": 11,
+          "dancers": 1,
+          "dancers_share_pct": 0.3,
+          "points": 30,
+          "points_share_pct": 1.5
+        }
+      ],
+      "next_year_return": [
+        {
+          "from_year": 2011,
+          "to_year": 2012,
+          "base": 40,
+          "returned": 19,
+          "rate_pct": 47.5
+        },
+        {
+          "from_year": 2012,
+          "to_year": 2013,
+          "base": 40,
+          "returned": 12,
+          "rate_pct": 30.0
+        },
+        {
+          "from_year": 2013,
+          "to_year": 2014,
+          "base": 47,
+          "returned": 12,
+          "rate_pct": 25.5
+        },
+        {
+          "from_year": 2014,
+          "to_year": 2015,
+          "base": 50,
+          "returned": 12,
+          "rate_pct": 24.0
+        },
+        {
+          "from_year": 2015,
+          "to_year": 2016,
+          "base": 50,
+          "returned": 18,
+          "rate_pct": 36.0
+        },
+        {
+          "from_year": 2016,
+          "to_year": 2017,
+          "base": 53,
+          "returned": 24,
+          "rate_pct": 45.3
+        },
+        {
+          "from_year": 2017,
+          "to_year": 2018,
+          "base": 60,
+          "returned": 14,
+          "rate_pct": 23.3
+        },
+        {
+          "from_year": 2018,
+          "to_year": 2019,
+          "base": 39,
+          "returned": 7,
+          "rate_pct": 17.9
+        },
+        {
+          "from_year": 2022,
+          "to_year": 2023,
+          "base": 41,
+          "returned": 9,
+          "rate_pct": 22.0
+        },
+        {
+          "from_year": 2023,
+          "to_year": 2024,
+          "base": 39,
+          "returned": 16,
+          "rate_pct": 41.0
+        },
+        {
+          "from_year": 2024,
+          "to_year": 2025,
+          "base": 55,
+          "returned": 20,
+          "rate_pct": 36.4
+        }
+      ],
+      "return_after_gap": {
+        "from_year": 2019,
+        "to_year": 2022,
+        "base": 35,
+        "returned": null,
+        "rate_pct": null,
+        "note": "after multi-year gap 2020-2021; consecutive YoY N/A",
+        "returned_after_gap_n": 7,
+        "returned_after_gap_pct": 20.0
+      },
+      "return_rate_range_pct": [
+        17.9,
+        47.5
+      ],
+      "recent_return_rate_range_pct": [
+        22.0,
+        41.0
+      ]
+    }
+  }
+}
