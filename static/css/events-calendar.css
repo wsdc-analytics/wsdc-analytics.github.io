@@ -327,7 +327,7 @@ h1 {
   width: 108px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   padding: 0;
   pointer-events: none;
 }
@@ -342,6 +342,18 @@ h1 {
   display: flex;
   justify-content: flex-start;
   min-height: 18px;
+  margin-bottom: 8px;
+}
+
+.cal-stats__group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Visual split: confirm status vs event type (no divider line) */
+.cal-stats__group--types {
+  margin-top: 60px;
 }
 
 .cal-stats__tip {
@@ -941,6 +953,18 @@ h1 {
   .cal-stats__head {
     width: 100%;
     min-height: 0;
+    margin-bottom: 0;
+  }
+  .cal-stats__group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 14px;
+  }
+  .cal-stats__group--types {
+    margin-top: 0;
+    width: 100%;
+    padding-top: 12px;
   }
   .cal-stats__tip-bubble {
     left: 0;
