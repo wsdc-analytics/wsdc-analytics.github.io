@@ -783,18 +783,74 @@
     });
   }
 
+  function tipGroupKey(status) {
+    if (status === "expected") return "expected";
+    if (status === "hiatus" || status === "cancelled") return "paused";
+    return "confirmed";
+  }
+
+  function sortEventsByName(a, b) {
+    return String(a.name || "").localeCompare(String(b.name || ""), undefined, {
+      sensitivity: "base"
+    });
+  }
+
+  function tipKindLabel(kind) {
+    return kind === "trial" ? t("statTrial") : t("statRegistry");
+  }
+
+  function tipKindClass(kind) {
+    return kind === "trial" ? "trial" : "registry";
+  }
+
+  function buildDayTooltipHtml(list) {
+    var buckets = { confirmed: [], expected: [], paused: [] };
+    (list || []).forEach(function (e) {
+      buckets[tipGroupKey(e.status)].push(e);
+    });
+    ["confirmed", "expected", "paused"].forEach(function (key) {
+      buckets[key].sort(sortEventsByName);
+    });
+    var ordered = buckets.confirmed.concat(buckets.expected, buckets.paused);
+    var more = Math.max(0, ordered.length - 10);
+    ordered = ordered.slice(0, 10);
+
+    var shown = { confirmed: [], expected: [], paused: [] };
+    ordered.forEach(function (e) {
+      shown[tipGroupKey(e.status)].push(e);
+    });
+
+    var html = "";
+    ["confirmed", "expected", "paused"].forEach(function (key) {
+      var rows = shown[key];
+      if (!rows.length) return;
+      html += '<div class="tooltip-group tooltip-group--' + key + '">';
+      rows.forEach(function (e) {
+        var where = [e.city, e.country].filter(Boolean).join(", ");
+        html +=
+          '<div class="tooltip-row">' +
+          '<div class="tooltip-row__main">' +
+          '<div class="tooltip-row__name">' + esc(e.name) + "</div>" +
+          '<div class="tooltip-row__where">' + esc(where) + "</div>" +
+          "</div>" +
+          '<div class="tooltip-row__meta">' +
+          '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
+          '<span class="badge ' + tipKindClass(e.kind) + '">' + esc(tipKindLabel(e.kind)) + "</span>" +
+          "</div></div>";
+      });
+      html += "</div>";
+    });
+    if (more > 0) {
+      html += '<div class="tooltip-more">… +' + more + "</div>";
+    }
+    return html;
+  }
+
   function showTooltip(ev, dayIso) {
     var tip = document.getElementById("tooltip");
     var list = state.byDay[dayIso] || [];
     if (!list.length) return;
-    tip.innerHTML = list.slice(0, 8).map(function (e) {
-      var where = [e.city, e.country].filter(Boolean).join(", ");
-      var span = esc(e.start_date) + (e.end_date && e.end_date !== e.start_date ? " - " + esc(e.end_date) : "");
-      return "<div><strong>" + esc(e.name) + "</strong>" +
-        (where ? " - " + esc(where) : "") +
-        '<div class="status-line">' + span + " · " + esc(e.status) + " · " + esc(e.kind) + "</div></div>";
-    }).join("");
-    if (list.length > 8) tip.innerHTML += "<div>… +" + (list.length - 8) + "</div>";
+    tip.innerHTML = buildDayTooltipHtml(list);
     tip.classList.add("is-visible");
     moveTooltip(ev);
   }
@@ -912,7 +968,7 @@
         '<div class="event-meta">' + span + (where ? " · " + esc(where) : "") + "</div>" +
         '<div class="badges">' +
         '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
-        '<span class="badge ' + (e.kind === "trial" ? "trial" : "") + '">' +
+        '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
         esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span>" +
         "</div></button>";
     }).join("");
@@ -943,7 +999,7 @@
     if (where) html += '<p class="event-meta">' + t("location") + ": " + esc(where) + "</p>";
     html += '<div class="badges">' +
       '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
-      '<span class="badge ' + (e.kind === "trial" ? "trial" : "") + '">' +
+      '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
       esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
     if (e.projected_from_year) {
       html += '<p class="event-meta" style="margin-top:8px">' + t("projected") + " " +
