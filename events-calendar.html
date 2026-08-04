@@ -229,7 +229,7 @@
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "of {n}",
-      statTip: "After filters. Past and future years show full-year totals. For the current year, Confirmed / Expected / Registry / Trial show remaining (not yet ended as of the data date), with the year total in quieter type — not a separate highlight. Hiatus / Cancelled is always the full-year count.",
+      statTip: "After filters. Past years: Confirmed counts distinct events with competition results. Future years show full-year calendar totals. For the current year, Confirmed / Expected / Registry / Trial show remaining (not yet ended as of the data date), with the year total in quieter type — not a separate highlight. Hiatus / Cancelled is always the full-year count.",
       statAria: "Selection counts",
       empty: "No day-precision events for this year yet.",
       day: "Day",
@@ -271,7 +271,7 @@
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "из {n}",
-      statTip: "После фильтров. Прошлый и будущий год — полные итоги. Для текущего года Confirmed / Expected / Registry / Trial показывают остаток (ещё не закончились на дату данных), а итог года — приглушённо, без отдельной подсветки. Hiatus / Cancelled всегда за весь год.",
+      statTip: "После фильтров. Прошлый год: Confirmed — число уникальных ивентов с результатами. Будущий год — полные календарные итоги. Для текущего года Confirmed / Expected / Registry / Trial показывают остаток (ещё не закончились на дату данных), а итог года — приглушённо, без отдельной подсветки. Hiatus / Cancelled всегда за весь год.",
       statAria: "Счётчики выборки",
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
@@ -313,7 +313,7 @@
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "de {n}",
-      statTip: "Tras los filtros. Años pasados y futuros: totales del año. En el año actual, Confirmed / Expected / Registry / Trial muestran lo que queda (aún no terminados a la fecha de los datos), con el total del año en tipografía más discreta. Hiatus / Cancelled es siempre el total del año.",
+      statTip: "Tras los filtros. Años pasados: Confirmed cuenta eventos distintos con resultados. Años futuros: totales del calendario. En el año actual, Confirmed / Expected / Registry / Trial muestran lo que queda (aún no terminados a la fecha de los datos), con el total del año en tipografía más discreta. Hiatus / Cancelled es siempre el total del año.",
       statAria: "Conteos de la selección",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
@@ -401,12 +401,26 @@
       registry: emptyStatBucket(),
       trial: emptyStatBucket()
     };
+    var asOfYear = Number(String(asOf || "").slice(0, 4));
+    var pastYearResultsConfirmed =
+      Number.isFinite(asOfYear) && state.year < asOfYear;
+    var confirmedSeen = {};
     (events || []).forEach(function (e) {
       var rem = isEventRemaining(e, asOf);
-      if (e.status === "confirmed") {
+      if (pastYearResultsConfirmed) {
+        if (e.has_results) {
+          var ckey =
+            e.event_id != null ? "id:" + e.event_id : "name:" + (e.name || "");
+          if (!confirmedSeen[ckey]) {
+            confirmedSeen[ckey] = true;
+            out.confirmed.total += 1;
+          }
+        }
+      } else if (e.status === "confirmed") {
         out.confirmed.total += 1;
         if (rem) out.confirmed.remaining += 1;
-      } else if (e.status === "expected") {
+      }
+      if (e.status === "expected") {
         out.expected.total += 1;
         if (rem) out.expected.remaining += 1;
       } else if (e.status === "hiatus" || e.status === "cancelled") {
@@ -620,6 +634,7 @@
   function indexByDay(events, year) {
     var map = {};
     events.forEach(function (e) {
+      if (e.stats_only) return;
       var start = e.start_date;
       if (!start) return;
       var end = e.end_date || e.start_date;
