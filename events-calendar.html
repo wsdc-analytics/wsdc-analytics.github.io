@@ -976,6 +976,10 @@
     return document.querySelector(".calendar-stage");
   }
 
+  function gridEl() {
+    return document.getElementById("calendarRoot");
+  }
+
   function toStageRect(viewportRect) {
     var stage = stageEl().getBoundingClientRect();
     return {
@@ -987,14 +991,18 @@
   }
 
   function islandFinalRect() {
+    var grid = gridEl();
+    var target = grid && grid.getBoundingClientRect().width
+      ? grid.getBoundingClientRect()
+      : stageEl().getBoundingClientRect();
     var stage = stageEl().getBoundingClientRect();
     var pad = 10;
-    // Nearly fill the calendar stage; leave a thin rim of the grid visible.
+    // Cover the month grid only (not stats/legend gutters), with a thin visible rim.
     return {
-      left: pad,
-      top: pad,
-      width: Math.max(280, stage.width - pad * 2),
-      height: Math.max(220, stage.height - pad * 2)
+      left: target.left - stage.left + pad,
+      top: target.top - stage.top + pad,
+      width: Math.max(280, target.width - pad * 2),
+      height: Math.max(220, target.height - pad * 2)
     };
   }
 
