@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta name="description" content="WSDC year event calendar with weekend map drill-down: confirmed, expected, cancelled, and hiatus editions.">
+    <meta name="description" content="WSDC year event calendar with weekend map drill-down: confirmed, expected, and hiatus editions.">
     <meta name="keywords" content="WSDC, events calendar, West Coast Swing, registry events, trial events, map">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
@@ -130,7 +130,7 @@
                     </span>
                 </div>
                 <div class="cal-stats__item">
-                    <span class="cal-stats__label" data-i18n="statPaused">Hiatus / Cancelled</span>
+                    <span class="cal-stats__label" data-i18n="statPaused">Hiatus</span>
                     <span class="cal-stats__nums" data-stat="paused">
                         <span class="cal-stats__value">0</span>
                         <span class="cal-stats__of" hidden></span>
@@ -238,11 +238,11 @@
       legToday: "Today",
       statConfirmed: "Confirmed",
       statExpected: "Expected",
-      statPaused: "Hiatus / Cancelled",
+      statPaused: "Hiatus",
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "of {n}",
-      statTip: "After filters. Past years: Confirmed counts distinct events with competition results. Future years show full-year calendar totals. For the current year, Confirmed / Expected / Registry / Trial show remaining (not yet ended as of the data date), with the year total in quieter type — not a separate highlight. Hiatus / Cancelled is always the full-year count.",
+      statTip: "After filters. Past years: Confirmed counts distinct events with competition results. Future years show full-year calendar totals. For the current year, Confirmed / Expected / Registry / Trial show remaining (not yet ended as of the data date), with the year total in quieter type — not a separate highlight. Hiatus is always the full-year count.",
       statAria: "Selection counts",
       empty: "No day-precision events for this year yet.",
       day: "Day",
@@ -255,7 +255,7 @@
       registry: "Registry Event",
       trial: "Trial Event",
       continents: { America: "America", Europe: "Europe", Asia: "Asia", Australia: "Australia" },
-      statuses: { confirmed: "Confirmed", expected: "Expected", cancelled: "Cancelled", hiatus: "Hiatus" },
+      statuses: { confirmed: "Confirmed", expected: "Expected", hiatus: "Hiatus" },
       months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
       dow: ["M","T","W","T","F","S","S"]
     },
@@ -280,11 +280,11 @@
       legToday: "Сегодня",
       statConfirmed: "Confirmed",
       statExpected: "Expected",
-      statPaused: "Hiatus / Cancelled",
+      statPaused: "Hiatus",
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "из {n}",
-      statTip: "После фильтров. Прошлый год: Confirmed — число уникальных ивентов с результатами. Будущий год — полные календарные итоги. Для текущего года Confirmed / Expected / Registry / Trial показывают остаток (ещё не закончились на дату данных), а итог года — приглушённо, без отдельной подсветки. Hiatus / Cancelled всегда за весь год.",
+      statTip: "После фильтров. Прошлый год: Confirmed — число уникальных ивентов с результатами. Будущий год — полные календарные итоги. Для текущего года Confirmed / Expected / Registry / Trial показывают остаток (ещё не закончились на дату данных), а итог года — приглушённо, без отдельной подсветки. Hiatus всегда за весь год.",
       statAria: "Счётчики выборки",
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
@@ -297,7 +297,7 @@
       registry: "Registry Event",
       trial: "Trial Event",
       continents: { America: "Америка", Europe: "Европа", Asia: "Азия", Australia: "Австралия" },
-      statuses: { confirmed: "Подтверждён", expected: "Ожидается", cancelled: "Отменён", hiatus: "Hiatus" },
+      statuses: { confirmed: "Подтверждён", expected: "Ожидается", hiatus: "Hiatus" },
       months: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
       dow: ["П","В","С","Ч","П","С","В"]
     },
@@ -322,11 +322,11 @@
       legToday: "Hoy",
       statConfirmed: "Confirmed",
       statExpected: "Expected",
-      statPaused: "Hiatus / Cancelled",
+      statPaused: "Hiatus",
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "de {n}",
-      statTip: "Tras los filtros. Años pasados: Confirmed cuenta eventos distintos con resultados. Años futuros: totales del calendario. En el año actual, Confirmed / Expected / Registry / Trial muestran lo que queda (aún no terminados a la fecha de los datos), con el total del año en tipografía más discreta. Hiatus / Cancelled es siempre el total del año.",
+      statTip: "Tras los filtros. Años pasados: Confirmed cuenta eventos distintos con resultados. Años futuros: totales del calendario. En el año actual, Confirmed / Expected / Registry / Trial muestran lo que queda (aún no terminados a la fecha de los datos), con el total del año en tipografía más discreta. Hiatus es siempre el total del año.",
       statAria: "Conteos de la selección",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
@@ -339,14 +339,14 @@
       registry: "Registry Event",
       trial: "Trial Event",
       continents: { America: "América", Europe: "Europa", Asia: "Asia", Australia: "Australia" },
-      statuses: { confirmed: "Confirmado", expected: "Previsto", cancelled: "Cancelado", hiatus: "Hiatus" },
+      statuses: { confirmed: "Confirmado", expected: "Previsto", hiatus: "Hiatus" },
       months: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
       dow: ["L","M","X","J","V","S","D"]
     }
   };
 
   var CONTINENTS = ["America", "Europe", "Asia", "Australia"];
-  var STATUSES = ["confirmed", "expected", "cancelled", "hiatus"];
+  var STATUSES = ["confirmed", "expected", "hiatus"];
   var KINDS = ["registry", "trial"];
 
   var state = {
@@ -515,7 +515,7 @@
       if (e.year !== year) return false;
       if (state.continent && e.continent !== state.continent) return false;
       if (state.country && e.country !== state.country) return false;
-      if (state.status && e.status !== state.status) return false;
+      if (state.status && normalizeStatus(e.status) !== state.status) return false;
       if (state.kind && e.kind !== state.kind) return false;
       return true;
     });
@@ -530,9 +530,15 @@
     return pack[key] || key;
   }
 
+  function normalizeStatus(status) {
+    // Product rule: Cancelled is shown as Hiatus everywhere.
+    return status === "cancelled" ? "hiatus" : status;
+  }
+
   function statusLabel(key) {
     var pack = (I18N[state.lang] || I18N.en).statuses || {};
-    return pack[key] || key;
+    var normalized = normalizeStatus(key);
+    return pack[normalized] || normalized || key;
   }
 
   function kindLabel(key) {
@@ -631,7 +637,7 @@
 
     var kindPool = yearEvents.filter(function (e) {
       if (state.country && e.country !== state.country) return false;
-      if (state.status && e.status !== state.status) return false;
+      if (state.status && normalizeStatus(e.status) !== state.status) return false;
       return true;
     });
     var kindPresent = {};
@@ -1136,8 +1142,7 @@
   function statusColor(status) {
     if (status === "confirmed") return "#16a34a";
     if (status === "expected") return "#9ca3af";
-    if (status === "cancelled") return "#dc2626";
-    if (status === "hiatus") return "#d97706";
+    if (status === "hiatus" || status === "cancelled") return "#d97706";
     return "#64748b";
   }
 
@@ -1395,7 +1400,7 @@
       (e.end_date ? " · " + t("ends") + ": " + esc(e.end_date) : "") + "</p>";
     if (where) html += '<p class="event-meta">' + t("location") + ": " + esc(where) + "</p>";
     html += '<div class="badges">' +
-      '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
+      '<span class="badge ' + esc(normalizeStatus(e.status)) + '">' + esc(statusLabel(e.status)) + "</span>" +
       '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
       esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
     if (e.projected_from_year) {
