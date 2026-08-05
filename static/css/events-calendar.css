@@ -717,12 +717,8 @@ h1 {
 .day-layer__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.28);
-  opacity: 0;
-  transition: opacity 220ms var(--ease-out);
-}
-
-.day-layer.is-open .day-layer__backdrop {
+  /* Hit-area for click-outside only — no gray wash over the calendar. */
+  background: transparent;
   opacity: 1;
 }
 
@@ -738,7 +734,7 @@ h1 {
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
   overflow: hidden;
   opacity: 0;
-  transform: scale(0.97);
+  transform: scale(0.985);
   transform-origin: center center;
   transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
 }
@@ -808,7 +804,7 @@ h1 {
 #dayMap {
   flex: 0 0 auto;
   width: 100%;
-  height: 158px;
+  height: 220px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   background: #fff;
@@ -1064,7 +1060,7 @@ h1 {
     font-size: 9px;
   }
   .day-island__body { grid-template-columns: 1fr; }
-  #dayMap { height: 140px; }
+  #dayMap { height: 180px; min-height: 160px; }
   .day-island__list { max-height: none; }
 }
 
