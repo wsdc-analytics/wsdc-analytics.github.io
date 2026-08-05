@@ -984,16 +984,20 @@
 
   function islandFinalRect() {
     var grid = gridEl();
+    var filters = document.querySelector(".filters");
     var target = grid && grid.getBoundingClientRect().width
       ? grid.getBoundingClientRect()
       : stageEl().getBoundingClientRect();
     var pad = 10;
-    // Open over the month grid; after that the user can drag anywhere on screen.
+    var filterTop = filters ? filters.getBoundingClientRect().top : NaN;
+    // Default open: top edge flush with the filters row; bottom still tracks the month grid.
+    var top = Number.isFinite(filterTop) ? filterTop : target.top + pad;
+    var bottom = target.bottom - pad;
     return {
       left: target.left + pad,
-      top: target.top + pad,
+      top: top,
       width: Math.max(280, target.width - pad * 2),
-      height: Math.max(220, target.height - pad * 2)
+      height: Math.max(220, bottom - top)
     };
   }
 
