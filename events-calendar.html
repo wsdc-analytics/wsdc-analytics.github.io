@@ -181,35 +181,35 @@
                     <span data-i18n="legToday">Today</span>
                 </div>
             </aside>
+            <div class="day-layer" id="dayLayer" hidden aria-hidden="true">
+                <div class="day-layer__backdrop" id="dayLayerBackdrop"></div>
+                <div
+                    class="day-island"
+                    id="dayIsland"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="dayIslandTitle"
+                >
+                    <div class="day-island__head">
+                        <h2 id="dayIslandTitle"></h2>
+                        <button type="button" class="day-island__close" id="closeDayIsland" data-i18n="close">Close</button>
+                    </div>
+                    <div class="day-island__body">
+                        <div class="day-island__map-col">
+                            <div id="noGeoNote" class="no-geo" hidden></div>
+                            <div id="dayMap" role="img" aria-label="Day events map"></div>
+                        </div>
+                        <div class="day-island__list-col">
+                            <div class="day-island__list" id="eventList"></div>
+                            <div class="detail" id="eventDetail"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
     </div>
     <div class="tooltip" id="tooltip" role="tooltip"></div>
-    <div class="day-layer" id="dayLayer" hidden aria-hidden="true">
-        <div class="day-layer__backdrop" id="dayLayerBackdrop"></div>
-        <div
-            class="day-island"
-            id="dayIsland"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="dayIslandTitle"
-        >
-            <div class="day-island__head">
-                <h2 id="dayIslandTitle"></h2>
-                <button type="button" class="day-island__close" id="closeDayIsland" data-i18n="close">Close</button>
-            </div>
-            <div class="day-island__body">
-                <div class="day-island__map-col">
-                    <div id="noGeoNote" class="no-geo" hidden></div>
-                    <div id="dayMap" role="img" aria-label="Day events map"></div>
-                </div>
-                <div class="day-island__list-col">
-                    <div class="day-island__list" id="eventList"></div>
-                    <div class="detail" id="eventDetail"></div>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="static/js/site-chrome.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
@@ -972,14 +972,35 @@
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
-  function islandFinalRect() {
-    var marginX = Math.max(16, Math.round(window.innerWidth * 0.04));
-    var marginY = Math.max(16, Math.round(window.innerHeight * 0.04));
+  function stageEl() {
+    return document.querySelector(".calendar-stage");
+  }
+
+  function toStageRect(viewportRect) {
+    var stage = stageEl().getBoundingClientRect();
     return {
-      left: marginX,
-      top: marginY,
-      width: Math.max(280, window.innerWidth - marginX * 2),
-      height: Math.max(320, window.innerHeight - marginY * 2)
+      left: viewportRect.left - stage.left,
+      top: viewportRect.top - stage.top,
+      width: viewportRect.width,
+      height: viewportRect.height
+    };
+  }
+
+  function islandFinalRect() {
+    var stage = stageEl().getBoundingClientRect();
+    var pad = 10;
+    var availW = Math.max(0, stage.width - pad * 2);
+    var availH = Math.max(0, stage.height - pad * 2);
+    // Compact magnifier: stay inside the calendar stage, leave filters visible.
+    var width = Math.min(560, availW);
+    var height = Math.min(320, Math.max(240, Math.round(availH * 0.78)));
+    width = Math.max(280, Math.min(width, availW));
+    height = Math.max(220, Math.min(height, availH));
+    return {
+      left: pad + (availW - width) / 2,
+      top: pad + (availH - height) / 2,
+      width: width,
+      height: height
     };
   }
 
@@ -993,22 +1014,41 @@
   function captureL2Origin(iso) {
     var tip = document.getElementById("tooltip");
     if (tip && tip.classList.contains("is-visible") && tip.offsetWidth > 0) {
-      return tip.getBoundingClientRect();
+      return toStageRect(tip.getBoundingClientRect());
     }
     var btn = document.querySelector('.day.has-events[data-date="' + iso + '"]');
-    if (btn) return btn.getBoundingClientRect();
+    if (btn) return toStageRect(btn.getBoundingClientRect());
     var fin = islandFinalRect();
     return {
       left: fin.left + fin.width * 0.35,
       top: fin.top + fin.height * 0.35,
-      width: fin.width * 0.3,
-      height: fin.height * 0.3
+      width: Math.max(40, fin.width * 0.28),
+      height: Math.max(40, fin.height * 0.28)
     };
+  }
+
+  function fitDayMap(bounds) {
+    if (!state.map || !bounds.length) {
+      if (state.map) state.map.setView([20, 0], 1);
+      return;
+    }
+    if (bounds.length === 1) {
+      state.map.setView(bounds[0], 6);
+      return;
+    }
+    var latLngs = bounds.map(function (b) { return L.latLng(b[0], b[1]); });
+    var box = L.latLngBounds(latLngs);
+    // Avoid ultra-wide empty oceans: pad tightly and allow closer zoom.
+    state.map.fitBounds(box.pad(0.12), { padding: [18, 18], maxZoom: 8 });
   }
 
   function ensureMap() {
     if (state.map) return;
-    state.map = L.map("dayMap", { scrollWheelZoom: false });
+    state.map = L.map("dayMap", {
+      scrollWheelZoom: false,
+      zoomControl: true,
+      attributionControl: false
+    });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap",
       maxZoom: 18
@@ -1142,11 +1182,18 @@
         state.markerById[String(e.id)] = { marker: m, event: e };
         bounds.push([e.lat, e.lon]);
       });
-      state.map.fitBounds(bounds, { padding: [28, 28], maxZoom: 5 });
+      fitDayMap(bounds);
     } else {
-      state.map.setView([20, 0], 1);
+      fitDayMap([]);
     }
-    setTimeout(function () { state.map.invalidateSize(); }, 60);
+    setTimeout(function () {
+      if (state.map) {
+        state.map.invalidateSize();
+        if (withGeo.length) {
+          fitDayMap(withGeo.map(function (e) { return [e.lat, e.lon]; }));
+        }
+      }
+    }, 80);
 
     var list = document.getElementById("eventList");
     list.innerHTML = buildL2ListHtml(events);
@@ -1166,15 +1213,22 @@
       populateDayIsland(iso);
       applyIslandRect(document.getElementById("dayIsland"), islandFinalRect());
       document.getElementById("dayIsland").classList.add("is-settled");
-      setTimeout(function () { if (state.map) state.map.invalidateSize(); }, 40);
+      setTimeout(function () {
+        if (!state.map) return;
+        state.map.invalidateSize();
+        var bounds = Object.keys(state.markerById).map(function (id) {
+          var e = state.markerById[id].event;
+          return [e.lat, e.lon];
+        });
+        fitDayMap(bounds);
+      }, 40);
       return;
     }
 
-    var origin = captureL2Origin(iso);
     hideTooltip();
     state.selectedDay = iso;
     state.l2Open = true;
-    state.l2Origin = origin;
+    state.l2Origin = captureL2Origin(iso);
     renderCalendar();
 
     var layer = document.getElementById("dayLayer");
@@ -1184,33 +1238,20 @@
     layer.classList.add("is-open");
     document.body.classList.add("day-layer-open");
 
-    populateDayIsland(iso);
-
-    var finalRect = islandFinalRect();
+    applyIslandRect(island, islandFinalRect());
     island.classList.remove("is-settled");
-    if (preferReducedMotion()) {
-      applyIslandRect(island, finalRect);
-      island.classList.add("is-settled");
-      setTimeout(function () { if (state.map) state.map.invalidateSize(); }, 40);
-      return;
-    }
-
-    applyIslandRect(island, {
-      left: origin.left,
-      top: origin.top,
-      width: Math.max(40, origin.width),
-      height: Math.max(40, origin.height)
-    });
-    island.style.transition = "none";
     void island.offsetWidth;
-    island.style.transition = "";
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        applyIslandRect(island, finalRect);
-        island.classList.add("is-settled");
-        setTimeout(function () { if (state.map) state.map.invalidateSize(); }, 300);
+    populateDayIsland(iso);
+    island.classList.add("is-settled");
+    setTimeout(function () {
+      if (!state.map) return;
+      state.map.invalidateSize();
+      var bounds = Object.keys(state.markerById).map(function (id) {
+        var e = state.markerById[id].event;
+        return [e.lat, e.lon];
       });
-    });
+      fitDayMap(bounds);
+    }, 200);
   }
 
   function forceCloseDayIsland() {
@@ -1233,25 +1274,11 @@
   function closeDayIsland() {
     if (!state.l2Open) return;
     var island = document.getElementById("dayIsland");
-    var origin = state.l2Origin;
-    var finish = function () {
+    island.classList.remove("is-settled");
+    window.setTimeout(function () {
       forceCloseDayIsland();
       renderCalendar();
-    };
-
-    if (preferReducedMotion() || !origin) {
-      finish();
-      return;
-    }
-
-    island.classList.remove("is-settled");
-    applyIslandRect(island, {
-      left: origin.left,
-      top: origin.top,
-      width: Math.max(40, origin.width),
-      height: Math.max(40, origin.height)
-    });
-    window.setTimeout(finish, 260);
+    }, preferReducedMotion() ? 0 : 160);
   }
 
   function selectEvent(id) {
@@ -1404,6 +1431,20 @@
   });
   document.getElementById("dayLayerBackdrop").addEventListener("click", function () {
     closeDayIsland();
+  });
+  window.addEventListener("resize", function () {
+    if (!state.l2Open) return;
+    var island = document.getElementById("dayIsland");
+    applyIslandRect(island, islandFinalRect());
+    island.classList.add("is-settled");
+    if (state.map) {
+      state.map.invalidateSize();
+      var bounds = Object.keys(state.markerById).map(function (id) {
+        var e = state.markerById[id].event;
+        return [e.lat, e.lon];
+      });
+      fitDayMap(bounds);
+    }
   });
   window.WsdcChrome = window.WsdcChrome || {};
   window.WsdcChrome.onLangChange = function (lang) {
