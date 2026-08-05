@@ -181,35 +181,35 @@
                     <span data-i18n="legToday">Today</span>
                 </div>
             </aside>
-            <div class="day-layer" id="dayLayer" hidden aria-hidden="true">
-                <div class="day-layer__backdrop" id="dayLayerBackdrop"></div>
-                <div
-                    class="day-island"
-                    id="dayIsland"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="dayIslandTitle"
-                >
-                    <div class="day-island__head">
-                        <h2 id="dayIslandTitle"></h2>
-                        <button type="button" class="day-island__close" id="closeDayIsland" data-i18n="close">Close</button>
-                    </div>
-                    <div class="day-island__body">
-                        <div class="day-island__map-col">
-                            <div id="noGeoNote" class="no-geo" hidden></div>
-                            <div id="dayMap" role="img" aria-label="Day events map"></div>
-                        </div>
-                        <div class="day-island__list-col">
-                            <div class="day-island__list" id="eventList"></div>
-                            <div class="detail" id="eventDetail"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
     </div>
     <div class="tooltip" id="tooltip" role="tooltip"></div>
+    <div class="day-layer" id="dayLayer" hidden aria-hidden="true">
+        <div class="day-layer__backdrop" id="dayLayerBackdrop"></div>
+        <div
+            class="day-island"
+            id="dayIsland"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dayIslandTitle"
+        >
+            <div class="day-island__head">
+                <h2 id="dayIslandTitle"></h2>
+                <button type="button" class="day-island__close" id="closeDayIsland" data-i18n="close">Close</button>
+            </div>
+            <div class="day-island__body">
+                <div class="day-island__map-col">
+                    <div id="noGeoNote" class="no-geo" hidden></div>
+                    <div id="dayMap" role="img" aria-label="Day events map"></div>
+                </div>
+                <div class="day-island__list-col">
+                    <div class="day-island__list" id="eventList"></div>
+                    <div class="detail" id="eventDetail"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="static/js/site-chrome.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
@@ -982,27 +982,16 @@
     return document.getElementById("calendarRoot");
   }
 
-  function toStageRect(viewportRect) {
-    var stage = stageEl().getBoundingClientRect();
-    return {
-      left: viewportRect.left - stage.left,
-      top: viewportRect.top - stage.top,
-      width: viewportRect.width,
-      height: viewportRect.height
-    };
-  }
-
   function islandFinalRect() {
     var grid = gridEl();
     var target = grid && grid.getBoundingClientRect().width
       ? grid.getBoundingClientRect()
       : stageEl().getBoundingClientRect();
-    var stage = stageEl().getBoundingClientRect();
     var pad = 10;
-    // Cover the month grid only (not stats/legend gutters), with a thin visible rim.
+    // Open over the month grid; after that the user can drag anywhere on screen.
     return {
-      left: target.left - stage.left + pad,
-      top: target.top - stage.top + pad,
+      left: target.left + pad,
+      top: target.top + pad,
       width: Math.max(280, target.width - pad * 2),
       height: Math.max(220, target.height - pad * 2)
     };
@@ -1024,13 +1013,15 @@
     };
   }
 
-  function clampIslandInLayer(left, top, width, height) {
-    var layer = document.getElementById("dayLayer");
-    var maxL = Math.max(0, layer.clientWidth - width);
-    var maxT = Math.max(0, layer.clientHeight - height);
+  function clampIslandInViewport(left, top, width, height) {
+    var pad = 8;
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var maxL = Math.max(pad, vw - width - pad);
+    var maxT = Math.max(pad, vh - height - pad);
     return {
-      left: Math.min(Math.max(0, left), maxL),
-      top: Math.min(Math.max(0, top), maxT),
+      left: Math.min(Math.max(pad, left), maxL),
+      top: Math.min(Math.max(pad, top), maxT),
       width: width,
       height: height
     };
@@ -1044,17 +1035,31 @@
   function placeIslandKeepingOffset(island) {
     var size = islandFinalRect();
     var cur = readIslandRect(island);
-    var next = clampIslandInLayer(cur.left, cur.top, size.width, size.height);
+    var next = clampIslandInViewport(cur.left, cur.top, size.width, size.height);
     applyIslandRect(island, next);
   }
 
   function captureL2Origin(iso) {
     var tip = document.getElementById("tooltip");
     if (tip && tip.classList.contains("is-visible") && tip.offsetWidth > 0) {
-      return toStageRect(tip.getBoundingClientRect());
+      var tipRect = tip.getBoundingClientRect();
+      return {
+        left: tipRect.left,
+        top: tipRect.top,
+        width: tipRect.width,
+        height: tipRect.height
+      };
     }
     var btn = document.querySelector('.day.has-events[data-date="' + iso + '"]');
-    if (btn) return toStageRect(btn.getBoundingClientRect());
+    if (btn) {
+      var btnRect = btn.getBoundingClientRect();
+      return {
+        left: btnRect.left,
+        top: btnRect.top,
+        width: btnRect.width,
+        height: btnRect.height
+      };
+    }
     var fin = islandFinalRect();
     return {
       left: fin.left + fin.width * 0.35,
@@ -1507,7 +1512,7 @@
       var dx = e.clientX - drag.startX;
       var dy = e.clientY - drag.startY;
       if (!drag.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) drag.moved = true;
-      var next = clampIslandInLayer(
+      var next = clampIslandInViewport(
         drag.origLeft + dx,
         drag.origTop + dy,
         drag.width,
