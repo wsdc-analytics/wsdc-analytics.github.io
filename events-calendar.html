@@ -199,13 +199,13 @@
                 <button type="button" class="day-island__close" id="closeDayIsland" data-i18n="close">Close</button>
             </div>
             <div class="day-island__body">
-                <div class="day-island__map-col">
+                <div class="day-island__map-col" id="dayMapCol">
                     <div id="noGeoNote" class="no-geo" hidden></div>
+                    <article class="l2-event-card" id="eventDetail" aria-live="polite"></article>
                     <div id="dayMap" role="img" aria-label="Day events map"></div>
                 </div>
                 <div class="day-island__list-col">
                     <div class="day-island__list" id="eventList"></div>
-                    <div class="detail" id="eventDetail"></div>
                 </div>
             </div>
         </div>
@@ -1265,6 +1265,8 @@
     wireL2ListInteractions();
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
+    var mapCol = document.getElementById("dayMapCol");
+    if (mapCol) mapCol.classList.remove("has-event");
     state.selectedEventId = null;
     state.hoverEventId = null;
   }
@@ -1340,6 +1342,8 @@
     state.hoverEventId = null;
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
+    var mapCol = document.getElementById("dayMapCol");
+    if (mapCol) mapCol.classList.remove("has-event");
   }
 
   function closeDayIsland() {
@@ -1352,32 +1356,26 @@
     }, preferReducedMotion() ? 0 : 160);
   }
 
-  function clearEventSelection() {
-    state.selectedEventId = null;
-    paintRowHighlights();
-    paintMarkerStyles();
-    var detail = document.getElementById("eventDetail");
-    detail.classList.remove("is-open");
-    detail.innerHTML = "";
-    fitDayMap(dayMapBounds(), { animate: true });
+  function refreshDayMapSize(afterMs) {
+    var delay = afterMs == null ? 0 : afterMs;
+    window.setTimeout(function () {
+      if (!state.map) return;
+      state.map.invalidateSize({ animate: false });
+    }, delay);
   }
 
-  function selectEvent(id) {
-    if (state.selectedEventId != null && String(state.selectedEventId) === String(id)) {
-      clearEventSelection();
-      return;
-    }
-    var events = eventsForYear(state.year);
-    var e = events.find(function (x) { return String(x.id) === String(id); });
-    if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) { return String(x.id) === String(id); });
-    }
-    if (!e) return;
-    state.selectedEventId = id;
-    paintRowHighlights();
-    paintMarkerStyles();
-    focusMapOnEvent(e);
+  function hideEventCard() {
     var detail = document.getElementById("eventDetail");
+    var mapCol = document.getElementById("dayMapCol");
+    detail.classList.remove("is-open");
+    detail.innerHTML = "";
+    if (mapCol) mapCol.classList.remove("has-event");
+    refreshDayMapSize(preferReducedMotion() ? 0 : 230);
+  }
+
+  function showEventCard(e) {
+    var detail = document.getElementById("eventDetail");
+    var mapCol = document.getElementById("dayMapCol");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var html = "<h3>" + esc(e.name) + "</h3>" +
       '<p class="event-meta">' + t("starts") + ": " + esc(e.start_date) +
@@ -1397,6 +1395,34 @@
     }
     detail.innerHTML = html;
     detail.classList.add("is-open");
+    if (mapCol) mapCol.classList.add("has-event");
+    refreshDayMapSize(preferReducedMotion() ? 0 : 230);
+  }
+
+  function clearEventSelection() {
+    state.selectedEventId = null;
+    paintRowHighlights();
+    paintMarkerStyles();
+    hideEventCard();
+    fitDayMap(dayMapBounds(), { animate: true });
+  }
+
+  function selectEvent(id) {
+    if (state.selectedEventId != null && String(state.selectedEventId) === String(id)) {
+      clearEventSelection();
+      return;
+    }
+    var events = eventsForYear(state.year);
+    var e = events.find(function (x) { return String(x.id) === String(id); });
+    if (!e) {
+      e = eventsInYearRaw(state.year).find(function (x) { return String(x.id) === String(id); });
+    }
+    if (!e) return;
+    state.selectedEventId = id;
+    paintRowHighlights();
+    paintMarkerStyles();
+    showEventCard(e);
+    focusMapOnEvent(e);
   }
 
   function setYear(y) {
