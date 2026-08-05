@@ -1103,10 +1103,9 @@
     });
   }
 
-  function focusMapOnEvent(e, marker) {
+  function focusMapOnEvent(e) {
     if (!state.map || typeof e.lat !== "number" || typeof e.lon !== "number") return;
     state.map.flyTo([e.lat, e.lon], 5, { duration: 0.55 });
-    if (marker) marker.openPopup();
   }
 
   function ensureMap() {
@@ -1241,7 +1240,6 @@
       var bounds = [];
       withGeo.forEach(function (e) {
         var m = L.circleMarker([e.lat, e.lon], markerStyleFor(e, "base"));
-        m.bindPopup(esc(e.name));
         m.on("mouseover", function () { setHoverEvent(e.id); });
         m.on("mouseout", function () { setHoverEvent(null); });
         m.on("click", function () { selectEvent(e.id); });
@@ -1358,7 +1356,6 @@
     state.selectedEventId = null;
     paintRowHighlights();
     paintMarkerStyles();
-    if (state.map) state.map.closePopup();
     var detail = document.getElementById("eventDetail");
     detail.classList.remove("is-open");
     detail.innerHTML = "";
@@ -1379,12 +1376,7 @@
     state.selectedEventId = id;
     paintRowHighlights();
     paintMarkerStyles();
-    var entry = state.markerById[String(id)];
-    if (entry && entry.marker) {
-      focusMapOnEvent(e, entry.marker);
-    } else {
-      focusMapOnEvent(e, null);
-    }
+    focusMapOnEvent(e);
     var detail = document.getElementById("eventDetail");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var html = "<h3>" + esc(e.name) + "</h3>" +
