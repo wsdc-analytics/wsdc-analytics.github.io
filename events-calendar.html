@@ -49,7 +49,7 @@
     <main id="main" class="container">
         <header class="page-head">
             <h1 data-i18n="title">Events Calendar</h1>
-            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and cards. Past years and past days are muted; today is outlined.</p>
+            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.</p>
             <p class="disclaimer" id="disclaimer"></p>
             <div class="toolbar">
                 <div class="filters" role="toolbar" aria-label="Filters">
@@ -182,25 +182,34 @@
                 </div>
             </aside>
         </div>
-        <section class="panel" id="weekendPanel" aria-live="polite">
-            <div class="panel-inner">
-            <div class="panel-head">
-                <h2 id="weekendTitle"></h2>
-                <button type="button" class="panel-close" id="closePanel" data-i18n="close">Close</button>
-            </div>
-            <div class="panel-map-col">
-            <div id="noGeoNote" class="no-geo" hidden></div>
-            <div id="weekendMap" role="img" aria-label="Weekend events map"></div>
-            </div>
-            <div class="panel-list-col">
-            <div class="event-list" id="eventList"></div>
-            <div class="detail" id="eventDetail"></div>
-            </div>
-            </div>
-        </section>
     </main>
     </div>
     <div class="tooltip" id="tooltip" role="tooltip"></div>
+    <div class="day-layer" id="dayLayer" hidden aria-hidden="true">
+        <div class="day-layer__backdrop" id="dayLayerBackdrop"></div>
+        <div
+            class="day-island"
+            id="dayIsland"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dayIslandTitle"
+        >
+            <div class="day-island__head">
+                <h2 id="dayIslandTitle"></h2>
+                <button type="button" class="day-island__close" id="closeDayIsland" data-i18n="close">Close</button>
+            </div>
+            <div class="day-island__body">
+                <div class="day-island__map-col">
+                    <div id="noGeoNote" class="no-geo" hidden></div>
+                    <div id="dayMap" role="img" aria-label="Day events map"></div>
+                </div>
+                <div class="day-island__list-col">
+                    <div class="day-island__list" id="eventList"></div>
+                    <div class="detail" id="eventDetail"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="static/js/site-chrome.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
@@ -210,7 +219,7 @@
   var I18N = {
     en: {
       title: "Events Calendar",
-      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and cards. Past years and past days are muted; today is outlined.",
+      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.",
       year: "Year",
       continent: "Continent",
       country: "Country",
@@ -252,7 +261,7 @@
     },
     ru: {
       title: "Календарь ивентов",
-      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и карточки. Прошлые годы и прошедшие дни приглушены, сегодня — обведено.",
+      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и список. Прошлые годы и прошедшие дни приглушены, сегодня — обведено.",
       year: "Год",
       continent: "Континент",
       country: "Страна",
@@ -294,7 +303,7 @@
     },
     es: {
       title: "Calendario de eventos",
-      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y las fichas. Los años y dias pasados se atenúan; hoy va marcado.",
+      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y la lista. Los años y dias pasados se atenúan; hoy va marcado.",
       year: "Año",
       continent: "Continente",
       country: "País",
@@ -350,8 +359,13 @@
     kind: "",
     byDay: {},
     selectedDay: null,
+    selectedEventId: null,
+    hoverEventId: null,
+    l2Open: false,
+    l2Origin: null,
     map: null,
-    markers: null
+    markers: null,
+    markerById: {}
   };
 
   function t(key) {
@@ -875,6 +889,7 @@
   }
 
   function showTooltip(ev, dayIso) {
+    if (state.l2Open) return;
     var tip = document.getElementById("tooltip");
     var list = state.byDay[dayIso] || [];
     if (!list.length) return;
@@ -926,9 +941,74 @@
     return state.byDay[iso] || [];
   }
 
+  function localeTag() {
+    if (state.lang === "ru") return "ru-RU";
+    if (state.lang === "es") return "es-ES";
+    return "en-US";
+  }
+
+  function formatDayHeading(iso) {
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso || "";
+    var d = new Date(iso + "T12:00:00");
+    return d.toLocaleDateString(localeTag(), {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  function formatEventDateRange(e) {
+    if (!e || !e.start_date) return "";
+    var opts = { day: "numeric", month: "short", year: "numeric" };
+    var start = new Date(e.start_date + "T12:00:00");
+    var a = start.toLocaleDateString(localeTag(), opts);
+    if (!e.end_date || e.end_date === e.start_date) return a;
+    var end = new Date(e.end_date + "T12:00:00");
+    return a + " – " + end.toLocaleDateString(localeTag(), opts);
+  }
+
+  function preferReducedMotion() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function islandFinalRect() {
+    var marginX = Math.max(16, Math.round(window.innerWidth * 0.04));
+    var marginY = Math.max(16, Math.round(window.innerHeight * 0.04));
+    return {
+      left: marginX,
+      top: marginY,
+      width: Math.max(280, window.innerWidth - marginX * 2),
+      height: Math.max(320, window.innerHeight - marginY * 2)
+    };
+  }
+
+  function applyIslandRect(el, rect) {
+    el.style.left = Math.round(rect.left) + "px";
+    el.style.top = Math.round(rect.top) + "px";
+    el.style.width = Math.round(rect.width) + "px";
+    el.style.height = Math.round(rect.height) + "px";
+  }
+
+  function captureL2Origin(iso) {
+    var tip = document.getElementById("tooltip");
+    if (tip && tip.classList.contains("is-visible") && tip.offsetWidth > 0) {
+      return tip.getBoundingClientRect();
+    }
+    var btn = document.querySelector('.day.has-events[data-date="' + iso + '"]');
+    if (btn) return btn.getBoundingClientRect();
+    var fin = islandFinalRect();
+    return {
+      left: fin.left + fin.width * 0.35,
+      top: fin.top + fin.height * 0.35,
+      width: fin.width * 0.3,
+      height: fin.height * 0.3
+    };
+  }
+
   function ensureMap() {
     if (state.map) return;
-    state.map = L.map("weekendMap", { scrollWheelZoom: false });
+    state.map = L.map("dayMap", { scrollWheelZoom: false });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap",
       maxZoom: 18
@@ -944,18 +1024,102 @@
     return "#64748b";
   }
 
-  function openDay(iso) {
-    hideTooltip();
-    state.selectedDay = iso;
-    renderCalendar();
-    var events = eventsForDay(iso);
-    var panel = document.getElementById("weekendPanel");
-    panel.classList.add("is-open");
-    document.body.classList.add("panel-open");
-    document.getElementById("weekendTitle").textContent = t("day") + " " + iso;
+  function markerStyleFor(e, mode) {
+    var active = mode === "selected" || mode === "hover";
+    return {
+      radius: mode === "selected" ? 11 : mode === "hover" ? 10 : 8,
+      color: mode === "selected" ? "#2563eb" : "#fff",
+      weight: mode === "selected" ? 2 : 1,
+      fillColor: statusColor(e.status),
+      fillOpacity: active ? 1 : 0.9
+    };
+  }
 
+  function eventMode(id) {
+    if (state.selectedEventId && String(state.selectedEventId) === String(id)) return "selected";
+    if (state.hoverEventId && String(state.hoverEventId) === String(id)) return "hover";
+    return "base";
+  }
+
+  function paintMarkerStyles() {
+    Object.keys(state.markerById).forEach(function (id) {
+      var entry = state.markerById[id];
+      if (!entry || !entry.marker || !entry.event) return;
+      entry.marker.setStyle(markerStyleFor(entry.event, eventMode(id)));
+    });
+  }
+
+  function paintRowHighlights() {
+    document.querySelectorAll(".l2-row").forEach(function (row) {
+      var id = row.getAttribute("data-id");
+      row.classList.toggle("is-selected", !!state.selectedEventId && String(state.selectedEventId) === String(id));
+      row.classList.toggle("is-hover", !!state.hoverEventId && String(state.hoverEventId) === String(id));
+    });
+  }
+
+  function setHoverEvent(id) {
+    state.hoverEventId = id || null;
+    paintRowHighlights();
+    paintMarkerStyles();
+  }
+
+  function buildL2ListHtml(list) {
+    var buckets = { confirmed: [], expected: [], paused: [] };
+    (list || []).forEach(function (e) {
+      buckets[tipGroupKey(e.status)].push(e);
+    });
+    buckets.confirmed.sort(sortConfirmedTipEvents);
+    buckets.expected.sort(sortEventsByName);
+    buckets.paused.sort(sortEventsByName);
+
+    var html = "";
+    ["confirmed", "expected", "paused"].forEach(function (key) {
+      var rows = buckets[key];
+      if (!rows.length) return;
+      html += '<div class="tooltip-group tooltip-group--' + key + '">';
+      html +=
+        '<div class="tooltip-group__label">' +
+        '<span class="badge ' + tipGroupBadgeClass(key) + '">' +
+        esc(tipGroupLabel(key)) +
+        "</span></div>";
+      rows.forEach(function (e) {
+        var where = [e.city, e.country].filter(Boolean).join(", ");
+        var dates = formatEventDateRange(e);
+        html +=
+          '<button type="button" class="l2-row" data-id="' + esc(e.id) + '">' +
+          '<div class="tooltip-row__main">' +
+          '<div class="tooltip-row__name">' + esc(e.name) + "</div>" +
+          (where ? '<div class="tooltip-row__where">' + esc(where) + "</div>" : "") +
+          (dates ? '<div class="l2-row__dates">' + esc(dates) + "</div>" : "") +
+          "</div>" +
+          '<div class="tooltip-row__meta">' +
+          '<span class="badge ' + tipKindClass(e.kind) + '">' +
+          esc(tipKindLabel(e.kind)) +
+          "</span>" +
+          "</div></button>";
+      });
+      html += "</div>";
+    });
+    return html;
+  }
+
+  function wireL2ListInteractions() {
+    document.querySelectorAll(".l2-row").forEach(function (row) {
+      var id = row.getAttribute("data-id");
+      row.addEventListener("mouseenter", function () { setHoverEvent(id); });
+      row.addEventListener("mouseleave", function () { setHoverEvent(null); });
+      row.addEventListener("focus", function () { setHoverEvent(id); });
+      row.addEventListener("blur", function () { setHoverEvent(null); });
+      row.addEventListener("click", function () { selectEvent(id); });
+    });
+  }
+
+  function populateDayIsland(iso) {
+    var events = eventsForDay(iso);
+    document.getElementById("dayIslandTitle").textContent = formatDayHeading(iso);
     ensureMap();
     state.markers.clearLayers();
+    state.markerById = {};
     var withGeo = events.filter(function (e) {
       return typeof e.lat === "number" && typeof e.lon === "number";
     });
@@ -969,56 +1133,142 @@
     if (withGeo.length) {
       var bounds = [];
       withGeo.forEach(function (e) {
-        var m = L.circleMarker([e.lat, e.lon], {
-          radius: 8,
-          color: "#fff",
-          weight: 1,
-          fillColor: statusColor(e.status),
-          fillOpacity: 0.9
-        });
+        var m = L.circleMarker([e.lat, e.lon], markerStyleFor(e, "base"));
         m.bindPopup(esc(e.name));
+        m.on("mouseover", function () { setHoverEvent(e.id); });
+        m.on("mouseout", function () { setHoverEvent(null); });
         m.on("click", function () { selectEvent(e.id); });
         state.markers.addLayer(m);
+        state.markerById[String(e.id)] = { marker: m, event: e };
         bounds.push([e.lat, e.lon]);
       });
       state.map.fitBounds(bounds, { padding: [28, 28], maxZoom: 5 });
     } else {
       state.map.setView([20, 0], 1);
     }
-    setTimeout(function () { state.map.invalidateSize(); }, 50);
+    setTimeout(function () { state.map.invalidateSize(); }, 60);
 
     var list = document.getElementById("eventList");
-    list.innerHTML = events.map(function (e) {
-      var where = [e.city, e.country].filter(Boolean).join(", ");
-      var span = esc(e.start_date) + (e.end_date && e.end_date !== e.start_date ? " - " + esc(e.end_date) : "");
-      return '<button type="button" class="event-card" data-id="' + esc(e.id) + '">' +
-        "<h3>" + esc(e.name) + "</h3>" +
-        '<div class="event-meta">' + span + (where ? " · " + esc(where) : "") + "</div>" +
-        '<div class="badges">' +
-        '<span class="badge ' + esc(e.status) + '">' + esc(statusLabel(e.status)) + "</span>" +
-        '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
-        esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span>" +
-        "</div></button>";
-    }).join("");
-    list.querySelectorAll(".event-card").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        selectEvent(btn.getAttribute("data-id"));
+    list.innerHTML = buildL2ListHtml(events);
+    wireL2ListInteractions();
+    document.getElementById("eventDetail").classList.remove("is-open");
+    document.getElementById("eventDetail").innerHTML = "";
+    state.selectedEventId = null;
+    state.hoverEventId = null;
+  }
+
+  function openDay(iso) {
+    if (state.l2Open) {
+      hideTooltip();
+      state.selectedDay = iso;
+      state.l2Origin = captureL2Origin(iso);
+      renderCalendar();
+      populateDayIsland(iso);
+      applyIslandRect(document.getElementById("dayIsland"), islandFinalRect());
+      document.getElementById("dayIsland").classList.add("is-settled");
+      setTimeout(function () { if (state.map) state.map.invalidateSize(); }, 40);
+      return;
+    }
+
+    var origin = captureL2Origin(iso);
+    hideTooltip();
+    state.selectedDay = iso;
+    state.l2Open = true;
+    state.l2Origin = origin;
+    renderCalendar();
+
+    var layer = document.getElementById("dayLayer");
+    var island = document.getElementById("dayIsland");
+    layer.hidden = false;
+    layer.setAttribute("aria-hidden", "false");
+    layer.classList.add("is-open");
+    document.body.classList.add("day-layer-open");
+
+    populateDayIsland(iso);
+
+    var finalRect = islandFinalRect();
+    island.classList.remove("is-settled");
+    if (preferReducedMotion()) {
+      applyIslandRect(island, finalRect);
+      island.classList.add("is-settled");
+      setTimeout(function () { if (state.map) state.map.invalidateSize(); }, 40);
+      return;
+    }
+
+    applyIslandRect(island, {
+      left: origin.left,
+      top: origin.top,
+      width: Math.max(40, origin.width),
+      height: Math.max(40, origin.height)
+    });
+    island.style.transition = "none";
+    void island.offsetWidth;
+    island.style.transition = "";
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        applyIslandRect(island, finalRect);
+        island.classList.add("is-settled");
+        setTimeout(function () { if (state.map) state.map.invalidateSize(); }, 300);
       });
     });
+  }
+
+  function forceCloseDayIsland() {
+    var layer = document.getElementById("dayLayer");
+    var island = document.getElementById("dayIsland");
+    layer.classList.remove("is-open");
+    layer.hidden = true;
+    layer.setAttribute("aria-hidden", "true");
+    island.classList.remove("is-settled");
+    document.body.classList.remove("day-layer-open");
+    state.l2Open = false;
+    state.l2Origin = null;
+    state.selectedDay = null;
+    state.selectedEventId = null;
+    state.hoverEventId = null;
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
   }
 
+  function closeDayIsland() {
+    if (!state.l2Open) return;
+    var island = document.getElementById("dayIsland");
+    var origin = state.l2Origin;
+    var finish = function () {
+      forceCloseDayIsland();
+      renderCalendar();
+    };
+
+    if (preferReducedMotion() || !origin) {
+      finish();
+      return;
+    }
+
+    island.classList.remove("is-settled");
+    applyIslandRect(island, {
+      left: origin.left,
+      top: origin.top,
+      width: Math.max(40, origin.width),
+      height: Math.max(40, origin.height)
+    });
+    window.setTimeout(finish, 260);
+  }
+
   function selectEvent(id) {
     var events = eventsForYear(state.year);
-    var e = events.find(function (x) { return x.id === id; });
+    var e = events.find(function (x) { return String(x.id) === String(id); });
     if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) { return x.id === id; });
+      e = eventsInYearRaw(state.year).find(function (x) { return String(x.id) === String(id); });
     }
     if (!e) return;
-    document.querySelectorAll(".event-card").forEach(function (c) {
-      c.classList.toggle("is-active", c.getAttribute("data-id") === id);
-    });
+    state.selectedEventId = id;
+    paintRowHighlights();
+    paintMarkerStyles();
+    var entry = state.markerById[String(id)];
+    if (entry && entry.marker && state.map) {
+      entry.marker.openPopup();
+      state.map.panTo(entry.marker.getLatLng(), { animate: true });
+    }
     var detail = document.getElementById("eventDetail");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var html = "<h3>" + esc(e.name) + "</h3>" +
@@ -1043,21 +1293,17 @@
 
   function setYear(y) {
     state.year = y;
-    state.selectedDay = null;
+    forceCloseDayIsland();
     state.country = "";
     state.status = "";
     state.kind = "";
-    document.getElementById("weekendPanel").classList.remove("is-open");
-    document.body.classList.remove("panel-open");
     renderYearSelect();
     refreshFilterOptions();
     renderCalendar();
   }
 
   function applyFiltersAndRender() {
-    state.selectedDay = null;
-    document.getElementById("weekendPanel").classList.remove("is-open");
-    document.body.classList.remove("panel-open");
+    forceCloseDayIsland();
     refreshFilterOptions();
     renderCalendar();
   }
@@ -1143,16 +1389,22 @@
     closeAllFilterDropdowns();
   });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeAllFilterDropdowns();
+    if (e.key === "Escape") {
+      if (state.l2Open) {
+        e.preventDefault();
+        closeDayIsland();
+        return;
+      }
+      closeAllFilterDropdowns();
+    }
   });
 
-  document.getElementById("closePanel").addEventListener("click", function () {
-    document.getElementById("weekendPanel").classList.remove("is-open");
-    document.body.classList.remove("panel-open");
-    state.selectedDay = null;
-    renderCalendar();
+  document.getElementById("closeDayIsland").addEventListener("click", function () {
+    closeDayIsland();
   });
-
+  document.getElementById("dayLayerBackdrop").addEventListener("click", function () {
+    closeDayIsland();
+  });
   window.WsdcChrome = window.WsdcChrome || {};
   window.WsdcChrome.onLangChange = function (lang) {
     state.lang = lang;
