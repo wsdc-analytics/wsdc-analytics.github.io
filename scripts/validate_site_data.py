@@ -178,6 +178,35 @@ def validate_events_year_calendar() -> None:
     print("[OK] events_year_calendar.json")
 
 
+def validate_event_l2_cards() -> None:
+    path = DATA_DIR / "event_l2_cards.json"
+    if not path.exists():
+        print("[SKIP] event_l2_cards.json (optional)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("event_l2_cards.json must be an object")
+    for field in ("as_of", "generated_at", "tier_tip", "cards"):
+        if field not in data:
+            fail(f"event_l2_cards.json missing field: {field}")
+    tip = data["tier_tip"]
+    if not isinstance(tip, dict):
+        fail("event_l2_cards.json.tier_tip must be an object")
+    for lang in ("en", "ru", "es"):
+        if lang not in tip or not str(tip[lang]).strip():
+            fail(f"event_l2_cards.json.tier_tip missing {lang}")
+    cards = data["cards"]
+    if not isinstance(cards, dict) or not cards:
+        fail("event_l2_cards.json.cards must be a non-empty object")
+    sample_key = next(iter(cards))
+    sample = cards[sample_key]
+    if not isinstance(sample, dict):
+        fail(f"event_l2_cards.json.cards[{sample_key}] must be an object")
+    if "series" not in sample:
+        fail(f"event_l2_cards.json.cards[{sample_key}] missing series")
+    print(f"[OK] event_l2_cards.json ({len(cards)} cards)")
+
+
 def validate_homepage_kpis() -> None:
     path = DATA_DIR / "homepage_kpis.json"
     data = load_json(path)
@@ -220,6 +249,7 @@ def main() -> None:
     validate_champion_news()
     validate_homepage_kpis()
     validate_events_year_calendar()
+    validate_event_l2_cards()
     print("[OK] Data validation passed.")
 
 if __name__ == "__main__":
