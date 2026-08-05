@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="static/css/site-chrome.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260805b" as="fetch" crossorigin>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20260806a" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -257,7 +257,17 @@
       continents: { America: "America", Europe: "Europe", Asia: "Asia", Australia: "Australia" },
       statuses: { confirmed: "Confirmed", expected: "Expected", hiatus: "Hiatus" },
       months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-      dow: ["M","T","W","T","F","S","S"]
+      dow: ["M","T","W","T","F","S","S"],
+      firstEdition: "First",
+      editionsCount: "Editions",
+      lastEdition: "Last edition",
+      metricDancers: "Dancers",
+      metricPoints: "Points",
+      metricNew: "New",
+      tierPrefix: "TIER",
+      colLeader: "L",
+      colFollower: "F",
+      tierTipAria: "About tiers"
     },
     ru: {
       title: "Календарь ивентов",
@@ -299,7 +309,17 @@
       continents: { America: "Америка", Europe: "Европа", Asia: "Азия", Australia: "Австралия" },
       statuses: { confirmed: "Подтверждён", expected: "Ожидается", hiatus: "Hiatus" },
       months: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
-      dow: ["П","В","С","Ч","П","С","В"]
+      dow: ["П","В","С","Ч","П","С","В"],
+      firstEdition: "Первый",
+      editionsCount: "Издания",
+      lastEdition: "Последний",
+      metricDancers: "Танцоры",
+      metricPoints: "Очки",
+      metricNew: "Новые",
+      tierPrefix: "ТИР",
+      colLeader: "L",
+      colFollower: "F",
+      tierTipAria: "О тирах"
     },
     es: {
       title: "Calendario de eventos",
@@ -341,7 +361,17 @@
       continents: { America: "América", Europe: "Europa", Asia: "Asia", Australia: "Australia" },
       statuses: { confirmed: "Confirmado", expected: "Previsto", hiatus: "Hiatus" },
       months: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
-      dow: ["L","M","X","J","V","S","D"]
+      dow: ["L","M","X","J","V","S","D"],
+      firstEdition: "Primero",
+      editionsCount: "Ediciones",
+      lastEdition: "Última edición",
+      metricDancers: "Bailarines",
+      metricPoints: "Puntos",
+      metricNew: "Nuevos",
+      tierPrefix: "TIER",
+      colLeader: "L",
+      colFollower: "F",
+      tierTipAria: "Sobre tiers"
     }
   };
 
@@ -368,7 +398,8 @@
     l2Drag: null,
     map: null,
     markers: null,
-    markerById: {}
+    markerById: {},
+    eventCards: null
   };
 
   function t(key) {
@@ -1391,27 +1422,113 @@
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
   }
 
+  function monthYearLabel(year, month) {
+    var months = (I18N[state.lang] || I18N.en).months || I18N.en.months;
+    var mi = Number(month) - 1;
+    var name = months[mi] != null ? months[mi] : String(month);
+    return name + " " + String(year);
+  }
+
+  function tierLabel(n) {
+    return t("tierPrefix") + "-" + String(n);
+  }
+
+  function eventCardPayload(e) {
+    if (!e || e.kind === "trial" || e.event_id == null) return null;
+    var cards = state.eventCards && state.eventCards.cards;
+    if (!cards) return null;
+    return cards[String(e.event_id)] || null;
+  }
+
+  function buildTierTableHtml(tiers) {
+    var order = ["Novice", "Intermediate", "Advanced", "All-Star", "Champions"];
+    var rows = order.filter(function (div) {
+      return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
+    });
+    if (!rows.length) return "";
+    var html = '<table class="l2-tier-table">' +
+      "<thead><tr>" +
+      "<th></th>" +
+      '<th class="is-lead">' + esc(t("colLeader")) + "</th>" +
+      '<th class="is-follow">' + esc(t("colFollower")) + "</th>" +
+      "</tr></thead><tbody>";
+    rows.forEach(function (div) {
+      html += "<tr>" +
+        "<th scope=\"row\">" + esc(div) + "</th>" +
+        '<td class="is-lead">' + esc(tierLabel(tiers[div].Leader)) + "</td>" +
+        '<td class="is-follow">' + esc(tierLabel(tiers[div].Follower)) + "</td>" +
+        "</tr>";
+    });
+    html += "</tbody></table>";
+    return html;
+  }
+
+  function tierTipText() {
+    var tips = state.eventCards && state.eventCards.tier_tip;
+    if (tips && tips[state.lang]) return tips[state.lang];
+    if (tips && tips.en) return tips.en;
+    return "";
+  }
+
   function showEventCard(e) {
     var detail = document.getElementById("eventDetail");
     var mapCol = document.getElementById("dayMapCol");
     var where = [e.city, e.country].filter(Boolean).join(", ");
-    var html = "<h3>" + esc(e.name) + "</h3>" +
-      '<p class="event-meta">' + t("starts") + ": " + esc(e.start_date) +
-      (e.end_date ? " · " + t("ends") + ": " + esc(e.end_date) : "") + "</p>";
-    if (where) html += '<p class="event-meta">' + t("location") + ": " + esc(where) + "</p>";
-    html += '<div class="badges">' +
+    var card = eventCardPayload(e);
+    var tip = tierTipText();
+
+    var left = '<div class="l2-event-card__series">' +
+      "<h3>" + esc(e.name) + "</h3>" +
+      '<div class="badges">' +
       '<span class="badge ' + esc(normalizeStatus(e.status)) + '">' + esc(statusLabel(e.status)) + "</span>" +
       '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
       esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
-    if (e.projected_from_year) {
-      html += '<p class="event-meta" style="margin-top:8px">' + t("projected") + " " +
-        esc(String(e.projected_from_year)) + " (" + esc(e.projected_from_start || "") + ")</p>";
-    }
+    if (where) left += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
     if (e.url) {
-      html += '<p style="margin-top:10px"><a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
-        t("website") + "</a></p>";
+      left += '<p class="l2-event-card__link"><a href="' + esc(e.url) +
+        '" target="_blank" rel="noopener noreferrer">' + t("website") + "</a></p>";
     }
-    detail.innerHTML = html;
+    if (card && card.series) {
+      var first = card.series.first_edition;
+      if (first) {
+        left += '<p class="event-meta">' + esc(t("firstEdition")) + ": " +
+          esc(monthYearLabel(first.year, first.month)) + "</p>";
+      }
+      if (card.series.editions_with_results != null) {
+        left += '<p class="event-meta">' + esc(t("editionsCount")) + ": " +
+          esc(String(card.series.editions_with_results)) + "</p>";
+      }
+    }
+    left += "</div>";
+
+    var right = '<div class="l2-event-card__last">';
+    if (card && card.last_edition) {
+      var last = card.last_edition;
+      right += '<div class="l2-event-card__last-head">' +
+        '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
+        '<span class="l2-event-card__last-date">' +
+        esc(monthYearLabel(last.year, last.month)) + "</span>";
+      if (tip) {
+        right += '<button type="button" class="l2-tier-tip" id="l2TierTip" aria-label="' +
+          esc(t("tierTipAria")) + '">' +
+          '<span class="l2-tier-tip__mark" aria-hidden="true">i</span>' +
+          '<span class="l2-tier-tip__bubble" role="tooltip">' + esc(tip) + "</span>" +
+          "</button>";
+      }
+      right += "</div>";
+      right += '<div class="l2-event-card__metrics">' +
+        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.unique_dancers)) +
+        '</span><span class="l2-metric__label">' + esc(t("metricDancers")) + "</span></div>" +
+        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.points)) +
+        '</span><span class="l2-metric__label">' + esc(t("metricPoints")) + "</span></div>" +
+        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.new_dancers)) +
+        '</span><span class="l2-metric__label">' + esc(t("metricNew")) + "</span></div>" +
+        "</div>";
+      right += buildTierTableHtml(last.tiers || {});
+    }
+    right += "</div>";
+
+    detail.innerHTML = '<div class="l2-event-card__grid">' + left + right + "</div>";
     detail.classList.add("is-open");
     if (mapCol) mapCol.classList.add("has-event");
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
@@ -1470,6 +1587,11 @@
     renderYearSelect();
     refreshFilterOptions();
     renderCalendar();
+  }
+
+  function bootAll(calendar, cards) {
+    state.eventCards = cards || null;
+    boot(calendar);
   }
 
   document.getElementById("yearSelectMenu").addEventListener("click", function (e) {
@@ -1651,12 +1773,22 @@
   var params = new URLSearchParams(window.location.search);
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
 
-  fetch("static/data/events_year_calendar.json?v=20260805b")
+  fetch("static/data/events_year_calendar.json?v=20260806a")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
     })
-    .then(boot)
+    .then(function (calendar) {
+      return fetch("static/data/event_l2_cards.json?v=20260806a")
+        .then(function (r) {
+          if (!r.ok) return null;
+          return r.json();
+        })
+        .catch(function () { return null; })
+        .then(function (cards) {
+          bootAll(calendar, cards);
+        });
+    })
     .catch(function (err) {
       var el = document.createElement("div");
       el.className = "error";
