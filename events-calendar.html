@@ -363,6 +363,8 @@
     hoverEventId: null,
     l2Open: false,
     l2Origin: null,
+    l2Moved: false,
+    l2Drag: null,
     map: null,
     markers: null,
     markerById: {}
@@ -1013,6 +1015,39 @@
     el.style.height = Math.round(rect.height) + "px";
   }
 
+  function readIslandRect(el) {
+    return {
+      left: parseFloat(el.style.left) || 0,
+      top: parseFloat(el.style.top) || 0,
+      width: parseFloat(el.style.width) || el.offsetWidth,
+      height: parseFloat(el.style.height) || el.offsetHeight
+    };
+  }
+
+  function clampIslandInLayer(left, top, width, height) {
+    var layer = document.getElementById("dayLayer");
+    var maxL = Math.max(0, layer.clientWidth - width);
+    var maxT = Math.max(0, layer.clientHeight - height);
+    return {
+      left: Math.min(Math.max(0, left), maxL),
+      top: Math.min(Math.max(0, top), maxT),
+      width: width,
+      height: height
+    };
+  }
+
+  function placeIslandDefault(island) {
+    applyIslandRect(island, islandFinalRect());
+    state.l2Moved = false;
+  }
+
+  function placeIslandKeepingOffset(island) {
+    var size = islandFinalRect();
+    var cur = readIslandRect(island);
+    var next = clampIslandInLayer(cur.left, cur.top, size.width, size.height);
+    applyIslandRect(island, next);
+  }
+
   function captureL2Origin(iso) {
     var tip = document.getElementById("tooltip");
     if (tip && tip.classList.contains("is-visible") && tip.offsetWidth > 0) {
@@ -1213,8 +1248,10 @@
       state.l2Origin = captureL2Origin(iso);
       renderCalendar();
       populateDayIsland(iso);
-      applyIslandRect(document.getElementById("dayIsland"), islandFinalRect());
-      document.getElementById("dayIsland").classList.add("is-settled");
+      var island = document.getElementById("dayIsland");
+      if (state.l2Moved) placeIslandKeepingOffset(island);
+      else placeIslandDefault(island);
+      island.classList.add("is-settled");
       setTimeout(function () {
         if (!state.map) return;
         state.map.invalidateSize();
@@ -1231,6 +1268,7 @@
     state.selectedDay = iso;
     state.l2Open = true;
     state.l2Origin = captureL2Origin(iso);
+    state.l2Moved = false;
     renderCalendar();
 
     var layer = document.getElementById("dayLayer");
@@ -1240,7 +1278,7 @@
     layer.classList.add("is-open");
     document.body.classList.add("day-layer-open");
 
-    applyIslandRect(island, islandFinalRect());
+    placeIslandDefault(island);
     island.classList.remove("is-settled");
     void island.offsetWidth;
     populateDayIsland(iso);
@@ -1263,9 +1301,12 @@
     layer.hidden = true;
     layer.setAttribute("aria-hidden", "true");
     island.classList.remove("is-settled");
+    island.classList.remove("is-dragging");
     document.body.classList.remove("day-layer-open");
     state.l2Open = false;
     state.l2Origin = null;
+    state.l2Moved = false;
+    state.l2Drag = null;
     state.selectedDay = null;
     state.selectedEventId = null;
     state.hoverEventId = null;
@@ -1434,10 +1475,65 @@
   document.getElementById("dayLayerBackdrop").addEventListener("click", function () {
     closeDayIsland();
   });
+
+  (function wireIslandDrag() {
+    var head = document.querySelector(".day-island__head");
+    var island = document.getElementById("dayIsland");
+    if (!head || !island) return;
+
+    head.addEventListener("pointerdown", function (e) {
+      if (!state.l2Open) return;
+      if (e.button != null && e.button !== 0) return;
+      if (e.target.closest && e.target.closest(".day-island__close")) return;
+      var cur = readIslandRect(island);
+      state.l2Drag = {
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startY: e.clientY,
+        origLeft: cur.left,
+        origTop: cur.top,
+        width: cur.width,
+        height: cur.height,
+        moved: false
+      };
+      island.classList.add("is-dragging");
+      try { head.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      e.preventDefault();
+    });
+
+    head.addEventListener("pointermove", function (e) {
+      var drag = state.l2Drag;
+      if (!drag || drag.pointerId !== e.pointerId) return;
+      var dx = e.clientX - drag.startX;
+      var dy = e.clientY - drag.startY;
+      if (!drag.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) drag.moved = true;
+      var next = clampIslandInLayer(
+        drag.origLeft + dx,
+        drag.origTop + dy,
+        drag.width,
+        drag.height
+      );
+      applyIslandRect(island, next);
+    });
+
+    function endDrag(e) {
+      var drag = state.l2Drag;
+      if (!drag || (e.pointerId != null && drag.pointerId !== e.pointerId)) return;
+      if (drag.moved) state.l2Moved = true;
+      state.l2Drag = null;
+      island.classList.remove("is-dragging");
+      try { head.releasePointerCapture(drag.pointerId); } catch (err) { /* ignore */ }
+    }
+
+    head.addEventListener("pointerup", endDrag);
+    head.addEventListener("pointercancel", endDrag);
+  })();
+
   window.addEventListener("resize", function () {
     if (!state.l2Open) return;
     var island = document.getElementById("dayIsland");
-    applyIslandRect(island, islandFinalRect());
+    if (state.l2Moved) placeIslandKeepingOffset(island);
+    else placeIslandDefault(island);
     island.classList.add("is-settled");
     if (state.map) {
       state.map.invalidateSize();
