@@ -990,14 +990,12 @@
       : stageEl().getBoundingClientRect();
     var pad = 10;
     var filterTop = filters ? filters.getBoundingClientRect().top : NaN;
-    // Default open: top edge flush with the filters row; bottom still tracks the month grid.
-    var top = Number.isFinite(filterTop) ? filterTop : target.top + pad;
-    var bottom = target.bottom - pad;
+    // Same size as the month-grid inset; only the top edge moves up to the filters row.
     return {
       left: target.left + pad,
-      top: top,
+      top: Number.isFinite(filterTop) ? filterTop : target.top + pad,
       width: Math.max(280, target.width - pad * 2),
-      height: Math.max(220, bottom - top)
+      height: Math.max(220, target.height - pad * 2)
     };
   }
 
