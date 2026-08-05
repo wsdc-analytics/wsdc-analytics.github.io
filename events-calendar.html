@@ -1069,19 +1069,44 @@
     };
   }
 
-  function fitDayMap(bounds) {
+  function dayMapBounds() {
+    return Object.keys(state.markerById).map(function (id) {
+      var e = state.markerById[id].event;
+      return [e.lat, e.lon];
+    });
+  }
+
+  function fitDayMap(bounds, opts) {
+    opts = opts || {};
+    var animate = !!opts.animate;
     if (!state.map || !bounds.length) {
-      if (state.map) state.map.setView([20, 0], 1);
+      if (state.map) state.map.setView([20, 0], 2);
       return;
     }
     if (bounds.length === 1) {
-      state.map.setView(bounds[0], 6);
+      // Country / region focus — not a world overview.
+      state.map.setView(bounds[0], 5, { animate: animate });
       return;
     }
     var latLngs = bounds.map(function (b) { return L.latLng(b[0], b[1]); });
     var box = L.latLngBounds(latLngs);
-    // Avoid ultra-wide empty oceans: pad tightly and allow closer zoom.
-    state.map.fitBounds(box.pad(0.12), { padding: [18, 18], maxZoom: 8 });
+    var spanM = box.getNorthEast().distanceTo(box.getSouthWest());
+    if (spanM < 80000) {
+      state.map.setView(box.getCenter(), 6, { animate: animate });
+      return;
+    }
+    // Fit only the markers that exist for this day (Europe-only → Europe, etc.).
+    state.map.fitBounds(box.pad(0.22), {
+      padding: [28, 28],
+      maxZoom: 7,
+      animate: animate
+    });
+  }
+
+  function focusMapOnEvent(e, marker) {
+    if (!state.map || typeof e.lat !== "number" || typeof e.lon !== "number") return;
+    state.map.flyTo([e.lat, e.lon], 5, { duration: 0.55 });
+    if (marker) marker.openPopup();
   }
 
   function ensureMap() {
@@ -1329,7 +1354,22 @@
     }, preferReducedMotion() ? 0 : 160);
   }
 
+  function clearEventSelection() {
+    state.selectedEventId = null;
+    paintRowHighlights();
+    paintMarkerStyles();
+    if (state.map) state.map.closePopup();
+    var detail = document.getElementById("eventDetail");
+    detail.classList.remove("is-open");
+    detail.innerHTML = "";
+    fitDayMap(dayMapBounds(), { animate: true });
+  }
+
   function selectEvent(id) {
+    if (state.selectedEventId != null && String(state.selectedEventId) === String(id)) {
+      clearEventSelection();
+      return;
+    }
     var events = eventsForYear(state.year);
     var e = events.find(function (x) { return String(x.id) === String(id); });
     if (!e) {
@@ -1340,9 +1380,10 @@
     paintRowHighlights();
     paintMarkerStyles();
     var entry = state.markerById[String(id)];
-    if (entry && entry.marker && state.map) {
-      entry.marker.openPopup();
-      state.map.panTo(entry.marker.getLatLng(), { animate: true });
+    if (entry && entry.marker) {
+      focusMapOnEvent(e, entry.marker);
+    } else {
+      focusMapOnEvent(e, null);
     }
     var detail = document.getElementById("eventDetail");
     var where = [e.city, e.country].filter(Boolean).join(", ");
