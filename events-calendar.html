@@ -362,6 +362,7 @@
     selectedEventId: null,
     hoverEventId: null,
     l2Open: false,
+    skipDayTip: false,
     l2Origin: null,
     l2Moved: false,
     l2Drag: null,
@@ -782,6 +783,11 @@
     html += "</div>";
     root.innerHTML = html;
     root.querySelectorAll(".day.has-events").forEach(function (btn) {
+      btn.addEventListener("pointerdown", function () {
+        // Click focuses the day button and would re-show the tip for a frame; suppress it.
+        state.skipDayTip = true;
+        hideTooltip();
+      });
       btn.addEventListener("click", function () {
         openDay(btn.getAttribute("data-date"));
       });
@@ -791,7 +797,10 @@
       btn.addEventListener("mousemove", function (ev) {
         moveTooltip(ev);
       });
-      btn.addEventListener("mouseleave", hideTooltip);
+      btn.addEventListener("mouseleave", function () {
+        state.skipDayTip = false;
+        hideTooltip();
+      });
       btn.addEventListener("focus", function (ev) {
         showTooltip(ev, btn.getAttribute("data-date"));
       });
@@ -891,7 +900,7 @@
   }
 
   function showTooltip(ev, dayIso) {
-    if (state.l2Open) return;
+    if (state.l2Open || state.skipDayTip) return;
     var tip = document.getElementById("tooltip");
     var list = state.byDay[dayIso] || [];
     if (!list.length) return;
@@ -909,8 +918,8 @@
     var vh = window.innerHeight || document.documentElement.clientHeight;
     var cx = ev.clientX || 0;
     var cy = ev.clientY || 0;
-    // Place off-screen first so layout size is measurable without flicker jump
-    tip.style.left = "0px";
+    // Measure far off-screen — never park at 0,0 (visible flash at top-left).
+    tip.style.left = "-9999px";
     tip.style.top = "0px";
     var w = tip.offsetWidth;
     var h = tip.offsetHeight;
@@ -1299,6 +1308,7 @@
     hideTooltip();
     state.selectedDay = iso;
     state.l2Open = true;
+    state.skipDayTip = true;
     state.l2Origin = captureL2Origin(iso);
     state.l2Moved = false;
     renderCalendar();
@@ -1342,6 +1352,7 @@
     state.selectedDay = null;
     state.selectedEventId = null;
     state.hoverEventId = null;
+    state.skipDayTip = false;
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
     var mapCol = document.getElementById("dayMapCol");
