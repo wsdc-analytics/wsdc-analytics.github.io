@@ -754,12 +754,26 @@ h1 {
   padding: 8px 10px 6px;
   border-bottom: 1px solid var(--border-color);
   background: #fff;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.day-island.is-dragging .day-island__head {
+  cursor: grabbing;
+}
+
+.day-island.is-dragging {
+  transition: none;
+  opacity: 1;
+  transform: none;
 }
 
 .day-island__head h2 {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.01em;
+  pointer-events: none;
 }
 
 .day-island__close {
@@ -783,7 +797,8 @@ h1 {
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  /* Give the map more width; list stays readable without colliding with kind badges. */
+  grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.82fr);
   gap: 8px;
   padding: 8px 10px 10px;
   align-items: stretch;
@@ -840,6 +855,23 @@ h1 {
   color: inherit;
   cursor: pointer;
   transition: background 120ms var(--ease-out), border-color 120ms var(--ease-out);
+}
+
+.l2-row .tooltip-row__main {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.l2-row .tooltip-row__name,
+.l2-row .tooltip-row__where,
+.l2-row .l2-row__dates {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.l2-row .tooltip-row__meta {
+  flex-shrink: 0;
 }
 
 .l2-row + .l2-row {
