@@ -810,25 +810,36 @@ h1 {
   flex-direction: column;
 }
 
+/* Map column is always two equal halves: map stays half-height; the other
+   half is empty by default and hosts the event card when selected. */
 .day-island__map-col {
-  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "note"
+    "primary"
+    "secondary";
   gap: 8px;
+  height: 100%;
+  align-content: stretch;
+}
+
+.day-island__map-col #noGeoNote {
+  grid-area: note;
 }
 
 #dayMap {
-  flex: 1 1 auto;
+  grid-area: primary;
   width: 100%;
-  min-height: 160px;
   height: 100%;
+  min-height: 0;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   background: #fff;
-  transition: min-height 220ms var(--ease-out);
 }
 
 .day-island__map-col.has-event #dayMap {
-  flex: 1 1 0;
-  min-height: 120px;
+  grid-area: secondary;
 }
 
 .no-geo {
@@ -918,8 +929,9 @@ h1 {
 }
 
 .l2-event-card {
-  flex: 0 0 auto;
-  max-height: 0;
+  grid-area: secondary;
+  min-height: 0;
+  height: 100%;
   opacity: 0;
   overflow: hidden;
   padding: 0 12px;
@@ -930,15 +942,18 @@ h1 {
   font-size: 13px;
   pointer-events: none;
   transition:
-    max-height 220ms var(--ease-out),
     opacity 180ms var(--ease-out),
-    padding 220ms var(--ease-out),
-    border-color 180ms var(--ease-out);
+    border-color 180ms var(--ease-out),
+    padding 180ms var(--ease-out);
+}
+
+.day-island__map-col.has-event .l2-event-card {
+  grid-area: primary;
 }
 
 .l2-event-card.is-open {
-  max-height: 240px;
   opacity: 1;
+  overflow: auto;
   padding: 10px 12px;
   border-color: var(--border-color);
   pointer-events: auto;
@@ -1123,8 +1138,7 @@ h1 {
     font-size: 9px;
   }
   .day-island__body { grid-template-columns: 1fr; }
-  #dayMap { min-height: 140px; }
-  .day-island__map-col.has-event #dayMap { min-height: 110px; }
+  .day-island__map-col { min-height: 280px; }
   .day-island__list { max-height: none; }
 }
 
@@ -1257,7 +1271,6 @@ h1 {
   .day-island__close,
   .l2-row,
   .l2-event-card,
-  #dayMap,
   .tooltip,
   .cal-dd__btn,
   .cal-dd__menu,
