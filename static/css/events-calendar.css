@@ -698,15 +698,13 @@ h1 {
   }
 }
 
-/* —— Day L2 island (compact magnifier inside calendar stage) —— */
+/* —— Day L2 island (viewport layer; opens on grid, draggable anywhere) —— */
 .day-layer {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 70;
   display: none;
   pointer-events: none;
-  overflow: hidden;
-  border-radius: inherit;
 }
 
 .day-layer.is-open {
@@ -717,13 +715,13 @@ h1 {
 .day-layer__backdrop {
   position: absolute;
   inset: 0;
-  /* Hit-area for click-outside only — no gray wash over the calendar. */
+  /* Hit-area for click-outside only — no gray wash. */
   background: transparent;
   opacity: 1;
 }
 
 .day-island {
-  position: absolute;
+  position: fixed;
   z-index: 1;
   display: flex;
   flex-direction: column;
