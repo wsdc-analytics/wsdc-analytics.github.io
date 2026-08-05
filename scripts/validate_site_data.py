@@ -148,7 +148,7 @@ def validate_events_year_calendar() -> None:
     for lang in ("en", "ru", "es"):
         if lang not in disclaimer:
             fail(f"events_year_calendar.json.disclaimer missing {lang}")
-    allowed_status = {"confirmed", "expected", "cancelled", "hiatus"}
+    allowed_status = {"confirmed", "expected", "hiatus"}
     allowed_kind = {"registry", "trial"}
     date_re = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     for idx, event in enumerate(data["events"]):
