@@ -1033,13 +1033,13 @@
       return;
     }
     if (bounds.length === 1) {
-      state.map.setView(bounds[0], 5);
+      state.map.setView(bounds[0], 6);
       return;
     }
     var latLngs = bounds.map(function (b) { return L.latLng(b[0], b[1]); });
     var box = L.latLngBounds(latLngs);
     // Avoid ultra-wide empty oceans: pad tightly and allow closer zoom.
-    state.map.fitBounds(box.pad(0.18), { padding: [16, 16], maxZoom: 7 });
+    state.map.fitBounds(box.pad(0.12), { padding: [18, 18], maxZoom: 8 });
   }
 
   function ensureMap() {
