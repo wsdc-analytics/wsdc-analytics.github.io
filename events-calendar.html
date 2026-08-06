@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260806d">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -266,6 +266,8 @@
       metricNew: "New",
       sparkAria: "Edition trend",
       sparkSeries: "Trend metric",
+      noLastEdition: "No scored edition stats yet",
+      trialNoStats: "Trial events have no scored edition stats",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -320,6 +322,8 @@
       metricNew: "Новые",
       sparkAria: "Динамика editions",
       sparkSeries: "Метрика тренда",
+      noLastEdition: "Пока нет статистики scored edition",
+      trialNoStats: "У trial нет статистики scored edition",
       tierPrefix: "ТИР",
       colLeader: "L",
       colFollower: "F",
@@ -374,6 +378,8 @@
       metricNew: "Nuevos",
       sparkAria: "Tendencia de ediciones",
       sparkSeries: "Métrica de tendencia",
+      noLastEdition: "Aún no hay estadísticas de edición",
+      trialNoStats: "Los trial no tienen estadísticas de edición",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -1535,8 +1541,10 @@
     if (!rows.length) return "";
     var active = sparkMetricKey();
     function seriesBtn(key, label) {
-      var isOn = active === key ? " is-active" : "";
-      return '<button type="button" class="l2-spark-seg__btn' + isOn + '" data-spark="' + key + '">' +
+      var isOn = active === key;
+      return '<button type="button" class="l2-spark-seg__btn' + (isOn ? " is-active" : "") +
+        '" role="tab" aria-selected="' + (isOn ? "true" : "false") +
+        '" data-spark="' + key + '">' +
         esc(label) + "</button>";
     }
     return '<div class="l2-series-trend">' +
@@ -1551,8 +1559,9 @@
 
   function buildLastMetricsHtml(last) {
     function metricCell(value, label) {
+      var shown = value == null || value === "" ? "—" : String(value);
       return '<div class="l2-metric">' +
-        '<span class="l2-metric__value">' + esc(String(value)) + "</span>" +
+        '<span class="l2-metric__value">' + esc(shown) + "</span>" +
         '<span class="l2-metric__label">' + esc(label) + "</span></div>";
     }
     return '<div class="l2-event-card__metrics">' +
@@ -1567,6 +1576,11 @@
     var mapCol = document.getElementById("dayMapCol");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var card = eventCardPayload(e);
+    var restoreSpark = null;
+    if (detail.contains(document.activeElement)) {
+      var activeSpark = document.activeElement.closest("[data-spark]");
+      if (activeSpark) restoreSpark = activeSpark.getAttribute("data-spark");
+    }
 
     var left = '<div class="l2-event-card__series">' +
       "<h3>" + esc(e.name) + "</h3>";
@@ -1589,21 +1603,33 @@
     }
     left += "</div>";
 
-    var right = '<div class="l2-event-card__last">';
-    if (card && card.last_edition) {
+    var hasLast = !!(card && card.last_edition);
+    var right = "";
+    if (hasLast) {
       var last = card.last_edition;
-      right += '<div class="l2-event-card__last-head">' +
+      right = '<div class="l2-event-card__last">' +
+        '<div class="l2-event-card__last-head">' +
         '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
         '<span class="l2-event-card__last-date">' +
-        esc(monthYearLabel(last.year, last.month)) + "</span></div>";
-      right += buildLastMetricsHtml(last);
-      right += buildTierTableHtml(last.tiers || {});
+        esc(monthYearLabel(last.year, last.month)) + "</span></div>" +
+        buildLastMetricsHtml(last) +
+        buildTierTableHtml(last.tiers || {}) +
+        "</div>";
+    } else {
+      right = '<div class="l2-event-card__last">' +
+        '<p class="event-meta l2-event-card__empty">' +
+        esc(e.kind === "trial" ? t("trialNoStats") : t("noLastEdition")) +
+        "</p></div>";
     }
-    right += "</div>";
 
-    detail.innerHTML = '<div class="l2-event-card__grid">' + left + right + "</div>";
+    var gridClass = "l2-event-card__grid" + (hasLast ? "" : " is-sparse");
+    detail.innerHTML = '<div class="' + gridClass + '">' + left + right + "</div>";
     detail.classList.add("is-open");
     if (mapCol) mapCol.classList.add("has-event");
+    if (restoreSpark) {
+      var focusBtn = detail.querySelector('[data-spark="' + restoreSpark + '"]');
+      if (focusBtn) focusBtn.focus();
+    }
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
   }
 
