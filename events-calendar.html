@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="static/css/site-chrome.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260806a" as="fetch" crossorigin>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20260806b" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -264,6 +264,9 @@
       metricDancers: "Dancers",
       metricPoints: "Points",
       metricNew: "New",
+      cardModeMetrics: "Metrics",
+      cardModeTiers: "Tiers",
+      sparkAria: "Edition trend",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -316,6 +319,9 @@
       metricDancers: "Танцоры",
       metricPoints: "Очки",
       metricNew: "Новые",
+      cardModeMetrics: "Метрики",
+      cardModeTiers: "Тиры",
+      sparkAria: "Динамика editions",
       tierPrefix: "ТИР",
       colLeader: "L",
       colFollower: "F",
@@ -368,6 +374,9 @@
       metricDancers: "Bailarines",
       metricPoints: "Puntos",
       metricNew: "Nuevos",
+      cardModeMetrics: "Métricas",
+      cardModeTiers: "Tiers",
+      sparkAria: "Tendencia de ediciones",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -399,7 +408,9 @@
     map: null,
     markers: null,
     markerById: {},
-    eventCards: null
+    eventCards: null,
+    l2CardMode: "tiers",
+    l2SparkMetric: "unique_dancers"
   };
 
   function t(key) {
@@ -1389,6 +1400,8 @@
     state.selectedEventId = null;
     state.hoverEventId = null;
     state.skipDayTip = false;
+    state.l2CardMode = "tiers";
+    state.l2SparkMetric = "unique_dancers";
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
     var mapCol = document.getElementById("dayMapCol");
@@ -1446,7 +1459,18 @@
       return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
     });
     if (!rows.length) return "";
-    var html = '<table class="l2-tier-table">' +
+    var tip = tierTipText();
+    var tipHtml = "";
+    if (tip) {
+      tipHtml = '<button type="button" class="l2-tier-tip" aria-label="' +
+        esc(t("tierTipAria")) + '">' +
+        '<span class="l2-tier-tip__mark" aria-hidden="true">i</span>' +
+        '<span class="l2-tier-tip__bubble" role="tooltip">' + esc(tip) + "</span>" +
+        "</button>";
+    }
+    var html = '<div class="l2-tier-panel">' +
+      '<div class="l2-tier-panel__head">' + tipHtml + "</div>" +
+      '<table class="l2-tier-table">' +
       "<thead><tr>" +
       "<th></th>" +
       '<th class="is-lead">' + esc(t("colLeader")) + "</th>" +
@@ -1459,7 +1483,7 @@
         '<td class="is-follow">' + esc(tierLabel(tiers[div].Follower)) + "</td>" +
         "</tr>";
     });
-    html += "</tbody></table>";
+    html += "</tbody></table></div>";
     return html;
   }
 
@@ -1470,12 +1494,69 @@
     return "";
   }
 
+  function sparkMetricKey() {
+    var key = state.l2SparkMetric;
+    if (key === "points" || key === "new_dancers" || key === "unique_dancers") return key;
+    return "unique_dancers";
+  }
+
+  function buildSparklineHtml(history) {
+    var rows = Array.isArray(history) ? history : [];
+    if (!rows.length) {
+      return '<div class="l2-spark" aria-hidden="true"></div>';
+    }
+    var key = sparkMetricKey();
+    var values = rows.map(function (r) {
+      var n = Number(r[key]);
+      return Number.isFinite(n) ? n : 0;
+    });
+    var w = 160;
+    var h = 40;
+    var padX = 4;
+    var padY = 5;
+    var min = Math.min.apply(null, values);
+    var max = Math.max.apply(null, values);
+    var span = max - min || 1;
+    var points = values.map(function (v, i) {
+      var x = padX + (rows.length === 1 ? (w - padX * 2) / 2 : (i / (rows.length - 1)) * (w - padX * 2));
+      var y = h - padY - ((v - min) / span) * (h - padY * 2);
+      return { x: x, y: y, v: v, label: monthYearLabel(rows[i].year, rows[i].month) };
+    });
+    var poly = points.map(function (p) { return p.x.toFixed(1) + "," + p.y.toFixed(1); }).join(" ");
+    var dots = points.map(function (p) {
+      return '<circle class="l2-spark__dot" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="2.2"><title>' + esc(p.label + ": " + String(p.v)) + "</title></circle>";
+    }).join("");
+    return '<div class="l2-spark" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
+      '<svg class="l2-spark__svg" viewBox="0 0 ' + w + " " + h +
+      '" width="100%" height="48" preserveAspectRatio="none">' +
+      '<polyline class="l2-spark__line" fill="none" points="' + poly + '"></polyline>' +
+      dots +
+      "</svg></div>";
+  }
+
+  function buildMetricsPanelHtml(last, history) {
+    var active = sparkMetricKey();
+    function metricBtn(key, value, label) {
+      var isOn = active === key ? " is-active" : "";
+      return '<button type="button" class="l2-metric' + isOn + '" data-spark="' + key + '">' +
+        '<span class="l2-metric__value">' + esc(String(value)) + "</span>" +
+        '<span class="l2-metric__label">' + esc(label) + "</span></button>";
+    }
+    return '<div class="l2-event-card__metrics">' +
+      metricBtn("unique_dancers", last.unique_dancers, t("metricDancers")) +
+      metricBtn("points", last.points, t("metricPoints")) +
+      metricBtn("new_dancers", last.new_dancers, t("metricNew")) +
+      "</div>" +
+      buildSparklineHtml(history);
+  }
+
   function showEventCard(e) {
     var detail = document.getElementById("eventDetail");
     var mapCol = document.getElementById("dayMapCol");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var card = eventCardPayload(e);
-    var tip = tierTipText();
+    var mode = state.l2CardMode === "metrics" ? "metrics" : "tiers";
 
     var left = '<div class="l2-event-card__series">' +
       "<h3>" + esc(e.name) + "</h3>" +
@@ -1507,24 +1588,22 @@
       right += '<div class="l2-event-card__last-head">' +
         '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
         '<span class="l2-event-card__last-date">' +
-        esc(monthYearLabel(last.year, last.month)) + "</span>";
-      if (tip) {
-        right += '<button type="button" class="l2-tier-tip" id="l2TierTip" aria-label="' +
-          esc(t("tierTipAria")) + '">' +
-          '<span class="l2-tier-tip__mark" aria-hidden="true">i</span>' +
-          '<span class="l2-tier-tip__bubble" role="tooltip">' + esc(tip) + "</span>" +
-          "</button>";
-      }
+        esc(monthYearLabel(last.year, last.month)) + "</span></div>";
+      right += '<div class="l2-seg" role="tablist" aria-label="' + esc(t("lastEdition")) + '">' +
+        '<button type="button" class="l2-seg__btn' + (mode === "metrics" ? " is-active" : "") +
+        '" role="tab" aria-selected="' + (mode === "metrics" ? "true" : "false") +
+        '" data-card-mode="metrics">' + esc(t("cardModeMetrics")) + "</button>" +
+        '<button type="button" class="l2-seg__btn' + (mode === "tiers" ? " is-active" : "") +
+        '" role="tab" aria-selected="' + (mode === "tiers" ? "true" : "false") +
+        '" data-card-mode="tiers">' + esc(t("cardModeTiers")) + "</button></div>";
+      right += '<div class="l2-event-card__panels">';
+      right += '<div class="l2-event-card__panel' + (mode === "metrics" ? " is-active" : "") +
+        '" data-panel="metrics">' +
+        buildMetricsPanelHtml(last, card.history || []) + "</div>";
+      right += '<div class="l2-event-card__panel' + (mode === "tiers" ? " is-active" : "") +
+        '" data-panel="tiers">' +
+        buildTierTableHtml(last.tiers || {}) + "</div>";
       right += "</div>";
-      right += '<div class="l2-event-card__metrics">' +
-        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.unique_dancers)) +
-        '</span><span class="l2-metric__label">' + esc(t("metricDancers")) + "</span></div>" +
-        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.points)) +
-        '</span><span class="l2-metric__label">' + esc(t("metricPoints")) + "</span></div>" +
-        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.new_dancers)) +
-        '</span><span class="l2-metric__label">' + esc(t("metricNew")) + "</span></div>" +
-        "</div>";
-      right += buildTierTableHtml(last.tiers || {});
     }
     right += "</div>";
 
@@ -1532,6 +1611,20 @@
     detail.classList.add("is-open");
     if (mapCol) mapCol.classList.add("has-event");
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
+  }
+
+  function refreshOpenEventCard() {
+    if (!state.selectedEventId) return;
+    var events = eventsForYear(state.year);
+    var e = events.find(function (x) {
+      return String(x.id) === String(state.selectedEventId);
+    });
+    if (!e) {
+      e = eventsInYearRaw(state.year).find(function (x) {
+        return String(x.id) === String(state.selectedEventId);
+      });
+    }
+    if (e) showEventCard(e);
   }
 
   function clearEventSelection() {
@@ -1638,6 +1731,34 @@
     closeAllFilterDropdowns();
     state.kind = btn.getAttribute("data-value") || "";
     applyFiltersAndRender();
+  });
+
+  document.getElementById("eventDetail").addEventListener("click", function (e) {
+    var modeBtn = e.target.closest("[data-card-mode]");
+    if (modeBtn) {
+      e.stopPropagation();
+      var nextMode = modeBtn.getAttribute("data-card-mode");
+      if (nextMode !== "metrics" && nextMode !== "tiers") return;
+      if (state.l2CardMode === nextMode) return;
+      state.l2CardMode = nextMode;
+      refreshOpenEventCard();
+      return;
+    }
+    var sparkBtn = e.target.closest("[data-spark]");
+    if (sparkBtn) {
+      e.stopPropagation();
+      var nextSpark = sparkBtn.getAttribute("data-spark");
+      if (
+        nextSpark !== "unique_dancers" &&
+        nextSpark !== "points" &&
+        nextSpark !== "new_dancers"
+      ) {
+        return;
+      }
+      if (state.l2SparkMetric === nextSpark) return;
+      state.l2SparkMetric = nextSpark;
+      refreshOpenEventCard();
+    }
   });
 
   document.querySelectorAll(".cal-dd").forEach(function (dd) {
@@ -1773,13 +1894,13 @@
   var params = new URLSearchParams(window.location.search);
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
 
-  fetch("static/data/events_year_calendar.json?v=20260806a")
+  fetch("static/data/events_year_calendar.json?v=20260806b")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
     })
     .then(function (calendar) {
-      return fetch("static/data/event_l2_cards.json?v=20260806a")
+      return fetch("static/data/event_l2_cards.json?v=20260806b")
         .then(function (r) {
           if (!r.ok) return null;
           return r.json();
