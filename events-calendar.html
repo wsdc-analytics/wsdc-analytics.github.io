@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="static/css/site-chrome.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260806b" as="fetch" crossorigin>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20260806c" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -264,9 +264,8 @@
       metricDancers: "Dancers",
       metricPoints: "Points",
       metricNew: "New",
-      cardModeMetrics: "Metrics",
-      cardModeTiers: "Tiers",
       sparkAria: "Edition trend",
+      sparkSeries: "Trend metric",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -319,9 +318,8 @@
       metricDancers: "Танцоры",
       metricPoints: "Очки",
       metricNew: "Новые",
-      cardModeMetrics: "Метрики",
-      cardModeTiers: "Тиры",
       sparkAria: "Динамика editions",
+      sparkSeries: "Метрика тренда",
       tierPrefix: "ТИР",
       colLeader: "L",
       colFollower: "F",
@@ -374,9 +372,8 @@
       metricDancers: "Bailarines",
       metricPoints: "Puntos",
       metricNew: "Nuevos",
-      cardModeMetrics: "Métricas",
-      cardModeTiers: "Tiers",
       sparkAria: "Tendencia de ediciones",
+      sparkSeries: "Métrica de tendencia",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -409,7 +406,6 @@
     markers: null,
     markerById: {},
     eventCards: null,
-    l2CardMode: "tiers",
     l2SparkMetric: "unique_dancers"
   };
 
@@ -1400,7 +1396,6 @@
     state.selectedEventId = null;
     state.hoverEventId = null;
     state.skipDayTip = false;
-    state.l2CardMode = "tiers";
     state.l2SparkMetric = "unique_dancers";
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
@@ -1510,8 +1505,8 @@
       var n = Number(r[key]);
       return Number.isFinite(n) ? n : 0;
     });
-    var w = 160;
-    var h = 40;
+    var w = 220;
+    var h = 52;
     var padX = 4;
     var padY = 5;
     var min = Math.min.apply(null, values);
@@ -1529,26 +1524,42 @@
     }).join("");
     return '<div class="l2-spark" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
       '<svg class="l2-spark__svg" viewBox="0 0 ' + w + " " + h +
-      '" width="100%" height="48" preserveAspectRatio="none">' +
+      '" width="100%" height="56" preserveAspectRatio="none">' +
       '<polyline class="l2-spark__line" fill="none" points="' + poly + '"></polyline>' +
       dots +
       "</svg></div>";
   }
 
-  function buildMetricsPanelHtml(last, history) {
+  function buildSeriesTrendHtml(history) {
+    var rows = Array.isArray(history) ? history : [];
+    if (!rows.length) return "";
     var active = sparkMetricKey();
-    function metricBtn(key, value, label) {
+    function seriesBtn(key, label) {
       var isOn = active === key ? " is-active" : "";
-      return '<button type="button" class="l2-metric' + isOn + '" data-spark="' + key + '">' +
+      return '<button type="button" class="l2-spark-seg__btn' + isOn + '" data-spark="' + key + '">' +
+        esc(label) + "</button>";
+    }
+    return '<div class="l2-series-trend">' +
+      '<div class="l2-spark-seg" role="tablist" aria-label="' + esc(t("sparkSeries")) + '">' +
+      seriesBtn("unique_dancers", t("metricDancers")) +
+      seriesBtn("points", t("metricPoints")) +
+      seriesBtn("new_dancers", t("metricNew")) +
+      "</div>" +
+      buildSparklineHtml(rows) +
+      "</div>";
+  }
+
+  function buildLastMetricsHtml(last) {
+    function metricCell(value, label) {
+      return '<div class="l2-metric">' +
         '<span class="l2-metric__value">' + esc(String(value)) + "</span>" +
-        '<span class="l2-metric__label">' + esc(label) + "</span></button>";
+        '<span class="l2-metric__label">' + esc(label) + "</span></div>";
     }
     return '<div class="l2-event-card__metrics">' +
-      metricBtn("unique_dancers", last.unique_dancers, t("metricDancers")) +
-      metricBtn("points", last.points, t("metricPoints")) +
-      metricBtn("new_dancers", last.new_dancers, t("metricNew")) +
-      "</div>" +
-      buildSparklineHtml(history);
+      metricCell(last.unique_dancers, t("metricDancers")) +
+      metricCell(last.points, t("metricPoints")) +
+      metricCell(last.new_dancers, t("metricNew")) +
+      "</div>";
   }
 
   function showEventCard(e) {
@@ -1556,14 +1567,9 @@
     var mapCol = document.getElementById("dayMapCol");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var card = eventCardPayload(e);
-    var mode = state.l2CardMode === "metrics" ? "metrics" : "tiers";
 
     var left = '<div class="l2-event-card__series">' +
-      "<h3>" + esc(e.name) + "</h3>" +
-      '<div class="badges">' +
-      '<span class="badge ' + esc(normalizeStatus(e.status)) + '">' + esc(statusLabel(e.status)) + "</span>" +
-      '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
-      esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
+      "<h3>" + esc(e.name) + "</h3>";
     if (where) left += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
     if (e.url) {
       left += '<p class="l2-event-card__link"><a href="' + esc(e.url) +
@@ -1579,6 +1585,7 @@
         left += '<p class="event-meta">' + esc(t("editionsCount")) + ": " +
           esc(String(card.series.editions_with_results)) + "</p>";
       }
+      left += buildSeriesTrendHtml(card.history || []);
     }
     left += "</div>";
 
@@ -1589,21 +1596,8 @@
         '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
         '<span class="l2-event-card__last-date">' +
         esc(monthYearLabel(last.year, last.month)) + "</span></div>";
-      right += '<div class="l2-seg" role="tablist" aria-label="' + esc(t("lastEdition")) + '">' +
-        '<button type="button" class="l2-seg__btn' + (mode === "metrics" ? " is-active" : "") +
-        '" role="tab" aria-selected="' + (mode === "metrics" ? "true" : "false") +
-        '" data-card-mode="metrics">' + esc(t("cardModeMetrics")) + "</button>" +
-        '<button type="button" class="l2-seg__btn' + (mode === "tiers" ? " is-active" : "") +
-        '" role="tab" aria-selected="' + (mode === "tiers" ? "true" : "false") +
-        '" data-card-mode="tiers">' + esc(t("cardModeTiers")) + "</button></div>";
-      right += '<div class="l2-event-card__panels">';
-      right += '<div class="l2-event-card__panel' + (mode === "metrics" ? " is-active" : "") +
-        '" data-panel="metrics">' +
-        buildMetricsPanelHtml(last, card.history || []) + "</div>";
-      right += '<div class="l2-event-card__panel' + (mode === "tiers" ? " is-active" : "") +
-        '" data-panel="tiers">' +
-        buildTierTableHtml(last.tiers || {}) + "</div>";
-      right += "</div>";
+      right += buildLastMetricsHtml(last);
+      right += buildTierTableHtml(last.tiers || {});
     }
     right += "</div>";
 
@@ -1734,16 +1728,6 @@
   });
 
   document.getElementById("eventDetail").addEventListener("click", function (e) {
-    var modeBtn = e.target.closest("[data-card-mode]");
-    if (modeBtn) {
-      e.stopPropagation();
-      var nextMode = modeBtn.getAttribute("data-card-mode");
-      if (nextMode !== "metrics" && nextMode !== "tiers") return;
-      if (state.l2CardMode === nextMode) return;
-      state.l2CardMode = nextMode;
-      refreshOpenEventCard();
-      return;
-    }
     var sparkBtn = e.target.closest("[data-spark]");
     if (sparkBtn) {
       e.stopPropagation();
@@ -1894,13 +1878,13 @@
   var params = new URLSearchParams(window.location.search);
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
 
-  fetch("static/data/events_year_calendar.json?v=20260806b")
+  fetch("static/data/events_year_calendar.json?v=20260806c")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
     })
     .then(function (calendar) {
-      return fetch("static/data/event_l2_cards.json?v=20260806b")
+      return fetch("static/data/event_l2_cards.json?v=20260806c")
         .then(function (r) {
           if (!r.ok) return null;
           return r.json();
