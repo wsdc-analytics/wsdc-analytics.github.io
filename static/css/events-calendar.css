@@ -963,16 +963,18 @@ h1 {
 .l2-event-card__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 8px 28px;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  column-gap: 28px;
+  row-gap: 4px;
   height: 100%;
   min-height: 0;
   padding: 0 2px;
+  align-items: stretch;
 }
 
 .l2-event-card__grid.is-sparse {
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
-  gap: 8px 24px;
+  column-gap: 24px;
 }
 
 .l2-event-card__series-head,
@@ -984,20 +986,47 @@ h1 {
 }
 
 .l2-event-card__series-head {
-  justify-content: space-between;
-  padding-right: 4px;
+  justify-content: flex-start;
+  padding-right: 0;
 }
 
 .l2-event-card__last-head-block {
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: stretch;
   text-align: center;
-  padding-left: 4px;
+  padding-left: 0;
 }
 
-.l2-event-card__head-control {
-  margin-top: auto;
-  padding-top: 6px;
+/* Shared baseline row: spark tabs | info | metric labels */
+.l2-event-card__spark-ctrl,
+.l2-event-card__kpi-ctrl {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+  min-height: 26px;
+}
+
+.l2-event-card__spark-ctrl .l2-spark-seg {
+  width: 100%;
+}
+
+.l2-event-card__kpi-ctrl {
+  position: relative;
+}
+
+.l2-kpi-seg-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.l2-kpi-seg-row .l2-metric-seg {
+  flex: 1 1 auto;
+  min-width: 0;
   width: 100%;
 }
 
@@ -1010,11 +1039,16 @@ h1 {
 }
 
 .l2-event-card__chart-body {
-  padding-right: 4px;
+  gap: 8px;
+  padding-top: 6px;
+  padding-right: 0;
 }
 
 .l2-event-card__tiers-body {
-  padding-left: 4px;
+  /* Halve label→KPI gap vs chart padding; keep tiers table Y by compensating gap. */
+  gap: 13px;
+  padding-top: 1px;
+  padding-left: 0;
 }
 
 .l2-event-card__empty {
@@ -1086,8 +1120,8 @@ h1 {
   flex-wrap: wrap;
   gap: 6px;
   min-width: 0;
-  min-height: 16px;
   width: 100%;
+  min-height: 18px;
 }
 
 .l2-event-card__last-label {
@@ -1110,12 +1144,29 @@ h1 {
   min-width: 0;
 }
 
-.l2-event-card__metrics-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 6px;
+.l2-metric-seg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.05);
   min-width: 0;
+}
+
+.l2-metric-seg__label {
+  display: block;
+  border-radius: 6px;
+  padding: 3px 4px;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .l2-chart-panel {
@@ -1165,7 +1216,7 @@ h1 {
 
 .l2-chart {
   display: flex;
-  gap: 4px;
+  gap: 1px;
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
@@ -1176,8 +1227,10 @@ h1 {
   flex-direction: column;
   justify-content: space-between;
   flex: 0 0 auto;
-  width: 30px;
-  padding: 8px 0 18px;
+  width: auto;
+  min-width: 1.6em;
+  max-width: 2.6em;
+  padding: 2px 1px 8px 0;
   font-size: 8px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -1191,14 +1244,14 @@ h1 {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .l2-chart__x {
   display: flex;
   justify-content: space-between;
   flex: 0 0 auto;
-  padding: 0 10px;
+  padding: 0 4px;
   font-size: 8px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -1212,15 +1265,11 @@ h1 {
   min-height: 0;
   height: 100%;
   flex: 1 1 auto;
+  position: relative;
 }
 
 .l2-tier-panel__head {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  min-height: 16px;
-  flex: 0 0 auto;
-  margin-bottom: 2px;
+  display: none;
 }
 
 .l2-info-tip {
@@ -1275,12 +1324,62 @@ h1 {
   transform: scale(1);
 }
 
+/* Column-gap bridge: centered between spark tabs and KPI pills. */
+.l2-info-tip--metrics-between {
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.l2-info-tip--metrics-between:active {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
+.l2-info-tip--metrics-between .l2-info-tip__bubble {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%) scale(0.97);
+  transform-origin: top center;
+}
+
+.l2-info-tip--metrics-between:hover .l2-info-tip__bubble,
+.l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble {
+  transform: translateX(-50%) scale(1);
+}
+
+/* Column-gap bridge: same X as metrics tip, directly underneath. */
+.l2-info-tip--tier-between {
+  position: absolute;
+  left: -14px;
+  top: 2px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.l2-info-tip--tier-between:active {
+  transform: translateX(-50%) scale(0.94);
+}
+
+.l2-info-tip--tier-between .l2-info-tip__bubble {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%) scale(0.97);
+  transform-origin: top center;
+}
+
+.l2-info-tip--tier-between:hover .l2-info-tip__bubble,
+.l2-info-tip--tier-between:focus-visible .l2-info-tip__bubble {
+  transform: translateX(-50%) scale(1);
+}
+
 .l2-event-card__metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
-  flex: 1 1 auto;
   min-width: 0;
+  width: 100%;
 }
 
 .l2-metric {
@@ -1289,7 +1388,7 @@ h1 {
   align-items: center;
   gap: 0;
   min-width: 0;
-  padding: 2px 0;
+  padding: 0;
   border-radius: 6px;
   color: inherit;
 }
@@ -1300,6 +1399,7 @@ h1 {
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .l2-metric__label {
@@ -1322,6 +1422,10 @@ h1 {
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.l2-spark__gap {
+  fill: #e8ebf0;
 }
 
 .l2-spark__dot {
@@ -1386,7 +1490,21 @@ h1 {
 @media (max-width: 900px) {
   .l2-event-card__grid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto auto;
+    row-gap: 6px;
+  }
+
+  .l2-info-tip--metrics-between,
+  .l2-info-tip--tier-between {
+    left: 0;
+    transform: none;
+    position: static;
+    margin: 0 0 4px auto;
+  }
+
+  .l2-info-tip--metrics-between:active,
+  .l2-info-tip--tier-between:active {
+    transform: scale(0.94);
   }
 }
 
