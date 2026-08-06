@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260806d">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260806e">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -268,6 +268,9 @@
       sparkSeries: "Trend metric",
       noLastEdition: "No scored edition stats yet",
       trialNoStats: "Trial events have no scored edition stats",
+      metricTipAria: "About metrics",
+      metricTip: "Dancers: unique competitors with results at this edition. Points: total WSDC points awarded. New: dancers whose first scored result at this event was this edition.",
+      websiteAria: "Event website",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -324,6 +327,9 @@
       sparkSeries: "Метрика тренда",
       noLastEdition: "Пока нет статистики scored edition",
       trialNoStats: "У trial нет статистики scored edition",
+      metricTipAria: "О метриках",
+      metricTip: "Танцоры: уникальные участники с результатами на этом edition. Очки: сумма очков WSDC. Новые: танцоры, у которых первый scored-результат на этом ивенте был на этом edition.",
+      websiteAria: "Сайт ивента",
       tierPrefix: "ТИР",
       colLeader: "L",
       colFollower: "F",
@@ -380,6 +386,9 @@
       sparkSeries: "Métrica de tendencia",
       noLastEdition: "Aún no hay estadísticas de edición",
       trialNoStats: "Los trial no tienen estadísticas de edición",
+      metricTipAria: "Sobre métricas",
+      metricTip: "Bailarines: competidores únicos con resultados en esta edición. Puntos: total de puntos WSDC. Nuevos: bailarines cuya primera puntuación en este evento fue esta edición.",
+      websiteAria: "Sitio del evento",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -1454,23 +1463,21 @@
     return cards[String(e.event_id)] || null;
   }
 
+  function buildInfoTipHtml(ariaLabel, text) {
+    if (!text) return "";
+    return '<button type="button" class="l2-info-tip" aria-label="' + esc(ariaLabel) + '">' +
+      '<span class="l2-info-tip__mark" aria-hidden="true">i</span>' +
+      '<span class="l2-info-tip__bubble" role="tooltip">' + esc(text) + "</span>" +
+      "</button>";
+  }
+
   function buildTierTableHtml(tiers) {
     var order = ["Novice", "Intermediate", "Advanced", "All-Star", "Champions"];
     var rows = order.filter(function (div) {
       return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
     });
     if (!rows.length) return "";
-    var tip = tierTipText();
-    var tipHtml = "";
-    if (tip) {
-      tipHtml = '<button type="button" class="l2-tier-tip" aria-label="' +
-        esc(t("tierTipAria")) + '">' +
-        '<span class="l2-tier-tip__mark" aria-hidden="true">i</span>' +
-        '<span class="l2-tier-tip__bubble" role="tooltip">' + esc(tip) + "</span>" +
-        "</button>";
-    }
     var html = '<div class="l2-tier-panel">' +
-      '<div class="l2-tier-panel__head">' + tipHtml + "</div>" +
       '<table class="l2-tier-table">' +
       "<thead><tr>" +
       "<th></th>" +
@@ -1504,41 +1511,67 @@
   function buildSparklineHtml(history) {
     var rows = Array.isArray(history) ? history : [];
     if (!rows.length) {
-      return '<div class="l2-spark" aria-hidden="true"></div>';
+      return '<div class="l2-chart" aria-hidden="true"></div>';
     }
     var key = sparkMetricKey();
     var values = rows.map(function (r) {
       var n = Number(r[key]);
       return Number.isFinite(n) ? n : 0;
     });
-    var w = 220;
-    var h = 52;
-    var padX = 4;
-    var padY = 5;
+    var w = 240;
+    var h = 88;
+    var padL = 2;
+    var padR = 4;
+    var padT = 6;
+    var padB = 6;
     var min = Math.min.apply(null, values);
     var max = Math.max.apply(null, values);
     var span = max - min || 1;
     var points = values.map(function (v, i) {
-      var x = padX + (rows.length === 1 ? (w - padX * 2) / 2 : (i / (rows.length - 1)) * (w - padX * 2));
-      var y = h - padY - ((v - min) / span) * (h - padY * 2);
-      return { x: x, y: y, v: v, label: monthYearLabel(rows[i].year, rows[i].month) };
+      var x = padL + (rows.length === 1 ? (w - padL - padR) / 2 : (i / (rows.length - 1)) * (w - padL - padR));
+      var y = h - padB - ((v - min) / span) * (h - padT - padB);
+      return { x: x, y: y, v: v, label: monthYearLabel(rows[i].year, rows[i].month), year: rows[i].year };
     });
     var poly = points.map(function (p) { return p.x.toFixed(1) + "," + p.y.toFixed(1); }).join(" ");
     var dots = points.map(function (p) {
       return '<circle class="l2-spark__dot" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-        '" r="2.2"><title>' + esc(p.label + ": " + String(p.v)) + "</title></circle>";
+        '" r="2.4"><title>' + esc(p.label + ": " + String(p.v)) + "</title></circle>";
     }).join("");
-    return '<div class="l2-spark" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
+    var axis =
+      '<line class="l2-spark__axis" x1="' + padL + '" y1="' + padT + '" x2="' + padL +
+      '" y2="' + (h - padB) + '"></line>' +
+      '<line class="l2-spark__axis" x1="' + padL + '" y1="' + (h - padB) + '" x2="' + (w - padR) +
+      '" y2="' + (h - padB) + '"></line>';
+
+    var xTicks = [];
+    if (rows.length === 1) {
+      xTicks = [0];
+    } else if (rows.length === 2) {
+      xTicks = [0, rows.length - 1];
+    } else {
+      xTicks = [0, Math.floor((rows.length - 1) / 2), rows.length - 1];
+    }
+    var xHtml = xTicks.map(function (idx) {
+      return "<span>" + esc(String(rows[idx].year)) + "</span>";
+    }).join("");
+
+    return '<div class="l2-chart" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
+      '<div class="l2-chart__y" aria-hidden="true">' +
+      "<span>" + esc(String(max)) + "</span>" +
+      "<span>" + esc(String(min)) + "</span>" +
+      "</div>" +
+      '<div class="l2-chart__plot">' +
       '<svg class="l2-spark__svg" viewBox="0 0 ' + w + " " + h +
-      '" width="100%" height="56" preserveAspectRatio="none">' +
+      '" width="100%" height="100%" preserveAspectRatio="none">' +
+      axis +
       '<polyline class="l2-spark__line" fill="none" points="' + poly + '"></polyline>' +
       dots +
-      "</svg></div>";
+      "</svg>" +
+      '<div class="l2-chart__x" aria-hidden="true">' + xHtml + "</div>" +
+      "</div></div>";
   }
 
-  function buildSeriesTrendHtml(history) {
-    var rows = Array.isArray(history) ? history : [];
-    if (!rows.length) return "";
+  function buildSparkSegHtml() {
     var active = sparkMetricKey();
     function seriesBtn(key, label) {
       var isOn = active === key;
@@ -1547,14 +1580,17 @@
         '" data-spark="' + key + '">' +
         esc(label) + "</button>";
     }
-    return '<div class="l2-series-trend">' +
-      '<div class="l2-spark-seg" role="tablist" aria-label="' + esc(t("sparkSeries")) + '">' +
+    return '<div class="l2-spark-seg" role="tablist" aria-label="' + esc(t("sparkSeries")) + '">' +
       seriesBtn("unique_dancers", t("metricDancers")) +
       seriesBtn("points", t("metricPoints")) +
       seriesBtn("new_dancers", t("metricNew")) +
-      "</div>" +
-      buildSparklineHtml(rows) +
       "</div>";
+  }
+
+  function buildSeriesTrendHtml(history) {
+    var rows = Array.isArray(history) ? history : [];
+    if (!rows.length) return "";
+    return '<div class="l2-chart-panel">' + buildSparklineHtml(rows) + "</div>";
   }
 
   function buildLastMetricsHtml(last) {
@@ -1564,10 +1600,13 @@
         '<span class="l2-metric__value">' + esc(shown) + "</span>" +
         '<span class="l2-metric__label">' + esc(label) + "</span></div>";
     }
-    return '<div class="l2-event-card__metrics">' +
+    return '<div class="l2-event-card__metrics-row">' +
+      '<div class="l2-event-card__metrics">' +
       metricCell(last.unique_dancers, t("metricDancers")) +
       metricCell(last.points, t("metricPoints")) +
       metricCell(last.new_dancers, t("metricNew")) +
+      "</div>" +
+      buildInfoTipHtml(t("metricTipAria"), t("metricTip")) +
       "</div>";
   }
 
@@ -1582,48 +1621,65 @@
       if (activeSpark) restoreSpark = activeSpark.getAttribute("data-spark");
     }
 
-    var left = '<div class="l2-event-card__series">' +
+    var titleRow = '<div class="l2-event-card__title-row">' +
       "<h3>" + esc(e.name) + "</h3>";
-    if (where) left += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
     if (e.url) {
-      left += '<p class="l2-event-card__link"><a href="' + esc(e.url) +
-        '" target="_blank" rel="noopener noreferrer">' + t("website") + "</a></p>";
+      titleRow += '<a class="l2-event-card__web" href="' + esc(e.url) +
+        '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(t("websiteAria")) +
+        '" title="' + esc(t("website")) + '">↗</a>';
     }
+    titleRow += "</div>";
+
+    var seriesHead = '<div class="l2-event-card__series-head">' + titleRow;
+    if (where) seriesHead += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
     if (card && card.series) {
+      var metaBits = [];
       var first = card.series.first_edition;
       if (first) {
-        left += '<p class="event-meta">' + esc(t("firstEdition")) + ": " +
-          esc(monthYearLabel(first.year, first.month)) + "</p>";
+        metaBits.push(t("firstEdition") + ": " + monthYearLabel(first.year, first.month));
       }
       if (card.series.editions_with_results != null) {
-        left += '<p class="event-meta">' + esc(t("editionsCount")) + ": " +
-          esc(String(card.series.editions_with_results)) + "</p>";
+        metaBits.push(t("editionsCount") + ": " + String(card.series.editions_with_results));
       }
-      left += buildSeriesTrendHtml(card.history || []);
+      if (metaBits.length) {
+        seriesHead += '<p class="event-meta l2-event-card__meta-line">' + esc(metaBits.join(" · ")) + "</p>";
+      }
+      if ((card.history || []).length) {
+        seriesHead += '<div class="l2-event-card__head-control">' + buildSparkSegHtml() + "</div>";
+      }
     }
-    left += "</div>";
+    seriesHead += "</div>";
+
+    var chartBody = '<div class="l2-event-card__chart-body">';
+    if (card && card.series) {
+      chartBody += buildSeriesTrendHtml(card.history || []);
+    }
+    chartBody += "</div>";
 
     var hasLast = !!(card && card.last_edition);
-    var right = "";
+    var lastHead = '<div class="l2-event-card__last-head-block">';
+    var tiersBody = '<div class="l2-event-card__tiers-body">';
     if (hasLast) {
       var last = card.last_edition;
-      right = '<div class="l2-event-card__last">' +
-        '<div class="l2-event-card__last-head">' +
+      lastHead += '<div class="l2-event-card__last-head">' +
         '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
         '<span class="l2-event-card__last-date">' +
-        esc(monthYearLabel(last.year, last.month)) + "</span></div>" +
-        buildLastMetricsHtml(last) +
-        buildTierTableHtml(last.tiers || {}) +
-        "</div>";
+        esc(monthYearLabel(last.year, last.month)) + "</span>" +
+        buildInfoTipHtml(t("tierTipAria"), tierTipText()) +
+        "</div>" +
+        '<div class="l2-event-card__head-control">' + buildLastMetricsHtml(last) + "</div>";
+      tiersBody += buildTierTableHtml(last.tiers || {});
     } else {
-      right = '<div class="l2-event-card__last">' +
-        '<p class="event-meta l2-event-card__empty">' +
-        esc(e.kind === "trial" ? t("trialNoStats") : t("noLastEdition")) +
-        "</p></div>";
+      lastHead += '<p class="event-meta l2-event-card__empty">' +
+        esc(e.kind === "trial" ? t("trialNoStats") : t("noLastEdition")) + "</p>";
     }
+    lastHead += "</div>";
+    tiersBody += "</div>";
 
     var gridClass = "l2-event-card__grid" + (hasLast ? "" : " is-sparse");
-    detail.innerHTML = '<div class="' + gridClass + '">' + left + right + "</div>";
+    detail.innerHTML = '<div class="' + gridClass + '">' +
+      seriesHead + lastHead + chartBody + tiersBody +
+      "</div>";
     detail.classList.add("is-open");
     if (mapCol) mapCol.classList.add("has-event");
     if (restoreSpark) {
