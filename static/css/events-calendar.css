@@ -968,6 +968,15 @@ h1 {
   min-height: 0;
 }
 
+.l2-event-card__grid.is-sparse {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr);
+}
+
+.l2-event-card__empty {
+  margin-top: 2px;
+  font-style: italic;
+}
+
 .l2-event-card__series,
 .l2-event-card__last {
   min-width: 0;
