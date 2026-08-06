@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260806e">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260806f">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1477,7 +1477,9 @@
       return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
     });
     if (!rows.length) return "";
+    var tipHtml = buildInfoTipHtml(t("tierTipAria"), tierTipText());
     var html = '<div class="l2-tier-panel">' +
+      '<div class="l2-tier-panel__head">' + tipHtml + "</div>" +
       '<table class="l2-tier-table">' +
       "<thead><tr>" +
       "<th></th>" +
@@ -1520,16 +1522,23 @@
     });
     var w = 240;
     var h = 88;
-    var padL = 2;
-    var padR = 4;
-    var padT = 6;
-    var padB = 6;
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
+    // Keep points/years off the plot edges.
+    var padL = 16;
+    var padR = 16;
+    var padT = 10;
+    var padB = 10;
+    var dataMin = Math.min.apply(null, values);
+    var dataMax = Math.max.apply(null, values);
+    var dataSpan = dataMax - dataMin;
+    var yPad = dataSpan === 0 ? Math.max(Math.abs(dataMax) * 0.15, 1) : dataSpan * 0.18;
+    var min = dataMin - yPad;
+    var max = dataMax + yPad;
     var span = max - min || 1;
+    var plotW = w - padL - padR;
+    var plotH = h - padT - padB;
     var points = values.map(function (v, i) {
-      var x = padL + (rows.length === 1 ? (w - padL - padR) / 2 : (i / (rows.length - 1)) * (w - padL - padR));
-      var y = h - padB - ((v - min) / span) * (h - padT - padB);
+      var x = padL + (rows.length === 1 ? plotW / 2 : (i / (rows.length - 1)) * plotW);
+      var y = h - padB - ((v - min) / span) * plotH;
       return { x: x, y: y, v: v, label: monthYearLabel(rows[i].year, rows[i].month), year: rows[i].year };
     });
     var poly = points.map(function (p) { return p.x.toFixed(1) + "," + p.y.toFixed(1); }).join(" ");
@@ -1555,10 +1564,15 @@
       return "<span>" + esc(String(rows[idx].year)) + "</span>";
     }).join("");
 
+    function axisLabel(n) {
+      var rounded = Math.abs(n) >= 100 ? Math.round(n) : Math.round(n * 10) / 10;
+      return String(rounded);
+    }
+
     return '<div class="l2-chart" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
       '<div class="l2-chart__y" aria-hidden="true">' +
-      "<span>" + esc(String(max)) + "</span>" +
-      "<span>" + esc(String(min)) + "</span>" +
+      "<span>" + esc(axisLabel(max)) + "</span>" +
+      "<span>" + esc(axisLabel(min)) + "</span>" +
       "</div>" +
       '<div class="l2-chart__plot">' +
       '<svg class="l2-spark__svg" viewBox="0 0 ' + w + " " + h +
@@ -1665,7 +1679,6 @@
         '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
         '<span class="l2-event-card__last-date">' +
         esc(monthYearLabel(last.year, last.month)) + "</span>" +
-        buildInfoTipHtml(t("tierTipAria"), tierTipText()) +
         "</div>" +
         '<div class="l2-event-card__head-control">' + buildLastMetricsHtml(last) + "</div>";
       tiersBody += buildTierTableHtml(last.tiers || {});
