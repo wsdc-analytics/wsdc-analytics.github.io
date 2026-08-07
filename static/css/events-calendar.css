@@ -520,13 +520,15 @@ h1 {
   top: 8px;
   left: max(4px, calc(50% - 410px - 120px));
   transform: none;
-  z-index: 2;
+  z-index: 25;
   width: 108px;
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: 0;
   pointer-events: none;
+  /* Tip bubble is absolutely positioned; keep it out of stage overflow clip. */
+  overflow: visible;
 }
 
 .cal-stats__head,
@@ -594,9 +596,11 @@ h1 {
 .cal-stats__tip-bubble {
   position: absolute;
   left: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%) scale(0.96);
-  transform-origin: left center;
+  /* Top-align (not vertically centered) so long copy grows downward
+     and is not clipped by .calendar-stage { overflow: hidden }. */
+  top: 0;
+  transform: translateY(0) scale(0.96);
+  transform-origin: left top;
   min-height: 32px;
   display: flex;
   align-items: center;
@@ -608,7 +612,7 @@ h1 {
   line-height: 1.35;
   border-radius: 8px;
   width: max-content;
-  max-width: min(260px, calc(100vw - 48px));
+  max-width: min(280px, calc(100vw - 48px));
   white-space: normal;
   text-align: left;
   text-transform: none;
@@ -626,7 +630,7 @@ h1 {
 .cal-stats__tip:focus-visible .cal-stats__tip-bubble {
   opacity: 1;
   visibility: visible;
-  transform: translateY(-50%) scale(1);
+  transform: translateY(0) scale(1);
   transition-duration: 180ms;
 }
 
@@ -638,7 +642,7 @@ h1 {
   .cal-stats__tip:hover .cal-stats__tip-bubble {
     opacity: 1;
     visibility: visible;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(0) scale(1);
     transition-duration: 180ms;
   }
 }
