@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807w">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807x">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -107,13 +107,13 @@
                         <span class="filter-label" aria-hidden="true">&nbsp;</span>
                         <button type="button" class="cal-reset-btn" id="clearFiltersBtn" data-i18n="clearFilters">Clear</button>
                     </div>
-                    <div class="filter-field cal-search-field">
-                        <span class="filter-label cal-search-field__label-spacer" aria-hidden="true">&nbsp;</span>
-                        <span class="visually-hidden" id="eventSearchLabel" data-i18n="search">Search</span>
-                        <div class="cal-search" id="eventSearch">
-                            <input type="search" class="cal-search__input" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
-                            <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
-                        </div>
+                </div>
+                <div class="filter-field cal-search-field">
+                    <span class="filter-label cal-search-field__label-spacer" aria-hidden="true">&nbsp;</span>
+                    <span class="visually-hidden" id="eventSearchLabel" data-i18n="search">Search</span>
+                    <div class="cal-search" id="eventSearch">
+                        <input type="search" class="cal-search__input" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
+                        <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
                     </div>
                 </div>
             </div>
@@ -1353,16 +1353,18 @@
 
   function islandFinalRect() {
     var grid = gridEl();
+    var toolbar = document.querySelector(".toolbar");
     var filters = document.querySelector(".filters");
     var target = grid && grid.getBoundingClientRect().width
       ? grid.getBoundingClientRect()
       : stageEl().getBoundingClientRect();
     var pad = 10;
-    var filterTop = filters ? filters.getBoundingClientRect().top : NaN;
+    var bar = toolbar || filters;
+    var barTop = bar ? bar.getBoundingClientRect().top : NaN;
     // Same size as the month-grid inset; only the top edge moves up to the filters row.
     return {
       left: target.left + pad,
-      top: Number.isFinite(filterTop) ? filterTop : target.top + pad,
+      top: Number.isFinite(barTop) ? barTop : target.top + pad,
       width: Math.max(280, target.width - pad * 2),
       height: Math.max(220, target.height - pad * 2)
     };
