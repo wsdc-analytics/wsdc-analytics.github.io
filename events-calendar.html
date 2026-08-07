@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ad">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807af">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1416,14 +1416,34 @@
     return document.getElementById("calendarRoot");
   }
 
+  var MOBILE_L2_MQ = "(max-width: 700px)";
+
+  function isMobileL2Layout() {
+    return window.matchMedia(MOBILE_L2_MQ).matches;
+  }
+
   function islandFinalRect() {
+    var pad = 10;
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    // Mobile: nearly full-viewport vertical card (scroll inside the body).
+    // Never exceed the visible viewport (landscape / narrow phones).
+    if (isMobileL2Layout()) {
+      var safeTop = 8;
+      var safeBottom = 8;
+      return {
+        left: pad,
+        top: safeTop,
+        width: Math.max(0, vw - pad * 2),
+        height: Math.max(0, vh - safeTop - safeBottom)
+      };
+    }
     var grid = gridEl();
     var toolbar = document.querySelector(".toolbar");
     var filters = document.querySelector(".filters");
     var target = grid && grid.getBoundingClientRect().width
       ? grid.getBoundingClientRect()
       : stageEl().getBoundingClientRect();
-    var pad = 10;
     var bar = toolbar || filters;
     var barTop = bar ? bar.getBoundingClientRect().top : NaN;
     // Same size as the month-grid inset; only the top edge moves up to the filters row.
@@ -2211,6 +2231,10 @@
       var focusBtn = detail.querySelector('[data-spark="' + restoreSpark + '"]');
       if (focusBtn) focusBtn.focus();
     }
+    if (isMobileL2Layout()) {
+      var body = document.querySelector(".day-island__body");
+      if (body) body.scrollTop = 0;
+    }
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
   }
 
@@ -2472,6 +2496,7 @@
 
     head.addEventListener("pointerdown", function (e) {
       if (!state.l2Open) return;
+      if (isMobileL2Layout()) return;
       if (e.button != null && e.button !== 0) return;
       if (e.target.closest && e.target.closest(".day-island__close")) return;
       var cur = readIslandRect(island);
