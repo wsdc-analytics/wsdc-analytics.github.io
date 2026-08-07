@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807z">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807aa">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -48,7 +48,10 @@
     <div class="page-shell">
     <main id="main" class="container">
         <header class="page-head">
-            <h1 data-i18n="title">Events Calendar</h1>
+            <div class="page-head__title-row">
+                <h1 data-i18n="title">Events Calendar</h1>
+                <time class="data-as-of" id="dataAsOf" hidden></time>
+            </div>
             <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.</p>
             <p class="disclaimer" id="disclaimer"></p>
             <div class="toolbar">
@@ -231,6 +234,7 @@
   var I18N = {
     en: {
       title: "Events Calendar",
+      asOf: "As of {date}",
       subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.",
       year: "Year",
       continent: "Continent",
@@ -297,6 +301,7 @@
     },
     ru: {
       title: "Календарь ивентов",
+      asOf: "По состоянию на {date}",
       subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и список. Прошлые годы и прошедшие дни приглушены, сегодня — обведено.",
       year: "Год",
       continent: "Континент",
@@ -362,6 +367,7 @@
     },
     es: {
       title: "Calendario de eventos",
+      asOf: "Actualizado al {date}",
       subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y la lista. Los años y dias pasados se atenúan; hoy va marcado.",
       year: "Año",
       continent: "Continente",
@@ -476,6 +482,7 @@
       document.getElementById("disclaimer").textContent =
         state.data.disclaimer[state.lang] || state.data.disclaimer.en || "";
     }
+    renderDataAsOf();
     var stats = document.getElementById("calStats");
     if (stats) stats.setAttribute("aria-label", t("statAria"));
     var tip = document.getElementById("calStatsTip");
@@ -484,6 +491,43 @@
     if (searchInput) searchInput.setAttribute("aria-label", t("searchAria"));
     var suggestions = document.getElementById("eventSearchSuggestions");
     if (suggestions) suggestions.setAttribute("aria-label", t("search"));
+  }
+
+  function formatAsOfDisplay(iso) {
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return "";
+    var locale =
+      state.lang === "ru" ? "ru-RU" : state.lang === "es" ? "es-ES" : "en-US";
+    try {
+      return new Date(iso + "T12:00:00").toLocaleDateString(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    } catch (err) {
+      return iso;
+    }
+  }
+
+  function renderDataAsOf() {
+    var el = document.getElementById("dataAsOf");
+    if (!el) return;
+    var iso = state.data && state.data.as_of;
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+      el.hidden = true;
+      el.textContent = "";
+      el.removeAttribute("datetime");
+      el.removeAttribute("title");
+      return;
+    }
+    var label = t("asOf").replace("{date}", formatAsOfDisplay(iso));
+    el.hidden = false;
+    el.textContent = label;
+    el.setAttribute("datetime", iso);
+    if (state.data.generated_at) {
+      el.setAttribute("title", state.data.generated_at);
+    } else {
+      el.removeAttribute("title");
+    }
   }
 
   function dataAsOf() {
