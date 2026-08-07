@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ad">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ae">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1417,13 +1417,26 @@
   }
 
   function islandFinalRect() {
+    var pad = 10;
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    // Mobile: nearly full-viewport vertical card (scroll inside the body).
+    if (vw <= 700) {
+      var safeTop = 8;
+      var safeBottom = 8;
+      return {
+        left: pad,
+        top: safeTop,
+        width: Math.max(280, vw - pad * 2),
+        height: Math.max(320, vh - safeTop - safeBottom)
+      };
+    }
     var grid = gridEl();
     var toolbar = document.querySelector(".toolbar");
     var filters = document.querySelector(".filters");
     var target = grid && grid.getBoundingClientRect().width
       ? grid.getBoundingClientRect()
       : stageEl().getBoundingClientRect();
-    var pad = 10;
     var bar = toolbar || filters;
     var barTop = bar ? bar.getBoundingClientRect().top : NaN;
     // Same size as the month-grid inset; only the top edge moves up to the filters row.
@@ -2211,6 +2224,10 @@
       var focusBtn = detail.querySelector('[data-spark="' + restoreSpark + '"]');
       if (focusBtn) focusBtn.focus();
     }
+    if (window.matchMedia("(max-width: 700px)").matches) {
+      var body = document.querySelector(".day-island__body");
+      if (body) body.scrollTop = 0;
+    }
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
   }
 
@@ -2472,6 +2489,7 @@
 
     head.addEventListener("pointerdown", function (e) {
       if (!state.l2Open) return;
+      if (window.matchMedia("(max-width: 700px)").matches) return;
       if (e.button != null && e.button !== 0) return;
       if (e.target.closest && e.target.closest(".day-island__close")) return;
       var cur = readIslandRect(island);

@@ -1940,33 +1940,47 @@ h1 {
   }
   h1 { font-size: 1.25rem; }
   .subtitle { font-size: 13px; }
-  .filter-field { flex: 1 1 42%; }
   .toolbar {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
     gap: 8px;
   }
   .filters {
-    grid-column: auto;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    align-items: end;
+    justify-content: stretch;
+    gap: 8px 6px;
     width: 100%;
-    justify-content: center;
     margin-left: 0;
+  }
+  .filter-field {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+  }
+  .filter-field .filter-label {
+    text-align: center;
   }
   .cal-search-field {
     grid-column: auto;
     justify-self: auto;
-    flex: 1 1 100%;
-    width: auto;
+    flex: none;
+    width: 100%;
     max-width: none;
     min-width: 0;
     margin-left: 0;
   }
   .cal-reset-field {
-    flex: 0 0 auto;
+    flex: none;
+    width: 100%;
   }
-  .cal-reset-btn { width: auto; }
+  .cal-reset-btn { width: 100%; }
   .cal-dd {
     width: 100%;
     --cal-dd-width: 100%;
@@ -2063,6 +2077,123 @@ h1 {
   .month { padding: 5px 5px 6px; }
   .month h2 { font-size: 11px; }
   .day { font-size: 10px; }
+
+  /* —— Mobile L2: vertical card ——
+     Default: map → event buttons
+     Selected: left analytics → right analytics → map → buttons */
+  .day-island {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .day-island__head {
+    cursor: default;
+    touch-action: manipulation;
+  }
+  .day-island__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .day-island__map-col,
+  .day-island__list-col {
+    display: contents;
+    min-height: 0;
+  }
+  .day-island__map-col #noGeoNote {
+    order: 0;
+  }
+  #dayMap,
+  .day-island__map-col.has-event #dayMap {
+    grid-area: auto;
+    order: 1;
+    flex: 0 0 auto;
+    width: 100%;
+    height: min(42vw, 240px);
+    min-height: 180px;
+    max-height: 260px;
+  }
+  .day-island__list {
+    order: 2;
+    flex: 0 0 auto;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .l2-event-card,
+  .day-island__map-col.has-event .l2-event-card {
+    grid-area: auto;
+    order: 3;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .l2-event-card:not(.is-open) {
+    display: none;
+  }
+  .l2-event-card.is-open {
+    order: 1;
+    display: block;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: auto;
+  }
+  .day-island__body:has(.l2-event-card.is-open) #dayMap {
+    order: 2;
+  }
+  .day-island__body:has(.l2-event-card.is-open) .day-island__list {
+    order: 3;
+  }
+
+  .l2-event-card__grid,
+  .l2-event-card__grid.is-sparse {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    column-gap: 0;
+    row-gap: 8px;
+    padding: 0;
+  }
+  .l2-event-card__series-head {
+    order: 1;
+    padding-right: 0;
+  }
+  .l2-event-card__spark-ctrl {
+    order: 2;
+  }
+  .l2-event-card__chart-body {
+    order: 3;
+    padding-right: 0;
+    padding-top: 0;
+  }
+  .l2-event-card__last-head-block {
+    order: 4;
+    justify-content: flex-start;
+    text-align: left;
+    padding-left: 0;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-color);
+  }
+  .l2-event-card__kpi-ctrl {
+    order: 5;
+  }
+  .l2-event-card__tiers-body {
+    order: 6;
+    padding-left: 0;
+    padding-top: 0;
+  }
+  .l2-event-card__chart-body .l2-chart,
+  .l2-event-card__chart-body .l2-chart-panel {
+    min-height: 120px;
+  }
+  .l2-info-tip__bubble {
+    max-width: min(240px, calc(100vw - 48px));
+  }
 }
 
 @media (max-width: 420px) {
