@@ -109,20 +109,21 @@ h1 {
 
 .toolbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: flex-end;
   justify-content: center;
-  gap: 10px 16px;
-  padding-top: 4px;
+  gap: 6px 8px;
+  padding-top: 2px;
   min-width: 0;
+  overflow-x: auto;
 }
 
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  flex-wrap: nowrap;
+  align-items: flex-end;
   justify-content: center;
-  gap: 8px 10px;
+  gap: 4px 6px;
   min-width: 0;
 }
 
@@ -130,20 +131,38 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
+  flex: 0 0 auto;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .cal-search-field {
-  flex: 1 1 180px;
-  max-width: 280px;
+  flex: 1 1 140px;
+  max-width: 200px;
+  min-width: 120px;
   align-items: stretch;
+}
+
+.cal-search-field__label-spacer {
+  visibility: hidden;
 }
 
 .cal-search {
   position: relative;
   width: 100%;
-  --cal-search-height: 34px;
+  --cal-search-height: 28px;
 }
 
 .cal-search__input {
@@ -151,13 +170,13 @@ h1 {
   height: var(--cal-search-height);
   box-sizing: border-box;
   margin: 0;
-  padding: 0 12px 0 34px;
+  padding: 0 8px 0 28px;
   border: 1px solid var(--border-color, #d0d7e2);
-  border-radius: 8px;
-  background: var(--bg-primary, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+  border-radius: 999px;
+  background: var(--bg-primary, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 9px center;
   color: var(--text-primary, #0f172a);
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.2;
 }
 
@@ -236,16 +255,17 @@ h1 {
 }
 
 .cal-reset-btn {
-  height: 34px;
+  height: 28px;
   margin: 0;
-  padding: 0 12px;
-  border: 1px solid var(--border-color, #d0d7e2);
-  border-radius: 8px;
-  background: var(--bg-primary, #fff);
-  color: var(--text-secondary, #64748b);
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-tertiary, #94a3b8);
   font: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -253,52 +273,52 @@ h1 {
 .cal-reset-btn:hover,
 .cal-reset-btn:focus-visible {
   outline: none;
-  border-color: var(--color-accent, #2563eb);
   color: var(--color-primary-dark, #1e3a8a);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .filter-label {
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--text-tertiary);
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 /* Chrome-matched pill dropdowns (Dashboards pattern) */
 .cal-dd {
   position: relative;
   display: inline-flex;
-  width: var(--cal-dd-width, 9rem);
+  width: var(--cal-dd-width, 7.5rem);
   flex-shrink: 0;
 }
 
-#yearSelectDd { --cal-dd-width: 5.25rem; }
-#continentFilterDd { --cal-dd-width: 9.5rem; }
-#countryFilterDd { --cal-dd-width: 10.5rem; }
-#statusFilterDd { --cal-dd-width: 13.5rem; }
-#kindFilterDd { --cal-dd-width: 8.75rem; }
+#yearSelectDd { --cal-dd-width: 4.25rem; }
+#continentFilterDd { --cal-dd-width: 7.25rem; }
+#countryFilterDd { --cal-dd-width: 8rem; }
+#statusFilterDd { --cal-dd-width: 6.5rem; }
+#kindFilterDd { --cal-dd-width: 5.5rem; }
 
 .cal-dd__btn {
   appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: 2px;
   box-sizing: border-box;
   width: 100%;
   height: 28px;
-  padding: 0 10px;
+  padding: 0 8px;
   border-radius: 999px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-secondary);
   font: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 1;
   cursor: pointer;
@@ -1866,14 +1886,18 @@ h1 {
   h1 { font-size: 1.25rem; }
   .subtitle { font-size: 13px; }
   .filter-field { flex: 1 1 42%; }
+  .filters {
+    flex-wrap: wrap;
+  }
   .cal-search-field {
     flex: 1 1 100%;
     max-width: none;
+    min-width: 0;
   }
   .cal-reset-field {
-    flex: 1 1 100%;
+    flex: 0 0 auto;
   }
-  .cal-reset-btn { width: 100%; }
+  .cal-reset-btn { width: auto; }
   .cal-dd {
     width: 100%;
     --cal-dd-width: 100%;

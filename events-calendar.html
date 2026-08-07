@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807u">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807v">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -103,16 +103,17 @@
                             <ul class="cal-dd__menu" id="kindFilterMenu" role="listbox" aria-labelledby="kindFilterLabel" aria-hidden="true"></ul>
                         </div>
                     </div>
+                    <div class="filter-field cal-reset-field">
+                        <span class="filter-label" aria-hidden="true">&nbsp;</span>
+                        <button type="button" class="cal-reset-btn" id="clearFiltersBtn" data-i18n="clearFilters">Clear</button>
+                    </div>
                     <div class="filter-field cal-search-field">
-                        <span class="filter-label" id="eventSearchLabel" data-i18n="search">Search</span>
+                        <span class="filter-label cal-search-field__label-spacer" aria-hidden="true">&nbsp;</span>
+                        <span class="visually-hidden" id="eventSearchLabel" data-i18n="search">Search</span>
                         <div class="cal-search" id="eventSearch">
                             <input type="search" class="cal-search__input" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
                             <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
                         </div>
-                    </div>
-                    <div class="filter-field cal-reset-field">
-                        <span class="filter-label" aria-hidden="true">&nbsp;</span>
-                        <button type="button" class="cal-reset-btn" id="clearFiltersBtn" data-i18n="clearFilters">Clear filters</button>
                     </div>
                 </div>
             </div>
@@ -234,13 +235,13 @@
       year: "Year",
       continent: "Continent",
       country: "Country",
-      confirmStatus: "Confirm status",
-      eventType: "Event type",
+      confirmStatus: "Status",
+      eventType: "Type",
       search: "Search",
       searchPlaceholder: "Event name…",
       searchAria: "Search events by name in the selected year",
       searchNoMatches: "No matching events",
-      clearFilters: "Clear filters",
+      clearFilters: "Clear",
       allContinents: "All continents",
       allCountries: "All countries",
       allConfirmStatuses: "All confirm statuses",
@@ -300,13 +301,13 @@
       year: "Год",
       continent: "Континент",
       country: "Страна",
-      confirmStatus: "Подтверждение",
-      eventType: "Тип ивента",
+      confirmStatus: "Статус",
+      eventType: "Тип",
       search: "Поиск",
       searchPlaceholder: "Название ивента…",
       searchAria: "Поиск ивентов по названию в выбранном году",
       searchNoMatches: "Нет совпадений",
-      clearFilters: "Сбросить фильтры",
+      clearFilters: "Сброс",
       allContinents: "Все континенты",
       allCountries: "Все страны",
       allConfirmStatuses: "Все статусы подтверждения",
@@ -365,13 +366,13 @@
       year: "Año",
       continent: "Continente",
       country: "País",
-      confirmStatus: "Confirmación",
-      eventType: "Tipo de evento",
+      confirmStatus: "Estado",
+      eventType: "Tipo",
       search: "Buscar",
       searchPlaceholder: "Nombre del evento…",
       searchAria: "Buscar eventos por nombre en el año seleccionado",
       searchNoMatches: "Sin coincidencias",
-      clearFilters: "Borrar filtros",
+      clearFilters: "Limpiar",
       allContinents: "Todos los continentes",
       allCountries: "Todos los países",
       allConfirmStatuses: "Todas las confirmaciones",
@@ -687,16 +688,29 @@
   }
 
   function refreshFilterOptions() {
-    var continents = (state.data && state.data.continents) || CONTINENTS;
+    var yearAll = eventsInYearRaw(state.year);
+    var continentPresent = {};
+    yearAll.forEach(function (e) {
+      if (e.continent) continentPresent[e.continent] = true;
+    });
+    var catalogContinents = (state.data && state.data.continents) || CONTINENTS;
+    var continentOpts = catalogContinents.filter(function (c) {
+      return continentPresent[c];
+    }).map(function (c) {
+      return { value: c, label: continentLabel(c) };
+    });
+    if (state.continent && continentPresent[state.continent] !== true) {
+      state.continent = "";
+    }
     fillDropdown(
       document.getElementById("continentFilterMenu"),
       document.getElementById("continentFilterValue"),
-      continents.map(function (c) { return { value: c, label: continentLabel(c) }; }),
+      continentOpts,
       state.continent,
       t("allContinents")
     );
 
-    var yearEvents = eventsInYearRaw(state.year).filter(function (e) {
+    var yearEvents = yearAll.filter(function (e) {
       if (state.continent && e.continent !== state.continent) return false;
       return true;
     });
@@ -707,10 +721,8 @@
     var countryList = Object.keys(countries).sort(function (a, b) {
       return a.localeCompare(b);
     });
-    // Keep a selected country across years even if it has no events this year.
     if (state.country && countries[state.country] !== true) {
-      countryList.push(state.country);
-      countryList.sort(function (a, b) { return a.localeCompare(b); });
+      state.country = "";
     }
     fillDropdown(
       document.getElementById("countryFilterMenu"),
@@ -720,9 +732,22 @@
       t("allCountries")
     );
 
-    var statusOpts = STATUSES.map(function (s) {
+    var statusPool = yearEvents.filter(function (e) {
+      if (state.country && e.country !== state.country) return false;
+      return true;
+    });
+    var statusPresent = {};
+    statusPool.forEach(function (e) {
+      statusPresent[normalizeStatus(e.status)] = true;
+    });
+    var statusOpts = STATUSES.filter(function (s) {
+      return statusPresent[s];
+    }).map(function (s) {
       return { value: s, label: statusLabel(s) };
     });
+    if (state.status && statusPresent[state.status] !== true) {
+      state.status = "";
+    }
     fillDropdown(
       document.getElementById("statusFilterMenu"),
       document.getElementById("statusFilterValue"),
@@ -731,8 +756,7 @@
       t("allConfirmStatuses")
     );
 
-    var kindPool = yearEvents.filter(function (e) {
-      if (state.country && e.country !== state.country) return false;
+    var kindPool = statusPool.filter(function (e) {
       if (state.status && normalizeStatus(e.status) !== state.status) return false;
       return true;
     });
@@ -743,9 +767,8 @@
     var kindOpts = KINDS.filter(function (k) { return kindPresent[k]; }).map(function (k) {
       return { value: k, label: kindLabel(k) };
     });
-    // Persist kind selection across years; surface it even if absent this year.
     if (state.kind && kindPresent[state.kind] !== true) {
-      kindOpts.push({ value: state.kind, label: kindLabel(state.kind) });
+      state.kind = "";
     }
     fillDropdown(
       document.getElementById("kindFilterMenu"),
