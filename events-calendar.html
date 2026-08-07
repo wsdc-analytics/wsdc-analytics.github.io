@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807s">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807t">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -880,7 +880,7 @@
   }
 
   function scrollHighlightIntoView() {
-    var hit = document.querySelector(".day.is-search-hit");
+    var hit = document.querySelector(".day.is-search-range");
     if (!hit) return;
     var month = hit.closest(".month");
     var target = month || hit;
@@ -1017,6 +1017,17 @@
         cells.push({ empty: true });
       }
       for (i = 0; i < cells.length; i++) {
+        var cell = cells[i];
+        if (!cell.searchHit) continue;
+        var row = Math.floor(i / 7);
+        var prev = i > 0 ? cells[i - 1] : null;
+        var next = i < cells.length - 1 ? cells[i + 1] : null;
+        var prevSameWeek = prev && Math.floor((i - 1) / 7) === row && prev.searchHit;
+        var nextSameWeek = next && Math.floor((i + 1) / 7) === row && next.searchHit;
+        cell.searchRangeStart = !prevSameWeek;
+        cell.searchRangeEnd = !nextSameWeek;
+      }
+      for (i = 0; i < cells.length; i++) {
         var c = cells[i];
         if (c.empty) {
           html += '<div class="day is-empty" aria-hidden="true"></div>';
@@ -1025,14 +1036,18 @@
         var cls = "day";
         if (c.occupied) cls += " has-events is-occupied dens-" + c.dens;
         if (c.selected) cls += " is-selected";
-        if (c.searchHit) cls += " is-search-hit";
+        if (c.searchHit) {
+          cls += " is-search-range";
+          if (c.searchRangeStart) cls += " is-search-range-start";
+          if (c.searchRangeEnd) cls += " is-search-range-end";
+        }
         if (c.today) cls += " is-today";
         if (c.past) cls += " is-past";
         html += '<button type="button" class="' + cls + '" data-date="' + c.iso + '"' +
           (c.occupied ? "" : " disabled") +
           ' aria-label="' + c.iso + (c.occupied ? ", " + c.count + " events" : "") +
           (c.today ? ", today" : "") +
-          (c.searchHit ? ", search match" : "") + '">';
+          (c.searchHit ? ", search period" : "") + '">';
         html += "<span>" + c.day + "</span>";
         html += "</button>";
       }

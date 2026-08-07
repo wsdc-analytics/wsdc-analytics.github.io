@@ -784,24 +784,52 @@ h1 {
   box-shadow: inset 0 0 0 1.5px var(--color-accent), inset 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-.day.is-search-hit {
-  box-shadow: inset 0 0 0 2px var(--color-accent);
-  color: var(--color-primary-dark);
-  font-weight: 700;
+/* Search period = continuous amber band (not Today’s blue day outline). */
+.day.is-search-range {
   z-index: 2;
 }
-.day.is-search-hit.is-occupied {
-  background: #dbeafe;
-  filter: none;
+.day.is-search-range > span {
+  position: relative;
+  z-index: 1;
 }
-.day.is-search-hit.is-past {
-  opacity: 0.92;
+.day.is-search-range::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 14%;
+  bottom: 14%;
+  background: rgba(245, 158, 11, 0.38);
+  pointer-events: none;
+  z-index: 0;
 }
-.day.is-search-hit.is-today {
-  box-shadow: inset 0 0 0 2px var(--color-accent), inset 0 0 0 4px rgba(37, 99, 235, 0.22);
+.day.is-search-range-start::before {
+  left: 10%;
+  border-radius: 999px 0 0 999px;
 }
-.day.is-search-hit.is-selected {
-  box-shadow: inset 0 0 0 2px var(--color-accent), inset 0 0 0 4px rgba(37, 99, 235, 0.28);
+.day.is-search-range-end::before {
+  right: 10%;
+  border-radius: 0 999px 999px 0;
+}
+.day.is-search-range-start.is-search-range-end::before {
+  left: 12%;
+  right: 12%;
+  border-radius: 999px;
+}
+.day.is-search-range.is-occupied {
+  color: #78350f;
+  font-weight: 700;
+}
+.day.is-search-range.is-past {
+  opacity: 0.95;
+}
+/* Today outline stays blue and sits above the amber period band. */
+.day.is-search-range.is-today {
+  box-shadow: inset 0 0 0 1.5px var(--color-accent);
+  color: var(--color-primary-dark);
+}
+.day.is-search-range.is-selected:not(.is-today) {
+  box-shadow: inset 0 0 0 1px #b45309;
 }
 
 .day.has-events:active {
