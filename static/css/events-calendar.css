@@ -2308,8 +2308,9 @@ h1 {
     order: 6;
     padding-left: 0;
     padding-top: 0;
-    /* Tighten KPI → tiers gap by another 5px (was -8). */
-    margin-top: -13px;
+    margin-top: 0;
+    /* Tighten metric values → tiers table (not labels → values). */
+    gap: 8px;
   }
   .l2-event-card__chart-body .l2-chart,
   .l2-event-card__chart-body .l2-chart-panel {
