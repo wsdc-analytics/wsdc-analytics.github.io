@@ -1518,6 +1518,10 @@
     }
     var found = findEditionForCalendarEvent(card, e);
     if (found) return { edition: found, mode: "edition" };
+    // Past calendar slot with no scored row (hiatus / unscored): fall back to last edition.
+    if (card.last_edition) {
+      return { edition: card.last_edition, mode: "last" };
+    }
     return { edition: null, mode: "missing" };
   }
 
