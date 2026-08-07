@@ -1944,11 +1944,16 @@ h1 {
   }
   .page-shell,
   .container,
-  .calendar-stage,
   #calendarRoot,
   .year-grid {
     max-width: 100%;
     overflow-x: hidden;
+  }
+  /* Keep stage overflow visible so the stats tip bubble is not clipped. */
+  .calendar-stage {
+    max-width: 100%;
+    overflow-x: visible;
+    overflow-y: visible;
   }
   .page-shell { min-height: calc(100dvh - 72px); }
   .container { min-height: 0; padding: 12px 14px 16px; }
@@ -2005,8 +2010,9 @@ h1 {
   }
   .cal-dd__btn { width: 100%; }
   .calendar-stage {
-    overflow-x: hidden;
+    overflow-x: visible;
     overflow-y: visible;
+    flex-direction: column;
   }
   .cal-stats {
     position: static;
@@ -2016,14 +2022,16 @@ h1 {
     width: 100%;
     margin: 0 0 8px;
     display: grid;
-    /* Full-width row: tip + 3 status metrics evenly spaced */
-    grid-template-columns: minmax(28px, auto) repeat(3, minmax(0, 1fr));
+    /* tip + 6 tracks: 3 metrics each span 2; row-2 sits between them */
+    grid-template-columns: minmax(28px, auto) repeat(6, minmax(0, 1fr));
     justify-content: stretch;
     justify-items: center;
     align-items: end;
-    column-gap: 8px;
-    row-gap: 12px;
+    column-gap: 0;
+    row-gap: 10px;
     pointer-events: auto;
+    overflow: visible;
+    z-index: 6;
   }
   .cal-stats__head {
     grid-column: 1;
@@ -2033,36 +2041,61 @@ h1 {
     margin-bottom: 0;
     align-self: end;
     justify-content: center;
+    position: relative;
+    z-index: 7;
   }
-  .cal-stats__group {
-    display: contents;
-  }
+  .cal-stats__group,
   .cal-stats__group--types {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-items: center;
-    align-items: end;
-    column-gap: 8px;
-    grid-column: 1 / -1;
-    grid-row: 2;
-    width: 100%;
+    display: contents;
     margin: 0;
     padding: 0;
+    width: auto;
+  }
+  .cal-stats__group > .cal-stats__item:nth-child(1) {
+    grid-column: 2 / 4;
+    grid-row: 1;
+  }
+  .cal-stats__group > .cal-stats__item:nth-child(2) {
+    grid-column: 4 / 6;
+    grid-row: 1;
+  }
+  .cal-stats__group > .cal-stats__item:nth-child(3) {
+    grid-column: 6 / 8;
+    grid-row: 1;
+  }
+  .cal-stats__group--types > .cal-stats__item:nth-child(1) {
+    grid-column: 3 / 5;
+    grid-row: 2;
+  }
+  .cal-stats__group--types > .cal-stats__item:nth-child(2) {
+    grid-column: 5 / 7;
+    grid-row: 2;
+  }
+  .cal-stats__tip {
+    z-index: 8;
   }
   .cal-stats__tip-bubble {
-    left: 50%;
+    left: 0;
     right: auto;
     top: calc(100% + 8px);
-    transform: translate(-50%, -4px) scale(0.96);
-    transform-origin: top center;
-    max-width: min(260px, calc(100% - 24px));
+    transform: translateY(-4px) scale(0.96);
+    transform-origin: top left;
+    max-width: min(280px, calc(100vw - 32px));
+    z-index: 40;
   }
-  .cal-stats__tip:focus-visible .cal-stats__tip-bubble {
-    transform: translate(-50%, 0) scale(1);
+  .cal-stats__tip:focus-visible .cal-stats__tip-bubble,
+  .cal-stats__tip.is-open .cal-stats__tip-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition-duration: 180ms;
   }
   @media (hover: hover) and (pointer: fine) {
     .cal-stats__tip:hover .cal-stats__tip-bubble {
-      transform: translate(-50%, 0) scale(1);
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      transition-duration: 180ms;
     }
   }
   .cal-stats__item {
@@ -2070,6 +2103,7 @@ h1 {
     min-width: 0;
     align-items: center;
     text-align: center;
+    padding: 0 4px;
   }
   .cal-stats__label {
     text-align: center;
@@ -2102,9 +2136,6 @@ h1 {
   }
   .cal-legend__gap {
     display: none;
-  }
-  .calendar-stage {
-    flex-direction: column;
   }
   #calendarRoot {
     width: 100%;

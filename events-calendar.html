@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ah">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ai">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -2500,8 +2500,37 @@
         return;
       }
       closeAllFilterDropdowns();
+      var openTip = document.querySelector(".cal-stats__tip.is-open");
+      if (openTip) openTip.classList.remove("is-open");
     }
   });
+
+  (function wireStatsTip() {
+    var tip = document.getElementById("calStatsTip");
+    if (!tip) return;
+
+    function closeTip() {
+      tip.classList.remove("is-open");
+    }
+
+    tip.addEventListener("click", function (e) {
+      // Mobile/touch: hover is unreliable — toggle the bubble on tap.
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        e.preventDefault();
+        e.stopPropagation();
+        tip.classList.toggle("is-open");
+        return;
+      }
+      // Desktop: keep native hover/focus; still allow click to pin open briefly.
+      tip.classList.add("is-open");
+    });
+
+    document.addEventListener("click", function (e) {
+      if (tip.classList.contains("is-open") && !(e.target.closest && e.target.closest("#calStatsTip"))) {
+        closeTip();
+      }
+    });
+  })();
 
   document.getElementById("closeDayIsland").addEventListener("click", function () {
     closeDayIsland();
