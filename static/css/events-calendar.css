@@ -2247,17 +2247,21 @@ h1 {
     order: 3;
     padding-right: 0;
     padding-top: 0;
+    /* Extra air before Last edition / KPI block. */
+    padding-bottom: 8px;
   }
   .l2-event-card__last-head-block {
     order: 4;
     justify-content: flex-start;
     text-align: left;
     padding-left: 0;
-    padding-top: 4px;
+    padding-top: 8px;
     border-top: 1px solid var(--border-color);
   }
   .l2-event-card__kpi-ctrl {
     order: 5;
+    /* Pull Last edition + KPI 4px closer to the tiers table. */
+    margin-bottom: -4px;
   }
   .l2-event-card__tiers-body {
     order: 6;
