@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260806r">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807s">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -101,6 +101,13 @@
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                             <ul class="cal-dd__menu" id="kindFilterMenu" role="listbox" aria-labelledby="kindFilterLabel" aria-hidden="true"></ul>
+                        </div>
+                    </div>
+                    <div class="filter-field cal-search-field">
+                        <span class="filter-label" id="eventSearchLabel" data-i18n="search">Search</span>
+                        <div class="cal-search" id="eventSearch">
+                            <input type="search" class="cal-search__input" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
+                            <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
                         </div>
                     </div>
                 </div>
@@ -225,6 +232,10 @@
       country: "Country",
       confirmStatus: "Confirm status",
       eventType: "Event type",
+      search: "Search",
+      searchPlaceholder: "Event name…",
+      searchAria: "Search events by name in the selected year",
+      searchNoMatches: "No matching events",
       allContinents: "All continents",
       allCountries: "All countries",
       allConfirmStatuses: "All confirm statuses",
@@ -286,6 +297,10 @@
       country: "Страна",
       confirmStatus: "Подтверждение",
       eventType: "Тип ивента",
+      search: "Поиск",
+      searchPlaceholder: "Название ивента…",
+      searchAria: "Поиск ивентов по названию в выбранном году",
+      searchNoMatches: "Нет совпадений",
       allContinents: "Все континенты",
       allCountries: "Все страны",
       allConfirmStatuses: "Все статусы подтверждения",
@@ -346,6 +361,10 @@
       country: "País",
       confirmStatus: "Confirmación",
       eventType: "Tipo de evento",
+      search: "Buscar",
+      searchPlaceholder: "Nombre del evento…",
+      searchAria: "Buscar eventos por nombre en el año seleccionado",
+      searchNoMatches: "Sin coincidencias",
       allContinents: "Todos los continentes",
       allCountries: "Todos los países",
       allConfirmStatuses: "Todas las confirmaciones",
@@ -417,6 +436,7 @@
     selectedDay: null,
     selectedEventId: null,
     hoverEventId: null,
+    highlight: null,
     l2Open: false,
     skipDayTip: false,
     l2Origin: null,
@@ -439,6 +459,10 @@
       var key = el.getAttribute("data-i18n");
       el.textContent = t(key);
     });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n-placeholder");
+      el.setAttribute("placeholder", t(key));
+    });
     document.documentElement.lang = state.lang;
     if (state.data && state.data.disclaimer) {
       document.getElementById("disclaimer").textContent =
@@ -448,6 +472,10 @@
     if (stats) stats.setAttribute("aria-label", t("statAria"));
     var tip = document.getElementById("calStatsTip");
     if (tip) tip.setAttribute("aria-label", t("statTip"));
+    var searchInput = document.getElementById("eventSearchInput");
+    if (searchInput) searchInput.setAttribute("aria-label", t("searchAria"));
+    var suggestions = document.getElementById("eventSearchSuggestions");
+    if (suggestions) suggestions.setAttribute("aria-label", t("search"));
   }
 
   function dataAsOf() {
@@ -648,6 +676,7 @@
       if (btn) btn.setAttribute("aria-expanded", "false");
       if (menu) menu.setAttribute("aria-hidden", "true");
     });
+    hideEventSearchSuggestions();
   }
 
   function refreshFilterOptions() {
@@ -734,6 +763,164 @@
     }
   }
 
+  function normalizeSearchText(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function eventSearchHaystack(e) {
+    return normalizeSearchText([e.name, e.city, e.country].filter(Boolean).join(" "));
+  }
+
+  function eventDateSpanInYear(e, year) {
+    if (!e || !e.start_date || e.stats_only) return null;
+    var start = e.start_date.slice(0, 10);
+    var end = (e.end_date || e.start_date).slice(0, 10);
+    var yearStart = year + "-01-01";
+    var yearEnd = year + "-12-31";
+    if (end < yearStart || start > yearEnd) return null;
+    return {
+      start: start < yearStart ? yearStart : start,
+      end: end > yearEnd ? yearEnd : end
+    };
+  }
+
+  function clearEventHighlight(resetInput) {
+    state.highlight = null;
+    if (resetInput) {
+      var input = document.getElementById("eventSearchInput");
+      if (input) input.value = "";
+    }
+    hideEventSearchSuggestions();
+  }
+
+  function hideEventSearchSuggestions() {
+    var box = document.getElementById("eventSearchSuggestions");
+    var input = document.getElementById("eventSearchInput");
+    if (box) {
+      box.innerHTML = "";
+      box.hidden = true;
+      box.classList.remove("is-open");
+    }
+    if (input) input.setAttribute("aria-expanded", "false");
+  }
+
+  function matchEventsForSearch(query) {
+    var q = normalizeSearchText(query);
+    if (!q || q.length < 1) return [];
+    var rows = eventsInYearRaw(state.year).filter(function (e) {
+      return !e.stats_only && e.start_date && eventSearchHaystack(e).indexOf(q) !== -1;
+    });
+    rows.sort(function (a, b) {
+      var an = normalizeSearchText(a.name);
+      var bn = normalizeSearchText(b.name);
+      var aStarts = an.indexOf(q) === 0 ? 0 : 1;
+      var bStarts = bn.indexOf(q) === 0 ? 0 : 1;
+      if (aStarts !== bStarts) return aStarts - bStarts;
+      var byName = String(a.name || "").localeCompare(String(b.name || ""), undefined, {
+        sensitivity: "base"
+      });
+      if (byName) return byName;
+      return String(a.start_date || "").localeCompare(String(b.start_date || ""));
+    });
+    return rows.slice(0, 10);
+  }
+
+  function formatSearchMeta(e) {
+    var bits = [];
+    if (e.start_date) {
+      bits.push(e.end_date && e.end_date !== e.start_date
+        ? e.start_date.slice(5) + "–" + e.end_date.slice(5)
+        : e.start_date.slice(5));
+    }
+    if (e.city) bits.push(e.city);
+    bits.push(statusLabel(e.status));
+    return bits.join(" · ");
+  }
+
+  function renderEventSearchSuggestions(query) {
+    var box = document.getElementById("eventSearchSuggestions");
+    var input = document.getElementById("eventSearchInput");
+    if (!box || !input) return;
+    var q = normalizeSearchText(query);
+    if (!q) {
+      hideEventSearchSuggestions();
+      return;
+    }
+    var matches = matchEventsForSearch(query);
+    if (!matches.length) {
+      box.innerHTML = '<div class="cal-search__empty">' + esc(t("searchNoMatches")) + "</div>";
+      box.hidden = false;
+      box.classList.add("is-open");
+      input.setAttribute("aria-expanded", "true");
+      return;
+    }
+    box.innerHTML = matches.map(function (e, idx) {
+      return '<button type="button" class="cal-search__suggestion" role="option" id="eventSearchOpt' + idx + '" data-event-key="' + esc(e.id) + '">' +
+        '<span class="cal-search__suggestion-name">' + esc(e.name || "") + "</span>" +
+        '<span class="cal-search__suggestion-meta">' + esc(formatSearchMeta(e)) + "</span>" +
+        "</button>";
+    }).join("");
+    box.hidden = false;
+    box.classList.add("is-open");
+    input.setAttribute("aria-expanded", "true");
+  }
+
+  function findEventByKey(key) {
+    if (!key || !state.data) return null;
+    var list = state.data.events || [];
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i].id) === String(key)) return list[i];
+    }
+    return null;
+  }
+
+  function scrollHighlightIntoView() {
+    var hit = document.querySelector(".day.is-search-hit");
+    if (!hit) return;
+    var month = hit.closest(".month");
+    var target = month || hit;
+    if (target && target.scrollIntoView) {
+      target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    }
+  }
+
+  function selectEventFromSearch(eventKey) {
+    var e = findEventByKey(eventKey);
+    hideEventSearchSuggestions();
+    if (!e) return;
+    var span = eventDateSpanInYear(e, state.year);
+    if (!span) return;
+    var input = document.getElementById("eventSearchInput");
+    if (input) input.value = e.name || "";
+    state.highlight = {
+      key: e.id,
+      start: span.start,
+      end: span.end
+    };
+    renderCalendar();
+    requestAnimationFrame(function () {
+      scrollHighlightIntoView();
+      var openIso = span.start;
+      if (!(state.byDay[openIso] && state.byDay[openIso].length)) {
+        openIso = null;
+        eachIsoDay(span.start, span.end, function (iso) {
+          if (openIso) return;
+          if (state.byDay[iso] && state.byDay[iso].length) openIso = iso;
+        });
+      }
+      if (!openIso) return;
+      openDay(openIso);
+      // Avoid selectEvent toggle-off if the same id was already selected.
+      state.selectedEventId = null;
+      if (e.id != null) selectEvent(String(e.id));
+    });
+  }
+
   function indexByDay(events, year) {
     var map = {};
     events.forEach(function (e) {
@@ -817,6 +1004,11 @@
           dens: dens,
           count: list.length,
           selected: occupied && state.selectedDay === iso,
+          searchHit: !!(
+            state.highlight &&
+            iso >= state.highlight.start &&
+            iso <= state.highlight.end
+          ),
           today: yearIsCurrent && iso === todayIso,
           past: yearIsPast || (yearIsCurrent && iso < todayIso)
         });
@@ -833,12 +1025,14 @@
         var cls = "day";
         if (c.occupied) cls += " has-events is-occupied dens-" + c.dens;
         if (c.selected) cls += " is-selected";
+        if (c.searchHit) cls += " is-search-hit";
         if (c.today) cls += " is-today";
         if (c.past) cls += " is-past";
         html += '<button type="button" class="' + cls + '" data-date="' + c.iso + '"' +
           (c.occupied ? "" : " disabled") +
           ' aria-label="' + c.iso + (c.occupied ? ", " + c.count + " events" : "") +
-          (c.today ? ", today" : "") + '">';
+          (c.today ? ", today" : "") +
+          (c.searchHit ? ", search match" : "") + '">';
         html += "<span>" + c.day + "</span>";
         html += "</button>";
       }
@@ -1897,6 +2091,7 @@
     state.country = "";
     state.status = "";
     state.kind = "";
+    clearEventHighlight(true);
     renderYearSelect();
     refreshFilterOptions();
     renderCalendar();
@@ -1970,6 +2165,72 @@
     state.kind = btn.getAttribute("data-value") || "";
     applyFiltersAndRender();
   });
+
+  (function wireEventSearch() {
+    var input = document.getElementById("eventSearchInput");
+    var box = document.getElementById("eventSearchSuggestions");
+    var wrap = document.getElementById("eventSearch");
+    if (!input || !box || !wrap) return;
+
+    input.addEventListener("input", function () {
+      var value = input.value;
+      if (!normalizeSearchText(value)) {
+        clearEventHighlight(false);
+        hideEventSearchSuggestions();
+        renderCalendar();
+        return;
+      }
+      // Typing a new query clears the previous highlight until a suggestion is chosen.
+      if (state.highlight) {
+        state.highlight = null;
+        renderCalendar();
+      }
+      renderEventSearchSuggestions(value);
+    });
+
+    input.addEventListener("focus", function () {
+      closeAllFilterDropdowns();
+      if (normalizeSearchText(input.value)) {
+        renderEventSearchSuggestions(input.value);
+      }
+    });
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        if (!box.hidden) {
+          e.preventDefault();
+          e.stopPropagation();
+          hideEventSearchSuggestions();
+          return;
+        }
+        if (state.highlight || input.value) {
+          e.preventDefault();
+          clearEventHighlight(true);
+          renderCalendar();
+        }
+        return;
+      }
+      if (e.key === "Enter") {
+        var first = box.querySelector(".cal-search__suggestion");
+        if (first && !box.hidden) {
+          e.preventDefault();
+          selectEventFromSearch(first.getAttribute("data-event-key"));
+        }
+      }
+    });
+
+    box.addEventListener("click", function (e) {
+      var btn = e.target.closest(".cal-search__suggestion");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      selectEventFromSearch(btn.getAttribute("data-event-key"));
+    });
+
+    wrap.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+  })();
 
   document.getElementById("eventDetail").addEventListener("click", function (e) {
     var sparkBtn = e.target.closest("[data-spark]");
