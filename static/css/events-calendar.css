@@ -2085,6 +2085,10 @@ h1 {
     max-width: calc(100vw - 16px);
     max-height: calc(100dvh - 16px);
   }
+  /* Override ≤960px map-col floor — contents layout + flex order need no min height. */
+  .day-island__map-col {
+    min-height: 0;
+  }
   .day-island__head {
     cursor: default;
     touch-action: manipulation;
