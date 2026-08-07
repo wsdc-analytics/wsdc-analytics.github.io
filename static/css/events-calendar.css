@@ -71,7 +71,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 10px;
+  /* Keep filters near the divider so they read with the calendar, not the copy. */
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--border-color);
   min-width: 0;
   /* 100px inset each side vs container content width */
@@ -147,7 +148,9 @@ h1 {
   align-items: end;
   justify-content: flex-start;
   column-gap: 12px;
-  padding-top: 2px;
+  /* Extra air under subtitle/disclaimer so filters sit with the calendar. */
+  margin-top: 8px;
+  padding-top: 0;
   width: 100%;
   min-width: 0;
   /* Must stay visible — overflow clips absolute dropdown menus. */
