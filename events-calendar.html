@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807t">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807u">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -109,6 +109,10 @@
                             <input type="search" class="cal-search__input" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
                             <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
                         </div>
+                    </div>
+                    <div class="filter-field cal-reset-field">
+                        <span class="filter-label" aria-hidden="true">&nbsp;</span>
+                        <button type="button" class="cal-reset-btn" id="clearFiltersBtn" data-i18n="clearFilters">Clear filters</button>
                     </div>
                 </div>
             </div>
@@ -236,6 +240,7 @@
       searchPlaceholder: "Event name…",
       searchAria: "Search events by name in the selected year",
       searchNoMatches: "No matching events",
+      clearFilters: "Clear filters",
       allContinents: "All continents",
       allCountries: "All countries",
       allConfirmStatuses: "All confirm statuses",
@@ -301,6 +306,7 @@
       searchPlaceholder: "Название ивента…",
       searchAria: "Поиск ивентов по названию в выбранном году",
       searchNoMatches: "Нет совпадений",
+      clearFilters: "Сбросить фильтры",
       allContinents: "Все континенты",
       allCountries: "Все страны",
       allConfirmStatuses: "Все статусы подтверждения",
@@ -365,6 +371,7 @@
       searchPlaceholder: "Nombre del evento…",
       searchAria: "Buscar eventos por nombre en el año seleccionado",
       searchNoMatches: "Sin coincidencias",
+      clearFilters: "Borrar filtros",
       allContinents: "Todos los continentes",
       allCountries: "Todos los países",
       allConfirmStatuses: "Todas las confirmaciones",
@@ -700,8 +707,10 @@
     var countryList = Object.keys(countries).sort(function (a, b) {
       return a.localeCompare(b);
     });
+    // Keep a selected country across years even if it has no events this year.
     if (state.country && countries[state.country] !== true) {
-      state.country = "";
+      countryList.push(state.country);
+      countryList.sort(function (a, b) { return a.localeCompare(b); });
     }
     fillDropdown(
       document.getElementById("countryFilterMenu"),
@@ -734,8 +743,9 @@
     var kindOpts = KINDS.filter(function (k) { return kindPresent[k]; }).map(function (k) {
       return { value: k, label: kindLabel(k) };
     });
+    // Persist kind selection across years; surface it even if absent this year.
     if (state.kind && kindPresent[state.kind] !== true) {
-      state.kind = "";
+      kindOpts.push({ value: state.kind, label: kindLabel(state.kind) });
     }
     fillDropdown(
       document.getElementById("kindFilterMenu"),
@@ -889,35 +899,89 @@
     }
   }
 
+  function applyHighlightForEvent(e, opts) {
+    opts = opts || {};
+    if (!e) {
+      state.highlight = null;
+      return false;
+    }
+    var span = eventDateSpanInYear(e, state.year);
+    if (!span) {
+      state.highlight = null;
+      return false;
+    }
+    state.highlight = {
+      key: e.id,
+      eventId: e.event_id != null ? e.event_id : null,
+      nameNorm: normalizeSearchText(e.name),
+      start: span.start,
+      end: span.end
+    };
+    if (opts.syncInput) {
+      var input = document.getElementById("eventSearchInput");
+      if (input) input.value = e.name || "";
+    }
+    return true;
+  }
+
+  function rematchHighlightForYear() {
+    var h = state.highlight;
+    var input = document.getElementById("eventSearchInput");
+    var nameNorm = (h && h.nameNorm) || (input ? normalizeSearchText(input.value) : "");
+    if ((!h || h.eventId == null) && !nameNorm) {
+      state.highlight = null;
+      return;
+    }
+    var pool = eventsInYearRaw(state.year).filter(function (e) {
+      return !e.stats_only && e.start_date;
+    });
+    var match = null;
+    if (h && h.eventId != null) {
+      for (var i = 0; i < pool.length; i++) {
+        if (String(pool[i].event_id) === String(h.eventId)) {
+          match = pool[i];
+          break;
+        }
+      }
+    }
+    if (!match && nameNorm) {
+      for (var j = 0; j < pool.length; j++) {
+        if (normalizeSearchText(pool[j].name) === nameNorm) {
+          match = pool[j];
+          break;
+        }
+      }
+    }
+    if (!match && nameNorm) {
+      for (var k = 0; k < pool.length; k++) {
+        if (eventSearchHaystack(pool[k]).indexOf(nameNorm) !== -1) {
+          match = pool[k];
+          break;
+        }
+      }
+    }
+    if (match) applyHighlightForEvent(match);
+    else state.highlight = null;
+  }
+
+  function clearAllFilters() {
+    state.continent = "";
+    state.country = "";
+    state.status = "";
+    state.kind = "";
+    forceCloseDayIsland();
+    refreshFilterOptions();
+    renderCalendar();
+  }
+
   function selectEventFromSearch(eventKey) {
     var e = findEventByKey(eventKey);
     hideEventSearchSuggestions();
     if (!e) return;
-    var span = eventDateSpanInYear(e, state.year);
-    if (!span) return;
-    var input = document.getElementById("eventSearchInput");
-    if (input) input.value = e.name || "";
-    state.highlight = {
-      key: e.id,
-      start: span.start,
-      end: span.end
-    };
+    if (!applyHighlightForEvent(e, { syncInput: true })) return;
     renderCalendar();
     requestAnimationFrame(function () {
       scrollHighlightIntoView();
-      var openIso = span.start;
-      if (!(state.byDay[openIso] && state.byDay[openIso].length)) {
-        openIso = null;
-        eachIsoDay(span.start, span.end, function (iso) {
-          if (openIso) return;
-          if (state.byDay[iso] && state.byDay[iso].length) openIso = iso;
-        });
-      }
-      if (!openIso) return;
-      openDay(openIso);
-      // Avoid selectEvent toggle-off if the same id was already selected.
-      state.selectedEventId = null;
-      if (e.id != null) selectEvent(String(e.id));
     });
   }
 
@@ -2103,13 +2167,13 @@
   function setYear(y) {
     state.year = y;
     forceCloseDayIsland();
-    state.country = "";
-    state.status = "";
-    state.kind = "";
-    clearEventHighlight(true);
     renderYearSelect();
     refreshFilterOptions();
+    rematchHighlightForYear();
     renderCalendar();
+    requestAnimationFrame(function () {
+      if (state.highlight) scrollHighlightIntoView();
+    });
   }
 
   function applyFiltersAndRender() {
@@ -2246,6 +2310,12 @@
       e.stopPropagation();
     });
   })();
+
+  document.getElementById("clearFiltersBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    clearAllFilters();
+  });
 
   document.getElementById("eventDetail").addEventListener("click", function (e) {
     var sparkBtn = e.target.closest("[data-spark]");

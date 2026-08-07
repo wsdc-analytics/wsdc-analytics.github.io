@@ -230,6 +230,33 @@ h1 {
   color: var(--text-secondary, #64748b);
 }
 
+.cal-reset-field {
+  flex: 0 0 auto;
+  align-items: stretch;
+}
+
+.cal-reset-btn {
+  height: 34px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--border-color, #d0d7e2);
+  border-radius: 8px;
+  background: var(--bg-primary, #fff);
+  color: var(--text-secondary, #64748b);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cal-reset-btn:hover,
+.cal-reset-btn:focus-visible {
+  outline: none;
+  border-color: var(--color-accent, #2563eb);
+  color: var(--color-primary-dark, #1e3a8a);
+}
+
 .filter-label {
   display: block;
   width: 100%;
@@ -1843,6 +1870,10 @@ h1 {
     flex: 1 1 100%;
     max-width: none;
   }
+  .cal-reset-field {
+    flex: 1 1 100%;
+  }
+  .cal-reset-btn { width: 100%; }
   .cal-dd {
     width: 100%;
     --cal-dd-width: 100%;
