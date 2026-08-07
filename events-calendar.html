@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta name="description" content="WSDC year event calendar with weekend map drill-down: confirmed, expected, and hiatus editions.">
+    <meta name="description" content="Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.">
     <meta name="keywords" content="WSDC, events calendar, West Coast Swing, registry events, trial events, map">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta property="og:title" content="Events Calendar | WSDC Analytics">
-    <meta property="og:description" content="Year calendar of WSDC events with weekend geography and event cards.">
+    <meta property="og:title" content="WSDC Events Calendar | WSDC Analytics">
+    <meta property="og:description" content="Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta property="twitter:title" content="Events Calendar | WSDC Analytics">
-    <meta property="twitter:description" content="Year calendar of WSDC events with weekend geography and event cards.">
-    <title>Events Calendar | WSDC Analytics</title>
+    <meta property="twitter:title" content="WSDC Events Calendar | WSDC Analytics">
+    <meta property="twitter:description" content="Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.">
+    <title>WSDC Events Calendar | WSDC Analytics</title>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "Events Calendar | WSDC Analytics",
+      "name": "WSDC Events Calendar | WSDC Analytics",
       "url": "https://wsdc-analytics.github.io/events-calendar.html",
-      "description": "Year calendar of WSDC events with weekend geography and event cards.",
+      "description": "Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.",
       "publisher": { "@type": "Organization", "name": "WSDC Analytics" }
     }
     </script>
@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807aa">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ab">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -49,10 +49,10 @@
     <main id="main" class="container">
         <header class="page-head">
             <div class="page-head__title-row">
-                <h1 data-i18n="title">Events Calendar</h1>
+                <h1 data-i18n="title">WSDC Events Calendar</h1>
                 <time class="data-as-of" id="dataAsOf" hidden></time>
             </div>
-            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.</p>
+            <p class="subtitle" data-i18n="subtitle">A calendar of expected, confirmed, and paused events for the selected year. Filter the list or use search. Click a date for location details and a short analytics view of the event’s history, estimated dancers, points earned, and new participants.</p>
             <p class="disclaimer" id="disclaimer"></p>
             <div class="toolbar">
                 <div class="filters" role="toolbar" aria-label="Filters">
@@ -233,9 +233,11 @@
 
   var I18N = {
     en: {
-      title: "Events Calendar",
+      title: "WSDC Events Calendar",
       asOf: "As of {date}",
-      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.",
+      subtitle: "A calendar of expected, confirmed, and paused events for the selected year. Filter the list or use search. Click a date for location details and a short analytics view of the event’s history, estimated dancers, points earned, and new participants.",
+      disclaimer: "Important: Expected events are events whose dates were not yet confirmed on the WSDC site ({link}) as of the latest update, but that ran around these dates the year before with no cancellation or hiatus reported. Expected dates in the calendar are approximate and may change once the event becomes confirmed.",
+      wsdcEventsList: "WSDC Events List",
       year: "Year",
       continent: "Continent",
       country: "Country",
@@ -300,9 +302,11 @@
       tierTipAria: "About tiers"
     },
     ru: {
-      title: "Календарь ивентов",
+      title: "WSDC Events Calendar",
       asOf: "По состоянию на {date}",
-      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и список. Прошлые годы и прошедшие дни приглушены, сегодня — обведено.",
+      subtitle: "Календарь ивентов, который включает в себя информацию об ожидаемых, подтверждённых и приостановленных ивентах в рамках выбранного года. Ивенты можно отфильтровать или воспользоваться поиском. При клике на дату можно посмотреть более детальную информацию о расположении ивента, а также небольшую аналитическую информацию об истории проведения и расчётном количестве участников, набранных поинтов и новых участниках.",
+      disclaimer: "Важно: ожидаемые ивенты — это ивенты, информация о проведении которых на момент последнего апдейта не подтверждена на сайте WSDC ({link}), но годом ранее ивент проводился примерно в эти даты и информация об отмене или приостановке ивента отсутствует. Даты проведения ожидаемых ивентов в календаре ориентировочные и могут измениться после перехода ивента в статус подтверждённых.",
+      wsdcEventsList: "Лист ивентов WSDC",
       year: "Год",
       continent: "Континент",
       country: "Страна",
@@ -366,9 +370,11 @@
       tierTipAria: "О тирах"
     },
     es: {
-      title: "Calendario de eventos",
+      title: "WSDC Events Calendar",
       asOf: "Actualizado al {date}",
-      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y la lista. Los años y dias pasados se atenúan; hoy va marcado.",
+      subtitle: "Calendario de eventos esperados, confirmados y en pausa para el año seleccionado. Puedes filtrar la lista o usar la búsqueda. Al hacer clic en una fecha verás la ubicación del evento y una breve analítica de su historial, el número estimado de participantes, los puntos obtenidos y los nuevos bailarines.",
+      disclaimer: "Importante: los eventos esperados son aquellos cuya celebración, a la fecha de la última actualización, aún no está confirmada en el sitio de WSDC ({link}), pero el año anterior se celebraron aproximadamente en estas fechas y no hay información de cancelación o pausa. Las fechas de los eventos esperados en el calendario son orientativas y pueden cambiar cuando el evento pase a confirmado.",
+      wsdcEventsList: "lista de eventos WSDC",
       year: "Año",
       continent: "Continente",
       country: "País",
@@ -478,10 +484,7 @@
       el.setAttribute("placeholder", t(key));
     });
     document.documentElement.lang = state.lang;
-    if (state.data && state.data.disclaimer) {
-      document.getElementById("disclaimer").textContent =
-        state.data.disclaimer[state.lang] || state.data.disclaimer.en || "";
-    }
+    renderDisclaimer();
     renderDataAsOf();
     var stats = document.getElementById("calStats");
     if (stats) stats.setAttribute("aria-label", t("statAria"));
@@ -491,6 +494,24 @@
     if (searchInput) searchInput.setAttribute("aria-label", t("searchAria"));
     var suggestions = document.getElementById("eventSearchSuggestions");
     if (suggestions) suggestions.setAttribute("aria-label", t("search"));
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function renderDisclaimer() {
+    var el = document.getElementById("disclaimer");
+    if (!el) return;
+    var link =
+      '<a href="https://www.worldsdc.com/events/" target="_blank" rel="noopener noreferrer">' +
+      escapeHtml(t("wsdcEventsList")) +
+      "</a>";
+    el.innerHTML = t("disclaimer").replace("{link}", link);
   }
 
   function formatAsOfDisplay(iso) {
@@ -2536,6 +2557,7 @@
   if (stored && I18N[stored]) state.lang = stored;
   var params = new URLSearchParams(window.location.search);
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
+  applyStaticI18n();
 
   fetch("static/data/events_year_calendar.json?v=20260807y")
     .then(function (r) {
