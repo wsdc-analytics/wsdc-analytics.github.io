@@ -124,9 +124,19 @@ h1 {
 .disclaimer {
   font-size: 12px;
   color: var(--text-tertiary);
-  line-height: 1.4;
+  line-height: 1.45;
   margin: 0;
   max-width: 62rem;
+}
+
+.disclaimer a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disclaimer a:hover {
+  color: var(--color-primary-dark);
 }
 
 .toolbar {
