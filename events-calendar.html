@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807aj">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ak">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -2159,9 +2159,12 @@
       "</div>";
   }
 
+  function buildMetricTipHtml() {
+    return buildInfoTipHtml(t("metricTipAria"), t("metricTip"), "l2-info-tip--metrics-between");
+  }
+
   function buildKpiSegHtml() {
     return '<div class="l2-kpi-seg-row">' +
-      buildInfoTipHtml(t("metricTipAria"), t("metricTip"), "l2-info-tip--metrics-between") +
       buildMetricLabelsHtml() +
       "</div>";
   }
@@ -2224,6 +2227,7 @@
     if (hasFocus) {
       var labelKey = right.mode === "edition" ? "thisEdition" : "lastEdition";
       lastHead += '<div class="l2-event-card__last-head">' +
+        buildMetricTipHtml() +
         '<span class="l2-event-card__last-label">' + esc(t(labelKey)) + "</span>" +
         '<span class="l2-event-card__last-date">' +
         esc(monthYearLabel(focusEdition.year, focusEdition.month)) + "</span>" +
@@ -2252,11 +2256,30 @@
       var focusBtn = detail.querySelector('[data-spark="' + restoreSpark + '"]');
       if (focusBtn) focusBtn.focus();
     }
+    wireL2InfoTips(detail);
     if (isMobileL2Layout()) {
       var body = document.querySelector(".day-island__body");
       if (body) body.scrollTop = 0;
     }
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
+  }
+
+  function wireL2InfoTips(root) {
+    if (!root) return;
+    root.querySelectorAll(".l2-info-tip").forEach(function (btn) {
+      if (btn.getAttribute("data-tip-wired") === "1") return;
+      btn.setAttribute("data-tip-wired", "1");
+      btn.addEventListener("click", function (e) {
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var open = btn.classList.contains("is-open");
+        root.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
+          el.classList.remove("is-open");
+        });
+        if (!open) btn.classList.add("is-open");
+      });
+    });
   }
 
   function refreshOpenEventCard() {
@@ -2529,6 +2552,11 @@
       if (tip.classList.contains("is-open") && !(e.target.closest && e.target.closest("#calStatsTip"))) {
         closeTip();
       }
+      document.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
+        if (!(e.target.closest && e.target.closest(".l2-info-tip") === el)) {
+          el.classList.remove("is-open");
+        }
+      });
     });
   })();
 

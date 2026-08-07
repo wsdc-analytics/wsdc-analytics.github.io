@@ -1368,6 +1368,20 @@ h1 {
   min-width: 0;
   width: 100%;
   min-height: 18px;
+  position: relative;
+}
+
+/* Metrics tip lives in the Last edition row; desktop keeps it in the column gap. */
+.l2-event-card__last-head .l2-info-tip--metrics-between {
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.l2-event-card__last-head .l2-info-tip--metrics-between:active {
+  transform: translate(-50%, -50%) scale(0.94);
 }
 
 .l2-event-card__last-label {
@@ -1565,7 +1579,8 @@ h1 {
 }
 
 .l2-info-tip:hover .l2-info-tip__bubble,
-.l2-info-tip:focus-visible .l2-info-tip__bubble {
+.l2-info-tip:focus-visible .l2-info-tip__bubble,
+.l2-info-tip.is-open .l2-info-tip__bubble {
   opacity: 1;
   transform: scale(1);
 }
@@ -1591,7 +1606,8 @@ h1 {
 }
 
 .l2-info-tip--metrics-between:hover .l2-info-tip__bubble,
-.l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble {
+.l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble,
+.l2-info-tip--metrics-between.is-open .l2-info-tip__bubble {
   transform: translateX(-50%) scale(1);
 }
 
@@ -2247,26 +2263,52 @@ h1 {
     order: 3;
     padding-right: 0;
     padding-top: 0;
-    /* Extra air before Last edition / KPI block. */
-    padding-bottom: 8px;
+    padding-bottom: 0;
   }
   .l2-event-card__last-head-block {
     order: 4;
     justify-content: flex-start;
     text-align: left;
     padding-left: 0;
-    padding-top: 8px;
+    /* More space after dynamics; compensated on tiers so the table does not drop. */
+    padding-top: 12px;
     border-top: 1px solid var(--border-color);
+  }
+  .l2-event-card__last-head {
+    justify-content: flex-start;
+    text-align: left;
+    gap: 8px;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin: 0;
+    flex: 0 0 auto;
+    order: -1;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between:active {
+    transform: scale(0.94);
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between.is-open .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble {
+    left: 0;
+    right: auto;
+    transform: none;
+    transform-origin: top left;
   }
   .l2-event-card__kpi-ctrl {
     order: 5;
-    /* Pull Last edition + KPI 4px closer to the tiers table. */
-    margin-bottom: -4px;
+    margin-bottom: 0;
   }
   .l2-event-card__tiers-body {
     order: 6;
     padding-left: 0;
     padding-top: 0;
+    /* Keep tiers table Y stable while Last edition/KPI sit closer to it. */
+    margin-top: -8px;
   }
   .l2-event-card__chart-body .l2-chart,
   .l2-event-card__chart-body .l2-chart-panel {
