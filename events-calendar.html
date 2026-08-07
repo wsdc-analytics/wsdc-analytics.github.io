@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807af">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260807ag">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1422,22 +1422,43 @@
     return window.matchMedia(MOBILE_L2_MQ).matches;
   }
 
-  function islandFinalRect() {
+  function mobileIslandRect() {
     var pad = 10;
-    var vw = window.innerWidth || document.documentElement.clientWidth;
-    var vh = window.innerHeight || document.documentElement.clientHeight;
-    // Mobile: nearly full-viewport vertical card (scroll inside the body).
-    // Never exceed the visible viewport (landscape / narrow phones).
-    if (isMobileL2Layout()) {
-      var safeTop = 8;
-      var safeBottom = 8;
-      return {
-        left: pad,
-        top: safeTop,
-        width: Math.max(0, vw - pad * 2),
-        height: Math.max(0, vh - safeTop - safeBottom)
-      };
+    var vv = window.visualViewport;
+    var vw = vv && vv.width ? vv.width : (window.innerWidth || document.documentElement.clientWidth);
+    var vh = vv && vv.height ? vv.height : (window.innerHeight || document.documentElement.clientHeight);
+    var offsetTop = vv && typeof vv.offsetTop === "number" ? vv.offsetTop : 0;
+    var offsetLeft = vv && typeof vv.offsetLeft === "number" ? vv.offsetLeft : 0;
+    var safeBottom = 8;
+    var top = offsetTop + 8;
+
+    var chrome = document.querySelector("[data-site-chrome]");
+    if (chrome) {
+      var chromeBottom = chrome.getBoundingClientRect().bottom;
+      if (Number.isFinite(chromeBottom)) top = Math.max(top, chromeBottom + 6);
     }
+
+    // If filters are still on-screen, sit the card just under them.
+    var filters = document.querySelector(".toolbar") || document.querySelector(".filters");
+    if (filters) {
+      var fr = filters.getBoundingClientRect();
+      if (fr.bottom > top && fr.top < vh * 0.45) {
+        top = Math.max(top, fr.bottom + 6);
+      }
+    }
+
+    var maxBottom = offsetTop + vh - safeBottom;
+    return {
+      left: offsetLeft + pad,
+      top: top,
+      width: Math.max(0, vw - pad * 2),
+      height: Math.max(0, maxBottom - top)
+    };
+  }
+
+  function islandFinalRect() {
+    if (isMobileL2Layout()) return mobileIslandRect();
+    var pad = 10;
     var grid = gridEl();
     var toolbar = document.querySelector(".toolbar");
     var filters = document.querySelector(".filters");
@@ -1736,7 +1757,7 @@
       renderCalendar();
       populateDayIsland(iso);
       var island = document.getElementById("dayIsland");
-      if (state.l2Moved) placeIslandKeepingOffset(island);
+      if (state.l2Moved && !isMobileL2Layout()) placeIslandKeepingOffset(island);
       else placeIslandDefault(island);
       island.classList.add("is-settled");
       setTimeout(function () {
@@ -2543,21 +2564,25 @@
     head.addEventListener("pointercancel", endDrag);
   })();
 
-  window.addEventListener("resize", function () {
+  function relocateOpenIsland() {
     if (!state.l2Open) return;
     var island = document.getElementById("dayIsland");
-    if (state.l2Moved) placeIslandKeepingOffset(island);
-    else placeIslandDefault(island);
+    if (!island) return;
+    // Mobile: always snap to the visible viewport under chrome/filters.
+    if (isMobileL2Layout() || !state.l2Moved) placeIslandDefault(island);
+    else placeIslandKeepingOffset(island);
     island.classList.add("is-settled");
     if (state.map) {
       state.map.invalidateSize();
-      var bounds = Object.keys(state.markerById).map(function (id) {
-        var e = state.markerById[id].event;
-        return [e.lat, e.lon];
-      });
-      fitDayMap(bounds);
+      fitDayMap(dayMapBounds());
     }
-  });
+  }
+
+  window.addEventListener("resize", relocateOpenIsland);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", relocateOpenIsland);
+    window.visualViewport.addEventListener("scroll", relocateOpenIsland);
+  }
   window.WsdcChrome = window.WsdcChrome || {};
   window.WsdcChrome.onLangChange = function (lang) {
     state.lang = lang;
