@@ -119,7 +119,8 @@ h1 {
   color: var(--text-secondary);
   line-height: 1.45;
   margin: 0;
-  max-width: 62rem;
+  width: 100%;
+  max-width: none;
 }
 
 .disclaimer {
@@ -127,7 +128,8 @@ h1 {
   color: var(--text-tertiary);
   line-height: 1.45;
   margin: 0;
-  max-width: 62rem;
+  width: 100%;
+  max-width: none;
 }
 
 .disclaimer a {
@@ -1593,6 +1595,11 @@ h1 {
   transform-origin: top right;
   pointer-events: none;
   transition: opacity 125ms var(--ease-out), transform 125ms var(--ease-out);
+}
+
+.l2-info-tip__bubble strong {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 /* Touch/coarse: only .is-open / keyboard focus — never sticky :hover flash. */
