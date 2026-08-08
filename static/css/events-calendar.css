@@ -989,18 +989,6 @@ h1 {
   transform: scale(1);
 }
 
-/* L2 info tips are absolutely positioned; keep them out of the island clip. */
-.day-island:has(.l2-info-tip.is-open),
-.day-island:has(.l2-info-tip:focus-visible) {
-  overflow: visible;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .day-island:has(.l2-info-tip:hover) {
-    overflow: visible;
-  }
-}
-
 .day-island__head {
   flex: 0 0 auto;
   display: flex;
@@ -1594,11 +1582,18 @@ h1 {
   transition: opacity 125ms var(--ease-out), transform 125ms var(--ease-out);
 }
 
-.l2-info-tip:hover .l2-info-tip__bubble,
+/* Touch/coarse: only .is-open / keyboard focus — never sticky :hover flash. */
 .l2-info-tip:focus-visible .l2-info-tip__bubble,
 .l2-info-tip.is-open .l2-info-tip__bubble {
   opacity: 1;
   transform: scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l2-info-tip:hover .l2-info-tip__bubble {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Column-gap bridge: centered between spark tabs and KPI pills. */
@@ -1614,6 +1609,12 @@ h1 {
   transform: translate(-50%, -50%) scale(0.94);
 }
 
+/* Open tip must stack above the sibling tier info button. */
+.l2-info-tip--metrics-between:focus-visible,
+.l2-info-tip--metrics-between.is-open {
+  z-index: 50;
+}
+
 .l2-info-tip--metrics-between .l2-info-tip__bubble {
   right: auto;
   left: 50%;
@@ -1621,10 +1622,18 @@ h1 {
   transform-origin: top center;
 }
 
-.l2-info-tip--metrics-between:hover .l2-info-tip__bubble,
 .l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble,
 .l2-info-tip--metrics-between.is-open .l2-info-tip__bubble {
   transform: translateX(-50%) scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l2-info-tip--metrics-between:hover {
+    z-index: 50;
+  }
+  .l2-info-tip--metrics-between:hover .l2-info-tip__bubble {
+    transform: translateX(-50%) scale(1);
+  }
 }
 
 /* Column-gap bridge: same X as metrics tip, directly underneath. */
@@ -1640,6 +1649,11 @@ h1 {
   transform: translateX(-50%) scale(0.94);
 }
 
+.l2-info-tip--tier-between:focus-visible,
+.l2-info-tip--tier-between.is-open {
+  z-index: 50;
+}
+
 .l2-info-tip--tier-between .l2-info-tip__bubble {
   right: auto;
   left: 50%;
@@ -1647,10 +1661,18 @@ h1 {
   transform-origin: top center;
 }
 
-.l2-info-tip--tier-between:hover .l2-info-tip__bubble,
 .l2-info-tip--tier-between:focus-visible .l2-info-tip__bubble,
 .l2-info-tip--tier-between.is-open .l2-info-tip__bubble {
   transform: translateX(-50%) scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l2-info-tip--tier-between:hover {
+    z-index: 50;
+  }
+  .l2-info-tip--tier-between:hover .l2-info-tip__bubble {
+    transform: translateX(-50%) scale(1);
+  }
 }
 
 .l2-event-card__metrics {
@@ -2217,12 +2239,6 @@ h1 {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-  }
-  /* Absolute tip bubbles must not be clipped by the L2 scrollport while open. */
-  .day-island__body:has(.l2-info-tip.is-open),
-  .day-island__body:has(.l2-info-tip:focus-visible),
-  .day-island__body:has(.l2-info-tip:hover) {
-    overflow: visible;
   }
   .day-island__map-col,
   .day-island__list-col {
