@@ -979,14 +979,12 @@ h1 {
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
   overflow: hidden;
   opacity: 0;
-  transform: scale(0.985);
-  transform-origin: center center;
-  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+  /* No transform here: it makes position:fixed tips use the island as containing block. */
+  transition: opacity 180ms var(--ease-out);
 }
 
 .day-island.is-settled {
   opacity: 1;
-  transform: scale(1);
 }
 
 .day-island__head {
@@ -1011,7 +1009,20 @@ h1 {
 .day-island.is-dragging {
   transition: none;
   opacity: 1;
-  transform: none;
+}
+
+/* Keep open L2 analytics above the Leaflet map so tip bubbles are not covered. */
+.day-island__map-col.has-event .l2-event-card.is-open {
+  position: relative;
+  z-index: 6;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .day-island:has(.l2-info-tip:hover),
+  .day-island:has(.l2-info-tip:focus-visible),
+  .day-island:has(.l2-info-tip.is-open) {
+    overflow: visible;
+  }
 }
 
 .day-island__head h2 {
@@ -1087,6 +1098,8 @@ h1 {
 
 .day-island__map-col.has-event #dayMap {
   grid-area: secondary;
+  position: relative;
+  z-index: 1;
 }
 
 .no-geo {
@@ -1584,9 +1597,20 @@ h1 {
 
 /* Touch/coarse: only .is-open / keyboard focus — never sticky :hover flash. */
 .l2-info-tip:focus-visible .l2-info-tip__bubble,
-.l2-info-tip.is-open .l2-info-tip__bubble {
+.l2-info-tip.is-open .l2-info-tip__bubble,
+.l2-info-tip__bubble.is-visible {
   opacity: 1;
   transform: scale(1);
+}
+
+/* Ported to document.body on mobile — viewport-fixed, above island/map. */
+.l2-info-tip__bubble.is-ported {
+  position: fixed;
+  z-index: 200;
+  right: auto;
+  transform: none;
+  transform-origin: top left;
+  pointer-events: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1657,6 +1681,8 @@ h1 {
 .l2-info-tip--tier-between .l2-info-tip__bubble {
   right: auto;
   left: 50%;
+  /* Compact range list — about half the metrics tip width. */
+  width: min(140px, 40vw);
   transform: translateX(-50%) scale(0.97);
   transform-origin: top center;
 }
@@ -2341,15 +2367,21 @@ h1 {
   .l2-event-card__last-head .l2-info-tip--metrics-between:active {
     transform: translateY(-50%) scale(0.94);
   }
-  .l2-event-card__last-head .l2-info-tip--metrics-between .l2-info-tip__bubble,
-  .l2-event-card__last-head .l2-info-tip--metrics-between.is-open .l2-info-tip__bubble,
-  .l2-event-card__last-head .l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble,
   .l2-info-tip--tier-between .l2-info-tip__bubble,
   .l2-info-tip--tier-between.is-open .l2-info-tip__bubble,
   .l2-info-tip--tier-between:focus-visible .l2-info-tip__bubble {
     left: 0;
     right: auto;
-    /* 100% here is the 16px tip button — use viewport, not parent %. */
+    width: min(140px, calc(100vw - 32px));
+    max-width: min(140px, calc(100vw - 32px));
+    transform: none;
+    transform-origin: top left;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between.is-open .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble {
+    left: 0;
+    right: auto;
     width: min(280px, calc(100vw - 32px));
     max-width: min(280px, calc(100vw - 32px));
     transform: none;
