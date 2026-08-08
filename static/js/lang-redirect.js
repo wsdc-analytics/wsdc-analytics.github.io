@@ -17,15 +17,9 @@
     if (!match) return null;
 
     var base = match[1];
-    var suffix = match[2] || null;
     if (!SUPPORTED[base]) return null;
 
-    var currentLang = suffix || "ru";
-    if (base === "dancers_2025" && file === "dancers_2025_ru.html") {
-      currentLang = "ru";
-    }
-
-    return { base: base, file: file, currentLang: currentLang };
+    return { base: base, file: file };
   }
 
   function buildTarget(base, lang) {
