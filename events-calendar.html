@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808e">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808f">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -466,7 +466,8 @@
     markers: null,
     markerById: {},
     eventCards: null,
-    l2SparkMetric: "unique_dancers"
+    l2SparkMetric: "unique_dancers",
+    l2TipIgnoreDocCloseUntil: 0
   };
 
   function t(key) {
@@ -2264,22 +2265,89 @@
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
   }
 
+  function clearL2TipBubblePosition(btn) {
+    var bubble = btn && btn.querySelector(".l2-info-tip__bubble");
+    if (!bubble) return;
+    bubble.style.position = "";
+    bubble.style.left = "";
+    bubble.style.top = "";
+    bubble.style.right = "";
+    bubble.style.width = "";
+    bubble.style.maxWidth = "";
+    bubble.style.transform = "";
+    bubble.style.zIndex = "";
+  }
+
+  function placeL2TipBubble(btn) {
+    var bubble = btn && btn.querySelector(".l2-info-tip__bubble");
+    if (!bubble) return;
+    if (!isMobileL2Layout()) {
+      clearL2TipBubblePosition(btn);
+      return;
+    }
+    var pad = 12;
+    var maxW = Math.min(280, window.innerWidth - pad * 2);
+    bubble.style.position = "fixed";
+    bubble.style.zIndex = "80";
+    bubble.style.right = "auto";
+    bubble.style.transform = "none";
+    bubble.style.width = maxW + "px";
+    bubble.style.maxWidth = maxW + "px";
+    // Measure after opacity rules apply (is-open already set).
+    var r = btn.getBoundingClientRect();
+    var h = bubble.getBoundingClientRect().height || 0;
+    var left = Math.min(Math.max(pad, r.left), window.innerWidth - pad - maxW);
+    var top = r.bottom + 8;
+    if (h && top + h > window.innerHeight - pad && r.top - 8 - h >= pad) {
+      top = r.top - 8 - h;
+    }
+    bubble.style.left = left + "px";
+    bubble.style.top = top + "px";
+  }
+
+  function closeAllL2InfoTips(scope) {
+    var root = scope || document;
+    root.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
+      el.classList.remove("is-open");
+      clearL2TipBubblePosition(el);
+    });
+  }
+
   function wireL2InfoTips(root) {
     if (!root) return;
     root.querySelectorAll(".l2-info-tip").forEach(function (btn) {
       if (btn.getAttribute("data-tip-wired") === "1") return;
       btn.setAttribute("data-tip-wired", "1");
       btn.addEventListener("click", function (e) {
-        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
         e.preventDefault();
         e.stopPropagation();
+        // Desktop with real hover: CSS :hover shows the tip.
+        // Mobile / coarse pointer (and mobile L2 layout): tap toggles .is-open.
+        var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        if (finePointer && !isMobileL2Layout()) return;
+
         var open = btn.classList.contains("is-open");
-        root.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
-          el.classList.remove("is-open");
-        });
-        if (!open) btn.classList.add("is-open");
+        closeAllL2InfoTips(root);
+        if (!open) {
+          btn.classList.add("is-open");
+          placeL2TipBubble(btn);
+          // Ignore the document click synthesized for this same tap.
+          state.l2TipIgnoreDocCloseUntil = Date.now() + 400;
+        }
       });
     });
+
+    var body = document.querySelector(".day-island__body");
+    if (body && body.getAttribute("data-l2-tip-scroll") !== "1") {
+      body.setAttribute("data-l2-tip-scroll", "1");
+      body.addEventListener(
+        "scroll",
+        function () {
+          closeAllL2InfoTips(root);
+        },
+        { passive: true }
+      );
+    }
   }
 
   function refreshOpenEventCard() {
@@ -2552,9 +2620,13 @@
       if (tip.classList.contains("is-open") && !(e.target.closest && e.target.closest("#calStatsTip"))) {
         closeTip();
       }
+      if (state.l2TipIgnoreDocCloseUntil && Date.now() < state.l2TipIgnoreDocCloseUntil) {
+        return;
+      }
       document.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
         if (!(e.target.closest && e.target.closest(".l2-info-tip") === el)) {
           el.classList.remove("is-open");
+          clearL2TipBubblePosition(el);
         }
       });
     });
