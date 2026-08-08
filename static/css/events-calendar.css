@@ -989,6 +989,18 @@ h1 {
   transform: scale(1);
 }
 
+/* L2 info tips are absolutely positioned; keep them out of the island clip. */
+.day-island:has(.l2-info-tip.is-open),
+.day-island:has(.l2-info-tip:focus-visible) {
+  overflow: visible;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .day-island:has(.l2-info-tip:hover) {
+    overflow: visible;
+  }
+}
+
 .day-island__head {
   flex: 0 0 auto;
   display: flex;
@@ -2205,6 +2217,12 @@ h1 {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+  }
+  /* Absolute tip bubbles must not be clipped by the L2 scrollport while open. */
+  .day-island__body:has(.l2-info-tip.is-open),
+  .day-island__body:has(.l2-info-tip:focus-visible),
+  .day-island__body:has(.l2-info-tip:hover) {
+    overflow: visible;
   }
   .day-island__map-col,
   .day-island__list-col {
