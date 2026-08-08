@@ -2036,7 +2036,8 @@ h1 {
     left: auto;
     top: auto;
     width: 100%;
-    margin: 0 0 8px;
+    /* Slightly more air before the year grid on small screens */
+    margin: 0 0 14px;
     display: grid;
     /* tip + 6 tracks: 3 metrics each span 2; row-2 sits between them */
     grid-template-columns: minmax(28px, auto) repeat(6, minmax(0, 1fr));
@@ -2044,7 +2045,7 @@ h1 {
     justify-items: center;
     align-items: end;
     column-gap: 0;
-    row-gap: 10px;
+    row-gap: 12px;
     pointer-events: auto;
     overflow: visible;
     z-index: 6;
@@ -2120,12 +2121,17 @@ h1 {
     align-items: center;
     text-align: center;
     padding: 0 4px;
+    gap: 3px;
   }
   .cal-stats__label {
     text-align: center;
+    font-size: 11px;
   }
   .cal-stats__value {
-    font-size: 14px;
+    font-size: 16px;
+  }
+  .cal-stats__of {
+    font-size: 12px;
   }
   .cal-legend {
     position: static;
@@ -2164,7 +2170,11 @@ h1 {
     max-width: 100%;
   }
   .month { padding: 5px 5px 6px; }
-  .month h2 { font-size: 11px; }
+  .month h2 {
+    font-size: 13px;
+    /* Clearer separation from the month grid on mobile */
+    margin: 0 0 4px;
+  }
   .day { font-size: 10px; }
 
   /* —— Mobile L2: vertical card ——
