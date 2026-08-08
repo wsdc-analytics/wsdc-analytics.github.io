@@ -1595,6 +1595,11 @@ h1 {
   transition: opacity 125ms var(--ease-out), transform 125ms var(--ease-out);
 }
 
+.l2-info-tip__bubble strong {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 /* Touch/coarse: only .is-open / keyboard focus — never sticky :hover flash. */
 .l2-info-tip:focus-visible .l2-info-tip__bubble,
 .l2-info-tip.is-open .l2-info-tip__bubble,

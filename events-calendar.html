@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808g">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808i">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1953,13 +1953,25 @@
     return { edition: null, mode: "missing" };
   }
 
-  function buildInfoTipHtml(ariaLabel, text, extraClass) {
-    if (!text) return "";
+  function buildInfoTipHtml(ariaLabel, bodyHtml, extraClass) {
+    if (!bodyHtml) return "";
     var cls = "l2-info-tip" + (extraClass ? " " + extraClass : "");
     return '<button type="button" class="' + cls + '" aria-label="' + esc(ariaLabel) + '">' +
       '<span class="l2-info-tip__mark" aria-hidden="true">i</span>' +
-      '<span class="l2-info-tip__bubble" role="tooltip">' + esc(text) + "</span>" +
+      '<span class="l2-info-tip__bubble" role="tooltip">' + bodyHtml + "</span>" +
       "</button>";
+  }
+
+  /** Bold metric names before the first ":" on each line; escape the rest. */
+  function metricTipHtml() {
+    return String(t("metricTip") || "")
+      .split("\n")
+      .map(function (line) {
+        var idx = line.indexOf(":");
+        if (idx <= 0) return esc(line);
+        return "<strong>" + esc(line.slice(0, idx)) + "</strong>" + esc(line.slice(idx));
+      })
+      .join("\n");
   }
 
   function buildTierTableHtml(tiers) {
@@ -1968,7 +1980,7 @@
       return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
     });
     if (!rows.length) return "";
-    var tipHtml = buildInfoTipHtml(t("tierTipAria"), tierTipText(), "l2-info-tip--tier-between");
+    var tipHtml = buildInfoTipHtml(t("tierTipAria"), esc(tierTipText()), "l2-info-tip--tier-between");
     var html = '<div class="l2-tier-panel">' +
       tipHtml +
       '<table class="l2-tier-table">' +
@@ -2060,7 +2072,7 @@
         x: x,
         y: y,
         v: v,
-        label: monthYearLabel(rows[i].year, rows[i].month),
+        label: String(rows[i].year),
         year: Number(rows[i].year)
       };
     });
@@ -2184,7 +2196,7 @@
   }
 
   function buildMetricTipHtml() {
-    return buildInfoTipHtml(t("metricTipAria"), t("metricTip"), "l2-info-tip--metrics-between");
+    return buildInfoTipHtml(t("metricTipAria"), metricTipHtml(), "l2-info-tip--metrics-between");
   }
 
   function buildKpiSegHtml() {
