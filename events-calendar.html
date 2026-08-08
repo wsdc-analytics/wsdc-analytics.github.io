@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="static/css/site-chrome.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260807an" as="fetch" crossorigin>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20260808h" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -670,14 +670,36 @@
     });
   }
 
+  function eventPassesFilters(e) {
+    if (state.continent && e.continent !== state.continent) return false;
+    if (state.country && e.country !== state.country) return false;
+    if (state.status && normalizeStatus(e.status) !== state.status) return false;
+    if (state.kind && e.kind !== state.kind) return false;
+    return true;
+  }
+
   function eventsForYear(year) {
     return (state.data.events || []).filter(function (e) {
       if (e.year !== year) return false;
-      if (state.continent && e.continent !== state.continent) return false;
-      if (state.country && e.country !== state.country) return false;
-      if (state.status && normalizeStatus(e.status) !== state.status) return false;
-      if (state.kind && e.kind !== state.kind) return false;
-      return true;
+      return eventPassesFilters(e);
+    });
+  }
+
+  /**
+   * NYE festivals are bucketed to the end/results year (Jan), but their real
+   * start is in December of the prior calendar year. Include those Dec days
+   * when viewing the start year so confirmed/held dates are not “shifted” to Jan.
+   */
+  function nyeDecSpillEventsForYear(year) {
+    var yNext = year + 1;
+    var prefix = String(year) + "-12-";
+    return (state.data.events || []).filter(function (e) {
+      if (e.stats_only || !e.start_date) return false;
+      if (e.year !== yNext) return false;
+      if (!eventPassesFilters(e)) return false;
+      // Concrete published/scheduled dates, or projected stubs that correctly
+      // kept a Dec→Jan span after YoY projection.
+      return String(e.start_date).indexOf(prefix) === 0;
     });
   }
 
@@ -1112,9 +1134,10 @@
   function renderCalendar() {
     var root = document.getElementById("calendarRoot");
     var events = eventsForYear(state.year);
-    state.byDay = indexByDay(events, state.year);
+    var gridEvents = events.concat(nyeDecSpillEventsForYear(state.year));
+    state.byDay = indexByDay(gridEvents, state.year);
     renderFilterStats(events);
-    if (!events.length) {
+    if (!events.length && !gridEvents.length) {
       root.innerHTML = '<div class="empty-year">' + t("empty") + "</div>";
       return;
     }
@@ -2389,15 +2412,7 @@
 
   function refreshOpenEventCard() {
     if (!state.selectedEventId) return;
-    var events = eventsForYear(state.year);
-    var e = events.find(function (x) {
-      return String(x.id) === String(state.selectedEventId);
-    });
-    if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) {
-        return String(x.id) === String(state.selectedEventId);
-      });
-    }
+    var e = findEventById(state.selectedEventId);
     if (e) showEventCard(e);
   }
 
@@ -2409,16 +2424,27 @@
     fitDayMap(dayMapBounds(), { animate: true });
   }
 
+  function findEventById(id) {
+    var sid = String(id);
+    var pools = [
+      eventsForYear(state.year),
+      eventsInYearRaw(state.year),
+      nyeDecSpillEventsForYear(state.year)
+    ];
+    var i;
+    for (i = 0; i < pools.length; i++) {
+      var hit = pools[i].find(function (x) { return String(x.id) === sid; });
+      if (hit) return hit;
+    }
+    return (state.data.events || []).find(function (x) { return String(x.id) === sid; }) || null;
+  }
+
   function selectEvent(id) {
     if (state.selectedEventId != null && String(state.selectedEventId) === String(id)) {
       clearEventSelection();
       return;
     }
-    var events = eventsForYear(state.year);
-    var e = events.find(function (x) { return String(x.id) === String(id); });
-    if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) { return String(x.id) === String(id); });
-    }
+    var e = findEventById(id);
     if (!e) return;
     state.selectedEventId = id;
     paintRowHighlights();
@@ -2775,7 +2801,7 @@
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
   applyStaticI18n();
 
-  fetch("static/data/events_year_calendar.json?v=20260807an")
+  fetch("static/data/events_year_calendar.json?v=20260808h")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
