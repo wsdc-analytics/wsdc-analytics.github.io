@@ -2412,15 +2412,7 @@
 
   function refreshOpenEventCard() {
     if (!state.selectedEventId) return;
-    var events = eventsForYear(state.year);
-    var e = events.find(function (x) {
-      return String(x.id) === String(state.selectedEventId);
-    });
-    if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) {
-        return String(x.id) === String(state.selectedEventId);
-      });
-    }
+    var e = findEventById(state.selectedEventId);
     if (e) showEventCard(e);
   }
 
@@ -2432,16 +2424,27 @@
     fitDayMap(dayMapBounds(), { animate: true });
   }
 
+  function findEventById(id) {
+    var sid = String(id);
+    var pools = [
+      eventsForYear(state.year),
+      eventsInYearRaw(state.year),
+      nyeDecSpillEventsForYear(state.year)
+    ];
+    var i;
+    for (i = 0; i < pools.length; i++) {
+      var hit = pools[i].find(function (x) { return String(x.id) === sid; });
+      if (hit) return hit;
+    }
+    return (state.data.events || []).find(function (x) { return String(x.id) === sid; }) || null;
+  }
+
   function selectEvent(id) {
     if (state.selectedEventId != null && String(state.selectedEventId) === String(id)) {
       clearEventSelection();
       return;
     }
-    var events = eventsForYear(state.year);
-    var e = events.find(function (x) { return String(x.id) === String(id); });
-    if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) { return String(x.id) === String(id); });
-    }
+    var e = findEventById(id);
     if (!e) return;
     state.selectedEventId = id;
     paintRowHighlights();
