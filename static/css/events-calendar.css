@@ -2338,21 +2338,20 @@ h1 {
     order: 1;
     padding-right: 0;
   }
-  /* Website link: larger glyph + tap target (desktop stays compact). */
+  /* Website link: keep large glyph, sit tight to title; expand tap via padding. */
   .l2-event-card__title-row {
-    align-items: center;
-    gap: 6px;
+    align-items: baseline;
+    gap: 2px;
   }
   .l2-event-card__web {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 36px;
-    min-height: 36px;
-    padding: 6px;
     font-size: 18px;
     font-weight: 700;
     line-height: 1;
+    padding: 10px;
+    margin: -10px -8px -10px -2px;
     -webkit-tap-highlight-color: transparent;
   }
   .l2-event-card__spark-ctrl {
