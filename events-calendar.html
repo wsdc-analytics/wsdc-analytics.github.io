@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808c">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808d">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -294,7 +294,7 @@
       noThisEdition: "No scored stats for this edition",
       trialNoStats: "No scored edition stats yet (trial)",
       metricTipAria: "About metrics",
-      metricTip: "Dancers (~): approximate competitive field from Chart 5 tier ranges (Newcomer + skill divisions × Leader/Follower; midpoint of the summed min–max). Switch dancers may be counted twice. Points: total WSDC points in Skill Level Jack & Jill (Newcomer–Champion, West Coast Swing). New: dancers whose first scored result at this event was this edition.",
+      metricTip: "Dancers: estimated metric from summing the midpoint of each Skill-Level nomination Tier.\nPoints: sum of all points awarded in Skill-Level nominations.\nNew: dancers who earned their first WSDC points at this event.",
       websiteAria: "Event website",
       tierPrefix: "TIER",
       colLeader: "L",
@@ -362,7 +362,7 @@
       noThisEdition: "Нет scored-статистики для этого edition",
       trialNoStats: "Пока нет статистики scored edition (trial)",
       metricTipAria: "О метриках",
-      metricTip: "Танцоры (~): оценка поля по диапазонам тиров Chart 5 (Newcomer + skill × Leader/Follower; середина суммы min–max). Switch может считаться дважды. Очки: сумма очков WSDC в Skill Level Jack & Jill (Newcomer–Champion, West Coast Swing). Новые: танцоры, у которых первый scored-результат на этом ивенте был на этом edition.",
+      metricTip: "Dancers: расчётная метрика — сумма средних значений каждого Tier в Skill-Level номинациях.\nPoints: сумма всех поинтов, начисленных в Skill-Level номинациях.\nNew: количество танцоров, получивших свои первые поинты WSDC на этом ивенте.",
       websiteAria: "Сайт ивента",
       tierPrefix: "ТИР",
       colLeader: "L",
@@ -431,7 +431,7 @@
       noThisEdition: "No hay estadísticas para esta edición",
       trialNoStats: "Aún no hay estadísticas de edición (trial)",
       metricTipAria: "Sobre métricas",
-      metricTip: "Bailarines (~): campo competitivo aproximado por rangos de tier Chart 5 (Newcomer + skill × Leader/Follower; punto medio del min–max sumado). Switch puede contarse dos veces. Puntos: total WSDC en Skill Level Jack & Jill (Newcomer–Champion, West Coast Swing). Nuevos: primera puntuación en este evento en esta edición.",
+      metricTip: "Dancers: métrica estimada sumando el punto medio de cada Tier de nominaciones Skill-Level.\nPoints: suma de todos los puntos otorgados en nominaciones Skill-Level.\nNew: bailarines que obtuvieron sus primeros puntos WSDC en este evento.",
       websiteAria: "Sitio del evento",
       tierPrefix: "TIER",
       colLeader: "L",
@@ -2672,7 +2672,7 @@
       return r.json();
     })
     .then(function (calendar) {
-      return fetch("static/data/event_l2_cards.json?v=20260806c")
+      return fetch("static/data/event_l2_cards.json?v=20260808d")
         .then(function (r) {
           if (!r.ok) return null;
           return r.json();
