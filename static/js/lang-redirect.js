@@ -11,25 +11,6 @@
     article_division_transition_time: ["ru", "en", "es"]
   };
 
-  function pickPreferredLanguage() {
-    var stored = localStorage.getItem("wsdc-lang");
-    if (stored && ["ru", "en", "es"].indexOf(stored) !== -1) {
-      return stored;
-    }
-
-    var browserLangs = Array.isArray(navigator.languages) && navigator.languages.length
-      ? navigator.languages
-      : [navigator.language || "en"];
-
-    for (var i = 0; i < browserLangs.length; i += 1) {
-      var l = (browserLangs[i] || "").toLowerCase();
-      if (l.indexOf("ru") === 0) return "ru";
-      if (l.indexOf("es") === 0) return "es";
-      if (l.indexOf("en") === 0) return "en";
-    }
-    return "en";
-  }
-
   function parseCurrent() {
     var file = (window.location.pathname.split("/").pop() || "").toLowerCase();
     var match = file.match(/^(.*?)(?:_(en|es|ru))?\.html$/);
@@ -52,34 +33,51 @@
     return base + "_" + lang + ".html";
   }
 
+  /**
+   * Strip setlang/lang from the URL without a navigation.
+   * location.replace() here is reported by Google as "Page with redirect".
+   */
+  function stripLangQueryInPlace(params) {
+    params.delete("setlang");
+    params.delete("lang");
+    var cleanQuery = params.toString();
+    var next =
+      window.location.pathname +
+      (cleanQuery ? "?" + cleanQuery : "") +
+      window.location.hash;
+    var current =
+      window.location.pathname + window.location.search + window.location.hash;
+    if (next === current) return;
+    if (window.history && typeof window.history.replaceState === "function") {
+      window.history.replaceState(null, "", next);
+    }
+  }
+
   function redirectIfNeeded() {
     var current = parseCurrent();
     if (!current) return;
 
     var params = new URLSearchParams(window.location.search);
-    // Treat both setlang and lang as explicit user choice.
-    // If present, do not run auto language detection redirect.
+    // Explicit user/language choice only (?lang= / ?setlang=).
+    // Do not auto-redirect from Accept-Language or localStorage — that makes
+    // sitemap language URLs (e.g. *_es.html) look like redirects to Googlebot.
     var forced = params.get("setlang") || params.get("lang");
-    if (forced && ["ru", "en", "es"].indexOf(forced) !== -1) {
-      localStorage.setItem("wsdc-lang", forced);
-      params.delete("setlang");
-      params.delete("lang");
-      var cleanQuery = params.toString();
-      var forcedTarget = buildTarget(current.base, forced);
-      var forcedUrl = forcedTarget + (cleanQuery ? "?" + cleanQuery : "") + window.location.hash;
-      if (forcedTarget === current.file && !cleanQuery) return;
-      window.location.replace(forcedUrl);
+    if (!(forced && ["ru", "en", "es"].indexOf(forced) !== -1)) return;
+
+    localStorage.setItem("wsdc-lang", forced);
+    var forcedTarget = buildTarget(current.base, forced);
+
+    if (forcedTarget === current.file) {
+      stripLangQueryInPlace(params);
       return;
     }
 
-    var preferred = pickPreferredLanguage();
-    if (SUPPORTED[current.base].indexOf(preferred) === -1) return;
-    if (preferred === current.currentLang) return;
-
-    var targetFile = buildTarget(current.base, preferred);
-    var query = params.toString();
-    var targetUrl = targetFile + (query ? "?" + query : "") + window.location.hash;
-    window.location.replace(targetUrl);
+    params.delete("setlang");
+    params.delete("lang");
+    var cleanQuery = params.toString();
+    var forcedUrl =
+      forcedTarget + (cleanQuery ? "?" + cleanQuery : "") + window.location.hash;
+    window.location.replace(forcedUrl);
   }
 
   try {
