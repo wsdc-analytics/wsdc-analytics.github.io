@@ -40,7 +40,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808f">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260808g">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -2265,9 +2265,18 @@
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
   }
 
+  function getL2TipBubble(btn) {
+    if (!btn) return null;
+    if (btn._l2Bubble && btn._l2Bubble.isConnected) return btn._l2Bubble;
+    var bubble = btn.querySelector(".l2-info-tip__bubble");
+    if (bubble) btn._l2Bubble = bubble;
+    return bubble || null;
+  }
+
   function clearL2TipBubblePosition(btn) {
-    var bubble = btn && btn.querySelector(".l2-info-tip__bubble");
+    var bubble = getL2TipBubble(btn);
     if (!bubble) return;
+    bubble.classList.remove("is-ported", "is-visible");
     bubble.style.position = "";
     bubble.style.left = "";
     bubble.style.top = "";
@@ -2276,33 +2285,61 @@
     bubble.style.maxWidth = "";
     bubble.style.transform = "";
     bubble.style.zIndex = "";
+    if (btn._l2BubbleHome && bubble.parentNode !== btn._l2BubbleHome) {
+      btn._l2BubbleHome.appendChild(bubble);
+    }
   }
 
   function placeL2TipBubble(btn) {
-    var bubble = btn && btn.querySelector(".l2-info-tip__bubble");
+    var bubble = getL2TipBubble(btn);
     if (!bubble) return;
     if (!isMobileL2Layout()) {
       clearL2TipBubblePosition(btn);
       return;
     }
-    var pad = 12;
-    var maxW = Math.min(280, window.innerWidth - pad * 2);
-    bubble.style.position = "fixed";
-    bubble.style.zIndex = "80";
-    bubble.style.right = "auto";
-    bubble.style.transform = "none";
-    bubble.style.width = maxW + "px";
-    bubble.style.maxWidth = maxW + "px";
-    // Measure after opacity rules apply (is-open already set).
-    var r = btn.getBoundingClientRect();
-    var h = bubble.getBoundingClientRect().height || 0;
-    var left = Math.min(Math.max(pad, r.left), window.innerWidth - pad - maxW);
-    var top = r.bottom + 8;
-    if (h && top + h > window.innerHeight - pad && r.top - 8 - h >= pad) {
-      top = r.top - 8 - h;
+    if (!btn._l2BubbleHome) btn._l2BubbleHome = bubble.parentNode;
+    // Port to body so fixed coords are viewport-relative (island must not be a fixed CB).
+    if (bubble.parentNode !== document.body) {
+      document.body.appendChild(bubble);
     }
-    bubble.style.left = left + "px";
-    bubble.style.top = top + "px";
+    bubble.classList.add("is-ported", "is-visible");
+
+    var isTier = btn.classList.contains("l2-info-tip--tier-between");
+    var pad = 12;
+    var maxW = isTier
+      ? Math.min(140, Math.max(96, Math.floor((window.innerWidth - pad * 2) * 0.42)))
+      : Math.min(280, window.innerWidth - pad * 2);
+
+    function applyPos() {
+      if (!btn.classList.contains("is-open")) return;
+      var r = btn.getBoundingClientRect();
+      var vv = window.visualViewport;
+      var vx = vv && typeof vv.offsetLeft === "number" ? vv.offsetLeft : 0;
+      var vy = vv && typeof vv.offsetTop === "number" ? vv.offsetTop : 0;
+      var vw = vv && vv.width ? vv.width : window.innerWidth;
+      var vh = vv && vv.height ? vv.height : window.innerHeight;
+
+      bubble.style.position = "fixed";
+      bubble.style.zIndex = "200";
+      bubble.style.right = "auto";
+      bubble.style.transform = "none";
+      bubble.style.width = maxW + "px";
+      bubble.style.maxWidth = maxW + "px";
+
+      var h = bubble.getBoundingClientRect().height || 0;
+      var left = Math.min(Math.max(pad + vx, r.left), vx + vw - pad - maxW);
+      var top = r.bottom + 8;
+      if (h && top + h > vy + vh - pad && r.top - 8 - h >= vy + pad) {
+        top = r.top - 8 - h;
+      }
+      bubble.style.left = Math.round(left) + "px";
+      bubble.style.top = Math.round(top) + "px";
+    }
+
+    applyPos();
+    requestAnimationFrame(function () {
+      requestAnimationFrame(applyPos);
+    });
   }
 
   function closeAllL2InfoTips(scope) {
