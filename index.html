@@ -271,6 +271,77 @@
             letter-spacing: -1.5px;
         }
 
+        /* Footnote mark: quiet disclaimer, not a CTA */
+        .brand-footnote {
+            position: relative;
+            appearance: none;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.45em;
+            font-weight: 600;
+            line-height: 1;
+            vertical-align: super;
+            color: var(--text-tertiary);
+            cursor: help;
+            padding: 0.12em 0.18em;
+            margin-left: 0.06em;
+            letter-spacing: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .brand-footnote:hover,
+        .brand-footnote:focus-visible,
+        .brand-footnote.is-open {
+            color: var(--text-secondary);
+        }
+        .brand-footnote:focus { outline: none; }
+        .brand-footnote:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 3px;
+            border-radius: 3px;
+        }
+        .brand-footnote__bubble {
+            position: absolute;
+            left: 50%;
+            top: calc(100% + 10px);
+            transform: translateX(-50%) translateY(-4px) scale(0.96);
+            transform-origin: top center;
+            min-width: 220px;
+            max-width: min(320px, calc(100vw - 40px));
+            width: max-content;
+            padding: 10px 12px;
+            background: var(--color-primary-dark);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0;
+            line-height: 1.4;
+            text-align: left;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 20;
+            transition:
+                opacity 140ms cubic-bezier(0.23, 1, 0.32, 1),
+                transform 140ms cubic-bezier(0.23, 1, 0.32, 1),
+                visibility 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .brand-footnote:focus-visible .brand-footnote__bubble,
+        .brand-footnote.is-open .brand-footnote__bubble {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .brand-footnote:hover .brand-footnote__bubble {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
         .subtitle {
             font-size: 20px;
             color: var(--text-secondary);
@@ -1190,7 +1261,16 @@
 
     <div class="container wsdc-chrome-page-pad">
         <header>
-            <h1>WSDC Analytics</h1>
+            <h1>
+                WSDC Analytics<button
+                    type="button"
+                    class="brand-footnote"
+                    id="brandFootnote"
+                    aria-label="About this site"
+                    aria-expanded="false"
+                    aria-describedby="brandFootnoteText"
+                >*<span class="brand-footnote__bubble" id="brandFootnoteText" role="tooltip">This site is based on official WSDC information, but it is not an official WSDC resource.</span></button>
+            </h1>
             <p class="subtitle" id="subtitle">West Coast Swing: Statistics, Research & Analytics</p>
         </header>
 
@@ -1337,6 +1417,26 @@
             if (subtitleElement) {
                 subtitleElement.textContent = subtitles[lang] || subtitles.en;
             }
+
+            const brandFootnote = document.getElementById('brandFootnote');
+            const brandFootnoteText = document.getElementById('brandFootnoteText');
+            const brandNotes = {
+                ru: {
+                    label: 'Об этом сайте',
+                    text: 'Сайт основан на официальной информации WSDC, но не является официальным ресурсом WSDC.'
+                },
+                en: {
+                    label: 'About this site',
+                    text: 'This site is based on official WSDC information, but it is not an official WSDC resource.'
+                },
+                es: {
+                    label: 'Sobre este sitio',
+                    text: 'Este sitio se basa en información oficial de WSDC, pero no es un recurso oficial de WSDC.'
+                }
+            };
+            const brandNoteCopy = brandNotes[lang] || brandNotes.en;
+            if (brandFootnoteText) brandFootnoteText.textContent = brandNoteCopy.text;
+            if (brandFootnote) brandFootnote.setAttribute('aria-label', brandNoteCopy.label);
 
             const kpiTipText = document.getElementById('kpiTipText');
             const kpiTipBtn = document.getElementById('kpiTip');
@@ -1500,6 +1600,25 @@
         // Инициализация языка при загрузке
         const currentLang = getCurrentLanguage();
         updateLanguage(currentLang);
+
+        (function initBrandFootnote() {
+            const btn = document.getElementById('brandFootnote');
+            if (!btn) return;
+            function setOpen(open) {
+                btn.classList.toggle('is-open', open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setOpen(!btn.classList.contains('is-open'));
+            });
+            document.addEventListener('click', (e) => {
+                if (!btn.contains(e.target)) setOpen(false);
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') setOpen(false);
+            });
+        })();
 
         function wireChromeLang() {
             if (window.WsdcChrome) {
