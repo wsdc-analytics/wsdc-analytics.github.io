@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-05",
-  "as_of": "2026-08-05",
+  "generated_at": "2026-08-14",
+  "as_of": "2026-08-14",
   "data_through": "2026-08-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,54 +17,54 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2644,
-    "points": 713734.0,
-    "dancers": 27252
+    "events": 2649,
+    "points": 716040.0,
+    "dancers": 27302
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-07-27",
-        "end": "2026-08-02",
+        "start": "2026-08-03",
+        "end": "2026-08-09",
         "since_previous_ended": "2026-07-31",
-        "iso_week": "2026-W31",
+        "iso_week": "2026-W32",
         "bucket": "edition_end_date",
-        "event_names": "Lisbon Westie Fest, Sea Sun and Swing, Warsaw Summer Nights Westival"
+        "event_names": "German Open, New England Dance Festival, Swing Fling, Swingtacular: The Galactic Open"
       },
       "increment": {
-        "events": 3,
-        "points": 1217.0,
-        "dancers": 40
+        "events": 4,
+        "points": 2119.0,
+        "dancers": 46
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-08-01",
-        "end": "2026-08-05",
+        "end": "2026-08-14",
         "since_previous_ended": "2026-07-31",
         "bucket": "edition_end_date",
-        "event_names": "Lisbon Westie Fest, Sea Sun and Swing, Warsaw Summer Nights Westival"
+        "event_names": "Arizona Dance Classic, German Open, Lisbon Westie Fest, New England Dance Festival, Sea Sun and Swing, Swing Fling, Swingtacular: The Galactic Open, Warsaw Summer Nights Westival"
       },
       "increment": {
-        "events": 3,
-        "points": 1217.0,
-        "dancers": 40
+        "events": 8,
+        "points": 3523.0,
+        "dancers": 90
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-08-05",
+        "end": "2026-08-14",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 105,
-        "points": 44260.0,
-        "dancers": 1473
+        "events": 110,
+        "points": 46566.0,
+        "dancers": 1523
       }
     }
   }
