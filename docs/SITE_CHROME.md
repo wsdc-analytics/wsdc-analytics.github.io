@@ -39,7 +39,7 @@ Mount point:
 | `data-lang-ru/en/es` | URL | Used with `data-lang-mode=navigate` |
 | `data-current-dash` | filename | Marks current Dashboards item |
 
-Includes quiet `i` tips for Dashboards, Summary Points, New Champions, and Events Calendar (hover/focus). On mobile (≤720px) Dashboards is hidden; Summary Points, New Champions, and Events Calendar are centered on the second chrome row.
+Includes quiet `i` tips for Dashboards, Summary Points, New Champions, and Events Calendar (hover/focus). On mobile (≤720px) Dashboards is hidden; row 2 is Summary Points + New Champions at equal width, and Events Calendar sits centered alone on row 3.
 
 ### Back to home
 
