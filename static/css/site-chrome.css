@@ -474,7 +474,8 @@ a.back-link.is-on-hero:focus-visible {
   /*
    * Mobile chrome layout:
    *  Row 1 — logo (far left) | envelope + language pills (far right)
-   *  Row 2 — Summary Points + New Champions + Events Calendar centered (Dashboards hidden)
+   *  Row 2 — Summary Points | New Champions (equal width; Dashboards hidden)
+   *  Row 3 — Events Calendar centered
    */
   .wsdc-chrome {
     display: flex;
@@ -517,23 +518,31 @@ a.back-link.is-on-hero:focus-visible {
     display: none;
   }
 
+  /* Row 2: equal-width Points + Champions */
   .wsdc-chrome__cluster[data-chrome-nav="points"],
-  .wsdc-chrome__cluster[data-chrome-nav="champions"],
-  .wsdc-chrome__cluster[data-chrome-nav="calendar"] {
-    order: 5;
-  }
-
-  /* Center the three visible nav clusters as a group on row 2 */
-  .wsdc-chrome__cluster[data-chrome-nav="points"] {
-    margin-left: auto;
-  }
-
   .wsdc-chrome__cluster[data-chrome-nav="champions"] {
-    margin-right: 0;
+    order: 5;
+    flex: 1 1 calc(50% - 2px);
+    max-width: calc(50% - 2px);
+    min-width: 0;
+    margin: 0;
   }
 
+  .wsdc-chrome__cluster[data-chrome-nav="points"] .wsdc-chrome__pill,
+  .wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__pill {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  /* Row 3: Calendar centered alone */
   .wsdc-chrome__cluster[data-chrome-nav="calendar"] {
-    margin-right: auto;
+    order: 6;
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    justify-content: center;
   }
 
   .wsdc-chrome__tip-bubble {
@@ -556,7 +565,7 @@ a.back-link.is-on-hero:focus-visible {
   }
 
   .wsdc-chrome-page-pad {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 108px);
+    padding-top: calc(env(safe-area-inset-top, 0px) + 148px);
   }
 }
 
