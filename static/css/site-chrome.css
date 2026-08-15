@@ -1,6 +1,6 @@
 /**
  * Shared Evolved C site chrome - floating nav across homepage, Points Summary,
- * New Champions, dashboards, and magazine articles.
+ * New Champions, Events Calendar, dashboards, and magazine articles.
  */
 :root {
   --wsdc-chrome-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -474,7 +474,7 @@ a.back-link.is-on-hero:focus-visible {
   /*
    * Mobile chrome layout:
    *  Row 1 — logo (far left) | envelope + language pills (far right)
-   *  Row 2 — Summary Points + New Champions centered (Dashboards hidden)
+   *  Row 2 — Summary Points + New Champions + Events Calendar centered (Dashboards hidden)
    */
   .wsdc-chrome {
     display: flex;
@@ -518,16 +518,21 @@ a.back-link.is-on-hero:focus-visible {
   }
 
   .wsdc-chrome__cluster[data-chrome-nav="points"],
-  .wsdc-chrome__cluster[data-chrome-nav="champions"] {
+  .wsdc-chrome__cluster[data-chrome-nav="champions"],
+  .wsdc-chrome__cluster[data-chrome-nav="calendar"] {
     order: 5;
   }
 
-  /* Center the two visible nav clusters as a pair on row 2 */
+  /* Center the three visible nav clusters as a group on row 2 */
   .wsdc-chrome__cluster[data-chrome-nav="points"] {
     margin-left: auto;
   }
 
   .wsdc-chrome__cluster[data-chrome-nav="champions"] {
+    margin-right: 0;
+  }
+
+  .wsdc-chrome__cluster[data-chrome-nav="calendar"] {
     margin-right: auto;
   }
 

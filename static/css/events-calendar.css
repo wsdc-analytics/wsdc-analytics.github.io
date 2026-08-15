@@ -45,6 +45,11 @@ body {
 
 [data-site-chrome] { flex: 0 0 auto; }
 
+/* Match Points/Champions back link, but keep calendar viewport dense */
+.container > .wsdc-back {
+  margin-bottom: 8px;
+}
+
 .page-shell {
   flex: 1 1 auto;
   min-height: 0;
