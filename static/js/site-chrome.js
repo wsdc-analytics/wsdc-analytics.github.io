@@ -2,12 +2,12 @@
  * Mount Evolved C site chrome into [data-site-chrome] placeholders.
  *
  * Attributes:
- *   data-active          home | dashboards | points | champions
+ *   data-active          home | dashboards | points | champions | calendar
  *   data-lang            ru | en | es
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       brand logo link (default index.html) — return home
- *   data-path-prefix     prefix for dashboard / points-summary / champion-news hrefs (e.g. "../../" from nested pages)
+ *   data-path-prefix     prefix for dashboard / points / champions / calendar hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
  *   data-current-dash    filename to mark current dashboard link
@@ -35,6 +35,7 @@
     dashboards: { ru: "Дашборды", en: "Dashboards", es: "Paneles" },
     points: { ru: "Summary Points", en: "Summary Points", es: "Summary Points" },
     champions: { ru: "New Champions", en: "New Champions", es: "New Champions" },
+    calendar: { ru: "Events Calendar", en: "Events Calendar", es: "Events Calendar" },
     contact: { ru: "Контакты", en: "Contacts", es: "Contacto" },
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
     facebook: { ru: "Написать в Facebook", en: "Message on Facebook", es: "Escribir en Facebook" },
@@ -53,6 +54,11 @@
       ru: "Хронология переходов Allowed и Required Champions",
       en: "Chronology of Allowed and Required Champions transitions",
       es: "Cronología de transiciones Allowed y Required Champions",
+    },
+    calendarTip: {
+      ru: "Календарь ожидаемых, подтверждённых и hiatus ивентов WSDC",
+      en: "Year calendar of expected, confirmed, and hiatus WSDC events",
+      es: "Calendario anual de eventos WSDC esperados, confirmados y en hiatus",
     },
   };
 
@@ -121,10 +127,12 @@
     var dashActive = active === "dashboards" ? " is-active" : "";
     var pointsActive = active === "points" ? " is-active" : "";
     var championsActive = active === "champions" ? " is-active" : "";
+    var calendarActive = active === "calendar" ? " is-active" : "";
     var homeLabel = LABELS.home[lang] || LABELS.home.en;
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
     var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
+    var calendarTip = LABELS.calendarTip[lang] || LABELS.calendarTip.en;
 
     var brandHtml;
     if (brandMode === "text") {
@@ -230,6 +238,18 @@
       "</span>" +
       "</a>" +
       "</div>" +
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="calendar">' +
+      tipHtml(calendarTip, 'data-chrome-calendar-tip') +
+      '<a class="wsdc-chrome__pill' +
+      calendarActive +
+      '" href="' +
+      esc(withPathPrefix(root, "events-calendar.html")) +
+      '" id="eventsCalendarBtn">' +
+      '<span data-chrome-calendar-label>' +
+      esc(LABELS.calendar[lang] || LABELS.calendar.en) +
+      "</span>" +
+      "</a>" +
+      "</div>" +
       '<div class="wsdc-chrome__spacer" aria-hidden="true"></div>' +
       '<div class="wsdc-chrome__contact" data-chrome-contact>' +
       '<button type="button" class="wsdc-chrome__contact-btn" data-chrome-contact-btn aria-label="' +
@@ -277,6 +297,7 @@
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
     var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
+    var calendarTip = LABELS.calendarTip[lang] || LABELS.calendarTip.en;
 
     var dashLabel = root.querySelector("[data-chrome-dash-label]");
     if (dashLabel) dashLabel.textContent = LABELS.dashboards[lang] || LABELS.dashboards.en;
@@ -284,6 +305,8 @@
     if (pointsLabel) pointsLabel.textContent = LABELS.points[lang] || LABELS.points.en;
     var championsLabel = root.querySelector("[data-chrome-champions-label]");
     if (championsLabel) championsLabel.textContent = LABELS.champions[lang] || LABELS.champions.en;
+    var calendarLabel = root.querySelector("[data-chrome-calendar-label]");
+    if (calendarLabel) calendarLabel.textContent = LABELS.calendar[lang] || LABELS.calendar.en;
     var contactBtn = root.querySelector("[data-chrome-contact-btn]");
     if (contactBtn) contactBtn.setAttribute("aria-label", LABELS.contact[lang] || LABELS.contact.en);
     var email = root.querySelector("[data-chrome-email]");
@@ -316,6 +339,12 @@
       championsTipEl.textContent = championsTip;
       var tipWrap3 = championsTipEl.closest(".wsdc-chrome__tip");
       if (tipWrap3) tipWrap3.setAttribute("aria-label", championsTip);
+    }
+    var calendarTipEl = root.querySelector("[data-chrome-calendar-tip]");
+    if (calendarTipEl) {
+      calendarTipEl.textContent = calendarTip;
+      var tipWrap4 = calendarTipEl.closest(".wsdc-chrome__tip");
+      if (tipWrap4) tipWrap4.setAttribute("aria-label", calendarTip);
     }
 
     root.querySelectorAll(".lang-btn").forEach(function (btn) {
