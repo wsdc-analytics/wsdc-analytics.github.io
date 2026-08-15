@@ -45,9 +45,13 @@ body {
 
 [data-site-chrome] { flex: 0 0 auto; }
 
-/* Match Points/Champions back link, but keep calendar viewport dense */
+/* Align Back to home with the inset title column (same track as .page-head). */
 .container > .wsdc-back {
+  width: calc(100% - 200px);
+  max-width: calc(100% - 200px);
+  margin-inline: auto;
   margin-bottom: 8px;
+  box-sizing: border-box;
 }
 
 .page-shell {
@@ -2051,6 +2055,10 @@ h1 {
   .page-shell { min-height: calc(100dvh - 72px); }
   .container { min-height: 0; padding: 12px 14px 16px; }
   .page-head {
+    width: 100%;
+    max-width: 100%;
+  }
+  .container > .wsdc-back {
     width: 100%;
     max-width: 100%;
   }
