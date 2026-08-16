@@ -43,7 +43,7 @@
     
     <!-- Resource hints для оптимизации производительности -->
     <link rel="stylesheet" href="static/css/tokens.css">
-    <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816c">
+    <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -699,9 +699,13 @@
         }
         .dashboards-nav .info-icon:hover,
         .points-summary-nav .info-icon:hover,
-        .mobile-summary-btn .info-icon:hover {
-            color: var(--color-primary);
-            border-color: var(--color-primary);
+        .mobile-summary-btn .info-icon:hover,
+        .dashboards-nav .info-icon:focus-visible,
+        .points-summary-nav .info-icon:focus-visible,
+        .mobile-summary-btn .info-icon:focus-visible {
+            color: var(--color-accent);
+            border-color: var(--color-accent);
+            outline: none;
         }
         .dashboards-nav .info-tooltip,
         .points-summary-nav .info-tooltip,
@@ -1085,11 +1089,11 @@
             box-sizing: border-box;
         }
         .kpi-tip:focus { outline: none; }
-        .kpi-tip:focus-visible {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
-            border-color: var(--color-primary);
-            color: var(--text-primary);
+        .kpi-tip:focus-visible,
+        .kpi-tip.is-open {
+            outline: none;
+            border-color: var(--color-accent);
+            color: var(--color-accent);
         }
         .kpi-tip-bubble {
             position: absolute;
@@ -1129,8 +1133,8 @@
         }
         @media (hover: hover) and (pointer: fine) {
             .kpi-tip:hover {
-                border-color: var(--text-primary);
-                color: var(--text-primary);
+                border-color: var(--color-accent);
+                color: var(--color-accent);
             }
             .kpi-tip:hover .kpi-tip-bubble {
                 opacity: 1;
@@ -1322,7 +1326,7 @@
         </main>
     </div>
 
-    <script src="static/js/site-chrome.js?v=20260816c" defer></script>
+    <script src="static/js/site-chrome.js?v=20260816d" defer></script>
     <script>
         // Данные статей (загружаются из JSON)
         let articlesByLang = {};
