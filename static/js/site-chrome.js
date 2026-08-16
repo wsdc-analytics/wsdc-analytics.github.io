@@ -97,16 +97,16 @@
 
   function tipHtml(tipText, tipAttr) {
     return (
-      '<span class="wsdc-chrome__tip" tabindex="0" role="img" aria-label="' +
+      '<button type="button" class="wsdc-chrome__tip" aria-expanded="false" aria-label="' +
       esc(tipText) +
       '">' +
       '<span class="wsdc-chrome__tip-mark" aria-hidden="true">i</span>' +
-      '<span class="wsdc-chrome__tip-bubble" ' +
+      '<span class="wsdc-chrome__tip-bubble" role="tooltip" ' +
       tipAttr +
       ">" +
       esc(tipText) +
       "</span>" +
-      "</span>"
+      "</button>"
     );
   }
 
@@ -288,6 +288,10 @@
     if (contactBtn) contactBtn.setAttribute("aria-expanded", "false");
     if (dashMenu) dashMenu.setAttribute("aria-hidden", "true");
     if (contactMenu) contactMenu.setAttribute("aria-hidden", "true");
+    root.querySelectorAll(".wsdc-chrome__tip.is-open").forEach(function (tip) {
+      tip.classList.remove("is-open");
+      tip.setAttribute("aria-expanded", "false");
+    });
   }
 
   function applyLangLabels(root, lang) {
@@ -387,6 +391,18 @@
         }
       });
     }
+
+    root.querySelectorAll(".wsdc-chrome__tip").forEach(function (tip) {
+      tip.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = !tip.classList.contains("is-open");
+        closeAll(root);
+        if (open) {
+          tip.classList.add("is-open");
+          tip.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
 
     document.addEventListener("click", function () {
       closeAll(root);
