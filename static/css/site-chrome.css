@@ -113,14 +113,18 @@
 
 .wsdc-chrome__tip {
   position: relative;
+  appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
   height: 18px;
+  padding: 0;
+  margin: 0;
   border-radius: 999px;
   border: 1.5px solid var(--wsdc-color-border, #d1d5db);
   color: var(--wsdc-color-text-muted, #4b5563);
+  font-family: inherit;
   font-size: 10px;
   font-weight: 600;
   font-style: normal;
@@ -130,6 +134,7 @@
   background: var(--wsdc-color-surface, #ffffff);
   opacity: 1;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .wsdc-chrome__tip-mark {
@@ -142,11 +147,13 @@
   outline: none;
 }
 
-.wsdc-chrome__tip:focus-visible {
+.wsdc-chrome__tip:focus-visible,
+.wsdc-chrome__tip.is-open {
   outline: 2px solid var(--wsdc-color-brand, #111827);
   outline-offset: 2px;
   border-color: var(--wsdc-color-brand, #111827);
   color: var(--wsdc-color-text-strong, #0b1221);
+  z-index: 9;
 }
 
 .wsdc-chrome__tip-bubble {
@@ -170,6 +177,7 @@
   width: max-content;
   max-width: min(340px, calc(100vw - 48px));
   white-space: normal;
+  text-align: left;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -180,7 +188,8 @@
     visibility var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
 }
 
-.wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
+.wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble,
+.wsdc-chrome__tip.is-open .wsdc-chrome__tip-bubble {
   opacity: 1;
   visibility: visible;
   transform: translateY(-50%) scale(1);
@@ -574,7 +583,8 @@ a.back-link.is-on-hero:focus-visible {
     width: min(280px, calc(100vw - 48px));
   }
 
-  .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble {
+  .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble,
+  .wsdc-chrome__tip.is-open .wsdc-chrome__tip-bubble {
     transform: translateX(-50%) scale(1);
   }
 
