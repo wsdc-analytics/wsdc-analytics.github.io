@@ -164,10 +164,9 @@
 
 .wsdc-chrome__tip:focus-visible,
 .wsdc-chrome__tip.is-open {
-  outline: 2px solid var(--wsdc-color-brand, #111827);
-  outline-offset: 2px;
-  border-color: var(--wsdc-color-brand, #111827);
-  color: var(--wsdc-color-text-strong, #0b1221);
+  outline: none;
+  border-color: var(--wsdc-color-brand-accent, #2563eb);
+  color: var(--wsdc-color-brand-accent, #2563eb);
   z-index: 31;
 }
 
@@ -213,8 +212,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .wsdc-chrome__tip:hover {
-    border-color: var(--wsdc-color-text-strong, #0b1221);
-    color: var(--wsdc-color-text-strong, #0b1221);
+    border-color: var(--wsdc-color-brand-accent, #2563eb);
+    color: var(--wsdc-color-brand-accent, #2563eb);
   }
 
   .wsdc-chrome__tip:hover .wsdc-chrome__tip-bubble {

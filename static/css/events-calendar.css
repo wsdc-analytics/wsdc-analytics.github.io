@@ -597,11 +597,11 @@ h1 {
   outline: none;
 }
 
-.cal-stats__tip:focus-visible {
-  outline: 2px solid var(--color-primary-dark);
-  outline-offset: 2px;
-  border-color: var(--color-primary-dark);
-  color: var(--text-primary);
+.cal-stats__tip:focus-visible,
+.cal-stats__tip.is-open {
+  outline: none;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .cal-stats__tip-bubble {
@@ -647,8 +647,8 @@ h1 {
 
 @media (hover: hover) and (pointer: fine) {
   .cal-stats__tip:hover {
-    border-color: var(--color-primary-dark);
-    color: var(--text-primary);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
   .cal-stats__tip:hover .cal-stats__tip-bubble {
     opacity: 1;
@@ -1570,7 +1570,19 @@ h1 {
   padding: 0;
   cursor: help;
   color: var(--text-secondary);
-  transition: transform 140ms var(--ease-out);
+  transition: transform 140ms var(--ease-out), border-color 160ms ease, color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.l2-info-tip:focus {
+  outline: none;
+}
+
+.l2-info-tip:focus-visible,
+.l2-info-tip.is-open {
+  outline: none;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .l2-info-tip:active {
@@ -1630,6 +1642,11 @@ h1 {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .l2-info-tip:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
   .l2-info-tip:hover .l2-info-tip__bubble {
     opacity: 1;
     transform: scale(1);
