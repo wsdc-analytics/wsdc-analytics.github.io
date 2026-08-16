@@ -110,6 +110,78 @@
     );
   }
 
+  function getTipBubble(tip) {
+    if (!tip) return null;
+    if (tip._chromeBubble && tip._chromeBubble.isConnected) return tip._chromeBubble;
+    var bubble = tip.querySelector(".wsdc-chrome__tip-bubble");
+    if (bubble) tip._chromeBubble = bubble;
+    return bubble || null;
+  }
+
+  function clearTipBubblePosition(tip) {
+    var bubble = getTipBubble(tip);
+    if (!bubble) return;
+    bubble.classList.remove("is-ported");
+    bubble.style.left = "";
+    bubble.style.top = "";
+    bubble.style.width = "";
+    bubble.style.maxWidth = "";
+    bubble.style.transform = "";
+    bubble.style.zIndex = "";
+    if (tip._chromeBubbleHome && bubble.parentNode !== tip._chromeBubbleHome) {
+      tip._chromeBubbleHome.appendChild(bubble);
+    }
+  }
+
+  function placeTipBubble(tip) {
+    var bubble = getTipBubble(tip);
+    if (!bubble) return;
+    // Narrow / touch: port to body so position:fixed is viewport-relative.
+    // (A position:fixed chrome wrap is otherwise the containing block and clips tips.)
+    var mobile = window.matchMedia("(max-width: 720px), (hover: none)").matches;
+    if (!mobile) {
+      clearTipBubblePosition(tip);
+      return;
+    }
+    if (!tip._chromeBubbleHome) tip._chromeBubbleHome = bubble.parentNode || tip;
+    if (bubble.parentNode !== document.body) {
+      document.body.appendChild(bubble);
+    }
+    bubble.classList.add("is-ported");
+
+    var pad = 12;
+    var gap = 8;
+    var maxW = Math.min(280, window.innerWidth - pad * 2);
+    bubble.style.maxWidth = maxW + "px";
+    bubble.style.width = maxW + "px";
+    bubble.style.transform = "none";
+    bubble.style.zIndex = "200";
+
+    var tipRect = tip.getBoundingClientRect();
+    var bW = bubble.offsetWidth || maxW;
+    var bH = bubble.offsetHeight || 48;
+    var left = tipRect.left + tipRect.width / 2 - bW / 2;
+    left = Math.max(pad, Math.min(left, window.innerWidth - pad - bW));
+
+    var topBelow = tipRect.bottom + gap;
+    var topAbove = tipRect.top - gap - bH;
+    var top;
+    if (topBelow + bH <= window.innerHeight - pad) {
+      top = topBelow;
+    } else if (topAbove >= pad) {
+      top = topAbove;
+    } else {
+      top = Math.max(pad, Math.min(topBelow, window.innerHeight - pad - bH));
+    }
+
+    bubble.style.left = Math.round(left) + "px";
+    bubble.style.top = Math.round(top) + "px";
+  }
+
+  function releaseAllTipBubbles(root) {
+    root.querySelectorAll(".wsdc-chrome__tip").forEach(clearTipBubblePosition);
+  }
+
   function render(root) {
     var active = root.getAttribute("data-active") || "home";
     var lang = root.getAttribute("data-lang") || "en";
@@ -292,6 +364,7 @@
       tip.classList.remove("is-open");
       tip.setAttribute("aria-expanded", "false");
     });
+    releaseAllTipBubbles(root);
   }
 
   function applyLangLabels(root, lang) {
@@ -326,28 +399,28 @@
 
     syncBackLinks(lang, root.getAttribute("data-home-href") || "index.html");
 
-    var dashTipEl = root.querySelector("[data-chrome-dash-tip]");
+    var dashTipEl = document.querySelector("[data-chrome-dash-tip]");
     if (dashTipEl) {
       dashTipEl.textContent = dashTip;
-      var tipWrap = dashTipEl.closest(".wsdc-chrome__tip");
+      var tipWrap = dashTipEl.closest(".wsdc-chrome__tip") || root.querySelector('[data-chrome-nav="dashboards"] .wsdc-chrome__tip');
       if (tipWrap) tipWrap.setAttribute("aria-label", dashTip);
     }
-    var pointsTipEl = root.querySelector("[data-chrome-points-tip]");
+    var pointsTipEl = document.querySelector("[data-chrome-points-tip]");
     if (pointsTipEl) {
       pointsTipEl.textContent = pointsTip;
-      var tipWrap2 = pointsTipEl.closest(".wsdc-chrome__tip");
+      var tipWrap2 = pointsTipEl.closest(".wsdc-chrome__tip") || root.querySelector('[data-chrome-nav="points"] .wsdc-chrome__tip');
       if (tipWrap2) tipWrap2.setAttribute("aria-label", pointsTip);
     }
-    var championsTipEl = root.querySelector("[data-chrome-champions-tip]");
+    var championsTipEl = document.querySelector("[data-chrome-champions-tip]");
     if (championsTipEl) {
       championsTipEl.textContent = championsTip;
-      var tipWrap3 = championsTipEl.closest(".wsdc-chrome__tip");
+      var tipWrap3 = championsTipEl.closest(".wsdc-chrome__tip") || root.querySelector('[data-chrome-nav="champions"] .wsdc-chrome__tip');
       if (tipWrap3) tipWrap3.setAttribute("aria-label", championsTip);
     }
-    var calendarTipEl = root.querySelector("[data-chrome-calendar-tip]");
+    var calendarTipEl = document.querySelector("[data-chrome-calendar-tip]");
     if (calendarTipEl) {
       calendarTipEl.textContent = calendarTip;
-      var tipWrap4 = calendarTipEl.closest(".wsdc-chrome__tip");
+      var tipWrap4 = calendarTipEl.closest(".wsdc-chrome__tip") || root.querySelector('[data-chrome-nav="calendar"] .wsdc-chrome__tip');
       if (tipWrap4) tipWrap4.setAttribute("aria-label", calendarTip);
     }
 
@@ -412,6 +485,9 @@
         if (open) {
           tip.classList.add("is-open");
           tip.setAttribute("aria-expanded", "true");
+          window.requestAnimationFrame(function () {
+            placeTipBubble(tip);
+          });
         }
       });
     });
@@ -426,6 +502,17 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeAll(root);
     });
+
+    window.addEventListener("resize", function () {
+      root.querySelectorAll(".wsdc-chrome__tip.is-open").forEach(placeTipBubble);
+    });
+    window.addEventListener(
+      "scroll",
+      function () {
+        root.querySelectorAll(".wsdc-chrome__tip.is-open").forEach(placeTipBubble);
+      },
+      true
+    );
 
     root.querySelectorAll(".lang-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {

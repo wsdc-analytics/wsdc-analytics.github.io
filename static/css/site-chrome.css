@@ -587,28 +587,21 @@ a.back-link.is-on-hero:focus-visible {
     justify-content: center;
   }
 
-  /* Open tips above the icon so row-3 Calendar does not cover Points/Champions bubbles */
-  .wsdc-chrome__tip-bubble {
-    left: 50%;
+  /* Tip bubbles are ported to document.body + position:fixed on mobile (see site-chrome.js). */
+  .wsdc-chrome__tip-bubble.is-ported {
+    position: fixed;
+    left: 0;
+    top: 0;
     right: auto;
-    top: auto;
-    bottom: calc(100% + 8px);
-    transform: translateX(-50%) scale(0.96);
-    transform-origin: bottom center;
-    max-width: min(280px, calc(100vw - 48px));
-    width: min(280px, calc(100vw - 48px));
-    z-index: 32;
-  }
-
-  .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble,
-  .wsdc-chrome__tip.is-open .wsdc-chrome__tip-bubble {
-    transform: translateX(-50%) scale(1);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .wsdc-chrome__tip:hover .wsdc-chrome__tip-bubble {
-      transform: translateX(-50%) scale(1);
-    }
+    bottom: auto;
+    transform: none;
+    transform-origin: top left;
+    max-width: min(280px, calc(100vw - 24px));
+    width: min(280px, calc(100vw - 24px));
+    z-index: 200;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: none;
   }
 
   .wsdc-chrome-page-pad {
