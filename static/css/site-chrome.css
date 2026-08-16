@@ -44,6 +44,7 @@
   border: 1px solid var(--wsdc-color-border, #d1d5db);
   border-radius: var(--wsdc-chrome-radius);
   background: var(--wsdc-color-surface, #ffffff);
+  overflow: visible;
 }
 
 .wsdc-chrome__brand {
@@ -109,6 +110,12 @@
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+  position: relative;
+  overflow: visible;
+}
+
+.wsdc-chrome__cluster:has(.wsdc-chrome__tip.is-open) {
+  z-index: 30;
 }
 
 .wsdc-chrome__tip {
@@ -135,6 +142,14 @@
   opacity: 1;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Expand hit target without shifting layout (mobile + desktop). */
+.wsdc-chrome__tip::before {
+  content: "";
+  position: absolute;
+  inset: -13px;
 }
 
 .wsdc-chrome__tip-mark {
@@ -153,7 +168,7 @@
   outline-offset: 2px;
   border-color: var(--wsdc-color-brand, #111827);
   color: var(--wsdc-color-text-strong, #0b1221);
-  z-index: 9;
+  z-index: 31;
 }
 
 .wsdc-chrome__tip-bubble {
@@ -572,15 +587,17 @@ a.back-link.is-on-hero:focus-visible {
     justify-content: center;
   }
 
-  /* Drop tips below the icon, centered, so they stay inside the viewport */
+  /* Open tips above the icon so row-3 Calendar does not cover Points/Champions bubbles */
   .wsdc-chrome__tip-bubble {
     left: 50%;
     right: auto;
-    top: calc(100% + 8px);
+    top: auto;
+    bottom: calc(100% + 8px);
     transform: translateX(-50%) scale(0.96);
-    transform-origin: top center;
+    transform-origin: bottom center;
     max-width: min(280px, calc(100vw - 48px));
     width: min(280px, calc(100vw - 48px));
+    z-index: 32;
   }
 
   .wsdc-chrome__tip:focus-visible .wsdc-chrome__tip-bubble,

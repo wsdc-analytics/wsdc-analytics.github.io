@@ -365,10 +365,19 @@
     var contactBtn = root.querySelector("[data-chrome-contact-btn]");
     var dashMenu = root.querySelector("[data-chrome-dash-menu]");
     var contactMenu = root.querySelector("[data-chrome-contact-menu]");
+    var ignoreDocClose = false;
+
+    function armIgnoreDocClose() {
+      ignoreDocClose = true;
+      window.setTimeout(function () {
+        ignoreDocClose = false;
+      }, 0);
+    }
 
     if (dashBtn && dd) {
       dashBtn.addEventListener("click", function (e) {
         e.stopPropagation();
+        armIgnoreDocClose();
         var open = !dd.classList.contains("is-open");
         closeAll(root);
         if (open) {
@@ -382,6 +391,7 @@
     if (contactBtn && contact) {
       contactBtn.addEventListener("click", function (e) {
         e.stopPropagation();
+        armIgnoreDocClose();
         var open = !contact.classList.contains("is-open");
         closeAll(root);
         if (open) {
@@ -394,7 +404,9 @@
 
     root.querySelectorAll(".wsdc-chrome__tip").forEach(function (tip) {
       tip.addEventListener("click", function (e) {
+        e.preventDefault();
         e.stopPropagation();
+        armIgnoreDocClose();
         var open = !tip.classList.contains("is-open");
         closeAll(root);
         if (open) {
@@ -404,7 +416,10 @@
       });
     });
 
-    document.addEventListener("click", function () {
+    document.addEventListener("click", function (e) {
+      if (ignoreDocClose) return;
+      var t = e.target;
+      if (t && t.closest && t.closest(".wsdc-chrome__tip")) return;
       closeAll(root);
     });
 
