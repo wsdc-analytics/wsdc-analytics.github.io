@@ -393,7 +393,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
             padding: 10px 0;
             cursor: pointer;
             user-select: none;
@@ -403,7 +403,79 @@
             font-size: 18px;
             letter-spacing: -0.02em;
         }
-        .year-header:hover { color: var(--color-accent); }
+        .year-header__main {
+            display: flex;
+            align-items: center;
+            gap: 10px 14px;
+            flex: 1;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+        .year-label {
+            flex-shrink: 0;
+            transition: color var(--transition);
+        }
+        .year-header:hover .year-label { color: var(--color-accent); }
+        .year-counts {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 11px;
+            letter-spacing: 0;
+            line-height: 1;
+            color: var(--text-tertiary);
+        }
+        .year-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.88;
+        }
+        .year-count.is-zero { display: none; }
+        .year-count__pill {
+            display: inline-flex;
+            align-items: stretch;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+        }
+        .year-count__seg {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 14px;
+            padding: 2px 4px;
+            font-size: 9px;
+            font-weight: 650;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .year-count__seg--leader {
+            background: var(--color-accent-soft);
+            color: #1e40af;
+        }
+        .year-count__seg--follower {
+            background: #fce7f3;
+            color: #9d174d;
+        }
+        .year-count__seg--allowed {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .year-count__seg--required {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .year-count__n {
+            font-variant-numeric: tabular-nums;
+            font-size: 11px;
+            font-weight: 550;
+            color: var(--text-tertiary);
+            min-width: 0.75em;
+        }
         .year-header .chevron {
             width: 18px;
             height: 18px;
@@ -620,6 +692,9 @@
                 width: min(300px, calc(100vw - 48px));
                 max-width: min(300px, calc(100vw - 48px));
             }
+            .year-header__main { gap: 8px 10px; }
+            .year-counts { gap: 5px; }
+            .year-count__n { font-size: 10px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .news-body:not(.collapsed) { animation: none; }
@@ -689,6 +764,7 @@
                     <li><span class="legend-pill legend-pill-yellow"></span><strong>Allowed</strong> - cumulative All-Stars points reach <code>150+</code>.</li>
                     <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> - All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>.</li>
                     <li><strong>Click a card</strong> to expand totals and path details (first points, counts, top events/cities, continents).</li>
+                    <li>Each year row shows quiet role×status totals (L/F + A/R) for that calendar year.</li>
                     <li>Filter by surname / WSDC #, role, or status in the search row.</li>
                 </ul>
             </div>
@@ -985,6 +1061,74 @@
         });
       }
 
+      const YEAR_COUNT_SPECS = [
+        { role: 'leader', status: 'allowed', roleAbbr: 'L', statusAbbr: 'A', title: 'Leader Allowed' },
+        { role: 'follower', status: 'allowed', roleAbbr: 'F', statusAbbr: 'A', title: 'Follower Allowed' },
+        { role: 'leader', status: 'required', roleAbbr: 'L', statusAbbr: 'R', title: 'Leader Required' },
+        { role: 'follower', status: 'required', roleAbbr: 'F', statusAbbr: 'R', title: 'Follower Required' },
+      ];
+
+      function emptyYearCounts() {
+        return { 'leader-allowed': 0, 'follower-allowed': 0, 'leader-required': 0, 'follower-required': 0 };
+      }
+
+      function bumpYearCount(counts, role, status) {
+        const r = (role || '').toLowerCase() === 'follower' ? 'follower' : 'leader';
+        const s = (status || '').toLowerCase() === 'required' ? 'required' : 'allowed';
+        const key = r + '-' + s;
+        counts[key] = (counts[key] || 0) + 1;
+      }
+
+      function yearCountsHtml(counts) {
+        const parts = YEAR_COUNT_SPECS.map(spec => {
+          const key = spec.role + '-' + spec.status;
+          const n = counts[key] || 0;
+          return (
+            `<span class="year-count${n ? '' : ' is-zero'}" data-count-key="${esc(key)}" title="${esc(spec.title)}: ${n}">` +
+              `<span class="year-count__pill" aria-hidden="true">` +
+                `<span class="year-count__seg year-count__seg--${esc(spec.role)}">${esc(spec.roleAbbr)}</span>` +
+                `<span class="year-count__seg year-count__seg--${esc(spec.status)}">${esc(spec.statusAbbr)}</span>` +
+              `</span>` +
+              `<span class="year-count__n">${n}</span>` +
+            `</span>`
+          );
+        }).join('');
+        const summary = YEAR_COUNT_SPECS
+          .map(spec => {
+            const n = counts[spec.role + '-' + spec.status] || 0;
+            return n ? `${spec.title} ${n}` : '';
+          })
+          .filter(Boolean)
+          .join(', ');
+        return (
+          `<span class="year-counts" aria-label="${esc(summary || 'No transitions')}">` +
+            parts +
+          `</span>`
+        );
+      }
+
+      function fillYearCounts(wrap, counts) {
+        if (!wrap) return;
+        YEAR_COUNT_SPECS.forEach(spec => {
+          const key = spec.role + '-' + spec.status;
+          const n = counts[key] || 0;
+          const el = wrap.querySelector(`[data-count-key="${key}"]`);
+          if (!el) return;
+          el.classList.toggle('is-zero', n === 0);
+          el.setAttribute('title', `${spec.title}: ${n}`);
+          const num = el.querySelector('.year-count__n');
+          if (num) num.textContent = String(n);
+        });
+        const summary = YEAR_COUNT_SPECS
+          .map(spec => {
+            const n = counts[spec.role + '-' + spec.status] || 0;
+            return n ? `${spec.title} ${n}` : '';
+          })
+          .filter(Boolean)
+          .join(', ');
+        wrap.setAttribute('aria-label', summary || 'No transitions');
+      }
+
       function postDateYear(raw) {
         const text = String(raw || '').trim();
         const iso = text.match(/^(\d{4})-\d{2}-\d{2}$/);
@@ -1032,8 +1176,15 @@
           block.classList.toggle('is-hidden', !any);
         });
         catalog.querySelectorAll('.year-block').forEach(block => {
-          const any = [...block.querySelectorAll('.news-card')].some(c => !c.classList.contains('is-hidden'));
+          const yearCards = [...block.querySelectorAll('.news-card')];
+          const visibleCards = yearCards.filter(c => !c.classList.contains('is-hidden'));
+          const any = visibleCards.length > 0;
           block.classList.toggle('is-hidden', !any);
+          const counts = emptyYearCounts();
+          visibleCards.forEach(card => {
+            bumpYearCount(counts, card.getAttribute('data-role'), card.getAttribute('data-status'));
+          });
+          fillYearCounts(block.querySelector('.year-counts'), counts);
           if (filtering && any && !block.classList.contains('expanded')) {
             block.classList.add('expanded');
             const body = block.querySelector('.year-body');
@@ -1071,9 +1222,13 @@
           years.forEach(year => {
             const open = year === currentYear;
             const label = year === 'unknown' ? 'Unknown year' : String(year);
+            const counts = emptyYearCounts();
+            byYear.get(year).forEach(block => {
+              (block.events || []).forEach(ev => bumpYearCount(counts, ev.role, ev.status));
+            });
             html += `<section class="year-block${open ? ' expanded' : ''}" data-year="${esc(String(year))}">`;
             html += `<div class="year-header" role="button" tabindex="0" aria-expanded="${open ? 'true' : 'false'}">`;
-            html += `<span>${esc(label)}</span>${chevronSvg}</div>`;
+            html += `<span class="year-header__main"><span class="year-label">${esc(label)}</span>${yearCountsHtml(counts)}</span>${chevronSvg}</div>`;
             html += `<div class="year-body${open ? '' : ' collapsed'}">`;
             byYear.get(year).forEach(block => {
               const header = esc(formatPostDate(block.post_date));
