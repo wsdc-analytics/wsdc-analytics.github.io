@@ -1976,7 +1976,7 @@
   }
 
   function buildTierTableHtml(tiers) {
-    var order = ["Novice", "Intermediate", "Advanced", "All-Star", "Champions"];
+    var order = ["Newcomer", "Novice", "Intermediate", "Advanced", "All-Star", "Champions"];
     var rows = order.filter(function (div) {
       return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
     });
