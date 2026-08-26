@@ -52,18 +52,18 @@
     <div class="controls" id="speedControls">
       <div class="ctrl">
         <label for="pair">Переход</label>
-        <select id="pair"></select>
+        <select id="pair" class="wsdc-select"></select>
       </div>
       <div class="ctrl">
         <label for="metric">Метрика</label>
-        <select id="metric">
+        <select id="metric" class="wsdc-select">
           <option value="first_to_first">Первые в D → первые в D+1</option>
           <option value="last_to_first">Последние в D → первые в D+1</option>
         </select>
       </div>
       <div class="ctrl">
         <label for="role">Роль</label>
-        <select id="role">
+        <select id="role" class="wsdc-select">
           <option value="Leader">Leader</option>
           <option value="Follower">Follower</option>
           <option value="Both">Обе (среднее)</option>
@@ -301,6 +301,7 @@
         o.textContent = pairKey(t.from, t.to);
         sel.appendChild(o);
       });
+      if (window.WsdcSelect) window.WsdcSelect.refresh(sel);
 
       document.querySelectorAll(".tab").forEach(btn => {
         btn.addEventListener("click", () => setView(btn.dataset.view));
@@ -316,5 +317,6 @@
     }
     init().catch(e => { $("meta").textContent = "Ошибка загрузки: " + e.message; });
   </script>
+  <script src="static/js/wsdc-select.js"></script>
 </body>
 </html>

@@ -109,6 +109,7 @@ File: [`static/css/ui-primitives.css`](../static/css/ui-primitives.css)
 | `.wsdc-info-btn` | Circular «i» tips (match chrome accent behavior) |
 | `.wsdc-page-header` | Title + subtitle block |
 | `.wsdc-dd` (+ `__btn` / `__value` / `__menu`, `.is-open`) | Compact pill filter dropdown (Calendar, Champions); width via `--wsdc-dd-width` or `.wsdc-dd--auto` |
+| `.wsdc-dd--field` + `select.wsdc-select` + `static/js/wsdc-select.js` | Form/chart filters: enhance native `<select>` into the same white anchored menu (no OS black popup) |
 
 Rules:
 
@@ -116,6 +117,7 @@ Rules:
 - Min tap target on mobile: ~44px height for icon buttons (info, clear).
 - Focus: visible `--wsdc-focus-ring`; never `outline: none` without a replacement.
 - Do not relocate the same control to a different structural slot across sibling tools without updating this guideline.
+- **Do not ship native `<select>` popups** for in-scope product/magazine/embed UI — they render as OS menus (often dark, detached). Use `.wsdc-dd` or mark `<select class="wsdc-select">` and load `wsdc-select.js`.
 
 ---
 

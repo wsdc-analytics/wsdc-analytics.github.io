@@ -223,7 +223,7 @@
               <label for="metric" data-i18n="metricLabel">Показатель</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon metric">analytics</span>
-                <select id="metric">
+                <select id="metric" class="wsdc-select">
                   <option value="percent" data-i18n="optPercent">Доля поинтов, %</option>
                   <option value="absolute" data-i18n="optAbsolute">Количество поинтов</option>
                 </select>
@@ -234,7 +234,7 @@
               <label for="division" data-i18n="divisionLabel">Номинация</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon division">trophy</span>
-                <select id="division">
+                <select id="division" class="wsdc-select">
                   <option value="Total" data-i18n="optTotal">Все номинации</option>
                   <option value="Newcomer">Newcomer</option>
                   <option value="Novice">Novice</option>
@@ -413,5 +413,6 @@
       });
     }
   </script>
+  <script src="static/js/wsdc-select.js"></script>
 </body>
 </html>
