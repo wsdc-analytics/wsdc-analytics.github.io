@@ -352,7 +352,10 @@
     els.modUnlock.hidden = unlocked;
     els.modLock.hidden = !unlocked;
     els.modActions.hidden = !unlocked || !state.threadId;
-    if (els.aside) els.aside.hidden = !unlocked;
+    if (els.aside) {
+      els.aside.hidden = !unlocked;
+      if (!unlocked) els.aside.open = false;
+    }
   }
 
   function renderModActions() {
@@ -389,10 +392,10 @@
             `</li>`
         )
         .join("");
-      els.stats.innerHTML = `<div class="qa-stats"><strong>Board counts</strong><ul>${lines}</ul>
+      els.stats.innerHTML = `<strong>Board counts</strong><ul>${lines}</ul>
         <p>Posts: ${data.posts_total || 0}${
         data.posts_hidden ? ` (${data.posts_hidden} hidden)` : ""
-      }</p></div>`;
+      }</p>`;
     } catch (e) {
       els.stats.textContent = e.message || "Stats unavailable";
     }

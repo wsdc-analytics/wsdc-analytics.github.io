@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826h">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826j">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -39,61 +39,63 @@
 
   <main id="main" class="qa-shell">
     <a class="wsdc-back qa-back" href="index.html?lang=en" data-wsdc-back>Back to home</a>
-    <header class="wsdc-page-header">
-      <h1 class="wsdc-page-title">Q&amp;A Hub</h1>
-      <p class="wsdc-page-subtitle">Ask about articles, dashboards, Summary Points, New Champions, Calendar, or the site. English only for now. No accounts — just a display name.</p>
-    </header>
-    <p class="qa-intro">
-      This is a lightweight community space. Posts appear immediately; spam can be hidden by moderators.
-      Prefer a clear title and one question per thread.
-    </p>
 
-    <div class="qa-mod-bar" id="qaModBar">
-      <div class="qa-mod-unlock" id="qaModUnlock">
-        <label class="qa-mod-label" for="qaModSecret">Moderator secret</label>
-        <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off">
-        <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
-      </div>
-      <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock moderator mode</button>
-      <div class="qa-mod-actions" id="qaModActions" hidden></div>
-    </div>
+    <div class="qa-top has-aside">
+      <div class="qa-main-col">
+        <header class="wsdc-page-header">
+          <h1 class="wsdc-page-title">Q&amp;A Hub</h1>
+          <p class="wsdc-page-subtitle">Ask about articles, dashboards, Summary Points, New Champions, Calendar, or the site. English only for now. No accounts — just a display name.</p>
+        </header>
+        <p class="qa-intro">
+          Lightweight community space. Posts appear immediately; moderators can hide spam.
+        </p>
 
-    <nav class="wsdc-filter-bar qa-boards" id="qaBoards" aria-label="Boards"></nav>
-
-    <div class="qa-layout has-aside">
-      <section class="qa-panel" aria-label="Threads">
-        <h2>Threads <span class="qa-status" id="qaListStatus"></span></h2>
-        <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
-
-        <div id="qaThreadPanel" hidden>
-          <h2 id="qaThreadTitle"></h2>
-          <p class="qa-thread-meta" id="qaThreadMeta"></p>
-          <div id="qaPosts"></div>
-
-          <form class="qa-form" id="qaReplyForm" hidden>
-            <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <label>Your name
-              <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
-            </label>
-            <label>Email (optional, not shown)
-              <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com">
-            </label>
-            <label>Reply
-              <textarea class="wsdc-field" name="body" required maxlength="8000" placeholder="Write a reply…"></textarea>
-            </label>
-            <div class="qa-form-actions">
-              <button type="submit" class="wsdc-btn wsdc-btn--primary">Post reply</button>
-            </div>
-          </form>
+        <div class="qa-mod-bar" id="qaModBar">
+          <div class="qa-mod-unlock" id="qaModUnlock">
+            <label class="qa-mod-label" for="qaModSecret">Mod</label>
+            <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" aria-label="Moderator secret">
+            <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
+          </div>
+          <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock</button>
+          <div class="qa-mod-actions" id="qaModActions" hidden></div>
         </div>
 
-        <p class="qa-status" id="qaStatus" aria-live="polite"></p>
-      </section>
+        <nav class="wsdc-filter-bar qa-boards" id="qaBoards" aria-label="Boards"></nav>
+
+        <section class="qa-panel" aria-label="Threads">
+          <h2>Threads <span class="qa-status" id="qaListStatus"></span></h2>
+          <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
+
+          <div id="qaThreadPanel" hidden>
+            <h2 id="qaThreadTitle"></h2>
+            <p class="qa-thread-meta" id="qaThreadMeta"></p>
+            <div id="qaPosts"></div>
+
+            <form class="qa-form" id="qaReplyForm" hidden>
+              <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <label>Your name
+                <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
+              </label>
+              <label>Email <span class="qa-label-hint">(not shown)</span>
+                <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com">
+              </label>
+              <label>Reply
+                <textarea class="wsdc-field" name="body" required maxlength="8000" placeholder="Write a reply…"></textarea>
+              </label>
+              <div class="qa-form-actions">
+                <button type="submit" class="wsdc-btn wsdc-btn--primary">Post reply</button>
+              </div>
+            </form>
+          </div>
+
+          <p class="qa-status" id="qaStatus" aria-live="polite"></p>
+        </section>
+      </div>
 
       <aside class="qa-panel qa-compose" id="qaCompose">
         <header class="qa-compose-head">
           <h2>New thread</h2>
-          <p class="qa-compose-lede">Posts to the selected board above.</p>
+          <p class="qa-compose-lede">Posts to the selected board.</p>
         </header>
         <form class="qa-form" id="qaNewThreadForm">
           <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -104,32 +106,34 @@
             <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
           </label>
           <label>Message
-            <textarea class="wsdc-field" name="body" required minlength="3" maxlength="8000" placeholder="Context, what you tried, what is unclear…"></textarea>
+            <textarea class="wsdc-field qa-compose-message" name="body" required minlength="3" maxlength="8000" placeholder="Context, what you tried, what is unclear…"></textarea>
           </label>
-          <div class="qa-form-optional">
-            <p class="qa-form-optional-label">Optional details</p>
-            <label>Email <span class="qa-label-hint">(not shown publicly)</span>
-              <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com" autocomplete="email">
-            </label>
-            <label>Related page
-              <input class="wsdc-field" name="page_url" type="url" maxlength="500" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
-            </label>
-          </div>
+          <details class="qa-form-optional">
+            <summary>Optional details</summary>
+            <div class="qa-form-optional-body">
+              <label>Email <span class="qa-label-hint">(not shown publicly)</span>
+                <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com" autocomplete="email">
+              </label>
+              <label>Related page
+                <input class="wsdc-field" name="page_url" type="url" maxlength="500" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
+              </label>
+            </div>
+          </details>
           <div class="qa-form-actions">
             <button type="submit" class="wsdc-btn wsdc-btn--primary qa-compose-submit">Publish thread</button>
           </div>
         </form>
 
-        <div class="qa-aside-stats" id="qaAside" hidden>
-          <h2>Stats</h2>
+        <details class="qa-aside-stats" id="qaAside" hidden>
+          <summary>Board stats</summary>
           <div id="qaStats" class="qa-stats">Unlock moderator mode to load counts.</div>
-        </div>
+        </details>
       </aside>
     </div>
   </main>
 
   <script src="static/js/site-chrome.js?v=20260816d" defer></script>
-  <script src="static/js/qa-config.js?v=20260826f"></script>
-  <script src="static/js/qa-hub.js?v=20260826f"></script>
+  <script src="static/js/qa-config.js?v=20260826j"></script>
+  <script src="static/js/qa-hub.js?v=20260826j"></script>
 </body>
 </html>
