@@ -221,7 +221,7 @@
               <label for="metric" data-i18n="metricLabel">Показатель</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon metric">analytics</span>
-                <select id="metric">
+                <select id="metric" class="wsdc-select">
                   <option value="share" data-i18n="optShare">Доля переходов во второй роли, %</option>
                   <option value="abs_secondary" data-i18n="optAbsSecondary">Переходы во второй роли</option>
                   <option value="abs_primary" data-i18n="optAbsPrimary">Переходы по основной роли</option>
@@ -233,7 +233,7 @@
               <label for="division" data-i18n="divisionLabel">Номинация</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon division">trophy</span>
-                <select id="division">
+                <select id="division" class="wsdc-select">
                   <option value="Total" data-i18n="optTotal">Все переходы</option>
                   <option value="Newcomer">→ Newcomer</option>
                   <option value="Novice">Newcomer → Novice</option>
@@ -424,5 +424,6 @@
       });
     }
   </script>
+  <script src="static/js/wsdc-select.js"></script>
 </body>
 </html>

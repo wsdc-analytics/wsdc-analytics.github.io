@@ -27,7 +27,7 @@ Full rules: [`DESIGN_GUIDELINE.md`](DESIGN_GUIDELINE.md).
 
 - [ ] Reading column vs tool width uses guideline tokens (not a new magic max-width)
 - [ ] Buttons/pills/fields/info/dropdowns use `.wsdc-*` primitives (or documented exception)
-- [ ] Filter dropdowns use `.wsdc-dd` (not a new page-local pill menu)
+- [ ] Filter dropdowns use `.wsdc-dd` / `select.wsdc-select` (no native OS popup menus)
 - [ ] Filter/search/actions sit in a consistent toolbar region
 - [ ] One clear primary action per region
 

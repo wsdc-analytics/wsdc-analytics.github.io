@@ -242,6 +242,73 @@
   min-width: 7rem;
 }
 
+/* Form-style trigger (chart/tool filters) — menu still matches chrome Dashboards */
+.wsdc-dd--field {
+  width: 100%;
+  --wsdc-dd-width: 100%;
+}
+
+.wsdc-dd--field .wsdc-dd__btn {
+  height: auto;
+  min-height: var(--wsdc-control-height, 40px);
+  padding: 0 var(--wsdc-space-3, 12px);
+  border-radius: var(--wsdc-radius-md, 8px);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text, #1f2937);
+  font-size: var(--wsdc-font-size-sm, 13px);
+  font-weight: var(--wsdc-font-weight-semibold, 600);
+  justify-content: space-between;
+}
+
+.wsdc-dd--field .wsdc-dd__value {
+  text-align: left;
+}
+
+.wsdc-dd--field.is-open .wsdc-dd__btn,
+.wsdc-dd--field .wsdc-dd__btn:hover {
+  border-color: #9ca3af;
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+.wsdc-select-host {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+select.wsdc-select-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Chart embeds that wrap selects with icons/carets */
+.select-wrap:has(.wsdc-select-host) .select-caret {
+  display: none;
+}
+
+.select-wrap:has(.wsdc-select-host) .wsdc-dd--field .wsdc-dd__btn {
+  padding-left: 32px;
+  padding-right: 28px;
+}
+
+.select-wrap,
+.control,
+.ctrl,
+.controls {
+  overflow: visible;
+}
+
 .wsdc-dd__btn {
   appearance: none;
   display: inline-flex;
@@ -319,9 +386,9 @@
   left: 0;
   right: auto;
   z-index: 60;
-  min-width: 100%;
+  min-width: max(100%, 200px);
   width: max-content;
-  max-width: min(280px, calc(100vw - 32px));
+  max-width: min(320px, calc(100vw - 32px));
   max-height: min(280px, 50vh);
   overflow-y: auto;
   margin: 0;
@@ -330,6 +397,7 @@
   border-radius: var(--wsdc-radius-lg, 10px);
   border: 1px solid var(--wsdc-color-border, #d1d5db);
   background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text, #1f2937);
   box-shadow: var(--wsdc-shadow-card);
   transform-origin: top left;
   opacity: 0;
