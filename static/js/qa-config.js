@@ -7,6 +7,6 @@ window.QA_CONFIG = {
   supabaseUrl: "https://tougqwxmahkwnaculiju.supabase.co",
   supabaseAnonKey:
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdWdxd3htYWhrd25hY3VsaWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjcyNzMsImV4cCI6MjA5MDgwMzI3M30.0sDagftyoM21lkV2sZJf5jhvtHR3GUE9IX10lznAOCw",
-  /* Same host pattern as REACTIONS_API when deployed */
-  apiBase: "https://wsdc-analytics-repo.vercel.app",
+  /* Same host as REACTIONS_API / contact API */
+  apiBase: "https://wsdc-analytics-github-io.vercel.app",
 };
