@@ -43,6 +43,7 @@
     
     <!-- Resource hints для оптимизации производительности -->
     <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,25 +63,25 @@
     </script>
     <style>
         :root {
-            /* Основные цвета */
-            --color-primary: #2d3748;
-            --color-primary-dark: #0B1221;
-            --color-primary-light: #4a5568;
-            --color-accent: #2563eb;
+            /* Remap legacy locals onto Evolved C tokens */
+            --color-primary: var(--wsdc-color-brand);
+            --color-primary-dark: var(--wsdc-color-text-strong);
+            --color-primary-light: var(--wsdc-color-text-muted);
+            --color-accent: var(--wsdc-color-brand-accent);
             
             /* Фоны */
-            --bg-primary: #ffffff;
-            --bg-secondary: #FFFFFF;
-            --bg-tertiary: #f7fafc;
+            --bg-primary: var(--wsdc-color-surface);
+            --bg-secondary: var(--wsdc-color-surface);
+            --bg-tertiary: var(--wsdc-color-surface-soft);
             
             /* Текст */
-            --text-primary: #0B1221;
-            --text-secondary: #4a5568;
-            --text-tertiary: #6B7280;
+            --text-primary: var(--wsdc-color-text-strong);
+            --text-secondary: var(--wsdc-color-text-muted);
+            --text-tertiary: var(--wsdc-color-text-muted);
             
             /* Границы */
-            --border-color: #e5e7eb;
-            --border-color-hover: #cbd5e0;
+            --border-color: var(--wsdc-color-border);
+            --border-color-hover: #9ca3af;
             
             /* Тени - floating элементы */
             --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);

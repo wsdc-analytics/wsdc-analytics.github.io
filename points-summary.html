@@ -36,6 +36,7 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
@@ -594,17 +595,19 @@
 
     <div class="container">
                 <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
-<h1>Summary Points</h1>
-        <p class="subtitle">Weekly points awarded by event, organized by publication date.</p>
-        <div class="page-search">
+        <header class="wsdc-page-header">
+        <h1 class="wsdc-page-title">Summary Points</h1>
+        <p class="wsdc-page-subtitle subtitle">Weekly points awarded by event, organized by publication date.</p>
+        </header>
+        <div class="page-search wsdc-filter-bar">
             <div class="search-help">
-                <span class="info-icon" aria-label="Brief search instructions (hover or focus to read)" role="img">
+                <span class="info-icon wsdc-info-btn" aria-label="Brief search instructions (hover or focus to read)" role="img">
                     <span aria-hidden="true">i</span>
                     <span class="info-tooltip"><span class="info-tooltip-main">Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</span><span class="info-tooltip-note"><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</span></span>
                 </span>
             </div>
             <div class="search-box">
-                <input type="search" class="search-input" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
+                <input type="search" class="search-input wsdc-field" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
                 <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
             </div>
         </div>

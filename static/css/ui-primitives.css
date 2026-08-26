@@ -1,0 +1,219 @@
+/**
+ * Shared Evolved C UI primitives — buttons, pills, fields, filter bar, info, page header.
+ * Load after tokens.css. Page CSS may refine layout but should reuse these classes.
+ */
+
+.wsdc-page-header {
+  margin: 0 0 var(--wsdc-space-6, 24px);
+  max-width: var(--wsdc-width-tool, 860px);
+}
+
+.wsdc-page-header h1,
+.wsdc-page-header .wsdc-page-title {
+  margin: 0 0 var(--wsdc-space-2, 8px);
+  color: var(--wsdc-color-text-strong, #0b1221);
+  font-family: var(--wsdc-font-sans);
+  font-size: var(--wsdc-font-size-xl, 24px);
+  font-weight: var(--wsdc-font-weight-bold, 700);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.wsdc-page-header .wsdc-page-subtitle,
+.wsdc-page-header .subtitle {
+  margin: 0;
+  color: var(--wsdc-color-text-muted, #4b5563);
+  font-family: var(--wsdc-font-sans);
+  font-size: var(--wsdc-font-size-md, 15px);
+  font-weight: var(--wsdc-font-weight-normal, 400);
+  line-height: 1.5;
+}
+
+.wsdc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--wsdc-space-2, 8px);
+  min-height: var(--wsdc-control-height, 40px);
+  padding: 0 var(--wsdc-space-4, 16px);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  border-radius: var(--wsdc-radius-md, 8px);
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text-strong, #0b1221);
+  font-family: var(--wsdc-font-sans);
+  font-size: var(--wsdc-font-size-sm, 13px);
+  font-weight: var(--wsdc-font-weight-semibold, 600);
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.wsdc-btn:hover {
+  border-color: #9ca3af;
+}
+
+.wsdc-btn:active {
+  transform: scale(0.98);
+}
+
+.wsdc-btn:focus-visible {
+  outline: var(--wsdc-focus-ring);
+  outline-offset: var(--wsdc-focus-offset, 2px);
+}
+
+.wsdc-btn--primary {
+  background: var(--wsdc-color-brand, #111827);
+  border-color: var(--wsdc-color-brand, #111827);
+  color: #ffffff;
+}
+
+.wsdc-btn--primary:hover {
+  background: var(--wsdc-color-text-strong, #0b1221);
+  border-color: var(--wsdc-color-text-strong, #0b1221);
+  color: #ffffff;
+}
+
+.wsdc-btn--secondary {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
+.wsdc-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--wsdc-color-text-muted, #4b5563);
+}
+
+.wsdc-btn--ghost:hover {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+  border-color: transparent;
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+.wsdc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 2px 10px;
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  border-radius: var(--wsdc-radius-pill, 999px);
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+  color: var(--wsdc-color-text-muted, #4b5563);
+  font-family: var(--wsdc-font-sans);
+  font-size: var(--wsdc-font-size-xs, 12px);
+  font-weight: var(--wsdc-font-weight-medium, 500);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.wsdc-pill.is-accent {
+  border-color: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 35%, var(--wsdc-color-border));
+  background: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 10%, white);
+  color: var(--wsdc-color-brand-accent, #2563eb);
+}
+
+.wsdc-field {
+  display: block;
+  width: 100%;
+  min-height: var(--wsdc-control-height, 40px);
+  padding: 0 var(--wsdc-space-3, 12px);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  border-radius: var(--wsdc-radius-md, 8px);
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text, #1f2937);
+  font-family: var(--wsdc-font-sans);
+  font-size: var(--wsdc-font-size-sm, 13px);
+  line-height: 1.4;
+}
+
+.wsdc-field::placeholder {
+  color: var(--wsdc-color-text-muted, #4b5563);
+  opacity: 0.8;
+}
+
+.wsdc-field:focus {
+  outline: none;
+  border-color: var(--wsdc-color-brand-accent, #2563eb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 20%, transparent);
+}
+
+.wsdc-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--wsdc-space-3, 12px);
+  margin: 0 0 var(--wsdc-space-5, 20px);
+}
+
+.wsdc-filter-bar .wsdc-field {
+  max-width: 280px;
+}
+
+@media (max-width: 720px) {
+  .wsdc-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wsdc-filter-bar .wsdc-field {
+    max-width: none;
+  }
+
+  .wsdc-btn {
+    min-height: var(--wsdc-tap-min, 44px);
+  }
+}
+
+.wsdc-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  border-radius: 50%;
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text-muted, #4b5563);
+  font-family: var(--wsdc-font-sans);
+  font-size: 12px;
+  font-weight: var(--wsdc-font-weight-semibold, 600);
+  font-style: italic;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+
+.wsdc-info-btn:hover,
+.wsdc-info-btn:focus-visible,
+.wsdc-info-btn[aria-expanded="true"] {
+  border-color: var(--wsdc-color-brand-accent, #2563eb);
+  color: var(--wsdc-color-brand-accent, #2563eb);
+  background: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 8%, white);
+}
+
+.wsdc-info-btn:focus-visible {
+  outline: var(--wsdc-focus-ring);
+  outline-offset: var(--wsdc-focus-offset, 2px);
+}
+
+@media (max-width: 720px) {
+  .wsdc-info-btn {
+    width: var(--wsdc-tap-min, 44px);
+    height: var(--wsdc-tap-min, 44px);
+    font-size: 14px;
+  }
+}
+
+/* Embeddable pages: safe edge padding when opened top-level */
+.wsdc-embed-shell {
+  box-sizing: border-box;
+  min-height: 100%;
+  margin: 0;
+  padding: var(--wsdc-space-4, 16px);
+  font-family: var(--wsdc-font-sans);
+  color: var(--wsdc-color-text, #1f2937);
+  background: var(--wsdc-color-surface, #ffffff);
+}

@@ -1,31 +1,37 @@
 # Mini Design System (Static Site)
 
-## Design tokens
-Source of truth: `static/css/tokens.css`
+> **Full canon:** [`DESIGN_GUIDELINE.md`](DESIGN_GUIDELINE.md) · **PR checklist:** [`DESIGN_CHECKLIST.md`](DESIGN_CHECKLIST.md) · **Audit:** [`DESIGN_AUDIT_INVENTORY.md`](DESIGN_AUDIT_INVENTORY.md)
 
-Core tokens:
-- text: `--wsdc-color-text-strong`, `--wsdc-color-text`, `--wsdc-color-text-muted`
-- surface: `--wsdc-color-surface`, `--wsdc-color-surface-soft`
-- border: `--wsdc-color-border`
-- brand: `--wsdc-color-brand`, `--wsdc-color-brand-accent`
-- elevation: `--wsdc-shadow-card`
+## Design tokens
+
+Source of truth: `static/css/tokens.css` (`--wsdc-*` colors, spacing, radii, widths, focus).
 
 ## Shared chrome (Evolved C)
-Source of truth: `static/css/site-chrome.css` + `static/js/site-chrome.js`  
-Usage notes: `docs/SITE_CHROME.md`
 
-Mount with `<div data-site-chrome …>` — brand · Dashboards · Summary Points · New Champions · quiet contact · RU/EN/ES.
+Source: `static/css/site-chrome.css` + `static/js/site-chrome.js`  
+Usage: [`SITE_CHROME.md`](SITE_CHROME.md)
 
-## Component primitives
-Use these shared patterns across pages:
-1. **Top navigation bar** via shared chrome (active language state on pills).
-2. **Card list item** with hover/focus affordance (homepage uses divider list).
-3. **Search field** with label and clear focus ring (secondary on Points Summary).
-4. **Expandable blocks** (`aria-expanded` + keyboard toggle).
-5. **Magazine article shell** via `static/css/article-shell.css` (quiet Evolved C remaps; keep content/structure).
+Mount with `<div data-site-chrome …>` — brand · Dashboards · Summary Points · New Champions · Events Calendar · quiet contact · RU/EN/ES.
+
+## UI primitives
+
+Source: `static/css/ui-primitives.css`  
+Buttons, pills, fields, filter bar, info button, page header — see guideline §6.
+
+## Magazine
+
+`static/css/article-shell.css` after page inline styles. Quiet remaps of legacy locals onto Evolved C tokens.
+
+## Page types (quick)
+
+| Type | Chrome? |
+|------|---------|
+| Product / magazine | Required |
+| iframe embeddable (`interactive_*`, forecast cards) | Forbidden — tokens + primitives only |
 
 ## Accessibility baseline
+
 - Every interactive icon/button gets `aria-label`.
 - Skip link for each major page.
-- Use semantic landmarks (`header`, `main`, `footer`).
-- Preserve keyboard support for custom controls.
+- Semantic landmarks (`header`, `main`, `footer`).
+- Keyboard support for custom controls.
