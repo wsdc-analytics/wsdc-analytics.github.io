@@ -236,8 +236,8 @@
       .map((t) => {
         const active = t.id === state.threadId ? " is-active" : "";
         const badges = [
-          t.is_pinned ? `<span class="qa-badge is-pin">Pinned</span>` : "",
-          t.is_hidden ? `<span class="qa-badge is-hidden">Hidden</span>` : "",
+          t.is_pinned ? `<span class="wsdc-pill is-accent">Pinned</span>` : "",
+          t.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">Hidden</span>` : "",
         ]
           .filter(Boolean)
           .join(" ");
@@ -312,12 +312,12 @@
         ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">source</a>`
         : "";
     })()}${
-      t.is_pinned ? ' · <span class="qa-badge is-pin">Pinned</span>' : ""
-    }${t.is_hidden ? ' · <span class="qa-badge is-hidden">Hidden</span>' : ""}`;
+      t.is_pinned ? ' · <span class="wsdc-pill is-accent">Pinned</span>' : ""
+    }${t.is_hidden ? ' · <span class="wsdc-pill qa-pill-hidden">Hidden</span>' : ""}`;
 
     const opHtml = `<article class="qa-post">
       <div class="qa-post-head"><span class="qa-post-author">${esc(t.author_name)}</span>
-      <span>${esc(fmtDate(t.created_at))}</span><span class="qa-badge">OP</span></div>
+      <span>${esc(fmtDate(t.created_at))}</span><span class="wsdc-pill">OP</span></div>
       <div class="qa-post-body">${esc(t.body)}</div>
     </article>`;
 
@@ -327,7 +327,7 @@
         (p) => `<article class="qa-post" data-post-id="${esc(p.id)}">
       <div class="qa-post-head"><span class="qa-post-author">${esc(p.author_name)}</span>
       <span>${esc(fmtDate(p.created_at))}</span>
-      ${p.is_hidden ? '<span class="qa-badge is-hidden">Hidden</span>' : ""}
+      ${p.is_hidden ? '<span class="wsdc-pill qa-pill-hidden">Hidden</span>' : ""}
       ${
         state.mod
           ? `<button type="button" class="wsdc-btn wsdc-btn--ghost" data-mod-post="${esc(p.id)}" data-mod-action="${
