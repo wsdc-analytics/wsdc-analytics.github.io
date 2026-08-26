@@ -92,6 +92,17 @@ body {
   z-index: 40;
 }
 
+/* Shared .wsdc-page-header / .wsdc-filter-bar add tool-page air that is too tall
+   for this full-bleed calendar shell — keep the divider, shrink the gutters. */
+.page-head.wsdc-page-header {
+  margin-bottom: 6px;
+  max-width: calc(100% - 200px);
+}
+
+.page-head .toolbar.wsdc-filter-bar {
+  margin-bottom: 0;
+}
+
 h1 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -160,7 +171,8 @@ h1 {
   justify-content: flex-start;
   column-gap: 12px;
   /* Extra air under subtitle/disclaimer so filters sit with the calendar. */
-  margin-top: 8px;
+  margin-top: 4px;
+  margin-bottom: 0;
   padding-top: 0;
   width: 100%;
   min-width: 0;
@@ -376,7 +388,7 @@ h1 {
   justify-content: center;
   align-items: stretch;
   overflow: hidden;
-  padding: 2px 0 8px;
+  padding: 0 0 8px;
 }
 
 /* Float in the empty gutter left of the centered 820px grid — does not shift the calendar */
@@ -1951,6 +1963,10 @@ h1 {
   .page-head {
     width: 100%;
     max-width: 100%;
+  }
+  .page-head.wsdc-page-header {
+    max-width: 100%;
+    margin-bottom: 4px;
   }
   .container > .wsdc-back {
     width: 100%;
