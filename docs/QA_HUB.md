@@ -34,9 +34,11 @@ Primary path matches existing `api/contact.js` / reactions style:
 | Endpoint | Role |
 |----------|------|
 | `POST /api/qa-mod` | Hide / unhide / pin / unpin / **delete**; `stats`; `list_threads` (incl. hidden) |
-| `POST /api/qa-notify` | Telegram alert on new thread/reply (soft-skip if unset) |
+| `POST /api/qa-notify` | Telegram alert after a **fresh** insert (thread/reply must exist and be under 3 minutes old; needs `SUPABASE_*`) |
 
 Where to put them: [Vercel Dashboard](https://vercel.com) → project that serves `https://wsdc-analytics-github-io.vercel.app` (same as reactions/contact) → **Settings → Environment Variables** → add for **Production** (and Preview if you test PRs) → **Redeploy** the latest deployment so functions pick up new vars.
+
+CORS for mod/notify is restricted to `https://wsdc-analytics.github.io` (plus local static previews).
 
 Client `apiBase` in [`static/js/qa-config.js`](../static/js/qa-config.js) must match that Vercel host.
 
@@ -88,6 +90,8 @@ Or use a small helper bot such as [@userinfobot](https://t.me/userinfobot) for y
 
 If token/chat are missing, `qa-notify` returns OK with `skipped: true` (posts still work; no Telegram ping).
 
+`qa-notify` also needs `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` to verify the thread/reply exists and was created within the last 3 minutes (blocks open Telegram spam with fake payloads).
+
 #### `QA_SITE_BASE` (optional)
 
 Default in code: `https://wsdc-analytics.github.io`.  
@@ -108,12 +112,14 @@ Moderation header used by the hub: `x-qa-admin-secret: <QA_ADMIN_SECRET>`.
 
 Optional Edge Function sources (same behaviour) under `supabase/functions/qa-mod` and `qa-notify` if you deploy to Supabase later instead of Vercel.
 
-## Antispam (v1)
+## Antispam / privacy (v1)
 
 - Honeypot field `website`
 - Min/max lengths (DB check + form)
 - ~20s client cooldown per browser
 - Optional email format check on insert
+- `author_email` is writable on insert but **not** selectable by anon (column grants)
+- `page_url` must be `https://…` (DB check + client); rendered with `rel="noopener noreferrer"`
 
 ## Manual test
 

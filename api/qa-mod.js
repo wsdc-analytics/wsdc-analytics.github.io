@@ -1,10 +1,24 @@
 function setCors(res, origin) {
-  res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  const allowed = allowOrigin(origin);
+  res.setHeader('Access-Control-Allow-Origin', allowed);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Content-Type, x-qa-admin-secret, Authorization, apikey'
   );
+  res.setHeader('Vary', 'Origin');
+}
+
+function allowOrigin(origin) {
+  const allowed = new Set([
+    'https://wsdc-analytics.github.io',
+    'http://127.0.0.1:4173',
+    'http://localhost:4173',
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+  ]);
+  if (origin && allowed.has(origin)) return origin;
+  return 'https://wsdc-analytics.github.io';
 }
 
 function sendJson(res, data, status = 200, origin) {
@@ -70,7 +84,7 @@ async function sbFetch(baseUrl, serviceKey, path, options = {}) {
 }
 
 module.exports = async function handler(req, res) {
-  const origin = req.headers.origin || '*';
+  const origin = req.headers.origin || '';
 
   if (req.method === 'OPTIONS') {
     setCors(res, origin);

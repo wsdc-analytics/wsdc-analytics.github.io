@@ -58,6 +58,19 @@
       .replace(/"/g, "&quot;");
   }
 
+  /** Only https URLs — blocks javascript:/data: etc. */
+  function safeHttpsUrl(raw) {
+    const s = String(raw || "").trim();
+    if (!s || s.length > 500) return null;
+    try {
+      const u = new URL(s);
+      if (u.protocol !== "https:") return null;
+      return u.href;
+    } catch {
+      return null;
+    }
+  }
+
   function fmtDate(iso) {
     try {
       return new Date(iso).toLocaleString("en-GB", {
@@ -293,7 +306,12 @@
       state.boardSlug;
     els.threadMeta.innerHTML = `${esc(boardTitle)} · by <strong>${esc(t.author_name)}</strong> · ${esc(
       fmtDate(t.created_at)
-    )}${t.page_url ? ` · <a href="${esc(t.page_url)}">source</a>` : ""}${
+    )}${(() => {
+      const href = safeHttpsUrl(t.page_url);
+      return href
+        ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">source</a>`
+        : "";
+    })()}${
       t.is_pinned ? ' · <span class="qa-badge is-pin">Pinned</span>' : ""
     }${t.is_hidden ? ' · <span class="qa-badge is-hidden">Hidden</span>' : ""}`;
 
@@ -389,7 +407,9 @@
     const title = String(form.title.value || "").trim();
     const author_name = String(form.author_name.value || "").trim();
     const author_email = String(form.author_email.value || "").trim() || null;
-    const page_url = String(form.page_url.value || "").trim() || null;
+    const page_url_raw = String(form.page_url.value || "").trim();
+    const page_url = page_url_raw ? safeHttpsUrl(page_url_raw) : null;
+    if (page_url_raw && !page_url) throw new Error("Related page URL must be https://");
     const body = String(form.body.value || "").trim();
 
     const rows = await sb("qa_threads", {
