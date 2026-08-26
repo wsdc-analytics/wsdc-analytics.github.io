@@ -1,11 +1,14 @@
 # Shared site chrome (Evolved C)
 
+Full design canon: [`DESIGN_GUIDELINE.md`](DESIGN_GUIDELINE.md) · checklist: [`DESIGN_CHECKLIST.md`](DESIGN_CHECKLIST.md).
+
 ## Usage
 
 In page `<head>`:
 
 ```html
 <link rel="stylesheet" href="static/css/tokens.css">
+<link rel="stylesheet" href="static/css/ui-primitives.css">
 <link rel="stylesheet" href="static/css/site-chrome.css">
 ```
 
