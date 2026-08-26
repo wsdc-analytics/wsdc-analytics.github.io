@@ -120,7 +120,7 @@ Optional Edge Function sources (same behaviour) under `supabase/functions/qa-mod
 - Min/max lengths (DB check + form)
 - ~20s client cooldown per browser
 - Optional email format check on insert
-- `author_email` is writable on insert but **not** selectable by anon (column grants)
+- `author_email` is writable on insert but **not** selectable by anon (`REVOKE SELECT (author_email)`; inserts use `?select=` without that column)
 - `page_url` must be `https://…` (DB check + client); rendered with `rel="noopener noreferrer"`
 
 ## Manual test

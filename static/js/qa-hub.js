@@ -412,21 +412,24 @@
     if (page_url_raw && !page_url) throw new Error("Related page URL must be https://");
     const body = String(form.body.value || "").trim();
 
-    const rows = await sb("qa_threads", {
-      method: "POST",
-      body: JSON.stringify({
-        board_id: board.id,
-        title,
-        author_name,
-        author_email,
-        page_url,
-        body,
-      }),
-    });
+    const rows = await sb(
+      "qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          board_id: board.id,
+          title,
+          author_name,
+          author_email,
+          page_url,
+          body,
+        }),
+      }
+    );
     const thread = Array.isArray(rows) ? rows[0] : rows;
     if (!thread || !thread.id) throw new Error("Failed to create thread");
 
-    await sb("qa_posts", {
+    await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
       method: "POST",
       body: JSON.stringify({
         thread_id: thread.id,
@@ -459,7 +462,7 @@
     const author_email = String(form.author_email.value || "").trim() || null;
     const body = String(form.body.value || "").trim();
 
-    await sb("qa_posts", {
+    await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
       method: "POST",
       body: JSON.stringify({
         thread_id: state.threadId,
