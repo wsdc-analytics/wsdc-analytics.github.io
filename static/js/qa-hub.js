@@ -355,6 +355,7 @@
       <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="pin">${
         t.is_pinned ? "Unpin" : "Pin"
       }</button>
+      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="delete">Delete thread</button>
     `;
   }
 
@@ -561,6 +562,22 @@
             type: "thread",
             id: state.thread.id,
           });
+        } else if (act === "delete") {
+          const title = state.thread.title || "this thread";
+          if (!window.confirm(`Delete thread permanently?\n\n“${title}”\n\nReplies will be removed too.`)) {
+            return;
+          }
+          const boardSlug = state.boardSlug;
+          await modApi({
+            action: "delete",
+            type: "thread",
+            id: state.thread.id,
+          });
+          state.threadId = null;
+          state.thread = null;
+          location.hash = `#board/${boardSlug}`;
+          setStatus("Thread deleted.", "ok");
+          return;
         }
         await onRoute();
         setStatus("Updated.", "ok");

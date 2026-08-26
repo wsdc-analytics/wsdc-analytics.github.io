@@ -166,6 +166,23 @@ module.exports = async function handler(req, res) {
     if (!id) return sendJson(res, { error: 'Missing id' }, 400, origin);
 
     const table = type === 'post' ? 'qa_posts' : 'qa_threads';
+
+    if (action === 'delete') {
+      // Deleting a thread cascades to qa_posts (FK on delete cascade).
+      const rows = await sbFetch(
+        supabaseUrl,
+        serviceKey,
+        `${table}?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: 'DELETE',
+          headers: { Prefer: 'return=representation' },
+        }
+      );
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      if (!row) return sendJson(res, { error: 'Not found' }, 404, origin);
+      return sendJson(res, { ok: true, deleted: row }, 200, origin);
+    }
+
     const patch = {};
     if (action === 'hide') patch.is_hidden = true;
     else if (action === 'unhide') patch.is_hidden = false;

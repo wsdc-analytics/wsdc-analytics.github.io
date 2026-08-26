@@ -112,6 +112,14 @@ Deno.serve(async (req: Request) => {
   if (!id) return json({ error: "Missing id" }, 400);
 
   const table = type === "post" ? "qa_posts" : "qa_threads";
+
+  if (action === "delete") {
+    const { data, error } = await sb.from(table).delete().eq("id", id).select("*").maybeSingle();
+    if (error) return json({ error: error.message }, 500);
+    if (!data) return json({ error: "Not found" }, 404);
+    return json({ ok: true, deleted: data });
+  }
+
   const patch: Record<string, boolean> = {};
 
   if (action === "hide") patch.is_hidden = true;

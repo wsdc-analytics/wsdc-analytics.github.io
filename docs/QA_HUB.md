@@ -33,7 +33,7 @@ Primary path matches existing `api/contact.js` / reactions style:
 
 | Endpoint | Role |
 |----------|------|
-| `POST /api/qa-mod` | Hide / unhide / pin / unpin; `stats`; `list_threads` (incl. hidden) |
+| `POST /api/qa-mod` | Hide / unhide / pin / unpin / **delete**; `stats`; `list_threads` (incl. hidden) |
 | `POST /api/qa-notify` | Telegram alert on new thread/reply (soft-skip if unset) |
 
 Where to put them: [Vercel Dashboard](https://vercel.com) → project that serves `https://wsdc-analytics-github-io.vercel.app` (same as reactions/contact) → **Settings → Environment Variables** → add for **Production** (and Preview if you test PRs) → **Redeploy** the latest deployment so functions pick up new vars.
@@ -56,7 +56,7 @@ Same value as `supabaseUrl` in `qa-config.js`.
 2. Under **Project API keys**, copy **`service_role`** (`secret`) — **not** the `anon` / publishable key.
 3. Paste only into Vercel env. Never commit it, never put it in `qa-config.js` or the browser.
 
-This key bypasses RLS so `qa-mod` can hide/pin and list hidden threads.
+This key bypasses RLS so `qa-mod` can hide/pin/delete and list hidden threads.
 
 #### `QA_ADMIN_SECRET`
 
@@ -64,7 +64,7 @@ This key bypasses RLS so `qa-mod` can hide/pin and list hidden threads.
 2. Set the **same** string in Vercel as `QA_ADMIN_SECRET`.
 3. On the live hub, paste it once into **Moderator secret** → Unlock (stored in browser `localStorage` as `qa_admin_secret_v1`).
 
-Anyone who knows this secret can hide/pin. Rotate by changing Vercel + re-unlocking in the browser.
+Anyone who knows this secret can hide/pin/delete. Rotate by changing Vercel + re-unlocking in the browser.
 
 #### `TELEGRAM_BOT_TOKEN`
 
@@ -120,7 +120,7 @@ Optional Edge Function sources (same behaviour) under `supabase/functions/qa-mod
 1. Open `/qa.html` → each board lists / creates threads.
 2. Reply on a thread; confirm chronological order.
 3. With Vercel env set: new post → Telegram ping.
-4. Unlock with `QA_ADMIN_SECRET` → Hide / Pin; hidden threads disappear for anon readers.
+4. Unlock with `QA_ADMIN_SECRET` → Hide / Pin / Delete; hidden threads disappear for anon readers.
 5. Confirm article feedback forms and chrome unchanged.
 
 ## Out of v1
