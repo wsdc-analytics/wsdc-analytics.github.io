@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-25",
-  "as_of": "2026-08-25",
+  "generated_at": "2026-08-26",
+  "as_of": "2026-08-26",
   "data_through": "2026-08-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,9 +17,9 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2656,
-    "points": 718841.0,
-    "dancers": 27400
+    "events": 2658,
+    "points": 719435.0,
+    "dancers": 27428
   },
   "comparisons": {
     "week": {
@@ -30,41 +30,41 @@
         "since_previous_ended": "2026-07-31",
         "iso_week": "2026-W34",
         "bucket": "edition_end_date",
-        "event_names": "Grand Party Sofia (GPS), Shakedown Swing, Summer Hummer, Swing Creation Hamburg, The Bend Connection, UpTown Swing, Westie Joy"
+        "event_names": "Chicagoland Country and Swing Dance Festival, Grand Party Sofia (GPS), Shakedown Swing, Summer Hummer, Swing Creation Hamburg, The Bend Connection, UpTown Swing, Westie Joy"
       },
       "increment": {
-        "events": 7,
-        "points": 2674.0,
-        "dancers": 98
+        "events": 8,
+        "points": 2924.0,
+        "dancers": 105
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-08-01",
-        "end": "2026-08-25",
+        "end": "2026-08-26",
         "since_previous_ended": "2026-07-31",
         "bucket": "edition_end_date",
-        "event_names": "Arizona Dance Classic, German Open, Grand Party Sofia (GPS), Lisbon Westie Fest, New England Dance Festival, Sea Sun and Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, Swing Fling, Swingtacular: The Galactic Open, The Bend Connection, UpTown Swing, Warsaw Summer Nights Westival, Westie Joy"
+        "event_names": "Arizona Dance Classic, Chicagoland Country and Swing Dance Festival, German Open, Grand Party Sofia (GPS), Lisbon Westie Fest, New England Dance Festival, Sea Sun and Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, Swing Fling, Swingtacular: The Galactic Open, The Bend Connection, UpTown Swing, Warsaw Summer Nights Westival, Westie Joy"
       },
       "increment": {
-        "events": 15,
-        "points": 6197.0,
-        "dancers": 188
+        "events": 16,
+        "points": 6447.0,
+        "dancers": 216
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-08-25",
+        "end": "2026-08-26",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 117,
-        "points": 49240.0,
-        "dancers": 1621
+        "events": 119,
+        "points": 49834.0,
+        "dancers": 1649
       }
     }
   }
