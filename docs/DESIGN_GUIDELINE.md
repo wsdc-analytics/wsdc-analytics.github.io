@@ -108,6 +108,7 @@ File: [`static/css/ui-primitives.css`](../static/css/ui-primitives.css)
 | `.wsdc-filter-bar` | Horizontal filter/toolbar row (stacks on mobile) |
 | `.wsdc-info-btn` | Circular «i» tips (match chrome accent behavior) |
 | `.wsdc-page-header` | Title + subtitle block |
+| `.wsdc-dd` (+ `__btn` / `__value` / `__menu`, `.is-open`) | Compact pill filter dropdown (Calendar, Champions); width via `--wsdc-dd-width` or `.wsdc-dd--auto` |
 
 Rules:
 

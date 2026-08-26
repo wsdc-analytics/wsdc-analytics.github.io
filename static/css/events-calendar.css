@@ -345,158 +345,12 @@ h1 {
   line-height: 1.15;
 }
 
-/* Chrome-matched pill dropdowns (Dashboards pattern) */
-.cal-dd {
-  position: relative;
-  display: inline-flex;
-  width: var(--cal-dd-width, 7.5rem);
-  flex-shrink: 0;
-  z-index: 1;
-}
-
-.cal-dd.is-open {
-  z-index: 50;
-}
-
-#yearSelectDd { --cal-dd-width: 4.25rem; }
-#continentFilterDd { --cal-dd-width: 7.25rem; }
-#countryFilterDd { --cal-dd-width: 8rem; }
-#statusFilterDd { --cal-dd-width: 6.5rem; }
-#kindFilterDd { --cal-dd-width: 5.5rem; }
-
-.cal-dd__btn {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2px;
-  box-sizing: border-box;
-  width: 100%;
-  height: 28px;
-  padding: 0 8px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1;
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    transform 140ms var(--ease-out),
-    background-color 160ms ease,
-    color 160ms ease,
-    border-color 160ms ease;
-}
-
-.cal-dd__btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-}
-
-.cal-dd.is-open .cal-dd__btn {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-  border-color: var(--border-color);
-}
-
-.cal-dd__btn:focus {
-  outline: none;
-}
-
-.cal-dd__btn:focus-visible {
-  outline: 2px solid var(--color-primary-dark);
-  outline-offset: 2px;
-}
-
-.cal-dd__btn:active {
-  transform: scale(0.97);
-}
-
-.cal-dd__value {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-}
-
-.cal-dd__btn svg {
-  flex-shrink: 0;
-  transition: transform 180ms var(--ease-out);
-}
-
-.cal-dd.is-open .cal-dd__btn svg {
-  transform: rotate(180deg);
-}
-
-.cal-dd__menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: auto;
-  z-index: 60;
-  min-width: 100%;
-  width: max-content;
-  max-width: min(280px, calc(100vw - 32px));
-  max-height: min(280px, 50vh);
-  overflow-y: auto;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: #fff;
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
-  transform-origin: top left;
-  opacity: 0;
-  transform: scale(0.96);
-  pointer-events: none;
-  transition:
-    opacity 120ms var(--ease-out),
-    transform 120ms var(--ease-out);
-}
-
-.cal-dd.is-open .cal-dd__menu {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-  transition-duration: 180ms;
-}
-
-.cal-dd__menu li {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.cal-dd__menu button {
-  display: block;
-  width: 100%;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 400;
-  text-align: left;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cal-dd__menu button:hover {
-  background: var(--bg-tertiary);
-}
-
-.cal-dd__menu button.is-current {
-  font-weight: 600;
-}
+/* Filter dropdown widths (shared .wsdc-dd styles live in ui-primitives.css) */
+#yearSelectDd { --wsdc-dd-width: 4.25rem; }
+#continentFilterDd { --wsdc-dd-width: 7.25rem; }
+#countryFilterDd { --wsdc-dd-width: 8rem; }
+#statusFilterDd { --wsdc-dd-width: 6.5rem; }
+#kindFilterDd { --wsdc-dd-width: 5.5rem; }
 
 .swatch {
   width: 10px; height: 10px; border-radius: 2px;
@@ -2145,11 +1999,6 @@ h1 {
     width: 100%;
   }
   .cal-reset-btn { width: 100%; }
-  .cal-dd {
-    width: 100%;
-    --cal-dd-width: 100%;
-  }
-  .cal-dd__btn { width: 100%; }
   .calendar-stage {
     overflow-x: visible;
     overflow-y: visible;
@@ -2517,8 +2366,8 @@ h1 {
   .l2-spark-seg__btn,
   .l2-info-tip,
   .tooltip,
-  .cal-dd__btn,
-  .cal-dd__menu,
+  .wsdc-dd__btn,
+  .wsdc-dd__menu,
   .cal-stats__tip-bubble {
     transition: none;
   }
