@@ -43,6 +43,8 @@
   border-radius: var(--wsdc-radius-lg, 10px);
   background: var(--wsdc-color-surface, #ffffff);
   padding: var(--wsdc-space-4, 16px);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .qa-panel h2 {
@@ -145,11 +147,14 @@
   display: grid;
   gap: var(--wsdc-space-3, 12px);
   margin-top: var(--wsdc-space-4, 16px);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .qa-form label {
   display: grid;
   gap: 6px;
+  min-width: 0;
   font-size: var(--wsdc-font-size-sm, 13px);
   font-weight: 600;
   color: var(--wsdc-color-text-muted, #4b5563);
@@ -157,6 +162,9 @@
 
 .qa-form .wsdc-field,
 .qa-form textarea.wsdc-field {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
   min-height: auto;
   height: auto;
   padding: 10px 12px;

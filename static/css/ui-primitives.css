@@ -115,7 +115,9 @@
 
 .wsdc-field {
   display: block;
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   min-height: var(--wsdc-control-height, 40px);
   padding: 0 var(--wsdc-space-3, 12px);
   border: 1px solid var(--wsdc-color-border, #d1d5db);
