@@ -33,12 +33,26 @@
 }
 
 .qa-shell {
-  /* Full-bleed hub: use the viewport edge, not the 1200px chrome cap */
-  max-width: none;
-  width: 100%;
-  margin: 0;
-  padding: var(--wsdc-space-4, 16px) clamp(16px, 2.5vw, 28px) var(--wsdc-space-10, 40px);
+  max-width: var(--wsdc-width-chrome, 1200px);
+  margin: 0 auto;
+  padding: var(--wsdc-space-4, 16px) var(--wsdc-space-5, 20px) var(--wsdc-space-4, 16px);
   box-sizing: border-box;
+  /* Fill viewport below site chrome so Threads can stretch to the page bottom */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Let the hub fill the viewport under chrome */
+body:has(.qa-shell) {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
+  flex: 0 0 auto;
 }
 
 .qa-main-col .wsdc-page-header {
@@ -71,45 +85,66 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--wsdc-space-5, 20px);
-  align-items: start;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .qa-main-col {
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 960px) {
   .qa-top.has-aside {
-    /* Main threads take remaining width to the page edge; compose stays a fixed rail */
-    grid-template-columns: minmax(0, 1fr) 300px;
-    column-gap: var(--wsdc-space-5, 20px);
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+    column-gap: var(--wsdc-space-6, 24px);
   }
 
   .qa-compose {
     position: sticky;
     top: var(--wsdc-space-4, 16px);
-    width: 300px;
-    max-width: 300px;
-    box-sizing: border-box;
-  }
-
-  .qa-main-col > .qa-panel {
-    /* Threads card fills the left column to the gutter */
-    width: 100%;
+    align-self: start;
   }
 }
 
-@media (min-width: 1400px) {
-  .qa-top.has-aside {
-    grid-template-columns: minmax(0, 1fr) 320px;
-  }
+/* Threads card grows to the bottom of the viewport */
+.qa-main-col > .qa-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
 
-  .qa-compose {
-    width: 320px;
-    max-width: 320px;
-  }
+.qa-main-col > .qa-panel > h2 {
+  flex: 0 0 auto;
+}
+
+#qaThreadList {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* When a thread is open, keep the list compact and give the thread the remaining height */
+.qa-main-col > .qa-panel:has(#qaThreadPanel:not([hidden])) #qaThreadList {
+  flex: 0 1 auto;
+  max-height: 28vh;
+}
+
+#qaThreadPanel:not([hidden]) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  margin-top: var(--wsdc-space-3, 12px);
+  padding-top: var(--wsdc-space-3, 12px);
+  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 80%, transparent);
+}
+
+.qa-main-col > .qa-panel > .qa-status {
+  flex: 0 0 auto;
 }
 
 .qa-panel {
