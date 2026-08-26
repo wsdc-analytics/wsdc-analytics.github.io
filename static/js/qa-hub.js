@@ -356,6 +356,9 @@
       els.aside.hidden = !unlocked;
       if (!unlocked) els.aside.open = false;
     }
+    /* Keep unlock UI collapsed for visitors; open when unlocked so Lock is reachable */
+    if (unlocked) els.modBar.open = true;
+    else els.modBar.open = false;
   }
 
   function renderModActions() {

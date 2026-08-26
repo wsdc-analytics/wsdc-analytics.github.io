@@ -355,18 +355,39 @@
   pointer-events: none !important;
 }
 
-.qa-mod-bar {
-  display: inline-flex;
+.qa-mod-aside {
+  margin-top: var(--wsdc-space-3, 12px);
+  padding-top: var(--wsdc-space-3, 12px);
+  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 80%, transparent);
+}
+
+.qa-mod-aside > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--wsdc-font-size-xs, 12px);
+  font-weight: 500;
+  color: var(--wsdc-color-text-muted, #4b5563);
+}
+
+.qa-mod-aside > summary::-webkit-details-marker {
+  display: none;
+}
+
+.qa-mod-aside > summary::before {
+  content: "+ ";
+  font-weight: 600;
+}
+
+.qa-mod-aside[open] > summary::before {
+  content: "− ";
+}
+
+.qa-mod-aside-body {
+  display: flex;
   flex-wrap: wrap;
-  gap: 6px var(--wsdc-space-2, 8px);
+  gap: 6px;
   align-items: center;
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 0 var(--wsdc-space-3, 12px);
-  padding: 6px 10px;
-  border: 1px dashed var(--wsdc-color-border, #d1d5db);
-  border-radius: var(--wsdc-radius-md, 8px);
-  background: var(--wsdc-color-surface-soft, #f8fafc);
+  margin-top: var(--wsdc-space-2, 8px);
 }
 
 .qa-mod-unlock {
@@ -384,7 +405,7 @@
 
 .qa-mod-secret {
   max-width: 140px;
-  width: min(140px, 42vw);
+  width: min(140px, 100%);
   display: inline-block;
   min-height: 32px;
   height: 32px;
@@ -392,20 +413,26 @@
   font-size: var(--wsdc-font-size-xs, 12px);
 }
 
-.qa-mod-bar .wsdc-btn {
+.qa-mod-aside .wsdc-btn {
   min-height: 32px;
   padding: 0 10px;
   font-size: var(--wsdc-font-size-xs, 12px);
 }
 
 .qa-mod-actions {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+  margin: 0 0 var(--wsdc-space-3, 12px);
 }
 
-.qa-mod-bar[hidden],
+.qa-mod-actions .wsdc-btn {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: var(--wsdc-font-size-xs, 12px);
+}
+
 .qa-mod-actions[hidden],
 #qaModUnlock[hidden],
 #qaModLock[hidden] {

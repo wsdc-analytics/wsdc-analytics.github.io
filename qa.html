@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826j">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826k">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -50,16 +50,6 @@
           Lightweight community space. Posts appear immediately; moderators can hide spam.
         </p>
 
-        <div class="qa-mod-bar" id="qaModBar">
-          <div class="qa-mod-unlock" id="qaModUnlock">
-            <label class="qa-mod-label" for="qaModSecret">Mod</label>
-            <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" aria-label="Moderator secret">
-            <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
-          </div>
-          <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock</button>
-          <div class="qa-mod-actions" id="qaModActions" hidden></div>
-        </div>
-
         <nav class="wsdc-filter-bar qa-boards" id="qaBoards" aria-label="Boards"></nav>
 
         <section class="qa-panel" aria-label="Threads">
@@ -69,6 +59,7 @@
           <div id="qaThreadPanel" hidden>
             <h2 id="qaThreadTitle"></h2>
             <p class="qa-thread-meta" id="qaThreadMeta"></p>
+            <div class="qa-mod-actions" id="qaModActions" hidden></div>
             <div id="qaPosts"></div>
 
             <form class="qa-form" id="qaReplyForm" hidden>
@@ -128,12 +119,24 @@
           <summary>Board stats</summary>
           <div id="qaStats" class="qa-stats">Unlock moderator mode to load counts.</div>
         </details>
+
+        <details class="qa-mod-aside" id="qaModBar">
+          <summary>Moderator</summary>
+          <div class="qa-mod-aside-body">
+            <div class="qa-mod-unlock" id="qaModUnlock">
+              <label class="qa-mod-label" for="qaModSecret">Secret</label>
+              <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" aria-label="Moderator secret">
+              <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
+            </div>
+            <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock</button>
+          </div>
+        </details>
       </aside>
     </div>
   </main>
 
   <script src="static/js/site-chrome.js?v=20260816d" defer></script>
-  <script src="static/js/qa-config.js?v=20260826j"></script>
-  <script src="static/js/qa-hub.js?v=20260826j"></script>
+  <script src="static/js/qa-config.js?v=20260826k"></script>
+  <script src="static/js/qa-hub.js?v=20260826k"></script>
 </body>
 </html>
