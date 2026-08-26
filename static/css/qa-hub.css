@@ -1,5 +1,37 @@
 /* Q&A hub — Evolved C companion styles (load after tokens + ui-primitives) */
 
+/* Visually hidden until keyboard focus (a11y) */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  background: var(--wsdc-color-brand, #111827);
+  color: var(--wsdc-color-surface, #ffffff);
+  border-radius: var(--wsdc-radius-md, 8px);
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 10px 14px;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  outline: var(--wsdc-focus-ring);
+  outline-offset: var(--wsdc-focus-offset, 2px);
+}
+
 .qa-shell {
   max-width: var(--wsdc-width-chrome, 1200px);
   margin: 0 auto;
