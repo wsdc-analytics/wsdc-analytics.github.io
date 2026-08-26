@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://wsdc-analytics.github.io/qa.html">
+  <meta name="description" content="Ask questions and discuss WSDC Analytics articles, dashboards, points, champions, and calendar.">
+  <meta name="robots" content="index,follow">
+  <title>Q&A Hub | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826a">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LMLCY5PE8Z');
+  </script>
+  <style>
+    body {
+      margin: 0;
+      font-family: var(--wsdc-font-sans);
+      color: var(--wsdc-color-text, #1f2937);
+      background: var(--wsdc-color-surface, #fff);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <!-- Chrome not mounted in v1 (plan); quiet link later -->
+  <main id="main" class="qa-shell">
+    <a class="wsdc-back qa-back" href="index.html?lang=en">Back to home</a>
+    <header class="wsdc-page-header">
+      <h1 class="wsdc-page-title">Q&amp;A Hub</h1>
+      <p class="wsdc-page-subtitle">Ask about articles, dashboards, Summary Points, New Champions, Calendar, or the site. English only for now. No accounts — just a display name.</p>
+    </header>
+    <p class="qa-intro">
+      This is a lightweight community space. Posts appear immediately; spam can be hidden by moderators.
+      Prefer a clear title and one question per thread.
+    </p>
+
+    <div class="qa-mod-bar" id="qaModBar">
+      <div id="qaModUnlock">
+        <label for="qaModSecret">Moderator secret</label>
+        <input class="wsdc-field" id="qaModSecret" type="password" autocomplete="off" style="max-width:220px;display:inline-block;margin:0 8px;">
+        <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
+      </div>
+      <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock moderator mode</button>
+      <div id="qaModActions" hidden></div>
+    </div>
+
+    <nav class="qa-boards" id="qaBoards" aria-label="Boards"></nav>
+
+    <div class="qa-layout has-aside">
+      <section class="qa-panel" aria-label="Threads">
+        <h2>Threads <span class="qa-status" id="qaListStatus"></span></h2>
+        <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
+
+        <div id="qaThreadPanel" hidden>
+          <h2 id="qaThreadTitle"></h2>
+          <p class="qa-thread-meta" id="qaThreadMeta"></p>
+          <div id="qaPosts"></div>
+
+          <form class="qa-form" id="qaReplyForm" hidden>
+            <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <label>Your name
+              <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
+            </label>
+            <label>Email (optional, not shown)
+              <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com">
+            </label>
+            <label>Reply
+              <textarea class="wsdc-field" name="body" required maxlength="8000" placeholder="Write a reply…"></textarea>
+            </label>
+            <div class="qa-form-actions">
+              <button type="submit" class="wsdc-btn wsdc-btn--primary">Post reply</button>
+            </div>
+          </form>
+        </div>
+
+        <p class="qa-status" id="qaStatus" aria-live="polite"></p>
+      </section>
+
+      <aside class="qa-panel" id="qaCompose">
+        <h2>New thread</h2>
+        <p class="qa-empty">Posts to the selected board above.</p>
+        <form class="qa-form" id="qaNewThreadForm">
+          <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label>Title
+            <input class="wsdc-field" name="title" required minlength="3" maxlength="160" placeholder="Short question title">
+          </label>
+          <label>Your name
+            <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
+          </label>
+          <label>Email (optional, not shown)
+            <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com">
+          </label>
+          <label>Related page URL (optional)
+            <input class="wsdc-field" name="page_url" type="url" maxlength="500" placeholder="https://wsdc-analytics.github.io/…">
+          </label>
+          <label>Message
+            <textarea class="wsdc-field" name="body" required minlength="3" maxlength="8000" placeholder="Context, what you tried, what is unclear…"></textarea>
+          </label>
+          <div class="qa-form-actions">
+            <button type="submit" class="wsdc-btn wsdc-btn--primary">Publish thread</button>
+          </div>
+        </form>
+
+        <div id="qaAside" hidden style="margin-top:20px;">
+          <h2>Stats</h2>
+          <div id="qaStats" class="qa-stats">Unlock moderator mode to load counts.</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="static/js/qa-config.js"></script>
+  <script src="static/js/qa-hub.js?v=20260826a"></script>
+</body>
+</html>
