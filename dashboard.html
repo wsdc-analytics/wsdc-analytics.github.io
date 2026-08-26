@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="static/css/tokens.css">
     <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link rel="stylesheet" href="static/css/dashboard-shell.css">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
@@ -22,60 +23,18 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <style>
+        html, body { overflow: hidden; height: 100%; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-        }
-        body {
-            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--wsdc-color-surface, #fff);
-            color: var(--wsdc-color-text, #1f2937);
-            line-height: 1.6;
-        }
-        .page {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .dash-chrome {
-            flex-shrink: 0;
-        }
-.viz-frame {
-            flex: 1;
-            min-height: 0;
-            margin: 0;
-            border: none;
-            border-radius: 0;
-            background: var(--wsdc-color-surface, #fff);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .viz-viewport {
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-        .viz-scaled {
-            transform-origin: center center;
-        }
-        .viz-scaled .tableauPlaceholder {
-            display: inline-block;
-        }
+        .viz-frame { padding: 0; display: flex; flex-direction: column; }
+        .viz-frame .viz-viewport { flex: 1; padding: 0; }
     </style>
 </head>
 <body>
     <div class="page">
         <div class="dash-chrome">
             <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="dashboard.html"></div>
-                        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
-</div>
+            <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+        </div>
 
         <div class="viz-frame">
             <div class="viz-viewport" id="vizViewport">

@@ -12,6 +12,7 @@ Full rules: [`DESIGN_GUIDELINE.md`](DESIGN_GUIDELINE.md).
 - [ ] `tokens.css` linked
 - [ ] `site-chrome.css` + `site-chrome.js` linked
 - [ ] `ui-primitives.css` linked
+- [ ] Tableau/viz host ⇒ `dashboard-shell.css` linked (no leftover local header chrome CSS)
 - [ ] `<div data-site-chrome …>` present with correct `data-active` / `data-lang`
 - [ ] Fixed chrome ⇒ `data-fixed="true"` + `wsdc-chrome-page-pad` on main container
 - [ ] Magazine ⇒ `article-shell.css` loaded **after** inline `<style>`

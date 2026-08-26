@@ -1,0 +1,97 @@
+/**
+ * Shared shell for Tableau / dashboard tool pages.
+ * Load after tokens.css + ui-primitives.css + site-chrome.css.
+ * Remaps legacy locals; styles viz viewport. Dead page-local header CSS can be deleted.
+ */
+
+:root {
+  --color-primary: var(--wsdc-color-brand, #111827);
+  --color-primary-dark: var(--wsdc-color-text-strong, #0b1221);
+  --color-primary-light: var(--wsdc-color-text-muted, #4b5563);
+  --accent: var(--wsdc-color-brand-accent, #2563eb);
+
+  --bg-primary: var(--wsdc-color-surface, #ffffff);
+  --bg-secondary: var(--wsdc-color-surface, #ffffff);
+  --bg-tertiary: var(--wsdc-color-surface-soft, #f8fafc);
+
+  --text-primary: var(--wsdc-color-text, #1f2937);
+  --text-secondary: var(--wsdc-color-text-muted, #4b5563);
+  --text-tertiary: #6b7280;
+
+  --border-color: var(--wsdc-color-border, #d1d5db);
+  --border-color-hover: #9ca3af;
+
+  --shadow-md: var(--wsdc-shadow-card);
+  --shadow-lg: var(--wsdc-shadow-card);
+  --transition-base: 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--wsdc-font-sans);
+  color: var(--wsdc-color-text, #1f2937);
+  background: var(--wsdc-color-surface, #ffffff);
+  line-height: 1.6;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dash-chrome {
+  flex-shrink: 0;
+}
+
+.viz-viewport,
+.viz-frame {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--wsdc-color-surface, #ffffff);
+}
+
+.viz-viewport {
+  padding: var(--wsdc-space-2, 8px);
+}
+
+.viz-scaled {
+  transform-origin: center center;
+}
+
+.viz-scaled .tableauPlaceholder {
+  display: inline-block;
+}
+
+.viz-frame-shell {
+  flex: 1;
+  min-height: 0;
+  margin: 10px 16px 16px;
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  border-radius: var(--wsdc-radius-lg, 10px);
+  background: var(--wsdc-color-surface, #ffffff);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 720px) {
+  .viz-viewport {
+    padding: var(--wsdc-space-1, 4px);
+  }
+
+  .viz-frame-shell {
+    margin: 8px 10px 12px;
+    border-radius: var(--wsdc-radius-md, 8px);
+  }
+}

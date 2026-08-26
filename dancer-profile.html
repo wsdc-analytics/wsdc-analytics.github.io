@@ -8,13 +8,13 @@
     <title>Dancer Profile | WSDC Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/tokens.css">
     <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link rel="stylesheet" href="static/css/dashboard-shell.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -23,189 +23,16 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <style>
-        :root {
-            --color-primary: #2d3748;
-            --bg-primary: #ffffff;
-            --bg-secondary: #FFFFFF;
-            --text-primary: #2d3748;
-            --text-secondary: #4a5568;
-            --border-color: #e5e5e5;
-            --border-color-hover: #cbd5e0;
-            --bg-tertiary: #f7fafc;
-            --transition-base: 0.2s ease;
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-        }
+        html, body { overflow: hidden; height: 100%; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-        }
-        body {
-            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-        .page {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .header {
-            flex-shrink: 0;
-            padding: 12px 24px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .back-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .back-link:hover { color: #1d4ed8; }
-        .header-separator { color: var(--text-secondary); opacity: 0.6; font-size: 14px; }
-        .dashboard-select {
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 32px 8px 16px;
-            height: 36px;
-            min-width: 200px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .dashboard-select:hover {
-            border-color: var(--color-primary);
-        }
-        /* Dashboards dropdown — как на главной */
-        .dashboards-nav { display: flex; align-items: center; }
-        .dashboards-nav .dropdown-wrapper { position: relative; }
-        .dashboards-nav .dropdown-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-sizing: border-box;
-            min-width: 200px;
-            height: 36px;
-            padding: 0 16px;
-            white-space: nowrap;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: transform var(--transition-base), opacity var(--transition-base), color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
-            font-family: inherit;
-        }
-        .dashboards-nav .dropdown-btn:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-        }
-        .dashboards-nav .dropdown-btn:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
-        }
-        .dashboards-nav .dropdown-btn svg {
-            transition: transform var(--transition-base);
-        }
-        .dashboards-nav .dropdown-wrapper.open .dropdown-btn svg {
-            transform: rotate(180deg);
-        }
-        .dashboards-nav .dropdown-menu {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            min-width: 240px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            padding: 6px;
-            list-style: none;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-4px);
-            transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
-        }
-        .dashboards-nav .dropdown-wrapper.open .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .dashboards-nav .dropdown-menu a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: background var(--transition-base);
-        }
-        .dashboards-nav .dropdown-menu a:hover {
-            background: var(--bg-tertiary);
-            color: var(--color-primary);
-        }
-        .dashboards-nav .dropdown-menu a.current {
-            font-weight: 600;
-            color: var(--color-primary);
-        }
-        .dashboards-nav .dropdown-menu a.current::before {
-            content: '✓';
-            font-size: 14px;
-            color: var(--color-primary);
-        }
-        .viz-viewport {
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px;
-        }
-        .viz-scaled {
-            transform-origin: center center;
-        }
-        .viz-scaled .tableauPlaceholder {
-            display: inline-block;
-        }
-    
-        .dash-chrome { flex-shrink: 0; }
-.viz-frame-shell {
-            flex: 1;
-            min-height: 0;
-            margin: 10px 16px 16px;
-            border: 1px solid var(--wsdc-color-border, #d1d5db);
-            border-radius: 12px;
-            background: #fff;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
     </style>
 </head>
 <body>
     <div class="page">
-                <div class="dash-chrome">
+        <div class="dash-chrome">
             <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="dancer-profile.html"></div>
-                        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
-</div>
+            <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+        </div>
 
         <div class="viz-viewport" id="vizViewport">
             <div class="viz-scaled" id="vizScaled">
@@ -268,7 +95,7 @@
         };
 
         window.addEventListener('resize', fitViz);
-</script>
+    </script>
     <script src="static/js/site-chrome.js" defer></script>
 </body>
 </html>
