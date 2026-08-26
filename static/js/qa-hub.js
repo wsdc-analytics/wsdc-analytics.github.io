@@ -133,7 +133,10 @@
       body: JSON.stringify(payload),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "Moderation failed");
+    if (!res.ok) {
+      const detail = data.message || data.error || "Moderation failed";
+      throw new Error(detail);
+    }
     return data;
   }
 

@@ -187,9 +187,10 @@ module.exports = async function handler(req, res) {
     if (!row) return sendJson(res, { error: 'Not found' }, 404, origin);
     return sendJson(res, { ok: true, row }, 200, origin);
   } catch (e) {
+    const detail = (e && e.message) || 'unknown';
     return sendJson(
       res,
-      { error: 'Server error', message: e && e.message },
+      { error: detail, message: detail },
       e && e.status ? e.status : 500,
       origin
     );
