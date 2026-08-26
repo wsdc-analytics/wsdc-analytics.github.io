@@ -36,7 +36,7 @@ Primary path matches existing `api/contact.js` / reactions style:
 | `POST /api/qa-mod` | Hide / unhide / pin / unpin; `stats`; `list_threads` (incl. hidden) |
 | `POST /api/qa-notify` | Telegram alert on new thread/reply (soft-skip if unset) |
 
-Where to put them: [Vercel Dashboard](https://vercel.com) → project that serves `https://wsdc-analytics-repo.vercel.app` (same as reactions/contact) → **Settings → Environment Variables** → add for **Production** (and Preview if you test PRs) → **Redeploy** the latest deployment so functions pick up new vars.
+Where to put them: [Vercel Dashboard](https://vercel.com) → project that serves `https://wsdc-analytics-github-io.vercel.app` (same as reactions/contact) → **Settings → Environment Variables** → add for **Production** (and Preview if you test PRs) → **Redeploy** the latest deployment so functions pick up new vars.
 
 Client `apiBase` in [`static/js/qa-config.js`](../static/js/qa-config.js) must match that Vercel host.
 
