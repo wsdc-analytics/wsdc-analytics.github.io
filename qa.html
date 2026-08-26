@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/tokens.css">
-  <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826f">
+  <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826f">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826g">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -90,9 +90,11 @@
         <p class="qa-status" id="qaStatus" aria-live="polite"></p>
       </section>
 
-      <aside class="qa-panel" id="qaCompose">
-        <h2>New thread</h2>
-        <p class="qa-empty">Posts to the selected board above.</p>
+      <aside class="qa-panel qa-compose" id="qaCompose">
+        <header class="qa-compose-head">
+          <h2>New thread</h2>
+          <p class="qa-compose-lede">Posts to the selected board above.</p>
+        </header>
         <form class="qa-form" id="qaNewThreadForm">
           <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
           <label>Title
@@ -101,17 +103,20 @@
           <label>Your name
             <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
           </label>
-          <label>Email (optional, not shown)
-            <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com">
-          </label>
-          <label>Related page URL (optional)
-            <input class="wsdc-field" name="page_url" type="url" maxlength="500" placeholder="https://wsdc-analytics.github.io/…">
-          </label>
           <label>Message
             <textarea class="wsdc-field" name="body" required minlength="3" maxlength="8000" placeholder="Context, what you tried, what is unclear…"></textarea>
           </label>
+          <div class="qa-form-optional">
+            <p class="qa-form-optional-label">Optional details</p>
+            <label>Email <span class="qa-label-hint">(not shown publicly)</span>
+              <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com" autocomplete="email">
+            </label>
+            <label>Related page
+              <input class="wsdc-field" name="page_url" type="url" maxlength="500" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
+            </label>
+          </div>
           <div class="qa-form-actions">
-            <button type="submit" class="wsdc-btn wsdc-btn--primary">Publish thread</button>
+            <button type="submit" class="wsdc-btn wsdc-btn--primary qa-compose-submit">Publish thread</button>
           </div>
         </form>
 
