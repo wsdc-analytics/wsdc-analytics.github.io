@@ -10,6 +10,7 @@ In page `<head>`:
 <link rel="stylesheet" href="static/css/tokens.css">
 <link rel="stylesheet" href="static/css/ui-primitives.css">
 <link rel="stylesheet" href="static/css/site-chrome.css">
+<!-- Tableau / full-bleed viz hosts also: static/css/dashboard-shell.css -->
 ```
 
 Before `</body>`:

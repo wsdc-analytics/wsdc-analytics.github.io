@@ -110,14 +110,14 @@
                     </div>
                     <div class="filter-field cal-reset-field">
                         <span class="filter-label" aria-hidden="true">&nbsp;</span>
-                        <button type="button" class="cal-reset-btn" id="clearFiltersBtn" data-i18n="clearFilters">Clear</button>
+                        <button type="button" class="cal-reset-btn wsdc-btn wsdc-btn--secondary" id="clearFiltersBtn" data-i18n="clearFilters">Clear</button>
                     </div>
                 </div>
                 <div class="filter-field cal-search-field">
                     <span class="filter-label cal-search-field__label-spacer" aria-hidden="true">&nbsp;</span>
                     <span class="visually-hidden" id="eventSearchLabel" data-i18n="search">Search</span>
                     <div class="cal-search" id="eventSearch">
-                        <input type="search" class="cal-search__input" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
+                        <input type="search" class="cal-search__input wsdc-field" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
                         <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
         <div class="calendar-stage">
             <aside class="cal-stats" id="calStats" aria-label="Selection counts">
                 <div class="cal-stats__head">
-                    <button type="button" class="cal-stats__tip" id="calStatsTip" aria-label="About these counts">
+                    <button type="button" class="cal-stats__tip wsdc-info-btn" id="calStatsTip" aria-label="About these counts">
                         <span class="cal-stats__tip-mark" aria-hidden="true">i</span>
                         <span class="cal-stats__tip-bubble" id="calStatsTipText" role="tooltip" data-i18n="statTip">Counts of shown events by status and type. For the current year, each metric shows remaining (not yet held) events out of the year's total for that status or type.</span>
                     </button>

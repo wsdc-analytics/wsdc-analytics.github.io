@@ -12,19 +12,12 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #f5f6f7;
-      --surface-card: #ffffff;
-      --text: #2c2f30;
-      --muted: #757778;
-      --muted-soft: #abadae;
-      --border: rgba(117, 119, 120, 0.16);
-      --primary: #111827;
-      --secondary: #2dd4bf;
-      --total: #475569;
-      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-      --radius-outer: 30px;
-      --radius-lg: 16px;
-      --radius-md: 12px;
+      --bg: var(--wsdc-color-surface-soft, #f8fafc);
+      --card: var(--wsdc-color-surface, #ffffff);
+      --text: var(--wsdc-color-text, #1f2937);
+      --muted: var(--wsdc-color-text-muted, #4b5563);
+      --border: var(--wsdc-color-border, #d1d5db);
+      --accent: var(--wsdc-color-brand-accent, #2563eb);
     }
     * { box-sizing: border-box; }
     html, body {

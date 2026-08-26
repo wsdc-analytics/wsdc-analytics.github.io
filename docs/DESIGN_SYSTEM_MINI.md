@@ -18,6 +18,10 @@ Mount with `<div data-site-chrome …>` — brand · Dashboards · Summary Point
 Source: `static/css/ui-primitives.css`  
 Buttons, pills, fields, filter bar, info button, page header — see guideline §6.
 
+## Dashboard / Tableau shell
+
+`static/css/dashboard-shell.css` — legacy token remap + viz viewport layout for full-bleed dashboard hosts.
+
 ## Magazine
 
 `static/css/article-shell.css` after page inline styles. Quiet remaps of legacy locals onto Evolved C tokens.

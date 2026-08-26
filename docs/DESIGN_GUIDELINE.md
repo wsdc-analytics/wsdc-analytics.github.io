@@ -27,6 +27,7 @@ Companion docs:
 | Type | Examples | Chrome | CSS stack |
 |------|----------|--------|-----------|
 | **Product tool** | home, Points, Champions, Calendar, dashboards, rankings, dancer-profile | Required | `tokens` + `site-chrome` + `ui-primitives` + page CSS |
+| **Tableau / viz shell** | `dashboard`, `navigator`, `rankings`, `dancer-profile`, `city-clouds`, secondary-role host | Required | above + `dashboard-shell.css` (token remap + viz layout) |
 | **Magazine article** | `article_*`, overview/geo/events/dancers 2025, rules, `events/*/article_*` | Required (usually `data-fixed`) | above + `article-shell.css` **after** inline styles |
 | **Embeddable** | `interactive_*`, forecast/risk cards (iframe) | **Forbidden** | `tokens` + `ui-primitives` + page CSS only |
 
@@ -86,6 +87,7 @@ Follow existing chrome CSS: Dashboards hidden; Points + Champions equal width; C
 
 - Prefer `--wsdc-width-tool` (~860–980px) or full chrome max (`1200px`) for dense tools.
 - Page header pattern: title + one subtitle + optional actions row (`.wsdc-page-header`).
+- Full-bleed Tableau hosts: use [`dashboard-shell.css`](../static/css/dashboard-shell.css) instead of copying dead header/dropdown CSS; keep chrome + `wsdc-back` only.
 
 ### Spacing
 
@@ -170,6 +172,7 @@ Must still share: page chrome (if navigable), fonts, button/filter chrome around
 
 1. Copy chrome mount + CSS/JS links from a sibling of the same page type.  
 2. Link `tokens.css` + `ui-primitives.css`.  
-3. Magazine: link `article-shell.css` **last** among CSS.  
-4. Use primitives for buttons/fields/pills; page CSS only for unique layout.  
+3. Tableau/viz host: also link `dashboard-shell.css`.  
+4. Magazine: link `article-shell.css` **last** among CSS.  
+5. Use primitives for buttons/fields/pills; page CSS only for unique layout.  
 5. Run [`DESIGN_CHECKLIST.md`](DESIGN_CHECKLIST.md) before PR.
