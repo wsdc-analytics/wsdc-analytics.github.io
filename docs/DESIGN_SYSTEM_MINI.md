@@ -16,7 +16,7 @@ Mount with `<div data-site-chrome …>` — brand · Dashboards · Summary Point
 ## UI primitives
 
 Source: `static/css/ui-primitives.css`  
-Buttons, pills, fields, filter bar, info button, page header — see guideline §6.
+Buttons, pills, fields, filter bar, info button, page header, pill dropdown (`.wsdc-dd`) — see guideline §6.
 
 ## Dashboard / Tableau shell
 

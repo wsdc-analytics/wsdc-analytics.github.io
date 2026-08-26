@@ -217,3 +217,184 @@
   color: var(--wsdc-color-text, #1f2937);
   background: var(--wsdc-color-surface, #ffffff);
 }
+
+/**
+ * Compact pill dropdown (Calendar / Champions filters).
+ * Markup: .wsdc-dd > button.wsdc-dd__btn > .wsdc-dd__value + svg; ul.wsdc-dd__menu
+ * Open state: .wsdc-dd.is-open
+ * Width: --wsdc-dd-width (default 7.5rem)
+ */
+.wsdc-dd {
+  position: relative;
+  display: inline-flex;
+  width: var(--wsdc-dd-width, 7.5rem);
+  flex-shrink: 0;
+  z-index: 1;
+  font-family: var(--wsdc-font-sans);
+}
+
+.wsdc-dd.is-open {
+  z-index: 50;
+}
+
+.wsdc-dd--auto {
+  width: auto;
+  min-width: 7rem;
+}
+
+.wsdc-dd__btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--wsdc-control-height-sm, 32px);
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--wsdc-radius-pill, 999px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--wsdc-color-text-muted, #4b5563);
+  font: inherit;
+  font-size: var(--wsdc-font-size-xs, 12px);
+  font-weight: var(--wsdc-font-weight-medium, 500);
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 140ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.wsdc-dd__btn:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
+.wsdc-dd.is-open .wsdc-dd__btn {
+  color: var(--wsdc-color-text-strong, #0b1221);
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+  border-color: var(--wsdc-color-border, #d1d5db);
+}
+
+.wsdc-dd__btn:focus {
+  outline: none;
+}
+
+.wsdc-dd__btn:focus-visible {
+  outline: var(--wsdc-focus-ring);
+  outline-offset: var(--wsdc-focus-offset, 2px);
+}
+
+.wsdc-dd__btn:active {
+  transform: scale(0.97);
+}
+
+.wsdc-dd__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.wsdc-dd__btn svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  transition: transform 180ms ease;
+}
+
+.wsdc-dd.is-open .wsdc-dd__btn svg {
+  transform: rotate(180deg);
+}
+
+.wsdc-dd__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: auto;
+  z-index: 60;
+  min-width: 100%;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 32px));
+  max-height: min(280px, 50vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: var(--wsdc-radius-lg, 10px);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  background: var(--wsdc-color-surface, #ffffff);
+  box-shadow: var(--wsdc-shadow-card);
+  transform-origin: top left;
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.wsdc-dd.is-open .wsdc-dd__menu {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  transition-duration: 180ms;
+}
+
+.wsdc-dd__menu li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.wsdc-dd__menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--wsdc-radius-md, 8px);
+  background: transparent;
+  color: var(--wsdc-color-text, #1f2937);
+  font: inherit;
+  font-size: var(--wsdc-font-size-sm, 13px);
+  font-weight: var(--wsdc-font-weight-normal, 400);
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wsdc-dd__menu button:hover {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
+.wsdc-dd__menu button.is-current,
+.wsdc-dd__menu button[aria-selected="true"] {
+  font-weight: var(--wsdc-font-weight-semibold, 600);
+}
+
+@media (max-width: 720px) {
+  .wsdc-dd {
+    width: 100%;
+    --wsdc-dd-width: 100%;
+  }
+
+  .wsdc-dd__btn {
+    width: 100%;
+    min-height: var(--wsdc-tap-min, 44px);
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wsdc-dd__btn,
+  .wsdc-dd__menu,
+  .wsdc-dd__btn svg {
+    transition: none;
+  }
+}

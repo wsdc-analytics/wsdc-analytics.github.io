@@ -141,102 +141,6 @@
             flex-shrink: 0;
             margin-top: 0;
         }
-        .search-filters .dropdown-wrapper { position: relative; display: inline-flex; }
-        .search-filters .dropdown-btn {
-            appearance: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            box-sizing: border-box;
-            height: 28px;
-            padding: 0 10px;
-            white-space: nowrap;
-            background: transparent;
-            border: 1px solid transparent;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 500;
-            line-height: 1;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: transform 140ms var(--ease-out), background-color 160ms ease, color 160ms ease;
-            font-family: inherit;
-        }
-        .search-filters .dropdown-btn:hover {
-            color: var(--text-primary);
-            background: var(--bg-tertiary);
-        }
-        .search-filters .dropdown-wrapper.open .dropdown-btn {
-            color: var(--text-primary);
-            background: var(--bg-tertiary);
-        }
-        .search-filters .dropdown-btn:focus { outline: none; }
-        .search-filters .dropdown-btn:focus-visible {
-            outline: 2px solid var(--color-primary-dark);
-            outline-offset: 2px;
-        }
-        .search-filters .dropdown-btn:active { transform: scale(0.97); }
-        .search-filters .dropdown-btn svg {
-            width: 12px;
-            height: 12px;
-            flex-shrink: 0;
-            transition: transform 180ms var(--ease-out);
-        }
-        .search-filters .dropdown-wrapper.open .dropdown-btn svg {
-            transform: rotate(180deg);
-        }
-        .search-filters .dropdown-menu {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            z-index: 100;
-            min-width: 160px;
-            margin: 0;
-            padding: 6px;
-            list-style: none;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-primary);
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
-            transform-origin: top left;
-            opacity: 0;
-            transform: scale(0.96);
-            pointer-events: none;
-            transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out);
-        }
-        .search-filters .dropdown-wrapper.open .dropdown-menu {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto;
-            transition-duration: 180ms;
-        }
-        .search-filters .dropdown-menu li { margin: 0; padding: 0; border: 0; }
-        .search-filters .dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 8px 10px;
-            border: none;
-            background: transparent;
-            color: var(--text-primary);
-            text-align: left;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 400;
-            font-family: inherit;
-            cursor: pointer;
-            transition: background 160ms ease;
-        }
-        .search-filters .dropdown-menu button:hover {
-            background: var(--bg-tertiary);
-        }
-        .search-filters .dropdown-menu button[aria-selected="true"] {
-            font-weight: 600;
-            background: transparent;
-        }
-        .search-filters .dropdown-menu button[aria-selected="true"]:hover {
-            background: var(--bg-tertiary);
-        }
         .search-help {
             display: inline-flex;
             align-items: center;
@@ -683,8 +587,6 @@
             }
             .page-search { max-width: none; }
             .search-filters { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
-            .search-filters .dropdown-wrapper { flex: 0 0 auto; }
-            .search-filters .dropdown-btn { width: auto; min-width: 0; }
             .container {
                 max-width: 100%;
                 overflow-x: hidden;
@@ -750,23 +652,23 @@
                        aria-label="Search New Champions by dancer surname, name, or WSDC number">
             </div>
             <div class="search-filters">
-                <div class="dropdown-wrapper" data-filter="role">
-                    <button type="button" class="dropdown-btn wsdc-btn wsdc-btn--secondary" id="filter-role-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Filter by role">
-                        <span class="dropdown-label">All roles</span>
+                <div class="wsdc-dd wsdc-dd--auto" data-filter="role">
+                    <button type="button" class="wsdc-dd__btn" id="filter-role-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Filter by role">
+                        <span class="wsdc-dd__value">All roles</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
-                    <ul class="dropdown-menu" role="listbox" aria-label="Role options">
+                    <ul class="wsdc-dd__menu" role="listbox" aria-label="Role options">
                         <li><button type="button" role="option" data-value="" aria-selected="true">All roles</button></li>
                         <li><button type="button" role="option" data-value="leader" aria-selected="false">Leader</button></li>
                         <li><button type="button" role="option" data-value="follower" aria-selected="false">Follower</button></li>
                     </ul>
                 </div>
-                <div class="dropdown-wrapper" data-filter="status">
-                    <button type="button" class="dropdown-btn wsdc-btn wsdc-btn--secondary" id="filter-status-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Filter by status">
-                        <span class="dropdown-label">All statuses</span>
+                <div class="wsdc-dd wsdc-dd--auto" data-filter="status">
+                    <button type="button" class="wsdc-dd__btn" id="filter-status-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Filter by status">
+                        <span class="wsdc-dd__value">All statuses</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
-                    <ul class="dropdown-menu" role="listbox" aria-label="Status options">
+                    <ul class="wsdc-dd__menu" role="listbox" aria-label="Status options">
                         <li><button type="button" role="option" data-value="" aria-selected="true">All statuses</button></li>
                         <li><button type="button" role="option" data-value="allowed" aria-selected="false">Allowed</button></li>
                         <li><button type="button" role="option" data-value="required" aria-selected="false">Required</button></li>
@@ -802,8 +704,8 @@
     (function () {
       const catalog = document.getElementById('catalog');
       const searchInput = document.getElementById('search-input');
-      const filterRoleWrap = document.querySelector('.dropdown-wrapper[data-filter="role"]');
-      const filterStatusWrap = document.querySelector('.dropdown-wrapper[data-filter="status"]');
+      const filterRoleWrap = document.querySelector('.wsdc-dd[data-filter="role"]');
+      const filterStatusWrap = document.querySelector('.wsdc-dd[data-filter="status"]');
       const searchNoResults = document.getElementById('search-no-results');
       const howTo = document.getElementById('how-to-read');
       const howHeader = howTo.querySelector('.how-to-read-header');
@@ -814,35 +716,35 @@
 
       function setDropdownValue(wrap, value) {
         if (!wrap) return;
-        const btn = wrap.querySelector('.dropdown-btn');
-        const label = wrap.querySelector('.dropdown-label');
+        const btn = wrap.querySelector('.wsdc-dd__btn');
+        const label = wrap.querySelector('.wsdc-dd__value');
         const options = [...wrap.querySelectorAll('[role="option"]')];
         const match = options.find(o => (o.getAttribute('data-value') || '') === value) || options[0];
         options.forEach(o => o.setAttribute('aria-selected', String(o === match)));
         if (label && match) label.textContent = match.textContent.trim();
         if (btn) btn.setAttribute('aria-expanded', 'false');
-        wrap.classList.remove('open');
+        wrap.classList.remove('is-open');
       }
 
       function closeAllFilterDropdowns() {
-        document.querySelectorAll('.search-filters .dropdown-wrapper.open').forEach(wrap => {
-          wrap.classList.remove('open');
-          const btn = wrap.querySelector('.dropdown-btn');
+        document.querySelectorAll('.search-filters .wsdc-dd.is-open').forEach(wrap => {
+          wrap.classList.remove('is-open');
+          const btn = wrap.querySelector('.wsdc-dd__btn');
           if (btn) btn.setAttribute('aria-expanded', 'false');
         });
       }
 
       function bindFilterDropdown(wrap, key) {
         if (!wrap) return;
-        const btn = wrap.querySelector('.dropdown-btn');
-        const menu = wrap.querySelector('.dropdown-menu');
+        const btn = wrap.querySelector('.wsdc-dd__btn');
+        const menu = wrap.querySelector('.wsdc-dd__menu');
         if (!btn || !menu) return;
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const willOpen = !wrap.classList.contains('open');
+          const willOpen = !wrap.classList.contains('is-open');
           closeAllFilterDropdowns();
           if (willOpen) {
-            wrap.classList.add('open');
+            wrap.classList.add('is-open');
             btn.setAttribute('aria-expanded', 'true');
           }
         });

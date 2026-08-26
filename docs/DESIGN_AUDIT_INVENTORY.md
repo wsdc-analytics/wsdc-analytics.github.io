@@ -46,7 +46,7 @@ Severity: **P0** broken/missing shared shell · **P1** visible control/layout dr
 ### P3 — Polish
 
 - Tool-specific breakpoints (640/700) remain documented as acceptable.
-- Calendar custom dropdown chrome (`cal-dd`) kept for density; Clear/search/info use primitives.
+- Calendar/Champions filter dropdowns share `.wsdc-dd` (page CSS only sets `--wsdc-dd-width`).
 
 ---
 
@@ -63,8 +63,8 @@ Severity: **P0** broken/missing shared shell · **P1** visible control/layout dr
 | Page | Chrome | Tokens | Notes |
 |------|--------|--------|-------|
 | `points-summary.html` | yes | remapped | Header + filter-bar + field + info primitives |
-| `champion-news.html` | yes | remapped | Same + secondary filter buttons |
-| `events-calendar.html` | yes | yes | Filter-bar; Clear/search/info primitives; Leaflet/Material stay tool-local |
+| `champion-news.html` | yes | remapped | Header + filter-bar + field/info + shared `.wsdc-dd` |
+| `events-calendar.html` | yes | yes | Filter-bar; Clear/search/info + shared `.wsdc-dd`; Leaflet/Material stay tool-local |
 
 ### Wave C — Dashboards / tools
 
@@ -88,7 +88,7 @@ Severity: **P0** broken/missing shared shell · **P1** visible control/layout dr
 ## Good references (canon)
 
 1. Magazine: tokens + chrome + article-shell + `wsdc-chrome-page-pad` + `wsdc-back`
-2. Points / Champions: `.wsdc-page-header` + `.wsdc-filter-bar` + field/info
+2. Points / Champions: `.wsdc-page-header` + `.wsdc-filter-bar` + field/info + `.wsdc-dd`
 3. Tableau host: chrome + `dashboard-shell.css` only (no duplicate nav CSS)
 4. Embed: `wsdc-embed-shell` + tokens + primitives, no chrome
 
@@ -105,5 +105,6 @@ Severity: **P0** broken/missing shared shell · **P1** visible control/layout dr
 - [x] Secondary-role host pills + shell
 - [x] Embed `:root` → `--wsdc-*`
 - [x] Docs: guideline / checklist / mini / inventory updated for dashboard-shell
+- [x] Extract Calendar/Champions pill dropdowns to shared `.wsdc-dd`
 
-**Open P0/P1:** none (deferred P3 only: deeper calendar `cal-dd` → shared dropdown primitive if ever extracted).
+**Open P0/P1/P3 deferred:** none.
