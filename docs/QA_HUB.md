@@ -2,7 +2,9 @@
 
 EN-only hub at [`qa.html`](../qa.html): boards, threads, chronological replies. No accounts (display name + optional email). Posts publish immediately; spam is hidden after the fact.
 
-Legacy `article-feedback` forms are unchanged. Site chrome is not linked in v1.
+UI follows Evolved C (`tokens` + `ui-primitives` + site chrome). Chrome has no dedicated Q&A nav pill yet (`data-active="qa"`).
+
+Legacy `article-feedback` forms are unchanged.
 
 ## Boards
 

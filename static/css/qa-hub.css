@@ -14,17 +14,16 @@
   line-height: 1.5;
 }
 
-.qa-boards {
-  display: flex;
+.qa-boards.wsdc-filter-bar {
   flex-wrap: wrap;
-  gap: var(--wsdc-space-2, 8px);
   margin: 0 0 var(--wsdc-space-5, 20px);
+  align-items: center;
 }
 
 .qa-board-btn.is-active {
   background: var(--wsdc-color-brand, #111827);
   border-color: var(--wsdc-color-brand, #111827);
-  color: #fff;
+  color: var(--wsdc-color-surface, #ffffff);
 }
 
 .qa-layout {
@@ -35,14 +34,14 @@
 
 @media (min-width: 960px) {
   .qa-layout.has-aside {
-    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 280px);
   }
 }
 
 .qa-panel {
   border: 1px solid var(--wsdc-color-border, #d1d5db);
   border-radius: var(--wsdc-radius-lg, 10px);
-  background: var(--wsdc-color-surface, #fff);
+  background: var(--wsdc-color-surface, #ffffff);
   padding: var(--wsdc-space-4, 16px);
 }
 
@@ -74,10 +73,14 @@
   color: inherit;
 }
 
-.qa-thread-item:hover,
+.qa-thread-item:hover {
+  background: var(--wsdc-color-surface-soft, #f8fafc);
+}
+
 .qa-thread-item:focus-visible {
   background: var(--wsdc-color-surface-soft, #f8fafc);
-  outline: none;
+  outline: var(--wsdc-focus-ring);
+  outline-offset: var(--wsdc-focus-offset, 2px);
 }
 
 .qa-thread-item.is-active {
@@ -87,7 +90,8 @@
 .qa-thread-title {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: var(--wsdc-space-2, 8px);
   font-weight: 600;
   color: var(--wsdc-color-text-strong, #0b1221);
 }
@@ -98,31 +102,10 @@
   color: var(--wsdc-color-text-muted, #4b5563);
 }
 
-.qa-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 8px;
-  border-radius: var(--wsdc-radius-pill, 999px);
-  border: 1px solid var(--wsdc-color-border, #d1d5db);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--wsdc-color-text-muted, #4b5563);
-}
-
-.qa-badge.is-pin {
-  border-color: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 35%, var(--wsdc-color-border));
-  color: var(--wsdc-color-brand-accent, #2563eb);
-}
-
-.qa-badge.is-hidden {
-  border-color: #fca5a5;
-  color: #b91c1c;
-}
-
 .qa-empty {
   color: var(--wsdc-color-text-muted, #4b5563);
   font-size: var(--wsdc-font-size-sm, 13px);
-  padding: 8px 0;
+  padding: var(--wsdc-space-2, 8px) 0;
 }
 
 .qa-post {
@@ -138,9 +121,9 @@
 .qa-post-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: var(--wsdc-space-2, 8px) var(--wsdc-space-3, 12px);
   align-items: baseline;
-  margin-bottom: 8px;
+  margin-bottom: var(--wsdc-space-2, 8px);
   font-size: var(--wsdc-font-size-sm, 13px);
   color: var(--wsdc-color-text-muted, #4b5563);
 }
@@ -187,7 +170,7 @@
 .qa-form-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--wsdc-space-2, 8px);
   align-items: center;
 }
 
@@ -198,11 +181,11 @@
 }
 
 .qa-status.is-error {
-  color: #b91c1c;
+  color: var(--wsdc-color-danger, #b91c1c);
 }
 
 .qa-status.is-ok {
-  color: #15803d;
+  color: var(--wsdc-color-success, #15803d);
 }
 
 .qa-hp {
@@ -217,7 +200,7 @@
 .qa-mod-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--wsdc-space-2, 8px);
   align-items: center;
   margin: 0 0 var(--wsdc-space-4, 16px);
   padding: 10px 12px;
@@ -226,8 +209,41 @@
   background: var(--wsdc-color-surface-soft, #f8fafc);
 }
 
-.qa-mod-bar[hidden] {
+.qa-mod-unlock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wsdc-space-2, 8px);
+  align-items: center;
+}
+
+.qa-mod-label {
+  font-size: var(--wsdc-font-size-sm, 13px);
+  font-weight: 600;
+  color: var(--wsdc-color-text-muted, #4b5563);
+}
+
+.qa-mod-secret {
+  max-width: 220px;
+  width: min(220px, 100%);
+  display: inline-block;
+}
+
+.qa-mod-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wsdc-space-2, 8px);
+  align-items: center;
+}
+
+.qa-mod-bar[hidden],
+.qa-mod-actions[hidden],
+#qaModUnlock[hidden],
+#qaModLock[hidden] {
   display: none !important;
+}
+
+.qa-aside-stats {
+  margin-top: var(--wsdc-space-5, 20px);
 }
 
 .qa-stats {
@@ -237,10 +253,17 @@
 }
 
 .qa-stats ul {
-  margin: 8px 0 0;
+  margin: var(--wsdc-space-2, 8px) 0 0;
   padding-left: 18px;
 }
 
 .qa-back {
   margin-bottom: var(--wsdc-space-3, 12px);
+}
+
+/* Hidden pill: muted emphasis without one-off palette drift */
+.wsdc-pill.qa-pill-hidden {
+  border-color: color-mix(in srgb, var(--wsdc-color-danger, #b91c1c) 35%, var(--wsdc-color-border));
+  background: color-mix(in srgb, var(--wsdc-color-danger, #b91c1c) 8%, var(--wsdc-color-surface));
+  color: var(--wsdc-color-danger, #b91c1c);
 }

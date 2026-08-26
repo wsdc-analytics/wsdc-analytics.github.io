@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826d">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826e">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -27,16 +27,18 @@
       margin: 0;
       font-family: var(--wsdc-font-sans);
       color: var(--wsdc-color-text, #1f2937);
-      background: var(--wsdc-color-surface, #fff);
+      background: var(--wsdc-color-surface, #ffffff);
       line-height: 1.5;
     }
   </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <!-- Chrome not mounted in v1 (plan); quiet link later -->
+  <!-- data-active=qa: no primary nav pill (hub not in chrome yet) -->
+  <div data-site-chrome data-active="qa" data-lang="en" data-home-href="index.html"></div>
+
   <main id="main" class="qa-shell">
-    <a class="wsdc-back qa-back" href="index.html?lang=en">Back to home</a>
+    <a class="wsdc-back qa-back" href="index.html?lang=en" data-wsdc-back>Back to home</a>
     <header class="wsdc-page-header">
       <h1 class="wsdc-page-title">Q&amp;A Hub</h1>
       <p class="wsdc-page-subtitle">Ask about articles, dashboards, Summary Points, New Champions, Calendar, or the site. English only for now. No accounts — just a display name.</p>
@@ -47,16 +49,16 @@
     </p>
 
     <div class="qa-mod-bar" id="qaModBar">
-      <div id="qaModUnlock">
-        <label for="qaModSecret">Moderator secret</label>
-        <input class="wsdc-field" id="qaModSecret" type="password" autocomplete="off" style="max-width:220px;display:inline-block;margin:0 8px;">
+      <div class="qa-mod-unlock" id="qaModUnlock">
+        <label class="qa-mod-label" for="qaModSecret">Moderator secret</label>
+        <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off">
         <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
       </div>
       <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock moderator mode</button>
-      <div id="qaModActions" hidden></div>
+      <div class="qa-mod-actions" id="qaModActions" hidden></div>
     </div>
 
-    <nav class="qa-boards" id="qaBoards" aria-label="Boards"></nav>
+    <nav class="wsdc-filter-bar qa-boards" id="qaBoards" aria-label="Boards"></nav>
 
     <div class="qa-layout has-aside">
       <section class="qa-panel" aria-label="Threads">
@@ -113,7 +115,7 @@
           </div>
         </form>
 
-        <div id="qaAside" hidden style="margin-top:20px;">
+        <div class="qa-aside-stats" id="qaAside" hidden>
           <h2>Stats</h2>
           <div id="qaStats" class="qa-stats">Unlock moderator mode to load counts.</div>
         </div>
@@ -121,7 +123,8 @@
     </div>
   </main>
 
-  <script src="static/js/qa-config.js?v=20260826d"></script>
-  <script src="static/js/qa-hub.js?v=20260826d"></script>
+  <script src="static/js/site-chrome.js?v=20260816d" defer></script>
+  <script src="static/js/qa-config.js?v=20260826e"></script>
+  <script src="static/js/qa-hub.js?v=20260826e"></script>
 </body>
 </html>
