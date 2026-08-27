@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Draft briefing for WSDC analytics committee : not linked from site navigation.">
+  <title>WSDC Analytics Brief : ограничения Points Registry (RU draft)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --slide-max: 1080px;
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+    }
+    .deck { height: 100%; display: flex; flex-direction: column; }
+    .chrome {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chrome strong { color: var(--ink); font-weight: 600; }
+    .chrome .navbtns { display: flex; gap: 8px; align-items: center; }
+    .chrome button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .chrome button:hover { border-color: var(--accent); }
+    .chrome button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: auto;
+    }
+    .slide {
+      display: none;
+      width: min(100%, var(--slide-max));
+      min-height: min(72vh, 640px);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 40px 32px;
+      box-shadow: var(--wsdc-shadow-card);
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .badge .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    .badge .pill.app { color: #1e3a5f; background: #e8f0fe; border-color: #bfdbfe; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+      line-height: 1.2;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 16px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 46rem;
+    }
+    ul, ol { margin: 0 0 12px; padding-left: 1.2rem; max-width: 46rem; }
+    li { margin: 0.35rem 0; line-height: 1.45; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    @media (max-width: 800px) {
+      .slide { padding: 24px 20px; }
+      .grid2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 0.92rem; color: var(--ink); }
+    .card p, .card li { font-size: 0.92rem; }
+    .card p { margin: 0; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-right: 6px;
+      background: #ffedd5;
+      color: var(--warn);
+    }
+    .matrix { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 8px; }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+    .matrix th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .notes {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .notes strong { color: var(--body); }
+    .title-slide { justify-content: center; }
+    .title-slide .meta { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86em; }
+    .foot-hint {
+      flex: 0 0 auto;
+      text-align: center;
+      padding: 6px 12px 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    kbd {
+      font: inherit;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 0 5px;
+      background: var(--bg);
+    }
+    .example {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      margin: 8px 0;
+      font-size: 0.92rem;
+    }
+    .example .label { font-weight: 600; color: var(--ink); }
+    .cite { font-size: 0.78rem; color: var(--muted); }
+    .evidence {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .evidence figure {
+      margin: 0;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    .evidence img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      background: #1f2937;
+    }
+    .evidence figcaption {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: var(--body);
+    }
+    .evidence figcaption strong { color: var(--ink); }
+    @media (max-width: 800px) {
+      .evidence { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="chrome">
+      <div><strong>WSDC Analytics Brief</strong> · draft · не в навигации сайта</div>
+      <div class="navbtns">
+        <span id="counter">1 / 1</span>
+        <button type="button" id="prev" aria-label="Предыдущий слайд">←</button>
+        <button type="button" id="next" aria-label="Следующий слайд">→</button>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+
+      <section class="slide title-slide active" data-section="core" data-notes="Открыть спокойно: рамка по данным, не обвинение.">
+        <div class="badge"><span class="pill">Core</span> Встреча · analytics committee</div>
+        <h1>Points Registry и аналитика board:<br>что видно снаружи, чего не хватает</h1>
+        <p class="lead">Разбор того, что реально даёт публичный реестр, где правила уже просят больше данных, и что нужно упорядочить в процессах, чтобы отвечать на вопросы комитета.</p>
+        <p class="meta">Встреча с analytics committee</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Партнёрский тон. wsdc-analytics : proof of work, не pitch стека.">
+        <div class="badge"><span class="pill">Core</span> Зачем этот разговор</div>
+        <h1>Что хотим получить с созвона</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>По делу</h3>
+            <ul>
+              <li>Сверить: какие данные есть публично, какие уже сдаются по правилам, какие реально хранятся</li>
+              <li>Привязать повестку board к ограничениям этих данных</li>
+              <li>Согласовать, какие процессы чинить в первую очередь</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Не сегодня</h3>
+            <ul>
+              <li>Не разбор «плохой базы». Речь о том, что видно при глубокой работе с открытым registry</li>
+              <li>Сначала общая рамка данных и процессов; как именно внедрять инструменты решает комитет</li>
+              <li>Не обещание готовых цифр по всем вопросам board до сверки источников</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes"><strong>На полях:</strong> на wsdc-analytics уже есть аналитика на публичных данных. Это пример того, что можно сделать снаружи, не требование к комитету.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Публичный слой = Points Registry lookup / scored history.">
+        <div class="badge"><span class="pill">Core</span> 1 · Инвентарь</div>
+        <h1>Что даёт публичный Points Registry</h1>
+        <p class="lead">Официальная запись результатов WSDC Jack &amp; Jill на Registry Events. Снаружи это в основном истории танцоров с поинтами.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Есть</h3>
+            <ul>
+              <li>Танцоры с WSDC Competitor ID и начисленными поинтами</li>
+              <li>Издания ивентов и scored-результаты по номинациям</li>
+              <li>Tier как сигнал размера дивизиона×роли (диапазон, не точный headcount)</li>
+              <li>Календарь / список registry events (отдельно от «кто вышел на паркет»)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>В открытом слое нет</h3>
+            <ul>
+              <li>Полного стартового листа номинации в удобном для аналитики виде</li>
+              <li>Танцоров, которые участвовали, но так и не получили поинт</li>
+              <li>«Чистой» географии без ручной нормализации имён и локаций</li>
+            </ul>
+          </div>
+        </div>
+        <p class="cite">Источник определения registry: WSDC Registry Event Rules 2026.1B, Overview / Points Registry.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Ключевая фактоправка: §2.3 уже просит full list. Спросить про retention.">
+        <div class="badge"><span class="pill">Core</span> 1 · Инвентарь</div>
+        <h1>Что правила уже просят сдавать</h1>
+        <p class="lead">По §2.3 Competitor Results Reporting члены сдают результаты всех WSDC J&amp;J. В форме уже заложено больше, чем видно в публичном lookup.</p>
+        <ul>
+          <li>Все petitions</li>
+          <li>WSDC ID финалистов (если ID уже выдан)</li>
+          <li>Число конкурентов в каждом дивизионе (для Tier)</li>
+          <li><strong>List of all competitors registered</strong> в WSDC Jack &amp; Jill contests</li>
+        </ul>
+        <div class="card" style="margin-top:14px">
+          <h3>Вопрос не «надо ли собирать списки»</h3>
+          <p>Правила уже просят список зарегистрированных. Вопрос: хранится ли он централизованно, за какие годы, в каком виде, и можно ли его стыковать с Points Registry для аналитики.</p>
+        </div>
+        <p class="cite">Registry Event Rules 2026.1B §2.3 (items 1-4). Срок сдачи результатов: не позднее 3 дней после закрытия ивента.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Якорь повестки Denis.">
+        <div class="badge"><span class="pill">Core</span> 2 · Повестка board</div>
+        <h1>Четыре направления из запроса комитета</h1>
+        <ol>
+          <li><strong>Competitor base 2021-2026</strong>: сколько танцоров по skill levels; community overall; по возможности регион</li>
+          <li><strong>Points &amp; tiers</strong>: текущая структура, влияние изменений; прогрессия большинства (много поинтов у небольшого меньшинства)</li>
+          <li><strong>Event landscape &amp; capacity</strong>: где нужны ивенты; рост vs лимит новых событий</li>
+          <li><strong>Point structure</strong>: как проверить данными, нужно ли менять структуру поинтов</li>
+        </ol>
+        <p class="notes">Дальше не цифры, а карта: что мешает ответить прямо и что чинить в процессах.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Четыре блока A-D.">
+        <div class="badge"><span class="pill">Core</span> Мост</div>
+        <h1>От повестки к четырём разрывам</h1>
+        <p class="lead">Без общих определений «танцора», «участника», «региона» и «ивента» отчёты board будут спорить сами с собой. В открытом registry четыре системных дыры.</p>
+        <div class="grid2">
+          <div class="card"><h3>A. Identity</h3><p>ID появляется после первого поинта. До этого человека нет в registry как сущности.</p></div>
+          <div class="card"><h3>B. Coverage</h3><p>Публичный слой = scored history. Полный entry list правила просят, но снаружи его нет.</p></div>
+          <div class="card"><h3>C. Data quality</h3><p>Ручной ввод: варианты имён, пустые локации, одинаковые названия у разных серий.</p></div>
+          <div class="card"><h3>D. Geo / landscape</h3><p>Без стабильной гео и entry-level спроса capacity остаётся «на ощущениях».</p></div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Официальная норма §3.2.2c.">
+        <div class="badge"><span class="pill">Core</span> Gap A · Identity</div>
+        <h1>ID выдаётся только после поинта</h1>
+        <p class="lead">Это не догадка по данным. В правилах прямо сказано: Competitor ID назначается только после того, как танцор получил поинт.</p>
+        <ul>
+          <li>До первого поинта человека нет в Points Registry как отслеживаемой сущности</li>
+          <li>Можно много раз выйти на паркет и остаться невидимым для публичной аналитики</li>
+          <li>«Сколько танцоров в community» и «сколько уникальных WSDC ID с поинтами» это разные метрики</li>
+        </ul>
+        <p class="cite">Registry Event Rules 2026.1B §3.2.2c; Overview: ID after at least one J&amp;J point.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Решение: либо earlier ID, либо честная метка scored population + хранение entry lists.">
+        <div class="badge"><span class="pill">Core</span> Gap A · Влияние</div>
+        <h1>Как это бьёт по повестке</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>По вопросам board</h3>
+            <ul>
+              <li>Q1: занижение «активных», особенно Newcomer и Novice</li>
+              <li>Q2: воронка входа обрезана до тех, кто уже получил поинт</li>
+              <li>Q3: спрос новичков почти не виден в registry</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что делать в процессах</h3>
+            <ul>
+              <li>Зафиксировать политику: ID только после поинта (как сейчас) или раньше</li>
+              <li>Если оставляем «после поинта», в отчётах писать scored population, не «вся community»</li>
+              <li>Для полной популяции опираться на списки зарегистрированных из §2.3</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Уточнение: orgs submit more than public shows.">
+        <div class="badge"><span class="pill">Core</span> Gap B · Coverage</div>
+        <h1>Публичный registry ≠ полный entry list</h1>
+        <p class="lead">Снаружи мы видим в основном тех, кому начислили поинты. Полный список зарегистрированных в J&amp;J правила уже требуют в Event Reporting Form, но в открытом Points Registry его нет.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Видно снаружи</h3>
+            <ul>
+              <li>Строки с поинтами / история ID</li>
+              <li>Косвенно: Tier по размеру дивизиона×роли</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Не видно снаружи</h3>
+            <ul>
+              <li>Все зарегистрированные в номинации</li>
+              <li>Точный headcount для capacity</li>
+              <li>Доля участников без поинтов</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Tier помогает оценить порядок масштаба. Он не заменяет именной entry list.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Спросить retention full lists 2021-2026.">
+        <div class="badge"><span class="pill">Core</span> Gap B · Влияние</div>
+        <h1>Влияние и путь вперёд</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>По вопросам board</h3>
+            <ul>
+              <li>Q1: skill counts по registry = scored, не starters</li>
+              <li>Q2: нельзя отделить «мало танцуют» от «не доходят до поинтов»</li>
+              <li>Q3-Q4: capacity и сценарии смены поинтов без воронки остаются хрупкими</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Процессный путь</h3>
+            <ul>
+              <li>Проверить, сохраняется ли уже сдаваемый list of all competitors</li>
+              <li>Единый машиночитаемый формат и срок хранения</li>
+              <li>Явно развести analytics on registry vs analytics on entries</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Примеры из открытых данных, без обвинений.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Data quality</div>
+        <h1>Качество сущностей: что всплывает в открытых данных</h1>
+        <p class="lead">При глубокой работе с registry регулярно встречаются расхождения имён и локаций. Это похоже на следствие ручного ввода и слабой верификации, а не на «злой умысел».</p>
+        <div class="example">
+          <div class="label">1. Разные названия одной серии</div>
+          В календаре: <span class="mono">Scandinavian Open WCS</span>, <span class="mono">Scandinavian Open WCS "SNOW"</span>. Канон: <span class="mono">Scandinavian Open</span>. Без словаря синонимов ряды ломаются.
+        </div>
+        <div class="example">
+          <div class="label">2. Пустая локация в выгрузке результатов</div>
+          У Scandinavian Open в локальном extract результатов поле локации пустое во всех 993 строках. Гео приходится восстанавливать из других источников.
+        </div>
+        <div class="example">
+          <div class="label">3. Варианты написания бренда</div>
+          <span class="mono">St.Petersburg WCS Nights</span> / <span class="mono">Saint Petersburg WCS Nights</span>; <span class="mono">Vestigala</span> / <span class="mono">Westie Gala</span>. Без aliases появляются ложные «новые» ивенты.
+        </div>
+        <div class="example">
+          <div class="label">4. Одно имя, разные истории</div>
+          Spring Swing: Stockholm и Detroit. Sunny Side Dance Camp: Crimea, затем Torrevieja. Нужны правила «сливать / не сливать».
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Показать скрины. Это выборка, не полный аудит. Решение: master events+locations + dropdowns в формах оргов.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Локации</div>
+        <h1>Мусор в локациях: зачем нужна стандартизация</h1>
+        <p class="lead">Одни и те же поля пишутся по-разному. Ниже только маленькая часть примеров из открытых данных; таких строк в registry намного больше.</p>
+        <div class="evidence">
+          <figure>
+            <img src="examples/loc-local-language.png" alt="KING SWING: Kraków, malopolska, Polska">
+            <figcaption><strong>Локальный язык + регистр:</strong> <span class="mono">Kraków, malopolska, Polska</span> вместо канона вроде Kraków / Poland.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-country-only.png" alt="Swing Fiction: Czech Republic">
+            <figcaption><strong>Нет города:</strong> только <span class="mono">Czech Republic</span>. Для карты ивентов этого мало.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-country-formats.png" alt="USA vs US vs United States">
+            <figcaption><strong>Страна в 3 форматах:</strong> <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> (+ штат то fully, то <span class="mono">LA</span>).</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-no-country.png" alt="Swing Dance America: Lake Geneva, IL">
+            <figcaption><strong>Страны нет вообще:</strong> <span class="mono">Lake Geneva, IL</span>. Для US-ивента догадываемся, для аналитики это дыра.</figcaption>
+          </figure>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Предлагаемое решение</h3>
+          <p>Отдельный централизованный учёт <strong>ивентов</strong> и <strong>локаций</strong> с canonical name. Справочник публичный или хотя бы доступный организаторам. В формах оргов: dropdowns (event + location), не free text.</p>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="DQ gate = dropdowns + master data, не постфактум чистка.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Влияние</div>
+        <h1>Почему без DQ нельзя «просто посчитать»</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Что ломается</h3>
+            <ul>
+              <li>Ряды по ивентам и странам</li>
+              <li>Двойной счёт или «пропавшие» издания</li>
+              <li>Региональные выводы board</li>
+              <li>Любая автоматизация без master-данных копирует мусор</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>База решения</h3>
+            <ul>
+              <li>Справочник ивентов: одно canonical name / один ID</li>
+              <li>Справочник локаций: city + country в одном формате</li>
+              <li>Формы оргов: dropdowns из справочников</li>
+              <li>Орги отвечают за актуальность своих записей</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Ключ: заранее, по регламенту, с историей. Не править накануне сдачи результатов.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Регламент</div>
+        <h1>Изменения в справочник только заранее и по правилам</h1>
+        <p class="lead">Организаторы обязаны следить за своими ивентами и локациями в справочнике. Любое изменение существующих данных или создание нового ивента подаётся <strong>предварительно</strong>, чтобы было время обновить учёт до форм и сдачи результатов.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>В регламенте прописать типы изменений</h3>
+            <ul>
+              <li>Новый ивент → новый ID + canonical name</li>
+              <li>Переименование серии (старое имя → alias / история)</li>
+              <li>Смена локации (город/страна)</li>
+              <li>Исправление ошибки в справочнике</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>История и доступ</h3>
+            <ul>
+              <li>Желательна полная история: имена, локации, даты смены</li>
+              <li>Справочник: публичный или доступный всем оргам</li>
+              <li>Заявка на изменение до дедлайна (не в день reporting)</li>
+              <li>Без записи в справочнике нельзя выбрать ивент/локацию в форме</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Иначе снова появятся free-text варианты вроде <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> и «новые» ивенты с тем же смыслом, но другим ID.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Growth vs limiting new events.">
+        <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
+        <h1>Landscape и capacity на неполных сигналах</h1>
+        <p class="lead">«Где нужны ивенты» и «можно ли ограничивать новые» требуют спроса и географии людей. Публичный слой даёт карту ивентов и scored-активности, но не полную картину спроса.</p>
+        <ul>
+          <li>Город ивента ≠ домашний регион танцора (много travel)</li>
+          <li>Без entry lists плохо видно переполненные vs пустые дивизионы</li>
+          <li>Ошибки локаций рисуют ложные «белые пятна» на карте</li>
+        </ul>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Разделить supply / scored demand / entry demand.">
+        <div class="badge"><span class="pill">Core</span> Gap D · Влияние</div>
+        <h1>Влияние и процессный путь</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Риск для Q3-Q4</h3>
+            <ul>
+              <li>Capacity «по ощущениям» вместо измеримого headcount</li>
+              <li>Ограничить рост там, где scored data недооценивает спрос</li>
+              <li>Менять point structure без модели воронки</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что зафиксировать</h3>
+            <ul>
+              <li>Стабильная гео ивентов (+ желательно регион танцора в заявке/профиле)</li>
+              <li>Entry counts / полные списки как рабочий слой аналитики, не только Tier</li>
+              <li>Три метрики отдельно: event supply, scored demand, entry demand</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Главный слайд для board.">
+        <div class="badge"><span class="pill">Core</span> Сводка</div>
+        <h1>Матрица: что можно ответить на публичных данных</h1>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Вопрос board</th>
+              <th>Сейчас (публичный registry)</th>
+              <th>Что разблокирует полный ответ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Competitors by skill 2021-2026 (+ region)</td>
+              <td><span class="tag">Частично</span> уникальные ID с поинтами; регион слабо / через proxy ивентов</td>
+              <td>Хранение и стыковка entry lists (§2.3) + политика ID + чистая гео</td>
+            </tr>
+            <tr>
+              <td>Points/tiers &amp; progression majority</td>
+              <td><span class="tag">Частично</span> распределение поинтов и переходы по scored; воронка входа обрезана</td>
+              <td>Entries + явное определение «majority»</td>
+            </tr>
+            <tr>
+              <td>Event landscape &amp; capacity / where needed</td>
+              <td><span class="tag">Частично</span> карта ивентов и scored активности; capacity косвенно (tiers)</td>
+              <td>Entry counts/lists + DQ гео + (опц.) гео танцоров</td>
+            </tr>
+            <tr>
+              <td>Point structure change analysis</td>
+              <td><span class="tag">Частично</span> симуляции на scored истории; без полной воронки ограничено</td>
+              <td>Согласованные KPI/сценарии + entries для чувствительности</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="notes">На одном только публичном registry ни один пункт не закрывается полностью. Это нормально зафиксировать вслух.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Checklist процессов.">
+        <div class="badge"><span class="pill">Core</span> Финал</div>
+        <h1>Checklist: что упорядочить</h1>
+        <ol>
+          <li><strong>Инвентаризация</strong>: куда девается list of all competitors из §2.3, за какие годы он есть</li>
+          <li><strong>Retention и формат</strong>: машиночитаемый шаблон, срок хранения, владелец</li>
+          <li><strong>Правило ID</strong>: оставляем «только после поинта» или меняем; как подписывать метрики</li>
+          <li><strong>Справочники ивентов и локаций</strong>: canonical name; доступ оргам (или публичный)</li>
+          <li><strong>Формы оргов</strong>: только dropdowns; изменения/новые записи заранее по регламенту + история имён/локаций</li>
+          <li><strong>Словарь метрик board</strong>: scored population vs entry population vs community</li>
+        </ol>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Задать вслух, записать ответы.">
+        <div class="badge"><span class="pill">Core</span> Discovery</div>
+        <h1>Четыре вопроса на сверку</h1>
+        <ol>
+          <li>Куда сейчас попадает <strong>list of all competitors</strong> из Event Reporting Form: центральное хранилище или только у оргов?</li>
+          <li>За какие годы (хотя бы 2021-2026) эти списки ещё восстановимы?</li>
+          <li>В каком виде: Excel, формы, БД? Есть ли единый шаблон?</li>
+          <li>Кто владелец данных и кто может менять процесс приёмки?</li>
+        </ol>
+        <p class="notes"><strong>Закрытие:</strong> на публичных данных уже можно делать осторожную аналитику. Устойчивые ответы board появятся, когда списки из §2.3 станут рабочим слоем, а имена/локации перестанут «плыть». Инструменты комитет выбирает сам.</p>
+      </section>
+
+      <section class="slide title-slide" data-section="appendix" data-notes="Appendix по запросу.">
+        <div class="badge"><span class="pill app">Appendix</span></div>
+        <h1>Appendix</h1>
+        <p class="lead">Детали, если на созвоне будет время.</p>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="">
+        <div class="badge"><span class="pill app">Appendix</span> Q1</div>
+        <h1>Competitors by skill / region</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Можно сейчас</h3>
+            <ul>
+              <li>Уникальные ID с поинтами по годам</li>
+              <li>Разрезы по дивизионам scored-результатов</li>
+              <li>Грубая гео через локацию ивентов (proxy)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Нельзя честно назвать community</h3>
+            <ul>
+              <li>Участники без поинтов</li>
+              <li>Точный home region танцора</li>
+              <li>Newcomer funnel до первого поинта</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="">
+        <div class="badge"><span class="pill app">Appendix</span> Q2</div>
+        <h1>Points, tiers, progression majority</h1>
+        <ul>
+          <li><strong>Можно:</strong> концентрация поинтов, скорость набора, переходы по scored; сравнения до/после смены правил</li>
+          <li><strong>Осторожно:</strong> «majority» нужно определить (все ID? активные за год? ≥N поинтов?)</li>
+          <li><strong>Нужно:</strong> entry-данные, чтобы отделить «нет поинтов» от «не участвовали»</li>
+        </ul>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="">
+        <div class="badge"><span class="pill app">Appendix</span> Q3</div>
+        <h1>Event landscape &amp; capacity</h1>
+        <ul>
+          <li><strong>Можно:</strong> число registry events, география, динамика 2021-2026, крупные vs малые по tiers/points</li>
+          <li><strong>Частично:</strong> «нужны ли ивенты здесь» через travel scored танцоров и плотность ивентов</li>
+          <li><strong>Без entries нельзя:</strong> реальная загрузка дивизионов и отказной спрос</li>
+        </ul>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="">
+        <div class="badge"><span class="pill app">Appendix</span> Q4</div>
+        <h1>Point structure change</h1>
+        <ul>
+          <li><strong>Можно:</strong> сценарные пересчёты на scored истории; чувствительность топов и порогов</li>
+          <li><strong>Риск:</strong> оптимизация под тех, кто уже в registry, без модели входа</li>
+          <li><strong>Сначала KPI:</strong> рост majority, честность порогов, нагрузка на оргов</li>
+        </ul>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="Chart 5 / tiers.">
+        <div class="badge"><span class="pill app">Appendix</span> Tiers</div>
+        <h1>Tier = диапазон размера, не точный счёт</h1>
+        <p class="lead">В правилах Tier зависит от числа уникальных конкурентов в дивизионе×роли. По публичным данным можно суммировать границы диапазонов. Это оценка порядка, не headcount.</p>
+        <ul>
+          <li>Удобно сравнивать масштаб ивентов</li>
+          <li>Не заменяет именной entry list из §2.3</li>
+          <li>Открытый верх у старших tier нужно помечать как неопределённость</li>
+        </ul>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="">
+        <div class="badge"><span class="pill app">Appendix</span> Определения</div>
+        <h1>Три популяции. Не смешивать в одном отчёте</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Scored population</h3>
+            <p>Уникальные WSDC ID с поинтами за период. То, что даёт публичный Points Registry.</p>
+          </div>
+          <div class="card">
+            <h3>Entry population</h3>
+            <p>Все зарегистрированные в WSDC J&amp;J. Уже заложены в §2.3 reporting, нужны в хранении.</p>
+          </div>
+          <div class="card">
+            <h3>Community (широко)</h3>
+            <p>Включает тех, кто вне scored-исходов и, возможно, вне registry events. Отдельная методология.</p>
+          </div>
+          <div class="card">
+            <h3>Практика</h3>
+            <p>В каждом отчёте board подписывать, какая популяция использована.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="appendix" data-notes="Speaking path.">
+        <div class="badge"><span class="pill app">Appendix</span> Навигация</div>
+        <h1>Короткий путь на созвоне (~12-15 мин)</h1>
+        <ol>
+          <li>Цель встречи</li>
+          <li>Публичный registry vs то, что уже просят в §2.3</li>
+          <li>Повестка board</li>
+          <li>Четыре gap по одному тезису (+ локации + регламент справочника)</li>
+          <li>Матрица частично / что разблокирует</li>
+          <li>Checklist + 4 вопроса</li>
+        </ol>
+        <p class="notes">Остальное appendix по запросу.</p>
+      </section>
+
+    </div>
+    <div class="foot-hint">Клавиши <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · клик по краям · draft meeting deck</div>
+  </div>
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('counter');
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        const sec = slides[i].dataset.section === 'appendix' ? 'Appendix' : 'Core';
+        counter.textContent = (i + 1) + ' / ' + slides.length + ' · ' + sec;
+        const note = slides[i].getAttribute('data-notes') || '';
+        if (note) console.debug('[notes]', note);
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+      document.getElementById('prev').addEventListener('click', () => show(i - 1));
+      document.getElementById('next').addEventListener('click', () => show(i + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); show(i + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); show(i - 1);
+        } else if (e.key === 'Home') show(0);
+        else if (e.key === 'End') show(slides.length - 1);
+      });
+      document.getElementById('stage').addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width * 0.28) show(i - 1);
+        else if (x > rect.width * 0.72) show(i + 1);
+      });
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash - 1 : 0);
+    })();
+  </script>
+</body>
+</html>
