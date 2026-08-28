@@ -11,6 +11,7 @@
 
   const els = {
     boards: document.getElementById("qaBoards"),
+    boardSelect: document.getElementById("qaBoardSelect"),
     threadList: document.getElementById("qaThreadList"),
     threadPanel: document.getElementById("qaThreadPanel"),
     threadTitle: document.getElementById("qaThreadTitle"),
@@ -188,15 +189,14 @@
   }
 
   function renderBoards() {
-    if (!els.boards) return;
-    els.boards.innerHTML = state.boards
-      .map((b) => {
-        const active = b.slug === state.boardSlug ? " is-active" : "";
-        return `<button type="button" class="wsdc-btn wsdc-btn--secondary qa-board-btn${active}" data-board="${esc(
-          b.slug
-        )}">${esc(b.title)}</button>`;
-      })
+    if (!els.boardSelect) return;
+    els.boardSelect.innerHTML = state.boards
+      .map(
+        (b) =>
+          `<option value="${esc(b.slug)}"${b.slug === state.boardSlug ? " selected" : ""}>${esc(b.title)}</option>`
+      )
       .join("");
+    if (state.boardSlug) els.boardSelect.value = state.boardSlug;
   }
 
   async function loadThreads() {
@@ -514,11 +514,11 @@
   }
 
   function wire() {
-    els.boards.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-board]");
-      if (!btn) return;
-      goBoard(btn.getAttribute("data-board"));
-    });
+    if (els.boardSelect) {
+      els.boardSelect.addEventListener("change", () => {
+        goBoard(els.boardSelect.value);
+      });
+    }
 
     els.threadList.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-thread]");
