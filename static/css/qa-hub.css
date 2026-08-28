@@ -87,19 +87,11 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 }
 
 .qa-board-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: block;
   min-width: 0;
   flex: 0 1 240px;
   width: min(100%, 280px);
   margin-left: auto;
-}
-
-.qa-board-label {
-  font-size: var(--wsdc-font-size-sm, 13px);
-  font-weight: var(--wsdc-font-weight-medium, 500);
-  color: var(--wsdc-color-text-strong, #0b1221);
 }
 
 .qa-board-field .wsdc-select-host {
@@ -118,8 +110,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     margin-left: 0;
   }
 }
-
-/* Hub-scoped blue accent for selection and primary actions */
 .qa-shell .wsdc-btn--primary {
   background: var(--wsdc-color-brand-accent, #2563eb);
   border-color: var(--wsdc-color-brand-accent, #2563eb);
