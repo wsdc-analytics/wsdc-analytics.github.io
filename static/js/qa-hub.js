@@ -197,6 +197,7 @@
       )
       .join("");
     if (state.boardSlug) els.boardSelect.value = state.boardSlug;
+    if (globalThis.WsdcSelect) globalThis.WsdcSelect.refresh(els.boardSelect);
   }
 
   async function loadThreads() {

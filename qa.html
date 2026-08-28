@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828b">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828c">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -47,9 +47,11 @@
           <p class="wsdc-page-subtitle">Ask about articles, dashboards, points, champions, or the site. English only. No accounts — just a display name. Posts appear immediately.</p>
         </header>
 
-        <div class="qa-board-picker" id="qaBoards">
-          <label class="qa-board-picker-label" for="qaBoardSelect">Board</label>
-          <select class="wsdc-field qa-board-select" id="qaBoardSelect" aria-label="Board"></select>
+        <div class="wsdc-filter-bar qa-board-picker" id="qaBoards">
+          <div class="qa-board-field">
+            <label class="qa-board-label" for="qaBoardSelect" id="qaBoardSelectLabel">Board</label>
+            <select class="wsdc-select wsdc-field" id="qaBoardSelect" aria-labelledby="qaBoardSelectLabel"></select>
+          </div>
         </div>
 
         <section class="qa-panel qa-threads-panel" aria-label="Threads">
@@ -142,7 +144,8 @@
   </main>
 
   <script src="static/js/site-chrome.js?v=20260816d" defer></script>
-  <script src="static/js/qa-config.js?v=20260828b"></script>
-  <script src="static/js/qa-hub.js?v=20260828b"></script>
+  <script src="static/js/wsdc-select.js?v=20260816d"></script>
+  <script src="static/js/qa-config.js?v=20260828c"></script>
+  <script src="static/js/qa-hub.js?v=20260828c"></script>
 </body>
 </html>
