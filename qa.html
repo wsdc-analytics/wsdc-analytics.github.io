@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828e">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828g">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -50,8 +50,14 @@
         <section class="qa-threads-panel" aria-label="Threads">
           <div class="qa-panel-toolbar">
             <h2 class="qa-panel-title">Threads <span class="qa-status" id="qaListStatus"></span></h2>
-            <div class="qa-board-field" id="qaBoards">
-              <select class="wsdc-select wsdc-field" id="qaBoardSelect" aria-label="Board"></select>
+            <div class="qa-board-filters" id="qaBoards">
+              <div class="wsdc-dd wsdc-dd--auto" id="qaBoardDd">
+                <button type="button" class="wsdc-dd__btn" id="qaBoardBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Board">
+                  <span class="wsdc-dd__value" id="qaBoardValue">Board</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <ul class="wsdc-dd__menu" id="qaBoardMenu" role="listbox" aria-label="Board options"></ul>
+              </div>
             </div>
           </div>
           <div class="qa-thread-scroll">
@@ -140,8 +146,7 @@
   </main>
 
   <script src="static/js/site-chrome.js?v=20260816d" defer></script>
-  <script src="static/js/wsdc-select.js?v=20260816d"></script>
-  <script src="static/js/qa-config.js?v=20260828d"></script>
-  <script src="static/js/qa-hub.js?v=20260828d"></script>
+  <script src="static/js/qa-config.js?v=20260828g"></script>
+  <script src="static/js/qa-hub.js?v=20260828g"></script>
 </body>
 </html>

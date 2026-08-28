@@ -32,16 +32,25 @@
   outline-offset: var(--wsdc-focus-offset, 2px);
 }
 
+/* Match Events Calendar .container width and padding */
 .qa-shell {
-  max-width: var(--wsdc-width-chrome, 1200px);
+  width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: var(--wsdc-space-4, 16px) var(--wsdc-space-5, 20px) var(--wsdc-space-4, 16px);
+  padding: 12px 20px 8px;
   box-sizing: border-box;
-  /* Fill viewport below site chrome so Threads can stretch to the page bottom */
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   min-height: 0;
+}
+
+.qa-shell > .qa-back {
+  width: calc(100% - 200px);
+  max-width: calc(100% - 200px);
+  margin-inline: auto;
+  margin-bottom: 8px;
+  box-sizing: border-box;
 }
 
 /* Let the hub fill the viewport under chrome */
@@ -86,16 +95,17 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   margin: 0;
 }
 
-.qa-board-field {
-  display: block;
-  min-width: 0;
-  flex: 0 1 240px;
-  width: min(100%, 280px);
+.qa-board-filters {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
   margin-left: auto;
 }
 
-.qa-board-field .wsdc-select-host {
-  width: 100%;
+.qa-board-filters .wsdc-dd {
+  position: relative;
+  z-index: 3;
 }
 
 @media (max-width: 559px) {
@@ -104,10 +114,14 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     align-items: stretch;
   }
 
-  .qa-board-field {
+  .qa-board-filters {
     width: 100%;
-    flex-basis: auto;
     margin-left: 0;
+  }
+
+  .qa-board-filters .wsdc-dd {
+    width: 100%;
+    --wsdc-dd-width: 100%;
   }
 }
 .qa-shell .wsdc-btn--primary {
@@ -702,7 +716,18 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 }
 
 .qa-back {
-  margin-bottom: var(--wsdc-space-3, 12px);
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .qa-shell {
+    padding: 12px 14px 16px;
+  }
+
+  .qa-shell > .qa-back {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* Hidden pill: muted emphasis without one-off palette drift */

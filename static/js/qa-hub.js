@@ -11,7 +11,10 @@
 
   const els = {
     boards: document.getElementById("qaBoards"),
-    boardSelect: document.getElementById("qaBoardSelect"),
+    boardDd: document.getElementById("qaBoardDd"),
+    boardBtn: document.getElementById("qaBoardBtn"),
+    boardValue: document.getElementById("qaBoardValue"),
+    boardMenu: document.getElementById("qaBoardMenu"),
     threadList: document.getElementById("qaThreadList"),
     threadPanel: document.getElementById("qaThreadPanel"),
     threadTitle: document.getElementById("qaThreadTitle"),
@@ -188,16 +191,39 @@
     renderBoards();
   }
 
+  function closeBoardDropdown() {
+    if (!els.boardDd) return;
+    els.boardDd.classList.remove("is-open");
+    if (els.boardBtn) els.boardBtn.setAttribute("aria-expanded", "false");
+  }
+
+  function setBoardDropdownValue(slug) {
+    if (!els.boardMenu) return;
+    const options = [...els.boardMenu.querySelectorAll('[role="option"]')];
+    const match =
+      options.find((o) => o.getAttribute("data-value") === slug) || options[0];
+    options.forEach((o) =>
+      o.setAttribute("aria-selected", String(o === match))
+    );
+    if (els.boardValue && match) {
+      els.boardValue.textContent = match.textContent.trim();
+    }
+    closeBoardDropdown();
+  }
+
   function renderBoards() {
-    if (!els.boardSelect) return;
-    els.boardSelect.innerHTML = state.boards
+    if (!els.boardMenu) return;
+    els.boardMenu.innerHTML = state.boards
       .map(
         (b) =>
-          `<option value="${esc(b.slug)}"${b.slug === state.boardSlug ? " selected" : ""}>${esc(b.title)}</option>`
+          `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
+            b.slug === state.boardSlug ? "true" : "false"
+          }">${esc(b.title)}</button></li>`
       )
       .join("");
-    if (state.boardSlug) els.boardSelect.value = state.boardSlug;
-    if (globalThis.WsdcSelect) globalThis.WsdcSelect.refresh(els.boardSelect);
+    const slug =
+      state.boardSlug || (state.boards[0] && state.boards[0].slug) || "";
+    setBoardDropdownValue(slug);
   }
 
   async function loadThreads() {
@@ -515,11 +541,31 @@
   }
 
   function wire() {
-    if (els.boardSelect) {
-      els.boardSelect.addEventListener("change", () => {
-        goBoard(els.boardSelect.value);
+    if (els.boardBtn && els.boardDd) {
+      els.boardBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const willOpen = !els.boardDd.classList.contains("is-open");
+        closeBoardDropdown();
+        if (willOpen) {
+          els.boardDd.classList.add("is-open");
+          els.boardBtn.setAttribute("aria-expanded", "true");
+        }
       });
     }
+
+    if (els.boardMenu) {
+      els.boardMenu.addEventListener("click", (e) => {
+        const option = e.target.closest('[role="option"]');
+        if (!option) return;
+        e.stopPropagation();
+        goBoard(option.getAttribute("data-value"));
+      });
+    }
+
+    document.addEventListener("click", closeBoardDropdown);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeBoardDropdown();
+    });
 
     els.threadList.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-thread]");
