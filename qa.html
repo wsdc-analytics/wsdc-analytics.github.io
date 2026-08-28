@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828c">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828d">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -47,16 +47,13 @@
           <p class="wsdc-page-subtitle">Ask about articles, dashboards, points, champions, or the site. English only. No accounts — just a display name. Posts appear immediately.</p>
         </header>
 
-        <div class="wsdc-filter-bar qa-board-picker" id="qaBoards">
-          <div class="qa-board-field">
-            <label class="qa-board-label" for="qaBoardSelect" id="qaBoardSelectLabel">Board</label>
-            <select class="wsdc-select wsdc-field" id="qaBoardSelect" aria-labelledby="qaBoardSelectLabel"></select>
-          </div>
-        </div>
-
         <section class="qa-panel qa-threads-panel" aria-label="Threads">
-          <div class="qa-panel-head">
+          <div class="qa-panel-toolbar">
             <h2 class="qa-panel-title">Threads <span class="qa-status" id="qaListStatus"></span></h2>
+            <div class="qa-board-field" id="qaBoards">
+              <label class="qa-board-label" for="qaBoardSelect" id="qaBoardSelectLabel">Board</label>
+              <select class="wsdc-select wsdc-field" id="qaBoardSelect" aria-labelledby="qaBoardSelectLabel"></select>
+            </div>
           </div>
           <div class="qa-thread-scroll">
             <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
@@ -145,7 +142,7 @@
 
   <script src="static/js/site-chrome.js?v=20260816d" defer></script>
   <script src="static/js/wsdc-select.js?v=20260816d"></script>
-  <script src="static/js/qa-config.js?v=20260828c"></script>
-  <script src="static/js/qa-hub.js?v=20260828c"></script>
+  <script src="static/js/qa-config.js?v=20260828d"></script>
+  <script src="static/js/qa-hub.js?v=20260828d"></script>
 </body>
 </html>
