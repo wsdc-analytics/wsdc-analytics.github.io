@@ -322,7 +322,7 @@
         <ol>
           <li><strong>Competitor base 2021-2026:</strong> counts by skill level; overall community; region if possible</li>
           <li><strong>Points &amp; tiers:</strong> current structure; impact of changes; progression for the majority (many points earned by a small minority)</li>
-          <li><strong>Event landscape &amp; capacity:</strong> where events are needed; growth vs limiting new events</li>
+          <li><strong>Event landscape &amp; capacity:</strong> where growth is justified (local organizer + territory case); when to limit new events; analytics confirms demand signals</li>
           <li><strong>Point structure:</strong> how to test with data whether the structure should change</li>
         </ol>
         <p class="notes">Next slides are not numbers. They map what blocks a straight answer and what process work unlocks one.</p>
@@ -336,7 +336,7 @@
           <div class="card"><h3>A. Identity</h3><p>An ID appears after the first point. Before that, the person is not a registry entity.</p></div>
           <div class="card"><h3>B. Coverage</h3><p>The public layer is scored history. Full entry lists are required in reporting, but not exposed publicly.</p></div>
           <div class="card"><h3>C. Data quality</h3><p>Manual intake: name variants, empty locations, same labels on different series.</p></div>
-          <div class="card"><h3>D. Geo / landscape</h3><p>Without stable geo and entry-level demand, capacity stays anecdotal.</p></div>
+          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity is not a map exercise: local organizers, territory case, then analytics to confirm demand.</p></div>
         </div>
       </section>
 
@@ -524,35 +524,48 @@
         <p class="notes">Otherwise free-text variants return (<span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>) and “new” events that are really renames with a different ID.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Growth vs limiting new events.">
+      <section class="slide" data-section="core" data-notes="Organizers carry risk; WSDC validates motivation. Analytics confirms demand, does not decide alone.">
         <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
-        <h1>Landscape and capacity on incomplete signals</h1>
-        <p class="lead">“Where events are needed” and “whether to limit new ones” need demand and people geography. The public layer maps events and scored activity, not full demand.</p>
-        <ul>
-          <li>Event city ≠ dancer home region (lots of travel)</li>
-          <li>Without entry lists, overloaded vs empty contests are hard to see</li>
-          <li>Bad locations draw false white space on the map</li>
-        </ul>
+        <h1>Landscape and capacity: organizers first</h1>
+        <p class="lead">WSDC does not run events. Organizers request trials and new events, spend money, and carry the risk that an event pays off. A blank spot on the map is not enough — there must be a local organizer and a credible case for that territory.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Organizer in the process</h3>
+            <ul>
+              <li>Named organizer takes operational and financial responsibility</li>
+              <li>Trial / new event: short justification — why WCS needs this here and why it can work</li>
+              <li>Review against the current event grid (crowded region vs one large event and a growing scene)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Where analytics fits</h3>
+            <ul>
+              <li>Confirms indirect signals: entry load at nearby events, regional density, scored activity</li>
+              <li>Does not replace the organizer's plan or guarantee ROI</li>
+              <li>Still limited: event city ≠ dancer home; bad geo draws false white space</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Separate supply / scored demand / entry demand.">
+      <section class="slide" data-section="core" data-notes="Organizer case + analytics layer; separate supply / scored / entry demand.">
         <div class="badge"><span class="pill">Core</span> Gap D · Impact</div>
         <h1>Impact and process path</h1>
         <div class="grid2">
           <div class="card">
             <h3>Risk for Q3-Q4</h3>
             <ul>
-              <li>Capacity by feel instead of measurable headcount</li>
-              <li>Constraining growth where scored data understates demand</li>
+              <li>Decisions by map or feel, without a local organizer or territory case</li>
+              <li>Approving another event in an overloaded region without checking motivation</li>
               <li>Changing point structure without a funnel model</li>
             </ul>
           </div>
           <div class="card">
             <h3>What to lock in</h3>
             <ul>
-              <li>Stable event geo (+ dancer region on registration/profile if possible)</li>
-              <li>Entry counts / full lists as a working analytics layer, not Tier alone</li>
-              <li>Three separate metrics: event supply, scored demand, entry demand</li>
+              <li>Light justification for trial/new events (organizer + territory case; not a full business plan)</li>
+              <li>Stable event geo + entry counts/lists as an analytics layer alongside Tier</li>
+              <li>Three metrics separate: event supply, scored demand, entry demand</li>
             </ul>
           </div>
         </div>
@@ -582,8 +595,8 @@
             </tr>
             <tr>
               <td>Event landscape &amp; capacity / where needed</td>
-              <td><span class="tag">Partial</span> event map and scored activity; capacity indirect (tiers)</td>
-              <td>Entry counts/lists + geo DQ + (optional) dancer geo</td>
+              <td><span class="tag">Partial</span> event map and scored activity; organizer proposals not standardized</td>
+              <td>Organizer justification workflow + entry counts/lists + geo DQ + review vs event grid</td>
             </tr>
             <tr>
               <td>Point structure change analysis</td>
@@ -605,6 +618,7 @@
           <li><strong>Event and location directories:</strong> canonical names; visible to organizers (or public)</li>
           <li><strong>Organizer forms:</strong> dropdowns only; changes/new rows in advance under regulations + name/location history</li>
           <li><strong>Board metric dictionary:</strong> scored population vs entry population vs community</li>
+          <li><strong>Trial / new events:</strong> named organizer, short territory justification, review against current event grid</li>
         </ol>
       </section>
 
@@ -663,9 +677,10 @@
         <div class="badge"><span class="pill app">Appendix</span> Q3</div>
         <h1>Event landscape &amp; capacity</h1>
         <ul>
-          <li><strong>Can:</strong> registry event counts, geography, 2021-2026 dynamics, large vs small via tiers/points</li>
-          <li><strong>Partial:</strong> “need events here” via scored travel and event density</li>
-          <li><strong>Needs entries:</strong> real contest load and unmet demand</li>
+          <li><strong>Process first:</strong> local organizer + short case for the territory; WSDC validates motivation, does not organize</li>
+          <li><strong>Can:</strong> registry event counts, geography, 2021-2026 dynamics, regional entry load (when lists exist)</li>
+          <li><strong>Partial:</strong> confirm demand via scored travel, event density, registrations at nearby events</li>
+          <li><strong>Cannot decide alone:</strong> whether an event will pay off for the organizer</li>
         </ul>
       </section>
 

@@ -322,7 +322,7 @@
         <ol>
           <li><strong>Competitor base 2021-2026</strong>: сколько танцоров по skill levels; community overall; по возможности регион</li>
           <li><strong>Points &amp; tiers</strong>: текущая структура, влияние изменений; прогрессия большинства (много поинтов у небольшого меньшинства)</li>
-          <li><strong>Event landscape &amp; capacity</strong>: где нужны ивенты; рост vs лимит новых событий</li>
+          <li><strong>Event landscape &amp; capacity</strong>: где рост обоснован (организатор на месте + case территории); когда ограничивать новые ивенты; аналитика подтверждает сигналы спроса</li>
           <li><strong>Point structure</strong>: как проверить данными, нужно ли менять структуру поинтов</li>
         </ol>
         <p class="notes">Дальше не цифры, а карта: что мешает ответить прямо и что чинить в процессах.</p>
@@ -336,7 +336,7 @@
           <div class="card"><h3>A. Identity</h3><p>ID появляется после первого поинта. До этого человека нет в registry как сущности.</p></div>
           <div class="card"><h3>B. Coverage</h3><p>Публичный слой = scored history. Полный entry list правила просят, но снаружи его нет.</p></div>
           <div class="card"><h3>C. Data quality</h3><p>Ручной ввод: варианты имён, пустые локации, одинаковые названия у разных серий.</p></div>
-          <div class="card"><h3>D. Geo / landscape</h3><p>Без стабильной гео и entry-level спроса capacity остаётся «на ощущениях».</p></div>
+          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity — не упражнение на карте: организатор на месте, case территории, затем аналитика для подтверждения спроса.</p></div>
         </div>
       </section>
 
@@ -524,34 +524,47 @@
         <p class="notes">Иначе снова появятся free-text варианты вроде <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> и «новые» ивенты с тем же смыслом, но другим ID.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Growth vs limiting new events.">
+      <section class="slide" data-section="core" data-notes="Орги несут риск; WSDC проверяет мотивацию. Аналитика подтверждает спрос, но не решает сама.">
         <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
-        <h1>Landscape и capacity на неполных сигналах</h1>
-        <p class="lead">«Где нужны ивенты» и «можно ли ограничивать новые» требуют спроса и географии людей. Публичный слой даёт карту ивентов и scored-активности, но не полную картину спроса.</p>
-        <ul>
-          <li>Город ивента ≠ домашний регион танцора (много travel)</li>
-          <li>Без entry lists плохо видно переполненные vs пустые дивизионы</li>
-          <li>Ошибки локаций рисуют ложные «белые пятна» на карте</li>
-        </ul>
+        <h1>Landscape и capacity: сначала организатор</h1>
+        <p class="lead">WSDC не проводит ивенты. Организаторы запрашивают трайлы и новые ивенты, тратят деньги и несут риск, что ивент окупится. «Белого пятна» на карте недостаточно — нужен организатор на месте и обоснованный case для этой территории.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Организатор в процессе</h3>
+            <ul>
+              <li>Именованный организатор берёт операционную и финансовую ответственность</li>
+              <li>Трайл / новый ивент: краткое обоснование — зачем WCS здесь и почему это может сработать</li>
+              <li>Сверка с текущей сеткой ивентов (перегруженный регион vs один крупный ивент и растущая сцена)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Где помогает аналитика</h3>
+            <ul>
+              <li>Подтверждает косвенные сигналы: загрузка entry на соседних ивентах, плотность в регионе, scored-активность</li>
+              <li>Не заменяет план организатора и не гарантирует окупаемость</li>
+              <li>Ограничения остаются: город ивента ≠ дом танцора; плохая гео рисует ложные «дыры»</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Разделить supply / scored demand / entry demand.">
+      <section class="slide" data-section="core" data-notes="Case организатора + слой аналитики; разделить supply / scored / entry demand.">
         <div class="badge"><span class="pill">Core</span> Gap D · Влияние</div>
         <h1>Влияние и процессный путь</h1>
         <div class="grid2">
           <div class="card">
             <h3>Риск для Q3-Q4</h3>
             <ul>
-              <li>Capacity «по ощущениям» вместо измеримого headcount</li>
-              <li>Ограничить рост там, где scored data недооценивает спрос</li>
+              <li>Решения по карте или «на ощущениях», без организатора на месте и case территории</li>
+              <li>Одобрить ещё один ивент в перегруженном регионе без проверки мотивации</li>
               <li>Менять point structure без модели воронки</li>
             </ul>
           </div>
           <div class="card">
             <h3>Что зафиксировать</h3>
             <ul>
-              <li>Стабильная гео ивентов (+ желательно регион танцора в заявке/профиле)</li>
-              <li>Entry counts / полные списки как рабочий слой аналитики, не только Tier</li>
+              <li>Лёгкое обоснование для trial/new events (организатор + case территории; не детальный бизнес-план)</li>
+              <li>Стабильная гео ивентов + entry counts/lists как слой аналитики рядом с Tier</li>
               <li>Три метрики отдельно: event supply, scored demand, entry demand</li>
             </ul>
           </div>
@@ -582,8 +595,8 @@
             </tr>
             <tr>
               <td>Event landscape &amp; capacity / where needed</td>
-              <td><span class="tag">Частично</span> карта ивентов и scored активности; capacity косвенно (tiers)</td>
-              <td>Entry counts/lists + DQ гео + (опц.) гео танцоров</td>
+              <td><span class="tag">Частично</span> карта ивентов и scored активности; заявки оргов не стандартизированы</td>
+              <td>Workflow обоснования орга + entry counts/lists + DQ гео + сверка с сеткой ивентов</td>
             </tr>
             <tr>
               <td>Point structure change analysis</td>
@@ -605,6 +618,7 @@
           <li><strong>Справочники ивентов и локаций</strong>: canonical name; доступ оргам (или публичный)</li>
           <li><strong>Формы оргов</strong>: только dropdowns; изменения/новые записи заранее по регламенту + история имён/локаций</li>
           <li><strong>Словарь метрик board</strong>: scored population vs entry population vs community</li>
+          <li><strong>Trial / new events</strong>: именованный организатор, краткое обоснование территории, сверка с текущей сеткой ивентов</li>
         </ol>
       </section>
 
@@ -663,9 +677,10 @@
         <div class="badge"><span class="pill app">Appendix</span> Q3</div>
         <h1>Event landscape &amp; capacity</h1>
         <ul>
-          <li><strong>Можно:</strong> число registry events, география, динамика 2021-2026, крупные vs малые по tiers/points</li>
-          <li><strong>Частично:</strong> «нужны ли ивенты здесь» через travel scored танцоров и плотность ивентов</li>
-          <li><strong>Без entries нельзя:</strong> реальная загрузка дивизионов и отказной спрос</li>
+          <li><strong>Сначала процесс:</strong> организатор на месте + краткий case территории; WSDC проверяет мотивацию, не организует сам</li>
+          <li><strong>Можно:</strong> число registry events, география, динамика 2021-2026, региональная загрузка entry (когда есть lists)</li>
+          <li><strong>Частично:</strong> подтвердить спрос через travel scored, плотность ивентов, регистрации на соседних ивентах</li>
+          <li><strong>Не решает сама:</strong> окупится ли ивент для организатора</li>
         </ul>
       </section>
 
