@@ -45,12 +45,17 @@
   min-height: 0;
 }
 
-.qa-shell > .qa-back {
+/* Same inset track as Events Calendar .page-head (100px each side). */
+.qa-shell > .qa-back,
+.qa-top {
   width: calc(100% - 200px);
   max-width: calc(100% - 200px);
   margin-inline: auto;
-  margin-bottom: 8px;
   box-sizing: border-box;
+}
+
+.qa-shell > .qa-back {
+  margin-bottom: 8px;
 }
 
 /* Let the hub fill the viewport under chrome */
@@ -724,7 +729,8 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     padding: 12px 14px 16px;
   }
 
-  .qa-shell > .qa-back {
+  .qa-shell > .qa-back,
+  .qa-top {
     width: 100%;
     max-width: 100%;
   }
