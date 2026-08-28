@@ -76,6 +76,8 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   gap: var(--wsdc-space-3, 12px) var(--wsdc-space-4, 16px);
   flex: 0 0 auto;
   margin-bottom: var(--wsdc-space-3, 12px);
+  padding-bottom: var(--wsdc-space-3, 12px);
+  border-bottom: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 55%, transparent);
   position: relative;
   z-index: 2;
 }
@@ -172,12 +174,13 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   }
 }
 
-/* Threads card grows to the bottom of the viewport */
-.qa-main-col > .qa-panel {
+/* Threads block grows to the bottom of the viewport — no outer card */
+.qa-main-col > .qa-threads-panel {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .qa-panel-head {
@@ -249,13 +252,13 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 65%, transparent);
 }
 
-.qa-main-col > .qa-panel > .qa-status {
+.qa-main-col > .qa-threads-panel > .qa-status {
   flex: 0 0 auto;
   margin-top: var(--wsdc-space-3, 12px);
 }
 
 .qa-threads-panel {
-  overflow: visible;
+  min-width: 0;
 }
 
 .qa-panel {
