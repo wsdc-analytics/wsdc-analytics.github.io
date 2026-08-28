@@ -32,16 +32,25 @@
   outline-offset: var(--wsdc-focus-offset, 2px);
 }
 
+/* Match Events Calendar .container width and padding */
 .qa-shell {
-  max-width: var(--wsdc-width-chrome, 1200px);
+  width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: var(--wsdc-space-4, 16px) var(--wsdc-space-5, 20px) var(--wsdc-space-4, 16px);
+  padding: 12px 20px 8px;
   box-sizing: border-box;
-  /* Fill viewport below site chrome so Threads can stretch to the page bottom */
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   min-height: 0;
+}
+
+.qa-shell > .qa-back {
+  width: calc(100% - 200px);
+  max-width: calc(100% - 200px);
+  margin-inline: auto;
+  margin-bottom: 8px;
+  box-sizing: border-box;
 }
 
 /* Let the hub fill the viewport under chrome */
@@ -702,7 +711,18 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 }
 
 .qa-back {
-  margin-bottom: var(--wsdc-space-3, 12px);
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .qa-shell {
+    padding: 12px 14px 16px;
+  }
+
+  .qa-shell > .qa-back {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* Hidden pill: muted emphasis without one-off palette drift */
