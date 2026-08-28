@@ -244,7 +244,7 @@
         return `<li>
           <button type="button" class="qa-thread-item${active}" data-thread="${esc(t.id)}">
             <div class="qa-thread-title"><span>${esc(t.title)}</span>${badges}</div>
-            <div class="qa-thread-meta">${esc(t.author_name)} · ${esc(fmtDate(t.created_at))}</div>
+            <div class="qa-thread-meta"><span class="qa-thread-author">${esc(t.author_name)}</span><span class="qa-time">${esc(fmtDate(t.created_at))}</span></div>
           </button>
         </li>`;
       })
@@ -304,9 +304,9 @@
       (t.qa_boards && t.qa_boards.title) ||
       (state.boards.find((b) => b.id === t.board_id) || {}).title ||
       state.boardSlug;
-    els.threadMeta.innerHTML = `${esc(boardTitle)} · by <strong>${esc(t.author_name)}</strong> · ${esc(
+    els.threadMeta.innerHTML = `${esc(boardTitle)} · by <strong>${esc(t.author_name)}</strong> · <span class="qa-time">${esc(
       fmtDate(t.created_at)
-    )}${(() => {
+    )}</span>${(() => {
       const href = safeHttpsUrl(t.page_url);
       return href
         ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">source</a>`
@@ -315,18 +315,18 @@
       t.is_pinned ? ' · <span class="wsdc-pill is-accent">Pinned</span>' : ""
     }${t.is_hidden ? ' · <span class="wsdc-pill qa-pill-hidden">Hidden</span>' : ""}`;
 
-    const opHtml = `<article class="qa-post">
+    const opHtml = `<article class="qa-post qa-post--op">
       <div class="qa-post-head"><span class="qa-post-author">${esc(t.author_name)}</span>
-      <span>${esc(fmtDate(t.created_at))}</span><span class="wsdc-pill">OP</span></div>
+      <span class="qa-time">${esc(fmtDate(t.created_at))}</span><span class="wsdc-pill">OP</span></div>
       <div class="qa-post-body">${esc(t.body)}</div>
     </article>`;
 
     const replies = (state.posts || [])
       .filter((p) => !p.is_op)
       .map(
-        (p) => `<article class="qa-post" data-post-id="${esc(p.id)}">
+        (p) => `<article class="qa-post qa-post--reply" data-post-id="${esc(p.id)}">
       <div class="qa-post-head"><span class="qa-post-author">${esc(p.author_name)}</span>
-      <span>${esc(fmtDate(p.created_at))}</span>
+      <span class="qa-time">${esc(fmtDate(p.created_at))}</span>
       ${p.is_hidden ? '<span class="wsdc-pill qa-pill-hidden">Hidden</span>' : ""}
       ${
         state.mod

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260826p">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828a">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -42,27 +42,29 @@
 
     <div class="qa-top has-aside">
       <div class="qa-main-col">
-        <header class="wsdc-page-header">
+        <header class="wsdc-page-header qa-page-header">
           <h1 class="wsdc-page-title">Q&amp;A Hub</h1>
-          <p class="wsdc-page-subtitle">Ask about articles, dashboards, Summary Points, New Champions, Calendar, or the site. English only for now. No accounts — just a display name.</p>
+          <p class="wsdc-page-subtitle">Ask about articles, dashboards, points, champions, or the site. English only. No accounts — just a display name. Posts appear immediately.</p>
         </header>
-        <p class="qa-intro">
-          Lightweight community space. Posts appear immediately; moderators can hide spam.
-        </p>
 
         <nav class="wsdc-filter-bar qa-boards" id="qaBoards" aria-label="Boards"></nav>
 
-        <section class="qa-panel" aria-label="Threads">
-          <h2>Threads <span class="qa-status" id="qaListStatus"></span></h2>
-          <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
+        <section class="qa-panel qa-threads-panel" aria-label="Threads">
+          <div class="qa-panel-head">
+            <h2 class="qa-panel-title">Threads <span class="qa-status" id="qaListStatus"></span></h2>
+          </div>
+          <div class="qa-thread-scroll">
+            <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
 
-          <div id="qaThreadPanel" hidden>
-            <h2 id="qaThreadTitle"></h2>
-            <p class="qa-thread-meta" id="qaThreadMeta"></p>
-            <div class="qa-mod-actions" id="qaModActions" hidden></div>
-            <div id="qaPosts"></div>
+            <div class="qa-thread-view" id="qaThreadPanel" hidden>
+              <header class="qa-thread-view-head">
+                <h3 class="qa-thread-view-title" id="qaThreadTitle"></h3>
+                <p class="qa-thread-meta" id="qaThreadMeta"></p>
+                <div class="qa-mod-actions" id="qaModActions" hidden></div>
+              </header>
+              <div class="qa-posts" id="qaPosts"></div>
 
-            <form class="qa-form" id="qaReplyForm" hidden>
+              <form class="qa-form qa-reply-form" id="qaReplyForm" hidden>
               <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
               <label>Your name
                 <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
@@ -76,7 +78,8 @@
               <div class="qa-form-actions">
                 <button type="submit" class="wsdc-btn wsdc-btn--primary">Post reply</button>
               </div>
-            </form>
+              </form>
+            </div>
           </div>
 
           <p class="qa-status" id="qaStatus" aria-live="polite"></p>
@@ -85,7 +88,7 @@
 
       <aside class="qa-panel qa-compose" id="qaCompose">
         <header class="qa-compose-head">
-          <h2>New thread</h2>
+          <h2 class="qa-compose-title">New thread</h2>
           <p class="qa-compose-lede">Posts to the selected board.</p>
         </header>
         <form class="qa-form" id="qaNewThreadForm">
@@ -136,7 +139,7 @@
   </main>
 
   <script src="static/js/site-chrome.js?v=20260816d" defer></script>
-  <script src="static/js/qa-config.js?v=20260826p"></script>
-  <script src="static/js/qa-hub.js?v=20260826p"></script>
+  <script src="static/js/qa-config.js?v=20260828a"></script>
+  <script src="static/js/qa-hub.js?v=20260828a"></script>
 </body>
 </html>
