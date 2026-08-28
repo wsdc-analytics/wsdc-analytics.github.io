@@ -95,16 +95,17 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   margin: 0;
 }
 
-.qa-board-field {
-  display: block;
-  min-width: 0;
-  flex: 0 1 240px;
-  width: min(100%, 280px);
+.qa-board-filters {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
   margin-left: auto;
 }
 
-.qa-board-field .wsdc-select-host {
-  width: 100%;
+.qa-board-filters .wsdc-dd {
+  position: relative;
+  z-index: 3;
 }
 
 @media (max-width: 559px) {
@@ -113,10 +114,14 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     align-items: stretch;
   }
 
-  .qa-board-field {
+  .qa-board-filters {
     width: 100%;
-    flex-basis: auto;
     margin-left: 0;
+  }
+
+  .qa-board-filters .wsdc-dd {
+    width: 100%;
+    --wsdc-dd-width: 100%;
   }
 }
 .qa-shell .wsdc-btn--primary {
