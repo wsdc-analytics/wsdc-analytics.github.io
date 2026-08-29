@@ -145,7 +145,13 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     position: sticky;
     top: var(--wsdc-space-4, 16px);
     align-self: start;
-    padding-top: 10px;
+    /* Two parallel thin vertical rules — no card border / fill */
+    padding: 4px 0 4px 22px;
+    border: 0;
+    background: transparent;
+    box-shadow:
+      -1px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent),
+      -4px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
   }
 
   /* Desktop: align compose title band with page title */
@@ -252,10 +258,20 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 
 .qa-compose {
   min-width: 0;
-  padding: 4px 0 0;
+  padding: 16px 0 8px;
   background: transparent;
   border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+  box-shadow: none;
   overflow: visible;
+}
+
+@media (min-width: 960px) {
+  .qa-compose {
+    border-top: 0;
+    border-bottom: 0;
+  }
 }
 
 .qa-compose-head {
@@ -341,7 +357,7 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   padding: 8px 12px;
   border: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 72%, transparent);
   border-radius: var(--wsdc-radius-pill, 999px);
-  background: var(--wsdc-color-surface, #ffffff);
+  background: transparent;
   color: var(--wsdc-color-text, #1f2937);
   font: inherit;
   font-size: var(--wsdc-font-size-sm, 13px);
@@ -363,7 +379,7 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 .qa-compose-input.wsdc-field:hover,
 .qa-compose textarea.qa-compose-input:hover {
   border-color: color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 100%, transparent);
-  background: var(--wsdc-color-surface-soft, #f8fafc);
+  background: transparent;
 }
 
 .qa-compose-input.wsdc-field:focus,
@@ -372,8 +388,8 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 .qa-compose textarea.qa-compose-input:focus-visible {
   outline: none;
   border-color: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 45%, var(--wsdc-color-border));
-  background: var(--wsdc-color-surface, #ffffff);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 12%, transparent);
+  background: transparent;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 10%, transparent);
 }
 
 .qa-compose .qa-form-optional-body {
