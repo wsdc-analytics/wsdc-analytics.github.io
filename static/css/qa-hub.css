@@ -248,9 +248,8 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   padding: 16px 0 8px;
   background: transparent;
   border: 0;
-  /* Mobile: two parallel horizontal hairlines */
+  /* Mobile: single horizontal hairline above the section */
   border-top: 0.5px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
-  border-bottom: 0.5px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
   overflow: visible;
 }
 
@@ -259,13 +258,10 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     position: sticky;
     top: var(--wsdc-space-4, 16px);
     align-self: start;
-    /* Two parallel thin vertical rules — half-pixel hairlines */
+    /* Single thin vertical hairline */
     padding: 4px 0 4px 18px;
     border-top: 0;
-    border-bottom: 0;
-    box-shadow:
-      -0.5px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent),
-      -2.5px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+    box-shadow: -0.5px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
   }
 }
 
