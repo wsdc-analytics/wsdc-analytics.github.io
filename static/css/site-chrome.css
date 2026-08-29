@@ -342,9 +342,11 @@
   appearance: none;
   border: none;
   background: transparent;
-  padding: 6px;
-  min-width: 36px;
-  min-height: 36px;
+  padding: 4px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -366,8 +368,8 @@
 
 .wsdc-chrome__qa-icon {
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background-color: currentColor;
   -webkit-mask-size: contain;
   mask-size: contain;
