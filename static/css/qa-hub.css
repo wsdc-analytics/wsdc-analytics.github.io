@@ -141,19 +141,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     width: 100%;
   }
 
-  .qa-compose {
-    position: sticky;
-    top: var(--wsdc-space-4, 16px);
-    align-self: start;
-    /* Two parallel thin vertical rules — no card border / fill */
-    padding: 4px 0 4px 22px;
-    border: 0;
-    background: transparent;
-    box-shadow:
-      -1px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent),
-      -4px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
-  }
-
   /* Desktop: align compose title band with page title */
   .qa-compose-title {
     font-size: var(--wsdc-font-size-xl, 24px);
@@ -261,16 +248,24 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   padding: 16px 0 8px;
   background: transparent;
   border: 0;
+  /* Mobile: two parallel horizontal hairlines */
   border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
-  box-shadow: none;
   overflow: visible;
 }
 
 @media (min-width: 960px) {
   .qa-compose {
+    position: sticky;
+    top: var(--wsdc-space-4, 16px);
+    align-self: start;
+    /* Two parallel thin vertical rules — no card border / fill */
+    padding: 4px 0 4px 22px;
     border-top: 0;
     border-bottom: 0;
+    box-shadow:
+      -1px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent),
+      -4px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
   }
 }
 
