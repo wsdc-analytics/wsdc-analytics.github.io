@@ -137,6 +137,22 @@
     location.hash = `#thread/${id}`;
   }
 
+  function setHubLang(lang) {
+    const next = I18n ? I18n.normalizeLang(lang) : lang === "ru" || lang === "es" ? lang : "en";
+    state.lang = next;
+    localStorage.setItem("wsdc-lang", next);
+    const url = new URL(location.href);
+    url.searchParams.set("lang", next);
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+    if (I18n) I18n.applyStatic(next);
+    const chrome = document.querySelector("[data-site-chrome]");
+    if (chrome) chrome.setAttribute("data-lang", next);
+    renderBoards();
+    if (state.thread) renderThread();
+    else renderThreads();
+    if (state.mod) loadStats();
+  }
+
   function applyLang() {
     state.lang = langFromQuery();
     localStorage.setItem("wsdc-lang", state.lang);
@@ -812,20 +828,22 @@
       onRoute().catch((err) => setStatus(err.message || "Error", "error"));
     });
 
+    function onChromeLang(lang) {
+      if (!lang) return;
+      setHubLang(lang);
+    }
+
     window.WsdcChrome = window.WsdcChrome || {};
     const prevLang = window.WsdcChrome.onLangChange;
     window.WsdcChrome.onLangChange = function (lang) {
       if (typeof prevLang === "function") prevLang(lang);
-      const url = new URL(location.href);
-      url.searchParams.set("lang", lang);
-      history.replaceState(null, "", url.pathname + url.search + url.hash);
-      state.lang = lang;
-      if (I18n) I18n.applyStatic(lang);
-      renderBoards();
-      if (state.thread) renderThread();
-      else renderThreads();
-      if (state.mod) loadStats();
+      onChromeLang(lang);
     };
+
+    document.addEventListener("wsdc:langchange", (e) => {
+      const lang = e && e.detail && e.detail.lang;
+      if (lang) onChromeLang(lang);
+    });
   }
 
   async function init() {
