@@ -348,17 +348,25 @@
       "</a>" +
       "</div>" +
       '<div class="wsdc-chrome__spacer" aria-hidden="true"></div>' +
+      '<div class="wsdc-chrome__qa" data-chrome-qa>' +
       '<a class="wsdc-chrome__qa-btn' +
       (active === "qa" ? " is-active" : "") +
       '" href="' +
       esc(qaHubHref(root, lang)) +
       '" data-chrome-qa-btn aria-label="' +
       esc(LABELS.qa[lang] || LABELS.qa.en) +
-      '" title="' +
-      esc(LABELS.qa[lang] || LABELS.qa.en) +
-      '">' +
-      '<svg width="18" height="16" viewBox="0 0 48 42" fill="none" aria-hidden="true"><path d="M8 4.5h28A5.5 5.5 0 0 1 41.5 10v12A5.5 5.5 0 0 1 36 27.5H19.2L8.5 37.5V27.5H8A5.5 5.5 0 0 1 2.5 22V10A5.5 5.5 0 0 1 8 4.5Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>' +
+      '" aria-describedby="wsdcChromeQaTip">' +
+      '<span class="wsdc-chrome__qa-icon" aria-hidden="true" style="-webkit-mask-image:url(\'' +
+      esc(withPathPrefix(root, "static/img/qa-chrome-icon.png")) +
+      "');mask-image:url('" +
+      esc(withPathPrefix(root, "static/img/qa-chrome-icon.png")) +
+      "')" +
+      "></span>" +
       "</a>" +
+      '<span class="wsdc-chrome__qa-tip" id="wsdcChromeQaTip" role="tooltip" data-chrome-qa-tip>' +
+      esc(LABELS.qa[lang] || LABELS.qa.en) +
+      "</span>" +
+      "</div>" +
       '<div class="wsdc-chrome__contact" data-chrome-contact>' +
       '<button type="button" class="wsdc-chrome__contact-btn" data-chrome-contact-btn aria-label="' +
       esc(LABELS.contact[lang] || LABELS.contact.en) +
@@ -427,9 +435,17 @@
       var qaLabel = LABELS.qa[lang] || LABELS.qa.en;
       qaBtn.setAttribute("href", qaHubHref(root, lang));
       qaBtn.setAttribute("aria-label", qaLabel);
-      qaBtn.setAttribute("title", qaLabel);
+      qaBtn.removeAttribute("title");
       qaBtn.classList.toggle("is-active", (root.getAttribute("data-active") || "") === "qa");
+      var icon = qaBtn.querySelector(".wsdc-chrome__qa-icon");
+      if (icon) {
+        var iconUrl = withPathPrefix(root, "static/img/qa-chrome-icon.png");
+        icon.style.webkitMaskImage = "url('" + iconUrl + "')";
+        icon.style.maskImage = "url('" + iconUrl + "')";
+      }
     }
+    var qaTip = root.querySelector("[data-chrome-qa-tip]");
+    if (qaTip) qaTip.textContent = LABELS.qa[lang] || LABELS.qa.en;
     var email = root.querySelector("[data-chrome-email]");
     if (email) email.textContent = LABELS.email[lang] || LABELS.email.en;
     var fb = root.querySelector("[data-chrome-facebook]");
