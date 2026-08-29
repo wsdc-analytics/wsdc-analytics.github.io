@@ -441,7 +441,7 @@
 
     const opHtml = `<article class="qa-post qa-post--op">
       <div class="qa-post-head"><span class="qa-post-author">${esc(thr.author_name)}</span>
-      <span class="qa-time">${esc(fmtDate(thr.created_at))}</span><span class="wsdc-pill">OP</span></div>
+      <span class="qa-time">${esc(fmtDate(thr.created_at))}</span></div>
       <div class="qa-post-body">${esc(thr.body)}</div>
     </article>`;
 
