@@ -41,7 +41,6 @@
     composeBoardMenu: document.getElementById("qaComposeBoardMenu"),
     composeTitle: document.getElementById("qaComposeTitle"),
     composeLede: document.getElementById("qaComposeLede"),
-    composeSwitch: document.getElementById("qaComposeSwitch"),
     threadBack: document.getElementById("qaThreadBack"),
     optionalDetails: document.getElementById("qaOptionalDetails"),
     threadList: document.getElementById("qaThreadList"),
@@ -479,9 +478,14 @@
       ${p.is_hidden ? `<span class="qa-flag is-hidden">${esc(t("hidden"))}</span>` : ""}
       ${
         state.mod
-          ? `<button type="button" class="qa-mod-inline" data-mod-post="${esc(
-              p.id
-            )}" data-mod-action="${hideAction}">${esc(hideLabel)}</button>`
+          ? `<span class="qa-mod-inline-group">
+          <button type="button" class="qa-mod-inline" data-mod-post="${esc(
+            p.id
+          )}" data-mod-action="${hideAction}">${esc(hideLabel)}</button>
+          <button type="button" class="qa-mod-inline qa-mod-inline--danger" data-mod-post="${esc(
+            p.id
+          )}" data-mod-action="delete">${esc(t("deletePost"))}</button>
+        </span>`
           : ""
       }
       </div>
@@ -499,7 +503,6 @@
     const replyMode = Boolean(state.threadId && state.thread);
     if (els.newThreadForm) els.newThreadForm.hidden = replyMode;
     if (els.replyForm) els.replyForm.hidden = !replyMode;
-    if (els.composeSwitch) els.composeSwitch.hidden = !replyMode;
     if (els.composeTitle) {
       els.composeTitle.textContent = replyMode ? t("replyTitle") : t("composeTitle");
       els.composeTitle.setAttribute("data-qa-i18n", replyMode ? "replyTitle" : "composeTitle");
@@ -795,11 +798,6 @@
   }
 
   function wire() {
-    if (els.composeSwitch) {
-      els.composeSwitch.addEventListener("click", () => {
-        goBoard(state.boardSlug || "other");
-      });
-    }
     if (els.threadBack) {
       els.threadBack.addEventListener("click", () => {
         goBoard(state.boardSlug || "other");
@@ -946,11 +944,24 @@
     els.posts.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-mod-post]");
       if (!btn) return;
+      const action = btn.getAttribute("data-mod-action");
+      const postId = btn.getAttribute("data-mod-post");
       try {
+        if (action === "delete") {
+          if (!window.confirm(t("deletePostConfirm"))) return;
+          await modApi({
+            action: "delete",
+            type: "post",
+            id: postId,
+          });
+          await loadThread(state.threadId);
+          setStatus(t("postDeleted"), "ok");
+          return;
+        }
         await modApi({
-          action: btn.getAttribute("data-mod-action"),
+          action,
           type: "post",
-          id: btn.getAttribute("data-mod-post"),
+          id: postId,
         });
         await loadThread(state.threadId);
         setStatus(t("updated"), "ok");
