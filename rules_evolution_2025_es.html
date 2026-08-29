@@ -938,6 +938,7 @@
     </style>
 <script src="static/js/lang-redirect.js?v=20260808b"></script>
   <link rel="stylesheet" href="static/css/article-shell.css">
+  <link rel="stylesheet" href="static/css/article-engage.css?v=20260829a">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Saltar al contenido</a>
@@ -951,7 +952,7 @@
     data-lang-ru="rules_evolution_2025.html"
     data-lang-en="rules_evolution_2025_en.html"
     data-lang-es="rules_evolution_2025_es.html"
-  ></div>
+   data-qa-board="articles"></div>
 <div class="wsdc-chrome-page-pad magazine-container">
         <header class="article-header">
             <div class="article-header-top">
@@ -1264,67 +1265,8 @@
             </section>
 
             <!-- Comments section removed: feedback will be redesigned -->
-            <section class="article-reactions">
-                <div class="article-reactions-label">Valora el artículo:</div>
-                <div class="article-reactions-buttons">
-                    <div class="article-reaction-item reaction-approve">
-                        <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Aprobar">
-                            <span class="article-reaction-emoji" aria-hidden="true">✓</span>
-                            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_es_positive"></div>
-                        </div>
-                        <span class="article-reaction-count" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_es_positive">–</span>
-                    </div>
-                    <div class="article-reaction-item reaction-neutral">
-                        <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Neutral">
-                            <span class="article-reaction-emoji" aria-hidden="true">○</span>
-                            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_es_neutral"></div>
-                        </div>
-                        <span class="article-reaction-count" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_es_neutral">–</span>
-                    </div>
-                    <div class="article-reaction-item reaction-disapprove">
-                        <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="No aprobar">
-                            <span class="article-reaction-emoji" aria-hidden="true">✗</span>
-                            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_es_negative"></div>
-                        </div>
-                        <span class="article-reaction-count" data-lyket-namespace="articles-2025" data-lyket-id="rules_evolution_2025_es_negative">–</span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="article-feedback">
-                <h2 class="article-feedback-title">Comentarios sobre el artículo</h2>
-                <p class="article-feedback-text">
-                    Si detectaste una inexactitud, quieres sugerir una mejora o simplemente quieres decir algo, rellena el formulario de abajo.
-                </p>
-                <form class="article-feedback-form" id="articleFeedbackForm">
-                    <label class="article-feedback-label" for="articleFeedbackMessage">
-                        Mensaje *
-                    </label>
-                    <textarea
-                        id="articleFeedbackMessage"
-                        class="article-feedback-input"
-                        rows="4"
-                        required
-                    ></textarea>
-
-                    <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">
-                        Email (opcional)
-                    </label>
-                    <input
-                        type="email"
-                        id="articleFeedbackEmail"
-                        class="article-feedback-input"
-                        placeholder="you@example.com"
-                    />
-
-                    <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">
-                        Enviar
-                    </button>
-                    <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
-                </form>
-            </section>
-
-            </article>
+            <section class="article-engage" data-article-engage data-article-id="rules_evolution_2025_es" data-lang="es"></section>
+</article>
         </main>
         <footer class="article-footer">
             <div class="data-note">
@@ -1439,137 +1381,7 @@
             });
         })();
     </script>
-<script>
-(function() {
-    var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
-    function getCountsUrl() { return REACTIONS_API ? (REACTIONS_API.replace(/\/$/, '') + '/api/reactions') : 'static/data/reactions.json'; }
-    function applyCount(span, n) { if (span) span.textContent = typeof n === 'number' && n >= 0 ? n : '–'; }
-    function fetchCounts() {
-        var url = getCountsUrl();
-        fetch(url, { credentials: 'omit' }).then(function(r) { return r.ok ? r.json() : {}; }).then(function(data) {
-            document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
-                var id = span.getAttribute('data-lyket-id');
-                if (id) applyCount(span, (data && typeof data[id] === 'number') ? data[id] : 0);
-            });
-        }).catch(function() {
-            document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) { applyCount(span, 0); });
-        });
-    }
-    function voteReaction(id, countSpan) {
-        if (!id || !countSpan || !REACTIONS_API) return;
-        countSpan.setAttribute('aria-busy', 'true');
-        countSpan.textContent = '…';
-        var base = REACTIONS_API.replace(/\/$/, '');
-        fetch(base + '/api/reactions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'omit',
-            body: JSON.stringify({ id: id })
-        }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
-    }
-    function initReactionClicks() {
-        document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
-            var overlay = trigger.querySelector('.lyket-overlay');
-            var id = overlay && overlay.getAttribute('data-lyket-id');
-            var item = trigger.closest('.article-reaction-item');
-            var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
-            if (!id || !countSpan) return;
-            trigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                voteReaction(id, countSpan);
-            });
-        });
-    }
-    function initReactionKeys() {
-        document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
-            trigger.addEventListener('keydown', function(e) {
-                if (e.key !== 'Enter' && e.key !== ' ') return;
-                e.preventDefault();
-                trigger.click();
-            });
-        });
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
-    else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
-})();
-</script>
-<script>
-(function() {
-    var FORM_ID = 'articleFeedbackForm';
-    var MESSAGE_ID = 'articleFeedbackMessage';
-    var EMAIL_ID = 'articleFeedbackEmail';
-    var SUBMIT_ID = 'articleFeedbackSubmit';
-    var STATUS_ID = 'articleFeedbackStatus';
-    var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
-    var ARTICLE_ID = 'rules_evolution_2025_es';
-    var TXT = { sending: 'Enviando...', ok: '¡Gracias! Tu mensaje ha sido enviado.', error: 'No se pudo enviar. Inténtalo de nuevo más tarde.', validation: 'Por favor escribe un poco más (mínimo 5 caracteres).' };
-
-    function $(id) { return document.getElementById(id); }
-
-    function setStatus(text, isError) {
-        var el = $(STATUS_ID);
-        if (!el) return;
-        el.textContent = text || '';
-        el.style.color = isError ? '#dc2626' : 'var(--text-secondary)';
-    }
-
-    function onSubmit(e) {
-        e.preventDefault();
-        var form = $(FORM_ID);
-        var msgEl = $(MESSAGE_ID);
-        var emailEl = $(EMAIL_ID);
-        var btn = $(SUBMIT_ID);
-
-        if (!form || !msgEl || !btn) return;
-
-        var message = msgEl.value.trim();
-        var email = emailEl && emailEl.value.trim();
-
-        if (!message || message.length < 5) {
-            setStatus(TXT.validation, true);
-            return;
-        }
-
-        btn.disabled = true;
-        setStatus(TXT.sending, false);
-
-        fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'omit',
-            body: JSON.stringify({
-                articleId: ARTICLE_ID,
-                articleUrl: window.location.href,
-                message: message,
-                email: email
-            })
-        }).then(function(r) {
-            if (!r.ok) throw new Error('Request failed');
-            return r.json().catch(function() { return {}; });
-        }).then(function() {
-            setStatus(TXT.ok, false);
-            msgEl.value = '';
-        }).catch(function() {
-            setStatus(TXT.error, true);
-        }).finally(function() {
-            btn.disabled = false;
-        });
-    }
-
-    function init() {
-        var form = $(FORM_ID);
-        if (form) form.addEventListener('submit', onSubmit);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-})();
-</script>
-  <script src="static/js/site-chrome.js" defer></script>
+<script src="static/js/site-chrome.js" defer></script>
   <script>
     (function() {
       var urlParams = new URLSearchParams(window.location.search);
@@ -1579,5 +1391,6 @@
       }
     })();
   </script>
+  <script src="static/js/article-engage.js?v=20260829a" defer></script>
 </body>
 </html>

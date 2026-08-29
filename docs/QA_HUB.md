@@ -1,27 +1,31 @@
 # Q&A / Community Hub
 
-EN-only hub at [`qa.html`](../qa.html): boards, threads, chronological replies. No accounts (display name + optional email). Posts publish immediately; spam is hidden after the fact.
+Hub at [`qa.html`](../qa.html): boards, threads, chronological replies. No accounts (display name + optional email). Posts publish immediately; spam is hidden after the fact.
 
-UI follows Evolved C (`tokens` + `ui-primitives` + site chrome). Chrome has no dedicated Q&A nav pill yet (`data-active="qa"`).
+**Language model:** UI is en/ru/es (`?lang=` + chrome); **threads are not split by language** — one shared stream. Placeholders follow the page language.
 
-Legacy `article-feedback` forms are unchanged.
+UI follows Evolved C (`tokens` + `ui-primitives` + site chrome). Chrome has a **chat icon** (left of Contacts) that deep-links to a board from page context — not a primary nav section.
+
+Article feedback forms were replaced by the shared engage block ([`static/js/article-engage.js`](../static/js/article-engage.js)): 👍/👎 + CTA into this hub.
 
 ## Boards
 
-| Slug | Title |
-|------|--------|
-| `articles` | Articles |
-| `dashboards` | Dashboards |
-| `summary-points` | Summary Points |
-| `new-champions` | New Champions |
-| `calendar` | Calendar |
-| `other` | Other |
+| Slug | Title | Chrome `data-active` / context |
+|------|--------|--------------------------------|
+| `articles` | Articles | articles / `data-qa-board="articles"` |
+| `dashboards` | Dashboards | `dashboards` |
+| `summary-points` | Summary Points | `points` |
+| `new-champions` | New Champions | `champions` |
+| `calendar` | Calendar | `calendar` |
+| `other` | Other | `home` / unknown / hub itself |
 
 Hash routes: `#board/<slug>`, `#thread/<uuid>`.
 
+Compose defaults to the current board (changeable). From articles: `qa.html?lang=…&page_url=…&title=…#board/articles` prefills related page / title.
+
 ## Backend
 
-Schema lives as `qa_*` tables on the existing Supabase project `tougqwxmahkwnaculiju` (dedicated project was deferred; plan fallback).
+Schema lives as `qa_*` tables on Supabase project `tougqwxmahkwnaculiju`.
 
 - Migration: [`supabase/migrations/20260826_qa_hub_schema.sql`](../supabase/migrations/20260826_qa_hub_schema.sql)
 - Tables: `qa_boards`, `qa_threads`, `qa_posts`
@@ -29,75 +33,42 @@ Schema lives as `qa_*` tables on the existing Supabase project `tougqwxmahkwnacu
 
 Client config (anon key is publishable): [`static/js/qa-config.js`](../static/js/qa-config.js).
 
-## Moderation & Telegram (Vercel)
+i18n dictionary: [`static/js/qa-i18n.js`](../static/js/qa-i18n.js).
 
-Primary path matches existing `api/contact.js` / reactions style:
+## Moderation & Telegram (Vercel)
 
 | Endpoint | Role |
 |----------|------|
-| `POST /api/qa-mod` | Hide / unhide / pin / unpin / **delete**; `stats`; `list_threads` (incl. hidden) |
-| `POST /api/qa-notify` | Telegram alert after a **fresh** insert (thread/reply must exist and be under 3 minutes old; needs `SUPABASE_*`) |
+| `POST /api/qa-mod` | Hide / unhide / pin / unpin / **delete** / **move** (board_slug); `stats`; `list_threads` |
+| `POST /api/qa-notify` | Telegram alert after a **fresh** insert |
 
-Where to put them: [Vercel Dashboard](https://vercel.com) → project that serves `https://wsdc-analytics-github-io.vercel.app` (same as reactions/contact) → **Settings → Environment Variables** → add for **Production** (and Preview if you test PRs) → **Redeploy** the latest deployment so functions pick up new vars.
+Env vars: same as before (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `QA_ADMIN_SECRET`, Telegram). See checklist below.
 
 CORS for mod/notify is restricted to `https://wsdc-analytics.github.io` (plus local static previews).
-
-Client `apiBase` in [`static/js/qa-config.js`](../static/js/qa-config.js) must match that Vercel host.
 
 ### Env variables — where each value comes from
 
 #### `SUPABASE_URL`
 
-1. Open [Supabase Dashboard](https://supabase.com/dashboard) → project **`tougqwxmahkwnaculiju`** (org project that already has `qa_*` tables).
-2. **Project Settings → API** (or **Connect**).
-3. Copy **Project URL** — looks like `https://tougqwxmahkwnaculiju.supabase.co`.
-
-Same value as `supabaseUrl` in `qa-config.js`.
+1. Open [Supabase Dashboard](https://supabase.com/dashboard) → project **`tougqwxmahkwnaculiju`**.
+2. **Project Settings → API**.
+3. Copy **Project URL**.
 
 #### `SUPABASE_SERVICE_ROLE_KEY`
 
-1. Same page: **Project Settings → API**.
-2. Under **Project API keys**, copy **`service_role`** (`secret`) — **not** the `anon` / publishable key.
-3. Paste only into Vercel env. Never commit it, never put it in `qa-config.js` or the browser.
-
-This key bypasses RLS so `qa-mod` can hide/pin/delete and list hidden threads.
+Same page → **`service_role`**. Never commit; Vercel only.
 
 #### `QA_ADMIN_SECRET`
 
-1. **You invent this** — a long random string (password manager / `openssl rand -hex 32`).
-2. Set the **same** string in Vercel as `QA_ADMIN_SECRET`.
-3. On the live hub, paste it once into **Moderator secret** → Unlock (stored in browser `localStorage` as `qa_admin_secret_v1`).
+Generate a long random string; set in Vercel; unlock in hub Moderator panel (`localStorage` `qa_admin_secret_v1`).
 
-Anyone who knows this secret can hide/pin/delete. Rotate by changing Vercel + re-unlocking in the browser.
+#### `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`
 
-#### `TELEGRAM_BOT_TOKEN`
-
-1. In Telegram, open [@BotFather](https://t.me/BotFather).
-2. `/newbot` (or `/mybots` → existing bot) → copy the **HTTP API token** (`123456:ABC-DEF...`).
-3. Put that token in Vercel as `TELEGRAM_BOT_TOKEN`.
-
-Reuse an existing site bot if you already have one for other alerts.
-
-#### `TELEGRAM_CHAT_ID`
-
-Where alerts should arrive (your private chat or a group):
-
-1. Start a chat with the bot (or add the bot to a group).
-2. Send any message to the bot / in the group.
-3. Open in a browser (replace `<TOKEN>`):  
-   `https://api.telegram.org/bot<TOKEN>/getUpdates`
-4. Find `"chat":{"id": ...}` — that number is `TELEGRAM_CHAT_ID` (for groups it is often negative, e.g. `-100…`).
-
-Or use a small helper bot such as [@userinfobot](https://t.me/userinfobot) for your personal id.
-
-If token/chat are missing, `qa-notify` returns OK with `skipped: true` (posts still work; no Telegram ping).
-
-`qa-notify` also needs `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` to verify the thread/reply exists and was created within the last 3 minutes (blocks open Telegram spam with fake payloads).
+BotFather + `getUpdates` (see previous setup notes).
 
 #### `QA_SITE_BASE` (optional)
 
-Default in code: `https://wsdc-analytics.github.io`.  
-Set only if the public site host differs; used to build links inside Telegram messages (`…/qa.html#thread/…`).
+Default `https://wsdc-analytics.github.io`.
 
 ### Quick checklist
 
@@ -110,27 +81,45 @@ Set only if the public site host differs; used to build links inside Telegram me
 | `TELEGRAM_CHAT_ID` | `getUpdates` / userinfobot | Semi |
 | `QA_SITE_BASE` | Public site origin | No |
 
-Moderation header used by the hub: `x-qa-admin-secret: <QA_ADMIN_SECRET>`.
+Moderation header: `x-qa-admin-secret: <QA_ADMIN_SECRET>`.
 
-Optional Edge Function sources (same behaviour) under `supabase/functions/qa-mod` and `qa-notify` if you deploy to Supabase later instead of Vercel.
+## Article reactions (👍/👎)
+
+Replaces Lyket + GitHub `reactions.json` increments.
+
+- Migration: [`supabase/migrations/20260829_article_reactions.sql`](../supabase/migrations/20260829_article_reactions.sql) — **apply in Supabase SQL editor** if not already applied (`article_reaction_votes`, `article_reaction_baseline`).
+- API: [`api/reactions.js`](../api/reactions.js) — GET counts, POST upsert/clear vote (needs `SUPABASE_*` on Vercel).
+- Client: [`static/js/article-engage.js`](../static/js/article-engage.js) + [`static/css/article-engage.css`](../static/css/article-engage.css).
+- Anti-abuse: `localStorage` + cookie `voter_key` (no fingerprint).
+- Legacy map: positive→up, negative→down, neutral dropped (baseline seed in migration).
+- No reactions inside the Q&A hub (v1).
+
+Mount example:
+
+```html
+<link rel="stylesheet" href="static/css/article-engage.css">
+<section class="article-engage" data-article-engage data-article-id="rules_evolution_2025_ru" data-lang="ru"></section>
+<script src="static/js/article-engage.js" defer></script>
+```
+
+Patch helper: [`scripts/patch_article_engage.py`](../scripts/patch_article_engage.py).
 
 ## Antispam / privacy (v1)
 
 - Honeypot field `website`
 - Min/max lengths (DB check + form)
 - ~20s client cooldown per browser
-- Optional email format check on insert
-- `author_email` is writable on insert but **not** selectable by anon (`REVOKE SELECT (author_email)`; inserts use `?select=` without that column)
-- `page_url` must be `https://…` (DB check + client); rendered with `rel="noopener noreferrer"`
+- `author_email` not selectable by anon
+- `page_url` must be `https://…`
 
 ## Manual test
 
-1. Open `/qa.html` → each board lists / creates threads.
-2. Reply on a thread; confirm chronological order.
-3. With Vercel env set: new post → Telegram ping.
-4. Unlock with `QA_ADMIN_SECRET` → Hide / Pin / Delete; hidden threads disappear for anon readers.
-5. Confirm article feedback forms and chrome unchanged.
+1. Chrome chat from home → `#board/other`; from Champions → `new-champions`; from article → `articles`.
+2. `/qa.html?lang=ru` — UI Russian; switch lang in chrome.
+3. Article CTA → hub with `page_url` prefilled; publish thread.
+4. 👍/👎 toggle on an article (after migration + Vercel deploy).
+5. Unlock moderator → Hide / Pin / **Move** / Delete.
 
 ## Out of v1
 
-Chrome nav link, RU/ES hubs, replacing article-feedback, accounts, AI digests.
+Language-split boards, reactions on threads, local CTAs on Champions/Points/Calendar, fingerprinting.

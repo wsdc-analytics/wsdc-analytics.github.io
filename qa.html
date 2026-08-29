@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
-  <link rel="stylesheet" href="static/css/site-chrome.css?v=20260816d">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260828h">
+  <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829a">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260829a">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -34,34 +34,33 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <!-- data-active=qa: no primary nav pill (hub not in chrome yet) -->
   <div data-site-chrome data-active="qa" data-lang="en" data-home-href="index.html"></div>
 
   <main id="main" class="qa-shell">
-    <a class="wsdc-back qa-back" href="index.html?lang=en" data-wsdc-back>Back to home</a>
+    <a class="wsdc-back qa-back" href="index.html?lang=en" data-wsdc-back data-qa-i18n="back">Back to home</a>
 
     <div class="qa-top has-aside">
       <div class="qa-main-col">
         <header class="wsdc-page-header qa-page-header">
-          <h1 class="wsdc-page-title">Q&amp;A Hub</h1>
-          <p class="wsdc-page-subtitle">Ask about articles, dashboards, points, champions, or the site. English only. No accounts — just a display name. Posts appear immediately.</p>
+          <h1 class="wsdc-page-title" data-qa-i18n="title">Q&amp;A Hub</h1>
+          <p class="wsdc-page-subtitle" data-qa-i18n="subtitle">Ask about articles, dashboards, points, champions, or the site. No accounts — just a display name. Posts appear immediately. Write in the language you prefer.</p>
         </header>
 
         <section class="qa-threads-panel" aria-label="Threads">
           <div class="qa-panel-toolbar">
-            <h2 class="qa-panel-title">Threads <span class="qa-status" id="qaListStatus"></span></h2>
+            <h2 class="qa-panel-title"><span data-qa-i18n="threads">Threads</span> <span class="qa-status" id="qaListStatus"></span></h2>
             <div class="qa-board-filters" id="qaBoards">
               <div class="wsdc-dd wsdc-dd--auto" id="qaBoardDd">
-                <button type="button" class="wsdc-dd__btn" id="qaBoardBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Board">
+                <button type="button" class="wsdc-dd__btn" id="qaBoardBtn" aria-haspopup="listbox" aria-expanded="false" data-qa-i18n-aria="board">
                   <span class="wsdc-dd__value" id="qaBoardValue">Board</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
-                <ul class="wsdc-dd__menu" id="qaBoardMenu" role="listbox" aria-label="Board options"></ul>
+                <ul class="wsdc-dd__menu" id="qaBoardMenu" role="listbox" data-qa-i18n-aria="boardOptions"></ul>
               </div>
             </div>
           </div>
           <div class="qa-thread-scroll">
-            <div id="qaThreadList"><p class="qa-empty">Loading…</p></div>
+            <div id="qaThreadList"><p class="qa-empty" data-qa-i18n="loading">Loading…</p></div>
 
             <div class="qa-thread-view" id="qaThreadPanel" hidden>
               <header class="qa-thread-view-head">
@@ -73,17 +72,17 @@
 
               <form class="qa-form qa-reply-form" id="qaReplyForm" hidden>
               <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-              <label>Your name
-                <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
+              <label><span data-qa-i18n="labelName">Your name</span>
+                <input class="wsdc-field" name="author_name" required maxlength="80" data-qa-i18n-placeholder="phName" placeholder="Display name">
               </label>
-              <label>Email <span class="qa-label-hint">(not shown)</span>
-                <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com">
+              <label><span data-qa-i18n="labelEmail">Email</span> <span class="qa-label-hint" data-qa-i18n="emailHintShort">(not shown)</span>
+                <input class="wsdc-field" name="author_email" type="email" maxlength="120" data-qa-i18n-placeholder="phEmail" placeholder="you@example.com">
               </label>
-              <label>Reply
-                <textarea class="wsdc-field" name="body" required maxlength="8000" placeholder="Write a reply…"></textarea>
+              <label><span data-qa-i18n="reply">Reply</span>
+                <textarea class="wsdc-field" name="body" required maxlength="8000" data-qa-i18n-placeholder="phReply" placeholder="Write a reply…"></textarea>
               </label>
               <div class="qa-form-actions">
-                <button type="submit" class="wsdc-btn wsdc-btn--primary">Post reply</button>
+                <button type="submit" class="wsdc-btn wsdc-btn--primary" data-qa-i18n="postReply">Post reply</button>
               </div>
               </form>
             </div>
@@ -95,58 +94,62 @@
 
       <aside class="qa-panel qa-compose" id="qaCompose">
         <header class="qa-compose-head">
-          <h2 class="qa-compose-title">New thread</h2>
-          <p class="qa-compose-lede">Posts to the selected board.</p>
+          <h2 class="qa-compose-title" data-qa-i18n="composeTitle">New thread</h2>
+          <p class="qa-compose-lede" data-qa-i18n="composeLede">Posts to the selected board. You can change the board anytime.</p>
         </header>
         <form class="qa-form" id="qaNewThreadForm">
           <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <label>Title
-            <input class="wsdc-field" name="title" required minlength="3" maxlength="160" placeholder="Short question title">
+          <label class="qa-compose-board-label"><span data-qa-i18n="board">Board</span>
+            <select class="wsdc-field" name="board_slug" id="qaComposeBoard" aria-label="Board"></select>
           </label>
-          <label>Your name
-            <input class="wsdc-field" name="author_name" required maxlength="80" placeholder="Display name">
+          <label><span data-qa-i18n="labelTitle">Title</span>
+            <input class="wsdc-field" name="title" required minlength="3" maxlength="160" data-qa-i18n-placeholder="phTitle" placeholder="Short question title">
           </label>
-          <label>Message
-            <textarea class="wsdc-field qa-compose-message" name="body" required minlength="3" maxlength="8000" placeholder="Context, what you tried, what is unclear…"></textarea>
+          <label><span data-qa-i18n="labelName">Your name</span>
+            <input class="wsdc-field" name="author_name" required maxlength="80" data-qa-i18n-placeholder="phName" placeholder="Display name">
           </label>
-          <details class="qa-form-optional">
-            <summary>Optional details</summary>
+          <label><span data-qa-i18n="labelMessage">Message</span>
+            <textarea class="wsdc-field qa-compose-message" name="body" required minlength="3" maxlength="8000" data-qa-i18n-placeholder="phMessage" placeholder="Context, what you tried, what is unclear…"></textarea>
+          </label>
+          <details class="qa-form-optional" id="qaOptionalDetails">
+            <summary data-qa-i18n="optional">Optional details</summary>
             <div class="qa-form-optional-body">
-              <label>Email <span class="qa-label-hint">(not shown publicly)</span>
-                <input class="wsdc-field" name="author_email" type="email" maxlength="120" placeholder="you@example.com" autocomplete="email">
+              <label><span data-qa-i18n="labelEmail">Email</span> <span class="qa-label-hint" data-qa-i18n="emailHint">(not shown publicly)</span>
+                <input class="wsdc-field" name="author_email" type="email" maxlength="120" data-qa-i18n-placeholder="phEmail" placeholder="you@example.com" autocomplete="email">
               </label>
-              <label>Related page
-                <input class="wsdc-field" name="page_url" type="url" maxlength="500" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
+              <label><span data-qa-i18n="labelPage">Related page</span>
+                <input class="wsdc-field" name="page_url" type="url" maxlength="500" data-qa-i18n-placeholder="phPage" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
               </label>
             </div>
           </details>
           <div class="qa-form-actions">
-            <button type="submit" class="wsdc-btn wsdc-btn--primary qa-compose-submit">Publish thread</button>
+            <button type="submit" class="wsdc-btn wsdc-btn--primary qa-compose-submit" data-qa-i18n="publish">Publish thread</button>
           </div>
         </form>
 
         <details class="qa-aside-stats" id="qaAside" hidden>
-          <summary>Board stats</summary>
-          <div id="qaStats" class="qa-stats">Unlock moderator mode to load counts.</div>
+          <summary data-qa-i18n="boardStats">Board stats</summary>
+          <div id="qaStats" class="qa-stats" data-qa-i18n="statsUnlock">Unlock moderator mode to load counts.</div>
         </details>
 
         <details class="qa-mod-aside" id="qaModBar">
-          <summary>Moderator</summary>
+          <summary data-qa-i18n="mod">Moderator</summary>
           <div class="qa-mod-aside-body">
             <div class="qa-mod-unlock" id="qaModUnlock">
-              <label class="qa-mod-label" for="qaModSecret">Secret</label>
-              <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" aria-label="Moderator secret">
-              <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn">Unlock</button>
+              <label class="qa-mod-label" for="qaModSecret" data-qa-i18n="secret">Secret</label>
+              <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" data-qa-i18n-aria="secret">
+              <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn" data-qa-i18n="unlock">Unlock</button>
             </div>
-            <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden>Lock</button>
+            <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden data-qa-i18n="lock">Lock</button>
           </div>
         </details>
       </aside>
     </div>
   </main>
 
-  <script src="static/js/site-chrome.js?v=20260816d" defer></script>
+  <script src="static/js/site-chrome.js?v=20260829a" defer></script>
+  <script src="static/js/qa-i18n.js?v=20260829a"></script>
   <script src="static/js/qa-config.js?v=20260828g"></script>
-  <script src="static/js/qa-hub.js?v=20260828g"></script>
+  <script src="static/js/qa-hub.js?v=20260829a"></script>
 </body>
 </html>

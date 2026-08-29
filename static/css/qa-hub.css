@@ -720,8 +720,27 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   padding-left: 18px;
 }
 
-.qa-back {
-  margin-bottom: 0;
+.qa-compose-board-label {
+  display: block;
+}
+
+.qa-compose-board-label select.wsdc-field {
+  width: 100%;
+  cursor: pointer;
+}
+
+.qa-mod-move {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.qa-mod-move select.wsdc-field {
+  flex: 1 1 140px;
+  min-width: 0;
 }
 
 @media (max-width: 700px) {

@@ -204,8 +204,21 @@ module.exports = async function handler(req, res) {
       if (type !== 'thread') return sendJson(res, { error: 'Pin only for threads' }, 400, origin);
       patch.is_pinned = true;
     } else if (action === 'unpin') {
-      if (type !== 'thread') return sendJson(res, { error: 'Unpin only for threads' }, 400, origin);
+      if (type !== 'thread') return sendJson(res, { error: 'Pin only for threads' }, 400, origin);
       patch.is_pinned = false;
+    } else if (action === 'move') {
+      if (type !== 'thread') return sendJson(res, { error: 'Move only for threads' }, 400, origin);
+      const boardSlug = String(body.board_slug || '').trim();
+      if (!boardSlug) return sendJson(res, { error: 'Missing board_slug' }, 400, origin);
+      const boards = await sbFetch(
+        supabaseUrl,
+        serviceKey,
+        `qa_boards?select=id,slug&slug=eq.${encodeURIComponent(boardSlug)}`
+      );
+      if (!boards || !boards[0] || !boards[0].id) {
+        return sendJson(res, { error: 'Unknown board' }, 404, origin);
+      }
+      patch.board_id = boards[0].id;
     } else {
       return sendJson(res, { error: 'Unknown action' }, 400, origin);
     }
