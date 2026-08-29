@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829f">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260829h">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260829l">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -83,33 +83,41 @@
         </section>
       </div>
 
-      <aside class="qa-panel qa-compose" id="qaCompose">
+      <aside class="qa-compose" id="qaCompose">
         <header class="qa-compose-head">
           <h2 class="qa-compose-title" data-qa-i18n="composeTitle">New thread</h2>
           <p class="qa-compose-lede" data-qa-i18n="composeLede">Choose a board, then publish. Switching the board also updates the thread list.</p>
         </header>
-        <form class="qa-form" id="qaNewThreadForm">
+        <form class="qa-form qa-compose-form" id="qaNewThreadForm">
           <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <label class="qa-compose-board-label"><span data-qa-i18n="board">Board</span>
-            <select class="wsdc-field" name="board_slug" id="qaComposeBoard" aria-label="Board"></select>
+          <input type="hidden" name="board_slug" id="qaComposeBoard" value="">
+          <div class="qa-compose-field">
+            <span class="qa-compose-label" id="qaComposeBoardLabel" data-qa-i18n="board">Board</span>
+            <div class="wsdc-dd wsdc-dd--auto qa-compose-board-dd" id="qaComposeBoardDd">
+              <button type="button" class="wsdc-dd__btn" id="qaComposeBoardBtn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="qaComposeBoardLabel">
+                <span class="wsdc-dd__value" id="qaComposeBoardValue">Board</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <ul class="wsdc-dd__menu" id="qaComposeBoardMenu" role="listbox" aria-labelledby="qaComposeBoardLabel"></ul>
+            </div>
+          </div>
+          <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelTitle">Title</span>
+            <input class="wsdc-field qa-compose-input" name="title" required minlength="3" maxlength="160" data-qa-i18n-placeholder="phTitle" placeholder="Short question title">
           </label>
-          <label><span data-qa-i18n="labelTitle">Title</span>
-            <input class="wsdc-field" name="title" required minlength="3" maxlength="160" data-qa-i18n-placeholder="phTitle" placeholder="Short question title">
+          <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelName">Your name</span>
+            <input class="wsdc-field qa-compose-input" name="author_name" required maxlength="80" data-qa-i18n-placeholder="phName" placeholder="Display name">
           </label>
-          <label><span data-qa-i18n="labelName">Your name</span>
-            <input class="wsdc-field" name="author_name" required maxlength="80" data-qa-i18n-placeholder="phName" placeholder="Display name">
-          </label>
-          <label><span data-qa-i18n="labelMessage">Message</span>
-            <textarea class="wsdc-field qa-compose-message" name="body" required minlength="3" maxlength="8000" data-qa-i18n-placeholder="phMessage" placeholder="Context, what you tried, what is unclear…"></textarea>
+          <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelMessage">Message</span>
+            <textarea class="wsdc-field qa-compose-input qa-compose-message" name="body" required minlength="3" maxlength="8000" data-qa-i18n-placeholder="phMessage" placeholder="Context, what you tried, what is unclear…"></textarea>
           </label>
           <details class="qa-form-optional" id="qaOptionalDetails">
             <summary data-qa-i18n="optional">Optional details</summary>
             <div class="qa-form-optional-body">
-              <label><span data-qa-i18n="labelEmail">Email</span> <span class="qa-label-hint" data-qa-i18n="emailHint">(not shown publicly)</span>
-                <input class="wsdc-field" name="author_email" type="email" maxlength="120" data-qa-i18n-placeholder="phEmail" placeholder="you@example.com" autocomplete="email">
+              <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelEmail">Email</span> <span class="qa-label-hint" data-qa-i18n="emailHint">(not shown publicly)</span>
+                <input class="wsdc-field qa-compose-input" name="author_email" type="email" maxlength="120" data-qa-i18n-placeholder="phEmail" placeholder="you@example.com" autocomplete="email">
               </label>
-              <label><span data-qa-i18n="labelPage">Related page</span>
-                <input class="wsdc-field" name="page_url" type="url" maxlength="500" data-qa-i18n-placeholder="phPage" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
+              <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelPage">Related page</span>
+                <input class="wsdc-field qa-compose-input" name="page_url" type="url" maxlength="500" data-qa-i18n-placeholder="phPage" placeholder="https://wsdc-analytics.github.io/…" inputmode="url">
               </label>
             </div>
           </details>
@@ -141,6 +149,6 @@
   <script src="static/js/site-chrome.js?v=20260829f" defer></script>
   <script src="static/js/qa-i18n.js?v=20260829h" defer></script>
   <script src="static/js/qa-config.js?v=20260828g" defer></script>
-  <script src="static/js/qa-hub.js?v=20260829h" defer></script>
+  <script src="static/js/qa-hub.js?v=20260829i" defer></script>
 </body>
 </html>

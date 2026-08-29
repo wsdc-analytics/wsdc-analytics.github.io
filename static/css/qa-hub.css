@@ -141,13 +141,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
     width: 100%;
   }
 
-  .qa-compose {
-    position: sticky;
-    top: var(--wsdc-space-4, 16px);
-    align-self: start;
-    padding-top: 10px;
-  }
-
   /* Desktop: align compose title band with page title */
   .qa-compose-title {
     font-size: var(--wsdc-font-size-xl, 24px);
@@ -251,17 +244,33 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 }
 
 .qa-compose {
-  background: color-mix(in srgb, var(--wsdc-color-surface-soft, #f8fafc) 88%, var(--wsdc-color-surface));
-  border-color: color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 65%, transparent);
-  padding: var(--wsdc-space-4, 16px);
+  min-width: 0;
+  padding: 16px 0 8px;
+  background: transparent;
+  border: 0;
+  /* Mobile: single horizontal hairline above the section */
+  border-top: 0.5px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+  overflow: visible;
+}
+
+@media (min-width: 960px) {
+  .qa-compose {
+    position: sticky;
+    top: var(--wsdc-space-4, 16px);
+    align-self: start;
+    /* Single thin vertical hairline */
+    padding: 4px 0 4px 18px;
+    border-top: 0;
+    box-shadow: -0.5px 0 0 color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+  }
 }
 
 .qa-compose-head {
-  margin: 0 0 var(--wsdc-space-3, 12px);
+  margin: 0 0 var(--wsdc-space-4, 16px);
 }
 
 .qa-compose-title {
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   letter-spacing: -0.02em;
   font-size: var(--wsdc-font-size-lg, 18px);
   font-weight: var(--wsdc-font-weight-bold, 700);
@@ -273,16 +282,126 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   margin: 0;
   color: var(--wsdc-color-text-muted, #4b5563);
   font-size: var(--wsdc-font-size-xs, 12px);
-  line-height: 1.4;
-  max-width: 36ch;
+  line-height: 1.45;
+  max-width: 38ch;
 }
 
-.qa-compose .qa-form {
+.qa-compose-form {
   gap: var(--wsdc-space-3, 12px);
 }
 
-.qa-compose .qa-form textarea.wsdc-field.qa-compose-message {
-  min-height: 72px;
+.qa-compose-field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+
+.qa-compose-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--wsdc-color-text-muted, #4b5563);
+  line-height: 1.2;
+}
+
+.qa-compose-board-dd {
+  width: 100%;
+  --wsdc-dd-width: 100%;
+}
+
+.qa-compose-board-dd .wsdc-dd__btn {
+  justify-content: space-between;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: var(--wsdc-radius-pill, 999px);
+  border: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 80%, transparent);
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text, #1f2937);
+  font-size: var(--wsdc-font-size-sm, 13px);
+  font-weight: var(--wsdc-font-weight-medium, 500);
+}
+
+.qa-compose-board-dd .wsdc-dd__value {
+  text-align: left;
+}
+
+.qa-compose-board-dd .wsdc-dd__menu {
+  right: 0;
+  left: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.qa-compose-input.wsdc-field,
+.qa-compose textarea.qa-compose-input {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-height: 36px;
+  height: auto;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 72%, transparent);
+  border-radius: var(--wsdc-radius-pill, 999px);
+  background: transparent;
+  color: var(--wsdc-color-text, #1f2937);
+  font: inherit;
+  font-size: var(--wsdc-font-size-sm, 13px);
+  line-height: 1.4;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.qa-compose textarea.qa-compose-input {
+  min-height: 96px;
+  border-radius: 14px;
+  resize: vertical;
+  line-height: 1.5;
+  padding: 10px 12px;
+}
+
+.qa-compose-input.wsdc-field:hover,
+.qa-compose textarea.qa-compose-input:hover {
+  border-color: color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 100%, transparent);
+  background: transparent;
+}
+
+.qa-compose-input.wsdc-field:focus,
+.qa-compose-input.wsdc-field:focus-visible,
+.qa-compose textarea.qa-compose-input:focus,
+.qa-compose textarea.qa-compose-input:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 45%, var(--wsdc-color-border));
+  background: transparent;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 10%, transparent);
+}
+
+.qa-compose .qa-form-optional-body {
+  border-top-color: color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 55%, transparent);
+}
+
+.qa-compose .qa-form-optional-body .qa-compose-label {
+  display: inline;
+  margin-right: 4px;
+}
+
+.qa-compose-submit {
+  width: auto;
+  min-width: 0;
+  justify-content: center;
+  border-radius: var(--wsdc-radius-pill, 999px);
+  padding-inline: 18px;
+}
+
+.qa-compose .qa-form-actions {
+  padding-top: 2px;
 }
 
 .qa-panel h2 {
@@ -537,11 +656,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   padding-top: var(--wsdc-space-1, 4px);
 }
 
-.qa-compose-submit {
-  width: 100%;
-  justify-content: center;
-}
-
 .qa-status {
   font-size: var(--wsdc-font-size-sm, 13px);
   color: var(--wsdc-color-text-muted, #4b5563);
@@ -689,15 +803,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 .qa-stats ul {
   margin: var(--wsdc-space-2, 8px) 0 0;
   padding-left: 18px;
-}
-
-.qa-compose-board-label {
-  display: block;
-}
-
-.qa-compose-board-label select.wsdc-field {
-  width: 100%;
-  cursor: pointer;
 }
 
 .qa-mod-move {
