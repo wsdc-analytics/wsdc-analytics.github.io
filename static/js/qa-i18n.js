@@ -10,7 +10,7 @@
       back: "Back to home",
       title: "Q&A Hub",
       subtitle:
-        "Ask about articles, dashboards, points, champions, or the site. No accounts — just a display name. Posts appear immediately. Write in the language you prefer.",
+        "Here you can leave a question or share your thoughts about the site content. Pick a board and start a new thread, or join an existing one.",
       threads: "Threads",
       board: "Board",
       boardOptions: "Board options",
@@ -88,7 +88,7 @@
       back: "На главную",
       title: "Q&A Hub",
       subtitle:
-        "Вопросы по статьям, дашбордам, очкам, чемпионам и сайту. Без аккаунтов — только отображаемое имя. Посты появляются сразу. Пишите на удобном языке.",
+        "Здесь вы можете оставить вопрос или поделиться своими мыслями по поводу контента сайта. Выберите интересующий вас раздел и создайте новый тред, либо присоединитесь к существующему.",
       threads: "Треды",
       board: "Доска",
       boardOptions: "Доски",
@@ -166,7 +166,7 @@
       back: "Volver al inicio",
       title: "Q&A Hub",
       subtitle:
-        "Pregunta sobre artículos, paneles, puntos, champions o el sitio. Sin cuentas: solo un nombre visible. Las publicaciones aparecen al instante. Escribe en el idioma que prefieras.",
+        "Aquí puedes dejar una pregunta o compartir tus ideas sobre el contenido del sitio. Elige un tablero y crea un hilo nuevo, o únete a uno existente.",
       threads: "Hilos",
       board: "Tablero",
       boardOptions: "Tableros",
