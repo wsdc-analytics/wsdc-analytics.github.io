@@ -47,7 +47,7 @@ Mount point:
 
 ### Q&A Hub entry
 
-A chat-style icon sits **left of the Contacts envelope**. It is not a primary section pill. Click navigates to:
+A chat-style icon sits **left of the Contacts envelope**. The glyph is the site asset [`static/img/qa-chrome-icon.png`](../static/img/qa-chrome-icon.png) (mask + `currentColor`, same muted treatment as the envelope). Hover/focus shows a dark tooltip with the localized “Q&A Hub” label. It is not a primary section pill. Click navigates to:
 
 `qa.html?lang=<lang>#board/<slug>`
 

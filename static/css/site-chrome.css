@@ -328,6 +328,15 @@
   font-weight: 600;
 }
 
+.wsdc-chrome__qa {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-right: 2px;
+  z-index: 4;
+}
+
 .wsdc-chrome__qa-btn,
 .wsdc-chrome__contact-btn {
   appearance: none;
@@ -352,8 +361,67 @@
 }
 
 .wsdc-chrome__qa-btn {
-  flex: 0 0 auto;
-  margin-right: 2px;
+  margin-right: 0;
+}
+
+.wsdc-chrome__qa-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.wsdc-chrome__qa-tip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+  z-index: 8;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--wsdc-color-brand, #111827);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  border-radius: 8px;
+  width: max-content;
+  max-width: min(220px, calc(100vw - 24px));
+  white-space: nowrap;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px) scale(0.96);
+  transform-origin: top right;
+  transition:
+    opacity var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
+    transform var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out),
+    visibility var(--wsdc-chrome-exit) var(--wsdc-chrome-ease-out);
+}
+
+.wsdc-chrome__qa:focus-within .wsdc-chrome__qa-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition-duration: var(--wsdc-chrome-enter);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wsdc-chrome__qa:hover .wsdc-chrome__qa-tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition-duration: var(--wsdc-chrome-enter);
+  }
 }
 
 .wsdc-chrome__contact {
@@ -550,7 +618,7 @@ a.back-link.is-on-hero:focus-visible {
     margin-left: 0;
   }
 
-  .wsdc-chrome__qa-btn {
+  .wsdc-chrome__qa {
     order: 2;
     margin-left: auto;
     margin-right: 0;
@@ -637,6 +705,7 @@ a.back-link.is-on-hero:focus-visible {
   .wsdc-chrome__pill svg,
   .wsdc-chrome__contact-btn,
   .wsdc-chrome__qa-btn,
+  .wsdc-chrome__qa-icon,
   .wsdc-chrome__brand {
     transition: none !important;
   }
