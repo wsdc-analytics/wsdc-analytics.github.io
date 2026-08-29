@@ -356,12 +356,7 @@
       '" data-chrome-qa-btn aria-label="' +
       esc(LABELS.qa[lang] || LABELS.qa.en) +
       '" aria-describedby="wsdcChromeQaTip">' +
-      '<span class="wsdc-chrome__qa-icon" aria-hidden="true" style="-webkit-mask-image:url(\'' +
-      esc(withPathPrefix(root, "static/img/qa-chrome-icon.png")) +
-      "');mask-image:url('" +
-      esc(withPathPrefix(root, "static/img/qa-chrome-icon.png")) +
-      "')" +
-      "></span>" +
+      '<span class="wsdc-chrome__qa-icon" aria-hidden="true" data-chrome-qa-icon></span>' +
       "</a>" +
       '<span class="wsdc-chrome__qa-tip" id="wsdcChromeQaTip" role="tooltip" data-chrome-qa-tip>' +
       esc(LABELS.qa[lang] || LABELS.qa.en) +
@@ -440,8 +435,8 @@
       var icon = qaBtn.querySelector(".wsdc-chrome__qa-icon");
       if (icon) {
         var iconUrl = withPathPrefix(root, "static/img/qa-chrome-icon.png");
-        icon.style.webkitMaskImage = "url('" + iconUrl + "')";
-        icon.style.maskImage = "url('" + iconUrl + "')";
+        icon.style.setProperty("-webkit-mask-image", "url(\"" + iconUrl + "\")");
+        icon.style.setProperty("mask-image", "url(\"" + iconUrl + "\")");
       }
     }
     var qaTip = root.querySelector("[data-chrome-qa-tip]");

@@ -36,13 +36,26 @@
   }
 
   function writeCookie(name, value) {
+    var secure = location.protocol === "https:" ? "; Secure" : "";
     document.cookie =
       name +
       "=" +
       encodeURIComponent(value) +
       "; path=/; max-age=" +
       60 * 60 * 24 * 400 +
-      "; SameSite=Lax";
+      "; SameSite=Lax" +
+      secure;
+  }
+
+  function isValidArticleId(id) {
+    return typeof id === "string" && /^[a-z0-9][a-z0-9_-]{1,120}$/i.test(id);
+  }
+
+  function apiBase(el) {
+    var raw = String(el.getAttribute("data-api-base") || DEFAULT_API).replace(/\/$/, "");
+    if (/^https:\/\/wsdc-analytics-github-io\.vercel\.app$/i.test(raw)) return raw;
+    if (/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(raw)) return raw;
+    return DEFAULT_API;
   }
 
   function getVoterKey() {
@@ -68,10 +81,6 @@
     if (lang.indexOf("ru") === 0) return "ru";
     if (lang.indexOf("es") === 0) return "es";
     return "en";
-  }
-
-  function apiBase(el) {
-    return String(el.getAttribute("data-api-base") || DEFAULT_API).replace(/\/$/, "");
   }
 
   function emptyRow() {
@@ -180,7 +189,7 @@
       if (!btn || !el.contains(btn)) return;
       e.preventDefault();
       var articleId = el.getAttribute("data-article-id");
-      if (!articleId || el._voting) return;
+      if (!isValidArticleId(articleId) || el._voting) return;
       var next = btn.getAttribute("data-value");
       var prev = el._counts || emptyRow();
       var value = prev.mine === next ? null : next;
@@ -191,8 +200,11 @@
         .then(function (data) {
           applyCounts(el, data);
         })
-        .catch(function () {
+        .catch(function (err) {
           applyCounts(el, prev);
+          if (typeof console !== "undefined" && console.warn) {
+            console.warn("[article-engage] vote failed", err && err.message ? err.message : err);
+          }
         })
         .finally(function () {
           el._voting = false;
@@ -210,7 +222,7 @@
       .map(function (el) {
         return el.getAttribute("data-article-id");
       })
-      .filter(Boolean);
+      .filter(isValidArticleId);
     var counts = {};
     try {
       counts = await fetchCounts(nodes[0], ids, voterKey);

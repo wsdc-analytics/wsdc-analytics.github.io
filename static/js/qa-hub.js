@@ -139,6 +139,7 @@
 
   function setHubLang(lang) {
     const next = I18n ? I18n.normalizeLang(lang) : lang === "ru" || lang === "es" ? lang : "en";
+    if (state.lang === next) return;
     state.lang = next;
     localStorage.setItem("wsdc-lang", next);
     const url = new URL(location.href);
@@ -360,8 +361,8 @@
       .map((row) => {
         const active = row.id === state.threadId ? " is-active" : "";
         const badges = [
-          row.is_pinned ? `<span class="wsdc-pill is-accent">${esc(t("pin"))}</span>` : "",
-          row.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : "",
+          row.is_pinned ? `<span class="wsdc-pill is-accent">${esc(t("pinned"))}</span>` : "",
+          row.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("badgeHidden"))}</span>` : "",
         ]
           .filter(Boolean)
           .join(" ");
@@ -439,8 +440,8 @@
         ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">${esc(t("source"))}</a>`
         : "";
     })()}${
-      thr.is_pinned ? ` · <span class="wsdc-pill is-accent">${esc(t("pin"))}</span>` : ""
-    }${thr.is_hidden ? ` · <span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}`;
+      thr.is_pinned ? ` · <span class="wsdc-pill is-accent">${esc(t("pinned"))}</span>` : ""
+    }${thr.is_hidden ? ` · <span class="wsdc-pill qa-pill-hidden">${esc(t("badgeHidden"))}</span>` : ""}`;
 
     const opHtml = `<article class="qa-post qa-post--op">
       <div class="qa-post-head"><span class="qa-post-author">${esc(thr.author_name)}</span>
@@ -454,7 +455,7 @@
         (p) => `<article class="qa-post qa-post--reply" data-post-id="${esc(p.id)}">
       <div class="qa-post-head"><span class="qa-post-author">${esc(p.author_name)}</span>
       <span class="qa-time">${esc(fmtDate(p.created_at))}</span>
-      ${p.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}
+      ${p.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("badgeHidden"))}</span>` : ""}
       ${
         state.mod
           ? `<button type="button" class="wsdc-btn wsdc-btn--ghost" data-mod-post="${esc(p.id)}" data-mod-action="${
@@ -833,13 +834,7 @@
       setHubLang(lang);
     }
 
-    window.WsdcChrome = window.WsdcChrome || {};
-    const prevLang = window.WsdcChrome.onLangChange;
-    window.WsdcChrome.onLangChange = function (lang) {
-      if (typeof prevLang === "function") prevLang(lang);
-      onChromeLang(lang);
-    };
-
+    // Prefer custom event only — chrome also calls onLangChange; avoid double wiring.
     document.addEventListener("wsdc:langchange", (e) => {
       const lang = e && e.detail && e.detail.lang;
       if (lang) onChromeLang(lang);

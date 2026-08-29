@@ -25,6 +25,9 @@ function allowOrigin(origin) {
     'http://localhost:5500',
   ]);
   if (origin && allowed.has(origin)) return origin;
+  // Vercel preview / prod host when opening API docs or local proxies
+  if (origin && /^https:\/\/[\w-]+-[\w-]+-[\w.-]+\.vercel\.app$/i.test(origin)) return origin;
+  if (origin === 'https://wsdc-analytics-github-io.vercel.app') return origin;
   return 'https://wsdc-analytics.github.io';
 }
 
@@ -98,6 +101,24 @@ function isValidArticleId(id) {
 
 function isValidVoterKey(key) {
   return typeof key === 'string' && /^[a-z0-9-]{8,80}$/i.test(key);
+}
+
+/** Soft per-instance throttle (best-effort on serverless). */
+const voteThrottle = new Map();
+const VOTE_MIN_MS = 800;
+
+function checkVoteThrottle(voterKey) {
+  const now = Date.now();
+  const prev = voteThrottle.get(voterKey) || 0;
+  if (now - prev < VOTE_MIN_MS) return false;
+  voteThrottle.set(voterKey, now);
+  if (voteThrottle.size > 5000) {
+    const cutoff = now - 60_000;
+    for (const [k, t] of voteThrottle) {
+      if (t < cutoff) voteThrottle.delete(k);
+    }
+  }
+  return true;
 }
 
 async function aggregateCounts(supabaseUrl, serviceKey, ids) {
@@ -200,6 +221,9 @@ module.exports = async function handler(req, res) {
     }
     if (value !== null && value !== 'up' && value !== 'down') {
       return sendJson(res, { error: 'Invalid value' }, 400, origin);
+    }
+    if (!checkVoteThrottle(voterKey)) {
+      return sendJson(res, { error: 'Too many votes; slow down' }, 429, origin);
     }
 
     if (value === null) {
