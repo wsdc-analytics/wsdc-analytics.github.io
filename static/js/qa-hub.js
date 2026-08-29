@@ -335,12 +335,12 @@
         state.threads = data.threads || [];
       } catch (e) {
         state.threads = await sb(
-          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
+          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
         );
       }
     } else {
       state.threads = await sb(
-        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
+        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
       );
     }
     renderThreads();
@@ -365,7 +365,9 @@
         return `<li>
           <button type="button" class="qa-thread-item${active}" data-thread="${esc(row.id)}">
             <div class="qa-thread-title"><span>${esc(row.title)}</span>${badges}</div>
-            <div class="qa-thread-meta"><span class="qa-thread-author">${esc(row.author_name)}</span><span class="qa-time">${esc(fmtDate(row.created_at))}</span></div>
+            <div class="qa-thread-meta"><span class="qa-thread-author${
+              row.is_moderator ? " is-mod" : ""
+            }">${esc(row.author_name)}</span><span class="qa-time">${esc(fmtDate(row.created_at))}</span></div>
           </button>
         </li>`;
       })
@@ -377,7 +379,7 @@
     const rows = state.mod && API_BASE
       ? null
       : await sb(
-          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
+          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
             id
           )}&limit=1`
         );
@@ -389,7 +391,7 @@
     }
     if (!thread) {
       const pub = await sb(
-        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
+        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
           id
         )}&limit=1`
       );
@@ -404,7 +406,7 @@
     }
 
     const posts = await sb(
-      `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at&thread_id=eq.${encodeURIComponent(
+      `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
         id
       )}&order=created_at.asc`
     );
@@ -428,7 +430,9 @@
       slug,
       (thr.qa_boards && thr.qa_boards.title) || state.boardSlug
     );
-    els.threadMeta.innerHTML = `${esc(boardTitle)} · ${esc(t("by"))} <strong>${esc(thr.author_name)}</strong> · <span class="qa-time">${esc(
+    els.threadMeta.innerHTML = `${esc(boardTitle)} · ${esc(t("by"))} <strong class="qa-author${
+      thr.is_moderator ? " is-mod" : ""
+    }">${esc(thr.author_name)}</strong> · <span class="qa-time">${esc(
       fmtDate(thr.created_at)
     )}</span>${(() => {
       const href = safeHttpsUrl(thr.page_url);
@@ -440,7 +444,9 @@
     }${thr.is_hidden ? ` · <span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}`;
 
     const opHtml = `<article class="qa-post qa-post--op">
-      <div class="qa-post-head"><span class="qa-post-author">${esc(thr.author_name)}</span>
+      <div class="qa-post-head"><span class="qa-post-author${
+        thr.is_moderator ? " is-mod" : ""
+      }">${esc(thr.author_name)}</span>
       <span class="qa-time">${esc(fmtDate(thr.created_at))}</span></div>
       <div class="qa-post-body">${esc(thr.body)}</div>
     </article>`;
@@ -449,7 +455,9 @@
       .filter((p) => !p.is_op)
       .map(
         (p) => `<article class="qa-post qa-post--reply" data-post-id="${esc(p.id)}">
-      <div class="qa-post-head"><span class="qa-post-author">${esc(p.author_name)}</span>
+      <div class="qa-post-head"><span class="qa-post-author${
+        p.is_moderator ? " is-mod" : ""
+      }">${esc(p.author_name)}</span>
       <span class="qa-time">${esc(fmtDate(p.created_at))}</span>
       ${p.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}
       ${
@@ -638,33 +646,51 @@
     if (page_url_raw && !page_url) throw new Error(t("pageUrlHttps"));
     const body = String(form.body.value || "").trim();
 
-    const rows = await sb(
-      "qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          board_id: board.id,
-          title,
-          author_name,
-          author_email,
-          page_url,
-          body,
-        }),
-      }
-    );
-    const thread = Array.isArray(rows) ? rows[0] : rows;
-    if (!thread || !thread.id) throw new Error(t("createFailed"));
-
-    await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
-      method: "POST",
-      body: JSON.stringify({
-        thread_id: thread.id,
+    let thread;
+    if (state.mod && API_BASE) {
+      const data = await modApi({
+        action: "create_thread",
+        board_id: board.id,
+        title,
         author_name,
         author_email,
+        page_url,
         body,
-        is_op: true,
-      }),
-    });
+      });
+      thread = data.thread;
+    } else {
+      const rows = await sb(
+        "qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            board_id: board.id,
+            title,
+            author_name,
+            author_email,
+            page_url,
+            body,
+          }),
+        }
+      );
+      thread = Array.isArray(rows) ? rows[0] : rows;
+      if (!thread || !thread.id) throw new Error(t("createFailed"));
+
+      await sb(
+        "qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            thread_id: thread.id,
+            author_name,
+            author_email,
+            body,
+            is_op: true,
+          }),
+        }
+      );
+    }
+    if (!thread || !thread.id) throw new Error(t("createFailed"));
 
     markPosted();
     await notify({
@@ -690,16 +716,30 @@
     const author_email = String(form.author_email.value || "").trim() || null;
     const body = String(form.body.value || "").trim();
 
-    await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
-      method: "POST",
-      body: JSON.stringify({
+    if (state.mod && API_BASE) {
+      await modApi({
+        action: "create_post",
         thread_id: state.threadId,
         author_name,
         author_email,
         body,
         is_op: false,
-      }),
-    });
+      });
+    } else {
+      await sb(
+        "qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            thread_id: state.threadId,
+            author_name,
+            author_email,
+            body,
+            is_op: false,
+          }),
+        }
+      );
+    }
 
     markPosted();
     await notify({
