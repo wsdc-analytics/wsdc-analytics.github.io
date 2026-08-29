@@ -357,7 +357,7 @@
       '" title="' +
       esc(LABELS.qa[lang] || LABELS.qa.en) +
       '">' +
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v6A2.25 2.25 0 0 1 17.25 15H9.6L5.55 18.3A.75.75 0 0 1 4.5 17.7V6.75Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M8.25 9h7.5M8.25 12h4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>' +
+      '<svg width="18" height="16" viewBox="0 0 48 42" fill="none" aria-hidden="true"><path d="M8 4.5h28A5.5 5.5 0 0 1 41.5 10v12A5.5 5.5 0 0 1 36 27.5H19.2L8.5 37.5V27.5H8A5.5 5.5 0 0 1 2.5 22V10A5.5 5.5 0 0 1 8 4.5Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>' +
       "</a>" +
       '<div class="wsdc-chrome__contact" data-chrome-contact>' +
       '<button type="button" class="wsdc-chrome__contact-btn" data-chrome-contact-btn aria-label="' +
