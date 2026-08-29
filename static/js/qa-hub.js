@@ -34,8 +34,11 @@
   }
 
   const els = {
-    boards: null,
     composeBoard: document.getElementById("qaComposeBoard"),
+    composeBoardDd: document.getElementById("qaComposeBoardDd"),
+    composeBoardBtn: document.getElementById("qaComposeBoardBtn"),
+    composeBoardValue: document.getElementById("qaComposeBoardValue"),
+    composeBoardMenu: document.getElementById("qaComposeBoardMenu"),
     optionalDetails: document.getElementById("qaOptionalDetails"),
     threadList: document.getElementById("qaThreadList"),
     threadPanel: document.getElementById("qaThreadPanel"),
@@ -269,15 +272,42 @@
     renderBoards();
   }
 
+  function closeComposeBoardDd() {
+    if (!els.composeBoardDd) return;
+    els.composeBoardDd.classList.remove("is-open");
+    if (els.composeBoardBtn) els.composeBoardBtn.setAttribute("aria-expanded", "false");
+  }
+
+  function setComposeBoardValue(slug) {
+    const board =
+      state.boards.find((b) => b.slug === slug) || state.boards[0] || null;
+    const next = board ? board.slug : "";
+    if (els.composeBoard) els.composeBoard.value = next;
+    if (els.composeBoardValue && board) {
+      els.composeBoardValue.textContent = localizedBoardTitle(board.slug, board.title);
+    }
+    if (els.composeBoardMenu) {
+      els.composeBoardMenu.querySelectorAll('[role="option"]').forEach((opt) => {
+        opt.setAttribute("aria-selected", String(opt.getAttribute("data-value") === next));
+      });
+    }
+    closeComposeBoardDd();
+  }
+
   function renderComposeBoardSelect() {
-    if (!els.composeBoard) return;
-    els.composeBoard.innerHTML = state.boards
+    if (!els.composeBoardMenu) {
+      if (els.composeBoard && state.boardSlug) els.composeBoard.value = state.boardSlug;
+      return;
+    }
+    els.composeBoardMenu.innerHTML = state.boards
       .map((b) => {
         const label = localizedBoardTitle(b.slug, b.title);
-        const sel = b.slug === state.boardSlug ? " selected" : "";
-        return `<option value="${esc(b.slug)}"${sel}>${esc(label)}</option>`;
+        return `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
+          b.slug === state.boardSlug ? "true" : "false"
+        }">${esc(label)}</button></li>`;
       })
       .join("");
+    setComposeBoardValue(state.boardSlug || (state.boards[0] && state.boards[0].slug) || "");
   }
 
   function renderBoards() {
@@ -628,12 +658,33 @@
   }
 
   function wire() {
-    if (els.composeBoard) {
-      els.composeBoard.addEventListener("change", () => {
-        const slug = els.composeBoard.value;
+    if (els.composeBoardBtn && els.composeBoardDd) {
+      els.composeBoardBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const willOpen = !els.composeBoardDd.classList.contains("is-open");
+        closeComposeBoardDd();
+        if (willOpen) {
+          els.composeBoardDd.classList.add("is-open");
+          els.composeBoardBtn.setAttribute("aria-expanded", "true");
+        }
+      });
+    }
+
+    if (els.composeBoardMenu) {
+      els.composeBoardMenu.addEventListener("click", (e) => {
+        const option = e.target.closest('[role="option"]');
+        if (!option) return;
+        e.stopPropagation();
+        const slug = option.getAttribute("data-value");
+        setComposeBoardValue(slug);
         if (slug && slug !== state.boardSlug) goBoard(slug);
       });
     }
+
+    document.addEventListener("click", closeComposeBoardDd);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeComposeBoardDd();
+    });
 
     els.threadList.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-thread]");
