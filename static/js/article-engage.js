@@ -1,5 +1,5 @@
 /**
- * Article thumbs: 👍 / 👎 + counts (right-aligned under article).
+ * Article thumbs: 👍 / 👎 + Q&A Hub CTA under the article.
  *
  * Mount:
  *   <section data-article-engage data-article-id="…" data-lang="ru"></section>
@@ -11,10 +11,25 @@
   var COOKIE_NAME = "wsdc_rk";
   var DEFAULT_API = "https://wsdc-analytics-github-io.vercel.app";
 
-  var LABELS = {
-    en: { up: "Helpful", down: "Not helpful" },
-    ru: { up: "Полезно", down: "Не полезно" },
-    es: { up: "Útil", down: "No útil" },
+  var COPY = {
+    en: {
+      up: "Helpful",
+      down: "Not helpful",
+      cta: "Questions, corrections, or ideas? Ask in the Q&A Hub — no account needed.",
+      link: "Open Q&A Hub",
+    },
+    ru: {
+      up: "Полезно",
+      down: "Не полезно",
+      cta: "Есть вопросы, уточнения или замечания? Задайте их в Q&A Hub — без регистрации.",
+      link: "Перейти в Q&A Hub",
+    },
+    es: {
+      up: "Útil",
+      down: "No útil",
+      cta: "¿Preguntas, correcciones o ideas? Escríbelas en el Q&A Hub — sin cuenta.",
+      link: "Abrir Q&A Hub",
+    },
   };
 
   function esc(s) {
@@ -36,13 +51,26 @@
   }
 
   function writeCookie(name, value) {
+    var secure = location.protocol === "https:" ? "; Secure" : "";
     document.cookie =
       name +
       "=" +
       encodeURIComponent(value) +
       "; path=/; max-age=" +
       60 * 60 * 24 * 400 +
-      "; SameSite=Lax";
+      "; SameSite=Lax" +
+      secure;
+  }
+
+  function isValidArticleId(id) {
+    return typeof id === "string" && /^[a-z0-9][a-z0-9_-]{1,120}$/i.test(id);
+  }
+
+  function apiBase(el) {
+    var raw = String(el.getAttribute("data-api-base") || DEFAULT_API).replace(/\/$/, "");
+    if (/^https:\/\/wsdc-analytics-github-io\.vercel\.app$/i.test(raw)) return raw;
+    if (/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(raw)) return raw;
+    return DEFAULT_API;
   }
 
   function getVoterKey() {
@@ -70,8 +98,17 @@
     return "en";
   }
 
-  function apiBase(el) {
-    return String(el.getAttribute("data-api-base") || DEFAULT_API).replace(/\/$/, "");
+  function qaHref(el, lang) {
+    var prefix = el.getAttribute("data-path-prefix") || "";
+    var custom = el.getAttribute("data-qa-href");
+    if (custom) return custom;
+    var pageUrl = location.href.split("#")[0].split("?")[0];
+    var title = document.title.replace(/\s*\|\s*WSDC Analytics\s*$/i, "").trim();
+    var params = new URLSearchParams();
+    params.set("lang", lang);
+    params.set("page_url", pageUrl);
+    if (title) params.set("title", title.slice(0, 120));
+    return prefix + "qa.html?" + params.toString() + "#board/articles";
   }
 
   function emptyRow() {
@@ -80,17 +117,25 @@
 
   function render(el, counts) {
     var lang = langOf(el);
-    var labels = LABELS[lang] || LABELS.en;
+    var c = COPY[lang] || COPY.en;
     var articleId = el.getAttribute("data-article-id") || "";
     var data = (counts && counts[articleId]) || emptyRow();
     el.innerHTML =
+      '<div class="article-engage__row">' +
+      '<p class="article-engage__cta">' +
+      esc(c.cta) +
+      ' <a href="' +
+      esc(qaHref(el, lang)) +
+      '">' +
+      esc(c.link) +
+      "</a></p>" +
       '<div class="article-engage__thumbs" role="group" aria-label="Reactions">' +
       '<button type="button" class="article-engage__btn' +
       (data.mine === "up" ? " is-active" : "") +
       '" data-value="up" aria-pressed="' +
       (data.mine === "up" ? "true" : "false") +
       '" aria-label="' +
-      esc(labels.up) +
+      esc(c.up) +
       '"><span class="article-engage__emoji" aria-hidden="true">👍</span>' +
       '<span class="article-engage__count" data-count="up">' +
       esc(String(data.up || 0)) +
@@ -100,12 +145,12 @@
       '" data-value="down" aria-pressed="' +
       (data.mine === "down" ? "true" : "false") +
       '" aria-label="' +
-      esc(labels.down) +
+      esc(c.down) +
       '"><span class="article-engage__emoji" aria-hidden="true">👎</span>' +
       '<span class="article-engage__count" data-count="down">' +
       esc(String(data.down || 0)) +
       "</span></button>" +
-      "</div>";
+      "</div></div>";
     el._counts = {
       up: Number(data.up) || 0,
       down: Number(data.down) || 0,
@@ -180,7 +225,7 @@
       if (!btn || !el.contains(btn)) return;
       e.preventDefault();
       var articleId = el.getAttribute("data-article-id");
-      if (!articleId || el._voting) return;
+      if (!isValidArticleId(articleId) || el._voting) return;
       var next = btn.getAttribute("data-value");
       var prev = el._counts || emptyRow();
       var value = prev.mine === next ? null : next;
@@ -191,8 +236,11 @@
         .then(function (data) {
           applyCounts(el, data);
         })
-        .catch(function () {
+        .catch(function (err) {
           applyCounts(el, prev);
+          if (typeof console !== "undefined" && console.warn) {
+            console.warn("[article-engage] vote failed", err && err.message ? err.message : err);
+          }
         })
         .finally(function () {
           el._voting = false;
@@ -210,7 +258,7 @@
       .map(function (el) {
         return el.getAttribute("data-article-id");
       })
-      .filter(Boolean);
+      .filter(isValidArticleId);
     var counts = {};
     try {
       counts = await fetchCounts(nodes[0], ids, voterKey);

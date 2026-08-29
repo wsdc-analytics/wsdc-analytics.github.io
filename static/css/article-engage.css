@@ -1,25 +1,56 @@
-/* Article thumbs — emoji + count, right-aligned, no divider */
+/* Article engage: Q&A CTA + aligned emoji thumbs */
 
 .article-engage {
-  margin: 16px 0 8px;
-  padding: 0;
-  border: 0;
+  margin: 20px 0 8px;
+  padding: 14px 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+}
+
+.article-engage__row {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.article-engage__cta {
+  margin: 0;
+  flex: 1 1 16rem;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--wsdc-color-text-muted, #4b5563);
+}
+
+.article-engage__cta a {
+  color: var(--wsdc-color-brand-accent, #2563eb);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article-engage__cta a:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
 }
 
 .article-engage__thumbs {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .article-engage__btn {
   appearance: none;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   margin: 0;
+  min-height: 28px;
   padding: 4px 2px;
   border: 0;
   border-radius: 6px;
@@ -37,8 +68,16 @@
 }
 
 .article-engage__emoji {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
   font-size: 1.15rem;
   line-height: 1;
+  /* Keep 👍 / 👎 on the same optical baseline across emoji fonts */
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
   filter: grayscale(1);
   opacity: 0.85;
   transition:
@@ -47,9 +86,18 @@
 }
 
 .article-engage__count {
-  min-width: 0.8em;
+  display: inline-flex;
+  align-items: center;
+  min-width: 1.1em;
+  height: 1.25rem;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
   color: inherit;
+}
+
+.article-engage__btn[data-value="down"] .article-engage__emoji {
+  /* Optical center of 👎 sits higher than 👍 in most emoji fonts */
+  transform: translateY(0.06em);
 }
 
 .article-engage__btn:hover {
@@ -85,4 +133,16 @@
 .article-engage__btn:disabled {
   cursor: default;
   opacity: 0.7;
+}
+
+@media (max-width: 560px) {
+  .article-engage__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .article-engage__thumbs {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
 }
