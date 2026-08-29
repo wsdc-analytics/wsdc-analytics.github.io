@@ -41,7 +41,6 @@
     composeBoardMenu: document.getElementById("qaComposeBoardMenu"),
     composeTitle: document.getElementById("qaComposeTitle"),
     composeLede: document.getElementById("qaComposeLede"),
-    composeSwitch: document.getElementById("qaComposeSwitch"),
     threadBack: document.getElementById("qaThreadBack"),
     optionalDetails: document.getElementById("qaOptionalDetails"),
     threadList: document.getElementById("qaThreadList"),
@@ -504,7 +503,6 @@
     const replyMode = Boolean(state.threadId && state.thread);
     if (els.newThreadForm) els.newThreadForm.hidden = replyMode;
     if (els.replyForm) els.replyForm.hidden = !replyMode;
-    if (els.composeSwitch) els.composeSwitch.hidden = !replyMode;
     if (els.composeTitle) {
       els.composeTitle.textContent = replyMode ? t("replyTitle") : t("composeTitle");
       els.composeTitle.setAttribute("data-qa-i18n", replyMode ? "replyTitle" : "composeTitle");
@@ -800,11 +798,6 @@
   }
 
   function wire() {
-    if (els.composeSwitch) {
-      els.composeSwitch.addEventListener("click", () => {
-        goBoard(state.boardSlug || "other");
-      });
-    }
     if (els.threadBack) {
       els.threadBack.addEventListener("click", () => {
         goBoard(state.boardSlug || "other");
