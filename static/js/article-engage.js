@@ -15,19 +15,19 @@
     en: {
       up: "Helpful",
       down: "Not helpful",
-      cta: "Questions, corrections, or ideas? Ask in the Q&A Hub — no account needed.",
+      cta: "Questions, corrections, or feedback?",
       link: "Open Q&A Hub",
     },
     ru: {
       up: "Полезно",
       down: "Не полезно",
-      cta: "Есть вопросы, уточнения или замечания? Задайте их в Q&A Hub — без регистрации.",
+      cta: "Есть вопросы, уточнения или замечания?",
       link: "Перейти в Q&A Hub",
     },
     es: {
       up: "Útil",
       down: "No útil",
-      cta: "¿Preguntas, correcciones o ideas? Escríbelas en el Q&A Hub — sin cuenta.",
+      cta: "¿Preguntas, correcciones o comentarios?",
       link: "Abrir Q&A Hub",
     },
   };
