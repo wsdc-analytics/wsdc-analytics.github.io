@@ -405,11 +405,25 @@
       state.boardSlug = thread.qa_boards.slug;
     }
 
-    const posts = await sb(
-      `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
-        id
-      )}&order=created_at.asc`
-    );
+    let posts = [];
+    if (state.mod && API_BASE) {
+      try {
+        const data = await modApi({ action: "list_posts", thread_id: id });
+        posts = data.posts || [];
+      } catch (e) {
+        posts = await sb(
+          `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
+            id
+          )}&order=created_at.asc`
+        );
+      }
+    } else {
+      posts = await sb(
+        `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
+          id
+        )}&order=created_at.asc`
+      );
+    }
     state.posts = posts || [];
     renderThread();
     renderBoards();
@@ -453,8 +467,11 @@
 
     const replies = (state.posts || [])
       .filter((p) => !p.is_op)
-      .map(
-        (p) => `<article class="qa-post qa-post--reply" data-post-id="${esc(p.id)}">
+      .map((p) => {
+        const hiddenClass = p.is_hidden ? " is-hidden" : "";
+        const hideLabel = p.is_hidden ? t("unhidePost") : t("hidePost");
+        const hideAction = p.is_hidden ? "unhide" : "hide";
+        return `<article class="qa-post qa-post--reply${hiddenClass}" data-post-id="${esc(p.id)}">
       <div class="qa-post-head"><span class="qa-post-author${
         p.is_moderator ? " is-mod" : ""
       }">${esc(p.author_name)}</span>
@@ -462,15 +479,15 @@
       ${p.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}
       ${
         state.mod
-          ? `<button type="button" class="qa-mod-inline" data-mod-post="${esc(p.id)}" data-mod-action="${
-              p.is_hidden ? "unhide" : "hide"
-            }">${esc(p.is_hidden ? t("unhidePost") : t("hidePost"))}</button>`
+          ? `<button type="button" class="qa-mod-inline" data-mod-post="${esc(
+              p.id
+            )}" data-mod-action="${hideAction}">${esc(hideLabel)}</button>`
           : ""
       }
       </div>
       <div class="qa-post-body">${esc(p.body)}</div>
-    </article>`
-      )
+    </article>`;
+      })
       .join("");
 
     els.posts.innerHTML = opHtml + replies;

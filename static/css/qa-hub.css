@@ -635,6 +635,17 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   line-height: 1.55;
 }
 
+/* Moderators still see hidden replies (dimmed) so they can Unhide */
+.qa-post.is-hidden {
+  opacity: 0.72;
+  border-left: 2px solid color-mix(in srgb, #9ca3af 55%, transparent);
+  padding-left: 10px;
+}
+
+.qa-post.is-hidden .qa-post-body {
+  color: var(--wsdc-color-text-muted, #6b7280);
+}
+
 .qa-form {
   display: grid;
   gap: var(--wsdc-space-4, 16px);

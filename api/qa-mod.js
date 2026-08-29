@@ -177,6 +177,19 @@ module.exports = async function handler(req, res) {
       return sendJson(res, { threads: threads || [] }, 200, origin);
     }
 
+    if (action === 'list_posts') {
+      const threadId = String(body.thread_id || '').trim();
+      if (!threadId) return sendJson(res, { error: 'Missing thread_id' }, 400, origin);
+      const posts = await sbFetch(
+        supabaseUrl,
+        serviceKey,
+        `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
+          threadId
+        )}&order=created_at.asc`
+      );
+      return sendJson(res, { posts: posts || [] }, 200, origin);
+    }
+
     if (action === 'create_post') {
       const threadId = String(body.thread_id || '').trim();
       const authorName = String(body.author_name || '').trim();
