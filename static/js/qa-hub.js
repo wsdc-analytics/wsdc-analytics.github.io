@@ -479,9 +479,14 @@
       ${p.is_hidden ? `<span class="qa-flag is-hidden">${esc(t("hidden"))}</span>` : ""}
       ${
         state.mod
-          ? `<button type="button" class="qa-mod-inline" data-mod-post="${esc(
-              p.id
-            )}" data-mod-action="${hideAction}">${esc(hideLabel)}</button>`
+          ? `<span class="qa-mod-inline-group">
+          <button type="button" class="qa-mod-inline" data-mod-post="${esc(
+            p.id
+          )}" data-mod-action="${hideAction}">${esc(hideLabel)}</button>
+          <button type="button" class="qa-mod-inline qa-mod-inline--danger" data-mod-post="${esc(
+            p.id
+          )}" data-mod-action="delete">${esc(t("deletePost"))}</button>
+        </span>`
           : ""
       }
       </div>
@@ -946,11 +951,24 @@
     els.posts.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-mod-post]");
       if (!btn) return;
+      const action = btn.getAttribute("data-mod-action");
+      const postId = btn.getAttribute("data-mod-post");
       try {
+        if (action === "delete") {
+          if (!window.confirm(t("deletePostConfirm"))) return;
+          await modApi({
+            action: "delete",
+            type: "post",
+            id: postId,
+          });
+          await loadThread(state.threadId);
+          setStatus(t("postDeleted"), "ok");
+          return;
+        }
         await modApi({
-          action: btn.getAttribute("data-mod-action"),
+          action,
           type: "post",
-          id: btn.getAttribute("data-mod-post"),
+          id: postId,
         });
         await loadThread(state.threadId);
         setStatus(t("updated"), "ok");

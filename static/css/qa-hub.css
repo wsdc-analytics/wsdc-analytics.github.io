@@ -595,7 +595,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 .qa-mod-inline {
   appearance: none;
   margin: 0;
-  margin-left: auto;
   padding: 0;
   border: 0;
   background: transparent;
@@ -608,8 +607,19 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   cursor: pointer;
 }
 
+.qa-mod-inline-group {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
 .qa-mod-inline:hover {
   color: var(--wsdc-color-brand-accent, #2563eb);
+}
+
+.qa-mod-inline--danger:hover {
+  color: var(--wsdc-color-danger, #b91c1c);
 }
 
 .qa-post-author {
