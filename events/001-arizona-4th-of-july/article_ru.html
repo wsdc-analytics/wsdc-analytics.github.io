@@ -746,6 +746,7 @@
       color: #0f766e;
     }
   </style>
+  <link rel="stylesheet" href="../../static/css/article-engage.css?v=20260829a">
 </head>
 <body>
   <a href="#main-content" class="skip-link">Перейти к содержимому</a>
@@ -760,7 +761,7 @@
     data-lang-ru="article_ru.html"
     data-lang-en="article_en.html"
     data-lang-es="article_es.html"
-  ></div>
+   data-qa-board="articles"></div>
 
 <div class="wsdc-chrome-page-pad magazine-container">
   <header class="article-header">
@@ -964,47 +965,8 @@
       </p>
     </section>
     
-    <section class="article-reactions" aria-label="Оценка статьи">
-      <div class="article-reactions-label">Оцените статью:</div>
-      <div class="article-reactions-buttons">
-        <div class="article-reaction-item reaction-approve">
-          <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Одобряю статью">
-            <span class="article-reaction-emoji" aria-hidden="true">✓</span>
-            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-events-001-arizona" data-lyket-id="events_001_arizona_4th_of_july_ru_positive"></div>
-          </div>
-          <span class="article-reaction-count" data-lyket-namespace="articles-events-001-arizona" data-lyket-id="events_001_arizona_4th_of_july_ru_positive">—</span>
-        </div>
-        <div class="article-reaction-item reaction-neutral">
-          <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Нейтральное отношение">
-            <span class="article-reaction-emoji" aria-hidden="true">○</span>
-            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-events-001-arizona" data-lyket-id="events_001_arizona_4th_of_july_ru_neutral"></div>
-          </div>
-          <span class="article-reaction-count" data-lyket-namespace="articles-events-001-arizona" data-lyket-id="events_001_arizona_4th_of_july_ru_neutral">—</span>
-        </div>
-        <div class="article-reaction-item reaction-disapprove">
-          <div class="article-reaction-trigger" role="button" tabindex="0" aria-label="Не одобряю статью">
-            <span class="article-reaction-emoji" aria-hidden="true">✗</span>
-            <div class="lyket-overlay" data-lyket-type="like" data-lyket-namespace="articles-events-001-arizona" data-lyket-id="events_001_arizona_4th_of_july_ru_negative"></div>
-          </div>
-          <span class="article-reaction-count" data-lyket-namespace="articles-events-001-arizona" data-lyket-id="events_001_arizona_4th_of_july_ru_negative">—</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="article-feedback" aria-labelledby="feedback-heading">
-      <h2 class="article-feedback-title" id="feedback-heading">Обратная связь по статье</h2>
-      <p class="article-feedback-text">Если вы заметили неточность, хотите предложить идею для улучшения или просто что-то написать, заполните форму ниже.</p>
-      <form class="article-feedback-form" id="articleFeedbackForm">
-        <label class="article-feedback-label" for="articleFeedbackMessage">Сообщение *</label>
-        <textarea id="articleFeedbackMessage" class="article-feedback-input" rows="4" required></textarea>
-        <label class="article-feedback-label" for="articleFeedbackEmail" style="margin-top: 8px;">Email (необязательно)</label>
-        <input type="email" id="articleFeedbackEmail" class="article-feedback-input" placeholder="you@example.com" autocomplete="email" />
-        <button type="submit" class="article-feedback-button" id="articleFeedbackSubmit">Отправить</button>
-        <p class="article-feedback-status" id="articleFeedbackStatus" aria-live="polite"></p>
-      </form>
-    </section>
-
-    </div>
+    <section class="article-engage" data-article-engage data-article-id="arizona_4th_ru" data-lang="ru" data-path-prefix="../../"></section>
+</div>
   </main>
 
   <footer class="article-footer">
@@ -1453,128 +1415,8 @@
 
 </script>
 
-  <script>
-(function() {
-  var REACTIONS_API = 'https://wsdc-analytics-github-io.vercel.app';
-  function getCountsUrl() { return REACTIONS_API ? (REACTIONS_API.replace(/\/$/, '') + '/api/reactions') : '../../static/data/reactions.json'; }
-  function applyCount(span, n) { if (span) span.textContent = typeof n === 'number' && n >= 0 ? n : '—'; }
-  function fetchCounts() {
-    var url = getCountsUrl();
-    fetch(url, { credentials: 'omit' }).then(function(r) { return r.ok ? r.json() : {}; }).then(function(data) {
-      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) {
-        var id = span.getAttribute('data-lyket-id');
-        if (id) applyCount(span, (data && typeof data[id] === 'number') ? data[id] : 0);
-      });
-    }).catch(function() {
-      document.querySelectorAll('.article-reaction-count[data-lyket-namespace][data-lyket-id]').forEach(function(span) { applyCount(span, 0); });
-    });
-  }
-  function voteReaction(id, countSpan) {
-    if (!id || !countSpan || !REACTIONS_API) return;
-    countSpan.setAttribute('aria-busy', 'true');
-    countSpan.textContent = '…';
-    var base = REACTIONS_API.replace(/\/$/, '');
-    fetch(base + '/api/reactions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'omit',
-      body: JSON.stringify({ id: id })
-    }).then(function() { fetchCounts(); }).catch(function() { fetchCounts(); }).finally(function() { countSpan.removeAttribute('aria-busy'); });
-  }
-  function initReactionClicks() {
-    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
-      var overlay = trigger.querySelector('.lyket-overlay');
-      var id = overlay && overlay.getAttribute('data-lyket-id');
-      var item = trigger.closest('.article-reaction-item');
-      var countSpan = item && item.querySelector('.article-reaction-count[data-lyket-namespace][data-lyket-id]');
-      if (!id || !countSpan) return;
-      trigger.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        voteReaction(id, countSpan);
-      });
-    });
-  }
-  function initReactionKeys() {
-    document.querySelectorAll('.article-reaction-trigger[role="button"]').forEach(function(trigger) {
-      trigger.addEventListener('keydown', function(e) {
-        if (e.key !== 'Enter' && e.key !== ' ') return;
-        e.preventDefault();
-        trigger.click();
-      });
-    });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { fetchCounts(); initReactionClicks(); initReactionKeys(); });
-  else { fetchCounts(); initReactionClicks(); initReactionKeys(); }
-})();
-  </script>
-  <script>
-(function() {
-  var FORM_ID = 'articleFeedbackForm';
-  var MESSAGE_ID = 'articleFeedbackMessage';
-  var EMAIL_ID = 'articleFeedbackEmail';
-  var SUBMIT_ID = 'articleFeedbackSubmit';
-  var STATUS_ID = 'articleFeedbackStatus';
-  var API_BASE = 'https://wsdc-analytics-github-io.vercel.app';
-  var ARTICLE_ID = 'events_001_arizona_4th_of_july_ru';
-  var TXT = {"sending": "Отправляем...", "ok": "Спасибо! Сообщение отправлено.", "error": "Не удалось отправить. Попробуйте ещё раз позже.", "validation": "Пожалуйста, напишите чуть подробнее (минимум 5 символов)."};
-
-  function $(id) { return document.getElementById(id); }
-
-  function setStatus(text, isError) {
-    var el = $(STATUS_ID);
-    if (!el) return;
-    el.textContent = text || '';
-    el.style.color = isError ? '#dc2626' : 'var(--muted)';
-  }
-
-  function onSubmit(e) {
-    e.preventDefault();
-    var form = $(FORM_ID);
-    var msgEl = $(MESSAGE_ID);
-    var emailEl = $(EMAIL_ID);
-    var btn = $(SUBMIT_ID);
-    if (!form || !msgEl || !btn) return;
-    var message = msgEl.value.trim();
-    var email = emailEl && emailEl.value.trim();
-    if (!message || message.length < 5) {
-      setStatus(TXT.validation, true);
-      return;
-    }
-    btn.disabled = true;
-    setStatus(TXT.sending, false);
-    fetch(API_BASE.replace(/\/$/, '') + '/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'omit',
-      body: JSON.stringify({
-        articleId: ARTICLE_ID,
-        articleUrl: window.location.href,
-        message: message,
-        email: email
-      })
-    }).then(function(r) {
-      if (!r.ok) throw new Error('Request failed');
-      return r.json().catch(function() { return {}; });
-    }).then(function() {
-      setStatus(TXT.ok, false);
-      msgEl.value = '';
-    }).catch(function() {
-      setStatus(TXT.error, true);
-    }).finally(function() {
-      btn.disabled = false;
-    });
-  }
-
-  function init() {
-    var form = $(FORM_ID);
-    if (form) form.addEventListener('submit', onSubmit);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
-  </script>
   <script src="../../static/js/site-chrome.js"></script>
 
+  <script src="../../static/js/article-engage.js?v=20260829a" defer></script>
 </body>
 </html>

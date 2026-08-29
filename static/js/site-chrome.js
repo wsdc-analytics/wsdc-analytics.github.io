@@ -2,12 +2,13 @@
  * Mount Evolved C site chrome into [data-site-chrome] placeholders.
  *
  * Attributes:
- *   data-active          home | dashboards | points | champions | calendar
+ *   data-active          home | dashboards | points | champions | calendar | articles | qa
+ *   data-qa-board        optional board slug override for the Q&A chrome link
  *   data-lang            ru | en | es
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       brand logo link (default index.html) — return home
- *   data-path-prefix     prefix for dashboard / points / champions / calendar hrefs (e.g. "../../" from nested pages)
+ *   data-path-prefix     prefix for dashboard / points / champions / calendar / qa hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
  *   data-current-dash    filename to mark current dashboard link
@@ -37,6 +38,7 @@
     champions: { ru: "New Champions", en: "New Champions", es: "New Champions" },
     calendar: { ru: "Events Calendar", en: "Events Calendar", es: "Events Calendar" },
     contact: { ru: "Контакты", en: "Contacts", es: "Contacto" },
+    qa: { ru: "Q&A Hub", en: "Q&A Hub", es: "Q&A Hub" },
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
     facebook: { ru: "Написать в Facebook", en: "Message on Facebook", es: "Escribir en Facebook" },
     home: { ru: "На главную", en: "Back to home", es: "Volver al inicio" },
@@ -80,6 +82,29 @@
     var base = String(href || "index.html").split("#")[0].split("?")[0];
     if (!base) base = "index.html";
     return base + "?lang=" + lang;
+  }
+
+  /** Map chrome context → qa_boards.slug */
+  var ACTIVE_TO_QA_BOARD = {
+    champions: "new-champions",
+    points: "summary-points",
+    calendar: "calendar",
+    dashboards: "dashboards",
+    articles: "articles",
+    qa: "other",
+    home: "other",
+  };
+
+  function resolveQaBoardSlug(root) {
+    var override = (root.getAttribute("data-qa-board") || "").trim();
+    if (override) return override;
+    var active = root.getAttribute("data-active") || "home";
+    return ACTIVE_TO_QA_BOARD[active] || "other";
+  }
+
+  function qaHubHref(root, lang) {
+    var slug = resolveQaBoardSlug(root);
+    return withPathPrefix(root, "qa.html") + "?lang=" + lang + "#board/" + encodeURIComponent(slug);
   }
 
   function syncBackLinks(lang, homeHref) {
@@ -323,6 +348,17 @@
       "</a>" +
       "</div>" +
       '<div class="wsdc-chrome__spacer" aria-hidden="true"></div>' +
+      '<a class="wsdc-chrome__qa-btn' +
+      (active === "qa" ? " is-active" : "") +
+      '" href="' +
+      esc(qaHubHref(root, lang)) +
+      '" data-chrome-qa-btn aria-label="' +
+      esc(LABELS.qa[lang] || LABELS.qa.en) +
+      '" title="' +
+      esc(LABELS.qa[lang] || LABELS.qa.en) +
+      '">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v6A2.25 2.25 0 0 1 17.25 15H9.6L5.55 18.3A.75.75 0 0 1 4.5 17.7V6.75Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M8.25 9h7.5M8.25 12h4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>' +
+      "</a>" +
       '<div class="wsdc-chrome__contact" data-chrome-contact>' +
       '<button type="button" class="wsdc-chrome__contact-btn" data-chrome-contact-btn aria-label="' +
       esc(LABELS.contact[lang] || LABELS.contact.en) +
@@ -386,6 +422,14 @@
     if (calendarLabel) calendarLabel.textContent = LABELS.calendar[lang] || LABELS.calendar.en;
     var contactBtn = root.querySelector("[data-chrome-contact-btn]");
     if (contactBtn) contactBtn.setAttribute("aria-label", LABELS.contact[lang] || LABELS.contact.en);
+    var qaBtn = root.querySelector("[data-chrome-qa-btn]");
+    if (qaBtn) {
+      var qaLabel = LABELS.qa[lang] || LABELS.qa.en;
+      qaBtn.setAttribute("href", qaHubHref(root, lang));
+      qaBtn.setAttribute("aria-label", qaLabel);
+      qaBtn.setAttribute("title", qaLabel);
+      qaBtn.classList.toggle("is-active", (root.getAttribute("data-active") || "") === "qa");
+    }
     var email = root.querySelector("[data-chrome-email]");
     if (email) email.textContent = LABELS.email[lang] || LABELS.email.en;
     var fb = root.querySelector("[data-chrome-facebook]");

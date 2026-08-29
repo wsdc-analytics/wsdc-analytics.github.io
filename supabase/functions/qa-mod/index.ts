@@ -120,7 +120,7 @@ Deno.serve(async (req: Request) => {
     return json({ ok: true, deleted: data });
   }
 
-  const patch: Record<string, boolean> = {};
+  const patch: Record<string, boolean | string> = {};
 
   if (action === "hide") patch.is_hidden = true;
   else if (action === "unhide") patch.is_hidden = false;
@@ -130,6 +130,18 @@ Deno.serve(async (req: Request) => {
   } else if (action === "unpin") {
     if (type !== "thread") return json({ error: "Unpin only for threads" }, 400);
     patch.is_pinned = false;
+  } else if (action === "move") {
+    if (type !== "thread") return json({ error: "Move only for threads" }, 400);
+    const boardSlug = String(body.board_slug || "").trim();
+    if (!boardSlug) return json({ error: "Missing board_slug" }, 400);
+    const { data: board, error: boardErr } = await sb
+      .from("qa_boards")
+      .select("id")
+      .eq("slug", boardSlug)
+      .maybeSingle();
+    if (boardErr) return json({ error: boardErr.message }, 500);
+    if (!board?.id) return json({ error: "Unknown board" }, 404);
+    patch.board_id = board.id;
   } else {
     return json({ error: "Unknown action" }, 400);
   }

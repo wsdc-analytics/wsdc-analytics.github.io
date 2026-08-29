@@ -8,6 +8,30 @@
   const MOD_KEY = "qa_admin_secret_v1";
   const COOLDOWN_KEY = "qa_last_post_ts";
   const COOLDOWN_MS = 20000;
+  const I18n = window.QaI18n || null;
+
+  function langFromQuery() {
+    try {
+      const q = new URLSearchParams(location.search).get("lang");
+      if (q && I18n) return I18n.normalizeLang(q);
+      if (q === "ru" || q === "es" || q === "en") return q;
+    } catch {
+      /* ignore */
+    }
+    const stored = localStorage.getItem("wsdc-lang");
+    if (stored === "ru" || stored === "es" || stored === "en") return stored;
+    return "en";
+  }
+
+  function t(key) {
+    if (I18n) return I18n.t(state.lang, key);
+    return key;
+  }
+
+  function localizedBoardTitle(slug, fallback) {
+    if (I18n) return I18n.boardTitle(state.lang, slug, fallback);
+    return fallback || slug;
+  }
 
   const els = {
     boards: document.getElementById("qaBoards"),
@@ -15,6 +39,8 @@
     boardBtn: document.getElementById("qaBoardBtn"),
     boardValue: document.getElementById("qaBoardValue"),
     boardMenu: document.getElementById("qaBoardMenu"),
+    composeBoard: document.getElementById("qaComposeBoard"),
+    optionalDetails: document.getElementById("qaOptionalDetails"),
     threadList: document.getElementById("qaThreadList"),
     threadPanel: document.getElementById("qaThreadPanel"),
     threadTitle: document.getElementById("qaThreadTitle"),
@@ -34,8 +60,9 @@
   };
 
   const state = {
+    lang: langFromQuery(),
     boards: [],
-    boardSlug: "articles",
+    boardSlug: "other",
     threads: [],
     threadId: null,
     thread: null,
@@ -62,7 +89,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  /** Only https URLs — blocks javascript:/data: etc. */
   function safeHttpsUrl(raw) {
     const s = String(raw || "").trim();
     if (!s || s.length > 500) return null;
@@ -77,7 +103,9 @@
 
   function fmtDate(iso) {
     try {
-      return new Date(iso).toLocaleString("en-GB", {
+      const locale =
+        state.lang === "ru" ? "ru-RU" : state.lang === "es" ? "es-ES" : "en-GB";
+      return new Date(iso).toLocaleString(locale, {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -98,7 +126,7 @@
     if (parts[0] === "board" && parts[1]) {
       return { view: "board", boardSlug: parts[1], threadId: null };
     }
-    return { view: "board", boardSlug: state.boardSlug || "articles", threadId: null };
+    return { view: "board", boardSlug: state.boardSlug || "other", threadId: null };
   }
 
   function goBoard(slug) {
@@ -109,8 +137,46 @@
     location.hash = `#thread/${id}`;
   }
 
+  function applyLang() {
+    state.lang = langFromQuery();
+    localStorage.setItem("wsdc-lang", state.lang);
+    if (I18n) I18n.applyStatic(state.lang);
+    const chrome = document.querySelector("[data-site-chrome]");
+    if (chrome) {
+      chrome.setAttribute("data-lang", state.lang);
+      if (window.WsdcChrome && typeof window.WsdcChrome.applyLangLabels === "function") {
+        window.WsdcChrome.applyLangLabels(state.lang);
+      }
+    }
+  }
+
+  function applyPrefillFromQuery() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const pageUrl = params.get("page_url");
+      const titleHint = params.get("title");
+      if (!els.newThreadForm) return;
+      if (pageUrl) {
+        const safe = safeHttpsUrl(pageUrl) || pageUrl;
+        const input = els.newThreadForm.querySelector('[name="page_url"]');
+        if (input) {
+          input.value = safe;
+          if (els.optionalDetails) els.optionalDetails.open = true;
+        }
+      }
+      if (titleHint) {
+        const titleInput = els.newThreadForm.querySelector('[name="title"]');
+        if (titleInput && !titleInput.value) {
+          titleInput.value = String(titleHint).slice(0, 160);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
   async function sb(path, options = {}) {
-    if (!SUPABASE_URL || !ANON) throw new Error("Q&A backend is not configured");
+    if (!SUPABASE_URL || !ANON) throw new Error(t("notConfigured"));
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       ...options,
       headers: {
@@ -208,29 +274,44 @@
     if (els.boardValue && match) {
       els.boardValue.textContent = match.textContent.trim();
     }
+    if (els.composeBoard && match) {
+      els.composeBoard.value = match.getAttribute("data-value") || "";
+    }
     closeBoardDropdown();
+  }
+
+  function renderComposeBoardSelect() {
+    if (!els.composeBoard) return;
+    els.composeBoard.innerHTML = state.boards
+      .map((b) => {
+        const label = localizedBoardTitle(b.slug, b.title);
+        const sel = b.slug === state.boardSlug ? " selected" : "";
+        return `<option value="${esc(b.slug)}"${sel}>${esc(label)}</option>`;
+      })
+      .join("");
   }
 
   function renderBoards() {
     if (!els.boardMenu) return;
     els.boardMenu.innerHTML = state.boards
-      .map(
-        (b) =>
-          `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
-            b.slug === state.boardSlug ? "true" : "false"
-          }">${esc(b.title)}</button></li>`
-      )
+      .map((b) => {
+        const label = localizedBoardTitle(b.slug, b.title);
+        return `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
+          b.slug === state.boardSlug ? "true" : "false"
+        }">${esc(label)}</button></li>`;
+      })
       .join("");
     const slug =
       state.boardSlug || (state.boards[0] && state.boards[0].slug) || "";
     setBoardDropdownValue(slug);
+    renderComposeBoardSelect();
   }
 
   async function loadThreads() {
-    setListStatus("Loading…");
+    setListStatus(t("loading"));
     const board = state.boards.find((b) => b.slug === state.boardSlug);
     if (!board) {
-      els.threadList.innerHTML = `<p class="qa-empty">Unknown board.</p>`;
+      els.threadList.innerHTML = `<p class="qa-empty">${esc(t("unknownBoard"))}</p>`;
       setListStatus("");
       return;
     }
@@ -256,22 +337,22 @@
   function renderThreads() {
     if (!els.threadList) return;
     if (!state.threads.length) {
-      els.threadList.innerHTML = `<p class="qa-empty">No threads yet. Start one on the right.</p>`;
+      els.threadList.innerHTML = `<p class="qa-empty">${esc(t("empty"))}</p>`;
       return;
     }
     els.threadList.innerHTML = `<ul class="qa-thread-list">${state.threads
-      .map((t) => {
-        const active = t.id === state.threadId ? " is-active" : "";
+      .map((row) => {
+        const active = row.id === state.threadId ? " is-active" : "";
         const badges = [
-          t.is_pinned ? `<span class="wsdc-pill is-accent">Pinned</span>` : "",
-          t.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">Hidden</span>` : "",
+          row.is_pinned ? `<span class="wsdc-pill is-accent">${esc(t("pin"))}</span>` : "",
+          row.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : "",
         ]
           .filter(Boolean)
           .join(" ");
         return `<li>
-          <button type="button" class="qa-thread-item${active}" data-thread="${esc(t.id)}">
-            <div class="qa-thread-title"><span>${esc(t.title)}</span>${badges}</div>
-            <div class="qa-thread-meta"><span class="qa-thread-author">${esc(t.author_name)}</span><span class="qa-time">${esc(fmtDate(t.created_at))}</span></div>
+          <button type="button" class="qa-thread-item${active}" data-thread="${esc(row.id)}">
+            <div class="qa-thread-title"><span>${esc(row.title)}</span>${badges}</div>
+            <div class="qa-thread-meta"><span class="qa-thread-author">${esc(row.author_name)}</span><span class="qa-time">${esc(fmtDate(row.created_at))}</span></div>
           </button>
         </li>`;
       })
@@ -279,7 +360,7 @@
   }
 
   async function loadThread(id) {
-    setStatus("Loading thread…");
+    setStatus(t("loadingThread"));
     const rows = state.mod && API_BASE
       ? null
       : await sb(
@@ -291,10 +372,9 @@
     let thread = rows && rows[0];
     if (!thread && state.mod && API_BASE) {
       const data = await modApi({ action: "list_threads" });
-      thread = (data.threads || []).find((t) => t.id === id);
+      thread = (data.threads || []).find((row) => row.id === id);
     }
     if (!thread) {
-      // fallback public fetch if mod list missed it
       const pub = await sb(
         `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
           id
@@ -302,7 +382,7 @@
       );
       thread = pub && pub[0];
     }
-    if (!thread) throw new Error("Thread not found");
+    if (!thread) throw new Error(t("threadNotFound"));
 
     state.thread = thread;
     state.threadId = thread.id;
@@ -323,29 +403,33 @@
   }
 
   function renderThread() {
-    const t = state.thread;
-    if (!t || !els.threadPanel) return;
+    const thr = state.thread;
+    if (!thr || !els.threadPanel) return;
     els.threadPanel.hidden = false;
-    els.threadTitle.textContent = t.title;
-    const boardTitle =
-      (t.qa_boards && t.qa_boards.title) ||
-      (state.boards.find((b) => b.id === t.board_id) || {}).title ||
+    els.threadTitle.textContent = thr.title;
+    const slug =
+      (thr.qa_boards && thr.qa_boards.slug) ||
+      (state.boards.find((b) => b.id === thr.board_id) || {}).slug ||
       state.boardSlug;
-    els.threadMeta.innerHTML = `${esc(boardTitle)} · by <strong>${esc(t.author_name)}</strong> · <span class="qa-time">${esc(
-      fmtDate(t.created_at)
+    const boardTitle = localizedBoardTitle(
+      slug,
+      (thr.qa_boards && thr.qa_boards.title) || state.boardSlug
+    );
+    els.threadMeta.innerHTML = `${esc(boardTitle)} · ${esc(t("by"))} <strong>${esc(thr.author_name)}</strong> · <span class="qa-time">${esc(
+      fmtDate(thr.created_at)
     )}</span>${(() => {
-      const href = safeHttpsUrl(t.page_url);
+      const href = safeHttpsUrl(thr.page_url);
       return href
-        ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">source</a>`
+        ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">${esc(t("source"))}</a>`
         : "";
     })()}${
-      t.is_pinned ? ' · <span class="wsdc-pill is-accent">Pinned</span>' : ""
-    }${t.is_hidden ? ' · <span class="wsdc-pill qa-pill-hidden">Hidden</span>' : ""}`;
+      thr.is_pinned ? ` · <span class="wsdc-pill is-accent">${esc(t("pin"))}</span>` : ""
+    }${thr.is_hidden ? ` · <span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}`;
 
     const opHtml = `<article class="qa-post qa-post--op">
-      <div class="qa-post-head"><span class="qa-post-author">${esc(t.author_name)}</span>
-      <span class="qa-time">${esc(fmtDate(t.created_at))}</span><span class="wsdc-pill">OP</span></div>
-      <div class="qa-post-body">${esc(t.body)}</div>
+      <div class="qa-post-head"><span class="qa-post-author">${esc(thr.author_name)}</span>
+      <span class="qa-time">${esc(fmtDate(thr.created_at))}</span><span class="wsdc-pill">OP</span></div>
+      <div class="qa-post-body">${esc(thr.body)}</div>
     </article>`;
 
     const replies = (state.posts || [])
@@ -354,12 +438,12 @@
         (p) => `<article class="qa-post qa-post--reply" data-post-id="${esc(p.id)}">
       <div class="qa-post-head"><span class="qa-post-author">${esc(p.author_name)}</span>
       <span class="qa-time">${esc(fmtDate(p.created_at))}</span>
-      ${p.is_hidden ? '<span class="wsdc-pill qa-pill-hidden">Hidden</span>' : ""}
+      ${p.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}
       ${
         state.mod
           ? `<button type="button" class="wsdc-btn wsdc-btn--ghost" data-mod-post="${esc(p.id)}" data-mod-action="${
               p.is_hidden ? "unhide" : "hide"
-            }">${p.is_hidden ? "Unhide" : "Hide"}</button>`
+            }">${esc(p.is_hidden ? t("unhidePost") : t("hidePost"))}</button>`
           : ""
       }
       </div>
@@ -383,7 +467,6 @@
       els.aside.hidden = !unlocked;
       if (!unlocked) els.aside.open = false;
     }
-    /* Moderator disclosure stays closed unless the user opens it */
     if (!unlocked) els.modBar.open = false;
   }
 
@@ -397,15 +480,35 @@
       return;
     }
     els.modActions.hidden = false;
-    const t = state.thread;
+    const thr = state.thread;
+    const currentSlug =
+      (thr.qa_boards && thr.qa_boards.slug) ||
+      (state.boards.find((b) => b.id === thr.board_id) || {}).slug ||
+      state.boardSlug;
+    const options = state.boards
+      .map((b) => {
+        const label = localizedBoardTitle(b.slug, b.title);
+        const sel = b.slug === currentSlug ? " selected" : "";
+        return `<option value="${esc(b.slug)}"${sel}>${esc(label)}</option>`;
+      })
+      .join("");
     els.modActions.innerHTML = `
-      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="hide">${
-        t.is_hidden ? "Unhide thread" : "Hide thread"
-      }</button>
-      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="pin">${
-        t.is_pinned ? "Unpin" : "Pin"
-      }</button>
-      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="delete">Delete thread</button>
+      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="hide">${esc(
+        thr.is_hidden ? t("unhideThread") : t("hideThread")
+      )}</button>
+      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="pin">${esc(
+        thr.is_pinned ? t("unpin") : t("pin")
+      )}</button>
+      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="delete">${esc(
+        t("deleteThread")
+      )}</button>
+      <div class="qa-mod-move">
+        <label class="qa-mod-label" for="qaModMoveBoard">${esc(t("moveBoard"))}</label>
+        <select class="wsdc-field" id="qaModMoveBoard">${options}</select>
+        <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="move">${esc(
+          t("move")
+        )}</button>
+      </div>
     `;
   }
 
@@ -414,34 +517,38 @@
     try {
       const data = await modApi({ action: "stats" });
       const lines = (data.boards || [])
-        .map(
-          (b) =>
-            `<li><strong>${esc(b.title)}</strong>: ${b.visible_threads} visible` +
-            (b.hidden_threads ? `, ${b.hidden_threads} hidden` : "") +
+        .map((b) => {
+          const title = localizedBoardTitle(b.slug, b.title);
+          return (
+            `<li><strong>${esc(title)}</strong>: ${b.visible_threads} ${esc(t("visible"))}` +
+            (b.hidden_threads ? `, ${b.hidden_threads} ${esc(t("hidden"))}` : "") +
             `</li>`
-        )
+          );
+        })
         .join("");
-      els.stats.innerHTML = `<strong>Board counts</strong><ul>${lines}</ul>
-        <p>Posts: ${data.posts_total || 0}${
-        data.posts_hidden ? ` (${data.posts_hidden} hidden)` : ""
+      els.stats.innerHTML = `<strong>${esc(t("boardCounts"))}</strong><ul>${lines}</ul>
+        <p>${esc(t("posts"))}: ${data.posts_total || 0}${
+        data.posts_hidden ? ` (${data.posts_hidden} ${esc(t("hidden"))})` : ""
       }</p>`;
     } catch (e) {
-      els.stats.textContent = e.message || "Stats unavailable";
+      els.stats.textContent = e.message || t("statsUnavailable");
     }
   }
 
   async function createThread(form) {
     if (honeypotFilled(form)) return;
     checkCooldown();
-    const board = state.boards.find((b) => b.slug === state.boardSlug);
-    if (!board) throw new Error("Select a board");
+    const formSlug =
+      (form.board_slug && form.board_slug.value) || state.boardSlug;
+    const board = state.boards.find((b) => b.slug === formSlug);
+    if (!board) throw new Error(t("selectBoard"));
 
     const title = String(form.title.value || "").trim();
     const author_name = String(form.author_name.value || "").trim();
     const author_email = String(form.author_email.value || "").trim() || null;
     const page_url_raw = String(form.page_url.value || "").trim();
     const page_url = page_url_raw ? safeHttpsUrl(page_url_raw) : null;
-    if (page_url_raw && !page_url) throw new Error("Related page URL must be https://");
+    if (page_url_raw && !page_url) throw new Error(t("pageUrlHttps"));
     const body = String(form.body.value || "").trim();
 
     const rows = await sb(
@@ -459,7 +566,7 @@
       }
     );
     const thread = Array.isArray(rows) ? rows[0] : rows;
-    if (!thread || !thread.id) throw new Error("Failed to create thread");
+    if (!thread || !thread.id) throw new Error(t("createFailed"));
 
     await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
       method: "POST",
@@ -481,15 +588,17 @@
       thread_id: thread.id,
       preview: body,
     });
+    state.boardSlug = board.slug;
     form.reset();
+    renderComposeBoardSelect();
     goThread(thread.id);
-    setStatus("Thread published.", "ok");
+    setStatus(t("threadPublished"), "ok");
   }
 
   async function createReply(form) {
     if (honeypotFilled(form)) return;
     checkCooldown();
-    if (!state.threadId) throw new Error("No thread selected");
+    if (!state.threadId) throw new Error(t("noThread"));
     const author_name = String(form.author_name.value || "").trim();
     const author_email = String(form.author_email.value || "").trim() || null;
     const body = String(form.body.value || "").trim();
@@ -516,12 +625,12 @@
     });
     form.reset();
     await loadThread(state.threadId);
-    setStatus("Reply published.", "ok");
+    setStatus(t("replyPublished"), "ok");
   }
 
   async function onRoute() {
     const route = parseHash();
-    state.boardSlug = route.boardSlug || state.boardSlug || "articles";
+    state.boardSlug = route.boardSlug || state.boardSlug || "other";
     renderBoards();
     renderModBar();
 
@@ -562,6 +671,13 @@
       });
     }
 
+    if (els.composeBoard) {
+      els.composeBoard.addEventListener("change", () => {
+        const slug = els.composeBoard.value;
+        if (slug && slug !== state.boardSlug) goBoard(slug);
+      });
+    }
+
     document.addEventListener("click", closeBoardDropdown);
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeBoardDropdown();
@@ -576,7 +692,7 @@
     els.newThreadForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        setStatus("Publishing…");
+        setStatus(t("publishing"));
         await createThread(e.target);
       } catch (err) {
         setStatus(err.message || "Failed", "error");
@@ -586,7 +702,7 @@
     els.replyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        setStatus("Publishing…");
+        setStatus(t("publishing"));
         await createReply(e.target);
       } catch (err) {
         setStatus(err.message || "Failed", "error");
@@ -602,7 +718,7 @@
       renderModBar();
       try {
         await modApi({ action: "stats" });
-        setStatus("Moderator mode on.", "ok");
+        setStatus(t("modOn"), "ok");
         await onRoute();
       } catch (err) {
         localStorage.removeItem(MOD_KEY);
@@ -616,7 +732,7 @@
       localStorage.removeItem(MOD_KEY);
       state.mod = false;
       renderModBar();
-      setStatus("Moderator mode off.");
+      setStatus(t("modOff"));
       onRoute();
     });
 
@@ -637,9 +753,24 @@
             type: "thread",
             id: state.thread.id,
           });
+        } else if (act === "move") {
+          const select = els.modActions.querySelector("#qaModMoveBoard");
+          const boardSlug = select && select.value;
+          if (!boardSlug) return;
+          await modApi({
+            action: "move",
+            type: "thread",
+            id: state.thread.id,
+            board_slug: boardSlug,
+          });
+          state.boardSlug = boardSlug;
         } else if (act === "delete") {
           const title = state.thread.title || "this thread";
-          if (!window.confirm(`Delete thread permanently?\n\n“${title}”\n\nReplies will be removed too.`)) {
+          if (
+            !window.confirm(
+              `${t("deleteConfirm")}\n\n“${title}”\n\n${t("deleteConfirmReplies")}`
+            )
+          ) {
             return;
           }
           const boardSlug = state.boardSlug;
@@ -651,11 +782,11 @@
           state.threadId = null;
           state.thread = null;
           location.hash = `#board/${boardSlug}`;
-          setStatus("Thread deleted.", "ok");
+          setStatus(t("threadDeleted"), "ok");
           return;
         }
         await onRoute();
-        setStatus("Updated.", "ok");
+        setStatus(t("updated"), "ok");
       } catch (err) {
         setStatus(err.message || "Moderation failed", "error");
       }
@@ -671,7 +802,7 @@
           id: btn.getAttribute("data-mod-post"),
         });
         await loadThread(state.threadId);
-        setStatus("Updated.", "ok");
+        setStatus(t("updated"), "ok");
       } catch (err) {
         setStatus(err.message || "Moderation failed", "error");
       }
@@ -680,11 +811,28 @@
     window.addEventListener("hashchange", () => {
       onRoute().catch((err) => setStatus(err.message || "Error", "error"));
     });
+
+    window.WsdcChrome = window.WsdcChrome || {};
+    const prevLang = window.WsdcChrome.onLangChange;
+    window.WsdcChrome.onLangChange = function (lang) {
+      if (typeof prevLang === "function") prevLang(lang);
+      const url = new URL(location.href);
+      url.searchParams.set("lang", lang);
+      history.replaceState(null, "", url.pathname + url.search + url.hash);
+      state.lang = lang;
+      if (I18n) I18n.applyStatic(lang);
+      renderBoards();
+      if (state.thread) renderThread();
+      else renderThreads();
+      if (state.mod) loadStats();
+    };
   }
 
   async function init() {
+    applyLang();
+    applyPrefillFromQuery();
     if (!SUPABASE_URL || !ANON) {
-      setStatus("Q&A backend is not configured.", "error");
+      setStatus(t("notConfigured"), "error");
       return;
     }
     wire();
