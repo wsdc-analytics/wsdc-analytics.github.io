@@ -366,7 +366,7 @@
       '<button type="button" class="wsdc-chrome__contact-btn" data-chrome-contact-btn aria-label="' +
       esc(LABELS.contact[lang] || LABELS.contact.en) +
       '" aria-expanded="false" aria-haspopup="menu" aria-controls="wsdcChromeContactMenu">' +
-      '<svg width="20" height="13" viewBox="0 0 48 32" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="43" height="27" rx="2.5" stroke="currentColor" stroke-width="1.75"/><path d="M3.5 7L24 20L44.5 7" stroke="currentColor" stroke-width="1.75"/></svg>' +
+      '<svg width="18" height="12" viewBox="0 0 48 32" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="43" height="27" rx="2.5" stroke="currentColor" stroke-width="1.75"/><path d="M3.5 7L24 20L44.5 7" stroke="currentColor" stroke-width="1.75"/></svg>' +
       "</button>" +
       '<ul class="wsdc-chrome__contact-menu" id="wsdcChromeContactMenu" role="menu" data-chrome-contact-menu aria-hidden="true">' +
       '<li role="none"><a href="mailto:analytics.wsdc@gmail.com" role="menuitem" data-chrome-email>' +
