@@ -62,19 +62,10 @@
         </div>
     </div>
 
+    <script src="static/js/dashboard-fit-viz.js"></script>
     <script type='text/javascript'>
         var VIZ_WIDTH = 1620;
         var VIZ_HEIGHT = 987;
-
-        function fitViz() {
-            var viewport = document.getElementById('vizViewport');
-            var scaled = document.getElementById('vizScaled');
-            var availableW = viewport.clientWidth;
-            var availableH = viewport.clientHeight;
-            var scale = Math.min(availableW / VIZ_WIDTH, availableH / VIZ_HEIGHT);
-            scale = Math.min(scale, 1);
-            scaled.style.transform = 'scale(' + scale + ')';
-        }
 
         var divElement = document.getElementById('viz1770822245316');
         var vizElement = divElement.getElementsByTagName('object')[0];
@@ -86,15 +77,15 @@
         vizElement.parentNode.insertBefore(scriptElement, vizElement);
 
         scriptElement.onload = function() {
-            fitViz();
+            if (window.wsdcBindFitViz) {
+                wsdcBindFitViz({ width: VIZ_WIDTH, height: VIZ_HEIGHT });
+            }
             var iframe = divElement.querySelector('iframe');
             if (iframe) {
                 iframe.style.width = VIZ_WIDTH + 'px';
                 iframe.style.height = VIZ_HEIGHT + 'px';
             }
         };
-
-        window.addEventListener('resize', fitViz);
     </script>
     <script src="static/js/site-chrome.js" defer></script>
 </body>
