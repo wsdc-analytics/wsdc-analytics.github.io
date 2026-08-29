@@ -611,6 +611,11 @@
     });
   }
 
+  var existingOnLangChange =
+    window.WsdcChrome && typeof window.WsdcChrome.onLangChange === "function"
+      ? window.WsdcChrome.onLangChange
+      : null;
+
   window.WsdcChrome = {
     mount: mountAll,
     applyLangLabels: function (lang) {
@@ -619,7 +624,7 @@
       });
     },
     syncBackLinks: syncBackLinks,
-    onLangChange: null,
+    onLangChange: existingOnLangChange,
   };
 
   if (document.readyState === "loading") {
