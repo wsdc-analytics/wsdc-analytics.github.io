@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-08-26",
-  "as_of": "2026-08-26",
+  "generated_at": "2026-08-29",
+  "as_of": "2026-08-29",
   "data_through": "2026-08-31",
-  "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
+  "source_dir": "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data",
   "methodology": {
     "events_total": "count of occurred WSDC editions in event_editions.csv (result_rows > 0 or event_occurred); one row per event year/month that awarded points",
     "points_total": "sum of event_points across all nominations in dancers_results_info.csv",
     "dancers_total": "count of unique dancer_id in dancers_results_info.csv",
     "dancers_increment": "new dancers = unique dancer_id whose first WSDC points fall in the window (week/month: earliest edition end_date; year: event_year of that first event)",
     "edition_dates": "event_editions.csv start_date/end_date (edition_date remains YYYY-MM-01 for Tableau)",
-    "calendar_archive": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data/edition_calendar_dates.csv",
+    "calendar_archive": "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data/edition_calendar_dates.csv",
     "as_of_note": "as_of defaults to today.",
     "increment_note": "Events/points increments count activity in the window. Dancers increment counts new dancers (first WSDC points), not unique participants. Week/month windows use edition end_date to match WSDC points-month attribution.",
     "week_note": "Week uses ISO week of edition end_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
@@ -30,26 +30,26 @@
         "since_previous_ended": "2026-07-31",
         "iso_week": "2026-W34",
         "bucket": "edition_end_date",
-        "event_names": "Chicagoland Country and Swing Dance Festival, Grand Party Sofia (GPS), Shakedown Swing, Summer Hummer, Swing Creation Hamburg, The Bend Connection, UpTown Swing, Westie Joy"
+        "event_names": "Chicagoland Country and Swing Dance Festival, Grand Party Sofia (GPS), Manneken Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, The Bend Connection, UpTown Swing, Westie Joy"
       },
       "increment": {
-        "events": 8,
-        "points": 2924.0,
-        "dancers": 105
+        "events": 9,
+        "points": 3268.0,
+        "dancers": 126
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-08-01",
-        "end": "2026-08-26",
+        "end": "2026-08-29",
         "since_previous_ended": "2026-07-31",
         "bucket": "edition_end_date",
-        "event_names": "Arizona Dance Classic, Chicagoland Country and Swing Dance Festival, German Open, Grand Party Sofia (GPS), Lisbon Westie Fest, New England Dance Festival, Sea Sun and Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, Swing Fling, Swingtacular: The Galactic Open, The Bend Connection, UpTown Swing, Warsaw Summer Nights Westival, Westie Joy"
+        "event_names": "Arizona Dance Classic, Chicagoland Country and Swing Dance Festival, German Open, Grand Party Sofia (GPS), Lisbon Westie Fest, Manneken Swing, New England Dance Festival, Sea Sun and Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, Swing Fling, Swingtacular: The Galactic Open, The Bend Connection, UpTown Swing, Warsaw Summer Nights Westival, Westie Joy"
       },
       "increment": {
-        "events": 16,
-        "points": 6447.0,
+        "events": 17,
+        "points": 6791.0,
         "dancers": 216
       }
     },
@@ -57,7 +57,7 @@
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-08-26",
+        "end": "2026-08-29",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
