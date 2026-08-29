@@ -428,6 +428,11 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  z-index: 5;
+}
+
+.wsdc-chrome__contact.is-open {
+  z-index: 40;
 }
 
 .wsdc-chrome__qa-btn:hover,
@@ -457,7 +462,7 @@
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  z-index: 5;
+  z-index: 40;
   min-width: 180px;
   margin: 0;
   padding: 6px;
