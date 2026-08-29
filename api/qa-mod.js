@@ -162,7 +162,7 @@ module.exports = async function handler(req, res) {
 
     if (action === 'list_threads') {
       let path =
-        'qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at,qa_boards(slug,title)&order=is_pinned.desc,created_at.desc&limit=100';
+        'qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&order=is_pinned.desc,created_at.desc&limit=100';
       if (body.board_slug) {
         const boards = await sbFetch(
           supabaseUrl,
@@ -175,6 +175,85 @@ module.exports = async function handler(req, res) {
       }
       const threads = await sbFetch(supabaseUrl, serviceKey, path);
       return sendJson(res, { threads: threads || [] }, 200, origin);
+    }
+
+    if (action === 'create_post') {
+      const threadId = String(body.thread_id || '').trim();
+      const authorName = String(body.author_name || '').trim();
+      const authorEmail = String(body.author_email || '').trim() || null;
+      const postBody = String(body.body || '').trim();
+      const isOp = Boolean(body.is_op);
+      if (!threadId) return sendJson(res, { error: 'Missing thread_id' }, 400, origin);
+      if (!authorName) return sendJson(res, { error: 'Missing author_name' }, 400, origin);
+      if (!postBody) return sendJson(res, { error: 'Missing body' }, 400, origin);
+      const rows = await sbFetch(
+        supabaseUrl,
+        serviceKey,
+        'qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            thread_id: threadId,
+            author_name: authorName.slice(0, 80),
+            author_email: authorEmail,
+            body: postBody.slice(0, 8000),
+            is_op: isOp,
+            is_moderator: true,
+          }),
+        }
+      );
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      return sendJson(res, { ok: true, row }, 200, origin);
+    }
+
+    if (action === 'create_thread') {
+      const boardId = String(body.board_id || '').trim();
+      const title = String(body.title || '').trim();
+      const authorName = String(body.author_name || '').trim();
+      const authorEmail = String(body.author_email || '').trim() || null;
+      const pageUrl = body.page_url ? String(body.page_url).trim() : null;
+      const threadBody = String(body.body || '').trim();
+      if (!boardId) return sendJson(res, { error: 'Missing board_id' }, 400, origin);
+      if (!title || title.length < 3) return sendJson(res, { error: 'Invalid title' }, 400, origin);
+      if (!authorName) return sendJson(res, { error: 'Missing author_name' }, 400, origin);
+      if (!threadBody || threadBody.length < 3) return sendJson(res, { error: 'Invalid body' }, 400, origin);
+      const threads = await sbFetch(
+        supabaseUrl,
+        serviceKey,
+        'qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            board_id: boardId,
+            title: title.slice(0, 160),
+            author_name: authorName.slice(0, 80),
+            author_email: authorEmail,
+            page_url: pageUrl,
+            body: threadBody.slice(0, 8000),
+            is_moderator: true,
+          }),
+        }
+      );
+      const thread = Array.isArray(threads) ? threads[0] : threads;
+      if (!thread || !thread.id) return sendJson(res, { error: 'Failed to create thread' }, 500, origin);
+      const posts = await sbFetch(
+        supabaseUrl,
+        serviceKey,
+        'qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            thread_id: thread.id,
+            author_name: authorName.slice(0, 80),
+            author_email: authorEmail,
+            body: threadBody.slice(0, 8000),
+            is_op: true,
+            is_moderator: true,
+          }),
+        }
+      );
+      const post = Array.isArray(posts) ? posts[0] : posts;
+      return sendJson(res, { ok: true, thread, post }, 200, origin);
     }
 
     if (!id) return sendJson(res, { error: 'Missing id' }, 400, origin);

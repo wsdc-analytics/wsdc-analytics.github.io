@@ -39,6 +39,10 @@
     composeBoardBtn: document.getElementById("qaComposeBoardBtn"),
     composeBoardValue: document.getElementById("qaComposeBoardValue"),
     composeBoardMenu: document.getElementById("qaComposeBoardMenu"),
+    composeTitle: document.getElementById("qaComposeTitle"),
+    composeLede: document.getElementById("qaComposeLede"),
+    composeSwitch: document.getElementById("qaComposeSwitch"),
+    threadBack: document.getElementById("qaThreadBack"),
     optionalDetails: document.getElementById("qaOptionalDetails"),
     threadList: document.getElementById("qaThreadList"),
     threadPanel: document.getElementById("qaThreadPanel"),
@@ -147,6 +151,7 @@
     const chrome = document.querySelector("[data-site-chrome]");
     if (chrome) chrome.setAttribute("data-lang", next);
     renderBoards();
+    syncComposeMode();
     if (state.thread) renderThread();
     else renderThreads();
     if (state.mod) loadStats();
@@ -330,12 +335,12 @@
         state.threads = data.threads || [];
       } catch (e) {
         state.threads = await sb(
-          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
+          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
         );
       }
     } else {
       state.threads = await sb(
-        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
+        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
       );
     }
     renderThreads();
@@ -360,7 +365,9 @@
         return `<li>
           <button type="button" class="qa-thread-item${active}" data-thread="${esc(row.id)}">
             <div class="qa-thread-title"><span>${esc(row.title)}</span>${badges}</div>
-            <div class="qa-thread-meta"><span class="qa-thread-author">${esc(row.author_name)}</span><span class="qa-time">${esc(fmtDate(row.created_at))}</span></div>
+            <div class="qa-thread-meta"><span class="qa-thread-author${
+              row.is_moderator ? " is-mod" : ""
+            }">${esc(row.author_name)}</span><span class="qa-time">${esc(fmtDate(row.created_at))}</span></div>
           </button>
         </li>`;
       })
@@ -372,7 +379,7 @@
     const rows = state.mod && API_BASE
       ? null
       : await sb(
-          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
+          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
             id
           )}&limit=1`
         );
@@ -384,7 +391,7 @@
     }
     if (!thread) {
       const pub = await sb(
-        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
+        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
           id
         )}&limit=1`
       );
@@ -399,7 +406,7 @@
     }
 
     const posts = await sb(
-      `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at&thread_id=eq.${encodeURIComponent(
+      `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
         id
       )}&order=created_at.asc`
     );
@@ -423,7 +430,9 @@
       slug,
       (thr.qa_boards && thr.qa_boards.title) || state.boardSlug
     );
-    els.threadMeta.innerHTML = `${esc(boardTitle)} · ${esc(t("by"))} <strong>${esc(thr.author_name)}</strong> · <span class="qa-time">${esc(
+    els.threadMeta.innerHTML = `${esc(boardTitle)} · ${esc(t("by"))} <strong class="qa-author${
+      thr.is_moderator ? " is-mod" : ""
+    }">${esc(thr.author_name)}</strong> · <span class="qa-time">${esc(
       fmtDate(thr.created_at)
     )}</span>${(() => {
       const href = safeHttpsUrl(thr.page_url);
@@ -435,8 +444,10 @@
     }${thr.is_hidden ? ` · <span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}`;
 
     const opHtml = `<article class="qa-post qa-post--op">
-      <div class="qa-post-head"><span class="qa-post-author">${esc(thr.author_name)}</span>
-      <span class="qa-time">${esc(fmtDate(thr.created_at))}</span><span class="wsdc-pill">OP</span></div>
+      <div class="qa-post-head"><span class="qa-post-author${
+        thr.is_moderator ? " is-mod" : ""
+      }">${esc(thr.author_name)}</span>
+      <span class="qa-time">${esc(fmtDate(thr.created_at))}</span></div>
       <div class="qa-post-body">${esc(thr.body)}</div>
     </article>`;
 
@@ -444,12 +455,14 @@
       .filter((p) => !p.is_op)
       .map(
         (p) => `<article class="qa-post qa-post--reply" data-post-id="${esc(p.id)}">
-      <div class="qa-post-head"><span class="qa-post-author">${esc(p.author_name)}</span>
+      <div class="qa-post-head"><span class="qa-post-author${
+        p.is_moderator ? " is-mod" : ""
+      }">${esc(p.author_name)}</span>
       <span class="qa-time">${esc(fmtDate(p.created_at))}</span>
       ${p.is_hidden ? `<span class="wsdc-pill qa-pill-hidden">${esc(t("hidden"))}</span>` : ""}
       ${
         state.mod
-          ? `<button type="button" class="wsdc-btn wsdc-btn--ghost" data-mod-post="${esc(p.id)}" data-mod-action="${
+          ? `<button type="button" class="qa-mod-inline" data-mod-post="${esc(p.id)}" data-mod-action="${
               p.is_hidden ? "unhide" : "hide"
             }">${esc(p.is_hidden ? t("unhidePost") : t("hidePost"))}</button>`
           : ""
@@ -461,8 +474,31 @@
       .join("");
 
     els.posts.innerHTML = opHtml + replies;
-    els.replyForm.hidden = false;
+    syncComposeMode();
     renderModActions();
+  }
+
+  function syncComposeMode() {
+    const replyMode = Boolean(state.threadId && state.thread);
+    if (els.newThreadForm) els.newThreadForm.hidden = replyMode;
+    if (els.replyForm) els.replyForm.hidden = !replyMode;
+    if (els.composeSwitch) els.composeSwitch.hidden = !replyMode;
+    if (els.composeTitle) {
+      els.composeTitle.textContent = replyMode ? t("replyTitle") : t("composeTitle");
+      els.composeTitle.setAttribute("data-qa-i18n", replyMode ? "replyTitle" : "composeTitle");
+    }
+    if (els.composeLede) {
+      if (replyMode) {
+        const title = (state.thread && state.thread.title) || "";
+        els.composeLede.textContent = title
+          ? `${t("replyLede")} — ${title}`
+          : t("replyLede");
+        els.composeLede.removeAttribute("data-qa-i18n");
+      } else {
+        els.composeLede.textContent = t("composeLede");
+        els.composeLede.setAttribute("data-qa-i18n", "composeLede");
+      }
+    }
   }
 
   function renderModBar() {
@@ -476,6 +512,7 @@
       if (!unlocked) els.aside.open = false;
     }
     if (!unlocked) els.modBar.open = false;
+    else if (state.threadId) els.modBar.open = true;
   }
 
   function renderModActions() {
@@ -493,31 +530,81 @@
       (thr.qa_boards && thr.qa_boards.slug) ||
       (state.boards.find((b) => b.id === thr.board_id) || {}).slug ||
       state.boardSlug;
-    const options = state.boards
-      .map((b) => {
-        const label = localizedBoardTitle(b.slug, b.title);
-        const sel = b.slug === currentSlug ? " selected" : "";
-        return `<option value="${esc(b.slug)}"${sel}>${esc(label)}</option>`;
-      })
-      .join("");
     els.modActions.innerHTML = `
-      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="hide">${esc(
-        thr.is_hidden ? t("unhideThread") : t("hideThread")
-      )}</button>
-      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="pin">${esc(
-        thr.is_pinned ? t("unpin") : t("pin")
-      )}</button>
-      <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="delete">${esc(
-        t("deleteThread")
-      )}</button>
-      <div class="qa-mod-move">
-        <label class="qa-mod-label" for="qaModMoveBoard">${esc(t("moveBoard"))}</label>
-        <select class="wsdc-field" id="qaModMoveBoard">${options}</select>
-        <button type="button" class="wsdc-btn wsdc-btn--secondary" data-mod-thread="move">${esc(
-          t("move")
+      <div class="qa-mod-actions-row">
+        <button type="button" class="qa-mod-chip" data-mod-thread="hide">${esc(
+          thr.is_hidden ? t("unhideThread") : t("hideThread")
+        )}</button>
+        <button type="button" class="qa-mod-chip" data-mod-thread="pin">${esc(
+          thr.is_pinned ? t("unpin") : t("pin")
+        )}</button>
+        <button type="button" class="qa-mod-chip qa-mod-chip--danger" data-mod-thread="delete">${esc(
+          t("deleteThread")
         )}</button>
       </div>
-    `;
+      <div class="qa-mod-move">
+        <span class="qa-compose-label" id="qaModMoveLabel">${esc(t("moveBoard"))}</span>
+        <div class="wsdc-dd wsdc-dd--auto qa-compose-board-dd" id="qaModMoveDd">
+          <button type="button" class="wsdc-dd__btn" id="qaModMoveBtn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="qaModMoveLabel">
+            <span class="wsdc-dd__value" id="qaModMoveValue">${esc(
+              localizedBoardTitle(currentSlug, currentSlug)
+            )}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="wsdc-dd__menu" id="qaModMoveMenu" role="listbox">${state.boards
+            .map((b) => {
+              const label = localizedBoardTitle(b.slug, b.title);
+              return `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
+                b.slug === currentSlug ? "true" : "false"
+              }">${esc(label)}</button></li>`;
+            })
+            .join("")}</ul>
+        </div>
+        <input type="hidden" id="qaModMoveBoard" value="${esc(currentSlug || "")}">
+        <button type="button" class="qa-mod-chip" data-mod-thread="move">${esc(t("move"))}</button>
+      </div>`;
+    wireModMoveDd();
+  }
+
+  let modMoveDdWired = false;
+  function wireModMoveDd() {
+    const dd = document.getElementById("qaModMoveDd");
+    const btn = document.getElementById("qaModMoveBtn");
+    const menu = document.getElementById("qaModMoveMenu");
+    const hidden = document.getElementById("qaModMoveBoard");
+    const valueEl = document.getElementById("qaModMoveValue");
+    if (!dd || !btn || !menu || !hidden) return;
+
+    function close() {
+      dd.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const willOpen = !dd.classList.contains("is-open");
+      close();
+      if (willOpen) {
+        dd.classList.add("is-open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    };
+    menu.onclick = (e) => {
+      const opt = e.target.closest('[role="option"]');
+      if (!opt) return;
+      e.stopPropagation();
+      const slug = opt.getAttribute("data-value") || "";
+      hidden.value = slug;
+      if (valueEl) valueEl.textContent = opt.textContent.trim();
+      menu.querySelectorAll('[role="option"]').forEach((o) => {
+        o.setAttribute("aria-selected", String(o === opt));
+      });
+      close();
+    };
+    if (!modMoveDdWired) {
+      modMoveDdWired = true;
+      document.addEventListener("click", close);
+    }
   }
 
   async function loadStats() {
@@ -559,33 +646,51 @@
     if (page_url_raw && !page_url) throw new Error(t("pageUrlHttps"));
     const body = String(form.body.value || "").trim();
 
-    const rows = await sb(
-      "qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,created_at",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          board_id: board.id,
-          title,
-          author_name,
-          author_email,
-          page_url,
-          body,
-        }),
-      }
-    );
-    const thread = Array.isArray(rows) ? rows[0] : rows;
-    if (!thread || !thread.id) throw new Error(t("createFailed"));
-
-    await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
-      method: "POST",
-      body: JSON.stringify({
-        thread_id: thread.id,
+    let thread;
+    if (state.mod && API_BASE) {
+      const data = await modApi({
+        action: "create_thread",
+        board_id: board.id,
+        title,
         author_name,
         author_email,
+        page_url,
         body,
-        is_op: true,
-      }),
-    });
+      });
+      thread = data.thread;
+    } else {
+      const rows = await sb(
+        "qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            board_id: board.id,
+            title,
+            author_name,
+            author_email,
+            page_url,
+            body,
+          }),
+        }
+      );
+      thread = Array.isArray(rows) ? rows[0] : rows;
+      if (!thread || !thread.id) throw new Error(t("createFailed"));
+
+      await sb(
+        "qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            thread_id: thread.id,
+            author_name,
+            author_email,
+            body,
+            is_op: true,
+          }),
+        }
+      );
+    }
+    if (!thread || !thread.id) throw new Error(t("createFailed"));
 
     markPosted();
     await notify({
@@ -611,16 +716,30 @@
     const author_email = String(form.author_email.value || "").trim() || null;
     const body = String(form.body.value || "").trim();
 
-    await sb("qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,created_at", {
-      method: "POST",
-      body: JSON.stringify({
+    if (state.mod && API_BASE) {
+      await modApi({
+        action: "create_post",
         thread_id: state.threadId,
         author_name,
         author_email,
         body,
         is_op: false,
-      }),
-    });
+      });
+    } else {
+      await sb(
+        "qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            thread_id: state.threadId,
+            author_name,
+            author_email,
+            body,
+            is_op: false,
+          }),
+        }
+      );
+    }
 
     markPosted();
     await notify({
@@ -650,7 +769,8 @@
       state.thread = null;
       state.posts = [];
       if (els.threadPanel) els.threadPanel.hidden = true;
-      if (els.replyForm) els.replyForm.hidden = true;
+      syncComposeMode();
+      renderModActions();
       await loadThreads();
       setStatus("");
     }
@@ -658,6 +778,17 @@
   }
 
   function wire() {
+    if (els.composeSwitch) {
+      els.composeSwitch.addEventListener("click", () => {
+        goBoard(state.boardSlug || "other");
+      });
+    }
+    if (els.threadBack) {
+      els.threadBack.addEventListener("click", () => {
+        goBoard(state.boardSlug || "other");
+      });
+    }
+
     if (els.composeBoardBtn && els.composeBoardDd) {
       els.composeBoardBtn.addEventListener("click", (e) => {
         e.stopPropagation();

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css?v=20260826g">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829f">
-  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260829l">
+  <link rel="stylesheet" href="static/css/qa-hub.css?v=20260829p">
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
   <script>
@@ -55,27 +55,11 @@
 
             <div class="qa-thread-view" id="qaThreadPanel" hidden>
               <header class="qa-thread-view-head">
+                <button type="button" class="qa-thread-back" id="qaThreadBack" data-qa-i18n="backToThreads">← Back to threads</button>
                 <h3 class="qa-thread-view-title" id="qaThreadTitle"></h3>
                 <p class="qa-thread-meta" id="qaThreadMeta"></p>
-                <div class="qa-mod-actions" id="qaModActions" hidden></div>
               </header>
               <div class="qa-posts" id="qaPosts"></div>
-
-              <form class="qa-form qa-reply-form" id="qaReplyForm" hidden>
-              <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-              <label><span data-qa-i18n="labelName">Your name</span>
-                <input class="wsdc-field" name="author_name" required maxlength="80" data-qa-i18n-placeholder="phName" placeholder="Display name">
-              </label>
-              <label><span data-qa-i18n="labelEmail">Email</span> <span class="qa-label-hint" data-qa-i18n="emailHintShort">(not shown)</span>
-                <input class="wsdc-field" name="author_email" type="email" maxlength="120" data-qa-i18n-placeholder="phEmail" placeholder="you@example.com">
-              </label>
-              <label><span data-qa-i18n="reply">Reply</span>
-                <textarea class="wsdc-field" name="body" required maxlength="8000" data-qa-i18n-placeholder="phReply" placeholder="Write a reply…"></textarea>
-              </label>
-              <div class="qa-form-actions">
-                <button type="submit" class="wsdc-btn wsdc-btn--primary" data-qa-i18n="postReply">Post reply</button>
-              </div>
-              </form>
             </div>
           </div>
 
@@ -85,8 +69,9 @@
 
       <aside class="qa-compose" id="qaCompose">
         <header class="qa-compose-head">
-          <h2 class="qa-compose-title" data-qa-i18n="composeTitle">New thread</h2>
-          <p class="qa-compose-lede" data-qa-i18n="composeLede">Choose a board, then publish. Switching the board also updates the thread list.</p>
+          <h2 class="qa-compose-title" id="qaComposeTitle" data-qa-i18n="composeTitle">New thread</h2>
+          <p class="qa-compose-lede" id="qaComposeLede" data-qa-i18n="composeLede">Choose a board, then publish. Switching the board also updates the thread list.</p>
+          <button type="button" class="qa-compose-switch" id="qaComposeSwitch" hidden data-qa-i18n="backToThreads">← Back to threads</button>
         </header>
         <form class="qa-form qa-compose-form" id="qaNewThreadForm">
           <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -126,6 +111,22 @@
           </div>
         </form>
 
+        <form class="qa-form qa-compose-form" id="qaReplyForm" hidden>
+          <input class="qa-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelName">Your name</span>
+            <input class="wsdc-field qa-compose-input" name="author_name" required maxlength="80" data-qa-i18n-placeholder="phName" placeholder="Display name">
+          </label>
+          <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="labelEmail">Email</span> <span class="qa-label-hint" data-qa-i18n="emailHintShort">(not shown)</span>
+            <input class="wsdc-field qa-compose-input" name="author_email" type="email" maxlength="120" data-qa-i18n-placeholder="phEmail" placeholder="you@example.com">
+          </label>
+          <label class="qa-compose-field"><span class="qa-compose-label" data-qa-i18n="reply">Reply</span>
+            <textarea class="wsdc-field qa-compose-input qa-compose-message" name="body" required maxlength="8000" data-qa-i18n-placeholder="phReply" placeholder="Write a reply…"></textarea>
+          </label>
+          <div class="qa-form-actions">
+            <button type="submit" class="wsdc-btn wsdc-btn--primary qa-compose-submit" data-qa-i18n="postReply">Post reply</button>
+          </div>
+        </form>
+
         <details class="qa-aside-stats" id="qaAside" hidden>
           <summary data-qa-i18n="boardStats">Board stats</summary>
           <div id="qaStats" class="qa-stats" data-qa-i18n="statsUnlock">Unlock moderator mode to load counts.</div>
@@ -136,10 +137,11 @@
           <div class="qa-mod-aside-body">
             <div class="qa-mod-unlock" id="qaModUnlock">
               <label class="qa-mod-label" for="qaModSecret" data-qa-i18n="secret">Secret</label>
-              <input class="wsdc-field qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" data-qa-i18n-aria="secret">
-              <button type="button" class="wsdc-btn wsdc-btn--secondary" id="qaModUnlockBtn" data-qa-i18n="unlock">Unlock</button>
+              <input class="wsdc-field qa-compose-input qa-mod-secret" id="qaModSecret" type="password" autocomplete="off" data-qa-i18n-aria="secret">
+              <button type="button" class="wsdc-btn wsdc-btn--primary qa-compose-submit" id="qaModUnlockBtn" data-qa-i18n="unlock">Unlock</button>
             </div>
-            <button type="button" class="wsdc-btn wsdc-btn--ghost" id="qaModLock" hidden data-qa-i18n="lock">Lock</button>
+            <button type="button" class="qa-compose-switch" id="qaModLock" hidden data-qa-i18n="lock">Lock</button>
+            <div class="qa-mod-actions" id="qaModActions" hidden></div>
           </div>
         </details>
       </aside>
@@ -147,8 +149,8 @@
   </main>
 
   <script src="static/js/site-chrome.js?v=20260829f" defer></script>
-  <script src="static/js/qa-i18n.js?v=20260829h" defer></script>
+  <script src="static/js/qa-i18n.js?v=20260829n" defer></script>
   <script src="static/js/qa-config.js?v=20260828g" defer></script>
-  <script src="static/js/qa-hub.js?v=20260829i" defer></script>
+  <script src="static/js/qa-hub.js?v=20260829p" defer></script>
 </body>
 </html>

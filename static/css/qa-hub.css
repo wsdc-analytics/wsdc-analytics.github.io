@@ -219,10 +219,47 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 }
 
 .qa-reply-form {
-  flex: 0 0 auto;
-  margin-top: var(--wsdc-space-4, 16px);
-  padding-top: var(--wsdc-space-4, 16px);
-  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 65%, transparent);
+  display: none;
+}
+
+.qa-thread-back {
+  appearance: none;
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wsdc-color-brand-accent, #2563eb);
+  font: inherit;
+  font-size: var(--wsdc-font-size-xs, 12px);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.qa-thread-back:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+.qa-compose-switch {
+  appearance: none;
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wsdc-color-brand-accent, #2563eb);
+  font: inherit;
+  font-size: var(--wsdc-font-size-xs, 12px);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.qa-compose-switch:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
 }
 
 .qa-main-col > .qa-threads-panel > .qa-status {
@@ -288,6 +325,15 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 
 .qa-compose-form {
   gap: var(--wsdc-space-3, 12px);
+}
+
+/* Author CSS display:grid beats the UA [hidden] rule — force exclusive modes */
+.qa-compose-form[hidden],
+#qaNewThreadForm[hidden],
+#qaReplyForm[hidden],
+.qa-compose-switch[hidden],
+.qa-thread-back[hidden] {
+  display: none !important;
 }
 
 .qa-compose-field {
@@ -512,8 +558,9 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 }
 
 .qa-post {
-  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 55%, transparent);
+  border-top: 0.5px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
   padding: var(--wsdc-space-4, 16px) 0;
+  background: transparent;
 }
 
 .qa-post:first-child {
@@ -523,14 +570,14 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 
 .qa-post--op {
   margin-bottom: var(--wsdc-space-2, 8px);
-  padding: var(--wsdc-space-4, 16px);
-  border: 1px solid color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 18%, var(--wsdc-color-border));
-  border-radius: var(--wsdc-radius-md, 8px);
-  background: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 4%, var(--wsdc-color-surface));
+  padding: var(--wsdc-space-3, 12px) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .qa-post--op:first-child {
-  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 18%, var(--wsdc-color-border));
+  border-top: 0;
 }
 
 .qa-post--reply:last-child {
@@ -542,14 +589,42 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   flex-wrap: wrap;
   gap: var(--wsdc-space-2, 8px) var(--wsdc-space-3, 12px);
   align-items: baseline;
-  margin-bottom: var(--wsdc-space-2, 8px);
-  font-size: var(--wsdc-font-size-sm, 13px);
+  margin-bottom: 6px;
+}
+
+.qa-mod-inline {
+  appearance: none;
+  margin: 0;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--wsdc-color-text-muted, #4b5563);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.qa-mod-inline:hover {
+  color: var(--wsdc-color-brand-accent, #2563eb);
 }
 
 .qa-post-author {
   font-weight: 600;
   color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+.qa-post-author.is-mod,
+.qa-thread-author.is-mod,
+.qa-author.is-mod {
+  color: #4f7a5a;
+  font-weight: 650;
+  background: color-mix(in srgb, #8fbc9a 22%, transparent);
+  border-radius: 999px;
+  padding: 1px 8px;
 }
 
 .qa-post-body {
@@ -708,53 +783,93 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 
 .qa-mod-aside-body {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
   margin-top: var(--wsdc-space-2, 8px);
 }
 
 .qa-mod-unlock {
-  display: inline-flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 6px;
-  align-items: center;
+  align-items: start;
 }
 
 .qa-mod-label {
-  font-size: var(--wsdc-font-size-xs, 12px);
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--wsdc-color-text-muted, #4b5563);
 }
 
 .qa-mod-secret {
-  max-width: 140px;
-  width: min(140px, 100%);
-  display: inline-block;
-  min-height: 32px;
-  height: 32px;
-  padding: 4px 8px;
-  font-size: var(--wsdc-font-size-xs, 12px);
-}
-
-.qa-mod-aside .wsdc-btn {
-  min-height: 32px;
-  padding: 0 10px;
-  font-size: var(--wsdc-font-size-xs, 12px);
+  max-width: none;
+  width: 100%;
+  display: block;
+  min-height: 36px;
+  height: auto;
+  padding: 8px 12px;
+  font-size: var(--wsdc-font-size-sm, 13px);
 }
 
 .qa-mod-actions {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  width: 100%;
+}
+
+.qa-mod-actions[hidden] {
+  display: none !important;
+}
+
+.qa-mod-actions-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  align-items: center;
-  margin: 0 0 var(--wsdc-space-3, 12px);
 }
 
-.qa-mod-actions .wsdc-btn {
-  min-height: 32px;
-  padding: 0 10px;
-  font-size: var(--wsdc-font-size-xs, 12px);
+.qa-mod-chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: var(--wsdc-radius-pill, 999px);
+  border: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 80%, transparent);
+  background: transparent;
+  color: var(--wsdc-color-text, #1f2937);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.qa-mod-chip:hover {
+  border-color: color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 100%, transparent);
+  background: color-mix(in srgb, var(--wsdc-color-surface-soft, #f8fafc) 80%, transparent);
+}
+
+.qa-mod-chip--danger {
+  color: var(--wsdc-color-danger, #b91c1c);
+  border-color: color-mix(in srgb, var(--wsdc-color-danger, #b91c1c) 35%, var(--wsdc-color-border));
+}
+
+.qa-mod-move {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.qa-mod-move .qa-compose-board-dd {
+  width: 100%;
+}
+
+.qa-mod-move .qa-mod-chip {
+  justify-self: start;
 }
 
 .qa-mod-actions[hidden],
@@ -803,20 +918,6 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 .qa-stats ul {
   margin: var(--wsdc-space-2, 8px) 0 0;
   padding-left: 18px;
-}
-
-.qa-mod-move {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  width: 100%;
-}
-
-.qa-mod-move select.wsdc-field {
-  flex: 1 1 140px;
-  min-width: 0;
 }
 
 @media (max-width: 700px) {
