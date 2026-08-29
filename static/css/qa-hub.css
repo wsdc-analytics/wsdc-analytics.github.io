@@ -222,6 +222,26 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
   display: none;
 }
 
+.qa-thread-back {
+  appearance: none;
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wsdc-color-brand-accent, #2563eb);
+  font: inherit;
+  font-size: var(--wsdc-font-size-xs, 12px);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.qa-thread-back:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
 .qa-compose-switch {
   appearance: none;
   display: inline-block;
@@ -305,6 +325,15 @@ body:has(.qa-shell) .wsdc-chrome-wrap:not(.is-fixed) {
 
 .qa-compose-form {
   gap: var(--wsdc-space-3, 12px);
+}
+
+/* Author CSS display:grid beats the UA [hidden] rule — force exclusive modes */
+.qa-compose-form[hidden],
+#qaNewThreadForm[hidden],
+#qaReplyForm[hidden],
+.qa-compose-switch[hidden],
+.qa-thread-back[hidden] {
+  display: none !important;
 }
 
 .qa-compose-field {

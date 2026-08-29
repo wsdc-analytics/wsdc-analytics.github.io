@@ -42,6 +42,7 @@
     composeTitle: document.getElementById("qaComposeTitle"),
     composeLede: document.getElementById("qaComposeLede"),
     composeSwitch: document.getElementById("qaComposeSwitch"),
+    threadBack: document.getElementById("qaThreadBack"),
     optionalDetails: document.getElementById("qaOptionalDetails"),
     threadList: document.getElementById("qaThreadList"),
     threadPanel: document.getElementById("qaThreadPanel"),
@@ -739,6 +740,11 @@
   function wire() {
     if (els.composeSwitch) {
       els.composeSwitch.addEventListener("click", () => {
+        goBoard(state.boardSlug || "other");
+      });
+    }
+    if (els.threadBack) {
+      els.threadBack.addEventListener("click", () => {
         goBoard(state.boardSlug || "other");
       });
     }
