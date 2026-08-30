@@ -2873,13 +2873,13 @@
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
   applyStaticI18n();
 
-  fetch("static/data/events_year_calendar.json?v=20260826-sync")
+  fetch("static/data/events_year_calendar.json?v=20260830-calgary")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
     })
     .then(function (calendar) {
-      return fetch("static/data/event_l2_cards.json?v=20260826-sync")
+      return fetch("static/data/event_l2_cards.json?v=20260830-calgary")
         .then(function (r) {
           if (!r.ok) return null;
           return r.json();
