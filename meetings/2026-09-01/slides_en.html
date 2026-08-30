@@ -621,90 +621,6 @@
         <p class="notes"><strong>Close:</strong> public data already supports careful analysis. Durable board answers need Score Report lists as a working layer and Event Update without free-text name/location drift. Tooling stays the committee’s choice.</p>
       </section>
 
-      <section class="slide title-slide" data-section="appendix" data-notes="Appendix on request.">
-        <div class="badge"><span class="pill app">Appendix</span></div>
-        <h1>Appendix</h1>
-        <p class="lead">Detail if the call has time.</p>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q1</div>
-        <h1>Competitors by skill / region</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Possible now</h3>
-            <ul>
-              <li>Unique IDs with points by year</li>
-              <li>Cuts by scored division</li>
-              <li>Rough geo via event location (proxy)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Not honestly “community”</h3>
-            <ul>
-              <li>Entrants without points</li>
-              <li>True dancer home region</li>
-              <li>Newcomer funnel before first point</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q2</div>
-        <h1>Points, tiers, progression majority</h1>
-        <ul>
-          <li><strong>Can:</strong> point concentration, progression speed, scored transitions; before/after rule changes</li>
-          <li><strong>Careful:</strong> define “majority” (all IDs? active in a year? ≥N points?)</li>
-          <li><strong>Need:</strong> entry data to separate “no points” from “did not enter”</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q3</div>
-        <h1>Event landscape &amp; capacity</h1>
-        <ul>
-          <li><strong>Process first:</strong> local organizer + short case for the territory; WSDC validates motivation, does not organize</li>
-          <li><strong>Can:</strong> registry event counts, geography, 2021-2026 dynamics, regional entry load (when lists exist)</li>
-          <li><strong>Partial:</strong> confirm demand via scored travel, event density, registrations at nearby events</li>
-          <li><strong>Cannot decide alone:</strong> whether an event will pay off for the organizer</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q4</div>
-        <h1>Point structure change</h1>
-        <ul>
-          <li><strong>Can:</strong> scenario recalculation on scored history; sensitivity of tops and thresholds</li>
-          <li><strong>Risk:</strong> optimizing for people already in the registry without an entry model</li>
-          <li><strong>First KPIs:</strong> majority growth, threshold fairness, organizer load</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="Chart 5 / tiers.">
-        <div class="badge"><span class="pill app">Appendix</span> Tiers</div>
-        <h1>Tier is a size band, not an exact count</h1>
-        <p class="lead">In the rules, Tier depends on unique competitors in a division×role. Public data can sum those range bounds. That is order of magnitude, not headcount.</p>
-        <ul>
-          <li>Useful for comparing event scale</li>
-          <li>Does not replace the named entry list from §2.3</li>
-          <li>Open-ended upper tiers need an uncertainty note</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="Speaking path for ~12-15 min.">
-        <div class="badge"><span class="pill app">Appendix</span> Navigation</div>
-        <h1>Short path on the call (~12-15 min)</h1>
-        <ol>
-          <li>Goal of the call</li>
-          <li>Public registry vs Score Report lists + three populations</li>
-          <li>Board agenda → four gaps</li>
-          <li>A–D: ID → list retention → forms/directories → organizers</li>
-          <li>Matrix + checklist / three questions</li>
-        </ol>
-        <p class="notes">Everything else is appendix on request.</p>
-      </section>
-
     </div>
     <div class="foot-hint">Keys <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · click edges</div>
   </div>
@@ -716,8 +632,7 @@
       function show(n) {
         i = Math.max(0, Math.min(slides.length - 1, n));
         slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
-        const sec = slides[i].dataset.section === 'appendix' ? 'Appendix' : 'Core';
-        counter.textContent = (i + 1) + ' / ' + slides.length + ' · ' + sec;
+        counter.textContent = (i + 1) + ' / ' + slides.length;
         const note = slides[i].getAttribute('data-notes') || '';
         if (note) console.debug('[notes]', note);
         history.replaceState(null, '', '#' + (i + 1));
