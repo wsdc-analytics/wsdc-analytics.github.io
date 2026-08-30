@@ -175,6 +175,11 @@
       text-underline-offset: 2px;
     }
     .notes a:hover { color: var(--ink); }
+    .lead a, .card a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
     .notes strong { color: var(--body); }
     .title-slide { justify-content: center; }
     .title-slide .meta { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
@@ -473,7 +478,7 @@
         </div>
         <div class="card" style="margin-top:12px">
           <h3>Предлагаемое решение</h3>
-          <p>Отдельный централизованный учёт <strong>ивентов</strong> и <strong>локаций</strong> с canonical name. Справочник публичный или хотя бы доступный организаторам. В формах оргов: dropdowns (event + location), не free text.</p>
+          <p>Отдельный централизованный учёт <strong>ивентов</strong> и <strong>локаций</strong> с canonical name. Подключить к существующим формам WSDC (<a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">worldsdc.com/wsdc-forms</a>): Event Update, New Event Application, Score Report — dropdowns для event + location, не free text.</p>
         </div>
       </section>
 
@@ -495,7 +500,7 @@
             <ul>
               <li>Справочник ивентов: одно canonical name / один ID</li>
               <li>Справочник локаций: city + country в одном формате (для американских ивентов — ещё штат)</li>
-              <li>Формы оргов: dropdowns из справочников</li>
+              <li>Формы оргов: Event Update / New Event / Score Report на справочниках</li>
               <li>Орги отвечают за актуальность своих записей</li>
             </ul>
           </div>
@@ -526,7 +531,33 @@
             </ul>
           </div>
         </div>
-        <p class="notes">Иначе снова появятся free-text варианты вроде <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> и «новые» ивенты с тем же смыслом, но другим ID.</p>
+        <p class="notes">Иначе снова появятся free-text варианты вроде <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> и «новые» ивенты с тем же смыслом, но другим ID. Именно это сегодня допускают free-text поля Event Update / Score Report.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Ссылка на живые формы WSDC. Мягкий тон: темы ок, entity-поля free text. Проверка worldsdc.com Aug 2026.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Формы</div>
+        <h1>Существующие формы WSDC: темы ок, entity — free text</h1>
+        <p class="lead">На <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC Forms</a> организаторы уже сдают <strong>New Event Application</strong>, <strong>Event Update</strong> и <strong>Score Report</strong>. Операционные вопросы в целом на месте. Дыра DQ — free-text <strong>название ивента</strong> и <strong>локация</strong>: отсюда aliases и битая гео.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Что уже работает</h3>
+            <ul>
+              <li><strong>New Event Application:</strong> viability, конфликты, venue, staffing — case организатора частично уже здесь</li>
+              <li><strong>Event Update:</strong> флаги смены имени, сдвига даты &gt;10 дней + approval board, dues current</li>
+              <li><strong>Score Report v2026.1B:</strong> лист Competitors List (§2.3) + tier-логика по дивизионам</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что ужесточить</h3>
+            <ul>
+              <li><strong>Event Update:</strong> выбрать существующий ивент → prefill; не набирать name/location с пустой формы</li>
+              <li><strong>Строго:</strong> название ивента + локация (city + country; для US — ещё штат)</li>
+              <li><strong>Можно free text:</strong> контакты, операционные заметки по venue, ownership %, shuttle</li>
+              <li><strong>Score Report:</strong> Event Name / Location из справочника или Event ID, не пустые ячейки в xlsx по email</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Даты остаются календарными полями. Смена имени и локации — через предварительный процесс справочника, не ad-hoc набор в день update или reporting.</p>
       </section>
 
       <section class="slide" data-section="core" data-notes="Орги несут риск; WSDC проверяет мотивацию. Аналитика подтверждает спрос, но не решает сама.">
@@ -538,7 +569,7 @@
             <h3>Организатор в процессе</h3>
             <ul>
               <li>Именованный организатор берёт операционную и финансовую ответственность</li>
-              <li>Трайл / новый ивент: краткое обоснование — зачем WCS здесь и почему это может сработать</li>
+              <li>Трайл / новый ивент: краткий case территории (New Event Application уже спрашивает viability — сохранить и структурировать)</li>
               <li>Сверка с текущей сеткой ивентов (перегруженный регион vs один крупный ивент и растущая сцена)</li>
             </ul>
           </div>
@@ -568,7 +599,7 @@
           <div class="card">
             <h3>Что зафиксировать</h3>
             <ul>
-              <li>Лёгкое обоснование для trial/new events (организатор + case территории; не детальный бизнес-план)</li>
+              <li>Структурировать New Event Application как case территории (+ подтверждение аналитикой); name/location не free text</li>
               <li>Стабильная гео ивентов + entry counts/lists как слой аналитики рядом с Tier</li>
               <li>Три метрики отдельно: event supply, scored demand, entry demand</li>
             </ul>
@@ -621,9 +652,9 @@
           <li><strong>Retention и формат</strong>: машиночитаемый шаблон, срок хранения, владелец</li>
           <li><strong>Правило ID</strong>: оставляем «только после поинта» или меняем; как подписывать метрики</li>
           <li><strong>Справочники ивентов и локаций</strong>: canonical name; доступ оргам (или публичный)</li>
-          <li><strong>Формы оргов</strong>: только dropdowns; изменения/новые записи заранее по регламенту + история имён/локаций</li>
+          <li><strong>Формы оргов (существующие)</strong>: Event Update / New Event Application / Score Report — убрать free-text у name &amp; location; Event Update prefills из справочника</li>
           <li><strong>Словарь метрик board</strong>: scored population vs entry population vs community</li>
-          <li><strong>Trial / new events</strong>: именованный организатор, краткое обоснование территории, сверка с текущей сеткой ивентов</li>
+          <li><strong>Trial / new events</strong>: именованный организатор + структурированный case в New Event Application; сверка с сеткой ивентов</li>
         </ol>
       </section>
 
