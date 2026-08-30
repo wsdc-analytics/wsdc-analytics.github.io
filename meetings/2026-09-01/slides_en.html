@@ -239,6 +239,44 @@
     @media (max-width: 800px) {
       .evidence { grid-template-columns: 1fr; }
     }
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+      max-width: 42rem;
+    }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.outer { width: 100%; }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .funnel .band p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--body);
+      line-height: 1.4;
+    }
+    .funnel .band .src {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -327,263 +365,200 @@
         <p class="cite">Registry Event Rules 2026.1B §2.3 (items 1-4); Score Report Form v2026.1B on <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC Forms</a>. Results due no later than three days after the event closes.</p>
       </section>
 
+      <section class="slide" data-section="core" data-notes="Visual anchor for all later gaps. Label every board report with which population.">
+        <div class="badge"><span class="pill">Core</span> Frame</div>
+        <h1>Three populations. Do not mix them in one report</h1>
+        <p class="lead">Board questions mix these layers unless we name which one we mean.</p>
+        <div class="funnel">
+          <div class="band outer">
+            <h3>Community (broad)</h3>
+            <p>People outside scored outcomes and possibly outside registry events.</p>
+            <span class="src">Source: separate methodology — not the Points Registry alone</span>
+          </div>
+          <div class="band mid">
+            <h3>Entry population</h3>
+            <p>Everyone registered in WSDC J&amp;J. Already collected in Score Report lists.</p>
+            <span class="src">Source: Competitors List / Dual Roles — needs schema + retention</span>
+          </div>
+          <div class="band inner">
+            <h3>Scored population (public)</h3>
+            <p>Unique WSDC IDs with points. What the open Points Registry shows.</p>
+            <span class="src">Source: public lookup / scored history</span>
+          </div>
+        </div>
+      </section>
+
       <section class="slide" data-section="core" data-notes="Denis agenda anchor.">
         <div class="badge"><span class="pill">Core</span> 2 · Board agenda</div>
         <h1>Four directions from the committee ask</h1>
         <ol>
           <li><strong>Competitor base 2021-2026:</strong> counts by skill level; overall community; region if possible</li>
-          <li><strong>Points &amp; tiers:</strong> current structure; impact of changes; progression for the majority (many points earned by a small minority)</li>
-          <li><strong>Event landscape &amp; capacity:</strong> where growth is justified (local organizer + territory case); when to limit new events; analytics confirms demand signals</li>
+          <li><strong>Points &amp; tiers:</strong> current structure; impact of changes; progression for the majority</li>
+          <li><strong>Event landscape &amp; capacity:</strong> where growth is justified (local organizer + territory case); when to limit new events</li>
           <li><strong>Point structure:</strong> how to test with data whether the structure should change</li>
         </ol>
-        <p class="notes">Next slides are not numbers. They map what blocks a straight answer and what process work unlocks one.</p>
+        <p class="notes">Next slides map what blocks a straight answer — not board numbers yet.</p>
       </section>
 
       <section class="slide" data-section="core" data-notes="Four gaps A-D.">
         <div class="badge"><span class="pill">Core</span> Bridge</div>
         <h1>From agenda to four gaps</h1>
-        <p class="lead">Without shared definitions of “dancer,” “entrant,” “region,” and “event,” board reports will argue with each other. The open registry has four structural holes.</p>
+        <p class="lead">Without shared definitions of “dancer,” “entrant,” “region,” and “event,” board reports will argue with each other.</p>
         <div class="grid2">
           <div class="card"><h3>A. Identity</h3><p>An ID appears after the first point. Before that, the person is not a registry entity.</p></div>
-          <div class="card"><h3>B. Coverage</h3><p>Public layer = scored history. Full lists already sit in Score Report sheets — format and retention unclear.</p></div>
-          <div class="card"><h3>C. Data quality</h3><p>Free-text intake on Event Update / New Event Application / Score Report: name variants, empty locations, drifting series.</p></div>
-          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity is not a map exercise: local organizers, territory case, then analytics to confirm demand.</p></div>
+          <div class="card"><h3>B. Coverage</h3><p>Public layer = scored history. Full lists sit in Score Report — format and retention unclear.</p></div>
+          <div class="card"><h3>C. Data quality</h3><p>Free-text intake on Event Update / New Event Application / Score Report multiplies name and location drift.</p></div>
+          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity needs a local organizer and territory case; analytics only confirms demand.</p></div>
         </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Official rule §3.2.2c.">
+      <section class="slide" data-section="core" data-notes="Merged Identity + Impact. §3.2.2c official.">
         <div class="badge"><span class="pill">Core</span> Gap A · Identity</div>
-        <h1>IDs are assigned only after a point</h1>
-        <p class="lead">This is not an inference from the scrape. The rules say a Competitor ID is assigned only after the dancer receives a point.</p>
-        <ul>
-          <li>Before the first point, the person is not trackable in the Points Registry as an entity</li>
-          <li>Someone can compete repeatedly and still be invisible to public analytics</li>
-          <li>“Dancers in the community” and “unique WSDC IDs with points” are different metrics</li>
-        </ul>
-        <p class="cite">Registry Event Rules 2026.1B §3.2.2c; Overview: ID after at least one J&amp;J point.</p>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Path: keep after-points policy with honest labels, or change; use §2.3 lists for full population.">
-        <div class="badge"><span class="pill">Core</span> Gap A · Impact</div>
-        <h1>How this hits the agenda</h1>
+        <h1>IDs only after a point — and what that means</h1>
+        <p class="lead">The rules assign a Competitor ID only after the dancer receives a point. Before that, the person is invisible in the public Points Registry.</p>
         <div class="grid2">
           <div class="card">
-            <h3>Board questions</h3>
+            <h3>Hits the agenda</h3>
             <ul>
-              <li>Q1: undercounts “actives,” especially Newcomer and Novice</li>
-              <li>Q2: the entry funnel is cut off at people who already scored</li>
-              <li>Q3: novice demand barely shows in the registry</li>
+              <li><strong>Counts:</strong> undercounts actives, especially Newcomer and Novice</li>
+              <li><strong>Progression:</strong> entry funnel cut off at people who already scored</li>
+              <li><strong>Capacity:</strong> novice demand barely shows in the registry</li>
             </ul>
           </div>
           <div class="card">
             <h3>Process moves</h3>
             <ul>
-              <li>Decide policy: ID only after points (current) or earlier</li>
-              <li>If you keep “after points,” label reports as scored population, not “whole community”</li>
-              <li>For full population work, lean on Score Report <span class="mono">Competitors List</span> / Dual Roles (§2.3) — once format and retention are clear</li>
+              <li>Keep “ID after points” or change it — either way, label reports honestly</li>
+              <li>If after points: write <em>scored population</em>, not “whole community”</li>
+              <li>Full population work needs Score Report lists once schema and retention are clear</li>
             </ul>
           </div>
         </div>
+        <p class="cite">Registry Event Rules 2026.1B §3.2.2c.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Lists exist in Score Report; public registry only shows scored. Soft tone.">
+      <section class="slide" data-section="core" data-notes="Merged Coverage + Impact. Lists exist; ask schema/ID/path.">
         <div class="badge"><span class="pill">Core</span> Gap B · Coverage</div>
-        <h1>Public registry ≠ full entry list</h1>
-        <p class="lead">Outside, we mostly see people who earned points. The full registered list is already collected in the Score Report workbook — sheets <span class="mono">Competitors List</span> and <span class="mono">Dual / Multiple Roles</span> — but it is not in the open Points Registry.</p>
+        <h1>Lists are collected — not yet a working analytics layer</h1>
+        <p class="lead">Score Report already has <span class="mono">Competitors List</span> and <span class="mono">Dual / Multiple Roles</span>. The public registry still shows mostly people who scored. The open questions are format, ID handling, and where files go after submit.</p>
         <div class="grid2">
           <div class="card">
-            <h3>Visible outside</h3>
+            <h3>Why it matters</h3>
             <ul>
-              <li>Point rows / ID histories</li>
-              <li>Indirectly: Tier by division×role size</li>
+              <li><strong>Counts:</strong> registry skill counts = scored, not starters</li>
+              <li><strong>Progression:</strong> cannot separate “dances little” from “never reaches points”</li>
+              <li><strong>Capacity / point structure:</strong> fragile without the entry funnel</li>
             </ul>
           </div>
           <div class="card">
-            <h3>Collected in Score Report, not public</h3>
+            <h3>What to lock</h3>
             <ul>
-              <li>Everyone registered in J&amp;J (Competitors List)</li>
-              <li>People who danced dual / multiple roles</li>
-              <li>Exact headcount and share with no points — only if lists are retained and joinable</li>
-            </ul>
-          </div>
-        </div>
-        <p class="notes">Tier helps with order of magnitude. It does not replace a named entry list with a clear schema (including how WSDC ID is handled for people who have not scored yet).</p>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Ask: xlsx vs DB; ID on list rows; years recoverable.">
-        <div class="badge"><span class="pill">Core</span> Gap B · Impact</div>
-        <h1>Impact and path forward</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Board questions</h3>
-            <ul>
-              <li>Q1: skill counts from the registry = scored, not starters</li>
-              <li>Q2: cannot separate “dances little” from “never reaches points”</li>
-              <li>Q3-Q4: capacity and point-structure scenarios stay fragile without the funnel</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Process path (Score Report lists)</h3>
-            <ul>
-              <li>Fix sheet schema: required fields, how WSDC ID is entered when the dancer has no ID yet</li>
-              <li>Trace the path after submit: stay with event protocols as xlsx, or load into a database?</li>
-              <li>If only files today — design a working store so lists can join the Points Registry later</li>
+              <li>Sheet schema: required fields; how WSDC ID is entered when the dancer has none yet</li>
+              <li>Path after submit: xlsx with protocols only, or a store that can join the Points Registry?</li>
+              <li>If only files today — design that working store</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Examples from open data. Root cause: free-text Event Update / New Event Application / Score Report header.">
+      <section class="slide" data-section="core" data-notes="Examples from open data. Root cause: free-text forms.">
         <div class="badge"><span class="pill">Core</span> Gap C · Data quality</div>
         <h1>Entity quality: what shows up in open data</h1>
-        <p class="lead">Deep work on the registry keeps hitting name and location mismatches. That is the downstream effect of free-text intake on the existing <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC forms</a> — not malice.</p>
+        <p class="lead">Name and location mismatches are the downstream effect of free-text intake on existing <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC forms</a> — not malice.</p>
         <div class="example">
           <div class="label">1. Multiple titles for one series</div>
-          Calendar strings like <span class="mono">Asia WCS Open XI</span>, <span class="mono">Asia WCS Open XIII</span>, and <span class="mono">Asia WCS Open - 10th Anniversary</span> resolve to <span class="mono">Asia WCS Open</span>. Without aliases, time series break.
+          <span class="mono">Asia WCS Open XI</span>, <span class="mono">XIII</span>, <span class="mono">10th Anniversary</span> → canonical <span class="mono">Asia WCS Open</span>. Without aliases, time series break.
         </div>
         <div class="example">
-          <div class="label">2. Empty location in the results extract</div>
-          For Scandinavian Open, the local results extract has an empty location on all 993 rows. Geography has to be recovered elsewhere.
+          <div class="label">2. Empty location</div>
+          Scandinavian Open: empty location on all 993 local result rows.
         </div>
         <div class="example">
           <div class="label">3. Brand spelling variants</div>
-          <span class="mono">St.Petersburg WCS Nights</span> / <span class="mono">Saint Petersburg WCS Nights</span>; <span class="mono">Vestigala</span> / <span class="mono">Westie Gala</span>. Without aliases, fake “new” events appear.
+          <span class="mono">St.Petersburg</span> / <span class="mono">Saint Petersburg WCS Nights</span>; <span class="mono">Vestigala</span> / <span class="mono">Westie Gala</span>.
         </div>
         <div class="example">
           <div class="label">4. Same label, different histories</div>
-          Spring Swing: Stockholm and Detroit. Sunny Side Dance Camp: Crimea, then Torrevieja. You need explicit merge / keep-separate rules.
+          Spring Swing: Stockholm and Detroit. Sunny Side Dance Camp: Crimea, then Torrevieja.
         </div>
-        <p class="notes"><strong>Where it enters:</strong> Event Update and New Event Application take <strong>event name</strong> and <strong>location</strong> as free text; Score Report Info Summary does the same for Event Name / Location. Retype from a blank form → new aliases and new geo spellings.</p>
+        <p class="notes"><strong>Intake:</strong> Event Update, New Event Application, and Score Report Info Summary take event name and location as free text. Blank retype → new aliases and geo spellings.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Show screenshots. Sample only. Solution: master events+locations + dropdowns in organizer forms.">
+      <section class="slide" data-section="core" data-notes="Screenshots sample. Solution once: directories + form wiring.">
         <div class="badge"><span class="pill">Core</span> Gap C · Locations</div>
         <h1>Location garbage: why standardization matters</h1>
-        <p class="lead">The same fields are written differently. Below is only a small sample from open data; the registry has many more rows like these.</p>
+        <p class="lead">Same fields, different writing. Small sample from open data.</p>
         <div class="evidence">
           <figure>
             <img src="examples/loc-local-language.png" alt="KING SWING: Kraków, malopolska, Polska">
-            <figcaption><strong>Local language + casing:</strong> <span class="mono">Kraków, malopolska, Polska</span> instead of a canon like Kraków / Poland.</figcaption>
+            <figcaption><strong>Local language + casing:</strong> <span class="mono">Kraków, malopolska, Polska</span> instead of Kraków / Poland.</figcaption>
           </figure>
           <figure>
             <img src="examples/loc-country-only.png" alt="Swing Fiction: Czech Republic">
-            <figcaption><strong>No city:</strong> only <span class="mono">Czech Republic</span>. Not enough for an event map.</figcaption>
+            <figcaption><strong>No city:</strong> only <span class="mono">Czech Republic</span>.</figcaption>
           </figure>
           <figure>
             <img src="examples/loc-country-formats.png" alt="USA vs US vs United States">
-            <figcaption><strong>Country in 3 forms:</strong> <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> (state full vs <span class="mono">LA</span>).</figcaption>
+            <figcaption><strong>Country in 3 forms:</strong> <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>.</figcaption>
           </figure>
           <figure>
             <img src="examples/loc-no-country.png" alt="Swing Dance America: Lake Geneva, IL">
-            <figcaption><strong>No country at all:</strong> <span class="mono">Lake Geneva, IL</span>. Humans guess USA; analytics sees a hole.</figcaption>
+            <figcaption><strong>No country:</strong> <span class="mono">Lake Geneva, IL</span>.</figcaption>
           </figure>
         </div>
-        <div class="card" style="margin-top:12px">
-          <h3>Proposed fix</h3>
-          <p>Central directories for <strong>events</strong> and <strong>locations</strong> (canonical name; US locations include state). Then change the existing forms: <strong>Event Update</strong> selects the event and prefills; <strong>New Event Application</strong> / <strong>Score Report</strong> pick location from the directory — free text stays for contacts and venue ops, not for entity fields.</p>
-        </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="DQ gate = dropdowns + master data, not cleanup after the fact.">
-        <div class="badge"><span class="pill">Core</span> Gap C · Impact</div>
-        <h1>Why you cannot “just count” without DQ</h1>
+      <section class="slide" data-section="core" data-notes="Merged Impact + Governance. One solution statement.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Fix</div>
+        <h1>Directories + forms that enforce them</h1>
+        <p class="lead">Without master data, event and country series break, editions double-count or vanish, and automation copies the mess. Fix the existing forms — do not invent parallel paperwork.</p>
         <div class="grid2">
           <div class="card">
-            <h3>What breaks</h3>
-            <ul>
-              <li>Event and country series</li>
-              <li>Double counts or “missing” editions</li>
-              <li>Regional board conclusions</li>
-              <li>Automation without master data copies the mess</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Foundation</h3>
+            <h3>Directories</h3>
             <ul>
               <li>Event directory: one canonical name / one ID</li>
-              <li>Location directory: city + country in one format (for US events, state too)</li>
-              <li>Organizer forms: Event Update / New Event / Score Report wired to directories</li>
+              <li>Location directory: city + country (US → state too)</li>
+              <li>Change types in advance: new event, rename, location move, correction</li>
               <li>Organizers own the accuracy of their rows</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Event Update prefill; New Event Application creates directory row after approval; Score Report uses Event ID.">
-        <div class="badge"><span class="pill">Core</span> Gap C · Governance</div>
-        <h1>Directory changes only in advance, under rules</h1>
-        <p class="lead">Organizers must keep their event and location rows current. Any change to existing data or creation of a new event is requested <strong>ahead of time</strong> — then Event Update and Score Report can only select what is already in the directory.</p>
-        <div class="grid2">
-          <div class="card">
-            <h3>Put change types in the regulations</h3>
-            <ul>
-              <li>New event (via New Event Application) → new ID + canonical name in the directory</li>
-              <li>Series rename (old name → alias / history)</li>
-              <li>Location change (city/country; US + state)</li>
-              <li>Correction of a directory error</li>
             </ul>
           </div>
           <div class="card">
             <h3>How forms enforce it</h3>
             <ul>
               <li><strong>Event Update:</strong> pick existing event → prefill; no blank retype of name/location</li>
+              <li><strong>New Event Application:</strong> after approval → new directory row</li>
               <li><strong>Score Report:</strong> Event Name / Location from directory or Event ID</li>
-              <li>Free text OK: contacts, venue ops, ownership, shuttle notes</li>
-              <li>No directory row → cannot select that event/location in the form</li>
+              <li>Free text OK: contacts, venue ops, ownership, shuttle</li>
             </ul>
           </div>
         </div>
-        <p class="notes">Otherwise free-text variants return (<span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>) and “new” events that are really renames — exactly what blank Event Update / Score Report fields allow today.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Organizers carry risk; WSDC validates motivation. Analytics confirms demand, does not decide alone.">
+      <section class="slide" data-section="core" data-notes="Merged Landscape + Impact.">
         <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
         <h1>Landscape and capacity: organizers first</h1>
-        <p class="lead">WSDC does not run events. Organizers request trials and new events, spend money, and carry the risk that an event pays off. A blank spot on the map is not enough — there must be a local organizer and a credible case for that territory.</p>
+        <p class="lead">WSDC does not run events. A blank spot on the map is not enough — there must be a local organizer who carries the risk, plus a credible territory case.</p>
         <div class="grid2">
           <div class="card">
             <h3>Organizer in the process</h3>
             <ul>
               <li>Named organizer takes operational and financial responsibility</li>
-              <li>Trial / new event: short territory case (New Event Application already asks viability — keep and structure it)</li>
-              <li>Review against the current event grid (crowded region vs one large event and a growing scene)</li>
+              <li>Structure the case already asked on New Event Application (viability + grid review)</li>
+              <li>Crowded region vs one large event and a growing scene — different decisions</li>
             </ul>
           </div>
           <div class="card">
             <h3>Where analytics fits</h3>
             <ul>
-              <li>Confirms indirect signals: entry load at nearby events, regional density, scored activity</li>
-              <li>Does not replace the organizer's plan or guarantee ROI</li>
-              <li>Still limited: event city ≠ dancer home; bad geo draws false white space</li>
+              <li>Confirms demand signals: nearby entry load, density, scored activity</li>
+              <li>Does not replace the organizer’s plan or guarantee ROI</li>
+              <li>Keep free text off name/location; separate metrics: supply, scored demand, entry demand</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Organizer case + analytics layer; separate supply / scored / entry demand.">
-        <div class="badge"><span class="pill">Core</span> Gap D · Impact</div>
-        <h1>Impact and process path</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Risk for Q3-Q4</h3>
-            <ul>
-              <li>Decisions by map or feel, without a local organizer or territory case</li>
-              <li>Approving another event in an overloaded region without checking motivation</li>
-              <li>Changing point structure without a funnel model</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>What to lock in</h3>
-            <ul>
-              <li>Structure New Event Application as the territory case (plus analytics confirmation); keep free text off name/location</li>
-              <li>Stable event geo + entry counts/lists as an analytics layer alongside Tier</li>
-              <li>Three metrics separate: event supply, scored demand, entry demand</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Primary board slide.">
+      <section class="slide" data-section="core" data-notes="Primary board slide. Say aloud: none fully closed on public data alone.">
         <div class="badge"><span class="pill">Core</span> Summary</div>
         <h1>Matrix: what public data can answer today</h1>
         <table class="matrix">
@@ -598,7 +573,7 @@
             <tr>
               <td>Competitors by skill 2021-2026 (+ region)</td>
               <td><span class="tag">Partial</span> unique IDs with points; region weak / via event proxy</td>
-              <td>Retain/join Score Report Competitors List (+ Dual Roles) + ID policy + clean geo</td>
+              <td>Retain/join Score Report lists + ID policy + clean geo</td>
             </tr>
             <tr>
               <td>Points/tiers &amp; progression majority</td>
@@ -608,7 +583,7 @@
             <tr>
               <td>Event landscape &amp; capacity / where needed</td>
               <td><span class="tag">Partial</span> event map and scored activity; organizer proposals not standardized</td>
-              <td>Organizer justification workflow + entry counts/lists + geo DQ + review vs event grid</td>
+              <td>Organizer case workflow + entry lists + geo DQ + event-grid review</td>
             </tr>
             <tr>
               <td>Point structure change analysis</td>
@@ -617,33 +592,33 @@
             </tr>
           </tbody>
         </table>
-        <p class="notes">On the public registry alone, none of these are fully closed. Say that out loud.</p>
+        <p class="notes">On the public registry alone, none of these are fully closed.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Process checklist.">
+      <section class="slide" data-section="core" data-notes="Merged checklist + discovery. Ask aloud; capture answers.">
         <div class="badge"><span class="pill">Core</span> Close</div>
-        <h1>Checklist: what to put in order</h1>
-        <ol>
-          <li><strong>Inventory:</strong> where Score Report <span class="mono">Competitors List</span> / Dual Roles files go after submit, and for which years they still exist</li>
-          <li><strong>List schema:</strong> required columns; how WSDC ID is handled when the dancer has no ID yet</li>
-          <li><strong>Retention store:</strong> xlsx with protocols only, or a database that can join the Points Registry?</li>
-          <li><strong>ID rule:</strong> keep “only after a point” or change it; how metrics are labeled</li>
-          <li><strong>Directories + forms:</strong> Event Update prefills; New Event Application / Score Report stop free-text on name &amp; location</li>
-          <li><strong>Board metric dictionary:</strong> scored population vs entry population vs community</li>
-          <li><strong>Trial / new events:</strong> structure the case already asked on New Event Application; review against event grid</li>
-        </ol>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Ask aloud; capture answers.">
-        <div class="badge"><span class="pill">Core</span> Discovery</div>
-        <h1>Four questions to reconcile</h1>
-        <ol>
-          <li>After Score Report submit: do <span class="mono">Competitors List</span> / Dual Roles stay as xlsx with event protocols, or load into a central store?</li>
-          <li>For which years (at least 2021-2026) are those lists still recoverable?</li>
-          <li>What is required on each list row today — is <strong>WSDC ID</strong> mandatory when the dancer has no points yet?</li>
-          <li>Who owns intake process for Event Update / New Event Application / Score Report, and who can change it?</li>
-        </ol>
-        <p class="notes"><strong>Close:</strong> public data already supports careful analysis. Durable board answers arrive when Score Report lists become a working layer and Event Update stops free-text name/location drift. Tooling stays the committee’s choice.</p>
+        <h1>What to put in order — and three questions</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Checklist</h3>
+            <ol>
+              <li><strong>Score Report lists:</strong> schema (incl. WSDC ID when none yet) + where files go after submit</li>
+              <li><strong>ID rule:</strong> keep “only after a point” or change; label metrics accordingly</li>
+              <li><strong>Directories + forms:</strong> Event Update prefills; stop free-text name/location</li>
+              <li><strong>Metric dictionary:</strong> scored vs entry vs community</li>
+              <li><strong>Trial / new events:</strong> structure New Event Application case vs event grid</li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>Ask on the call</h3>
+            <ol>
+              <li>After Score Report submit: xlsx with protocols only, or a central store?</li>
+              <li>For 2021-2026, are Competitors List / Dual Roles still recoverable?</li>
+              <li>Who owns Event Update / New Event Application / Score Report intake — and who can change it?</li>
+            </ol>
+          </div>
+        </div>
+        <p class="notes"><strong>Close:</strong> public data already supports careful analysis. Durable board answers need Score Report lists as a working layer and Event Update without free-text name/location drift. Tooling stays the committee’s choice.</p>
       </section>
 
       <section class="slide title-slide" data-section="appendix" data-notes="Appendix on request.">
@@ -717,39 +692,15 @@
         </ul>
       </section>
 
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Definitions</div>
-        <h1>Three populations. Do not mix them in one report</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Scored population</h3>
-            <p>Unique WSDC IDs with points in the period. What the public Points Registry gives.</p>
-          </div>
-          <div class="card">
-            <h3>Entry population</h3>
-            <p>Everyone registered in WSDC J&amp;J. Already required in §2.3 reporting; needs retention.</p>
-          </div>
-          <div class="card">
-            <h3>Community (broad)</h3>
-            <p>Includes people outside scored outcomes and possibly outside registry events. Separate methodology.</p>
-          </div>
-          <div class="card">
-            <h3>Practice</h3>
-            <p>Label which population each board report uses.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="Speaking path.">
+      <section class="slide" data-section="appendix" data-notes="Speaking path for ~12-15 min.">
         <div class="badge"><span class="pill app">Appendix</span> Navigation</div>
         <h1>Short path on the call (~12-15 min)</h1>
         <ol>
           <li>Goal of the call</li>
-          <li>Public registry vs Score Report lists (§2.3 already asks)</li>
-          <li>Board agenda</li>
-          <li>Four gaps: ID → lists format/retention → free-text forms/directories → organizers</li>
-          <li>Partial matrix / what unlocks</li>
-          <li>Checklist + four questions</li>
+          <li>Public registry vs Score Report lists + three populations</li>
+          <li>Board agenda → four gaps</li>
+          <li>A–D: ID → list retention → forms/directories → organizers</li>
+          <li>Matrix + checklist / three questions</li>
         </ol>
         <p class="notes">Everything else is appendix on request.</p>
       </section>

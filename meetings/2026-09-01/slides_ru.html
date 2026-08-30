@@ -239,6 +239,44 @@
     @media (max-width: 800px) {
       .evidence { grid-template-columns: 1fr; }
     }
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+      max-width: 42rem;
+    }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.outer { width: 100%; }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .funnel .band p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--body);
+      line-height: 1.4;
+    }
+    .funnel .band .src {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -327,263 +365,200 @@
         <p class="cite">Registry Event Rules 2026.1B §2.3 (items 1-4); Score Report Form v2026.1B на <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC Forms</a>. Срок сдачи: не позднее 3 дней после закрытия ивента.</p>
       </section>
 
+      <section class="slide" data-section="core" data-notes="Визуальный якорь для всех gap. В каждом отчёте board подписывать популяцию.">
+        <div class="badge"><span class="pill">Core</span> Рамка</div>
+        <h1>Три популяции. Не смешивать в одном отчёте</h1>
+        <p class="lead">Вопросы board смешивают эти слои, если не назвать, о каком именно речь.</p>
+        <div class="funnel">
+          <div class="band outer">
+            <h3>Community (широко)</h3>
+            <p>Люди вне scored-исходов и, возможно, вне registry events.</p>
+            <span class="src">Источник: отдельная методология — не только Points Registry</span>
+          </div>
+          <div class="band mid">
+            <h3>Entry population</h3>
+            <p>Все зарегистрированные в WSDC J&amp;J. Уже собираются в листах Score Report.</p>
+            <span class="src">Источник: Competitors List / Dual Roles — нужны схема и retention</span>
+          </div>
+          <div class="band inner">
+            <h3>Scored population (публичный)</h3>
+            <p>Уникальные WSDC ID с поинтами. То, что видно в открытом Points Registry.</p>
+            <span class="src">Источник: публичный lookup / scored history</span>
+          </div>
+        </div>
+      </section>
+
       <section class="slide" data-section="core" data-notes="Якорь повестки Denis.">
         <div class="badge"><span class="pill">Core</span> 2 · Повестка board</div>
         <h1>Четыре направления из запроса комитета</h1>
         <ol>
           <li><strong>Competitor base 2021-2026</strong>: сколько танцоров по skill levels; community overall; по возможности регион</li>
-          <li><strong>Points &amp; tiers</strong>: текущая структура, влияние изменений; прогрессия большинства (много поинтов у небольшого меньшинства)</li>
-          <li><strong>Event landscape &amp; capacity</strong>: где рост обоснован (организатор на месте + case территории); когда ограничивать новые ивенты; аналитика подтверждает сигналы спроса</li>
+          <li><strong>Points &amp; tiers</strong>: текущая структура, влияние изменений; прогрессия большинства</li>
+          <li><strong>Event landscape &amp; capacity</strong>: где рост обоснован (организатор на месте + case территории); когда ограничивать новые ивенты</li>
           <li><strong>Point structure</strong>: как проверить данными, нужно ли менять структуру поинтов</li>
         </ol>
-        <p class="notes">Дальше не цифры, а карта: что мешает ответить прямо и что чинить в процессах.</p>
+        <p class="notes">Дальше — карта ограничений, не цифры board.</p>
       </section>
 
       <section class="slide" data-section="core" data-notes="Четыре блока A-D.">
         <div class="badge"><span class="pill">Core</span> Мост</div>
         <h1>От повестки к четырём разрывам</h1>
-        <p class="lead">Без общих определений «танцора», «участника», «региона» и «ивента» отчёты board будут спорить сами с собой. В открытом registry четыре системных дыры.</p>
+        <p class="lead">Без общих определений «танцора», «участника», «региона» и «ивента» отчёты board будут спорить сами с собой.</p>
         <div class="grid2">
           <div class="card"><h3>A. Identity</h3><p>ID появляется после первого поинта. До этого человека нет в registry как сущности.</p></div>
-          <div class="card"><h3>B. Coverage</h3><p>Публичный слой = scored history. Полные списки уже в листах Score Report — формат и retention неясны.</p></div>
-          <div class="card"><h3>C. Data quality</h3><p>Free-text intake в Event Update / New Event Application / Score Report: варианты имён, пустые локации, «плывущие» серии.</p></div>
-          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity — не упражнение на карте: организатор на месте, case территории, затем аналитика для подтверждения спроса.</p></div>
+          <div class="card"><h3>B. Coverage</h3><p>Публичный слой = scored history. Полные списки в Score Report — формат и retention неясны.</p></div>
+          <div class="card"><h3>C. Data quality</h3><p>Free-text intake в Event Update / New Event Application / Score Report плодит drift имён и локаций.</p></div>
+          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity нужен организатор на месте и case территории; аналитика только подтверждает спрос.</p></div>
         </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Официальная норма §3.2.2c.">
+      <section class="slide" data-section="core" data-notes="Слиты Identity + Impact. §3.2.2c официально.">
         <div class="badge"><span class="pill">Core</span> Gap A · Identity</div>
-        <h1>ID выдаётся только после поинта</h1>
-        <p class="lead">Это не догадка по данным. В правилах прямо сказано: Competitor ID назначается только после того, как танцор получил поинт.</p>
-        <ul>
-          <li>До первого поинта человека нет в Points Registry как отслеживаемой сущности</li>
-          <li>Можно много раз выйти на паркет и остаться невидимым для публичной аналитики</li>
-          <li>«Сколько танцоров в community» и «сколько уникальных WSDC ID с поинтами» это разные метрики</li>
-        </ul>
-        <p class="cite">Registry Event Rules 2026.1B §3.2.2c; Overview: ID after at least one J&amp;J point.</p>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Решение: либо earlier ID, либо честная метка scored population + хранение entry lists.">
-        <div class="badge"><span class="pill">Core</span> Gap A · Влияние</div>
-        <h1>Как это бьёт по повестке</h1>
+        <h1>ID только после поинта — и что из этого следует</h1>
+        <p class="lead">По правилам Competitor ID назначается только после поинта. До этого человека нет в публичном Points Registry.</p>
         <div class="grid2">
           <div class="card">
-            <h3>По вопросам board</h3>
+            <h3>Бьёт по повестке</h3>
             <ul>
-              <li>Q1: занижение «активных», особенно Newcomer и Novice</li>
-              <li>Q2: воронка входа обрезана до тех, кто уже получил поинт</li>
-              <li>Q3: спрос новичков почти не виден в registry</li>
+              <li><strong>Counts:</strong> занижение «активных», особенно Newcomer и Novice</li>
+              <li><strong>Progression:</strong> воронка входа обрезана до тех, кто уже получил поинт</li>
+              <li><strong>Capacity:</strong> спрос новичков почти не виден в registry</li>
             </ul>
           </div>
           <div class="card">
             <h3>Что делать в процессах</h3>
             <ul>
-              <li>Зафиксировать политику: ID только после поинта (как сейчас) или раньше</li>
-              <li>Если оставляем «после поинта», в отчётах писать scored population, не «вся community»</li>
-              <li>Для полной популяции опираться на Score Report <span class="mono">Competitors List</span> / Dual Roles (§2.3) — когда ясны формат и retention</li>
+              <li>Оставить «ID после поинта» или менять — в любом случае честно подписывать отчёты</li>
+              <li>Если после поинта: писать <em>scored population</em>, не «вся community»</li>
+              <li>Полная популяция — через листы Score Report, когда ясны схема и retention</li>
             </ul>
           </div>
         </div>
+        <p class="cite">Registry Event Rules 2026.1B §3.2.2c.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Списки есть в Score Report; публичный registry только scored. Мягкий тон.">
+      <section class="slide" data-section="core" data-notes="Слиты Coverage + Impact. Списки есть; спросить схему/ID/путь.">
         <div class="badge"><span class="pill">Core</span> Gap B · Coverage</div>
-        <h1>Публичный registry ≠ полный entry list</h1>
-        <p class="lead">Снаружи мы видим в основном тех, кому начислили поинты. Полный список зарегистрированных уже собирается в workbook Score Report — листы <span class="mono">Competitors List</span> и <span class="mono">Dual / Multiple Roles</span> — но в открытом Points Registry его нет.</p>
+        <h1>Списки собираются — ещё не рабочий слой аналитики</h1>
+        <p class="lead">В Score Report уже есть <span class="mono">Competitors List</span> и <span class="mono">Dual / Multiple Roles</span>. Публичный registry по-прежнему показывает в основном тех, кто получил поинт. Открыты вопросы формата, ID и куда уходят файлы после сдачи.</p>
         <div class="grid2">
           <div class="card">
-            <h3>Видно снаружи</h3>
+            <h3>Почему важно</h3>
             <ul>
-              <li>Строки с поинтами / история ID</li>
-              <li>Косвенно: Tier по размеру дивизиона×роли</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Собирается в Score Report, снаружи нет</h3>
-            <ul>
-              <li>Все зарегистрированные в J&amp;J (Competitors List)</li>
-              <li>Участники dual / multiple roles</li>
-              <li>Точный headcount и доля без поинтов — только если списки хранятся и стыкуются</li>
-            </ul>
-          </div>
-        </div>
-        <p class="notes">Tier помогает оценить порядок масштаба. Он не заменяет именной entry list с ясной схемой (включая как оформлять WSDC ID у тех, кто ещё без поинтов).</p>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Спросить: xlsx vs БД; ID в строках списка; за какие годы восстановимо.">
-        <div class="badge"><span class="pill">Core</span> Gap B · Влияние</div>
-        <h1>Влияние и путь вперёд</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>По вопросам board</h3>
-            <ul>
-              <li>Q1: skill counts по registry = scored, не starters</li>
-              <li>Q2: нельзя отделить «мало танцуют» от «не доходят до поинтов»</li>
-              <li>Q3-Q4: capacity и сценарии смены поинтов без воронки остаются хрупкими</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Процессный путь (листы Score Report)</h3>
-            <ul>
-              <li>Зафиксировать схему листа: обязательные поля, как вводить WSDC ID, если ID ещё нет</li>
-              <li>Проследить путь после сдачи: остаётся xlsx с протоколами ивента или загружается в базу?</li>
-              <li>Если сегодня только файлы — спроектировать рабочее хранилище, чтобы списки стыковались с Points Registry</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Примеры из открытых данных. Причина: free-text Event Update / New Event Application / Score Report header.">
-        <div class="badge"><span class="pill">Core</span> Gap C · Data quality</div>
-        <h1>Качество сущностей: что всплывает в открытых данных</h1>
-        <p class="lead">При глубокой работе с registry регулярно встречаются расхождения имён и локаций. Это следствие free-text intake в существующих <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">формах WSDC</a>, а не «злой умысел».</p>
-        <div class="example">
-          <div class="label">1. Разные названия одной серии</div>
-          В календаре: <span class="mono">Asia WCS Open XI</span>, <span class="mono">Asia WCS Open XIII</span>, <span class="mono">Asia WCS Open - 10th Anniversary</span>. Канон: <span class="mono">Asia WCS Open</span>. Без словаря синонимов ряды ломаются.
-        </div>
-        <div class="example">
-          <div class="label">2. Пустая локация в выгрузке результатов</div>
-          У Scandinavian Open в локальном extract результатов поле локации пустое во всех 993 строках. Гео приходится восстанавливать из других источников.
-        </div>
-        <div class="example">
-          <div class="label">3. Варианты написания бренда</div>
-          <span class="mono">St.Petersburg WCS Nights</span> / <span class="mono">Saint Petersburg WCS Nights</span>; <span class="mono">Vestigala</span> / <span class="mono">Westie Gala</span>. Без aliases появляются ложные «новые» ивенты.
-        </div>
-        <div class="example">
-          <div class="label">4. Одно имя, разные истории</div>
-          Spring Swing: Stockholm и Detroit. Sunny Side Dance Camp: Crimea, затем Torrevieja. Нужны правила «сливать / не сливать».
-        </div>
-        <p class="notes"><strong>Откуда входит:</strong> Event Update и New Event Application принимают <strong>название ивента</strong> и <strong>локацию</strong> free text; Score Report Info Summary — то же для Event Name / Location. Набор с пустой формы → новые aliases и новые написания гео.</p>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Показать скрины. Это выборка, не полный аудит. Решение: master events+locations + dropdowns в формах оргов.">
-        <div class="badge"><span class="pill">Core</span> Gap C · Локации</div>
-        <h1>Мусор в локациях: зачем нужна стандартизация</h1>
-        <p class="lead">Одни и те же поля пишутся по-разному. Ниже только маленькая часть примеров из открытых данных; таких строк в registry намного больше.</p>
-        <div class="evidence">
-          <figure>
-            <img src="examples/loc-local-language.png" alt="KING SWING: Kraków, malopolska, Polska">
-            <figcaption><strong>Локальный язык + регистр:</strong> <span class="mono">Kraków, malopolska, Polska</span> вместо канона вроде Kraków / Poland.</figcaption>
-          </figure>
-          <figure>
-            <img src="examples/loc-country-only.png" alt="Swing Fiction: Czech Republic">
-            <figcaption><strong>Нет города:</strong> только <span class="mono">Czech Republic</span>. Для карты ивентов этого мало.</figcaption>
-          </figure>
-          <figure>
-            <img src="examples/loc-country-formats.png" alt="USA vs US vs United States">
-            <figcaption><strong>Страна в 3 форматах:</strong> <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> (+ штат то fully, то <span class="mono">LA</span>).</figcaption>
-          </figure>
-          <figure>
-            <img src="examples/loc-no-country.png" alt="Swing Dance America: Lake Geneva, IL">
-            <figcaption><strong>Страны нет вообще:</strong> <span class="mono">Lake Geneva, IL</span>. Для US-ивента догадываемся, для аналитики это дыра.</figcaption>
-          </figure>
-        </div>
-        <div class="card" style="margin-top:12px">
-          <h3>Предлагаемое решение</h3>
-          <p>Центральные справочники <strong>ивентов</strong> и <strong>локаций</strong> (canonical name; для US — ещё штат). Затем правим существующие формы: <strong>Event Update</strong> выбирает ивент и prefills; <strong>New Event Application</strong> / <strong>Score Report</strong> берут локацию из справочника — free text остаётся для контактов и ops по venue, не для entity-полей.</p>
-        </div>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="DQ gate = dropdowns + master data, не постфактум чистка.">
-        <div class="badge"><span class="pill">Core</span> Gap C · Влияние</div>
-        <h1>Почему без DQ нельзя «просто посчитать»</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Что ломается</h3>
-            <ul>
-              <li>Ряды по ивентам и странам</li>
-              <li>Двойной счёт или «пропавшие» издания</li>
-              <li>Региональные выводы board</li>
-              <li>Любая автоматизация без master-данных копирует мусор</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>База решения</h3>
-            <ul>
-              <li>Справочник ивентов: одно canonical name / один ID</li>
-              <li>Справочник локаций: city + country в одном формате (для американских ивентов — ещё штат)</li>
-              <li>Формы оргов: Event Update / New Event / Score Report на справочниках</li>
-              <li>Орги отвечают за актуальность своих записей</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Event Update prefill; New Event Application создаёт строку справочника после approval; Score Report — Event ID.">
-        <div class="badge"><span class="pill">Core</span> Gap C · Регламент</div>
-        <h1>Изменения в справочник только заранее и по правилам</h1>
-        <p class="lead">Организаторы обязаны следить за своими ивентами и локациями в справочнике. Любое изменение существующих данных или создание нового ивента подаётся <strong>предварительно</strong> — затем Event Update и Score Report могут выбирать только то, что уже есть в справочнике.</p>
-        <div class="grid2">
-          <div class="card">
-            <h3>В регламенте прописать типы изменений</h3>
-            <ul>
-              <li>Новый ивент (через New Event Application) → новый ID + canonical name в справочнике</li>
-              <li>Переименование серии (старое имя → alias / история)</li>
-              <li>Смена локации (город/страна; для US — ещё штат)</li>
-              <li>Исправление ошибки в справочнике</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Как формы это закрепляют</h3>
-            <ul>
-              <li><strong>Event Update:</strong> выбрать существующий ивент → prefill; без набора name/location с пустой формы</li>
-              <li><strong>Score Report:</strong> Event Name / Location из справочника или Event ID</li>
-              <li>Free text OK: контакты, ops по venue, ownership, shuttle</li>
-              <li>Без записи в справочнике нельзя выбрать ивент/локацию в форме</li>
-            </ul>
-          </div>
-        </div>
-        <p class="notes">Иначе снова появятся free-text варианты вроде <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span> и «новые» ивенты-переименования — именно это сегодня допускают пустые поля Event Update / Score Report.</p>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Орги несут риск; WSDC проверяет мотивацию. Аналитика подтверждает спрос, но не решает сама.">
-        <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
-        <h1>Landscape и capacity: сначала организатор</h1>
-        <p class="lead">WSDC не проводит ивенты. Организаторы запрашивают трайлы и новые ивенты, тратят деньги и несут риск, что ивент окупится. «Белого пятна» на карте недостаточно — нужен организатор на месте и обоснованный case для этой территории.</p>
-        <div class="grid2">
-          <div class="card">
-            <h3>Организатор в процессе</h3>
-            <ul>
-              <li>Именованный организатор берёт операционную и финансовую ответственность</li>
-              <li>Трайл / новый ивент: краткий case территории (New Event Application уже спрашивает viability — сохранить и структурировать)</li>
-              <li>Сверка с текущей сеткой ивентов (перегруженный регион vs один крупный ивент и растущая сцена)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Где помогает аналитика</h3>
-            <ul>
-              <li>Подтверждает косвенные сигналы: загрузка entry на соседних ивентах, плотность в регионе, scored-активность</li>
-              <li>Не заменяет план организатора и не гарантирует окупаемость</li>
-              <li>Ограничения остаются: город ивента ≠ дом танцора; плохая гео рисует ложные «дыры»</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Case организатора + слой аналитики; разделить supply / scored / entry demand.">
-        <div class="badge"><span class="pill">Core</span> Gap D · Влияние</div>
-        <h1>Влияние и процессный путь</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Риск для Q3-Q4</h3>
-            <ul>
-              <li>Решения по карте или «на ощущениях», без организатора на месте и case территории</li>
-              <li>Одобрить ещё один ивент в перегруженном регионе без проверки мотивации</li>
-              <li>Менять point structure без модели воронки</li>
+              <li><strong>Counts:</strong> skill counts по registry = scored, не starters</li>
+              <li><strong>Progression:</strong> нельзя отделить «мало танцуют» от «не доходят до поинтов»</li>
+              <li><strong>Capacity / point structure:</strong> без воронки входа остаются хрупкими</li>
             </ul>
           </div>
           <div class="card">
             <h3>Что зафиксировать</h3>
             <ul>
-              <li>Структурировать New Event Application как case территории (+ подтверждение аналитикой); name/location не free text</li>
-              <li>Стабильная гео ивентов + entry counts/lists как слой аналитики рядом с Tier</li>
-              <li>Три метрики отдельно: event supply, scored demand, entry demand</li>
+              <li>Схема листа: обязательные поля; как вводить WSDC ID, если ID ещё нет</li>
+              <li>Путь после сдачи: только xlsx с протоколами или хранилище со стыковкой к Points Registry?</li>
+              <li>Если сегодня только файлы — спроектировать это хранилище</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Главный слайд для board.">
+      <section class="slide" data-section="core" data-notes="Примеры из открытых данных. Причина: free-text формы.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Data quality</div>
+        <h1>Качество сущностей: что всплывает в открытых данных</h1>
+        <p class="lead">Расхождения имён и локаций — следствие free-text intake в существующих <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">формах WSDC</a>, а не «злой умысел».</p>
+        <div class="example">
+          <div class="label">1. Разные названия одной серии</div>
+          <span class="mono">Asia WCS Open XI</span>, <span class="mono">XIII</span>, <span class="mono">10th Anniversary</span> → канон <span class="mono">Asia WCS Open</span>. Без aliases ряды ломаются.
+        </div>
+        <div class="example">
+          <div class="label">2. Пустая локация</div>
+          Scandinavian Open: пустая локация во всех 993 строках локального extract.
+        </div>
+        <div class="example">
+          <div class="label">3. Варианты написания бренда</div>
+          <span class="mono">St.Petersburg</span> / <span class="mono">Saint Petersburg WCS Nights</span>; <span class="mono">Vestigala</span> / <span class="mono">Westie Gala</span>.
+        </div>
+        <div class="example">
+          <div class="label">4. Одно имя, разные истории</div>
+          Spring Swing: Stockholm и Detroit. Sunny Side Dance Camp: Crimea, затем Torrevieja.
+        </div>
+        <p class="notes"><strong>Откуда входит:</strong> Event Update, New Event Application и Score Report Info Summary принимают название и локацию free text. Набор с пустой формы → новые aliases и написания гео.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Скрины — выборка. Решение один раз на следующем слайде.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Локации</div>
+        <h1>Мусор в локациях: зачем нужна стандартизация</h1>
+        <p class="lead">Одни и те же поля пишутся по-разному. Маленькая выборка из открытых данных.</p>
+        <div class="evidence">
+          <figure>
+            <img src="examples/loc-local-language.png" alt="KING SWING: Kraków, malopolska, Polska">
+            <figcaption><strong>Локальный язык + регистр:</strong> <span class="mono">Kraków, malopolska, Polska</span> вместо Kraków / Poland.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-country-only.png" alt="Swing Fiction: Czech Republic">
+            <figcaption><strong>Нет города:</strong> только <span class="mono">Czech Republic</span>.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-country-formats.png" alt="USA vs US vs United States">
+            <figcaption><strong>Страна в 3 форматах:</strong> <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-no-country.png" alt="Swing Dance America: Lake Geneva, IL">
+            <figcaption><strong>Страны нет:</strong> <span class="mono">Lake Geneva, IL</span>.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты Impact + Governance. Одно решение.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Решение</div>
+        <h1>Справочники + формы, которые их закрепляют</h1>
+        <p class="lead">Без master-данных ломаются ряды по ивентам и странам, издания двоятся или пропадают, автоматизация копирует мусор. Правим существующие формы — не изобретаем параллельный paper trail.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Справочники</h3>
+            <ul>
+              <li>Ивенты: одно canonical name / один ID</li>
+              <li>Локации: city + country (для US — ещё штат)</li>
+              <li>Типы изменений заранее: новый ивент, rename, смена локации, правка ошибки</li>
+              <li>Орги отвечают за актуальность своих записей</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Как формы это закрепляют</h3>
+            <ul>
+              <li><strong>Event Update:</strong> выбрать ивент → prefill; без набора name/location с пустой формы</li>
+              <li><strong>New Event Application:</strong> после approval → новая строка справочника</li>
+              <li><strong>Score Report:</strong> Event Name / Location из справочника или Event ID</li>
+              <li>Free text OK: контакты, ops по venue, ownership, shuttle</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты Landscape + Impact.">
+        <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
+        <h1>Landscape и capacity: сначала организатор</h1>
+        <p class="lead">WSDC не проводит ивенты. «Белого пятна» на карте недостаточно — нужен организатор на месте, который несёт риск, и обоснованный case территории.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Организатор в процессе</h3>
+            <ul>
+              <li>Именованный организатор берёт операционную и финансовую ответственность</li>
+              <li>Структурировать case, уже заложенный в New Event Application (viability + сверка с сеткой)</li>
+              <li>Перегруженный регион vs один крупный ивент и растущая сцена — разные решения</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Где помогает аналитика</h3>
+            <ul>
+              <li>Подтверждает сигналы спроса: entry на соседних ивентах, плотность, scored-активность</li>
+              <li>Не заменяет план организатора и не гарантирует окупаемость</li>
+              <li>Name/location не free text; отдельно: supply, scored demand, entry demand</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Главный слайд для board. Вслух: на публичных данных ни один пункт не закрыт полностью.">
         <div class="badge"><span class="pill">Core</span> Сводка</div>
         <h1>Матрица: что можно ответить на публичных данных</h1>
         <table class="matrix">
@@ -598,7 +573,7 @@
             <tr>
               <td>Competitors by skill 2021-2026 (+ region)</td>
               <td><span class="tag">Частично</span> уникальные ID с поинтами; регион слабо / через proxy ивентов</td>
-              <td>Хранение/стыковка Score Report Competitors List (+ Dual Roles) + политика ID + чистая гео</td>
+              <td>Хранение/стыковка списков Score Report + политика ID + чистая гео</td>
             </tr>
             <tr>
               <td>Points/tiers &amp; progression majority</td>
@@ -608,7 +583,7 @@
             <tr>
               <td>Event landscape &amp; capacity / where needed</td>
               <td><span class="tag">Частично</span> карта ивентов и scored активности; заявки оргов не стандартизированы</td>
-              <td>Workflow обоснования орга + entry counts/lists + DQ гео + сверка с сеткой ивентов</td>
+              <td>Workflow case орга + entry lists + DQ гео + сверка с сеткой</td>
             </tr>
             <tr>
               <td>Point structure change analysis</td>
@@ -617,33 +592,33 @@
             </tr>
           </tbody>
         </table>
-        <p class="notes">На одном только публичном registry ни один пункт не закрывается полностью. Это нормально зафиксировать вслух.</p>
+        <p class="notes">На одном только публичном registry ни один пункт не закрывается полностью.</p>
       </section>
 
-      <section class="slide" data-section="core" data-notes="Checklist процессов.">
+      <section class="slide" data-section="core" data-notes="Слиты checklist + discovery. Задать вслух, записать ответы.">
         <div class="badge"><span class="pill">Core</span> Финал</div>
-        <h1>Checklist: что упорядочить</h1>
-        <ol>
-          <li><strong>Инвентаризация</strong>: куда уходят файлы Score Report <span class="mono">Competitors List</span> / Dual Roles после сдачи, за какие годы они ещё есть</li>
-          <li><strong>Схема списка</strong>: обязательные колонки; как оформлять WSDC ID, если у танцора ещё нет ID</li>
-          <li><strong>Хранилище</strong>: только xlsx с протоколами или база, которую можно стыковать с Points Registry?</li>
-          <li><strong>Правило ID</strong>: оставляем «только после поинта» или меняем; как подписывать метрики</li>
-          <li><strong>Справочники + формы</strong>: Event Update prefills; New Event Application / Score Report без free-text у name &amp; location</li>
-          <li><strong>Словарь метрик board</strong>: scored population vs entry population vs community</li>
-          <li><strong>Trial / new events</strong>: структурировать case, уже заложенный в New Event Application; сверка с сеткой ивентов</li>
-        </ol>
-      </section>
-
-      <section class="slide" data-section="core" data-notes="Задать вслух, записать ответы.">
-        <div class="badge"><span class="pill">Core</span> Discovery</div>
-        <h1>Четыре вопроса на сверку</h1>
-        <ol>
-          <li>После сдачи Score Report: листы <span class="mono">Competitors List</span> / Dual Roles остаются xlsx с протоколами ивента или попадают в центральное хранилище?</li>
-          <li>За какие годы (хотя бы 2021-2026) эти списки ещё восстановимы?</li>
-          <li>Что обязательно в каждой строке списка сегодня — нужен ли <strong>WSDC ID</strong>, если у танцора ещё нет поинтов?</li>
-          <li>Кто владеет процессом intake для Event Update / New Event Application / Score Report и кто может его менять?</li>
-        </ol>
-        <p class="notes"><strong>Закрытие:</strong> на публичных данных уже можно делать осторожную аналитику. Устойчивые ответы board появятся, когда списки Score Report станут рабочим слоем, а Event Update перестанет плодить free-text drift имён/локаций. Инструменты комитет выбирает сам.</p>
+        <h1>Что упорядочить — и три вопроса</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Checklist</h3>
+            <ol>
+              <li><strong>Листы Score Report:</strong> схема (в т.ч. WSDC ID, если ID ещё нет) + куда уходят файлы после сдачи</li>
+              <li><strong>Правило ID:</strong> оставляем «только после поинта» или меняем; как подписывать метрики</li>
+              <li><strong>Справочники + формы:</strong> Event Update prefills; без free-text name/location</li>
+              <li><strong>Словарь метрик:</strong> scored vs entry vs community</li>
+              <li><strong>Trial / new events:</strong> структурировать case New Event Application vs сетка ивентов</li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>Спросить на созвоне</h3>
+            <ol>
+              <li>После сдачи Score Report: только xlsx с протоколами или центральное хранилище?</li>
+              <li>За 2021-2026 Competitors List / Dual Roles ещё восстановимы?</li>
+              <li>Кто владеет intake Event Update / New Event Application / Score Report — и кто может менять?</li>
+            </ol>
+          </div>
+        </div>
+        <p class="notes"><strong>Закрытие:</strong> на публичных данных уже можно делать осторожную аналитику. Устойчивые ответы board нуждаются в списках Score Report как рабочем слое и Event Update без free-text drift имён/локаций. Инструменты комитет выбирает сам.</p>
       </section>
 
       <section class="slide title-slide" data-section="appendix" data-notes="Appendix по запросу.">
@@ -717,39 +692,15 @@
         </ul>
       </section>
 
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Определения</div>
-        <h1>Три популяции. Не смешивать в одном отчёте</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Scored population</h3>
-            <p>Уникальные WSDC ID с поинтами за период. То, что даёт публичный Points Registry.</p>
-          </div>
-          <div class="card">
-            <h3>Entry population</h3>
-            <p>Все зарегистрированные в WSDC J&amp;J. Уже заложены в §2.3 reporting, нужны в хранении.</p>
-          </div>
-          <div class="card">
-            <h3>Community (широко)</h3>
-            <p>Включает тех, кто вне scored-исходов и, возможно, вне registry events. Отдельная методология.</p>
-          </div>
-          <div class="card">
-            <h3>Практика</h3>
-            <p>В каждом отчёте board подписывать, какая популяция использована.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="Speaking path.">
+      <section class="slide" data-section="appendix" data-notes="Speaking path на ~12-15 мин.">
         <div class="badge"><span class="pill app">Appendix</span> Навигация</div>
         <h1>Короткий путь на созвоне (~12-15 мин)</h1>
         <ol>
           <li>Цель встречи</li>
-          <li>Публичный registry vs листы Score Report (§2.3 уже просит)</li>
-          <li>Повестка board</li>
-          <li>Четыре gap: ID → формат/retention списков → free-text формы/справочники → организаторы</li>
-          <li>Матрица частично / что разблокирует</li>
-          <li>Checklist + 4 вопроса</li>
+          <li>Публичный registry vs листы Score Report + три популяции</li>
+          <li>Повестка board → четыре gap</li>
+          <li>A–D: ID → retention списков → формы/справочники → организаторы</li>
+          <li>Матрица + checklist / три вопроса</li>
         </ol>
         <p class="notes">Остальное appendix по запросу.</p>
       </section>
