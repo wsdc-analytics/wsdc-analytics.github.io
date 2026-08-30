@@ -664,6 +664,28 @@ h1 {
   flex: 0 0 auto;
 }
 
+.month-count {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.month-count__held,
+.month-count__confirmed {
+  color: inherit;
+  font-weight: 600;
+}
+
+.month-count__sep,
+.month-count__expected {
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
+.month.is-past-month .month-count__held {
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
 .dow {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
