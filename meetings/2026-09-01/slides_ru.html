@@ -621,90 +621,6 @@
         <p class="notes"><strong>Закрытие:</strong> на публичных данных уже можно делать осторожную аналитику. Устойчивые ответы board нуждаются в списках Score Report как рабочем слое и Event Update без free-text drift имён/локаций. Инструменты комитет выбирает сам.</p>
       </section>
 
-      <section class="slide title-slide" data-section="appendix" data-notes="Appendix по запросу.">
-        <div class="badge"><span class="pill app">Appendix</span></div>
-        <h1>Appendix</h1>
-        <p class="lead">Детали, если на созвоне будет время.</p>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q1</div>
-        <h1>Competitors by skill / region</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Можно сейчас</h3>
-            <ul>
-              <li>Уникальные ID с поинтами по годам</li>
-              <li>Разрезы по дивизионам scored-результатов</li>
-              <li>Грубая гео через локацию ивентов (proxy)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Нельзя честно назвать community</h3>
-            <ul>
-              <li>Участники без поинтов</li>
-              <li>Точный home region танцора</li>
-              <li>Newcomer funnel до первого поинта</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q2</div>
-        <h1>Points, tiers, progression majority</h1>
-        <ul>
-          <li><strong>Можно:</strong> концентрация поинтов, скорость набора, переходы по scored; сравнения до/после смены правил</li>
-          <li><strong>Осторожно:</strong> «majority» нужно определить (все ID? активные за год? ≥N поинтов?)</li>
-          <li><strong>Нужно:</strong> entry-данные, чтобы отделить «нет поинтов» от «не участвовали»</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q3</div>
-        <h1>Event landscape &amp; capacity</h1>
-        <ul>
-          <li><strong>Сначала процесс:</strong> организатор на месте + краткий case территории; WSDC проверяет мотивацию, не организует сам</li>
-          <li><strong>Можно:</strong> число registry events, география, динамика 2021-2026, региональная загрузка entry (когда есть lists)</li>
-          <li><strong>Частично:</strong> подтвердить спрос через travel scored, плотность ивентов, регистрации на соседних ивентах</li>
-          <li><strong>Не решает сама:</strong> окупится ли ивент для организатора</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="">
-        <div class="badge"><span class="pill app">Appendix</span> Q4</div>
-        <h1>Point structure change</h1>
-        <ul>
-          <li><strong>Можно:</strong> сценарные пересчёты на scored истории; чувствительность топов и порогов</li>
-          <li><strong>Риск:</strong> оптимизация под тех, кто уже в registry, без модели входа</li>
-          <li><strong>Сначала KPI:</strong> рост majority, честность порогов, нагрузка на оргов</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="Chart 5 / tiers.">
-        <div class="badge"><span class="pill app">Appendix</span> Tiers</div>
-        <h1>Tier = диапазон размера, не точный счёт</h1>
-        <p class="lead">В правилах Tier зависит от числа уникальных конкурентов в дивизионе×роли. По публичным данным можно суммировать границы диапазонов. Это оценка порядка, не headcount.</p>
-        <ul>
-          <li>Удобно сравнивать масштаб ивентов</li>
-          <li>Не заменяет именной entry list из §2.3</li>
-          <li>Открытый верх у старших tier нужно помечать как неопределённость</li>
-        </ul>
-      </section>
-
-      <section class="slide" data-section="appendix" data-notes="Speaking path на ~12-15 мин.">
-        <div class="badge"><span class="pill app">Appendix</span> Навигация</div>
-        <h1>Короткий путь на созвоне (~12-15 мин)</h1>
-        <ol>
-          <li>Цель встречи</li>
-          <li>Публичный registry vs листы Score Report + три популяции</li>
-          <li>Повестка board → четыре gap</li>
-          <li>A–D: ID → retention списков → формы/справочники → организаторы</li>
-          <li>Матрица + checklist / три вопроса</li>
-        </ol>
-        <p class="notes">Остальное appendix по запросу.</p>
-      </section>
-
     </div>
     <div class="foot-hint">Клавиши <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · клик по краям</div>
   </div>
@@ -716,8 +632,7 @@
       function show(n) {
         i = Math.max(0, Math.min(slides.length - 1, n));
         slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
-        const sec = slides[i].dataset.section === 'appendix' ? 'Appendix' : 'Core';
-        counter.textContent = (i + 1) + ' / ' + slides.length + ' · ' + sec;
+        counter.textContent = (i + 1) + ' / ' + slides.length;
         const note = slides[i].getAttribute('data-notes') || '';
         if (note) console.debug('[notes]', note);
         history.replaceState(null, '', '#' + (i + 1));
