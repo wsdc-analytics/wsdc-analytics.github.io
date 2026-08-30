@@ -175,6 +175,11 @@
       text-underline-offset: 2px;
     }
     .notes a:hover { color: var(--ink); }
+    .lead a, .card a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
     .notes strong { color: var(--body); }
     .title-slide { justify-content: center; }
     .title-slide .meta { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
@@ -473,7 +478,7 @@
         </div>
         <div class="card" style="margin-top:12px">
           <h3>Proposed fix</h3>
-          <p>Maintain separate central directories for <strong>events</strong> and <strong>locations</strong>, each with a canonical name. The directory should be public or at least visible to organizers. Organizer forms use dropdowns (event + location), not free text.</p>
+          <p>Maintain separate central directories for <strong>events</strong> and <strong>locations</strong>, each with a canonical name. Wire them into the existing WSDC forms (<a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">worldsdc.com/wsdc-forms</a>): Event Update, New Event Application, Score Report — dropdowns for event + location, not free text.</p>
         </div>
       </section>
 
@@ -495,7 +500,7 @@
             <ul>
               <li>Event directory: one canonical name / one ID</li>
               <li>Location directory: city + country in one format (for US events, state too)</li>
-              <li>Organizer forms: dropdowns from those directories</li>
+              <li>Organizer forms: Event Update / New Event / Score Report wired to directories</li>
               <li>Organizers own the accuracy of their rows</li>
             </ul>
           </div>
@@ -526,7 +531,33 @@
             </ul>
           </div>
         </div>
-        <p class="notes">Otherwise free-text variants return (<span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>) and “new” events that are really renames with a different ID.</p>
+        <p class="notes">Otherwise free-text variants return (<span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>) and “new” events that are really renames with a different ID. That is exactly what free-text Event Update / Score Report fields allow today.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Cite live WSDC forms. Soft tone: topics OK, entity fields free-text. Evidence from worldsdc.com Aug 2026.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Forms</div>
+        <h1>Existing WSDC forms: topics OK, entity fields free text</h1>
+        <p class="lead">On <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC Forms</a>, organizers already use <strong>New Event Application</strong>, <strong>Event Update</strong>, and <strong>Score Report</strong>. Operational questions are largely in place. The DQ leak is free-text <strong>event name</strong> and <strong>location</strong> — that is what multiplies aliases and empty/garbled geo.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>What already works</h3>
+            <ul>
+              <li><strong>New Event Application:</strong> viability, conflicts, venue, staffing — organizer case is partly here</li>
+              <li><strong>Event Update:</strong> flags name change, date shift &gt;10 days + board approval, membership current</li>
+              <li><strong>Score Report v2026.1B:</strong> Competitors List sheet (§2.3) + per-division tier logic</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>What to tighten</h3>
+            <ul>
+              <li><strong>Event Update:</strong> select the existing event → prefill; do not retype name/location from a blank form</li>
+              <li><strong>Strict:</strong> event name + location (city + country; US → state too)</li>
+              <li><strong>OK as free text:</strong> contacts, venue ops notes, ownership %, shuttle times</li>
+              <li><strong>Score Report:</strong> Event Name / Location from directory or Event ID, not blank cells emailed as xlsx</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Dates stay calendar fields. Name and location changes go through the advance directory process — not as ad-hoc typing on update or reporting day.</p>
       </section>
 
       <section class="slide" data-section="core" data-notes="Organizers carry risk; WSDC validates motivation. Analytics confirms demand, does not decide alone.">
@@ -538,7 +569,7 @@
             <h3>Organizer in the process</h3>
             <ul>
               <li>Named organizer takes operational and financial responsibility</li>
-              <li>Trial / new event: short justification — why WCS needs this here and why it can work</li>
+              <li>Trial / new event: short territory case (New Event Application already asks viability — keep and structure it)</li>
               <li>Review against the current event grid (crowded region vs one large event and a growing scene)</li>
             </ul>
           </div>
@@ -568,7 +599,7 @@
           <div class="card">
             <h3>What to lock in</h3>
             <ul>
-              <li>Light justification for trial/new events (organizer + territory case; not a full business plan)</li>
+              <li>Structure New Event Application as the territory case (plus analytics confirmation); keep free text off name/location</li>
               <li>Stable event geo + entry counts/lists as an analytics layer alongside Tier</li>
               <li>Three metrics separate: event supply, scored demand, entry demand</li>
             </ul>
@@ -621,9 +652,9 @@
           <li><strong>Retention and format:</strong> machine-readable template, retention window, owner</li>
           <li><strong>ID rule:</strong> keep “only after a point” or change it; how metrics are labeled</li>
           <li><strong>Event and location directories:</strong> canonical names; visible to organizers (or public)</li>
-          <li><strong>Organizer forms:</strong> dropdowns only; changes/new rows in advance under regulations + name/location history</li>
+          <li><strong>Organizer forms (existing):</strong> Event Update / New Event Application / Score Report — stop free-text on name &amp; location; Event Update prefills from the directory</li>
           <li><strong>Board metric dictionary:</strong> scored population vs entry population vs community</li>
-          <li><strong>Trial / new events:</strong> named organizer, short territory justification, review against current event grid</li>
+          <li><strong>Trial / new events:</strong> named organizer + structured case on New Event Application; review against event grid</li>
         </ol>
       </section>
 
