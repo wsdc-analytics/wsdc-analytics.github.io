@@ -338,6 +338,7 @@
           <div class="card">
             <h3>В открытом слое нет</h3>
             <ul>
+              <li>Надёжного forward-сигнала, что edition этого года состоится (в правилах confirmed — post-event Update Form)</li>
               <li>Полного стартового листа номинации в удобном для аналитики виде</li>
               <li>Танцоров, которые участвовали, но так и не получили поинт</li>
               <li>«Чистой» географии без ручной нормализации имён и локаций</li>
@@ -408,7 +409,7 @@
           <div class="card"><h3>A. Identity</h3><p>ID появляется после первого поинта. До этого человека нет в registry как сущности.</p></div>
           <div class="card"><h3>B. Coverage</h3><p>Публичный слой = scored history. Полные списки в Score Report — формат и retention неясны.</p></div>
           <div class="card"><h3>C. Data quality</h3><p>Free-text intake в Event Update / New Event Application / Score Report плодит drift имён и локаций.</p></div>
-          <div class="card"><h3>D. Geo / landscape</h3><p>Capacity нужен организатор на месте и case территории; аналитика только подтверждает спрос.</p></div>
+          <div class="card"><h3>D. Landscape / calendar</h3><p>Capacity нужен организатор на месте и case территории; аналитика только подтверждает спрос. В правилах нет forward-подтверждения в календаре WSDC.</p></div>
         </div>
       </section>
 
@@ -558,6 +559,36 @@
         </div>
       </section>
 
+      <section class="slide" data-section="core" data-notes="Не только аналитика: confirmed в правилах = post-event Update Form. Предложить pre-event deadline + модель статусов.">
+        <div class="badge"><span class="pill">Core</span> Gap D · Календарь</div>
+        <h1>Календарь ивентов: «confirmed» только после проведения</h1>
+        <p class="lead">WSDC Events calendar — публичный список registry events — но правила требуют <strong>post-event</strong> подтверждения. По одним источникам WSDC community не может понять, состоится ли edition этого года, пока ивент не прошёл (или не объявлен hiatus).</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Что в правилах сейчас (2026.1B)</h3>
+            <ul>
+              <li><strong>§1.1.4:</strong> Registry Event Update Form — в течение <strong>45 дней после закрытия</strong> → confirmed в WSDC Events calendar</li>
+              <li><strong>§1.3.2:</strong> Trial — list on WSDC website после одобрения Board (без срока в днях до ивента)</li>
+              <li><strong>§1.1.9:</strong> за 90 дней — rules и schedule на <strong>сайте организатора</strong>, не в календаре WSDC</li>
+              <li>Нет требования опубликовать edition этого года в календаре WSDC до даты ивента</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Почему это больше, чем аналитика</h3>
+            <ul>
+              <li>«Confirmed» появляется <strong>задним числом</strong> — слабый сигнал для travel, trial и сверки сетки</li>
+              <li>До hiatus (6 месяцев notice) или post-event Update — только догадка по прошлому году</li>
+              <li>У trial-оргов нет одного публичного view, что реально запланировано в регионе</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Изменение правил — обсудить</h3>
+          <p>Требовать <strong>подтверждение upcoming edition</strong> в календаре WSDC к фиксированной дате до ивента (горизонт выбирает комитет — например, стыковка с 6-месячными окнами change/hiatus). Разделить статусы: <em>scheduled</em> / <em>confirmed will run</em> / <em>hiatus or cancelled</em> / <em>confirmed ran</em>. Питать через Event Update + event directory, чтобы календарь, Time/Distance и аналитика брали один источник.</p>
+        </div>
+        <p class="cite">Registry Event Rules 2026.1B §1.1.4, §1.3.2, §1.4, §1.5; <a href="https://worldsdc.com/rules/" target="_blank" rel="noopener noreferrer">WSDC Events calendar</a>.</p>
+      </section>
+
       <section class="slide" data-section="core" data-notes="Главный слайд для board. Вслух: на публичных данных ни один пункт не закрыт полностью.">
         <div class="badge"><span class="pill">Core</span> Сводка</div>
         <h1>Матрица: что можно ответить на публичных данных</h1>
@@ -582,8 +613,8 @@
             </tr>
             <tr>
               <td>Event landscape &amp; capacity / where needed</td>
-              <td><span class="tag">Частично</span> карта ивентов и scored активности; заявки оргов не стандартизированы</td>
-              <td>Workflow case орга + entry lists + DQ гео + сверка с сеткой</td>
+              <td><span class="tag">Частично</span> карта ивентов и scored активности; нет forward-подтверждения в календаре; заявки оргов не стандартизированы</td>
+              <td>Правило pre-event confirmation + workflow case орга + entry lists + DQ гео + сверка с сеткой</td>
             </tr>
             <tr>
               <td>Point structure change analysis</td>
@@ -607,14 +638,16 @@
               <li><strong>Справочники + формы:</strong> Event Update prefills; без free-text name/location</li>
               <li><strong>Словарь метрик:</strong> scored vs entry vs community</li>
               <li><strong>Trial / new events:</strong> структурировать case New Event Application vs сетка ивентов</li>
+              <li><strong>Правила календаря:</strong> pre-event confirmation + модель статусов (scheduled / will run / hiatus / ran)</li>
             </ol>
           </div>
           <div class="card">
             <h3>Спросить на созвоне</h3>
             <ol>
               <li>После сдачи Score Report: только xlsx с протоколами или центральное хранилище?</li>
+              <li>Должен ли Update Form подтверждать <strong>upcoming</strong> edition до ивента — а не только после закрытия?</li>
               <li>За 2021-2026 Competitors List / Dual Roles ещё восстановимы?</li>
-              <li>Кто владеет intake Event Update / New Event Application / Score Report — и кто может менять?</li>
+              <li>Кто владеет intake Event Update / New Event Application / Score Report — и кто может менять правила календаря?</li>
             </ol>
           </div>
         </div>
