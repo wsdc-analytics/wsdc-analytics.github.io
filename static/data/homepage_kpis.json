@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-29",
-  "as_of": "2026-08-29",
+  "generated_at": "2026-08-31",
+  "as_of": "2026-08-31",
   "data_through": "2026-08-31",
   "source_dir": "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data",
   "methodology": {
@@ -11,9 +11,9 @@
     "edition_dates": "event_editions.csv start_date/end_date (edition_date remains YYYY-MM-01 for Tableau)",
     "calendar_archive": "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data/edition_calendar_dates.csv",
     "as_of_note": "as_of defaults to today.",
-    "increment_note": "Events/points increments count activity in the window. Dancers increment counts new dancers (first WSDC points), not unique participants. Week/month windows use edition end_date to match WSDC points-month attribution.",
-    "week_note": "Week uses ISO week of edition end_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
-    "month_note": "Month increment = occurred editions with end_date in the current month through as_of (aligns with WSDC end-date month for points); new dancers with first points in that window.",
+    "increment_note": "Events/points increments count activity in the window. Dancers increment counts new dancers (first WSDC points), not unique participants. Week/month windows use edition start_date so cross-month events count once.",
+    "week_note": "Week uses ISO week of edition start_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
+    "month_note": "Month increment = occurred editions with start_date in the current month through as_of; new dancers with first points in that window.",
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
@@ -29,12 +29,12 @@
         "end": "2026-08-23",
         "since_previous_ended": "2026-07-31",
         "iso_week": "2026-W34",
-        "bucket": "edition_end_date",
-        "event_names": "Chicagoland Country and Swing Dance Festival, Grand Party Sofia (GPS), Manneken Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, The Bend Connection, UpTown Swing, Westie Joy"
+        "bucket": "edition_start_date",
+        "event_names": "Chicagoland Country and Swing Dance Festival, Manneken Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, The Bend Connection, Westie Joy"
       },
       "increment": {
-        "events": 9,
-        "points": 3268.0,
+        "events": 7,
+        "points": 2408.0,
         "dancers": 126
       }
     },
@@ -42,14 +42,14 @@
       "label": "Month",
       "period": {
         "start": "2026-08-01",
-        "end": "2026-08-29",
+        "end": "2026-08-31",
         "since_previous_ended": "2026-07-31",
-        "bucket": "edition_end_date",
-        "event_names": "Arizona Dance Classic, Chicagoland Country and Swing Dance Festival, German Open, Grand Party Sofia (GPS), Lisbon Westie Fest, Manneken Swing, New England Dance Festival, Sea Sun and Swing, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, Swing Fling, Swingtacular: The Galactic Open, The Bend Connection, UpTown Swing, Warsaw Summer Nights Westival, Westie Joy"
+        "bucket": "edition_start_date",
+        "event_names": "Chicagoland Country and Swing Dance Festival, German Open, Grand Party Sofia (GPS), Manneken Swing, New England Dance Festival, Shakedown Swing, Summer Hummer, Swing Creation Hamburg, Swing Fling, Swingtacular: The Galactic Open, The Bend Connection, UpTown Swing, Westie Joy"
       },
       "increment": {
-        "events": 17,
-        "points": 6791.0,
+        "events": 13,
+        "points": 5387.0,
         "dancers": 216
       }
     },
@@ -57,7 +57,7 @@
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-08-29",
+        "end": "2026-08-31",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
