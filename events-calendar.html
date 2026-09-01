@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829u">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260901-sync" as="fetch" crossorigin>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20260901-us-state" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -86,6 +86,16 @@
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                             <ul class="wsdc-dd__menu cal-dd__menu" id="countryFilterMenu" role="listbox" aria-labelledby="countryFilterLabel" aria-hidden="true"></ul>
+                        </div>
+                    </div>
+                    <div class="filter-field" data-cal-dd data-state-filter hidden>
+                        <span class="filter-label" id="stateFilterLabel" data-i18n="usState">State</span>
+                        <div class="wsdc-dd cal-dd" id="stateFilterDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="stateFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="stateFilterMenu" aria-labelledby="stateFilterLabel stateFilterValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="stateFilterValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="stateFilterMenu" role="listbox" aria-labelledby="stateFilterLabel" aria-hidden="true"></ul>
                         </div>
                     </div>
                     <div class="filter-field" data-cal-dd>
@@ -243,6 +253,7 @@
       year: "Year",
       continent: "Continent",
       country: "Country",
+      usState: "State",
       confirmStatus: "Status",
       eventType: "Type",
       search: "Search",
@@ -252,6 +263,7 @@
       clearFilters: "Clear",
       allContinents: "All continents",
       allCountries: "All countries",
+      allStates: "All states",
       allConfirmStatuses: "All statuses",
       allEventTypes: "All types",
       close: "Close",
@@ -312,6 +324,7 @@
       year: "Год",
       continent: "Континент",
       country: "Страна",
+      usState: "Штат",
       confirmStatus: "Статус",
       eventType: "Тип",
       search: "Поиск",
@@ -321,6 +334,7 @@
       clearFilters: "Сброс",
       allContinents: "Все континенты",
       allCountries: "Все страны",
+      allStates: "Все штаты",
       allConfirmStatuses: "Все статусы",
       allEventTypes: "Все типы",
       close: "Закрыть",
@@ -380,6 +394,7 @@
       year: "Año",
       continent: "Continente",
       country: "País",
+      usState: "Estado (EE. UU.)",
       confirmStatus: "Estado",
       eventType: "Tipo",
       search: "Buscar",
@@ -389,7 +404,8 @@
       clearFilters: "Limpiar",
       allContinents: "Todos los continentes",
       allCountries: "Todos los países",
-      allConfirmStatuses: "Todos los estados",
+      allStates: "Todos los estados (EE. UU.)",
+      allConfirmStatuses: "Todos los estados de confirmación",
       allEventTypes: "Todos los tipos",
       close: "Cerrar",
       legDens1: "1–2",
@@ -445,6 +461,7 @@
   var CONTINENTS = ["America", "Europe", "Asia", "Australia"];
   var STATUSES = ["confirmed", "expected", "hiatus"];
   var KINDS = ["registry", "trial"];
+  var US_COUNTRY = "United States";
 
   var state = {
     lang: "en",
@@ -452,6 +469,7 @@
     year: null,
     continent: "",
     country: "",
+    usState: "",
     status: "",
     kind: "",
     byDay: {},
@@ -675,9 +693,25 @@
   function eventPassesFilters(e) {
     if (state.continent && e.continent !== state.continent) return false;
     if (state.country && e.country !== state.country) return false;
+    if (state.country === US_COUNTRY && state.usState && e.state !== state.usState) return false;
     if (state.status && normalizeStatus(e.status) !== state.status) return false;
     if (state.kind && e.kind !== state.kind) return false;
     return true;
+  }
+
+  function isUsCountrySelected() {
+    return state.country === US_COUNTRY;
+  }
+
+  function updateStateFilterVisibility() {
+    var field = document.querySelector("[data-state-filter]");
+    if (!field) return;
+    var show = isUsCountrySelected();
+    field.hidden = !show;
+    if (!show) {
+      state.usState = "";
+      closeAllFilterDropdowns();
+    }
   }
 
   function eventsForYear(year) {
@@ -822,8 +856,34 @@
       t("allCountries")
     );
 
-    var statusPool = yearEvents.filter(function (e) {
+    updateStateFilterVisibility();
+
+    var statePool = yearEvents.filter(function (e) {
       if (state.country && e.country !== state.country) return false;
+      return true;
+    });
+    if (isUsCountrySelected()) {
+      var states = {};
+      statePool.forEach(function (e) {
+        if (e.state) states[e.state] = true;
+      });
+      var stateList = Object.keys(states).sort(function (a, b) {
+        return a.localeCompare(b);
+      });
+      if (state.usState && states[state.usState] !== true) {
+        state.usState = "";
+      }
+      fillDropdown(
+        document.getElementById("stateFilterMenu"),
+        document.getElementById("stateFilterValue"),
+        stateList.map(function (s) { return { value: s, label: s }; }),
+        state.usState,
+        t("allStates")
+      );
+    }
+
+    var statusPool = statePool.filter(function (e) {
+      if (isUsCountrySelected() && state.usState && e.state !== state.usState) return false;
       return true;
     });
     var statusPresent = {};
@@ -1080,6 +1140,7 @@
   function clearAllFilters() {
     state.continent = "";
     state.country = "";
+    state.usState = "";
     state.status = "";
     state.kind = "";
     forceCloseDayIsland();
@@ -2571,6 +2632,7 @@
     closeAllFilterDropdowns();
     state.continent = btn.getAttribute("data-value") || "";
     state.country = "";
+    state.usState = "";
     state.status = "";
     state.kind = "";
     applyFiltersAndRender();
@@ -2581,6 +2643,17 @@
     e.stopPropagation();
     closeAllFilterDropdowns();
     state.country = btn.getAttribute("data-value") || "";
+    state.usState = "";
+    state.status = "";
+    state.kind = "";
+    applyFiltersAndRender();
+  });
+  document.getElementById("stateFilterMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    state.usState = btn.getAttribute("data-value") || "";
     state.status = "";
     state.kind = "";
     applyFiltersAndRender();
@@ -2870,7 +2943,7 @@
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
   applyStaticI18n();
 
-  fetch("static/data/events_year_calendar.json?v=20260901-sync")
+  fetch("static/data/events_year_calendar.json?v=20260901-us-state")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
