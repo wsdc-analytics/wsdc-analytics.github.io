@@ -202,6 +202,10 @@ h1 {
   flex: 0 0 auto;
 }
 
+.filter-field[hidden] {
+  display: none !important;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
