@@ -41,7 +41,7 @@
     "url": "https://wsdc-analytics.github.io/article_division_transition_time_en.html",
     "image": "https://wsdc-analytics.github.io/article_division_transition_time_header.jpg",
     "datePublished": "2026-05-26",
-    "dateModified": "2026-05-26",
+    "dateModified": "2026-09-03",
     "author": { "@type": "Organization", "name": "WSDC Analytics" },
     "publisher": {
       "@type": "Organization",
@@ -793,7 +793,7 @@
     <main id="main-content" class="article-content">
       <section class="section">
         <p>After the pandemic, the WSDC calendar began growing rapidly. Along with it, the feel of the division system changed: there were more points, more opportunities to compete, and for some dancers the path to the next division started looking shorter. Cases where dancers move through two or three divisions in a single calendar year are no longer unusual.</p>
-        <p>In 2025, there were <strong>172 events</strong>, nearly <strong>4,000 dancers</strong> earned more than <strong>46,000 points</strong> — record figures for the entire history of WSDC events. Early 2026 data gives no reason to expect this upward trend to reverse.</p>
+        <p>In 2025, there were <strong>172 events</strong>, nearly <strong>4,000 dancers</strong> earned more than <strong>46,000 points</strong> — record figures for the entire history of WSDC events. By August 2026 there were already <strong>122 events</strong> (~<strong>34,000</strong> points): the calendar is keeping pace with 2025.</p>
         <p>In this article, I want to examine the existing mechanism for regulating transitions between WSDC Skill Level divisions, how well current thresholds are coping with the growth in events and dancers in recent years, and whether anything should be done about it.</p>
       </section>
 
@@ -860,7 +860,7 @@
         </details>
 
         <p>In the 2015–2019 baseline period, earning the right to compete in Intermediate took about <strong>12 months</strong> from the first Novice point. Moving from Intermediate to Advanced took <strong>17 months</strong>, and from Advanced to All-Stars about <strong>20 months</strong>.</p>
-        <p>In 2025, this figure was <strong>9 months</strong> in Novice, <strong>16 months</strong> in Intermediate, and <strong>21 months</strong> in Advanced. The 2026 trend shows Novice already closer to <strong>6 months</strong> and Intermediate closer to <strong>13</strong>. The main signal: the lower part of the system is moving faster precisely where thresholds have not changed in years.</p>
+        <p>In 2025, this figure was <strong>9 months</strong> in Novice, <strong>16 months</strong> in Intermediate, and <strong>21 months</strong> in Advanced. In 2026 (data through August) the Novice median is still <strong>9 months</strong>, and Intermediate is about <strong>14–15</strong>. The main signal: the lower part of the system is faster than the pre-pandemic baseline where thresholds have not changed; relative to 2025 there is almost no extra compression.</p>
         <figure class="figure-chart">
           <h3>Time Between First Points in Divisions</h3>
           <div class="chart-legend" aria-hidden="true">
@@ -886,7 +886,7 @@
         </details>
 
         <p>By <strong>time between first points in divisions</strong>, the picture aligns with <strong>time to transition threshold</strong>, but more gently. From 2015 to 2019, from the first Novice point to the first Intermediate point took about <strong>17 months</strong>, from Intermediate to Advanced <strong>21 months</strong>, and from Advanced to All-Stars about <strong>25 months</strong>.</p>
-        <p>In 2025, these figures were <strong>15</strong>, <strong>17</strong>, and <strong>27 months</strong> respectively. The 2026 trend is still close to <strong>15 months</strong> in Novice, <strong>17–18</strong> in Intermediate, and <strong>28</strong> in Advanced. Actual transitions are speeding up on the lower rungs too, but not as sharply as the formal right to move up.</p>
+        <p>In 2025, these figures were <strong>15</strong>, <strong>17</strong>, and <strong>27 months</strong> respectively. In 2026 they are <strong>15 months</strong> in Novice, <strong>19</strong> in Intermediate, and <strong>28</strong> in Advanced. Actual Novice transitions match 2025; Intermediate is a bit longer than in the record year. The lower rungs are still faster than 2015–2019, but not as sharply as the formal right to move up.</p>
 
         <p>Two more things matter: whether there are <strong>more transitions</strong> between divisions overall, and whether the <strong>share of dancers</strong> who earn first points in adjacent divisions within 12 months has grown.</p>
 
@@ -940,7 +940,7 @@
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Current allowed thresholds and two recalculation scenarios"></canvas></div>
         </figure>
 
-        <p>For median time to earn enough Novice points to reach the Intermediate threshold to return to pre-pandemic values, the threshold would need to be <strong>21</strong> points; accounting for the 2026 trend and assuming it continues, <strong>30</strong> points. For Intermediate → Advanced, those values are <strong>32</strong> and <strong>44</strong> points respectively.</p>
+        <p>For median time to earn enough Novice points to reach the Intermediate threshold to return to pre-pandemic values, the threshold would need to be <strong>21</strong> points; accounting for the 2026 trend and assuming it continues, <strong>24</strong> points. For Intermediate → Advanced, those values are <strong>32</strong> and <strong>39</strong> points respectively.</p>
       </section>
 
       <section class="section">
@@ -963,6 +963,7 @@
     <footer class="article-footer">
       <div class="data-note">
         <p><strong>Data Source:</strong> Analysis of the <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a></p>
+        <p><strong>Snapshot:</strong> results through August 2026, recalculated 3 September 2026.</p>
         <p><strong>Related:</strong> <a href="https://wsdc-analytics.github.io/rules_evolution_2025_en.html?lang=en">Evolution of WSDC Rules</a> · <a href="https://wsdc-analytics.github.io/article_3year_rule_en.html?lang=en">The Return of the 3-Year Rule</a></p>
       </div>
     </footer>
@@ -971,7 +972,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260524a';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260903a';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
 
