@@ -41,7 +41,7 @@
     "url": "https://wsdc-analytics.github.io/article_division_transition_time.html",
     "image": "https://wsdc-analytics.github.io/article_division_transition_time_header.jpg",
     "datePublished": "2026-05-26",
-    "dateModified": "2026-05-26",
+    "dateModified": "2026-09-03",
     "author": { "@type": "Organization", "name": "WSDC Analytics" },
     "publisher": {
       "@type": "Organization",
@@ -793,7 +793,7 @@
     <main id="main-content" class="article-content">
       <section class="section">
         <p>После пандемии WSDC-календарь стал активно расти. И вместе с ним изменилось ощущение самой системы дивизионов: поинтов стало больше, возможностей соревноваться — тоже, а путь до следующего дивизиона для части танцоров начал выглядеть короче. Появились случаи, когда танцоры за один календарный год проходят два–три дивизиона, и это перестаёт выглядеть чем-то уникальным.</p>
-        <p>За 2025 год прошло <strong>172 ивента</strong>, почти <strong>4000 танцоров</strong> получили более <strong>46 тысяч поинтов</strong> — это рекордные показатели за весь период проведения WSDC-ивентов. Текущие показатели 2026 года не дают оснований предполагать, что этот восходящий тренд пойдёт на спад.</p>
+        <p>За 2025 год прошло <strong>172 ивента</strong>, почти <strong>4000 танцоров</strong> получили более <strong>46 тысяч поинтов</strong> — это рекордные показатели за весь период проведения WSDC-ивентов. К августу 2026 уже прошло <strong>122 ивента</strong> (~<strong>34 тысячи</strong> поинтов): по темпу календарь не отстаёт от 2025.</p>
         <p>В данной статье я хочу рассмотреть существующий механизм регулирования переходов между Skill Level-дивизионами WSDC, а также то, насколько хорошо или плохо текущие пороговые значения справляются с увеличением количества ивентов и танцоров в последние годы, и надо ли что-то с этим делать.</p>
       </section>
 
@@ -860,7 +860,7 @@
         </details>
 
         <p>В базовом периоде 2015–2019 на то, чтобы получить право выступать в Intermediate, требовалось примерно <strong>12 месяцев</strong> от получения первого поинта в Novice. На переход из Intermediate в Advanced требовалось <strong>17 месяцев</strong>, а на переход из Advanced в All-Stars — около <strong>20 месяцев</strong>.</p>
-        <p>В 2025 году этот показатель составил <strong>9 месяцев</strong> в Novice, <strong>16 месяцев</strong> в Intermediate и <strong>21 месяц</strong> в Advanced. Тренд 2026 года показывает, что в Novice этот показатель уже ближе к <strong>6 месяцам</strong>, а в Intermediate — к <strong>13</strong>. Главный сигнал здесь — нижняя часть системы стала проходиться быстрее именно там, где пороги давно не менялись.</p>
+        <p>В 2025 году этот показатель составил <strong>9 месяцев</strong> в Novice, <strong>16 месяцев</strong> в Intermediate и <strong>21 месяц</strong> в Advanced. В 2026 (данные по август) в Novice медиана остаётся <strong>9 месяцев</strong>, в Intermediate — около <strong>14–15</strong>. Главный сигнал: нижняя часть системы быстрее доковидной базы там, где пороги давно не менялись; относительно 2025 дополнительного сжатия почти нет.</p>
         <figure class="figure-chart">
           <h3>Время между первыми поинтами в дивизионах</h3>
           <div class="chart-legend" aria-hidden="true">
@@ -886,7 +886,7 @@
         </details>
 
         <p>По метрике <strong>времени между первыми поинтами в дивизионах</strong> картина согласуется с <strong>временем до порога перехода</strong>, но мягче. В период с 2015 по 2019 год от первого поинта в Novice до первого поинта в Intermediate проходило примерно <strong>17 месяцев</strong>, из Intermediate в Advanced — <strong>21 месяц</strong>, из Advanced в All-Stars — около <strong>25 месяцев</strong>.</p>
-        <p>В 2025 году эти показатели составили <strong>15</strong>, <strong>17</strong> и <strong>27 месяцев</strong> соответственно. Тренд 2026 года пока близок к <strong>15 месяцам</strong> на Novice, <strong>17–18</strong> на Intermediate и <strong>28</strong> на Advanced. То есть фактический переход тоже ускоряется на нижних ступенях, но не так резко, как формальное право идти выше.</p>
+        <p>В 2025 году эти показатели составили <strong>15</strong>, <strong>17</strong> и <strong>27 месяцев</strong> соответственно. В 2026 пока <strong>15 месяцев</strong> на Novice, <strong>19</strong> на Intermediate и <strong>28</strong> на Advanced. Фактический переход на Novice стабилен относительно 2025; Intermediate чуть длиннее, чем в рекордном году. Ускорение относительно 2015–2019 на нижних ступенях сохраняется, но не так резко, как формальное право идти выше.</p>
 
         <p>Дополнительно важно посмотреть на ещё две вещи: стало ли в целом <strong>больше переходов</strong> между дивизионами и выросла ли <strong>доля тех</strong>, кто получает первые поинты в соседних дивизионах в течение 12 месяцев.</p>
 
@@ -940,7 +940,7 @@
           <div class="chart-canvas-box"><canvas id="chartImplied" aria-label="Текущие allowed-пороги и два сценария пересчёта"></canvas></div>
         </figure>
 
-        <p>Для того чтобы медианное время набора поинтов в Novice до порога перехода в Intermediate вернулось к доковидным значениям, порог должен быть <strong>21</strong> поинт, а с учётом тренда 2026 года и расчётом на сохранение этого тренда — <strong>30</strong> поинтов. Для перехода из Intermediate в Advanced эти значения составляют <strong>32</strong> и <strong>44</strong> поинта соответственно.</p>
+        <p>Для того чтобы медианное время набора поинтов в Novice до порога перехода в Intermediate вернулось к доковидным значениям, порог должен быть <strong>21</strong> поинт, а с учётом тренда 2026 года и расчётом на сохранение этого тренда — <strong>24</strong> поинта. Для перехода из Intermediate в Advanced эти значения составляют <strong>32</strong> и <strong>39</strong> поинтов соответственно.</p>
       </section>
 
       <section class="section">
@@ -963,6 +963,7 @@
     <footer class="article-footer">
       <div class="data-note">
         <p><strong>Источник данных:</strong> Анализ базы данных <a href="https://points.worldsdc.com/" rel="noopener noreferrer" target="_blank">WSDC Points Registry</a></p>
+        <p><strong>Срез:</strong> результаты по август 2026, пересчёт 3 сентября 2026.</p>
         <p><strong>Связанные материалы:</strong> <a href="https://wsdc-analytics.github.io/rules_evolution_2025.html?lang=ru">Эволюция правил WSDC</a> · <a href="https://wsdc-analytics.github.io/article_3year_rule.html?lang=ru">Возвращение правила 3 лет</a></p>
       </div>
     </footer>
@@ -971,7 +972,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
 (function() {
-  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260524a';
+  var JSON_URL = 'static/data/division_transition_metrics.json?v=20260903a';
   var charts = {};
   function destroy(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
 

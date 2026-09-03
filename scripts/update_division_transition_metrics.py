@@ -34,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Update division transition metrics JSON.")
     parser.add_argument(
         "--source-dir",
-        default="/Users/ania/.cursor/projects/tableau/My-Tableau-Projects/WSDC/WSDC Points",
+        default="/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data",
     )
     parser.add_argument(
         "--output",
@@ -50,7 +50,7 @@ def parse_args() -> argparse.Namespace:
 
 def norm_div(value: str) -> str | None:
     v = (value or "").strip()
-    if v in {"All Star", "All Stars", "All-Stars"}:
+    if v in {"All Star", "All-Star", "All Stars", "All-Stars"}:
         return "All-Stars"
     if v in {"Champion", "Champions"}:
         return "Champions"
