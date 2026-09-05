@@ -143,6 +143,16 @@
       vertical-align: middle;
     }
     .tag.reuse { border-color: #bfdbfe; background: #e8f0fe; color: #1e3a5f; }
+    .tag.full { border-color: #bbf7d0; background: #ecfdf5; color: #14532d; }
+    .tag.partial { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+    .quote {
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+    .quote::before { content: "“"; }
+    .quote::after { content: "”"; }
   </style>
 </head>
 <body>
@@ -154,7 +164,7 @@
     </div>
     <nav class="toc" aria-label="Categories">
       <a href="#c1">C1 · 23</a>
-      <a href="#c2">C2 · 18</a>
+      <a href="#c2">C2 · 17</a>
       <a href="#c3">C3 · 6</a>
       <a href="#c4">C4 · 6</a>
       <a href="#c5">C5 · 8</a>
@@ -162,336 +172,332 @@
   </div>
   <div class="wrap">
     <h1>Board questions by category</h1>
-    <p class="lead">Atomic asks after the 2026-09-05 review: where Board wording means full competitors, Entry is C2 until lists are usable; Scored stays C1 with an explicit label. Each row: who asked, question, why.</p>
-    <p class="meta">Source: MATRIX.md · 61 atoms · C1 23 · C2 18 · C3 6 · C4 6 · C5 8</p>
-
+    <p class="lead">Each row keeps the <strong>Board quote</strong> (full ask when split). C1: full (14) then partial (9). C2: concrete enabling for a full answer.</p>
+    <p class="meta">Source: MATRIX.md · 60 atoms · C1 23 (full 14 · partial 9) · C2 17 · C3 6 · C4 6 · C5 8</p>
     <section class="cat" id="c1">
       <h2>C1 — Answerable now (23)</h2>
-      <p class="blurb">Public/cleaned Points Registry or published scored analytics — labeled Scored only.</p>
+      <p class="blurb">Sorted: <strong>full</strong> (take into work) first, then <strong>partial</strong> (same Board quote, Scored/limited scope only).</p>
       <div class="item">
-        <div class="who"><span class="id">YV-1a</span> Yvonne</div>
-        <p class="q">Unique scored competitors by skill division, 2021–2026</p>
-        <p class="why"><strong>Why C1:</strong> Points Registry; role×division. Label clearly — not “all competitors.” <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-1</span> Jim Tigges <span class="tag full">full</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">“Length of time for each competitor from when they first earn a point in a division until they are done in that division”</p>
+        <p class="why"><strong>Comment:</strong> Tigges#1. Advancers + censored; reuse article / dwell.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">YV-4a</span> Yvonne</div>
-        <p class="q">Forecast scored competitor counts by skill 2027–2031</p>
-        <p class="why"><strong>Why C1:</strong> Scenario only; 2026 YTD incomplete; Board must accept scored substitute. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-2</span> Jim Tigges <span class="tag full">full</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">“Length of time for each competitor from earning their last point in a lower division and first point in the higher division”</p>
+        <p class="why"><strong>Comment:</strong> Tigges#2. `last_to_first`; reuse.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">KY-2a</span> Kay <span class="tag reuse">reuse</span></div>
-        <p class="q">Points/tiers: impact framing for scored majority progression vs minority point-winners</p>
-        <p class="why"><strong>Why C1:</strong> Division-transition + concentration; package for Board initiative. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-3</span> Jim Tigges <span class="tag full">full</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">“Length of time … reaching the ‘may’ move up … to … ‘must’ move up … and how many stayed … until 25%, 50% and 75% of the additional points”</p>
+        <p class="why"><strong>Comment:</strong> Tigges#3. Time-to-allowed/required; reuse.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">KY-3a</span> Kay</div>
-        <p class="q">Event landscape & scored load vs limiting new events (mission growth)</p>
-        <p class="why"><strong>Why C1:</strong> Catalog + scored headcounts YOY — ecosystem signal, not proof of Entry capacity. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-4</span> Jim Tigges <span class="tag full">full</span></div>
+        <p class="quote">“How many events, for each year, has each competitor earned a point [at] any level” (+ bins 12+ / 6–12 / 3–6 / 0–1)</p>
+        <p class="why"><strong>Comment:</strong> Tigges#4. Events-with-a-point only — quote already excludes attendance.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-5a</span> Jim Coakley</div>
-        <p class="q">Which events held Sophisticated / Masters / Juniors (WSDC J&J age) over ~15y; trend</p>
-        <p class="why"><strong>Why C1:</strong> Present in Points Registry results (`Sophisticated`, `Master`, `Juniors`). Scored presence only — not full “division was offered.” <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-6</span> Jim Tigges <span class="tag full">full</span></div>
+        <p class="quote">“How many people could ‘move down’ IF we allowed them to ‘discount’ points more than 10 years old (or 8 years or 5 years)”</p>
+        <p class="why"><strong>Comment:</strong> Tigges#6 analytic. Policy decision = JT-6b (C5).</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-11</span> Jim Coakley</div>
-        <p class="q">Analytics helpful for New Event Applications (scored decision-support pack)</p>
-        <p class="why"><strong>Why C1:</strong> Nearby registry events, scored size history, regional YOY — **not** Entry attendance. Clarify with Jim if he meant KPI design (then C5/C3). <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-8</span> Jim Tigges <span class="tag full">full</span></div>
+        <p class="quote">“We have xx years of event results, what is the listing, for each event, for each year, so we can see if they are growing, shrinking, staying the same… or, if shrinking, then look to see if there are new events in their region”</p>
+        <p class="why"><strong>Comment:</strong> Tigges#8. Scored size YOY + nearby new events; causality interpretive.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-1a</span> Jen <span class="tag reuse">reuse</span></div>
-        <p class="q">Post-covid Novice→All-Star scored trajectory + regional event supply YOY</p>
-        <p class="why"><strong>Why C1:</strong> Article + region cut; “events” = events with points unless noted. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-1b</span> Jen <span class="tag full">full</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">“The total number of people who have made it to qualify to compete in the all star division spanning 10+ years.”</p>
+        <p class="why"><strong>Comment:</strong> Jen#1. Clarify metric: allowed in Advanced vs first All-Star point. Reuse article path.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-2</span> Jen <span class="tag reuse">reuse</span></div>
-        <p class="q">Count who reached All-Star eligibility over 10+ years</p>
-        <p class="why"><strong>Why C1:</strong> Clarify with Jen: allowed in Advanced vs first All-Star point. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-1c</span> Jen <span class="tag full">full</span></div>
+        <p class="quote">“The statistics around current 10+ point champions. The amount of time they have been a champion, the amount of time it took them to get into that division, the average number of events they compete at and make finals per year.”</p>
+        <p class="why"><strong>Comment:</strong> Jen#1. Finals where place exists in results.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-3</span> Jen</div>
-        <p class="q">Champions with 10+ points: time-in-division, time-to-reach, events/finals per year</p>
-        <p class="why"><strong>Why C1:</strong> Held for now (discussion open); finals where place exists. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-1d</span> Jen <span class="tag full">full</span></div>
+        <p class="quote">“…as well as the number of champions that have not received a point post covid.”</p>
+        <p class="why"><strong>Comment:</strong> Jen#1. Inactivity filter on Champions.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-4</span> Jen</div>
-        <p class="q">Champions with no points post-covid</p>
-        <p class="why"><strong>Why C1:</strong> Inactivity filter. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-2b</span> Jen <span class="tag full">full</span></div>
+        <p class="quote">“How many people have not competed (or haven't received a point, if we don't have registration data) post covid - what states have the most decline… what countries…”</p>
+        <p class="why"><strong>Comment:</strong> Jen#2. Quote allows points proxy; deliver scored inactivity by event geo. Entry no-shows = JN-2b-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-5a</span> Jen</div>
-        <p class="q">States/countries with most scored competitors + 10y growth</p>
-        <p class="why"><strong>Why C1:</strong> Label scored; event location vs dancer home. <em>(Scored)</em></p>
+        <div class="who"><span class="id">PL-1a</span> Paul <span class="tag full">full</span></div>
+        <p class="quote">“how any events held champion division and or invitational” (windows 3 / 6 / 9 years)</p>
+        <p class="why"><strong>Comment:</strong> Paul#1. Contest names in results.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-6a</span> Jen</div>
-        <p class="q">Scored inactivity post-covid; decline by state/country</p>
-        <p class="why"><strong>Why C1:</strong> Last-point geography. <em>(Scored)</em></p>
+        <div class="who"><span class="id">PL-1c</span> Paul <span class="tag full">full</span></div>
+        <p class="quote">“indicate where points where awarded to individuals with less than 11 champion points”</p>
+        <p class="why"><strong>Comment:</strong> Paul#1. Join placements to career Champion totals.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-7a</span> Jen</div>
-        <p class="q">Events added YOY by country + scored competitors per event</p>
-        <p class="why"><strong>Why C1:</strong> Unique IDs with points. <em>(Scored)</em></p>
+        <div class="who"><span class="id">KY-1</span> Kay <span class="tag full">full</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">“Closer look at current points and tiers structure, and impact of possible changes, especially on progression of the majority of our dancers (n.b. many of our points are won by the same small minority of dancers)”</p>
+        <p class="why"><strong>Comment:</strong> Kay#1. Package division-transition + concentration for Board initiative. Entry “majority on the floor” = KY-1-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">PL-1</span> Paul</div>
-        <p class="q">Champion and/or Invitational held: 3 / 6 / 9 year windows</p>
-        <p class="why"><strong>Why C1:</strong> Contest names in results. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JC-5b</span> Jim Coakley <span class="tag full">full</span></div>
+        <p class="quote">“Does the committee have ideas for other analytics that would be helpful to New Event Applications?”</p>
+        <p class="why"><strong>Comment:</strong> Coakley#5. Scored decision-support pack (nearby registry events, scored size, regional YOY). Not Entry attendance (JC-5c).</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">PL-3</span> Paul</div>
-        <p class="q">Points to individuals with <11 Champion points in those contexts</p>
-        <p class="why"><strong>Why C1:</strong> Join to career totals. <em>(Scored)</em></p>
+        <div class="who"><span class="id">YV-1</span> Yvonne <span class="tag partial">partial</span></div>
+        <p class="quote">“How many competitors are there in each skill level from 2021 through 2026?”</p>
+        <p class="why"><strong>Comment:</strong> Answer now for Scored only (role×division). Full “competitors” = Entry → YV-1-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-1</span> Jim Tigges <span class="tag reuse">reuse</span></div>
-        <p class="q">Months first point in division → first in next</p>
-        <p class="why"><strong>Why C1:</strong> Advancers; censored separate. <em>(Scored)</em></p>
+        <div class="who"><span class="id">YV-3</span> Yvonne <span class="tag partial">partial</span></div>
+        <p class="quote">“Based on the data, what is the prediction for the number of competitors in each role for 2027, 2028, 2029, 2030, and 2031.”</p>
+        <p class="why"><strong>Comment:</strong> Scored scenario/forecast only; 2026 YTD incomplete. Entry forecast → YV-3-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-2</span> Jim Tigges <span class="tag reuse">reuse</span></div>
-        <p class="q">Last point lower → first higher</p>
-        <p class="why"><strong>Why C1:</strong> last_to_first. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-1a</span> Jen <span class="tag partial">partial</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">“The average trajectory of someone starting WCS post covid going from novice to all star by using the average number of events someone attends (growth regions, vs Europe, vs US) - would need to know the difference of the # of events offered YOY.”</p>
+        <p class="why"><strong>Comment:</strong> Scored trajectory + events-with-points as proxy for “attends”; region cut. True attendance → JN-1a-E. Reuse article.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-3</span> Jim Tigges <span class="tag reuse">reuse</span></div>
-        <p class="q">May→must timing; stay to 25/50/75% of gap</p>
-        <p class="why"><strong>Why C1:</strong> Time-to-allowed/required. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-2a</span> Jen <span class="tag partial">partial</span></div>
+        <p class="quote">“What States/Countries have the most WCS registered competitors, and what that increase has looked like over the past 10 years.”</p>
+        <p class="why"><strong>Comment:</strong> Scored unique by event (or dancer) geo — label clearly, not “registered Entry.” Full Entry → JN-2a-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-4</span> Jim Tigges</div>
-        <p class="q">Events-with-a-point per competitor per year (bins)</p>
-        <p class="why"><strong>Why C1:</strong> Not attendance. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-3a</span> Jen <span class="tag partial">partial</span></div>
+        <p class="quote">“Number of events added YOY by country with the amount of competitors at each event”</p>
+        <p class="why"><strong>Comment:</strong> Events YOY = C1; competitors = scored unique IDs. Entry headcount → JN-3a-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-5a</span> Jim Tigges</div>
-        <p class="q">Events/year offering each division; tier bands from registry</p>
-        <p class="why"><strong>Why C1:</strong> Size bands, not exact Entry headcount. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-5</span> Jim Tigges <span class="tag partial">partial</span></div>
+        <p class="quote">“How many events, each year, have the various WSDC divisions and how many of each level (for each role) are the various Tiers. (i.e. are half or more of the events with Novice divisions of at least Tier 3 or higher?, How many events have Tier 1 All-Star divisions, etc.)”</p>
+        <p class="why"><strong>Comment:</strong> Division presence + tier bands from scored finals size. Exact Entry tier headcounts → JT-5-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-6</span> Jim Tigges</div>
-        <p class="q">Move-down counterfactual if old points discounted</p>
-        <p class="why"><strong>Why C1:</strong> Policy = JT-7. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JT-7</span> Jim Tigges <span class="tag partial">partial</span></div>
+        <p class="quote">“A map with the events…and the number of competitors (so France has 12 events, do they average 200 competitors or 400 competitors, etc.)”</p>
+        <p class="why"><strong>Comment:</strong> Map + scored unique per edition. Entry event size → JT-7-E.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-8a</span> Jim Tigges</div>
-        <p class="q">Map events + scored competitor volume</p>
-        <p class="why"><strong>Why C1:</strong> Unique scored per edition. <em>(Scored)</em></p>
+        <div class="who"><span class="id">KY-2</span> Kay <span class="tag partial">partial</span></div>
+        <p class="quote">“What can we understand from current data about our current event landscape and capacity, especially as we are talking about limiting new events in the context of a mission that talks about supporting growth?”</p>
+        <p class="why"><strong>Comment:</strong> Landscape + scored load YOY now. Capacity / customer base → KY-2-E; “where needed” → KY-2c.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-9</span> Jim Tigges</div>
-        <p class="q">Per-event YOY size trajectory + nearby new events</p>
-        <p class="why"><strong>Why C1:</strong> Scored sizes; causality interpretive. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JC-3a</span> Jim Coakley <span class="tag partial">partial</span></div>
+        <p class="quote">“Analyze data on routine divisions in the past 15 years. Chart what events hold classic, showcase, Sophisticated, Masters and Juniors. … Are routines on the decline?”</p>
+        <p class="why"><strong>Comment:</strong> Age J&amp;J (Sophisticated / Masters / Juniors) only, and only where points were awarded — not full “hold” history / not guaranteed 15y. Classic/Showcase → JC-3b. Clarify intent with Jim.</p>
       </div>
     </section>
+
     <section class="cat" id="c2">
-      <h2>C2 — After source hygiene (18)</h2>
-      <p class="blurb">WSDC sources exist (Score Report lists, Drive, ops export) but need schema/join/geo hygiene — especially Entry.</p>
+      <h2>C2 — After source hygiene (17)</h2>
+      <p class="blurb">Same Board quote; each row names the <strong>concrete enabling work</strong> for a full answer.</p>
       <div class="item">
-        <div class="who"><span class="id">YV-1b</span> Yvonne</div>
-        <p class="q">Competitors by skill level 2021–2026 = Entry (everyone registered in that skill J&J)</p>
-        <p class="why"><strong>Why C2:</strong> Needs Competitors List retention + join (Gap B). Literal reading of “how many competitors.” <em>(Entry)</em></p>
+        <div class="who"><span class="id">YV-1-E</span> Yvonne</div>
+        <p class="quote">“How many competitors are there in each skill level from 2021 through 2026?”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: retain Score Report Competitors Lists; schema + dancer ID join into analytics pipeline; skill/role on entry list. Then full skill-level Entry counts.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">YV-2</span> Yvonne</div>
-        <p class="q">“Total community” size (same years)</p>
-        <p class="why"><strong>Why C2:</strong> Broader than skill Entry; same list dependency. Do **not** equate to YV-1a. <em>(Entry)</em></p>
+        <div class="who"><span class="id">YV-2a</span> Yvonne</div>
+        <p class="quote">“The total community, and if possible, the region?”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: define “community” with Board (Entry-only vs broader); Competitors List retention + join (same as YV-1-E). Region without lists still blocked.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">YV-3a</span> Yvonne</div>
-        <p class="q">Scored counts by region (state/country)</p>
-        <p class="why"><strong>Why C2:</strong> Still needs geo hygiene (Gap C); event location vs dancer home — specify which. <em>(Scored)</em></p>
+        <div class="who"><span class="id">YV-2b</span> Yvonne</div>
+        <p class="quote">“The total community, and if possible, the region?”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling (scored region): Gap C — event/location aliases; freeze event country/state; document event-geo vs dancer-home. Partial scored-by-event-country possible after aliases.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">YV-3b</span> Yvonne</div>
-        <p class="q">Entry counts by region</p>
-        <p class="why"><strong>Why C2:</strong> Lists + clean geo. <em>(Entry)</em></p>
+        <div class="who"><span class="id">YV-2b-E</span> Yvonne</div>
+        <p class="quote">“The total community, and if possible, the region?”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: YV-1-E list join plus clean Entry geo (list fields or verified home).</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">YV-4b</span> Yvonne</div>
-        <p class="q">Forecast Entry competitor counts by skill 2027–2031</p>
-        <p class="why"><strong>Why C2:</strong> No honest Entry forecast until YV-1b series exists. <em>(Entry)</em></p>
+        <div class="who"><span class="id">YV-3-E</span> Yvonne</div>
+        <p class="quote">“Based on the data, what is the prediction for the number of competitors in each role for 2027, 2028, 2029, 2030, and 2031.”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: multi-year Entry time series from YV-1-E first; only then scenario forecast on Entry.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">YV-5</span> Yvonne</div>
-        <p class="q">Interpret linked Drive file in context of YV asks</p>
-        <p class="why"><strong>Why C2:</strong> Review privately; map columns to YV atoms; do not commit file. <em>(—)</em></p>
+        <div class="who"><span class="id">KY-1-E</span> Kay</div>
+        <p class="quote">“Closer look at current points and tiers structure, and impact of possible changes, especially on progression of the majority of our dancers (n.b. many of our points are won by the same small minority of dancers)”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Competitors List join so “majority on the floor” ≠ scored point-winners only.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">KY-2b</span> Kay</div>
-        <p class="q">Same initiative for Entry “majority on the floor”</p>
-        <p class="why"><strong>Why C2:</strong> Needs lists; scored majority ≠ Entry majority. <em>(Entry)</em></p>
+        <div class="who"><span class="id">KY-2-E</span> Kay</div>
+        <p class="quote">“What can we understand from current data about our current event landscape and capacity, especially as we are talking about limiting new events in the context of a mission that talks about supporting growth?”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Entry headcounts per event/year from Competitors Lists (join + retention) as capacity signal.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">KY-3b</span> Kay</div>
-        <p class="q">Capacity / customer base to justify limits or growth (Entry)</p>
-        <p class="why"><strong>Why C2:</strong> Competitors List (and later home geo). <em>(Entry)</em></p>
+        <div class="who"><span class="id">JC-6a</span> Jim Coakley</div>
+        <p class="quote">“Database Audits - We had some people with no points. Did we fix this?”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: ops registry export from Paul; define “zero-point record” checklist; annual re-run.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-14</span> Jim Coakley</div>
-        <p class="q">DB audits: zero-point records fixed?</p>
-        <p class="why"><strong>Why C2:</strong> Ops export / Paul. <em>(Scored)</em></p>
+        <div class="who"><span class="id">JN-1a-E</span> Jen</div>
+        <p class="quote">“The average trajectory of someone starting WCS post covid going from novice to all star by using the average number of events someone attends (growth regions, vs Europe, vs US) - would need to know the difference of the # of events offered YOY.”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Competitors List / attendance layer joined to IDs so “events attended” ≠ events-with-a-point.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-1b</span> Jen</div>
-        <p class="q">Same trajectory using true events attended (incl. no-point contests)</p>
-        <p class="why"><strong>Why C2:</strong> Needs Competitors List / attendance layer. <em>(Entry)</em></p>
+        <div class="who"><span class="id">JN-2a-E</span> Jen</div>
+        <p class="quote">“What States/Countries have the most WCS registered competitors, and what that increase has looked like over the past 10 years.”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Entry lists + geo fields (or home) retained and joinable; Gap C aliases.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-5b</span> Jen</div>
-        <p class="q">Same for registered Entry competitors</p>
-        <p class="why"><strong>Why C2:</strong> Lists + geo. <em>(Entry)</em></p>
+        <div class="who"><span class="id">JN-2b-E</span> Jen</div>
+        <p class="quote">“How many people have not competed (or haven't received a point, if we don't have registration data) post covid - what states have the most decline… what countries…”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Entry lists across events + identity so no-shows ≠ “no points.”</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-6b</span> Jen</div>
-        <p class="q">Entry no-shows / no competition post-covid by region</p>
-        <p class="why"><strong>Why C2:</strong> Lists. <em>(Entry)</em></p>
+        <div class="who"><span class="id">JN-3a-E</span> Jen</div>
+        <p class="quote">“Number of events added YOY by country with the amount of competitors at each event”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Competitors List per edition joined to event catalog (Gap B).</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-7b</span> Jen</div>
-        <p class="q">Competitors per event = Entry headcount</p>
-        <p class="why"><strong>Why C2:</strong> Competitors List join. <em>(Entry)</em></p>
+        <div class="who"><span class="id">JN-3b</span> Jen</div>
+        <p class="quote">“Based on competitions, The top 5-10 largest events in each country/region to show the data of the locations of competitors (i.e. French open had 50% french people in 2023…)”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: dancer nationality or home country hygiene (Score Report / verification); event country alone insufficient.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-8</span> Jen</div>
-        <p class="q">Top events: share of “local” competitors (migration story)</p>
-        <p class="why"><strong>Why C2:</strong> Needs dancer nationality/home (hygiene). <em>(Scored)</em></p>
+        <div class="who"><span class="id">PL-1b</span> Paul</div>
+        <p class="quote">“Indicate those that had prelims and those that where shelf judges”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: pull prelims / shelf-judge fields from Score Report (or protocols) into a joinable table by event×year.</p>
       </div>
       <div class="item">
         <div class="who"><span class="id">PL-2</span> Paul</div>
-        <p class="q">Prelims vs shelf judges for those</p>
-        <p class="why"><strong>Why C2:</strong> Score Report / protocols. <em>(—)</em></p>
+        <p class="quote">“Using Yvonne and Jenifer’s initial data which establishes there are 25% (problem child) events. look into more detail as to the impact those 25 events have on … 615 rule the time distance rule or any other metric”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Board’s locked “problem child” event list + complete official dates / distance fields (see JC-5a).</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">PL-4</span> Paul</div>
-        <p class="q">Impact of ~25% “problem” events on 6-15 / distance rules</p>
-        <p class="why"><strong>Why C2:</strong> Board list + official dates (JC-10). <em>(—)</em></p>
+        <div class="who"><span class="id">JT-5-E</span> Jim Tigges</div>
+        <p class="quote">“How many events, each year, have the various WSDC divisions and how many of each level (for each role) are the various Tiers. (i.e. are half or more of the events with Novice divisions of at least Tier 3 or higher?, How many events have Tier 1 All-Star divisions, etc.)”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Entry starting-list sizes by division×role (Competitors List) to assign true WSDC tiers.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JT-5b</span> Jim Tigges</div>
-        <p class="q">Exact tier headcounts (Entry) by division×role</p>
-        <p class="why"><strong>Why C2:</strong> Lists. <em>(Entry)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JT-8b</span> Jim Tigges</div>
-        <p class="q">Same map with Entry event size</p>
-        <p class="why"><strong>Why C2:</strong> Lists. <em>(Entry)</em></p>
+        <div class="who"><span class="id">JT-7-E</span> Jim Tigges</div>
+        <p class="quote">“A map with the events…and the number of competitors (so France has 12 events, do they average 200 competitors or 400 competitors, etc.)”</p>
+        <p class="why"><strong>Enabling:</strong> Enabling: Entry headcount per edition from Competitors Lists joined to geo.</p>
       </div>
     </section>
+
     <section class="cat" id="c3">
       <h2>C3 — Needs WSDC collection design (6)</h2>
-      <p class="blurb">Right place inside WSDC; usable stream not designed yet.</p>
+      <p class="blurb">Inside WSDC, but no usable stream yet.</p>
       <div class="item">
-        <div class="who"><span class="id">KY-4</span> Kay</div>
-        <p class="q">Where events are “needed” relative to customer base</p>
-        <p class="why"><strong>Why C3:</strong> Residence or Entry geo as designed stream. <em>(Entry/Community)</em></p>
+        <div class="who"><span class="id">KY-2c</span> Kay</div>
+        <p class="quote">“Is there a way to understand where events are needed in terms of the customer base?”</p>
+        <p class="why"><strong>Comment:</strong> Design: residence / customer-base stream (voluntary home or Entry geo policy) before “where needed” is answerable.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-5b</span> Jim Coakley</div>
-        <p class="q">Which events held Classic / Showcase (couple routines / choreography), 15y; decline?</p>
-        <p class="why"><strong>Why C3:</strong> **Not** in public Points Registry. Find Score Report / programs / other WSDC intake; else falls to C4 web collection. <em>(—)</em></p>
+        <div class="who"><span class="id">JC-3b</span> Jim Coakley</div>
+        <p class="quote">“Analyze data on routine divisions in the past 15 years. Chart what events hold classic, showcase, Sophisticated, Masters and Juniors. … Are routines on the decline?”</p>
+        <p class="why"><strong>Comment:</strong> Design / source hunt: Classic &amp; Showcase not in public Points Registry — Score Report contests, programs, or other WSDC intake; else C4 web collection.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-10</span> Jim Coakley</div>
-        <p class="q">Complete official dates on 6/15 Excel export</p>
-        <p class="why"><strong>Why C3:</strong> Ops/NEA fields. <em>(—)</em></p>
+        <div class="who"><span class="id">JC-5a</span> Jim Coakley</div>
+        <p class="quote">“Paul has already been working on the 6/15 excel export. We have to complete the official dates piece.”</p>
+        <p class="why"><strong>Comment:</strong> Design/ops: official-dates field completeness on NEA / 6-15 export; validation checks committee can define.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-13</span> Jim Coakley</div>
-        <p class="q">Exception criteria data points; 100-mile radius</p>
-        <p class="why"><strong>Why C3:</strong> Home city/state. <em>(Entry)</em></p>
+        <div class="who"><span class="id">JC-5d</span> Jim Coakley</div>
+        <p class="quote">“What data points does the data committee think our measurements should be in considering exceptions? Jen’s data request of number of dancers in a 100 mile radius…”</p>
+        <p class="why"><strong>Comment:</strong> Design: home city/state capture (verification or list fields) + radius method.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JN-9</span> Jen</div>
-        <p class="q">WCS population within 100 miles of every event</p>
-        <p class="why"><strong>Why C3:</strong> Home city; Score Report city → may become C2. <em>(Entry/Community)</em></p>
+        <div class="who"><span class="id">JN-3c</span> Jen</div>
+        <p class="quote">“WCS population within a 100 mile radius around every event.”</p>
+        <p class="why"><strong>Comment:</strong> Design: home coordinates/city stream; if Score Report city collected → may move to C2 after join.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">PL-5</span> Paul</div>
-        <p class="q">AJP % 25→40/50 from pre-reg judge lists 2027</p>
-        <p class="why"><strong>Why C3:</strong> Certified-judge feed + panels. <em>(—)</em></p>
+        <div class="who"><span class="id">PL-3</span> Paul</div>
+        <p class="quote">“Continue with the data capture around integration of Wsdc judges certification AJP starting at March 2027… will events be able to meet 25% based on pre-registration judges list… forecasting … 40% and 50%”</p>
+        <p class="why"><strong>Comment:</strong> Design: certified-judge roster feed + scheduled J&amp;J judges per event.</p>
       </div>
     </section>
+
     <section class="cat" id="c4">
       <h2>C4 — Outside WSDC (6)</h2>
       <p class="blurb">Community / non-registry landscape.</p>
       <div class="item">
         <div class="who"><span class="id">JC-1</span> Jim Coakley</div>
-        <p class="q">Global workshop weekends / day intensives by geo</p>
-        <p class="why"><strong>Why C4:</strong> Separate collection + verification. <em>(Community)</em></p>
+        <p class="quote">“Collect a list of workshop weekends and specialty day intensive throughout the globe and help categorize them by state/country/region”</p>
+        <p class="why"><strong>Comment:</strong> Community collection + verification program (owner TBD).</p>
       </div>
       <div class="item">
         <div class="who"><span class="id">JC-2</span> Jim Coakley</div>
-        <p class="q">Global local dance events by geo</p>
-        <p class="why"><strong>Why C4:</strong> Same as JC-1. <em>(Community)</em></p>
+        <p class="quote">“Collect local dance events globally and help categorize them by state/country/region”</p>
+        <p class="why"><strong>Comment:</strong> Same program as JC-1.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-3</span> Jim Coakley</div>
-        <p class="q">Verification cadence so listings stay true</p>
-        <p class="why"><strong>Why C4:</strong> Advise schema; do not auto-own build. <em>(Community)</em></p>
+        <div class="who"><span class="id">JC-2b</span> Jim Coakley</div>
+        <p class="quote">“There would have to be a verification process monthly or weekly… We don’t want to list events and then have people… find that the event no longer exists”</p>
+        <p class="why"><strong>Comment:</strong> Advise schema/cadence; do not auto-own build (Kay filter).</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-7</span> Jim Coakley</div>
-        <p class="q">Poll community on routine-division interest/blockers</p>
-        <p class="why"><strong>Why C4:</strong> Survey. <em>(Community)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JC-8</span> Jim Coakley</div>
-        <p class="q">Non-WSDC weekend / social events page</p>
-        <p class="why"><strong>Why C4:</strong> Same program as JC-1/2. <em>(Community)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JC-12</span> Jim Coakley</div>
-        <p class="q">Local attendance / community size for 6/15 exceptions</p>
-        <p class="why"><strong>Why C4:</strong> Non-registry. <em>(Community)</em></p>
-      </div>
-    </section>
-    <section class="cat" id="c5">
-      <h2>C5 — Governance / scope (8)</h2>
-      <p class="blurb">Strategy, product, policy — not another extract.</p>
-      <div class="item">
-        <div class="who"><span class="id">KY-1</span> Kay</div>
-        <p class="q">Use committee to support current Board mission/strategy (not expand scope)</p>
-        <p class="why"><strong>Why C5:</strong> Standing rule. <em>(—)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">KY-5</span> Kay</div>
-        <p class="q">Facilitate points DB / communication / infrastructure (not new tasks)</p>
-        <p class="why"><strong>Why C5:</strong> Advisory only without ops mandate. <em>(—)</em></p>
+        <div class="who"><span class="id">JC-3d</span> Jim Coakley</div>
+        <p class="quote">“They could also poll the community to see where there is interest in creating more routine divisions and what are the stumbling blocks.”</p>
+        <p class="why"><strong>Comment:</strong> Survey design outside registry.</p>
       </div>
       <div class="item">
         <div class="who"><span class="id">JC-4</span> Jim Coakley</div>
-        <p class="q">Become hub for WCS info (education / find dancers)</p>
-        <p class="why"><strong>Why C5:</strong> Product/mission expansion; Kay filter. <em>(Community)</em></p>
+        <p class="quote">“I meant to also include NON WSDC weekend events, or social events.”</p>
+        <p class="why"><strong>Comment:</strong> Same listings program as JC-1/2.</p>
       </div>
       <div class="item">
-        <div class="who"><span class="id">JC-6</span> Jim Coakley</div>
-        <p class="q">Calendar filters for routine divisions + other filter feedback</p>
-        <p class="why"><strong>Why C5:</strong> Website product. <em>(—)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JC-9</span> Jim Coakley</div>
-        <p class="q">Listing fee model</p>
-        <p class="why"><strong>Why C5:</strong> Board/finance. <em>(—)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JC-15</span> Jim Coakley</div>
-        <p class="q">Audit policy (strip points, merge without request, delete)</p>
-        <p class="why"><strong>Why C5:</strong> Board/ops decision. <em>(Scored)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JC-16</span> Jim Coakley</div>
-        <p class="q">Point ranking history on website?</p>
-        <p class="why"><strong>Why C5:</strong> Product call. <em>(Scored)</em></p>
-      </div>
-      <div class="item">
-        <div class="who"><span class="id">JT-7</span> Jim Tigges</div>
-        <p class="q">Policy: allow move-down via discount</p>
-        <p class="why"><strong>Why C5:</strong> Board rules. <em>(—)</em></p>
+        <div class="who"><span class="id">JC-5c</span> Jim Coakley</div>
+        <p class="quote">“…gather info on local dance attendance to get a sense of the size of the community…”</p>
+        <p class="why"><strong>Comment:</strong> Non-registry attendance collection.</p>
       </div>
     </section>
 
-    <p class="meta" style="margin-top:28px">For discussion: reply with IDs to move (e.g. “JN-5a → C2”).</p>
+    <section class="cat" id="c5">
+      <h2>C5 — Governance / scope (8)</h2>
+      <p class="blurb">Strategy, product, or ops ownership — not another dataset.</p>
+      <div class="item">
+        <div class="who"><span class="id">KY-S</span> Kay</div>
+        <p class="quote">“I'd like the committee to support our current work, mission and strategy. … we need to be careful that we aren't using this committee to expand our scope.”</p>
+        <p class="why"><strong>Comment:</strong> Standing rule for all intake.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">KY-3</span> Kay</div>
+        <p class="quote">“Where could this committee facilitate or support other current ongoing work, especially surrounding our points database, communication, and infrastructure?”</p>
+        <p class="why"><strong>Comment:</strong> Kay#3. Advisory; no new task ownership without mandate.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-2c</span> Jim Coakley</div>
+        <p class="quote">“Becoming a hub for WCS dance information will assist in the education initiatives…”</p>
+        <p class="why"><strong>Comment:</strong> Product/mission expansion; Kay filter.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-3c</span> Jim Coakley</div>
+        <p class="quote">“We could use filters to show what events are holding these specific competitions… The committee could also give us feedback on other filters to include on the website.”</p>
+        <p class="why"><strong>Comment:</strong> Website product; filter list can be informed by JC-3a inventory.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-4b</span> Jim Coakley</div>
+        <p class="quote">“For these added pages, I think the listings should be free. … Maybe 3 free Years and then $20 per year…”</p>
+        <p class="why"><strong>Comment:</strong> Board/finance.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-6b</span> Jim Coakley</div>
+        <p class="quote">“What about people who have danced in the wrong division? Should we audit and take the points away? … duplicate records… Should the records be merged? … records that look like they should be delete.”</p>
+        <p class="why"><strong>Comment:</strong> Audit policy is Board/ops; detection rules can be proposed later.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-7</span> Jim Coakley</div>
+        <p class="quote">“Point ranking history by event and by individual. Do we want to add this to the website?”</p>
+        <p class="why"><strong>Comment:</strong> Product call.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-6b</span> Jim Tigges</div>
+        <p class="quote">“…IF we allowed them to ‘discount’ points…” (policy to allow move-down)</p>
+        <p class="why"><strong>Comment:</strong> Board rules decision; analytic support = JT-6.</p>
+      </div>
+    </section>
   </div>
 </body>
 </html>
