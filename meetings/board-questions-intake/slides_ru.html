@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="WSDC Analytics: концепт приёма вопросов Board (категории 4+1). Unlisted brief.">
+  <title>Приём вопросов Board · 4+1 (RU)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --slide-max: 1080px;
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+    }
+    .deck { height: 100%; display: flex; flex-direction: column; }
+    .chrome {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chrome strong { color: var(--ink); font-weight: 600; }
+    .chrome .navbtns { display: flex; gap: 8px; align-items: center; }
+    .chrome button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .chrome button:hover { border-color: var(--accent); }
+    .chrome button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: auto;
+    }
+    .slide {
+      display: none;
+      width: min(100%, var(--slide-max));
+      min-height: min(72vh, 640px);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 40px 32px;
+      box-shadow: var(--wsdc-shadow-card);
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .badge .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+      line-height: 1.2;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 16px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 46rem;
+    }
+    ul, ol { margin: 0 0 12px; padding-left: 1.2rem; max-width: 46rem; }
+    li { margin: 0.35rem 0; line-height: 1.45; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 8px 0 12px;
+    }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--soft);
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .card p, .card ul { margin: 0; font-size: 0.9rem; }
+    .card ul { padding-left: 1.1rem; }
+    .notes {
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .cite { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+    .foot-hint {
+      flex: 0 0 auto;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    kbd {
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: var(--bg);
+    }
+    .cat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 8px 0 12px;
+    }
+    .cat-table th, .cat-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .cat-table th { color: var(--ink); font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86em; }
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .stat {
+      flex: 1 1 90px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: var(--soft);
+      text-align: center;
+    }
+    .stat .n {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .stat .l {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .funnel { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--ink); }
+    .funnel .band p { margin: 0; font-size: 0.86rem; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="chrome">
+      <div><strong>Приём вопросов Board</strong> · концепт 4+1</div>
+      <div class="navbtns">
+        <span id="counter">1 / 1</span>
+        <button type="button" id="prev" aria-label="Предыдущий слайд">←</button>
+        <button type="button" id="next" aria-label="Следующий слайд">→</button>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+
+      <section class="slide title-slide active" data-notes="Партнёрский тон: рамка процесса, не список отказов.">
+        <div class="badge"><span class="pill">Brief</span> Analytics committee · приём вопросов Board</div>
+        <h1>Как принимать вопросы Board,<br>не раздувая не ту работу</h1>
+        <p class="lead">Общий способ классифицировать запросы: что можно ответить из публичного Points Registry сейчас, что откроется после гигиены источников WSDC, что требует нового сбора, что лежит вне реестра — и что относится к governance, а не к датасету.</p>
+      </section>
+
+      <section class="slide" data-notes="Ограничение Kay — северная звезда.">
+        <div class="badge"><span class="pill">Scope</span> Зачем классифицировать</div>
+        <h1>Лучше текущая работа — не больше тарелка</h1>
+        <p class="lead">Вопросы Board приходят смешанными. Без рамки каждый выглядит как «ещё аналитика», и комитет уезжает в новые продуктовые фронты, пока инфраструктура и mission-работа всё ещё нуждаются в поддержке.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Постоянное правило (Kay)</h3>
+            <p>Использовать комитет, чтобы усиливать текущие инициативы Board и инфраструктуру. По умолчанию не расширять scope на новые хабы, эксперименты с платой и ownership сборки — пока Board явно не поручит.</p>
+          </div>
+          <div class="card">
+            <h3>Что даёт классификация</h3>
+            <ul>
+              <li>Дробит одно сообщение на атомарные вопросы</li>
+              <li>Называет слой данных для каждого атома</li>
+              <li>Отделяет deliverables от enabling-работы и от решений по scope</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Тот же funnel, что в brief 1 сентября.">
+        <div class="badge"><span class="pill">Frame</span> Популяции</div>
+        <h1>Три популяции. Не смешивать</h1>
+        <div class="funnel">
+          <div class="band">
+            <h3>Community</h3>
+            <p>Широкий мир WCS: social и обучение — в основном вне реестра.</p>
+          </div>
+          <div class="band mid">
+            <h3>Entry</h3>
+            <p>Все зарегистрированные в WSDC J&amp;J. Уже запрошены в списках Score Report (§2.3) — для аналитики нужны retention и join.</p>
+          </div>
+          <div class="band inner">
+            <h3>Scored</h3>
+            <p>Люди с начисленными поинтами / Competitor ID после поинта. Это то, что публичный реестр поддерживает сегодня.</p>
+          </div>
+        </div>
+        <p class="cite">Competitor ID только после поинта — Rules 2026.1B §3.2.2c. Согласовано с analytics brief от 1 сентября.</p>
+      </section>
+
+      <section class="slide" data-notes="Таблица 4+1 — коротко.">
+        <div class="badge"><span class="pill">Model</span> Категории</div>
+        <h1>Четыре категории данных + governance</h1>
+        <table class="cat-table">
+          <thead>
+            <tr><th>ID</th><th>Название</th><th>Смысл</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">C1</td><td>Можно сейчас</td><td>Публичный / очищенный Points Registry и каталог ивентов</td></tr>
+            <tr><td class="mono">C2</td><td>После гигиены источников</td><td>Сырые источники WSDC уже есть (напр. архив Score Report) — нужны схема, алиасы, join</td></tr>
+            <tr><td class="mono">C3</td><td>Нужен дизайн сбора в WSDC</td><td>Место правильное внутри WSDC, но usable stream ещё нет</td></tr>
+            <tr><td class="mono">C4</td><td>Вне WSDC</td><td>Локальные танцы, воркшопы, non-registry weekends, опросы</td></tr>
+            <tr><td class="mono">C5</td><td>Governance / scope</td><td>Приоритеты, product ownership, политика — не «ещё один extract»</td></tr>
+          </tbody>
+        </table>
+        <p class="notes">По мере enablement атомы мигрируют C3 → C2 → C1. C4 остаётся community-программой. C5 эскалируется Board/ops.</p>
+      </section>
+
+      <section class="slide" data-notes="Workflow — один слайд.">
+        <div class="badge"><span class="pill">Process</span> Процесс</div>
+        <h1>От вопроса к трекингу</h1>
+        <ol>
+          <li><strong>Intake</strong> — кто спросил, текст, must-have vs nice-to-have</li>
+          <li><strong>Decompose</strong> — одно сообщение Board → несколько атомарных вопросов</li>
+          <li><strong>Classify</strong> — C1–C5 + популяция (Community / Entry / Scored)</li>
+          <li><strong>Respond</strong> — отдать (C1), partial + enabling step (C2/C3), дизайн сбора (C4) или вернуть по scope (C5)</li>
+          <li><strong>Track &amp; reclassify</strong> — когда enabling step сделан</li>
+        </ol>
+        <p class="notes">Внутренние детали: <span class="mono">meetings/board-questions-intake/CONCEPT.md</span> и <span class="mono">MATRIX.md</span>.</p>
+      </section>
+
+      <section class="slide" data-notes="Счётчики из MATRIX — без обвинений.">
+        <div class="badge"><span class="pill">Этот драфт</span> Карта intake</div>
+        <h1>Как ложится текущий драфт Board</h1>
+        <p class="lead">49 атомарных вопросов от Yvonne, Kay, Jim Coakley, Jen, Paul и Jim Tigges — классифицированы один раз, без превращения каждой строки в обязательство.</p>
+        <div class="stat-row">
+          <div class="stat"><span class="n">23</span><span class="l">C1 сейчас</span></div>
+          <div class="stat"><span class="n">7</span><span class="l">C2 гигиена</span></div>
+          <div class="stat"><span class="n">5</span><span class="l">C3 дизайн</span></div>
+          <div class="stat"><span class="n">6</span><span class="l">C4 вне</span></div>
+          <div class="stat"><span class="n">8</span><span class="l">C5 scope</span></div>
+        </div>
+        <p class="notes">Около половины атомов уже в C1 (scored-слой). Остальное — unlock’и или явные не-data решения. Это здорово, а не провал реестра.</p>
+      </section>
+
+      <section class="slide" data-notes="Reuse статьи — не запускать заново.">
+        <div class="badge"><span class="pill">C1</span> Начать сейчас</div>
+        <h1>Кластеры на scored-данных</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Прогрессия и структура поинтов</h3>
+            <ul>
+              <li>Dwell в дивизионе / first→first / may→must (Tigges, Jen, Kay #1)</li>
+              <li>Переиспользовать опубликованный <a href="https://wsdc-analytics.github.io/article_division_transition_time.html" target="_blank" rel="noopener noreferrer">разбор переходов между дивизионами</a> — расширять, не начинать с нуля</li>
+              <li>Пути Champions, inactivity, концентрация поинтов</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Ландшафт ивентов (scored)</h3>
+            <ul>
+              <li>Ивенты YOY по странам; траектории размера edition</li>
+              <li>Наличие дивизионов / tier; история Champion и Invitational</li>
+              <li>Scored headcounts как сигнал capacity — не Entry community</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Согласовать с discovery checklist сентября.">
+        <div class="badge"><span class="pill">C2–C3</span> Что открыть дальше</div>
+        <h1>Что переводит больше вопросов Board в C1</h1>
+        <ul>
+          <li><strong>Списки Score Report</strong> — схема, retention, ID если ещё нет → Entry «total community», no-shows, точный размер ивента</li>
+          <li><strong>Гигиена geo / имён</strong> — убрать free-text drift в Event Update / Score Report → срезы по регионам и карты ивентов</li>
+          <li><strong>Home city/state</strong> (поле в списке или добровольная верификация) → радиус 100 миль, «где нужны ивенты»</li>
+          <li><strong>Official dates / поля 6-15</strong> + feeds сертификации судей → impact problem-events и AJP %</li>
+        </ul>
+        <p class="cite">Тот же discovery-трек, что Gaps A–D в brief от 1 сентября.</p>
+      </section>
+
+      <section class="slide" data-notes="C4 — отдельная программа.">
+        <div class="badge"><span class="pill">C4</span> Вне реестра</div>
+        <h1>Локальные танцы, воркшопы, non-WSDC weekends</h1>
+        <p class="lead">Идеи хаба Jim Coakley ценны для образования и путешественников — и это <strong>программа сбора community-данных</strong>, а не аналитика Points Registry.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Нужно</h3>
+            <ul>
+              <li>Явный владелец и мандат Board</li>
+              <li>Шаблон intake + cadence верификации</li>
+              <li>Честная планка точности (не registry-grade)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Роль комитета</h3>
+            <ul>
+              <li>Советовать схему и дизайн верификации</li>
+              <li>Не брать тихо ownership сайта или fee-политики (это C5)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Попросить Board приоритизировать enablement.">
+        <div class="badge"><span class="pill">Ask</span> Приоритеты Board</div>
+        <h1>Что нужно от Board</h1>
+        <ol>
+          <li>Подтвердить рамку intake 4+1 (включая правило Kay по scope)</li>
+          <li>Выбрать <strong>один</strong> C2/C3 enablement на квартал (рекомендация: retention + схема списков Score Report)</li>
+          <li>Назначить владельца, если C4 community listings становятся программой Board</li>
+          <li>Оставить website / merge-delete / fee на governance-треке — комитет может советовать с опорой на C1</li>
+        </ol>
+      </section>
+
+      <section class="slide" data-notes="30/90 дней — узко.">
+        <div class="badge"><span class="pill">Plan</span> Следующие 30 / 90 дней</div>
+        <h1>Фокус комитета</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>30 дней</h3>
+            <ul>
+              <li>Отдать C1-пакеты, которые Board уже ждёт: прогрессия (reuse статьи), scored ecosystem YOY, champion/inactivity</li>
+              <li>Держать MATRIX в актуальном виде по мере новых asks</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>90 дней</h3>
+            <ul>
+              <li>Один enabling-трек — предпочтительно usable Entry-списки для аналитики</li>
+              <li>Переклассифицировать C2/C3, когда трек сядет</li>
+              <li>Отклонять или парковать расширения C4/C5 без мандата Board</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Публичное доказательство C1-работы уже на <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a> — как evidence, не как мандат на tooling.</p>
+      </section>
+
+    </div>
+    <div class="foot-hint">Клавиши <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · клик по краям</div>
+  </div>
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('counter');
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        counter.textContent = (i + 1) + ' / ' + slides.length;
+        const note = slides[i].getAttribute('data-notes') || '';
+        if (note) console.debug('[notes]', note);
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+      document.getElementById('prev').addEventListener('click', () => show(i - 1));
+      document.getElementById('next').addEventListener('click', () => show(i + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); show(i + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); show(i - 1);
+        } else if (e.key === 'Home') show(0);
+        else if (e.key === 'End') show(slides.length - 1);
+      });
+      document.getElementById('stage').addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width * 0.28) show(i - 1);
+        else if (x > rect.width * 0.72) show(i + 1);
+      });
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash - 1 : 0);
+    })();
+  </script>
+</body>
+</html>
