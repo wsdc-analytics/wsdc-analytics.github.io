@@ -16,11 +16,15 @@ Unlisted materials for the analytics committee: how to classify and track Board 
 | [MATRIX.md](MATRIX.md) | Full atomic classification of the current Board draft |
 | [slides_en.html](slides_en.html) | Short board-facing deck (EN) |
 | [slides_ru.html](slides_ru.html) | Short board-facing deck (RU) |
+| [appendix_en.html](appendix_en.html) | Appendix: all atoms by C1–C5 with asker + why (EN) |
+| [appendix_ru.html](appendix_ru.html) | Appendix: all atoms by C1–C5 with asker + why (RU) |
 
 ## Share URLs
 
-- EN: https://wsdc-analytics.github.io/meetings/board-questions-intake/slides_en.html
-- RU: https://wsdc-analytics.github.io/meetings/board-questions-intake/slides_ru.html
+- EN deck: https://wsdc-analytics.github.io/meetings/board-questions-intake/slides_en.html
+- RU deck: https://wsdc-analytics.github.io/meetings/board-questions-intake/slides_ru.html
+- EN appendix: https://wsdc-analytics.github.io/meetings/board-questions-intake/appendix_en.html
+- RU appendix: https://wsdc-analytics.github.io/meetings/board-questions-intake/appendix_ru.html
 
 Local preview: open the HTML files in a browser (tokens from `../../static/css/tokens.css`).
 
