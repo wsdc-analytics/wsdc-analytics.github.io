@@ -10,7 +10,7 @@ Working process for the WSDC analytics committee when Board members submit data 
 
 ## Why this exists
 
-Board asks arrive mixed: some are answerable from the public Points Registry today; some need Score Report hygiene already sitting in WSDC’s contour; some need new collection design; some are community landscape outside the registry; some are governance/scope (how the committee should work), not datasets.
+Board asks arrive mixed by **company data readiness** (not a personal analytics store): some are answerable from the public Points Registry today (fully or partially); some already exist in WSDC (often Sheets / Score Report) but are not yet in a usable analytics stream; some we believe live inside WSDC but are not collected yet; some are community landscape outside the registry; some are governance/scope (how the committee should work), not datasets.
 
 Without a shared frame, every ask looks like “more analysis” and scope expands. Kay’s constraint stands: **use this committee to make current work better, not to bite off new product fronts.**
 
@@ -34,11 +34,11 @@ Competitor ID only after a point — Registry Event Rules 2026.1B §3.2.2c. Publ
 
 | ID | Name | Meaning | Typical sources |
 |----|------|---------|-----------------|
-| **C1** | Answerable now | Deliver from cleaned/public layer with clear disclaimers | Points Registry results, event catalog/calendar, published analytics |
-| **C2** | After source hygiene | Data already exists in WSDC contour in raw/private form; need aliases, join, retention, schema | Score Report archive (Info Summary, Competitors List, Dual Roles), Drive sheets, Event Update free-text cleanup |
-| **C3** | Needs WSDC collection design | Inside WSDC is the right place, but no usable stream yet (or policy/format undecided) | Durable list retention + ID policy, voluntary home city, certified-judge feeds for AJP %, New Event Application analytics fields, calendar pre-event confirmation |
-| **C4** | Outside WSDC | Community / non-registry landscape | Workshops, local socials, non-WSDC weekends, local attendance, polls |
-| **C5** | Governance / scope | Strategy, priorities, product/ops ownership — not “another dataset” | Committee mandate, website feature calls, merge/delete policy, listing fee models |
+| **C1** | Answerable now | Working stream (registry / catalog). **Full** or **partial** (e.g. Scored only) if the asker accepts | Points Registry results, event catalog/calendar, published analytics |
+| **C2** | Exists — not in stream yet | Already collected in WSDC (often Sheets / Score Report); not normalized / no pipeline; need schema, aliases, join, retention | Score Report archive (Info Summary, Competitors List, Dual Roles), Drive sheets, Event Update free-text cleanup |
+| **C3** | Inside WSDC — not collected yet | Hypothesis where to get it; no raw stream yet. Learn to collect → becomes C2 | Durable list retention + ID policy, voluntary home city, certified-judge feeds for AJP %, New Event Application analytics fields, calendar pre-event confirmation |
+| **C4** | Outside WSDC | Community / non-registry landscape. Once collected → C2 | Workshops, local socials, non-WSDC weekends, local attendance, polls |
+| **C5** | Governance / scope | Strategy, priorities, product/ops — separate circle, not a rung on C3→C2→C1 | Committee mandate, website feature calls, merge/delete policy, listing fee models |
 
 ### Link to Gaps A–D (Sep brief)
 
@@ -56,12 +56,13 @@ Competitor ID only after a point — Registry Event Rules 2026.1B §3.2.2c. Publ
 Categories are **not permanent labels on topics**. They move when enablements land.
 
 ```
-C3 ──schema / retention / policy──► C2 ──pipeline join / aliases──► C1
-C4 stays C4 until a durable community-collection program exists
-C5 is escalated to Board/ops; data work does not “solve” it
+C3 (not collected yet) ── learn to collect ──┐
+                                              ├──► C2 (exists, not in stream) ── pipeline / join / cleanup ──► C1 (full or partial)
+C4 (outside WSDC) ─────── start collecting ──┘
+C5 stays aside (governance / scope — not this ladder)
 ```
 
-**Example:** Competitors List today → mostly C3 (usable stream unclear) or C2 (archive exists, not joined). After schema + central retention + aliases → C2. After join into analytics pipeline → C1 for Entry-based asks.
+**Example:** Competitors List archive → C2 until schema + retention + join. Home city (believed inside WSDC, not collected) → C3 until intake design; then C2; then C1. Local dances → C4 until a community feed exists → C2.
 
 Reclassify atomic rows in [MATRIX.md](MATRIX.md) when an enablement ships. Do not leave stale “blocked forever” labels.
 
