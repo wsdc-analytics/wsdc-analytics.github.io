@@ -214,7 +214,96 @@
     }
     .funnel .band h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--ink); }
     .funnel .band p { margin: 0; font-size: 0.86rem; line-height: 1.4; }
-  </style>
+    .cat-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0 8px;
+    }
+    .cat-row {
+      display: grid;
+      grid-template-columns: 3.2rem 1fr;
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--soft);
+    }
+    .cat-row .cid {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      padding-top: 1px;
+    }
+    .cat-row h3 {
+      margin: 0 0 3px;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+    .cat-row p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      color: var(--body);
+    }
+    .cat-row.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .cat-row.c2 { background: #fffbeb; border-color: #fde68a; }
+    .cat-row.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .cat-row.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 10px;
+      margin: 12px 0 8px;
+      align-items: stretch;
+    }
+    @media (max-width: 800px) { .flow { grid-template-columns: 1fr; } }
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .flow-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: var(--soft);
+      flex: 1;
+    }
+    .flow-box h3 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+    .flow-box p {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .flow-box.ready { background: #ecfdf5; border-color: #bbf7d0; }
+    .flow-box.wait { background: #fffbeb; border-color: #fde68a; }
+    .flow-box.idea { background: #eef4fb; border-color: #bfdbfe; }
+    .flow-box.out { background: #f8fafc; }
+    .flow-box.scope {
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      margin-top: 8px;
+    }
+    .flow-arrow {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      padding: 2px 0;
+    }
+    .flow-mid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
 </head>
 <body>
   <div class="deck">
@@ -231,7 +320,7 @@
       <section class="slide title-slide active" data-notes="Партнёрский тон: рамка процесса, не список отказов.">
         <div class="badge"><span class="pill">Brief</span> Analytics committee · приём вопросов Board</div>
         <h1>Как принимать вопросы Board,<br>не раздувая не ту работу</h1>
-        <p class="lead">Общий способ классифицировать запросы: что можно ответить из публичного Points Registry сейчас, что откроется после гигиены источников WSDC, что требует нового сбора, что лежит вне реестра — и что относится к governance, а не к датасету.</p>
+        <p class="lead">Общий способ классифицировать запросы по <strong>готовности данных компании WSDC</strong>: отвечаем сейчас (полностью или частично), данные есть, но ещё не в аналитическом стриме, данные внутри WSDC ещё не собирали, данные вне WSDC — и governance, который не датасет.</p>
       </section>
 
       <section class="slide" data-notes="Ограничение Kay — северная звезда.">
@@ -274,22 +363,83 @@
         <p class="cite">Competitor ID только после поинта — Rules 2026.1B §3.2.2c. Согласовано с analytics brief от 1 сентября.</p>
       </section>
 
-      <section class="slide" data-notes="Таблица 4+1 — коротко.">
+      <section class="slide" data-notes="Категории: данные есть / нет / вне / scope.">
         <div class="badge"><span class="pill">Model</span> Категории</div>
-        <h1>Четыре категории данных + governance</h1>
-        <table class="cat-table">
-          <thead>
-            <tr><th>ID</th><th>Название</th><th>Смысл</th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="mono">C1</td><td>Можно сейчас</td><td>Публичный / очищенный Points Registry и каталог ивентов</td></tr>
-            <tr><td class="mono">C2</td><td>После гигиены источников</td><td>Сырые источники WSDC уже есть (напр. архив Score Report) — нужны схема, алиасы, join</td></tr>
-            <tr><td class="mono">C3</td><td>Нужен дизайн сбора в WSDC</td><td>Место правильное внутри WSDC, но usable stream ещё нет</td></tr>
-            <tr><td class="mono">C4</td><td>Вне WSDC</td><td>Локальные танцы, воркшопы, non-registry weekends, опросы</td></tr>
-            <tr><td class="mono">C5</td><td>Governance / scope</td><td>Приоритеты, product ownership, политика — не «ещё один extract»</td></tr>
-          </tbody>
-        </table>
-        <p class="notes">По мере выполнения enabling-шагов атомы мигрируют C3 → C2 → C1. C4 остаётся community-программой. C5 эскалируется на Board / ops.</p>
+        <h1>Как мы раскладываем вопросы Board</h1>
+        <p class="lead">Не «хорошая / плохая база», а <strong>готовность данных компании (WSDC)</strong> к ответу. Личная аналитическая база здесь ни при чём.</p>
+        <div class="cat-stack">
+          <div class="cat-row c1">
+            <div class="cid">C1</div>
+            <div>
+              <h3>Можно отвечать сейчас</h3>
+              <p>Данные уже в рабочем стриме (Points Registry, каталог ивентов). Часть вопросов — <strong>полностью</strong>; часть — <strong>частично</strong> (обычно только Scored), если спрашивающего это устраивает.</p>
+            </div>
+          </div>
+          <div class="cat-row c2">
+            <div class="cid">C2</div>
+            <div>
+              <h3>Данные в контуре WSDC есть — в стрим ещё нельзя</h3>
+              <p>Уже собираются (часто через Google Sheets / Score Report), но не нормализованы, не почищены, нет пайплайна. Нужна доработка: схема, алиасы, join, retention — чтобы сделать пригодными для аналитики.</p>
+            </div>
+          </div>
+          <div class="cat-row c3">
+            <div class="cid">C3</div>
+            <div>
+              <h3>В контуре WSDC, но пока не собирали</h3>
+              <p>Предполагаем, откуда взять (внутри WSDC). Пока сырого потока нет. Сначала научиться брать → затем это станет C2.</p>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cid">C4</div>
+            <div>
+              <h3>Вне WSDC</h3>
+              <p>Локальные танцы, воркшопы, non-WSDC weekends, опросы. Когда данные начнут собирать — попадают в C2 (есть, но ещё не в общем строе).</p>
+            </div>
+          </div>
+          <div class="cat-row c5">
+            <div class="cid">C5</div>
+            <div>
+              <h3>Другой круг: scope / governance</h3>
+              <p>Приоритеты, product, политика, fee — не датасет. К пайплайну C1–C4 почти не относится.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Миграция по готовности инфраструктуры.">
+        <div class="badge"><span class="pill">Logic</span> Трансформация</div>
+        <h1>Как вопросы двигаются по мере готовности данных</h1>
+        <div class="flow">
+          <div class="flow-col">
+            <div class="flow-box idea">
+              <h3>C3 · ещё не брали</h3>
+              <p>Есть гипотеза, где в WSDC лежат данные. Проработать: к кому идти, можно ли взять, в каком виде.</p>
+            </div>
+            <div class="flow-box out">
+              <h3>C4 · вне WSDC</h3>
+              <p>Community-сбор. Когда поток появится — тоже в C2.</p>
+            </div>
+          </div>
+          <div class="flow-mid">
+            <p class="flow-arrow">научиться брать / собирать →</p>
+            <div class="flow-box wait">
+              <h3>C2 · есть, но не в строе</h3>
+              <p>Короткий перечень: что получить и чему научиться (пайплайн, join, очистка). После этого вопросы уходят в C1.</p>
+            </div>
+            <p class="flow-arrow">→ научиться работать со стримом →</p>
+          </div>
+          <div class="flow-col">
+            <div class="flow-box ready">
+              <h3>C1 · отвечаем</h3>
+              <p>Полный ответ или частичный (если устраивает). C2/C3 по мере enablement схлопываются сюда.</p>
+            </div>
+            <div class="flow-box scope">
+              <h3>C5 · отдельно</h3>
+              <p>Стратегия и ownership — не этап этой лестницы.</p>
+            </div>
+          </div>
+        </div>
+        <p class="notes">Развилка C3 / C4 → обе кормят C2. Дальше C2 → C1. Матрица вопросов — следующий шаг: кто в какой клетке сейчас.</p>
       </section>
 
       <section class="slide" data-notes="Workflow — один слайд.">
@@ -312,7 +462,7 @@
         <div class="stat-row">
           <div class="stat"><span class="n">10</span><span class="l">C1 полный</span></div>
           <div class="stat"><span class="n">12</span><span class="l">C1 частичный</span></div>
-          <div class="stat"><span class="n">17</span><span class="l">C2 гигиена</span></div>
+          <div class="stat"><span class="n">17</span><span class="l">C2 доработка</span></div>
           <div class="stat"><span class="n">6</span><span class="l">C3 дизайн</span></div>
           <div class="stat"><span class="n">6</span><span class="l">C4 вне</span></div>
           <div class="stat"><span class="n">9</span><span class="l">C5 scope</span></div>
@@ -345,14 +495,14 @@
 
       <section class="slide" data-notes="Согласовать с discovery checklist сентября.">
         <div class="badge"><span class="pill">C2–C3</span> Что открыть дальше</div>
-        <h1>Что переводит больше вопросов Board в C1</h1>
+        <h1>Перечень: чему научиться, чтобы C2/C3 стали C1</h1>
         <ul>
-          <li><strong>Списки Score Report</strong> — схема, retention, ID если ещё нет → Entry «total community», no-shows, точный размер ивента</li>
-          <li><strong>Гигиена geo / имён</strong> — убрать free-text drift в Event Update / Score Report → срезы по регионам и карты ивентов</li>
-          <li><strong>Home city/state</strong> (поле в списке или добровольная верификация) → радиус 100 миль, «где нужны ивенты»</li>
-          <li><strong>Official dates / поля 6-15</strong> + feeds сертификации судей → impact problem-events и AJP %</li>
+          <li><strong>C2 · Competitors List / Score Report</strong> — схема, retention, join ID → Entry community, no-shows, размер ивента</li>
+          <li><strong>C2 · geo / имена ивентов</strong> — нормализация free-text → регионы и карты</li>
+          <li><strong>C3 · home city/state</strong> — согласовать, можно ли брать; затем сбор → C2</li>
+          <li><strong>C3 · official dates / судьи AJP</strong> — найти владельца и формат; потом поток → C2</li>
         </ul>
-        <p class="cite">Тот же discovery-трек, что Gaps A–D в brief от 1 сентября.</p>
+        <p class="cite">Тот же discovery-трек, что Gaps A–D в brief от 1 сентября. Не «личная база» — контур данных компании WSDC.</p>
       </section>
 
       <section class="slide" data-notes="C4 — отдельная программа.">

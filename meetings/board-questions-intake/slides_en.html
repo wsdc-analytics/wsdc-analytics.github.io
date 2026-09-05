@@ -214,7 +214,96 @@
     }
     .funnel .band h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--ink); }
     .funnel .band p { margin: 0; font-size: 0.86rem; line-height: 1.4; }
-  </style>
+    .cat-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0 8px;
+    }
+    .cat-row {
+      display: grid;
+      grid-template-columns: 3.2rem 1fr;
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--soft);
+    }
+    .cat-row .cid {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      padding-top: 1px;
+    }
+    .cat-row h3 {
+      margin: 0 0 3px;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+    .cat-row p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      color: var(--body);
+    }
+    .cat-row.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .cat-row.c2 { background: #fffbeb; border-color: #fde68a; }
+    .cat-row.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .cat-row.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 10px;
+      margin: 12px 0 8px;
+      align-items: stretch;
+    }
+    @media (max-width: 800px) { .flow { grid-template-columns: 1fr; } }
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .flow-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: var(--soft);
+      flex: 1;
+    }
+    .flow-box h3 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+    .flow-box p {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .flow-box.ready { background: #ecfdf5; border-color: #bbf7d0; }
+    .flow-box.wait { background: #fffbeb; border-color: #fde68a; }
+    .flow-box.idea { background: #eef4fb; border-color: #bfdbfe; }
+    .flow-box.out { background: #f8fafc; }
+    .flow-box.scope {
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      margin-top: 8px;
+    }
+    .flow-arrow {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      padding: 2px 0;
+    }
+    .flow-mid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
 </head>
 <body>
   <div class="deck">
@@ -231,7 +320,7 @@
       <section class="slide title-slide active" data-notes="Partner open: process frame, not a refusal list.">
         <div class="badge"><span class="pill">Brief</span> Analytics committee · Board intake</div>
         <h1>How we take Board questions<br>without expanding the wrong work</h1>
-        <p class="lead">A shared way to classify asks: what we can answer from the public Points Registry now, what unlocks with WSDC source hygiene, what needs new collection, what sits outside the registry — and what is governance, not a dataset.</p>
+        <p class="lead">A shared way to classify asks by <strong>WSDC company data readiness</strong>: answerable now (full or partial), data that exists but isn’t in the analytics stream yet, data we believe we can collect inside WSDC, data outside WSDC — and governance that isn’t a dataset.</p>
       </section>
 
       <section class="slide" data-notes="Kay constraint is the north star.">
@@ -274,22 +363,83 @@
         <p class="cite">Competitor ID only after a point — Rules 2026.1B §3.2.2c. Aligns with the 1 September analytics brief.</p>
       </section>
 
-      <section class="slide" data-notes="4+1 table — keep short.">
+      <section class="slide" data-notes="Categories: have data / not ready / not collected / outside / scope.">
         <div class="badge"><span class="pill">Model</span> Categories</div>
-        <h1>Four data categories + governance</h1>
-        <table class="cat-table">
-          <thead>
-            <tr><th>ID</th><th>Name</th><th>Meaning</th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="mono">C1</td><td>Answerable now</td><td>Public / cleaned Points Registry and event catalog</td></tr>
-            <tr><td class="mono">C2</td><td>After source hygiene</td><td>Raw WSDC sources exist (e.g. Score Report archive) — need schema, aliases, join</td></tr>
-            <tr><td class="mono">C3</td><td>Needs WSDC collection design</td><td>Right place is inside WSDC, but no usable stream yet</td></tr>
-            <tr><td class="mono">C4</td><td>Outside WSDC</td><td>Local dances, workshops, non-registry weekends, polls</td></tr>
-            <tr><td class="mono">C5</td><td>Governance / scope</td><td>Priorities, product ownership, policy — not “another extract”</td></tr>
-          </tbody>
-        </table>
-        <p class="notes">As enablements land, atoms migrate C3 → C2 → C1. C4 stays community-program work. C5 escalates to Board/ops.</p>
+        <h1>How we sort Board questions</h1>
+        <p class="lead">Not “good vs bad database” — <strong>how ready WSDC company data</strong> is to answer. This is not about a personal analytics store.</p>
+        <div class="cat-stack">
+          <div class="cat-row c1">
+            <div class="cid">C1</div>
+            <div>
+              <h3>Answerable now</h3>
+              <p>Already in a working stream (Points Registry, event catalog). Some asks <strong>fully</strong>; some only <strong>partially</strong> (usually Scored) — if that works for the asker.</p>
+            </div>
+          </div>
+          <div class="cat-row c2">
+            <div class="cid">C2</div>
+            <div>
+              <h3>Data exists in WSDC — not in the analytics stream yet</h3>
+              <p>Already collected (often Google Sheets / Score Report), but not normalized or cleaned, no pipeline. Need company-side prep: schema, aliases, join, retention — to make it usable.</p>
+            </div>
+          </div>
+          <div class="cat-row c3">
+            <div class="cid">C3</div>
+            <div>
+              <h3>Inside WSDC contour — not collected yet</h3>
+              <p>We believe where to get it inside WSDC. No raw stream yet. First learn to collect → then it becomes C2.</p>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cid">C4</div>
+            <div>
+              <h3>Outside WSDC</h3>
+              <p>Local dances, workshops, non-WSDC weekends, polls. Once collected, those feeds land in C2 (exist, not yet in the shared pipeline).</p>
+            </div>
+          </div>
+          <div class="cat-row c5">
+            <div class="cid">C5</div>
+            <div>
+              <h3>Separate circle: scope / governance</h3>
+              <p>Priorities, product, policy, fees — not a dataset. Outside the C1–C4 readiness ladder.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Migration by infrastructure readiness.">
+        <div class="badge"><span class="pill">Logic</span> Transformation</div>
+        <h1>How asks move as data readiness improves</h1>
+        <div class="flow">
+          <div class="flow-col">
+            <div class="flow-box idea">
+              <h3>C3 · not collected yet</h3>
+              <p>Hypothesis where data lives in WSDC. Work: who to ask, can we get it, in what form.</p>
+            </div>
+            <div class="flow-box out">
+              <h3>C4 · outside WSDC</h3>
+              <p>Community collection. When a feed exists → also C2.</p>
+            </div>
+          </div>
+          <div class="flow-mid">
+            <p class="flow-arrow">learn to collect →</p>
+            <div class="flow-box wait">
+              <h3>C2 · exists, not in stream</h3>
+              <p>Short list: what to obtain and what to learn (pipeline, join, cleanup). Then asks move to C1.</p>
+            </div>
+            <p class="flow-arrow">→ learn to run the stream →</p>
+          </div>
+          <div class="flow-col">
+            <div class="flow-box ready">
+              <h3>C1 · we answer</h3>
+              <p>Full or partial (if accepted). C2/C3 collapse here as enablements land.</p>
+            </div>
+            <div class="flow-box scope">
+              <h3>C5 · aside</h3>
+              <p>Strategy and ownership — not a rung on this ladder.</p>
+            </div>
+          </div>
+        </div>
+        <p class="notes">Fork: C3 / C4 both feed C2. Then C2 → C1. The question matrix is next: which ask sits where today.</p>
       </section>
 
       <section class="slide" data-notes="Workflow one slide.">
@@ -312,7 +462,7 @@
         <div class="stat-row">
           <div class="stat"><span class="n">10</span><span class="l">C1 full</span></div>
           <div class="stat"><span class="n">12</span><span class="l">C1 partial</span></div>
-          <div class="stat"><span class="n">17</span><span class="l">C2 hygiene</span></div>
+          <div class="stat"><span class="n">17</span><span class="l">C2 prepare</span></div>
           <div class="stat"><span class="n">6</span><span class="l">C3 design</span></div>
           <div class="stat"><span class="n">6</span><span class="l">C4 outside</span></div>
           <div class="stat"><span class="n">9</span><span class="l">C5 scope</span></div>
@@ -345,14 +495,14 @@
 
       <section class="slide" data-notes="Align Sep discovery checklist.">
         <div class="badge"><span class="pill">C2–C3</span> Unlock next</div>
-        <h1>What turns more Board asks into C1</h1>
+        <h1>Checklist: learn this so C2/C3 can become C1</h1>
         <ul>
-          <li><strong>Score Report lists</strong> — schema, retention, ID when none yet → Entry “total community,” no-shows, exact event size</li>
-          <li><strong>Geo / name hygiene</strong> — stop free-text drift on Event Update / Score Report → region cuts and event maps</li>
-          <li><strong>Home city/state</strong> (list field or voluntary verify) → 100-mile radius, “where events are needed”</li>
-          <li><strong>Official dates / 6-15 fields</strong> + judge certification feeds → problem-event impact and AJP %</li>
+          <li><strong>C2 · Competitors List / Score Report</strong> — schema, retention, ID join → Entry community, no-shows, event size</li>
+          <li><strong>C2 · geo / event names</strong> — normalize free-text → regions and maps</li>
+          <li><strong>C3 · home city/state</strong> — confirm we can collect; then intake → C2</li>
+          <li><strong>C3 · official dates / AJP judges</strong> — find owner and format; then stream → C2</li>
         </ul>
-        <p class="cite">Same discovery track as the 1 September Gaps A–D brief.</p>
+        <p class="cite">Same discovery track as Gaps A–D in the 1 September brief. Not a “personal database” — WSDC company data contour.</p>
       </section>
 
       <section class="slide" data-notes="C4 separate program.">
