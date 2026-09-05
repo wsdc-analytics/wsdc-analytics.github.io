@@ -17,7 +17,7 @@ Unlisted materials for the analytics committee: how to classify and track Board 
 | [slides_en.html](slides_en.html) | Short board-facing deck (EN) |
 | [slides_ru.html](slides_ru.html) | Short board-facing deck (RU) |
 | [appendix_en.html](appendix_en.html) | Appendix by C1–C5: Board quote + comment/enabling (EN); C1 full→partial |
-| [appendix_ru.html](appendix_ru.html) | Appendix by C1–C5: Board quote + comment/enabling (RU); C1 full→partial |
+| [appendix_ru.html](appendix_ru.html) | Приложение C1–C5: **русский перевод** цитат Board + комментарий / шаг; C1 полный→частичный |
 
 ## Share URLs
 
