@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="WSDC Analytics: Board questions intake concept (4+1 categories). Unlisted brief.">
+  <title>Board Questions Intake · 4+1 (EN)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --slide-max: 1080px;
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+    }
+    .deck { height: 100%; display: flex; flex-direction: column; }
+    .chrome {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chrome strong { color: var(--ink); font-weight: 600; }
+    .chrome .navbtns { display: flex; gap: 8px; align-items: center; }
+    .chrome button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .chrome button:hover { border-color: var(--accent); }
+    .chrome button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: auto;
+    }
+    .slide {
+      display: none;
+      width: min(100%, var(--slide-max));
+      min-height: min(72vh, 640px);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 40px 32px;
+      box-shadow: var(--wsdc-shadow-card);
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .badge .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+      line-height: 1.2;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 16px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 46rem;
+    }
+    ul, ol { margin: 0 0 12px; padding-left: 1.2rem; max-width: 46rem; }
+    li { margin: 0.35rem 0; line-height: 1.45; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 8px 0 12px;
+    }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--soft);
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .card p, .card ul { margin: 0; font-size: 0.9rem; }
+    .card ul { padding-left: 1.1rem; }
+    .notes {
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .cite { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+    .foot-hint {
+      flex: 0 0 auto;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    kbd {
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: var(--bg);
+    }
+    .cat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 8px 0 12px;
+    }
+    .cat-table th, .cat-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .cat-table th { color: var(--ink); font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86em; }
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .stat {
+      flex: 1 1 90px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: var(--soft);
+      text-align: center;
+    }
+    .stat .n {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .stat .l {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .funnel { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--ink); }
+    .funnel .band p { margin: 0; font-size: 0.86rem; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="chrome">
+      <div><strong>Board Questions Intake</strong> · 4+1 concept</div>
+      <div class="navbtns">
+        <span id="counter">1 / 1</span>
+        <button type="button" id="prev" aria-label="Previous slide">←</button>
+        <button type="button" id="next" aria-label="Next slide">→</button>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+
+      <section class="slide title-slide active" data-notes="Partner open: process frame, not a refusal list.">
+        <div class="badge"><span class="pill">Brief</span> Analytics committee · Board intake</div>
+        <h1>How we take Board questions<br>without expanding the wrong work</h1>
+        <p class="lead">A shared way to classify asks: what we can answer from the public Points Registry now, what unlocks with WSDC source hygiene, what needs new collection, what sits outside the registry — and what is governance, not a dataset.</p>
+      </section>
+
+      <section class="slide" data-notes="Kay constraint is the north star.">
+        <div class="badge"><span class="pill">Scope</span> Why classify</div>
+        <h1>Better current work — not a bigger plate</h1>
+        <p class="lead">Board asks arrive mixed. Without a frame, every ask looks like “more analysis,” and the committee drifts into new product fronts while infrastructure and mission work still need support.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Standing rule (Kay)</h3>
+            <p>Use this committee to make current Board initiatives and infrastructure stronger. Default against expanding scope into new hubs, fee experiments, or build-ownership unless the Board mandates it.</p>
+          </div>
+          <div class="card">
+            <h3>What classification does</h3>
+            <ul>
+              <li>Splits one message into atomic questions</li>
+              <li>Names the data layer each atom needs</li>
+              <li>Separates deliverables from enabling work and from scope decisions</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Same funnel as Sep 1 brief.">
+        <div class="badge"><span class="pill">Frame</span> Populations</div>
+        <h1>Three populations. Do not mix them</h1>
+        <div class="funnel">
+          <div class="band">
+            <h3>Community</h3>
+            <p>Broader WCS social and learning world — mostly outside the registry.</p>
+          </div>
+          <div class="band mid">
+            <h3>Entry</h3>
+            <p>Everyone registered in WSDC J&amp;J. Already requested in Score Report lists (§2.3) — usable analytics need retention and join.</p>
+          </div>
+          <div class="band inner">
+            <h3>Scored</h3>
+            <p>People with awarded points / Competitor ID after a point. This is what the public registry supports today.</p>
+          </div>
+        </div>
+        <p class="cite">Competitor ID only after a point — Rules 2026.1B §3.2.2c. Aligns with the 1 September analytics brief.</p>
+      </section>
+
+      <section class="slide" data-notes="4+1 table — keep short.">
+        <div class="badge"><span class="pill">Model</span> Categories</div>
+        <h1>Four data categories + governance</h1>
+        <table class="cat-table">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">C1</td><td>Answerable now</td><td>Public / cleaned Points Registry and event catalog</td></tr>
+            <tr><td class="mono">C2</td><td>After source hygiene</td><td>Raw WSDC sources exist (e.g. Score Report archive) — need schema, aliases, join</td></tr>
+            <tr><td class="mono">C3</td><td>Needs WSDC collection design</td><td>Right place is inside WSDC, but no usable stream yet</td></tr>
+            <tr><td class="mono">C4</td><td>Outside WSDC</td><td>Local dances, workshops, non-registry weekends, polls</td></tr>
+            <tr><td class="mono">C5</td><td>Governance / scope</td><td>Priorities, product ownership, policy — not “another extract”</td></tr>
+          </tbody>
+        </table>
+        <p class="notes">As enablements land, atoms migrate C3 → C2 → C1. C4 stays community-program work. C5 escalates to Board/ops.</p>
+      </section>
+
+      <section class="slide" data-notes="Workflow one slide.">
+        <div class="badge"><span class="pill">Process</span> Workflow</div>
+        <h1>From ask to track</h1>
+        <ol>
+          <li><strong>Intake</strong> — asker, text, must-have vs nice-to-have</li>
+          <li><strong>Decompose</strong> — one Board message → several atomic questions</li>
+          <li><strong>Classify</strong> — C1–C5 + population (Community / Entry / Scored)</li>
+          <li><strong>Respond</strong> — deliver (C1), partial + enabling step (C2/C3), collection design (C4), or scope return (C5)</li>
+          <li><strong>Track &amp; reclassify</strong> when an enabling step ships</li>
+        </ol>
+        <p class="notes">Internal detail: <span class="mono">meetings/board-questions-intake/CONCEPT.md</span> and <span class="mono">MATRIX.md</span>.</p>
+      </section>
+
+      <section class="slide" data-notes="Counts from MATRIX — not blame.">
+        <div class="badge"><span class="pill">This draft</span> Intake map</div>
+        <h1>How this Board draft maps</h1>
+        <p class="lead">49 atomic questions from Yvonne, Kay, Jim Coakley, Jen, Paul, and Jim Tigges — classified once, without treating every row as a commitment.</p>
+        <div class="stat-row">
+          <div class="stat"><span class="n">23</span><span class="l">C1 now</span></div>
+          <div class="stat"><span class="n">7</span><span class="l">C2 hygiene</span></div>
+          <div class="stat"><span class="n">5</span><span class="l">C3 design</span></div>
+          <div class="stat"><span class="n">6</span><span class="l">C4 outside</span></div>
+          <div class="stat"><span class="n">8</span><span class="l">C5 scope</span></div>
+        </div>
+        <p class="notes">About half the atoms are already in C1 (scored layer). The rest are unlocks or explicit non-data decisions — that is healthy, not a failure of the registry.</p>
+      </section>
+
+      <section class="slide" data-notes="Reuse article — do not relaunch.">
+        <div class="badge"><span class="pill">C1</span> Start now</div>
+        <h1>Clusters we can work from scored data</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Progression &amp; points structure</h3>
+            <ul>
+              <li>Division dwell / first→first / may→must (Tigges, Jen, Kay #1)</li>
+              <li>Reuse published <a href="https://wsdc-analytics.github.io/article_division_transition_time_en.html" target="_blank" rel="noopener noreferrer">division-transition analysis</a> — extend, don’t restart</li>
+              <li>Champion paths, inactivity, point concentration</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Event landscape (scored)</h3>
+            <ul>
+              <li>Events YOY by country; edition size trajectories</li>
+              <li>Division / tier presence; Champion &amp; Invitational history</li>
+              <li>Scored headcounts as capacity signal — not Entry community</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Align Sep discovery checklist.">
+        <div class="badge"><span class="pill">C2–C3</span> Unlock next</div>
+        <h1>What turns more Board asks into C1</h1>
+        <ul>
+          <li><strong>Score Report lists</strong> — schema, retention, ID when none yet → Entry “total community,” no-shows, exact event size</li>
+          <li><strong>Geo / name hygiene</strong> — stop free-text drift on Event Update / Score Report → region cuts and event maps</li>
+          <li><strong>Home city/state</strong> (list field or voluntary verify) → 100-mile radius, “where events are needed”</li>
+          <li><strong>Official dates / 6-15 fields</strong> + judge certification feeds → problem-event impact and AJP %</li>
+        </ul>
+        <p class="cite">Same discovery track as the 1 September Gaps A–D brief.</p>
+      </section>
+
+      <section class="slide" data-notes="C4 separate program.">
+        <div class="badge"><span class="pill">C4</span> Outside the registry</div>
+        <h1>Local dances, workshops, non-WSDC weekends</h1>
+        <p class="lead">Jim Coakley’s hub ideas are valuable for education and travelers — and they are a <strong>community collection program</strong>, not Points Registry analytics.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Needs</h3>
+            <ul>
+              <li>Clear Board owner and mandate</li>
+              <li>Intake template + verification cadence</li>
+              <li>Honest accuracy bar (not registry-grade)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Committee role</h3>
+            <ul>
+              <li>Advise schema and verification design</li>
+              <li>Do not silently own website build or fee policy (those are C5)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-notes="Ask Board to prioritize enablements.">
+        <div class="badge"><span class="pill">Ask</span> Board priorities</div>
+        <h1>What we need from the Board</h1>
+        <ol>
+          <li>Confirm the 4+1 intake frame (including Kay’s scope rule)</li>
+          <li>Prioritize <strong>one</strong> C2/C3 enablement for the next quarter (recommended: Score Report list retention + schema)</li>
+          <li>Name an owner if C4 community listings become a Board program</li>
+          <li>Keep website / merge-delete / fee decisions on the governance track — committee can advise with C1 evidence</li>
+        </ol>
+      </section>
+
+      <section class="slide" data-notes="30/90 days — narrow.">
+        <div class="badge"><span class="pill">Plan</span> Next 30 / 90 days</div>
+        <h1>Committee focus</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>30 days</h3>
+            <ul>
+              <li>Deliver C1 packages Board already cares about: progression (reuse article), scored ecosystem YOY, champion/inactivity cuts</li>
+              <li>Keep MATRIX updated as asks arrive</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>90 days</h3>
+            <ul>
+              <li>One enabling track only — preferably Entry lists usable for analytics</li>
+              <li>Reclassify C2/C3 atoms when that track lands</li>
+              <li>Decline or park C4/C5 expansions without Board mandate</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Public proof of C1 work already lives on <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a> — useful as evidence, not as a tooling mandate.</p>
+      </section>
+
+    </div>
+    <div class="foot-hint">Keys <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · click edges</div>
+  </div>
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('counter');
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        counter.textContent = (i + 1) + ' / ' + slides.length;
+        const note = slides[i].getAttribute('data-notes') || '';
+        if (note) console.debug('[notes]', note);
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+      document.getElementById('prev').addEventListener('click', () => show(i - 1));
+      document.getElementById('next').addEventListener('click', () => show(i + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); show(i + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); show(i - 1);
+        } else if (e.key === 'Home') show(0);
+        else if (e.key === 'End') show(slides.length - 1);
+      });
+      document.getElementById('stage').addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width * 0.28) show(i - 1);
+        else if (x > rect.width * 0.72) show(i + 1);
+      });
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash - 1 : 0);
+    })();
+  </script>
+</body>
+</html>
