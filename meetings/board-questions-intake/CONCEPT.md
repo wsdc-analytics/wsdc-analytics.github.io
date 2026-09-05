@@ -70,25 +70,31 @@ Reclassify atomic rows in [MATRIX.md](MATRIX.md) when an enablement ships. Do no
 ## Workflow
 
 1. **Intake** — asker, raw text, must-have vs nice-to-have, date.
-2. **Decompose** — one Board message often becomes several *atomic* questions (different categories).
-3. **Classify** each atomic → C1–C5 + population (Community / Entry / Scored).
-4. **Respond**
-   - **C1:** analyze and deliver; scored-only disclaimer where needed; reuse published work when it overlaps (do not relaunch as new research).
-   - **C2 / C3:** optional partial C1 now + explicit *enabling step* (source, owner, dependency).
-   - **C4:** collection + verification design; do not promise registry-grade accuracy.
-   - **C5:** return to Board with a scope recommendation (support existing initiatives / do not expand).
-5. **Track** — status, blocker, next enabling step.
-6. **Reclassify** after enablement.
+2. **Quote** — keep the Board wording (full ask or the exact bullet/clause). Do not replace the ask with a paraphrase in the matrix.
+3. **Decompose** — one Board message often becomes several *atomic* rows (different categories), **same quote** when layers differ.
+4. **Classify** each atomic → C1–C5 + population (Community / Entry / Scored) + **Depth** (`full` / `partial` / `blocked` / `scope`).
+5. **Respond**
+   - **C1 `full`:** analyze and deliver; take into work first.
+   - **C1 `partial`:** deliver only the named scope (usually Scored) against the **same quote**; point to the C2/C3 twin for the full ask.
+   - **C2:** do not stop at “need data” — name the **concrete enabling work** that unlocks a full answer (e.g. Competitors List join, Score Report prelims field, aliases).
+   - **C3:** design the collection/policy stream inside WSDC.
+   - **C4:** community collection + verification design; not registry-grade.
+   - **C5:** return to Board with scope recommendation (Kay filter).
+6. **Track** — status, blocker, next enabling step.
+7. **Reclassify** after enablement (C2→C1 when unlock ships).
+
+**C1 review order:** list `full` atoms first, then `partial`.
 
 ### Decision shortcuts
 
 | Signal | Prefer |
 |--------|--------|
-| Answerable from points + event dates alone | C1 |
+| Answerable from points + event dates alone, ask matches that layer | C1 `full` |
+| Ask is broader (Entry/community/attendance) but scored slice is useful now | C1 `partial` + C2 twin with concrete Enabling |
 | Answer needs full starting lists, home city, judges panel, or unjoined Score Report fields | C2 if files/sheets exist; else C3 |
 | Workshops / local socials / non-WSDC weekends / polls | C4 |
 | “Should the website…?”, “Should the committee build…?”, fee models, merge policy without contestant request | C5 |
-| Forecast / prediction | C1 only with heavy caveat (projection from scored history, not destiny) |
+| Forecast / prediction | C1 `partial` (scored scenario) unless Entry series exists |
 
 ---
 
@@ -103,7 +109,7 @@ The committee **supports current Board mission, strategy, and infrastructure wor
 | File | Audience |
 |------|----------|
 | [CONCEPT.md](CONCEPT.md) | Committee — taxonomy + workflow |
-| [MATRIX.md](MATRIX.md) | Committee — full atomic classification of the current Board draft |
+| [MATRIX.md](MATRIX.md) | Committee — Board source numbering + atomic splits (`a`/`-E`); full classification |
 | [slides_en.html](slides_en.html) | Board-facing brief (unlisted) |
 | [README.md](README.md) | Share notes, noindex |
 
