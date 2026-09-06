@@ -13,7 +13,7 @@ Categories: see [CONCEPT.md](CONCEPT.md). Populations: **Community / Entry / Sco
 3. **C1 sort order (appendices / review):** all `full` first, then `partial`.
 4. **IDs** follow Board source numbering; letters / `-E` = splits only. No invented top-level numbers.
 
-**Counts:** C1 22 (full 10 · partial 12) · C2 17 · C3 6 · C4 6 · C5 9 · (**60** atoms).
+**Counts:** C1 22 (full 10 · partial 12) · C2 17 · C3 5 · C4 7 · C5 9 · (**60** atoms).
 
 ---
 
@@ -82,10 +82,10 @@ Categories: see [CONCEPT.md](CONCEPT.md). Populations: **Community / Entry / Sco
 | KY-2c | Kay | “Is there a way to understand where events are needed in terms of the customer base?” | C3 | blocked | **Design:** residence / customer-base stream (voluntary home or Entry geo policy) before “where needed” is answerable. |
 | JC-3b | Jim Coakley | “Analyze data on routine divisions in the past 15 years. Chart what events hold classic, showcase, Sophisticated, Masters and Juniors. … Are routines on the decline?” | C3 | blocked | **Design / source hunt:** Classic & Showcase not in public Points Registry — Score Report contests, programs, or other WSDC intake; else C4 web collection. |
 | JC-5a | Jim Coakley | “Paul has already been working on the 6/15 excel export. We have to complete the official dates piece.” | C3 | blocked | **Design/ops:** official-dates field completeness on NEA / 6-15 export; validation checks committee can define. |
-| JC-5d | Jim Coakley | “What data points does the data committee think our measurements should be in considering exceptions? Jen’s data request of number of dancers in a 100 mile radius…” | C3 | blocked | **Design:** home city/state capture (verification or list fields) + radius method. |
-| JN-3c | Jen | “WCS population within a 100 mile radius around every event.” | C3 | blocked | **Design:** home coordinates/city stream; if Score Report city collected → may move to C2 after join. |
+| JC-5d | Jim Coakley | “What data points does the data committee think our measurements should be in considering exceptions? Jen’s data request of number of dancers in a 100 mile radius…” | C3 | blocked | **Design:** which metrics for NEA exceptions. Jen’s full ask (JN-3c) is **C4** local WCS; a WSDC-only proxy would need home city/state + radius (separate design). |
 | PL-3 | Paul | “Continue with the data capture around integration of Wsdc judges certification AJP starting at March 2027… will events be able to meet 25% based on pre-registration judges list… forecasting … 40% and 50%” | C3 | blocked | **Design:** certified-judge roster feed + scheduled J&J judges per event. |
 | JC-1 | Jim Coakley | “Collect a list of workshop weekends and specialty day intensive throughout the globe and help categorize them by state/country/region” | C4 | blocked | Community collection + verification program (owner TBD). |
+| JN-3c | Jen | “WCS population within a 100 mile radius around every event.” | C4 | blocked | **Community / local WCS**, not WSDC registry: center = event venue; count = local WCS population outside the WSDC contour. Same program family as JC-5c / JC-1–2. (WSDC home-city × radius would be a narrower proxy — only if Jen accepts.) |
 | JC-2 | Jim Coakley | “Collect local dance events globally and help categorize them by state/country/region” | C4 | blocked | Same program as JC-1. |
 | JC-2b | Jim Coakley | “There would have to be a verification process monthly or weekly… We don’t want to list events and then have people… find that the event no longer exists” | C4 | blocked | Advise schema/cadence; do not auto-own build (Kay filter). |
 | JC-3d | Jim Coakley | “They could also poll the community to see where there is interest in creating more routine divisions and what are the stumbling blocks.” | C4 | blocked | Survey design outside registry. |
@@ -130,6 +130,7 @@ Categories: see [CONCEPT.md](CONCEPT.md). Populations: **Community / Entry / Sco
 | PL-1a | **Champions-with-points only**; Invitational “held” not from Points Registry in this ask |
 | JT-5 | Tier-mix ask is **C1 full** from registry size bands — not an Entry headcount question |
 | JC-5b | NEA “ideas for analytics” = **C5** strategic initiative, not C1 registry analysis |
+| JN-3c | “WCS population” in 100 mi of event = **C4** local community; not Entry/Scored home-geo inside WSDC |
 | Appendix | Must match this MATRIX |
 
 ## What not to do
