@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-09-08",
   "as_of": "2026-09-08",
-  "data_through": "2026-08-31",
+  "data_through": "2026-09-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
     "events_total": "count of occurred WSDC editions in event_editions.csv (result_rows > 0 or event_occurred); one row per event year/month that awarded points",
@@ -17,25 +17,25 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2661,
-    "points": 721000.0,
-    "dancers": 27457
+    "events": 2663,
+    "points": 721626.0,
+    "dancers": 27469
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-08-24",
-        "end": "2026-08-30",
-        "since_previous_ended": "2026-07-31",
-        "iso_week": "2026-W35",
+        "start": "2026-08-31",
+        "end": "2026-09-06",
+        "since_previous_ended": "2026-08-31",
+        "iso_week": "2026-W36",
         "bucket": "edition_start_date",
-        "event_names": "Bristol Swing Fiesta, Desert City Swing, Rolling Swing"
+        "event_names": "River City Swing, South Bay Dance Fling"
       },
       "increment": {
-        "events": 3,
-        "points": 1557.0,
-        "dancers": 21
+        "events": 2,
+        "points": 626.0,
+        "dancers": 10
       }
     },
     "month": {
@@ -45,12 +45,12 @@
         "end": "2026-09-08",
         "since_previous_ended": "2026-08-31",
         "bucket": "edition_start_date",
-        "event_names": ""
+        "event_names": "River City Swing, South Bay Dance Fling"
       },
       "increment": {
-        "events": 0,
-        "points": 0.0,
-        "dancers": 0
+        "events": 2,
+        "points": 626.0,
+        "dancers": 14
       }
     },
     "year": {
@@ -62,9 +62,9 @@
         "bucket": "event_year"
       },
       "increment": {
-        "events": 122,
-        "points": 51399.0,
-        "dancers": 1679
+        "events": 124,
+        "points": 52025.0,
+        "dancers": 1691
       }
     }
   }
