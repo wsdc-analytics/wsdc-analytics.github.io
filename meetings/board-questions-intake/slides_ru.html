@@ -348,6 +348,12 @@
       font-size: 0.7rem;
       color: var(--muted);
     }
+    .ladder-mini .bar {
+      width: 1px;
+      height: 1.05rem;
+      background: var(--line);
+      margin: 0 4px 0 6px;
+    }
     .examples {
       margin-top: 8px;
       border: 1px dashed var(--line);
@@ -390,13 +396,13 @@
       <section class="slide title-slide active" data-notes="Партнёрский тон: рамка процесса; читается и после созвона.">
         <div class="badge"><span class="pill">Brief</span> Analytics committee · приём вопросов Board</div>
         <h1>Вопросы Board → готовность данных WSDC:<br>одна рамка для приёма</h1>
-        <p class="lead">Общий способ классифицировать запросы по <strong>готовности данных компании WSDC</strong>: отвечаем сейчас (полностью или частично), данные есть, но ещё не в аналитическом стриме, данные внутри WSDC ещё не собирали, данные вне WSDC — и governance, который не датасет.</p>
+        <p class="lead">Общий способ классифицировать запросы по <strong>готовности данных компании WSDC</strong>: отвечаем сейчас (полностью или частично), данные есть, но ещё не в аналитическом стриме, данные внутри WSDC ещё не собирали, данные вне WSDC — и вопросы стратегии и продукта, которые не про датасет.</p>
       </section>
 
       <section class="slide" data-notes="Правило Kay один раз — позитивно.">
         <div class="badge"><span class="pill">Scope</span> Зачем классифицировать</div>
-        <h1>Лучше текущая работа — не больше тарелка</h1>
-        <p class="lead">Вопросы Board приходят смешанными. Без рамки каждый выглядит как «ещё аналитика», и комитет уезжает в новые продуктовые фронты, пока инфраструктура и mission-работа всё ещё нуждаются в поддержке.</p>
+        <h1>Общая рамка усиливает текущую работу</h1>
+        <p class="lead">Вопросы Board приходят смешанными. Рамка называет, что нужно каждому запросу, — комитет может опираться на инфраструктуру и текущие инициативы.</p>
         <div class="grid2">
           <div class="card">
             <h3>Фокус комитета (Kay)</h3>
@@ -407,7 +413,7 @@
             <ul>
               <li>Дробит одно сообщение на отдельные вопросы</li>
               <li>Называет слой данных для каждого вопроса</li>
-              <li>Отделяет deliverables от подготовительной работы и от решений по scope</li>
+              <li>Отделяет готовые ответы от подготовительной работы и от решений про мандат</li>
             </ul>
           </div>
         </div>
@@ -501,7 +507,7 @@
           <div class="flow-col">
             <div class="flow-box ready">
               <h3>C1 · отвечаем</h3>
-              <p>Полный ответ или частичный (если устраивает). C2/C3 по мере подготовительных шагов схлопываются сюда.</p>
+              <p>Полный ответ или частичный (если устраивает). Сюда схлопывается C2 — и то, что пришло в него из C3 или C4.</p>
             </div>
             <div class="flow-box scope">
               <h3>C5 · отдельно</h3>
@@ -517,15 +523,16 @@
         <h1>Рабочий стрим — аналитика уже возможна</h1>
         <div class="ladder-mini" aria-hidden="true">
         <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
         <span class="step">C4 вне</span>
         <span class="arrow">→</span>
         <span class="step">C2 доработка</span>
         <span class="arrow">→</span>
         <span class="step on c1">C1 ответ</span>
-        <span class="arrow">·</span>
-        <span class="step">C5 scope</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
         </div>
-        <p class="lead">Points Registry и каталог ивентов регулярно обновляются. Полный ответ, где ask укладывается в Scored; <strong>частичный</strong> — если спрашивающего устраивает этот слой.</p>
+        <p class="lead">Points Registry и каталог ивентов регулярно обновляются. Полный ответ, где вопрос укладывается в Scored; <strong>частичный</strong> — если спрашивающего устраивает этот слой.</p>
         <div class="grid3">
           <div class="card">
             <h3>Что есть</h3>
@@ -539,14 +546,14 @@
             <h3>Ограничения</h3>
             <ul>
               <li>Scored ≠ Entry / attendance / «held»</li>
-              <li>Partial надо явно маркировать — не «вся community»</li>
+              <li>Частичный ответ надо явно маркировать — не «вся community»</li>
               <li>Invitational / no-shows из реестра одними не закрыть</li>
             </ul>
           </div>
           <div class="card">
-            <h3>Quality на этом слое</h3>
+            <h3>Качество на этом слое</h3>
             <ul>
-              <li>Меньше free-text; стандартизация сущностей</li>
+              <li>Меньше свободного текста; стандартизация сущностей</li>
               <li>Регулярные таблицы: танцор · ивент · результат</li>
               <li>Качество WSDC-слоя — не спор «чья база»</li>
             </ul>
@@ -560,20 +567,21 @@
             <li><span class="mono">YV-1</span> · Yvonne — competitors по skill level → <strong>C1 частичный</strong> (только Scored; полный Entry — C2)</li>
           </ul>
         </div>
-        <p class="notes">Отдавать сейчас: прогрессия / структура поинтов · scored-ландшафт ивентов · пути Champions и inactivity (с оговорками).</p>
+        <p class="notes">После принятия рамки естественные C1-пакеты: прогрессия / структура поинтов · scored-ландшафт ивентов · пути Champions и inactivity (с оговорками).</p>
       </section>
 <section class="slide" data-notes="C2 подробно: Score Report ~2023, путь в C1.">
         <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C2</span> Есть — не в стриме</div>
         <h1>Уже в контуре WSDC — ещё не стыкуется</h1>
         <div class="ladder-mini" aria-hidden="true">
         <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
         <span class="step">C4 вне</span>
         <span class="arrow">→</span>
         <span class="step on c2">C2 доработка</span>
         <span class="arrow">→</span>
         <span class="step">C1 ответ</span>
-        <span class="arrow">·</span>
-        <span class="step">C5 scope</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
         </div>
         <p class="lead">В Score Report / Sheets уже есть зачатки (часто с ~2023). Можно проектировать, как они войдут в общий аналитический стрим рядом с C1.</p>
         <div class="grid3">
@@ -605,7 +613,7 @@
         <div class="examples">
           <h3>Примеры из этого драфта Board</h3>
           <ul>
-            <li><span class="mono">YV-1-E</span> · Yvonne — тот же ask про competitors → хранить списки Score Report централизованно и связать по ID</li>
+            <li><span class="mono">YV-1-E</span> · Yvonne — тот же вопрос про competitors → хранить списки Score Report централизованно и связать по ID</li>
             <li><span class="mono">PL-1b</span> · Paul — prelims / shelf judges → поля есть в Score Report, ещё не в общем стриме</li>
           </ul>
         </div>
@@ -616,13 +624,14 @@
         <h1>Полагаем, что лежит в WSDC — пока не забирали</h1>
         <div class="ladder-mini" aria-hidden="true">
         <span class="step on c3">C3 найти</span>
+        <span class="arrow">/</span>
         <span class="step">C4 вне</span>
         <span class="arrow">→</span>
         <span class="step">C2 доработка</span>
         <span class="arrow">→</span>
         <span class="step">C1 ответ</span>
-        <span class="arrow">·</span>
-        <span class="step">C5 scope</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
         </div>
         <p class="lead">По вопросам Board: к кому идти внутри WSDC, что запросить, можно ли взять. Часто — архив / обогащение того же блока, что C2.</p>
         <div class="grid3">
@@ -664,13 +673,14 @@
         <h1>Локальный мир WCS — не контур реестра</h1>
         <div class="ladder-mini" aria-hidden="true">
         <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
         <span class="step on c4">C4 вне</span>
         <span class="arrow">→</span>
         <span class="step">C2 доработка</span>
         <span class="arrow">→</span>
         <span class="step">C1 ответ</span>
-        <span class="arrow">·</span>
-        <span class="step">C5 scope</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
         </div>
         <p class="lead">Воркшопы, локальные танцы, non-WSDC weekends, популяция WCS вокруг ивентов (напр. JN-3c). Здесь старт — <strong>дизайн сбора</strong>, не extract из Points Registry.</p>
         <div class="grid3">
@@ -708,20 +718,21 @@
         </div>
         <p class="cite">Примеры уже централизованных community-листингов (не WSDC, не registry-grade): <a href="https://weekenders.dance/" target="_blank" rel="noopener noreferrer">weekenders.dance</a> · <a href="https://westiehub.dance/" target="_blank" rel="noopener noreferrer">westiehub.dance</a></p>
       </section>
-<section class="slide" data-notes="C5 подробно: не пайплайн аналитики. Фокус Kay — второй раз.">
+<section class="slide" data-notes="C5 подробно: не вопрос готовности данных. Фокус Kay — второй раз.">
         <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C5</span> Scope / governance</div>
         <h1>Это не вопрос готовности данных</h1>
         <div class="ladder-mini" aria-hidden="true">
         <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
         <span class="step">C4 вне</span>
         <span class="arrow">→</span>
         <span class="step">C2 доработка</span>
         <span class="arrow">→</span>
         <span class="step">C1 ответ</span>
-        <span class="arrow">·</span>
-        <span class="step on c5">C5 scope</span>
+        <span class="bar"></span>
+        <span class="step on c5">C5 отдельно</span>
         </div>
-        <p class="lead">Отделить аналитику и подготовительную работу с данными от стратегии, продукта и политики — чтобы комитет оставался на готовности данных и текущих инициативах.</p>
+        <p class="lead">Отделить аналитику и подготовительную работу с данными от стратегии, продукта и политики — чтобы комитет оставался на готовности данных и текущих инициативах (Kay).</p>
         <div class="grid3">
           <div class="card">
             <h3>Что это</h3>
@@ -732,19 +743,19 @@
             </ul>
           </div>
           <div class="card">
-            <h3>Примеры в этом драфте</h3>
+            <h3>Почему не лестница данных</h3>
             <ul>
-              <li>Идеи hub / education-расширения</li>
-              <li>NEA «ideas for analytics» как initiative</li>
-              <li>Listing fees, product-фильтры на сайте</li>
+              <li>Новая таблица этот вопрос не закроет</li>
+              <li>Не двигается по C3 → C2 → C1</li>
+              <li>Нужно решение Board / ops, а не путь данных</li>
             </ul>
           </div>
           <div class="card">
             <h3>Что делаем</h3>
             <ul>
-              <li>Вернуть Board / ops с ясной рекомендацией</li>
-              <li>Можно советовать на C1-evidence — не владеть product</li>
-              <li>Не поднимается по лестнице C3 → C2 → C1</li>
+              <li>Вернуть Board / ops с ясной рекомендацией (фокус комитета)</li>
+              <li>Можно советовать на уже готовых C1-ответах — не владеть продуктом</li>
+              <li>Паркуем, пока Board не назначит владельца или мандат</li>
             </ul>
           </div>
         </div>
@@ -795,7 +806,7 @@
           <li><strong>Следующий созвон</strong> — сверка матрицы по строкам (согласны / переклассифицируем)</li>
           <li><strong>После этого</strong> — распределение C1-пакетов и общих подготовительных треков</li>
         </ol>
-        <p class="notes">Сроки выше — ориентир, не утверждённый план. Позже можно коротко вынести Board: подтвердить рамку; назначить владельца, только если community listings (C4) станут программой Board. Публичное C1-evidence: <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a>.</p>
+        <p class="notes">Это последовательность шагов, не датированный план. Позже можно коротко вынести Board: подтвердить рамку; назначить владельца, только если community listings (C4) станут программой Board. Публичное подтверждение C1: <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a>.</p>
       </section>
 
     </div>
