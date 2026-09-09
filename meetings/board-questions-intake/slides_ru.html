@@ -152,9 +152,6 @@
       color: var(--muted);
       line-height: 1.4;
     }
-    .slide:has(.flow) > .notes {
-      margin-top: 10px;
-    }
     .cite { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
     .foot-hint {
       flex: 0 0 auto;
@@ -268,35 +265,22 @@
     .flow {
       display: grid;
       grid-template-columns: 1fr 1.15fr 1fr;
-      grid-template-rows: minmax(400px, 1fr);
-      gap: 14px;
-      margin: 28px 0 10px;
+      gap: 10px;
+      margin: 12px 0 8px;
       align-items: stretch;
-      flex: 1 1 auto;
-      min-height: 400px;
     }
-    @media (max-width: 800px) {
-      .flow {
-        grid-template-columns: 1fr;
-        grid-template-rows: none;
-        flex: 0 1 auto;
-        min-height: 0;
-        margin-top: 16px;
-      }
-    }
+    @media (max-width: 800px) { .flow { grid-template-columns: 1fr; } }
     .flow-col {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      align-self: stretch;
-      gap: 0;
+      gap: 8px;
     }
     .flow-box {
       border: 1px solid var(--line);
       border-radius: 10px;
       padding: 12px 14px;
       background: var(--soft);
-      flex: 0 0 auto;
+      flex: 1;
     }
     .flow-box h3 {
       margin: 0 0 6px;
@@ -309,37 +293,26 @@
       line-height: 1.4;
     }
     .flow-box.ready { background: #ecfdf5; border-color: #bbf7d0; }
-    .flow-box.wait {
-      background: #fffbeb;
-      border-color: #fde68a;
-      flex: 1 1 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+    .flow-box.wait { background: #fffbeb; border-color: #fde68a; }
     .flow-box.idea { background: #eef4fb; border-color: #bfdbfe; }
     .flow-box.out { background: #f8fafc; }
     .flow-box.scope {
       background: #f4f4f5;
       border-color: #d4d4d8;
+      margin-top: 8px;
     }
     .flow-arrow {
       text-align: center;
       font-size: 0.78rem;
       color: var(--muted);
       letter-spacing: 0.02em;
-      padding: 8px 0;
-      flex: 0 0 auto;
+      padding: 2px 0;
     }
     .flow-mid {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      align-self: stretch;
-      gap: 12px;
-    }
-    .slide:has(.flow) {
-      min-height: min(80vh, 720px);
+      justify-content: center;
+      gap: 6px;
     }
     .badge .pill.deep {
       background: #eef4fb;
@@ -806,7 +779,6 @@
           <li><strong>Ответ</strong> — отдать (C1), частичный ответ + подготовительный шаг (C2/C3), дизайн сбора (C4) или вернуть по scope (C5)</li>
           <li><strong>Трекинг и переклассификация</strong> — когда подготовительный шаг сделан</li>
         </ol>
-        <p class="notes">Внутренние детали: <span class="mono">meetings/board-questions-intake/CONCEPT.md</span> и <span class="mono">MATRIX.md</span>.</p>
       </section>
 
 <section class="slide" data-notes="Счётчики из MATRIX — evidence, что рамка уже применена.">
