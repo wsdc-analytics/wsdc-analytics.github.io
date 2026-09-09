@@ -122,6 +122,16 @@
       margin: 8px 0 12px;
     }
     @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 8px 0 10px;
+    }
+    @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
+    .grid3 .card h3 { font-size: 0.88rem; }
+    .grid3 .card p, .grid3 .card ul { font-size: 0.82rem; line-height: 1.35; }
     .card {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -344,7 +354,7 @@
         </div>
       </section>
 
-      <section class="slide" data-notes="Same funnel as Sep 1 brief.">
+<section class="slide" data-notes="Same funnel as Sep 1 brief.">
         <div class="badge"><span class="pill">Frame</span> Populations</div>
         <h1>Three populations. Do not mix them</h1>
         <div class="funnel">
@@ -364,7 +374,7 @@
         <p class="cite">Competitor ID only after a point — Rules 2026.1B §3.2.2c. Aligns with the 1 September analytics brief.</p>
       </section>
 
-      <section class="slide" data-notes="Categories: have data / not ready / not collected / outside / scope.">
+<section class="slide" data-notes="Categories: have data / not ready / not collected / outside / scope.">
         <div class="badge"><span class="pill">Model</span> Categories</div>
         <h1>How we sort Board questions</h1>
         <p class="lead">Not “good vs bad database” — <strong>how ready WSDC company data</strong> is to answer. This is not about a personal analytics store.</p>
@@ -407,7 +417,169 @@
         </div>
       </section>
 
-      <section class="slide" data-notes="Migration by infrastructure readiness.">
+<section class="slide" data-notes="C1 deep: have / limits / quality.">
+        <div class="badge"><span class="pill">C1</span> Answerable now</div>
+        <h1>Working stream — we can analyze today</h1>
+        <p class="lead">Points Registry and the event catalog already refresh regularly. Full answers where the ask fits Scored; <strong>partial</strong> when that scope is enough for the asker.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What we have</h3>
+            <ul>
+              <li>Points / placements / Competitor IDs after a point</li>
+              <li>Event catalog &amp; scored landscape YOY</li>
+              <li>Reusable C1 work (e.g. division transitions)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Limits</h3>
+            <ul>
+              <li>Scored ≠ Entry / attendance / “held”</li>
+              <li>Partial must be labeled — not sold as total community</li>
+              <li>Invitational / no-shows not from registry alone</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Quality on this layer</h3>
+            <ul>
+              <li>Less free-text drift; standardize entities</li>
+              <li>Refreshable tables: dancer · event · result</li>
+              <li>WSDC-layer quality work — not “whose database”</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Ship now: progression / points structure · scored event landscape · champion paths &amp; inactivity (with caveats).</p>
+      </section>
+
+<section class="slide" data-notes="C2 deep: Score Report ~2023, path to C1.">
+        <div class="badge"><span class="pill">C2</span> Exists — not in stream</div>
+        <h1>Already in the WSDC contour — not yet joinable</h1>
+        <p class="lead">Score Report / Sheets hold usable beginnings (often from ~2023). We can start designing how they enter the shared analytics stream next to C1.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What we already have</h3>
+            <ul>
+              <li>Event reports: tiers, counts by division / role</li>
+              <li>Competitors Lists — imperfect, but a trail exists</li>
+              <li>Same contour as rules §2.3 list requirements</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Limits</h3>
+            <ul>
+              <li>Depth mostly ~2023 onward</li>
+              <li>No stable schema / retention / ID join yet</li>
+              <li>Cannot sit cleanly in the shared DWH/stream beside C1</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Path → C1</h3>
+            <ul>
+              <li>Pipeline: ingest → clean → entities → join to C1</li>
+              <li>Geo / event-name aliases (Gap C)</li>
+              <li>Pre-2023 / missing archives → often C3 first, then C2</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Competitors List is still early: scoring systems are the practical source to grow this block — current partial feeds stay C2 until joinable.</p>
+      </section>
+
+<section class="slide" data-notes="C3 deep: find inside WSDC, then promote.">
+        <div class="badge"><span class="pill">C3</span> Inside WSDC — not collected</div>
+        <h1>We believe it lives in WSDC — we have not taken it yet</h1>
+        <p class="lead">From Board asks: who to approach inside WSDC, what to request, whether it is obtainable. Often archive / enrichment for the same block as C2.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Typical gaps</h3>
+            <ul>
+              <li>Pre-2023 Score Report / list depth</li>
+              <li>Home city/state, official dates, AJP judge feeds</li>
+              <li>Fields that exist somewhere in ops — not in our stream</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Work now</h3>
+            <ul>
+              <li>Map owner + format inside WSDC</li>
+              <li>Confirm: can we get it, under what policy?</li>
+              <li>Do not pretend it is already analytics-ready</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Then promote</h3>
+            <ul>
+              <li>Found &amp; collectable → <strong>C2</strong></li>
+              <li>Pipeline + join → <strong>C1</strong></li>
+              <li>Not findable / out of contour → rethink (C4 / park)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="C4 deep: outside WSDC, regional leads.">
+        <div class="badge"><span class="pill">C4</span> Outside WSDC</div>
+        <h1>Local WCS world — not the registry contour</h1>
+        <p class="lead">Workshops, local dances, non-WSDC weekends, WCS population around events (e.g. JN-3c). Analytics here starts with <strong>collection design</strong>, not Points Registry extracts.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What it is</h3>
+            <ul>
+              <li>Community landscape beyond WSDC events</li>
+              <li>Venue radius / local population asks</li>
+              <li>Accuracy will not be registry-grade</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>How to organize</h3>
+            <ul>
+              <li>Source hunt; possible regional leads from other committees</li>
+              <li>Sector / region split + verification cadence</li>
+              <li>Board owner + mandate before build</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Then</h3>
+            <ul>
+              <li>When a feed exists → <strong>C2</strong></li>
+              <li>Committee advises schema — does not quietly own site / fees</li>
+              <li>Product / fee / hub policy → <strong>C5</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="C5 deep: not analytics pipeline.">
+        <div class="badge"><span class="pill">C5</span> Scope / governance</div>
+        <h1>Not a data pipeline question</h1>
+        <p class="lead">Separate analytics and enablement from strategy, product, and policy — so the committee does not absorb the wrong work (Kay filter).</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What it is</h3>
+            <ul>
+              <li>Priorities, mandate, mission stretch</li>
+              <li>Website / product features (e.g. rankings on site)</li>
+              <li>Fees, merge/delete, audit <em>policy</em></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Examples in this draft</h3>
+            <ul>
+              <li>Hub / education expansion ideas</li>
+              <li>NEA “ideas for analytics” as initiative framing</li>
+              <li>Listing fees, filter product calls</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>What we do</h3>
+            <ul>
+              <li>Return to Board / ops with a clear recommend</li>
+              <li>May advise with C1 evidence — not own the product</li>
+              <li>Does not climb C3 → C2 → C1</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Migration by infrastructure readiness.">
         <div class="badge"><span class="pill">Logic</span> Transformation</div>
         <h1>How asks move as data readiness improves</h1>
         <div class="flow">
@@ -443,7 +615,7 @@
         <p class="notes">Fork: C3 / C4 both feed C2. Then C2 → C1. The question matrix is next: which ask sits where today.</p>
       </section>
 
-      <section class="slide" data-notes="Workflow one slide.">
+<section class="slide" data-notes="Workflow one slide.">
         <div class="badge"><span class="pill">Process</span> Workflow</div>
         <h1>From ask to track</h1>
         <ol>
@@ -456,7 +628,7 @@
         <p class="notes">Internal detail: <span class="mono">meetings/board-questions-intake/CONCEPT.md</span> and <span class="mono">MATRIX.md</span>.</p>
       </section>
 
-      <section class="slide" data-notes="Counts from MATRIX — not blame.">
+<section class="slide" data-notes="Counts from MATRIX — not blame.">
         <div class="badge"><span class="pill">This draft</span> Intake map</div>
         <h1>How this Board draft maps</h1>
         <p class="lead">60 atomic rows — Board quotes kept. C1: 10 full (take now) then 12 partial (Scored/limited). C2: concrete enabling per ask.</p>
@@ -471,65 +643,7 @@
         <p class="notes">C1 is split into full (take now) vs partial (same Board quote, Scored/limited scope). Entry / list-dependent asks sit in C2 with concrete enabling work — that is the intended split, not a registry failure.</p>
       </section>
 
-      <section class="slide" data-notes="Reuse article — do not relaunch.">
-        <div class="badge"><span class="pill">C1</span> Start now</div>
-        <h1>Clusters we can work from scored data</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Progression &amp; points structure</h3>
-            <ul>
-              <li>Division dwell / first→first / may→must (Tigges, Jen, Kay #1)</li>
-              <li>Reuse published <a href="https://wsdc-analytics.github.io/article_division_transition_time_en.html" target="_blank" rel="noopener noreferrer">division-transition analysis</a> — extend, don’t restart</li>
-              <li>Champion paths, inactivity, point concentration</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Event landscape (scored)</h3>
-            <ul>
-              <li>Events YOY by country; edition size trajectories</li>
-              <li>Division / tier presence; Champion history where points exist — not Invitational “held”</li>
-              <li>Scored headcounts as capacity signal — not Entry community</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-notes="Align Sep discovery checklist.">
-        <div class="badge"><span class="pill">C2–C3</span> Unlock next</div>
-        <h1>Checklist: learn this so C2/C3 can become C1</h1>
-        <ul>
-          <li><strong>C2 · Competitors List / Score Report</strong> — schema, retention, ID join → Entry community, no-shows, event size</li>
-          <li><strong>C2 · geo / event names</strong> — normalize free-text → regions and maps</li>
-          <li><strong>C3 · home city/state</strong> — confirm we can collect; then intake → C2</li>
-          <li><strong>C3 · official dates / AJP judges</strong> — find owner and format; then stream → C2</li>
-        </ul>
-        <p class="cite">Same discovery track as Gaps A–D in the 1 September brief. Not a “personal database” — WSDC company data contour.</p>
-      </section>
-
-      <section class="slide" data-notes="C4 separate program.">
-        <div class="badge"><span class="pill">C4</span> Outside the registry</div>
-        <h1>Local dances, workshops, non-WSDC weekends</h1>
-        <p class="lead">Jim Coakley’s hub ideas are valuable for education and travelers — and they are a <strong>community collection program</strong>, not Points Registry analytics.</p>
-        <div class="grid2">
-          <div class="card">
-            <h3>Needs</h3>
-            <ul>
-              <li>Clear Board owner and mandate</li>
-              <li>Intake template + verification cadence</li>
-              <li>Honest accuracy bar (not registry-grade)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Committee role</h3>
-            <ul>
-              <li>Advise schema and verification design</li>
-              <li>Do not silently own website build or fee policy (those are C5)</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-notes="Ask Board to prioritize enablements.">
+<section class="slide" data-notes="Ask Board to prioritize enablements.">
         <div class="badge"><span class="pill">Ask</span> Board priorities</div>
         <h1>What we need from the Board</h1>
         <ol>
@@ -540,7 +654,7 @@
         </ol>
       </section>
 
-      <section class="slide" data-notes="30/90 days — narrow.">
+<section class="slide" data-notes="30/90 days — narrow.">
         <div class="badge"><span class="pill">Plan</span> Next 30 / 90 days</div>
         <h1>Committee focus</h1>
         <div class="grid2">

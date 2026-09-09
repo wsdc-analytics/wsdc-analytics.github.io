@@ -122,6 +122,16 @@
       margin: 8px 0 12px;
     }
     @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 8px 0 10px;
+    }
+    @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
+    .grid3 .card h3 { font-size: 0.88rem; }
+    .grid3 .card p, .grid3 .card ul { font-size: 0.82rem; line-height: 1.35; }
     .card {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -344,7 +354,7 @@
         </div>
       </section>
 
-      <section class="slide" data-notes="Тот же funnel, что в brief 1 сентября.">
+<section class="slide" data-notes="Тот же funnel, что в brief 1 сентября.">
         <div class="badge"><span class="pill">Frame</span> Популяции</div>
         <h1>Три популяции. Не смешивать</h1>
         <div class="funnel">
@@ -364,7 +374,7 @@
         <p class="cite">Competitor ID только после поинта — Rules 2026.1B §3.2.2c. Согласовано с analytics brief от 1 сентября.</p>
       </section>
 
-      <section class="slide" data-notes="Категории: данные есть / нет / вне / scope.">
+<section class="slide" data-notes="Категории: данные есть / нет / вне / scope.">
         <div class="badge"><span class="pill">Model</span> Категории</div>
         <h1>Как мы раскладываем вопросы Board</h1>
         <p class="lead">Не «хорошая / плохая база», а <strong>готовность данных компании (WSDC)</strong> к ответу. Личная аналитическая база здесь ни при чём.</p>
@@ -407,7 +417,169 @@
         </div>
       </section>
 
-      <section class="slide" data-notes="Миграция по готовности инфраструктуры.">
+<section class="slide" data-notes="C1 подробно: есть / пределы / quality.">
+        <div class="badge"><span class="pill">C1</span> Можно отвечать сейчас</div>
+        <h1>Рабочий стрим — аналитика уже возможна</h1>
+        <p class="lead">Points Registry и каталог ивентов регулярно обновляются. Полный ответ, где ask укладывается в Scored; <strong>частичный</strong> — если спрашивающего устраивает этот слой.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что есть</h3>
+            <ul>
+              <li>Поинты / размещения / Competitor ID после поинта</li>
+              <li>Каталог ивентов и scored-ландшафт YOY</li>
+              <li>Готовая C1-работа (напр. переходы дивизионов)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Ограничения</h3>
+            <ul>
+              <li>Scored ≠ Entry / attendance / «held»</li>
+              <li>Partial надо явно маркировать — не «вся community»</li>
+              <li>Invitational / no-shows из реестра одними не закрыть</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Quality на этом слое</h3>
+            <ul>
+              <li>Меньше free-text; стандартизация сущностей</li>
+              <li>Регулярные таблицы: танцор · ивент · результат</li>
+              <li>Качество WSDC-слоя — не спор «чья база»</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">Отдавать сейчас: прогрессия / структура поинтов · scored-ландшафт ивентов · пути Champions и inactivity (с оговорками).</p>
+      </section>
+
+<section class="slide" data-notes="C2 подробно: Score Report ~2023, путь в C1.">
+        <div class="badge"><span class="pill">C2</span> Есть — не в стриме</div>
+        <h1>Уже в контуре WSDC — ещё не стыкуется</h1>
+        <p class="lead">В Score Report / Sheets уже есть зачатки (часто с ~2023). Можно проектировать, как они войдут в общий аналитический стрим рядом с C1.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что уже есть</h3>
+            <ul>
+              <li>Отчёты ивентов: тиры, counts по номинациям / ролям</li>
+              <li>Competitors List — проблемный, но след есть</li>
+              <li>Тот же контур, что требования списков §2.3</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Ограничения</h3>
+            <ul>
+              <li>Глубина в основном с ~2023</li>
+              <li>Нет устойчивой схемы / retention / join ID</li>
+              <li>Пока не садится в общий DWH/стрим рядом с C1</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Путь → C1</h3>
+            <ul>
+              <li>Pipeline: ingest → clean → сущности → join к C1</li>
+              <li>Алиасы geo / имён ивентов (Gap C)</li>
+              <li>Архив до 2023 / пропуски → часто сначала C3, потом C2</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes">List участников ещё зачаток: практический добор — scoring-системы. Текущие частичные фиды остаются C2, пока не joinable.</p>
+      </section>
+
+<section class="slide" data-notes="C3 подробно: найти внутри WSDC, затем повысить.">
+        <div class="badge"><span class="pill">C3</span> В контуре — ещё не брали</div>
+        <h1>Полагаем, что лежит в WSDC — пока не забирали</h1>
+        <p class="lead">По вопросам Board: к кому идти внутри WSDC, что запросить, можно ли взять. Часто — архив / обогащение того же блока, что C2.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Типичные пробелы</h3>
+            <ul>
+              <li>Глубина Score Report / списков до 2023</li>
+              <li>Home city/state, official dates, потоки судей AJP</li>
+              <li>Поля где-то в ops — не в нашем стриме</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Работа сейчас</h3>
+            <ul>
+              <li>Найти владельца и формат внутри WSDC</li>
+              <li>Подтвердить: можно ли получить и на каких правилах</li>
+              <li>Не выдавать за уже готовое к аналитике</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Дальше — повышение</h3>
+            <ul>
+              <li>Нашли и можно брать → <strong>C2</strong></li>
+              <li>Pipeline + join → <strong>C1</strong></li>
+              <li>Не нашли / вне контура → пересмотр (C4 / парк)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="C4 подробно: вне WSDC, regional leads.">
+        <div class="badge"><span class="pill">C4</span> Вне WSDC</div>
+        <h1>Локальный мир WCS — не контур реестра</h1>
+        <p class="lead">Воркшопы, локальные танцы, non-WSDC weekends, популяция WCS вокруг ивентов (напр. JN-3c). Здесь старт — <strong>дизайн сбора</strong>, не extract из Points Registry.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что это</h3>
+            <ul>
+              <li>Community-ландшафт вне ивентов WSDC</li>
+              <li>Радиус от venue / локальная популяция</li>
+              <li>Точность не будет registry-grade</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Как организовать</h3>
+            <ul>
+              <li>Поиск источника; возможно regional leads из других комитетов</li>
+              <li>Разбивка по секторам / регионам + cadence проверки</li>
+              <li>Владелец и мандат Board до сборки</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Дальше</h3>
+            <ul>
+              <li>Когда поток есть → <strong>C2</strong></li>
+              <li>Комитет советует схему — не забирает тихо сайт / fee</li>
+              <li>Product / fee / hub-политика → <strong>C5</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="C5 подробно: не пайплайн аналитики.">
+        <div class="badge"><span class="pill">C5</span> Scope / governance</div>
+        <h1>Это не вопрос пайплайна данных</h1>
+        <p class="lead">Отделить аналитику и enablement от стратегии, продукта и политики — чтобы комитет не съел чужую работу (фильтр Kay).</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что это</h3>
+            <ul>
+              <li>Приоритеты, мандат, растягивание mission</li>
+              <li>Сайт / product (напр. рейтинги на сайте)</li>
+              <li>Fee, merge/delete, <em>политика</em> аудита</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Примеры в этом драфте</h3>
+            <ul>
+              <li>Идеи hub / education-расширения</li>
+              <li>NEA «ideas for analytics» как initiative</li>
+              <li>Listing fees, product-фильтры на сайте</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что делаем</h3>
+            <ul>
+              <li>Вернуть Board / ops с ясной рекомендацией</li>
+              <li>Можно советовать на C1-evidence — не владеть product</li>
+              <li>Не поднимается по лестнице C3 → C2 → C1</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Миграция по готовности инфраструктуры.">
         <div class="badge"><span class="pill">Logic</span> Трансформация</div>
         <h1>Как вопросы двигаются по мере готовности данных</h1>
         <div class="flow">
@@ -443,7 +615,7 @@
         <p class="notes">Развилка C3 / C4 → обе кормят C2. Дальше C2 → C1. Матрица вопросов — следующий шаг: кто в какой клетке сейчас.</p>
       </section>
 
-      <section class="slide" data-notes="Workflow — один слайд.">
+<section class="slide" data-notes="Workflow — один слайд.">
         <div class="badge"><span class="pill">Process</span> Процесс</div>
         <h1>От вопроса к трекингу</h1>
         <ol>
@@ -456,7 +628,7 @@
         <p class="notes">Внутренние детали: <span class="mono">meetings/board-questions-intake/CONCEPT.md</span> и <span class="mono">MATRIX.md</span>.</p>
       </section>
 
-      <section class="slide" data-notes="Счётчики из MATRIX — без обвинений.">
+<section class="slide" data-notes="Счётчики из MATRIX — без обвинений.">
         <div class="badge"><span class="pill">Этот драфт</span> Карта intake</div>
         <h1>Как ложится текущий драфт Board</h1>
         <p class="lead">60 атомов — цитаты Board на русском. C1: 10 полных (брать сейчас), затем 12 частичных (Scored / ограниченно). C2: конкретный шаг на каждый вопрос.</p>
@@ -471,65 +643,7 @@
         <p class="notes">C1 делится на полный ответ (брать сейчас) и частичный (та же цитата Board, Scored / ограниченный слой). Entry / списки — в C2 с конкретным шагом. Это задуманный split, не провал реестра.</p>
       </section>
 
-      <section class="slide" data-notes="Reuse статьи — не запускать заново.">
-        <div class="badge"><span class="pill">C1</span> Начать сейчас</div>
-        <h1>Кластеры на scored-данных</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>Прогрессия и структура поинтов</h3>
-            <ul>
-              <li>Dwell в дивизионе / first→first / may→must (Tigges, Jen, Kay #1)</li>
-              <li>Переиспользовать опубликованный <a href="https://wsdc-analytics.github.io/article_division_transition_time.html" target="_blank" rel="noopener noreferrer">разбор переходов между дивизионами</a> — расширять, не начинать с нуля</li>
-              <li>Пути Champions, inactivity, концентрация поинтов</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Ландшафт ивентов (scored)</h3>
-            <ul>
-              <li>Ивенты YOY по странам; траектории размера edition</li>
-              <li>Наличие дивизионов / tier; история Champion (где были поинты) — не Invitational «held»</li>
-              <li>Число scored-участников как сигнал capacity — не Entry community</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-notes="Согласовать с discovery checklist сентября.">
-        <div class="badge"><span class="pill">C2–C3</span> Что открыть дальше</div>
-        <h1>Перечень: чему научиться, чтобы C2/C3 стали C1</h1>
-        <ul>
-          <li><strong>C2 · Competitors List / Score Report</strong> — схема, retention, join ID → Entry community, no-shows, размер ивента</li>
-          <li><strong>C2 · geo / имена ивентов</strong> — нормализация free-text → регионы и карты</li>
-          <li><strong>C3 · home city/state</strong> — согласовать, можно ли брать; затем сбор → C2</li>
-          <li><strong>C3 · official dates / судьи AJP</strong> — найти владельца и формат; потом поток → C2</li>
-        </ul>
-        <p class="cite">Тот же discovery-трек, что Gaps A–D в brief от 1 сентября. Не «личная база» — контур данных компании WSDC.</p>
-      </section>
-
-      <section class="slide" data-notes="C4 — отдельная программа.">
-        <div class="badge"><span class="pill">C4</span> Вне реестра</div>
-        <h1>Локальные танцы, воркшопы, non-WSDC weekends</h1>
-        <p class="lead">Идеи хаба Jim Coakley ценны для образования и путешественников — и это <strong>программа сбора community-данных</strong>, а не аналитика Points Registry.</p>
-        <div class="grid2">
-          <div class="card">
-            <h3>Нужно</h3>
-            <ul>
-              <li>Явный владелец и мандат Board</li>
-              <li>Шаблон intake + cadence верификации</li>
-              <li>Честная планка точности (не registry-grade)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Роль комитета</h3>
-            <ul>
-              <li>Советовать схему и дизайн верификации</li>
-              <li>Не брать тихо ownership сайта или fee-политики (это C5)</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" data-notes="Попросить Board приоритизировать enablement.">
+<section class="slide" data-notes="Попросить Board приоритизировать enablement.">
         <div class="badge"><span class="pill">Ask</span> Приоритеты Board</div>
         <h1>Что нужно от Board</h1>
         <ol>
@@ -540,7 +654,7 @@
         </ol>
       </section>
 
-      <section class="slide" data-notes="30/90 дней — узко.">
+<section class="slide" data-notes="30/90 дней — узко.">
         <div class="badge"><span class="pill">Plan</span> Следующие 30 / 90 дней</div>
         <h1>Фокус комитета</h1>
         <div class="grid2">
