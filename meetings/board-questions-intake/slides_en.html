@@ -314,6 +314,65 @@
       justify-content: center;
       gap: 6px;
     }
+    .badge .pill.deep {
+      background: #eef4fb;
+      border-color: #bfdbfe;
+      color: #1e3a5f;
+    }
+    .ladder-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 12px;
+      align-items: center;
+    }
+    .ladder-mini .step {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+    }
+    .ladder-mini .step.on {
+      color: var(--ink);
+    }
+    .ladder-mini .step.on.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .ladder-mini .step.on.c2 { background: #fffbeb; border-color: #fde68a; }
+    .ladder-mini .step.on.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .ladder-mini .step.on.c4 { background: #f8fafc; border-color: #cbd5e1; }
+    .ladder-mini .step.on.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .ladder-mini .arrow {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .examples {
+      margin-top: 8px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #fafbfc;
+    }
+    .examples h3 {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+    .examples ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      max-width: none;
+    }
+    .examples li {
+      margin: 0.22rem 0;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
   </style>
 </head>
 <body>
@@ -326,29 +385,29 @@
         <button type="button" id="next" aria-label="Next slide">→</button>
       </div>
     </div>
-    <div class="stage" id="stage">
+        <div class="stage" id="stage">
 
-      <section class="slide title-slide active" data-notes="Partner open: process frame, not a refusal list.">
+      <section class="slide title-slide active" data-notes="Partner open: shared frame for intake; readable after the call.">
         <div class="badge"><span class="pill">Brief</span> Analytics committee · Board intake</div>
-        <h1>How we take Board questions<br>without expanding the wrong work</h1>
+        <h1>From Board questions to WSDC data readiness:<br>one intake frame</h1>
         <p class="lead">A shared way to classify asks by <strong>WSDC company data readiness</strong>: answerable now (full or partial), data that exists but isn’t in the analytics stream yet, data we believe we can collect inside WSDC, data outside WSDC — and governance that isn’t a dataset.</p>
       </section>
 
-      <section class="slide" data-notes="Kay constraint is the north star.">
+      <section class="slide" data-notes="Kay standing rule once — positive framing.">
         <div class="badge"><span class="pill">Scope</span> Why classify</div>
         <h1>Better current work — not a bigger plate</h1>
         <p class="lead">Board asks arrive mixed. Without a frame, every ask looks like “more analysis,” and the committee drifts into new product fronts while infrastructure and mission work still need support.</p>
         <div class="grid2">
           <div class="card">
-            <h3>Standing rule (Kay)</h3>
-            <p>Use this committee to make current Board initiatives and infrastructure stronger. Default against expanding scope into new hubs, fee experiments, or build-ownership unless the Board mandates it.</p>
+            <h3>Committee focus (Kay)</h3>
+            <p>Use this committee to strengthen current Board initiatives and infrastructure. Stay with that focus unless the Board explicitly expands the mandate.</p>
           </div>
           <div class="card">
             <h3>What classification does</h3>
             <ul>
-              <li>Splits one message into atomic questions</li>
-              <li>Names the data layer each atom needs</li>
-              <li>Separates deliverables from enabling work and from scope decisions</li>
+              <li>Splits one message into separate questions</li>
+              <li>Names the data layer each question needs</li>
+              <li>Separates deliverables from preparatory work and from scope decisions</li>
             </ul>
           </div>
         </div>
@@ -364,7 +423,7 @@
           </div>
           <div class="band mid">
             <h3>Entry</h3>
-            <p>Everyone registered in WSDC J&amp;J. Already requested in Score Report lists (§2.3) — usable analytics need retention and join.</p>
+            <p>Everyone registered in WSDC J&amp;J. Already requested in Score Report competitor lists — for analytics we need to keep those lists centrally and link them to dancer and event IDs.</p>
           </div>
           <div class="band inner">
             <h3>Scored</h3>
@@ -390,7 +449,7 @@
             <div class="cid">C2</div>
             <div>
               <h3>Data exists in WSDC — not in the analytics stream yet</h3>
-              <p>Already collected (often Google Sheets / Score Report), but not normalized or cleaned, no pipeline. Need company-side prep: schema, aliases, join, retention — to make it usable.</p>
+              <p>Already collected (often Google Sheets / Score Report), but not normalized or cleaned, no regular path into analytics. Need company-side prep: schema, consistent names, link by ID, keep centrally — to make it usable.</p>
             </div>
           </div>
           <div class="cat-row c3">
@@ -404,7 +463,7 @@
             <div class="cid">C4</div>
             <div>
               <h3>Outside WSDC</h3>
-              <p>Local dances, workshops, non-WSDC weekends, polls. Once collected, those feeds land in C2 (exist, not yet in the shared pipeline).</p>
+              <p>Local dances, workshops, non-WSDC weekends, polls. Once collected, those feeds land in C2 (exist, not yet in the shared analytics stream).</p>
             </div>
           </div>
           <div class="cat-row c5">
@@ -417,9 +476,55 @@
         </div>
       </section>
 
-<section class="slide" data-notes="C1 deep: have / limits / quality.">
-        <div class="badge"><span class="pill">C1</span> Answerable now</div>
+<section class="slide" data-notes="Ladder before deep dives — skippable detail follows.">
+        <div class="badge"><span class="pill">Logic</span> Transformation</div>
+        <h1>How asks move as data readiness improves</h1>
+        <div class="flow">
+          <div class="flow-col">
+            <div class="flow-box idea">
+              <h3>C3 · not collected yet</h3>
+              <p>Hypothesis where data lives in WSDC. Work: who to ask, can we get it, in what form.</p>
+            </div>
+            <div class="flow-box out">
+              <h3>C4 · outside WSDC</h3>
+              <p>Community collection. When a feed exists → also C2.</p>
+            </div>
+          </div>
+          <div class="flow-mid">
+            <p class="flow-arrow">learn to collect →</p>
+            <div class="flow-box wait">
+              <h3>C2 · exists, not in stream</h3>
+              <p>Short list: what to obtain and what to learn (regular path: get → clean → link; consistent names). Then asks move to C1.</p>
+            </div>
+            <p class="flow-arrow">→ learn to run the stream →</p>
+          </div>
+          <div class="flow-col">
+            <div class="flow-box ready">
+              <h3>C1 · we answer</h3>
+              <p>Full or partial (if accepted). C2/C3 collapse here as preparatory steps land.</p>
+            </div>
+            <div class="flow-box scope">
+              <h3>C5 · aside</h3>
+              <p>Strategy and ownership — not a rung on this ladder.</p>
+            </div>
+          </div>
+        </div>
+        <p class="notes">Fork: C3 / C4 both feed C2. Then C2 → C1. Next slides detail each step — skippable live; useful when reading after the call.</p>
+      </section>
+
+<section class="slide" data-notes="C1 deep: have / limits / quality. Skippable live.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C1</span> Answerable now</div>
         <h1>Working stream — we can analyze today</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step on c1">C1 answer</span>
+        <span class="arrow">·</span>
+        <span class="step">C5 scope</span>
+        </div>
         <p class="lead">Points Registry and the event catalog already refresh regularly. Full answers where the ask fits Scored; <strong>partial</strong> when that scope is enough for the asker.</p>
         <div class="grid3">
           <div class="card">
@@ -447,12 +552,29 @@
             </ul>
           </div>
         </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JT-1</span> · Tigges — time in a division → <strong>C1 full</strong> (registry path already exists)</li>
+            <li><span class="mono">JN-1b</span> · Jen — how many reached All-Star → <strong>C1 full</strong></li>
+            <li><span class="mono">YV-1</span> · Yvonne — competitors per skill level → <strong>C1 partial</strong> (Scored only; full Entry is C2)</li>
+          </ul>
+        </div>
         <p class="notes">Ship now: progression / points structure · scored event landscape · champion paths &amp; inactivity (with caveats).</p>
       </section>
-
 <section class="slide" data-notes="C2 deep: Score Report ~2023, path to C1.">
-        <div class="badge"><span class="pill">C2</span> Exists — not in stream</div>
-        <h1>Already in the WSDC contour — not yet joinable</h1>
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C2</span> Exists — not in stream</div>
+        <h1>Already in the WSDC contour — not yet linked into the stream</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step on c2">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="arrow">·</span>
+        <span class="step">C5 scope</span>
+        </div>
         <p class="lead">Score Report / Sheets hold usable beginnings (often from ~2023). We can start designing how they enter the shared analytics stream next to C1.</p>
         <div class="grid3">
           <div class="card">
@@ -460,32 +582,48 @@
             <ul>
               <li>Event reports: tiers, counts by division / role</li>
               <li>Competitors Lists — imperfect, but a trail exists</li>
-              <li>Same contour as rules §2.3 list requirements</li>
+              <li>Same contour as Score Report competitor-list requirements</li>
             </ul>
           </div>
           <div class="card">
             <h3>Limits</h3>
             <ul>
               <li>Depth mostly ~2023 onward</li>
-              <li>No stable schema / retention / ID join yet</li>
-              <li>Cannot sit cleanly in the shared DWH/stream beside C1</li>
+              <li>No stable schema; not kept centrally; not linked by dancer/event ID yet</li>
+              <li>Cannot sit cleanly in the shared analytics stream beside C1</li>
             </ul>
           </div>
           <div class="card">
             <h3>Path → C1</h3>
             <ul>
-              <li>Pipeline: ingest → clean → entities → join to C1</li>
-              <li>Geo / event-name aliases (Gap C)</li>
+              <li>Regular path: get → clean → entities → link to C1</li>
+              <li>Consistent event and place names</li>
               <li>Pre-2023 / missing archives → often C3 first, then C2</li>
             </ul>
           </div>
         </div>
-        <p class="notes">Competitors List is still early: scoring systems are the practical source to grow this block — current partial feeds stay C2 until joinable.</p>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">YV-1-E</span> · Yvonne — same “competitors per skill” ask → keep Score Report lists centrally and link to IDs</li>
+            <li><span class="mono">PL-1b</span> · Paul — prelims / shelf judges → fields exist in Score Report, not yet in the shared stream</li>
+          </ul>
+        </div>
+        <p class="notes">Competitors List is still early: scoring systems are the practical source to grow this block — current partial feeds stay C2 until they link cleanly to C1.</p>
       </section>
-
 <section class="slide" data-notes="C3 deep: find inside WSDC, then promote.">
-        <div class="badge"><span class="pill">C3</span> Inside WSDC — not collected</div>
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C3</span> Inside WSDC — not collected</div>
         <h1>We believe it lives in WSDC — we have not taken it yet</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step on c3">C3 find</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="arrow">·</span>
+        <span class="step">C5 scope</span>
+        </div>
         <p class="lead">From Board asks: who to approach inside WSDC, what to request, whether it is obtainable. Often archive / enrichment for the same block as C2.</p>
         <div class="grid3">
           <div class="card">
@@ -508,16 +646,32 @@
             <h3>Then promote</h3>
             <ul>
               <li>Found &amp; collectable → <strong>C2</strong></li>
-              <li>Pipeline + join → <strong>C1</strong></li>
+              <li>Regular path + link to C1 → <strong>C1</strong></li>
               <li>Not findable / out of contour → rethink (C4 / park)</li>
             </ul>
           </div>
         </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JC-3b</span> · Coakley — Classic/Showcase history → not in Points Registry; hunt inside WSDC first</li>
+            <li><span class="mono">PL-3</span> · Paul — AJP certified-judge roster feed → design who holds it and how we get it</li>
+          </ul>
+        </div>
       </section>
-
 <section class="slide" data-notes="C4 deep: outside WSDC, regional leads.">
-        <div class="badge"><span class="pill">C4</span> Outside WSDC</div>
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C4</span> Outside WSDC</div>
         <h1>Local WCS world — not the registry contour</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="step on c4">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="arrow">·</span>
+        <span class="step">C5 scope</span>
+        </div>
         <p class="lead">Workshops, local dances, non-WSDC weekends, WCS population around events (e.g. JN-3c). Analytics here starts with <strong>collection design</strong>, not Points Registry extracts.</p>
         <div class="grid3">
           <div class="card">
@@ -540,18 +694,34 @@
             <h3>Then</h3>
             <ul>
               <li>When a feed exists → <strong>C2</strong></li>
-              <li>Committee advises schema — does not quietly own site / fees</li>
+              <li>Committee can advise on structure — Board owns program and product calls</li>
               <li>Product / fee / hub policy → <strong>C5</strong></li>
             </ul>
           </div>
         </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JC-1 / JC-2</span> · Coakley — workshop weekends &amp; local dances globally → community collection</li>
+            <li><span class="mono">JN-3c</span> · Jen — WCS population within 100 miles of an event → local community, not registry</li>
+          </ul>
+        </div>
         <p class="cite">Examples of already-centralized community listings (not WSDC, not registry-grade): <a href="https://weekenders.dance/" target="_blank" rel="noopener noreferrer">weekenders.dance</a> · <a href="https://westiehub.dance/" target="_blank" rel="noopener noreferrer">westiehub.dance</a></p>
       </section>
-
-<section class="slide" data-notes="C5 deep: not analytics pipeline.">
-        <div class="badge"><span class="pill">C5</span> Scope / governance</div>
-        <h1>Not a data pipeline question</h1>
-        <p class="lead">Separate analytics and enablement from strategy, product, and policy — so the committee does not absorb the wrong work (Kay filter).</p>
+<section class="slide" data-notes="C5 deep: not a data readiness question. Kay focus restated once.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C5</span> Scope / governance</div>
+        <h1>Not a data readiness question</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="arrow">·</span>
+        <span class="step on c5">C5 scope</span>
+        </div>
+        <p class="lead">Separate analytics and preparatory data work from strategy, product, and policy — so the committee stays on data readiness and current initiatives.</p>
         <div class="grid3">
           <div class="card">
             <h3>What it is</h3>
@@ -572,48 +742,20 @@
           <div class="card">
             <h3>What we do</h3>
             <ul>
-              <li>Return to Board / ops with a clear recommend</li>
+              <li>Return to Board / ops with a clear recommendation</li>
               <li>May advise with C1 evidence — not own the product</li>
               <li>Does not climb C3 → C2 → C1</li>
             </ul>
           </div>
         </div>
-      </section>
-
-<section class="slide" data-notes="Migration by infrastructure readiness.">
-        <div class="badge"><span class="pill">Logic</span> Transformation</div>
-        <h1>How asks move as data readiness improves</h1>
-        <div class="flow">
-          <div class="flow-col">
-            <div class="flow-box idea">
-              <h3>C3 · not collected yet</h3>
-              <p>Hypothesis where data lives in WSDC. Work: who to ask, can we get it, in what form.</p>
-            </div>
-            <div class="flow-box out">
-              <h3>C4 · outside WSDC</h3>
-              <p>Community collection. When a feed exists → also C2.</p>
-            </div>
-          </div>
-          <div class="flow-mid">
-            <p class="flow-arrow">learn to collect →</p>
-            <div class="flow-box wait">
-              <h3>C2 · exists, not in stream</h3>
-              <p>Short list: what to obtain and what to learn (pipeline, join, cleanup). Then asks move to C1.</p>
-            </div>
-            <p class="flow-arrow">→ learn to run the stream →</p>
-          </div>
-          <div class="flow-col">
-            <div class="flow-box ready">
-              <h3>C1 · we answer</h3>
-              <p>Full or partial (if accepted). C2/C3 collapse here as enablements land.</p>
-            </div>
-            <div class="flow-box scope">
-              <h3>C5 · aside</h3>
-              <p>Strategy and ownership — not a rung on this ladder.</p>
-            </div>
-          </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JC-7</span> · Coakley — point ranking history on the website → product call</li>
+            <li><span class="mono">JC-4b</span> · Coakley — listing fees → Board / finance</li>
+            <li><span class="mono">JC-6b</span> · Coakley — audit / merge / delete policy → Board / ops</li>
+          </ul>
         </div>
-        <p class="notes">Fork: C3 / C4 both feed C2. Then C2 → C1. The question matrix is next: which ask sits where today.</p>
       </section>
 
 <section class="slide" data-notes="Workflow one slide.">
@@ -621,18 +763,18 @@
         <h1>From ask to track</h1>
         <ol>
           <li><strong>Intake</strong> — asker, text, must-have vs nice-to-have</li>
-          <li><strong>Decompose</strong> — one Board message → several atomic questions</li>
+          <li><strong>Decompose</strong> — one Board message → several separate questions</li>
           <li><strong>Classify</strong> — C1–C5 + population (Community / Entry / Scored)</li>
-          <li><strong>Respond</strong> — deliver (C1), partial + enabling step (C2/C3), collection design (C4), or scope return (C5)</li>
-          <li><strong>Track &amp; reclassify</strong> when an enabling step ships</li>
+          <li><strong>Respond</strong> — deliver (C1), partial + preparatory step (C2/C3), collection design (C4), or return on scope (C5)</li>
+          <li><strong>Track &amp; reclassify</strong> when a preparatory step ships</li>
         </ol>
         <p class="notes">Internal detail: <span class="mono">meetings/board-questions-intake/CONCEPT.md</span> and <span class="mono">MATRIX.md</span>.</p>
       </section>
 
-<section class="slide" data-notes="Counts from MATRIX — not blame.">
+<section class="slide" data-notes="Counts from MATRIX — evidence the frame was applied.">
         <div class="badge"><span class="pill">This draft</span> Intake map</div>
         <h1>How this Board draft maps</h1>
-        <p class="lead">60 atomic rows — Board quotes kept. C1: 10 full (take now) then 12 partial (Scored/limited). C2: concrete enabling per ask.</p>
+        <p class="lead">60 separate questions after splitting Board messages. C1: 10 full (take now) then 12 partial (Scored/limited). C2: a concrete preparatory step per ask.</p>
         <div class="stat-row">
           <div class="stat"><span class="n">10</span><span class="l">C1 full</span></div>
           <div class="stat"><span class="n">12</span><span class="l">C1 partial</span></div>
@@ -641,42 +783,19 @@
           <div class="stat"><span class="n">7</span><span class="l">C4 outside</span></div>
           <div class="stat"><span class="n">9</span><span class="l">C5 scope</span></div>
         </div>
-        <p class="notes">C1 is split into full (take now) vs partial (same Board quote, Scored/limited scope). Entry / list-dependent asks sit in C2 with concrete enabling work — that is the intended split, not a registry failure.</p>
+        <p class="notes">C1 is split into full (take now) vs partial (same Board quote, Scored/limited scope). Entry / list-dependent asks sit in C2 with a named next step.</p>
+        <p class="notes" style="margin-top:8px"><strong>Appendix:</strong> full question list by category (quote + comment / step) → <a href="appendix_en.html">appendix_en.html</a> · <a href="appendix_ru.html">RU</a></p>
       </section>
 
-<section class="slide" data-notes="Ask Board to prioritize enablements.">
-        <div class="badge"><span class="pill">Ask</span> Board priorities</div>
-        <h1>What we need from the Board</h1>
+<section class="slide" data-notes="Committee decision today — not a locked 30/90 plan.">
+        <div class="badge"><span class="pill">Next</span> What we decide today</div>
+        <h1>What happens next</h1>
         <ol>
-          <li>Confirm the 4+1 intake frame (including Kay’s scope rule)</li>
-          <li>Prioritize <strong>one</strong> C2/C3 enablement for the next quarter (recommended: Score Report list retention + schema)</li>
-          <li>Name an owner if C4 community listings become a Board program</li>
-          <li>Keep website / merge-delete / fee decisions on the governance track — committee can advise with C1 evidence</li>
+          <li><strong>Today</strong> — accept the C1–C5 frame, adjust wording, or send it back for a rewrite</li>
+          <li><strong>Next call</strong> — walk the matrix line by line (agree / reclassify)</li>
+          <li><strong>After that</strong> — assign C1 packages and any shared preparatory tracks</li>
         </ol>
-      </section>
-
-<section class="slide" data-notes="30/90 days — narrow.">
-        <div class="badge"><span class="pill">Plan</span> Next 30 / 90 days</div>
-        <h1>Committee focus</h1>
-        <div class="grid2">
-          <div class="card">
-            <h3>30 days</h3>
-            <ul>
-              <li>Deliver C1 packages Board already cares about: progression (reuse article), scored ecosystem YOY, champion/inactivity cuts</li>
-              <li>Keep MATRIX updated as asks arrive</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>90 days</h3>
-            <ul>
-              <li>One enabling track only — preferably Entry lists usable for analytics</li>
-              <li>Reclassify C2/C3 atoms when that track lands</li>
-              <li>Decline or park C4/C5 expansions without Board mandate</li>
-            </ul>
-          </div>
-        </div>
-        <p class="notes">Public proof of C1 work already lives on <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a> — useful as evidence, not as a tooling mandate.</p>
-        <p class="notes" style="margin-top:8px"><strong>Appendix:</strong> full question list by category (who asked + why) → <a href="appendix_en.html">appendix_en.html</a> · <a href="appendix_ru.html">RU</a></p>
+        <p class="notes">Timing above is an orientation, not a committed plan. Later we can take a short Board ask: confirm the frame, and name an owner only if community listings (C4) become a Board program. Public C1 evidence: <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a>.</p>
       </section>
 
     </div>
