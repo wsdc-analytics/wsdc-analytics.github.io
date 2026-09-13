@@ -41,7 +41,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913a">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913b">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -788,6 +788,9 @@
       btn.setAttribute("data-value", opt.value);
       if (opt.countHtml) {
         btn.innerHTML = escapeHtml(opt.label) + opt.countHtml;
+        if (opt.countAria) {
+          btn.setAttribute("aria-label", opt.label + ", " + opt.countAria);
+        }
       } else {
         btn.textContent = opt.label;
       }
@@ -865,13 +868,36 @@
     return monthCountHtml(counts || emptyEventCounts(), yearPast);
   }
 
+  function filterCountAria(counts, yearPast) {
+    var c = counts || emptyEventCounts();
+    if (yearPast) return String(c.held | 0);
+    return (c.confirmed | 0) + " / " + (c.expected | 0);
+  }
+
   function filterSingleCountHtml(n) {
+    var num = n | 0;
     return (
       ' <span class="month-count" title="Events">' +
       '<span class="month-count__held">(' +
-      n +
+      num +
       ")</span></span>"
     );
+  }
+
+  function attachGeoCountMeta(opt, counts, yearPast) {
+    var c = counts || emptyEventCounts();
+    opt.countHtml = filterCountHtml(c, yearPast);
+    opt.countAria = filterCountAria(c, yearPast);
+    opt.sortKey = geoSortKey(c, yearPast);
+    return opt;
+  }
+
+  function attachSingleCountMeta(opt, n) {
+    var num = n | 0;
+    opt.countHtml = filterSingleCountHtml(num);
+    opt.countAria = String(num);
+    opt.sortKey = num;
+    return opt;
   }
 
   function statusOptionCount(events, statusKey, yearPast) {
@@ -933,13 +959,11 @@
     var continentOpts = catalogContinents.filter(function (c) {
       return continentPresent[c];
     }).map(function (c) {
-      var counts = continentBuckets[c] || emptyEventCounts();
-      return {
-        value: c,
-        label: continentLabel(c),
-        countHtml: filterCountHtml(counts, yearPast),
-        sortKey: geoSortKey(counts, yearPast)
-      };
+      return attachGeoCountMeta(
+        { value: c, label: continentLabel(c) },
+        continentBuckets[c],
+        yearPast
+      );
     }).sort(compareFilterOpts);
     if (state.continent && continentPresent[state.continent] !== true) {
       state.continent = "";
@@ -962,13 +986,11 @@
     });
     var countryBuckets = countsByField(yearEvents, function (e) { return e.country; });
     var countryList = Object.keys(countries).map(function (c) {
-      var counts = countryBuckets[c] || emptyEventCounts();
-      return {
-        value: c,
-        label: c,
-        countHtml: filterCountHtml(counts, yearPast),
-        sortKey: geoSortKey(counts, yearPast)
-      };
+      return attachGeoCountMeta(
+        { value: c, label: c },
+        countryBuckets[c],
+        yearPast
+      );
     }).sort(compareFilterOpts);
     if (state.country && countries[state.country] !== true) {
       state.country = "";
@@ -994,13 +1016,11 @@
       });
       var stateBuckets = countsByField(statePool, function (e) { return e.state; });
       var stateList = Object.keys(states).map(function (s) {
-        var counts = stateBuckets[s] || emptyEventCounts();
-        return {
-          value: s,
-          label: s,
-          countHtml: filterCountHtml(counts, yearPast),
-          sortKey: geoSortKey(counts, yearPast)
-        };
+        return attachGeoCountMeta(
+          { value: s, label: s },
+          stateBuckets[s],
+          yearPast
+        );
       }).sort(compareFilterOpts);
       if (state.usState && states[state.usState] !== true) {
         state.usState = "";
@@ -1025,13 +1045,10 @@
     var statusOpts = STATUSES.filter(function (s) {
       return statusPresent[s];
     }).map(function (s) {
-      var n = statusOptionCount(statusPool, s, yearPast);
-      return {
-        value: s,
-        label: statusLabel(s),
-        countHtml: filterSingleCountHtml(n),
-        sortKey: n
-      };
+      return attachSingleCountMeta(
+        { value: s, label: statusLabel(s) },
+        statusOptionCount(statusPool, s, yearPast)
+      );
     }).sort(compareFilterOpts);
     if (state.status && statusPresent[state.status] !== true) {
       state.status = "";
@@ -1053,13 +1070,10 @@
       if (e.kind) kindPresent[e.kind] = true;
     });
     var kindOpts = KINDS.filter(function (k) { return kindPresent[k]; }).map(function (k) {
-      var n = kindOptionCount(kindPool, k, yearPast);
-      return {
-        value: k,
-        label: kindLabel(k),
-        countHtml: filterSingleCountHtml(n),
-        sortKey: n
-      };
+      return attachSingleCountMeta(
+        { value: k, label: kindLabel(k) },
+        kindOptionCount(kindPool, k, yearPast)
+      );
     }).sort(compareFilterOpts);
     if (state.kind && kindPresent[state.kind] !== true) {
       state.kind = "";
@@ -1349,20 +1363,23 @@
   }
 
   function monthCountHtml(counts, monthPast) {
+    var held = (counts && counts.held) | 0;
+    var confirmed = (counts && counts.confirmed) | 0;
+    var expected = (counts && counts.expected) | 0;
     if (monthPast) {
       return (
         ' <span class="month-count" title="Held events">' +
         '<span class="month-count__held">(' +
-        counts.held +
+        held +
         ")</span></span>"
       );
     }
     return (
       ' <span class="month-count" title="Confirmed / expected">' +
       '<span class="month-count__confirmed">(' +
-      counts.confirmed +
+      confirmed +
       '</span><span class="month-count__sep">/</span><span class="month-count__expected">' +
-      counts.expected +
+      expected +
       ")</span></span>"
     );
   }
@@ -1371,13 +1388,17 @@
     var years = (state.data.years || []).filter(function (y) {
       return Number(y) >= 2025;
     }).map(function (y) {
-      var yn = Number(y);
+      return Number(y);
+    }).sort(function (a, b) {
+      return b - a;
+    }).map(function (yn) {
       var counts = tallyEventCounts(eventsInYearRaw(yn));
       var past = isCalendarYearPast(yn);
       return {
-        value: String(y),
-        label: String(y),
-        countHtml: filterCountHtml(counts, past)
+        value: String(yn),
+        label: String(yn),
+        countHtml: filterCountHtml(counts, past),
+        countAria: filterCountAria(counts, past)
       };
     });
     if (!years.length) return;
