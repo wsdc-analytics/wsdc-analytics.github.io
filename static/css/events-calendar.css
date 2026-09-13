@@ -690,6 +690,16 @@ h1 {
   font-weight: 500;
 }
 
+.cal-dd__menu .month-count,
+.cal-dd__menu .month-count__held,
+.cal-dd__menu .month-count__confirmed,
+.cal-dd__menu .month-count__sep,
+.cal-dd__menu .month-count__expected {
+  margin-left: 0;
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
 .cal-dd__menu .month-count {
   margin-left: 0.15em;
 }
