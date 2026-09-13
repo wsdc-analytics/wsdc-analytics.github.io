@@ -41,7 +41,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913c">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913d">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -878,9 +878,10 @@
     var num = n | 0;
     return (
       ' <span class="month-count" title="Events">' +
-      '<span class="month-count__held">(' +
+      '<span class="month-count__paren">(</span>' +
+      '<span class="month-count__held">' +
       num +
-      ")</span></span>"
+      '</span><span class="month-count__paren">)</span></span>'
     );
   }
 
@@ -1369,18 +1370,20 @@
     if (monthPast) {
       return (
         ' <span class="month-count" title="Held events">' +
-        '<span class="month-count__held">(' +
+        '<span class="month-count__paren">(</span>' +
+        '<span class="month-count__held">' +
         held +
-        ")</span></span>"
+        '</span><span class="month-count__paren">)</span></span>'
       );
     }
     return (
       ' <span class="month-count" title="Confirmed / expected">' +
-      '<span class="month-count__confirmed">(' +
+      '<span class="month-count__paren">(</span>' +
+      '<span class="month-count__confirmed">' +
       confirmed +
       '</span><span class="month-count__sep">/</span><span class="month-count__expected">' +
       expected +
-      ")</span></span>"
+      '</span><span class="month-count__paren">)</span></span>'
     );
   }
 
