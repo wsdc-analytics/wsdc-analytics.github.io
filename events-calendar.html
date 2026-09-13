@@ -41,7 +41,7 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260901b">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913a">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -54,7 +54,7 @@
                 <h1 class="wsdc-page-title" data-i18n="title">WSDC Events Calendar</h1>
                 <time class="data-as-of" id="dataAsOf" hidden></time>
             </div>
-            <p class="subtitle wsdc-page-subtitle" data-i18n="subtitle">A calendar of expected, confirmed, and paused (hiatus) events for the selected year. Filter the list or use search. Click a date for the map with location and a short analytics view of the event. Month labels show held events for past months, or confirmed/expected for the current and upcoming months (counted by start date).</p>
+            <p class="subtitle wsdc-page-subtitle" data-i18n="subtitle">A calendar of expected, confirmed, and paused (hiatus) events for the selected year. Filter the list or use search. Click a date for the map with location and a short analytics view of the event. Month labels and filter options show held events for past periods, or confirmed/expected for the current and upcoming ones (counted by start date).</p>
             <p class="disclaimer" id="disclaimer"></p>
             <div class="toolbar wsdc-filter-bar">
                 <div class="filters" role="toolbar" aria-label="Filters">
@@ -247,7 +247,7 @@
     en: {
       title: "WSDC Events Calendar",
       asOf: "As of {date}",
-      subtitle: "A calendar of expected, confirmed, and paused (hiatus) events for the selected year. Filter the list or use search. Click a date for the map with location and a short analytics view of the event. Month labels show held events for past months, or confirmed/expected for the current and upcoming months (counted by start date).",
+      subtitle: "A calendar of expected, confirmed, and paused (hiatus) events for the selected year. Filter the list or use search. Click a date for the map with location and a short analytics view of the event. Month labels and filter options show held events for past periods, or confirmed/expected for the current and upcoming ones (counted by start date).",
       disclaimer: "Important: Expected events are those whose dates were not yet confirmed in the {link} as of the latest update, but that ran around these dates the year before with no cancellation or hiatus reported. Expected dates in the calendar are approximate and may change once the event becomes confirmed.",
       wsdcEventsList: "official WSDC Events List",
       year: "Year",
@@ -318,7 +318,7 @@
     ru: {
       title: "WSDC Events Calendar",
       asOf: "По состоянию на {date}",
-      subtitle: "Календарь ожидаемых, подтверждённых и приостановленных (hiatus) ивентов за выбранный год. Можно отфильтровать список или воспользоваться поиском. Клик по дате открывает карту с локацией и краткую аналитику по ивенту. У названия месяца — число состоявшихся ивентов для прошедших месяцев или confirmed/expected для текущего и будущих (по start date).",
+      subtitle: "Календарь ожидаемых, подтверждённых и приостановленных (hiatus) ивентов за выбранный год. Можно отфильтровать список или воспользоваться поиском. Клик по дате открывает карту с локацией и краткую аналитику по ивенту. У названий месяцев и в опциях фильтров — число состоявшихся ивентов для прошедших периодов или confirmed/expected для текущего и будущих (по start date).",
       disclaimer: "Важно: ожидаемые ивенты — те, чьи даты на момент последнего обновления ещё не подтверждены в {link}, но годом раньше ивент шёл примерно в эти дни и нет сведений об отмене или hiatus. Даты ожидаемых ивентов ориентировочные и могут измениться после подтверждения.",
       wsdcEventsList: "официальном списке ивентов WSDC",
       year: "Год",
@@ -388,7 +388,7 @@
     es: {
       title: "WSDC Events Calendar",
       asOf: "Actualizado al {date}",
-      subtitle: "Calendario de eventos esperados, confirmados y en pausa (hiatus) para el año seleccionado. Puedes filtrar la lista o usar la búsqueda. Al hacer clic en una fecha verás el mapa con la ubicación y una breve analítica del evento. Junto al mes: eventos celebrados en meses pasados, o confirmed/expected en el mes actual y los siguientes (por start date).",
+      subtitle: "Calendario de eventos esperados, confirmados y en pausa (hiatus) para el año seleccionado. Puedes filtrar la lista o usar la búsqueda. Al hacer clic en una fecha verás el mapa con la ubicación y una breve analítica del evento. En los meses y en las opciones de filtro: eventos celebrados en periodos pasados, o confirmed/expected en el actual y los siguientes (por start date).",
       disclaimer: "Importante: los eventos esperados son aquellos cuyas fechas, a la última actualización, aún no están confirmadas en {link}, pero el año anterior se celebraron aproximadamente en esos días y no hay información de cancelación o hiatus. Las fechas esperadas son orientativas y pueden cambiar cuando el evento pase a confirmado.",
       wsdcEventsList: "la lista oficial de eventos WSDC",
       year: "Año",
@@ -786,7 +786,11 @@
       btn.type = "button";
       btn.setAttribute("role", "option");
       btn.setAttribute("data-value", opt.value);
-      btn.textContent = opt.label;
+      if (opt.countHtml) {
+        btn.innerHTML = escapeHtml(opt.label) + opt.countHtml;
+      } else {
+        btn.textContent = opt.label;
+      }
       if (opt.value === effective) {
         btn.classList.add("is-current");
         btn.setAttribute("aria-selected", "true");
@@ -798,6 +802,112 @@
       menuEl.appendChild(li);
     });
     valueEl.textContent = currentLabel;
+  }
+
+  function isCalendarYearPast(year) {
+    return Number(year) < new Date().getFullYear();
+  }
+
+  function emptyEventCounts() {
+    return { held: 0, confirmed: 0, expected: 0 };
+  }
+
+  function tallyEventCounts(events) {
+    var seen = {};
+    var held = 0;
+    var confirmed = 0;
+    var expected = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (e.has_results) held += 1;
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed") confirmed += 1;
+      else if (st === "expected") expected += 1;
+    });
+    return { held: held, confirmed: confirmed, expected: expected };
+  }
+
+  function countsByField(events, fieldGetter) {
+    var buckets = {};
+    var seen = {};
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      var field = fieldGetter(e);
+      if (!field) return;
+      if (!buckets[field]) buckets[field] = emptyEventCounts();
+      if (e.has_results) buckets[field].held += 1;
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed") buckets[field].confirmed += 1;
+      else if (st === "expected") buckets[field].expected += 1;
+    });
+    return buckets;
+  }
+
+  function geoSortKey(counts, yearPast) {
+    if (!counts) return 0;
+    return yearPast ? counts.held : counts.confirmed + counts.expected;
+  }
+
+  function compareFilterOpts(a, b) {
+    var ka = a.sortKey != null ? a.sortKey : 0;
+    var kb = b.sortKey != null ? b.sortKey : 0;
+    if (kb !== ka) return kb - ka;
+    return String(a.label || "").localeCompare(String(b.label || ""));
+  }
+
+  function filterCountHtml(counts, yearPast) {
+    return monthCountHtml(counts || emptyEventCounts(), yearPast);
+  }
+
+  function filterSingleCountHtml(n) {
+    return (
+      ' <span class="month-count" title="Events">' +
+      '<span class="month-count__held">(' +
+      n +
+      ")</span></span>"
+    );
+  }
+
+  function statusOptionCount(events, statusKey, yearPast) {
+    var seen = {};
+    var n = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (yearPast && statusKey === "confirmed") {
+        if (e.has_results) n += 1;
+        return;
+      }
+      if (normalizeStatus(e.status) === statusKey) n += 1;
+    });
+    return n;
+  }
+
+  function kindOptionCount(events, kindKey, yearPast) {
+    var seen = {};
+    var n = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      if (e.kind !== kindKey) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (yearPast) {
+        if (e.has_results) n += 1;
+        return;
+      }
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed" || st === "expected") n += 1;
+    });
+    return n;
   }
 
   function closeAllFilterDropdowns() {
@@ -812,17 +922,25 @@
   }
 
   function refreshFilterOptions() {
+    var yearPast = isCalendarYearPast(state.year);
     var yearAll = eventsInYearRaw(state.year);
     var continentPresent = {};
     yearAll.forEach(function (e) {
       if (e.continent) continentPresent[e.continent] = true;
     });
+    var continentBuckets = countsByField(yearAll, function (e) { return e.continent; });
     var catalogContinents = (state.data && state.data.continents) || CONTINENTS;
     var continentOpts = catalogContinents.filter(function (c) {
       return continentPresent[c];
     }).map(function (c) {
-      return { value: c, label: continentLabel(c) };
-    });
+      var counts = continentBuckets[c] || emptyEventCounts();
+      return {
+        value: c,
+        label: continentLabel(c),
+        countHtml: filterCountHtml(counts, yearPast),
+        sortKey: geoSortKey(counts, yearPast)
+      };
+    }).sort(compareFilterOpts);
     if (state.continent && continentPresent[state.continent] !== true) {
       state.continent = "";
     }
@@ -842,16 +960,23 @@
     yearEvents.forEach(function (e) {
       if (e.country) countries[e.country] = true;
     });
-    var countryList = Object.keys(countries).sort(function (a, b) {
-      return a.localeCompare(b);
-    });
+    var countryBuckets = countsByField(yearEvents, function (e) { return e.country; });
+    var countryList = Object.keys(countries).map(function (c) {
+      var counts = countryBuckets[c] || emptyEventCounts();
+      return {
+        value: c,
+        label: c,
+        countHtml: filterCountHtml(counts, yearPast),
+        sortKey: geoSortKey(counts, yearPast)
+      };
+    }).sort(compareFilterOpts);
     if (state.country && countries[state.country] !== true) {
       state.country = "";
     }
     fillDropdown(
       document.getElementById("countryFilterMenu"),
       document.getElementById("countryFilterValue"),
-      countryList.map(function (c) { return { value: c, label: c }; }),
+      countryList,
       state.country,
       t("allCountries")
     );
@@ -867,16 +992,23 @@
       statePool.forEach(function (e) {
         if (e.state) states[e.state] = true;
       });
-      var stateList = Object.keys(states).sort(function (a, b) {
-        return a.localeCompare(b);
-      });
+      var stateBuckets = countsByField(statePool, function (e) { return e.state; });
+      var stateList = Object.keys(states).map(function (s) {
+        var counts = stateBuckets[s] || emptyEventCounts();
+        return {
+          value: s,
+          label: s,
+          countHtml: filterCountHtml(counts, yearPast),
+          sortKey: geoSortKey(counts, yearPast)
+        };
+      }).sort(compareFilterOpts);
       if (state.usState && states[state.usState] !== true) {
         state.usState = "";
       }
       fillDropdown(
         document.getElementById("stateFilterMenu"),
         document.getElementById("stateFilterValue"),
-        stateList.map(function (s) { return { value: s, label: s }; }),
+        stateList,
         state.usState,
         t("allStates")
       );
@@ -893,8 +1025,14 @@
     var statusOpts = STATUSES.filter(function (s) {
       return statusPresent[s];
     }).map(function (s) {
-      return { value: s, label: statusLabel(s) };
-    });
+      var n = statusOptionCount(statusPool, s, yearPast);
+      return {
+        value: s,
+        label: statusLabel(s),
+        countHtml: filterSingleCountHtml(n),
+        sortKey: n
+      };
+    }).sort(compareFilterOpts);
     if (state.status && statusPresent[state.status] !== true) {
       state.status = "";
     }
@@ -915,8 +1053,14 @@
       if (e.kind) kindPresent[e.kind] = true;
     });
     var kindOpts = KINDS.filter(function (k) { return kindPresent[k]; }).map(function (k) {
-      return { value: k, label: kindLabel(k) };
-    });
+      var n = kindOptionCount(kindPool, k, yearPast);
+      return {
+        value: k,
+        label: kindLabel(k),
+        countHtml: filterSingleCountHtml(n),
+        sortKey: n
+      };
+    }).sort(compareFilterOpts);
     if (state.kind && kindPresent[state.kind] !== true) {
       state.kind = "";
     }
@@ -1227,7 +1371,14 @@
     var years = (state.data.years || []).filter(function (y) {
       return Number(y) >= 2025;
     }).map(function (y) {
-      return { value: String(y), label: String(y) };
+      var yn = Number(y);
+      var counts = tallyEventCounts(eventsInYearRaw(yn));
+      var past = isCalendarYearPast(yn);
+      return {
+        value: String(y),
+        label: String(y),
+        countHtml: filterCountHtml(counts, past)
+      };
     });
     if (!years.length) return;
     if (!years.some(function (opt) { return Number(opt.value) === state.year; })) {
