@@ -1393,7 +1393,7 @@
     }).map(function (y) {
       return Number(y);
     }).sort(function (a, b) {
-      return b - a;
+      return a - b;
     }).map(function (yn) {
       var counts = tallyEventCounts(eventsInYearRaw(yn));
       var past = isCalendarYearPast(yn);
