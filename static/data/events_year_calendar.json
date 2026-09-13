@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-09-09",
-  "generated_at": "2026-09-09T18:37:06Z",
+  "as_of": "2026-09-13",
+  "generated_at": "2026-09-13T13:48:14Z",
   "years": [
     2024,
     2025,
@@ -25,8 +25,8 @@
     "2024": 139,
     "2025": 177,
     "2026": 189,
-    "2027": 198,
-    "2028": 197
+    "2027": 199,
+    "2028": 198
   },
   "disclaimer": {
     "en": "Expected events are projected from the latest confirmed edition (±1 week per WSDC Registry Rules) for the current year and near-future years in the selector. They stay unconfirmed until published on the WSDC calendar; hiatus stops the projection.",
@@ -4857,29 +4857,6 @@
       "has_results": true
     },
     {
-      "id": "confirmed:255:2025-06-01",
-      "event_id": 255,
-      "name": "Indy Dance Explosion",
-      "start_date": "2025-06-01",
-      "end_date": null,
-      "weekend_start": "2025-05-29",
-      "weekend_end": "2025-06-01",
-      "weekend_key": "2025-05-29",
-      "status": "confirmed",
-      "kind": "registry",
-      "city": "Fort Wayne",
-      "country": "United States",
-      "state": "Indiana",
-      "continent": "America",
-      "lat": 41.0794759,
-      "lon": -85.1362929,
-      "url": "http://www.indydancex.com",
-      "year": 2025,
-      "source": "event_editions_month_only",
-      "stats_only": true,
-      "has_results": true
-    },
-    {
       "id": "confirmed:222:2025-06-05",
       "event_id": 222,
       "name": "Baltic Swing",
@@ -5053,6 +5030,28 @@
       "url": "https://dancenplay.com/",
       "year": 2025,
       "source": "edition_calendar_dates",
+      "has_results": true
+    },
+    {
+      "id": "confirmed:255:2025-06-26",
+      "event_id": 255,
+      "name": "Indy Dance Explosion",
+      "start_date": "2025-06-26",
+      "end_date": "2025-06-29",
+      "weekend_start": "2025-06-26",
+      "weekend_end": "2025-06-29",
+      "weekend_key": "2025-06-26",
+      "status": "confirmed",
+      "kind": "registry",
+      "city": "Fort Wayne",
+      "country": "United States",
+      "state": "Indiana",
+      "continent": "America",
+      "lat": 41.0794759,
+      "lon": -85.1362929,
+      "url": "http://www.indydancex.com",
+      "year": 2025,
+      "source": "operator_override",
       "has_results": true
     },
     {
@@ -13227,6 +13226,29 @@
       "has_results": true
     },
     {
+      "id": "expected:255:2027-06-24",
+      "event_id": 255,
+      "name": "Indy Dance Explosion",
+      "start_date": "2027-06-24",
+      "end_date": "2027-06-27",
+      "weekend_start": "2027-06-24",
+      "weekend_end": "2027-06-27",
+      "weekend_key": "2027-06-24",
+      "status": "expected",
+      "kind": "registry",
+      "city": "Fort Wayne",
+      "country": "United States",
+      "state": "Indiana",
+      "continent": "America",
+      "lat": 41.0794759,
+      "lon": -85.1362929,
+      "url": "http://www.indydancex.com",
+      "year": 2027,
+      "source": "expected_yoy",
+      "projected_from_year": 2025,
+      "projected_from_start": "2025-06-26"
+    },
+    {
       "id": "confirmed:96:2027-06-24",
       "event_id": 96,
       "name": "Liberty Swing Dance Championships",
@@ -17906,6 +17928,29 @@
       "source": "expected_yoy",
       "projected_from_year": 2027,
       "projected_from_start": "2027-07-01"
+    },
+    {
+      "id": "expected:255:2028-06-29",
+      "event_id": 255,
+      "name": "Indy Dance Explosion",
+      "start_date": "2028-06-29",
+      "end_date": "2028-07-02",
+      "weekend_start": "2028-06-29",
+      "weekend_end": "2028-07-02",
+      "weekend_key": "2028-06-29",
+      "status": "expected",
+      "kind": "registry",
+      "city": "Fort Wayne",
+      "country": "United States",
+      "state": "Indiana",
+      "continent": "America",
+      "lat": 41.0794759,
+      "lon": -85.1362929,
+      "url": "http://www.indydancex.com",
+      "year": 2028,
+      "source": "expected_yoy",
+      "projected_from_year": 2025,
+      "projected_from_start": "2025-06-26"
     },
     {
       "id": "expected:360:2028-06-29",
