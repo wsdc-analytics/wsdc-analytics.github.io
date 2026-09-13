@@ -673,16 +673,17 @@ h1 {
   white-space: nowrap;
 }
 
-.month-count__held,
-.month-count__confirmed {
-  color: inherit;
-  font-weight: 600;
-}
-
+.month-count__paren,
 .month-count__sep,
 .month-count__expected {
   color: var(--text-tertiary, #9ca3af);
   font-weight: 500;
+}
+
+.month-count__held,
+.month-count__confirmed {
+  color: inherit;
+  font-weight: 600;
 }
 
 .month.is-past-month .month-count__held {
@@ -691,6 +692,7 @@ h1 {
 }
 
 .cal-dd__menu .month-count,
+.cal-dd__menu .month-count__paren,
 .cal-dd__menu .month-count__held,
 .cal-dd__menu .month-count__confirmed,
 .cal-dd__menu .month-count__sep,
