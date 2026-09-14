@@ -297,9 +297,9 @@
   <script src="static/js/wsdc-select.js"></script>
   <script>
 (function () {
-  /* Warm complementary pair: green ↔ orange (far on hue wheel, both warm) */
-  const COLOR = { Leader: '#2E9B6B', Follower: '#E8752C' };
-  const COLOR_FILL = { Leader: 'rgba(46, 155, 107, 0.9)', Follower: 'rgba(232, 117, 44, 0.9)' };
+  /* Modern cool pair, far on hue wheel: indigo ↔ rose */
+  const COLOR = { Leader: '#6366F1', Follower: '#F43F5E' };
+  const COLOR_FILL = { Leader: 'rgba(99, 102, 241, 0.9)', Follower: 'rgba(244, 63, 94, 0.9)' };
 
   const state = {
     data: null,
@@ -404,7 +404,7 @@
       row.appendChild(span);
     });
     const tip = document.createElement('span');
-    tip.textContent = 'Hover: one dancer · dashed gray = median months / events';
+    tip.textContent = 'Hover: one dancer · rings = individuals · dashed gray = medians';
     row.appendChild(tip);
   }
 
@@ -451,12 +451,13 @@
     return groups.map((role) => ({
       label: role,
       data: laid[role] || [],
-      backgroundColor: COLOR_FILL[role],
+      backgroundColor: 'rgba(255, 255, 255, 0)',
       borderColor: COLOR[role],
-      borderWidth: 0.6,
-      pointRadius: 2.2,
+      borderWidth: 1.6,
+      pointRadius: 3.2,
       pointHoverRadius: 5,
-      pointHitRadius: 6,
+      pointHitRadius: 7,
+      pointStyle: 'circle',
     }));
   }
 
@@ -486,7 +487,7 @@
       })),
       backgroundColor: cells.map((c) => {
         const a = 0.28 + 0.62 * (c.n / maxN);
-        return `rgba(46, 155, 107, ${a})`;
+        return `rgba(99, 102, 241, ${a})`;
       }),
       borderWidth: 0,
       pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 5,
