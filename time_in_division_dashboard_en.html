@@ -263,6 +263,10 @@
         <div class="kpi"><div class="lbl">N</div><div class="val" id="kpiN">—</div></div>
         <div class="kpi"><div class="lbl">Median months</div><div class="val" id="kpiMonths">—</div></div>
         <div class="kpi"><div class="lbl">Median events</div><div class="val" id="kpiEvents">—</div></div>
+        <div class="kpi" title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
+          <div class="lbl">≤ both medians</div>
+          <div class="val" id="kpiMedianBox">—</div>
+        </div>
       </div>
 
       <div class="legend-row" id="legendRow"></div>
@@ -285,6 +289,7 @@
             <li><strong>Events (Y):</strong> unique events with a point in that division×role over the whole career.</li>
             <li><strong>Window:</strong> keep spells whose done <em>year</em> falls in the selected From–To year range (inclusive). Same year in both = that calendar year only. Data cut-off: <span id="asOfNote">—</span>.</li>
             <li><strong>Median guides:</strong> dashed gray lines at median months (vertical) and median events (horizontal) for the current filter — four quadrants relative to the typical dancer.</li>
+            <li><strong>≤ both medians:</strong> share of spells with months ≤ median months <em>and</em> events ≤ median events (the lower-left rectangle from the origin to the median cross). If months and events were independent, this would be ~25%; correlation pushes it up or down.</li>
             <li><strong>Density bins:</strong> fixed 6 months × 2 events.</li>
             <li>Only completed spells (threshold already reached) are plotted. Overlapping values are fanned on a small ring around the true point.</li>
           </ul>
@@ -384,6 +389,18 @@
       state.medianMonths == null ? '—' : String(Math.round(state.medianMonths * 10) / 10);
     document.getElementById('kpiEvents').textContent =
       state.medianEvents == null ? '—' : String(Math.round(state.medianEvents * 10) / 10);
+
+    const boxEl = document.getElementById('kpiMedianBox');
+    if (!rows.length || state.medianMonths == null || state.medianEvents == null) {
+      boxEl.textContent = '—';
+    } else {
+      const inside = rows.filter(
+        (s) => s[thr].months <= state.medianMonths && s.events <= state.medianEvents
+      ).length;
+      const pct = Math.round((1000 * inside) / rows.length) / 10;
+      boxEl.textContent = `${pct}%`;
+      boxEl.title = `${inside} of ${rows.length} spells`;
+    }
   }
 
   function updateLegend() {
@@ -404,7 +421,7 @@
       row.appendChild(span);
     });
     const tip = document.createElement('span');
-    tip.textContent = 'Hover: one dancer · rings = individuals · dashed gray = medians';
+    tip.textContent = 'Hover: one dancer · rings · dashed = medians · KPI “≤ both medians” = lower-left share';
     row.appendChild(tip);
   }
 
