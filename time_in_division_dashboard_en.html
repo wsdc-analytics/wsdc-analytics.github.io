@@ -42,48 +42,45 @@
       color: var(--wsdc-color-text-muted, #4b5563);
       margin-top: 2px;
     }
-    .controls {
+    .tid-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px 12px;
+      gap: 10px 12px;
       align-items: flex-end;
+      overflow: visible;
+      z-index: 5;
     }
-    .ctrl { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-    .ctrl label {
+    .tid-filters .filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .tid-filters .filter-label {
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--wsdc-color-text-muted, #4b5563);
     }
-    .seg {
-      display: inline-flex;
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
-      overflow: hidden;
-      background: #fff;
+    .tid-filters .wsdc-select-host,
+    .tid-filters .wsdc-dd {
+      min-width: 7.5rem;
     }
-    .seg button {
-      border: 0;
-      background: transparent;
-      padding: 7px 10px;
-      font: 600 12px/1.2 Inter, system-ui, sans-serif;
-      color: var(--wsdc-color-text, #1f2937);
-      cursor: pointer;
-      white-space: nowrap;
+    #divisionSelect + .wsdc-dd,
+    .tid-filters .filter-field:has(#divisionSelect) .wsdc-dd { min-width: 9rem; }
+    #yearFromSelect + .wsdc-dd,
+    #yearToSelect + .wsdc-dd,
+    .tid-filters .filter-field:has(#yearFromSelect) .wsdc-dd,
+    .tid-filters .filter-field:has(#yearToSelect) .wsdc-dd {
+      min-width: 5.25rem;
     }
-    .seg button + button { border-left: 1px solid var(--wsdc-color-border, #d1d5db); }
-    .seg button[aria-pressed="true"] {
-      background: var(--wsdc-color-brand-accent, #2563eb);
-      color: #fff;
-    }
-    .ctrl input[type="range"] { width: 140px; }
-    .years-val { font-size: 12px; font-weight: 600; color: var(--wsdc-color-text, #1f2937); }
     .ghost-btn {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       background: #fff;
       border-radius: 8px;
-      padding: 7px 12px;
+      padding: 0 12px;
+      min-height: var(--wsdc-control-height, 40px);
       font: 600 12px Inter, system-ui, sans-serif;
       cursor: pointer;
       color: var(--wsdc-color-text, #1f2937);
@@ -131,14 +128,11 @@
       vertical-align: -1px;
     }
     .viz-card {
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: var(--wsdc-radius-lg, 10px);
-      background: #fff;
+      background: transparent;
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 8px 10px 4px;
       position: relative;
     }
     .chart-wrap {
@@ -199,39 +193,48 @@
         <p>Months from first point to may/must threshold · events with a point in that division×role (career)</p>
       </header>
 
-      <div class="controls" role="group" aria-label="Filters">
-        <div class="ctrl">
-          <label>Division</label>
-          <div class="seg" id="divisionSeg" role="tablist"></div>
+      <div class="tid-filters wsdc-filter-bar" role="group" aria-label="Filters">
+        <div class="filter-field">
+          <label class="filter-label" for="divisionSelect" id="divisionLabel">Division</label>
+          <select id="divisionSelect" class="wsdc-select" aria-labelledby="divisionLabel">
+            <option value="Novice" selected>Novice</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+            <option value="All-Stars">All-Stars</option>
+          </select>
         </div>
-        <div class="ctrl">
-          <label>Threshold</label>
-          <div class="seg" id="thresholdSeg">
-            <button type="button" data-thr="allowed" aria-pressed="true">May</button>
-            <button type="button" data-thr="required" aria-pressed="false">Must</button>
-          </div>
+        <div class="filter-field">
+          <label class="filter-label" for="thresholdSelect" id="thresholdLabel">Threshold</label>
+          <select id="thresholdSelect" class="wsdc-select" aria-labelledby="thresholdLabel">
+            <option value="allowed" selected>May</option>
+            <option value="required">Must</option>
+          </select>
         </div>
-        <div class="ctrl">
-          <label>Role</label>
-          <div class="seg" id="roleSeg">
-            <button type="button" data-role="All" aria-pressed="true">All</button>
-            <button type="button" data-role="Leader" aria-pressed="false">Leader</button>
-            <button type="button" data-role="Follower" aria-pressed="false">Follower</button>
-          </div>
+        <div class="filter-field">
+          <label class="filter-label" for="roleSelect" id="roleLabel">Role</label>
+          <select id="roleSelect" class="wsdc-select" aria-labelledby="roleLabel">
+            <option value="All" selected>All</option>
+            <option value="Leader">Leader</option>
+            <option value="Follower">Follower</option>
+          </select>
         </div>
-        <div class="ctrl">
-          <label>Chart</label>
-          <div class="seg" id="modeSeg">
-            <button type="button" data-mode="scatter" aria-pressed="true">Scatter</button>
-            <button type="button" data-mode="density" aria-pressed="false">Density</button>
-          </div>
+        <div class="filter-field">
+          <label class="filter-label" for="modeSelect" id="modeLabel">Chart</label>
+          <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
+            <option value="scatter" selected>Scatter</option>
+            <option value="density">Density</option>
+          </select>
         </div>
-        <div class="ctrl">
-          <label>Done in last <span class="years-val" id="yearsLabel">5</span> years</label>
-          <input type="range" id="yearsRange" min="1" max="15" step="1" value="5" />
+        <div class="filter-field">
+          <label class="filter-label" for="yearFromSelect" id="yearFromLabel">From year</label>
+          <select id="yearFromSelect" class="wsdc-select" aria-labelledby="yearFromLabel"></select>
         </div>
-        <div class="ctrl">
-          <label>&nbsp;</label>
+        <div class="filter-field">
+          <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
+          <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
+        </div>
+        <div class="filter-field">
+          <span class="filter-label" aria-hidden="true">&nbsp;</span>
           <button type="button" class="ghost-btn" id="resetZoom">Reset zoom</button>
         </div>
       </div>
@@ -260,9 +263,9 @@
             <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars uses champions_allowed / champions_required (OR of Champions pts or All-Stars pts).</li>
             <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics). Day-level start dates are not required.</li>
             <li><strong>Events (Y):</strong> unique events with a point in that division×role over the whole career.</li>
-            <li><strong>Window:</strong> keep spells whose done date falls in the trailing N years ending at data cut-off (<span id="asOfNote">—</span>).</li>
-            <li><strong>Density bins:</strong> fixed 6 months × 2 events (cell size stated here for comparability).</li>
-            <li>Only completed spells (threshold already reached) are plotted.</li>
+            <li><strong>Window:</strong> keep spells whose done <em>year</em> falls in the selected From–To year range (inclusive). Same year in both = that calendar year only. Data cut-off: <span id="asOfNote">—</span>.</li>
+            <li><strong>Density bins:</strong> fixed 6 months × 2 events.</li>
+            <li>Only completed spells (threshold already reached) are plotted. Overlapping values are fanned on a small ring around the true point.</li>
           </ul>
         </div>
       </details>
@@ -270,11 +273,12 @@
   </main>
 
   <script src="static/js/site-chrome.js" defer></script>
+  <script src="static/js/wsdc-select.js"></script>
   <script>
 (function () {
-  const COLOR = { Leader: '#2563eb', Follower: '#c2410c' };
-  const DIVISIONS = ['Novice', 'Intermediate', 'Advanced', 'All-Stars'];
-  const JITTER = 0.35;
+  /* Pastel role colors */
+  const COLOR = { Leader: '#6FAF8E', Follower: '#E2A07A' };
+  const COLOR_FILL = { Leader: 'rgba(111, 175, 142, 0.72)', Follower: 'rgba(226, 160, 122, 0.72)' };
 
   const state = {
     data: null,
@@ -282,31 +286,24 @@
     threshold: 'allowed',
     role: 'All',
     mode: 'scatter',
-    years: 5,
+    yearFrom: null,
+    yearTo: null,
     chart: null,
     binM: 6,
     binE: 2,
   };
-
-  function hash01(str) {
-    let h = 2166136261;
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0) / 4294967295;
-  }
-
-  function jitter(id, axis) {
-    const u = hash01(id + ':' + axis);
-    return (u - 0.5) * 2 * JITTER;
-  }
 
   function parseYm(s) {
     if (!s) return null;
     const [y, m] = s.split('-').map(Number);
     if (!y || !m) return null;
     return y * 12 + m;
+  }
+
+  function doneYear(hit) {
+    if (!hit || !hit.done_ym) return null;
+    const y = Number(String(hit.done_ym).slice(0, 4));
+    return Number.isFinite(y) ? y : null;
   }
 
   function median(arr) {
@@ -316,31 +313,20 @@
     return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
   }
 
-  function windowBounds(dataAsOf, years) {
-    const end = parseYm(dataAsOf.slice(0, 7));
-    if (end == null) return null;
-    return { end, start: end - years * 12 + 1 };
-  }
-
   function filteredRows() {
     const d = state.data;
     if (!d) return [];
-    const bounds = windowBounds(d.data_as_of, state.years);
     const thr = state.threshold;
+    const y0 = state.yearFrom;
+    const y1 = state.yearTo;
     return d.spells.filter((s) => {
       if (s.division !== state.division) return false;
       if (state.role !== 'All' && s.role !== state.role) return false;
       const hit = s[thr];
       if (!hit) return false;
-      const done = parseYm(hit.done_ym);
-      if (done == null || !bounds) return false;
-      return done >= bounds.start && done <= bounds.end;
-    });
-  }
-
-  function setSeg(container, attr, value) {
-    container.querySelectorAll('button').forEach((btn) => {
-      btn.setAttribute('aria-pressed', String(btn.getAttribute(attr) === value));
+      const y = doneYear(hit);
+      if (y == null || y0 == null || y1 == null) return false;
+      return y >= y0 && y <= y1;
     });
   }
 
@@ -348,33 +334,6 @@
     if (state.chart && typeof state.chart.resetZoom === 'function') {
       state.chart.resetZoom();
     }
-  }
-
-  function buildDivisionSeg() {
-    const el = document.getElementById('divisionSeg');
-    el.innerHTML = DIVISIONS.map((div) =>
-      `<button type="button" data-div="${div}" aria-pressed="${div === state.division}">${div}</button>`
-    ).join('');
-    el.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-div]');
-      if (!btn) return;
-      state.division = btn.getAttribute('data-div');
-      setSeg(el, 'data-div', state.division);
-      resetZoomIfAny();
-      render();
-    });
-  }
-
-  function wireSeg(id, attr, key) {
-    const el = document.getElementById(id);
-    el.addEventListener('click', (e) => {
-      const btn = e.target.closest(`button[${attr}]`);
-      if (!btn) return;
-      state[key] = btn.getAttribute(attr);
-      setSeg(el, attr, state[key]);
-      resetZoomIfAny();
-      render();
-    });
   }
 
   function updateKpis(rows, thr) {
@@ -405,34 +364,62 @@
       row.appendChild(span);
     });
     const tip = document.createElement('span');
-    tip.textContent = 'Hover: WSDC ID · name · events · months';
+    tip.textContent = 'Hover: one dancer — WSDC ID · name · events · months';
     row.appendChild(tip);
   }
 
-  function scatterDatasets(rows, thr) {
-    const groups = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
-    return groups.map((role) => {
-      const pts = rows
-        .filter((s) => s.role === role)
-        .map((s) => {
-          const months = s[thr].months;
-          const events = s.events;
-          return {
-            x: months + jitter(s.id + s.role + s.division, 'x'),
-            y: Math.max(0, events + jitter(s.id + s.role + s.division, 'y')),
-            raw: s,
-          };
-        });
-      return {
-        label: role,
-        data: pts,
-        backgroundColor: COLOR[role] + '99',
-        borderColor: COLOR[role],
-        borderWidth: 1,
-        pointRadius: 3.5,
-        pointHoverRadius: 6,
-      };
+  /** Fan points that share the same (months, events) on a ring around the true value. */
+  function radialLayout(rows, thr) {
+    const groups = new Map();
+    rows.forEach((s) => {
+      const mx = s[thr].months;
+      const ey = s.events;
+      const key = mx + '|' + ey;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(s);
     });
+
+    const byRole = { Leader: [], Follower: [] };
+    groups.forEach((list, key) => {
+      const [mx, ey] = key.split('|').map(Number);
+      list.sort((a, b) => {
+        const id = String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
+        return id || a.role.localeCompare(b.role);
+      });
+      const n = list.length;
+      list.forEach((s, i) => {
+        let x = mx;
+        let y = ey;
+        if (n > 1) {
+          const perRing = 10;
+          const ring = Math.floor(i / perRing);
+          const idx = i % perRing;
+          const onRing = Math.min(perRing, n - ring * perRing);
+          const angle = (2 * Math.PI * idx) / onRing - Math.PI / 2;
+          const r = 0.28 + ring * 0.32;
+          /* Slightly anisotropic so the ring reads rounder on typical chart aspect */
+          x = mx + Math.cos(angle) * r * 0.95;
+          y = Math.max(0, ey + Math.sin(angle) * r * 0.42);
+        }
+        byRole[s.role].push({ x, y, raw: s });
+      });
+    });
+    return byRole;
+  }
+
+  function scatterDatasets(rows, thr) {
+    const laid = radialLayout(rows, thr);
+    const groups = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
+    return groups.map((role) => ({
+      label: role,
+      data: laid[role] || [],
+      backgroundColor: COLOR_FILL[role],
+      borderColor: COLOR[role],
+      borderWidth: 0.5,
+      pointRadius: 1.6,
+      pointHoverRadius: 4,
+      pointHitRadius: 5,
+    }));
   }
 
   function densityDatasets(rows, thr) {
@@ -457,15 +444,16 @@
         x: c.x,
         y: c.y,
         n: c.n,
-        r: 4 + 18 * (c.n / maxN),
+        r: 3 + 14 * (c.n / maxN),
       })),
       backgroundColor: cells.map((c) => {
-        const a = 0.25 + 0.65 * (c.n / maxN);
-        return `rgba(37, 99, 235, ${a})`;
+        const a = 0.22 + 0.6 * (c.n / maxN);
+        return `rgba(111, 175, 142, ${a})`;
       }),
       borderWidth: 0,
-      pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 6,
-      pointHoverRadius: (ctx) => ((ctx.raw && ctx.raw.r) || 6) + 2,
+      pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 5,
+      pointHoverRadius: (ctx) => ((ctx.raw && ctx.raw.r) || 5) + 2,
+      pointHitRadius: 8,
     }];
   }
 
@@ -480,9 +468,22 @@
         maintainAspectRatio: false,
         parsing: false,
         animation: false,
+        interaction: {
+          mode: 'nearest',
+          intersect: true,
+          axis: 'xy',
+        },
         plugins: {
           legend: { display: false },
           tooltip: {
+            enabled: true,
+            mode: 'nearest',
+            intersect: true,
+            displayColors: false,
+            filter(item, index) {
+              /* One dancer only — never stack multi-point tooltips */
+              return index === 0;
+            },
             callbacks: {
               title(items) {
                 const raw = items[0]?.raw;
@@ -555,21 +556,75 @@
     chart.update('none');
   }
 
+  function fillYearSelects(years, fromDefault, toDefault) {
+    const fromEl = document.getElementById('yearFromSelect');
+    const toEl = document.getElementById('yearToSelect');
+    const opts = years.map((y) => `<option value="${y}">${y}</option>`).join('');
+    fromEl.innerHTML = opts;
+    toEl.innerHTML = opts;
+    fromEl.value = String(fromDefault);
+    toEl.value = String(toDefault);
+    state.yearFrom = fromDefault;
+    state.yearTo = toDefault;
+    if (window.WsdcSelect) {
+      WsdcSelect.refresh(fromEl);
+      WsdcSelect.refresh(toEl);
+    }
+  }
+
+  function syncYearRange(changed) {
+    let from = Number(document.getElementById('yearFromSelect').value);
+    let to = Number(document.getElementById('yearToSelect').value);
+    if (from > to) {
+      if (changed === 'from') to = from;
+      else from = to;
+      document.getElementById('yearFromSelect').value = String(from);
+      document.getElementById('yearToSelect').value = String(to);
+      if (window.WsdcSelect) {
+        WsdcSelect.refresh(document.getElementById('yearFromSelect'));
+        WsdcSelect.refresh(document.getElementById('yearToSelect'));
+      }
+    }
+    state.yearFrom = from;
+    state.yearTo = to;
+  }
+
+  function collectDoneYears(data) {
+    const set = new Set();
+    data.spells.forEach((s) => {
+      ['allowed', 'required'].forEach((k) => {
+        const y = doneYear(s[k]);
+        if (y != null) set.add(y);
+      });
+    });
+    return [...set].sort((a, b) => a - b);
+  }
+
   async function init() {
-    buildDivisionSeg();
-    wireSeg('thresholdSeg', 'data-thr', 'threshold');
-    wireSeg('roleSeg', 'data-role', 'role');
-    wireSeg('modeSeg', 'data-mode', 'mode');
-    const range = document.getElementById('yearsRange');
-    range.addEventListener('input', () => {
-      state.years = Number(range.value);
-      document.getElementById('yearsLabel').textContent = String(state.years);
+    const bindSelect = (id, key) => {
+      const el = document.getElementById(id);
+      el.addEventListener('change', () => {
+        state[key] = el.value;
+        resetZoomIfAny();
+        render();
+      });
+    };
+    bindSelect('divisionSelect', 'division');
+    bindSelect('thresholdSelect', 'threshold');
+    bindSelect('roleSelect', 'role');
+    bindSelect('modeSelect', 'mode');
+
+    document.getElementById('yearFromSelect').addEventListener('change', () => {
+      syncYearRange('from');
       resetZoomIfAny();
       render();
     });
-    document.getElementById('resetZoom').addEventListener('click', () => {
+    document.getElementById('yearToSelect').addEventListener('change', () => {
+      syncYearRange('to');
       resetZoomIfAny();
+      render();
     });
+    document.getElementById('resetZoom').addEventListener('click', () => resetZoomIfAny());
 
     const res = await fetch('static/data/time_in_division_spells.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -577,6 +632,16 @@
     state.binM = Number(state.data.bin_months) || 6;
     state.binE = Number(state.data.bin_events) || 2;
     document.getElementById('asOfNote').textContent = state.data.data_as_of;
+
+    const years = collectDoneYears(state.data);
+    const asOfYear = Number(String(state.data.data_as_of).slice(0, 4));
+    const maxY = years.length ? years[years.length - 1] : asOfYear;
+    const minY = years.length ? years[0] : asOfYear;
+    const defaultTo = Math.min(maxY, asOfYear);
+    const defaultFrom = Math.max(minY, defaultTo - 4);
+    fillYearSelects(years.length ? years : [asOfYear], defaultFrom, defaultTo);
+
+    if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
     render();
   }
 
