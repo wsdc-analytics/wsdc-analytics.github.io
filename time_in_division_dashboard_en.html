@@ -297,9 +297,9 @@
   <script src="static/js/wsdc-select.js"></script>
   <script>
 (function () {
-  /* Bright, readable at small point size */
-  const COLOR = { Leader: '#0F9F6E', Follower: '#E85D04' };
-  const COLOR_FILL = { Leader: 'rgba(15, 159, 110, 0.85)', Follower: 'rgba(232, 93, 4, 0.85)' };
+  /* #588EC1 + matched cool green (same lightness / muted chroma) */
+  const COLOR = { Leader: '#588EC1', Follower: '#54B688' };
+  const COLOR_FILL = { Leader: 'rgba(88, 142, 193, 0.88)', Follower: 'rgba(84, 182, 136, 0.88)' };
 
   const state = {
     data: null,
@@ -486,7 +486,7 @@
       })),
       backgroundColor: cells.map((c) => {
         const a = 0.28 + 0.62 * (c.n / maxN);
-        return `rgba(15, 159, 110, ${a})`;
+        return `rgba(88, 142, 193, ${a})`;
       }),
       borderWidth: 0,
       pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 5,
