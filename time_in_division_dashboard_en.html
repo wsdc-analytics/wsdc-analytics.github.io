@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Time in division: months from first point to may/must threshold vs career events with a point." />
+  <title>Time in division | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+  <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .content {
+      flex: 1;
+      min-height: 0;
+      max-width: var(--wsdc-width-chrome, 1200px);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: var(--wsdc-space-3, 12px) var(--wsdc-space-4, 16px) 16px;
+      gap: 10px;
+      overflow: hidden;
+    }
+    .page-head h1 {
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      letter-spacing: -0.02em;
+    }
+    .page-head p {
+      font-size: 0.85rem;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      margin-top: 2px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: flex-end;
+    }
+    .ctrl { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .ctrl label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .seg button {
+      border: 0;
+      background: transparent;
+      padding: 7px 10px;
+      font: 600 12px/1.2 Inter, system-ui, sans-serif;
+      color: var(--wsdc-color-text, #1f2937);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .seg button + button { border-left: 1px solid var(--wsdc-color-border, #d1d5db); }
+    .seg button[aria-pressed="true"] {
+      background: var(--wsdc-color-brand-accent, #2563eb);
+      color: #fff;
+    }
+    .ctrl input[type="range"] { width: 140px; }
+    .years-val { font-size: 12px; font-weight: 600; color: var(--wsdc-color-text, #1f2937); }
+    .ghost-btn {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font: 600 12px Inter, system-ui, sans-serif;
+      cursor: pointer;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .ghost-btn:hover { border-color: #9ca3af; }
+    .kpis {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .kpi {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      min-width: 110px;
+    }
+    .kpi .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .kpi .val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .swatch {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+    .viz-card {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: var(--wsdc-radius-lg, 10px);
+      background: #fff;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 10px 4px;
+      position: relative;
+    }
+    .chart-wrap {
+      flex: 1;
+      min-height: 280px;
+      position: relative;
+    }
+    .empty {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 14px;
+      pointer-events: none;
+    }
+    .empty.show { display: flex; }
+    details.method {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    details.method summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    details.method .body {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.5;
+    }
+    details.method ul { padding-left: 18px; margin-top: 4px; }
+    @media (max-width: 900px) {
+      html, body { height: auto; overflow: auto; }
+      .page { height: auto; min-height: 100dvh; overflow: visible; }
+      .content { overflow: visible; }
+      .viz-card { flex: 0 0 auto; min-height: 420px; }
+      .chart-wrap { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="dash-chrome">
+      <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="time_in_division_dashboard_en.html"></div>
+      <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+    </div>
+
+    <section class="content">
+      <header class="page-head">
+        <h1>Time in division</h1>
+        <p>Months from first point to may/must threshold · events with a point in that division×role (career)</p>
+      </header>
+
+      <div class="controls" role="group" aria-label="Filters">
+        <div class="ctrl">
+          <label>Division</label>
+          <div class="seg" id="divisionSeg" role="tablist"></div>
+        </div>
+        <div class="ctrl">
+          <label>Threshold</label>
+          <div class="seg" id="thresholdSeg">
+            <button type="button" data-thr="allowed" aria-pressed="true">May</button>
+            <button type="button" data-thr="required" aria-pressed="false">Must</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Role</label>
+          <div class="seg" id="roleSeg">
+            <button type="button" data-role="All" aria-pressed="true">All</button>
+            <button type="button" data-role="Leader" aria-pressed="false">Leader</button>
+            <button type="button" data-role="Follower" aria-pressed="false">Follower</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Chart</label>
+          <div class="seg" id="modeSeg">
+            <button type="button" data-mode="scatter" aria-pressed="true">Scatter</button>
+            <button type="button" data-mode="density" aria-pressed="false">Density</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Done in last <span class="years-val" id="yearsLabel">5</span> years</label>
+          <input type="range" id="yearsRange" min="1" max="15" step="1" value="5" />
+        </div>
+        <div class="ctrl">
+          <label>&nbsp;</label>
+          <button type="button" class="ghost-btn" id="resetZoom">Reset zoom</button>
+        </div>
+      </div>
+
+      <div class="kpis" aria-live="polite">
+        <div class="kpi"><div class="lbl">N</div><div class="val" id="kpiN">—</div></div>
+        <div class="kpi"><div class="lbl">Median months</div><div class="val" id="kpiMonths">—</div></div>
+        <div class="kpi"><div class="lbl">Median events</div><div class="val" id="kpiEvents">—</div></div>
+      </div>
+
+      <div class="legend-row" id="legendRow"></div>
+
+      <section class="viz-card" aria-label="Time in division chart">
+        <div class="chart-wrap">
+          <canvas id="chart"></canvas>
+          <div class="empty" id="emptyState">No spells in this filter</div>
+        </div>
+      </section>
+
+      <details class="method">
+        <summary>Methodology</summary>
+        <div class="body">
+          <ul>
+            <li><strong>Spell:</strong> one dancer × division × role (Leader/Follower separately).</li>
+            <li><strong>Start:</strong> first event-month with a point in that spell.</li>
+            <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars uses champions_allowed / champions_required (OR of Champions pts or All-Stars pts).</li>
+            <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics). Day-level start dates are not required.</li>
+            <li><strong>Events (Y):</strong> unique events with a point in that division×role over the whole career.</li>
+            <li><strong>Window:</strong> keep spells whose done date falls in the trailing N years ending at data cut-off (<span id="asOfNote">—</span>).</li>
+            <li><strong>Density bins:</strong> fixed 6 months × 2 events (cell size stated here for comparability).</li>
+            <li>Only completed spells (threshold already reached) are plotted.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <script src="static/js/site-chrome.js" defer></script>
+  <script>
+(function () {
+  const COLOR = { Leader: '#2563eb', Follower: '#c2410c' };
+  const DIVISIONS = ['Novice', 'Intermediate', 'Advanced', 'All-Stars'];
+  const BIN_M = 6;
+  const BIN_E = 2;
+  const JITTER = 0.35;
+
+  const state = {
+    data: null,
+    division: 'Novice',
+    threshold: 'allowed',
+    role: 'All',
+    mode: 'scatter',
+    years: 5,
+    chart: null,
+  };
+
+  function hash01(str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0) / 4294967295;
+  }
+
+  function jitter(id, axis) {
+    const u = hash01(id + ':' + axis);
+    return (u - 0.5) * 2 * JITTER;
+  }
+
+  function parseYm(s) {
+    if (!s) return null;
+    const [y, m] = s.split('-').map(Number);
+    if (!y || !m) return null;
+    return y * 12 + m;
+  }
+
+  function median(arr) {
+    if (!arr.length) return null;
+    const a = arr.slice().sort((x, y) => x - y);
+    const mid = Math.floor(a.length / 2);
+    return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+  }
+
+  function windowBounds(dataAsOf, years) {
+    const end = parseYm(dataAsOf.slice(0, 7));
+    if (end == null) return null;
+    return { end, start: end - years * 12 + 1 };
+  }
+
+  function filteredRows() {
+    const d = state.data;
+    if (!d) return [];
+    const bounds = windowBounds(d.data_as_of, state.years);
+    const thr = state.threshold;
+    return d.spells.filter((s) => {
+      if (s.division !== state.division) return false;
+      if (state.role !== 'All' && s.role !== state.role) return false;
+      const hit = s[thr];
+      if (!hit) return false;
+      const done = parseYm(hit.done_ym);
+      if (done == null || !bounds) return false;
+      return done >= bounds.start && done <= bounds.end;
+    });
+  }
+
+  function setSeg(container, attr, value) {
+    container.querySelectorAll('button').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.getAttribute(attr) === value));
+    });
+  }
+
+  function buildDivisionSeg() {
+    const el = document.getElementById('divisionSeg');
+    el.innerHTML = DIVISIONS.map((div) =>
+      `<button type="button" data-div="${div}" aria-pressed="${div === state.division}">${div}</button>`
+    ).join('');
+    el.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-div]');
+      if (!btn) return;
+      state.division = btn.getAttribute('data-div');
+      setSeg(el, 'data-div', state.division);
+      render();
+    });
+  }
+
+  function wireSeg(id, attr, key) {
+    const el = document.getElementById(id);
+    el.addEventListener('click', (e) => {
+      const btn = e.target.closest(`button[${attr}]`);
+      if (!btn) return;
+      state[key] = btn.getAttribute(attr);
+      setSeg(el, attr, state[key]);
+      render();
+    });
+  }
+
+  function updateKpis(rows, thr) {
+    const months = rows.map((s) => s[thr].months);
+    const events = rows.map((s) => s.events);
+    document.getElementById('kpiN').textContent = String(rows.length);
+    const mm = median(months);
+    const me = median(events);
+    document.getElementById('kpiMonths').textContent = mm == null ? '—' : String(Math.round(mm * 10) / 10);
+    document.getElementById('kpiEvents').textContent = me == null ? '—' : String(Math.round(me * 10) / 10);
+  }
+
+  function updateLegend() {
+    const row = document.getElementById('legendRow');
+    if (state.mode === 'density') {
+      row.innerHTML = 'Density: darker / larger = more dancers in a 6-month × 2-event cell';
+      return;
+    }
+    if (state.role === 'All') {
+      row.innerHTML =
+        `<span><span class="swatch" style="background:${COLOR.Leader}"></span>Leader</span>` +
+        `<span><span class="swatch" style="background:${COLOR.Follower}"></span>Follower</span>` +
+        `<span>Hover: WSDC ID · name · events · months</span>`;
+    } else {
+      row.innerHTML =
+        `<span><span class="swatch" style="background:${COLOR[state.role]}"></span>${state.role}</span>` +
+        `<span>Hover: WSDC ID · name · events · months</span>`;
+    }
+  }
+
+  function scatterDatasets(rows, thr) {
+    const groups = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
+    return groups.map((role) => {
+      const pts = rows
+        .filter((s) => s.role === role)
+        .map((s) => {
+          const months = s[thr].months;
+          const events = s.events;
+          return {
+            x: months + jitter(s.id + s.role + s.division, 'x'),
+            y: Math.max(0, events + jitter(s.id + s.role + s.division, 'y')),
+            raw: s,
+          };
+        });
+      return {
+        label: role,
+        data: pts,
+        backgroundColor: COLOR[role] + '99',
+        borderColor: COLOR[role],
+        borderWidth: 1,
+        pointRadius: 3.5,
+        pointHoverRadius: 6,
+      };
+    });
+  }
+
+  function densityDatasets(rows, thr) {
+    const bins = new Map();
+    rows.forEach((s) => {
+      const mx = s[thr].months;
+      const ey = s.events;
+      const bx = Math.floor(mx / BIN_M) * BIN_M;
+      const by = Math.floor(ey / BIN_E) * BIN_E;
+      const key = bx + ':' + by;
+      const cur = bins.get(key) || { x: bx + BIN_M / 2, y: by + BIN_E / 2, n: 0 };
+      cur.n += 1;
+      bins.set(key, cur);
+    });
+    const cells = [...bins.values()];
+    const maxN = cells.reduce((m, c) => Math.max(m, c.n), 1);
+    return [{
+      label: 'Density',
+      data: cells.map((c) => ({
+        x: c.x,
+        y: c.y,
+        n: c.n,
+        r: 4 + 18 * (c.n / maxN),
+      })),
+      backgroundColor: cells.map((c) => {
+        const a = 0.25 + 0.65 * (c.n / maxN);
+        return `rgba(37, 99, 235, ${a})`;
+      }),
+      borderWidth: 0,
+      pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 6,
+      pointHoverRadius: (ctx) => ((ctx.raw && ctx.raw.r) || 6) + 2,
+    }];
+  }
+
+  function ensureChart() {
+    if (state.chart) return state.chart;
+    const ctx = document.getElementById('chart').getContext('2d');
+    state.chart = new Chart(ctx, {
+      type: 'scatter',
+      data: { datasets: [] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        parsing: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title(items) {
+                const raw = items[0]?.raw;
+                if (!raw) return '';
+                if (raw.raw) {
+                  const s = raw.raw;
+                  return `${s.name} · ${s.id}`;
+                }
+                if (raw.n != null) return `${raw.n} dancers in bin`;
+                return '';
+              },
+              label(item) {
+                const raw = item.raw;
+                if (raw?.raw) {
+                  const s = raw.raw;
+                  const thr = state.threshold;
+                  const hit = s[thr];
+                  return [
+                    `Role: ${s.role}`,
+                    `Months to ${thr === 'allowed' ? 'may' : 'must'}: ${hit.months}`,
+                    `Events: ${s.events}`,
+                  ];
+                }
+                if (raw?.n != null) {
+                  return [
+                    `Bin center ≈ ${Math.round(raw.x)} mo × ${Math.round(raw.y)} events`,
+                    `Count: ${raw.n}`,
+                  ];
+                }
+                return '';
+              },
+            },
+          },
+          zoom: {
+            pan: { enabled: true, mode: 'xy' },
+            zoom: {
+              wheel: { enabled: true },
+              pinch: { enabled: true },
+              mode: 'xy',
+            },
+          },
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Months to threshold' },
+            grid: { color: 'rgba(15,23,42,0.06)' },
+            beginAtZero: true,
+          },
+          y: {
+            title: { display: true, text: 'Events with a point (career, division×role)' },
+            grid: { color: 'rgba(15,23,42,0.06)' },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+    return state.chart;
+  }
+
+  function render() {
+    const rows = filteredRows();
+    const thr = state.threshold;
+    updateKpis(rows, thr);
+    updateLegend();
+    document.getElementById('emptyState').classList.toggle('show', rows.length === 0);
+    const chart = ensureChart();
+    chart.data.datasets = state.mode === 'scatter'
+      ? scatterDatasets(rows, thr)
+      : densityDatasets(rows, thr);
+    chart.update('none');
+  }
+
+  async function init() {
+    buildDivisionSeg();
+    wireSeg('thresholdSeg', 'data-thr', 'threshold');
+    wireSeg('roleSeg', 'data-role', 'role');
+    wireSeg('modeSeg', 'data-mode', 'mode');
+    const range = document.getElementById('yearsRange');
+    range.addEventListener('input', () => {
+      state.years = Number(range.value);
+      document.getElementById('yearsLabel').textContent = String(state.years);
+      render();
+    });
+    document.getElementById('resetZoom').addEventListener('click', () => {
+      if (state.chart) state.chart.resetZoom();
+    });
+
+    const res = await fetch('static/data/time_in_division_spells.json');
+    state.data = await res.json();
+    document.getElementById('asOfNote').textContent = state.data.data_as_of;
+    render();
+  }
+
+  init().catch((err) => {
+    document.getElementById('emptyState').textContent = 'Failed to load data';
+    document.getElementById('emptyState').classList.add('show');
+    console.error(err);
+  });
+})();
+  </script>
+</body>
+</html>
