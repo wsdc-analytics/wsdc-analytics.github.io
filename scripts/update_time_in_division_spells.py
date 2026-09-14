@@ -166,20 +166,25 @@ def find_advanced_crossings(
     t0: tuple[int, int],
     rules: dict,
 ) -> dict[str, dict]:
+    """Cross allowed/required using the counting model active at each event month.
+
+    Cumulative score always includes all Advanced points from first point forward,
+    so an era switch (rolling → cumulative) does not drop earlier points.
+    Rolling eras still evaluate the 36-month window at each event.
+    """
     reached: dict[str, dict] = {}
     cum = 0.0
     for e in events:
         if e["div"] != "Advanced" or e["ym"] < t0:
             continue
+        cum += e["pts"]
         th = threshold_for_year(rules, e["year"], "Advanced")
         if not th or th.get("allowed") is None:
             continue
         counting = th.get("counting", "cumulative")
-        use_rolling = counting == "rolling_36mo"
-        if use_rolling:
+        if counting == "rolling_36mo":
             score = rolling_sum(events, "Advanced", e["ym"], 36)
         else:
-            cum += e["pts"]
             score = cum
         months = months_between(t0, e["ym"])
         for kind in ("allowed", "required"):
@@ -351,7 +356,6 @@ def main() -> None:
 
     payload = {
         "data_as_of": data_as_of,
-        "source_dir": str(source),
         "rules_ref": "rules_advancement_thresholds.json",
         "bin_months": 6,
         "bin_events": 2,

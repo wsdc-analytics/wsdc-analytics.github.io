@@ -274,8 +274,6 @@
 (function () {
   const COLOR = { Leader: '#2563eb', Follower: '#c2410c' };
   const DIVISIONS = ['Novice', 'Intermediate', 'Advanced', 'All-Stars'];
-  const BIN_M = 6;
-  const BIN_E = 2;
   const JITTER = 0.35;
 
   const state = {
@@ -286,6 +284,8 @@
     mode: 'scatter',
     years: 5,
     chart: null,
+    binM: 6,
+    binE: 2,
   };
 
   function hash01(str) {
@@ -344,6 +344,12 @@
     });
   }
 
+  function resetZoomIfAny() {
+    if (state.chart && typeof state.chart.resetZoom === 'function') {
+      state.chart.resetZoom();
+    }
+  }
+
   function buildDivisionSeg() {
     const el = document.getElementById('divisionSeg');
     el.innerHTML = DIVISIONS.map((div) =>
@@ -354,6 +360,7 @@
       if (!btn) return;
       state.division = btn.getAttribute('data-div');
       setSeg(el, 'data-div', state.division);
+      resetZoomIfAny();
       render();
     });
   }
@@ -365,6 +372,7 @@
       if (!btn) return;
       state[key] = btn.getAttribute(attr);
       setSeg(el, attr, state[key]);
+      resetZoomIfAny();
       render();
     });
   }
@@ -382,19 +390,23 @@
   function updateLegend() {
     const row = document.getElementById('legendRow');
     if (state.mode === 'density') {
-      row.innerHTML = 'Density: darker / larger = more dancers in a 6-month × 2-event cell';
+      row.textContent =
+        `Density: darker / larger = more dancers in a ${state.binM}-month × ${state.binE}-event cell`;
       return;
     }
-    if (state.role === 'All') {
-      row.innerHTML =
-        `<span><span class="swatch" style="background:${COLOR.Leader}"></span>Leader</span>` +
-        `<span><span class="swatch" style="background:${COLOR.Follower}"></span>Follower</span>` +
-        `<span>Hover: WSDC ID · name · events · months</span>`;
-    } else {
-      row.innerHTML =
-        `<span><span class="swatch" style="background:${COLOR[state.role]}"></span>${state.role}</span>` +
-        `<span>Hover: WSDC ID · name · events · months</span>`;
-    }
+    row.replaceChildren();
+    const roles = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
+    roles.forEach((role) => {
+      const span = document.createElement('span');
+      const sw = document.createElement('span');
+      sw.className = 'swatch';
+      sw.style.background = COLOR[role];
+      span.append(sw, document.createTextNode(role));
+      row.appendChild(span);
+    });
+    const tip = document.createElement('span');
+    tip.textContent = 'Hover: WSDC ID · name · events · months';
+    row.appendChild(tip);
   }
 
   function scatterDatasets(rows, thr) {
@@ -425,13 +437,15 @@
 
   function densityDatasets(rows, thr) {
     const bins = new Map();
+    const binM = state.binM;
+    const binE = state.binE;
     rows.forEach((s) => {
       const mx = s[thr].months;
       const ey = s.events;
-      const bx = Math.floor(mx / BIN_M) * BIN_M;
-      const by = Math.floor(ey / BIN_E) * BIN_E;
+      const bx = Math.floor(mx / binM) * binM;
+      const by = Math.floor(ey / binE) * binE;
       const key = bx + ':' + by;
-      const cur = bins.get(key) || { x: bx + BIN_M / 2, y: by + BIN_E / 2, n: 0 };
+      const cur = bins.get(key) || { x: bx + binM / 2, y: by + binE / 2, n: 0 };
       cur.n += 1;
       bins.set(key, cur);
     });
@@ -550,14 +564,18 @@
     range.addEventListener('input', () => {
       state.years = Number(range.value);
       document.getElementById('yearsLabel').textContent = String(state.years);
+      resetZoomIfAny();
       render();
     });
     document.getElementById('resetZoom').addEventListener('click', () => {
-      if (state.chart) state.chart.resetZoom();
+      resetZoomIfAny();
     });
 
     const res = await fetch('static/data/time_in_division_spells.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
+    state.binM = Number(state.data.bin_months) || 6;
+    state.binE = Number(state.data.bin_events) || 2;
     document.getElementById('asOfNote').textContent = state.data.data_as_of;
     render();
   }
