@@ -28,6 +28,12 @@
       gap: 10px;
       overflow: hidden;
     }
+    .page-head {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     .page-head h1 {
       font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
       font-size: 1.35rem;
@@ -35,10 +41,11 @@
       color: var(--wsdc-color-text-strong, #0b1221);
       letter-spacing: -0.02em;
     }
-    .page-head p {
-      font-size: 0.85rem;
+    .page-head .subtitle {
+      font-size: 0.88rem;
+      line-height: 1.45;
       color: var(--wsdc-color-text-muted, #4b5563);
-      margin-top: 2px;
+      max-width: 62rem;
     }
     .tid-filters {
       display: flex;
@@ -101,15 +108,17 @@
     }
     .kpis {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 8px;
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
     }
     .kpi {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 8px;
-      padding: 8px 12px;
+      padding: 10px 12px;
       background: var(--wsdc-color-surface-soft, #f8fafc);
-      min-width: 110px;
+      width: 100%;
       text-align: left;
       font: inherit;
       color: inherit;
@@ -133,19 +142,23 @@
       color: var(--wsdc-color-text-muted, #4b5563);
     }
     .kpi .val {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 700;
       font-family: 'DM Sans', sans-serif;
       color: var(--wsdc-color-text-strong, #0b1221);
+      margin-top: 2px;
     }
     .legend-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
       font-size: 12px;
       color: var(--wsdc-color-text-muted, #4b5563);
+      flex-shrink: 0;
+      min-height: 1.1rem;
     }
+    .legend-row:empty { display: none; }
     .swatch {
       display: inline-block;
       width: 10px;
@@ -154,9 +167,18 @@
       margin-right: 5px;
       vertical-align: -1px;
     }
+    .viz-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: stretch;
+    }
     .viz-card {
       background: transparent;
       flex: 1;
+      min-width: 0;
       min-height: 0;
       display: flex;
       flex-direction: column;
@@ -322,6 +344,20 @@
       html, body { height: auto; overflow: auto; }
       .page { height: auto; min-height: 100dvh; overflow: visible; }
       .content { overflow: visible; }
+      .viz-stage {
+        flex-direction: column;
+      }
+      .kpis {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: auto;
+        flex: 0 0 auto;
+      }
+      .kpi {
+        flex: 1 1 7.5rem;
+        min-width: 7.5rem;
+        width: auto;
+      }
       .viz-card { flex: 0 0 auto; min-height: 420px; }
       .chart-wrap, .table-wrap { min-height: 360px; }
     }
@@ -337,111 +373,112 @@
     <section class="content">
       <header class="page-head">
         <h1>Time in division</h1>
-        <p>Months from first point to may/must threshold · events with a point in that division×role (career)</p>
+        <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against career events with a point in that division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
+        <div class="tid-filters" role="group" aria-label="Filters">
+          <div class="filter-field">
+            <label class="filter-label" for="divisionSelect" id="divisionLabel">Division</label>
+            <select id="divisionSelect" class="wsdc-select" aria-labelledby="divisionLabel">
+              <option value="Novice" selected>Novice</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="All-Stars">All-Stars</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label class="filter-label" for="thresholdSelect" id="thresholdLabel">Threshold</label>
+            <select id="thresholdSelect" class="wsdc-select" aria-labelledby="thresholdLabel">
+              <option value="allowed" selected>May</option>
+              <option value="required">Must</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label class="filter-label" for="roleSelect" id="roleLabel">Role</label>
+            <select id="roleSelect" class="wsdc-select" aria-labelledby="roleLabel">
+              <option value="All" selected>All</option>
+              <option value="Leader">Leader</option>
+              <option value="Follower">Follower</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label class="filter-label" for="modeSelect" id="modeLabel">Chart</label>
+            <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
+              <option value="scatter" selected>Scatter</option>
+              <option value="density">Density</option>
+              <option value="dynamics">Dynamics</option>
+              <option value="table">Table</option>
+            </select>
+          </div>
+          <div class="filter-field" id="yearFromField">
+            <label class="filter-label" for="yearFromSelect" id="yearFromLabel">From year</label>
+            <select id="yearFromSelect" class="wsdc-select" aria-labelledby="yearFromLabel"></select>
+          </div>
+          <div class="filter-field" id="yearToField">
+            <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
+            <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
+          </div>
+        </div>
       </header>
 
-      <div class="tid-filters" role="group" aria-label="Filters">
-        <div class="filter-field">
-          <label class="filter-label" for="divisionSelect" id="divisionLabel">Division</label>
-          <select id="divisionSelect" class="wsdc-select" aria-labelledby="divisionLabel">
-            <option value="Novice" selected>Novice</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-            <option value="All-Stars">All-Stars</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label class="filter-label" for="thresholdSelect" id="thresholdLabel">Threshold</label>
-          <select id="thresholdSelect" class="wsdc-select" aria-labelledby="thresholdLabel">
-            <option value="allowed" selected>May</option>
-            <option value="required">Must</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label class="filter-label" for="roleSelect" id="roleLabel">Role</label>
-          <select id="roleSelect" class="wsdc-select" aria-labelledby="roleLabel">
-            <option value="All" selected>All</option>
-            <option value="Leader">Leader</option>
-            <option value="Follower">Follower</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label class="filter-label" for="modeSelect" id="modeLabel">Chart</label>
-          <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
-            <option value="scatter" selected>Scatter</option>
-            <option value="density">Density</option>
-            <option value="dynamics">Dynamics</option>
-            <option value="table">Table</option>
-          </select>
-        </div>
-        <div class="filter-field" id="yearFromField">
-          <label class="filter-label" for="yearFromSelect" id="yearFromLabel">From year</label>
-          <select id="yearFromSelect" class="wsdc-select" aria-labelledby="yearFromLabel"></select>
-        </div>
-        <div class="filter-field" id="yearToField">
-          <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
-          <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
-        </div>
-      </div>
+      <div class="legend-row" id="legendRow" aria-label="Legend"></div>
 
-      <div class="kpis" id="kpiRow" aria-live="polite">
-        <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
-          <div class="lbl">N</div>
-          <div class="val" id="kpiN">—</div>
-        </button>
-        <button type="button" class="kpi" data-metric="months" id="kpiBtnMonths">
-          <div class="lbl">Median months</div>
-          <div class="val" id="kpiMonths">—</div>
-        </button>
-        <button type="button" class="kpi" data-metric="events" id="kpiBtnEvents">
-          <div class="lbl">Median events</div>
-          <div class="val" id="kpiEvents">—</div>
-        </button>
-        <button type="button" class="kpi" data-metric="both" id="kpiBtnBoth"
-          title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
-          <div class="lbl">≤ both medians</div>
-          <div class="val" id="kpiMedianBox">—</div>
-        </button>
-      </div>
-
-      <div class="legend-row" id="legendRow"></div>
-
-      <section class="viz-card" aria-label="Time in division visualization">
-        <div class="chart-wrap is-active" id="chartWrap">
-          <canvas id="chart"></canvas>
-          <div class="empty" id="emptyState">No spells in this filter</div>
+      <div class="viz-stage">
+        <div class="kpis" id="kpiRow" aria-live="polite">
+          <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
+            <div class="lbl">N</div>
+            <div class="val" id="kpiN">—</div>
+          </button>
+          <button type="button" class="kpi" data-metric="months" id="kpiBtnMonths">
+            <div class="lbl">Median months</div>
+            <div class="val" id="kpiMonths">—</div>
+          </button>
+          <button type="button" class="kpi" data-metric="events" id="kpiBtnEvents">
+            <div class="lbl">Median events</div>
+            <div class="val" id="kpiEvents">—</div>
+          </button>
+          <button type="button" class="kpi" data-metric="both" id="kpiBtnBoth"
+            title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
+            <div class="lbl">≤ both medians</div>
+            <div class="val" id="kpiMedianBox">—</div>
+          </button>
         </div>
-        <div class="table-wrap" id="tableWrap">
-          <div class="table-toolbar">
-            <div class="table-search-wrap">
-              <input type="search" id="tableSearch" placeholder="Find dancer (name or WSDC ID)" autocomplete="off" aria-label="Find dancer in table" />
-              <div class="table-suggest" id="tableSuggest" role="listbox" aria-label="Search suggestions"></div>
+
+        <section class="viz-card" aria-label="Time in division visualization">
+          <div class="chart-wrap is-active" id="chartWrap">
+            <canvas id="chart"></canvas>
+            <div class="empty" id="emptyState">No spells in this filter</div>
+          </div>
+          <div class="table-wrap" id="tableWrap">
+            <div class="table-toolbar">
+              <div class="table-search-wrap">
+                <input type="search" id="tableSearch" placeholder="Find dancer (name or WSDC ID)" autocomplete="off" aria-label="Find dancer in table" />
+                <div class="table-suggest" id="tableSuggest" role="listbox" aria-label="Search suggestions"></div>
+              </div>
+              <button type="button" class="ghost-btn" id="csvDownload">Download CSV</button>
+              <span class="table-page-info" id="tablePageInfo">—</span>
+              <button type="button" class="ghost-btn" id="tablePrev">Prev</button>
+              <button type="button" class="ghost-btn" id="tableNext">Next</button>
             </div>
-            <button type="button" class="ghost-btn" id="csvDownload">Download CSV</button>
-            <span class="table-page-info" id="tablePageInfo">—</span>
-            <button type="button" class="ghost-btn" id="tablePrev">Prev</button>
-            <button type="button" class="ghost-btn" id="tableNext">Next</button>
+            <div class="table-scroll" id="tableScroll">
+              <table class="tid-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Division</th>
+                    <th>First ym</th>
+                    <th>Done ym</th>
+                    <th>Months</th>
+                    <th>Events</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+            <div class="empty" id="tableEmpty">No spells in this filter</div>
           </div>
-          <div class="table-scroll" id="tableScroll">
-            <table class="tid-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Role</th>
-                  <th>Division</th>
-                  <th>First ym</th>
-                  <th>Done ym</th>
-                  <th>Months</th>
-                  <th>Events</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody"></tbody>
-            </table>
-          </div>
-          <div class="empty" id="tableEmpty">No spells in this filter</div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <details class="method">
         <summary>Methodology</summary>
@@ -453,9 +490,11 @@
             <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics).</li>
             <li><strong>Events:</strong> unique events with a point in that division×role over the whole career.</li>
             <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To. Data cut-off: <span id="asOfNote">—</span>.</li>
+            <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events. KPI “≤ both medians” = share in the lower-left of the median cross.</li>
+            <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
             <li><strong>Dynamics:</strong> line of one KPI by calendar year of done (full period; From/To hidden). Click a KPI card to choose the series (resets to N when entering Dynamics). Years with N = 0 create a gap. Median months / median events / % ≤ both require N ≥ 10 in that year.</li>
-            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; typeahead jumps to a row without filtering; CSV exports the full filtered set.</li>
-            <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range.</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; typeahead jumps to a row without filtering; CSV exports the full filtered set (includes threshold).</li>
+            <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
         </div>
       </details>
@@ -620,30 +659,26 @@
 
   function updateLegend() {
     const row = document.getElementById('legendRow');
+    row.replaceChildren();
+    if (state.mode === 'table') return;
     if (state.mode === 'density') {
-      row.textContent =
-        `Density: darker / larger = more dancers in a ${state.binM}-month × ${state.binE}-event cell · dashed = medians`;
+      const span = document.createElement('span');
+      const sw = document.createElement('span');
+      sw.className = 'swatch';
+      sw.style.background = 'rgba(99, 102, 241, 0.75)';
+      span.append(sw, document.createTextNode('Density'));
+      row.appendChild(span);
       return;
     }
     if (state.mode === 'dynamics') {
-      row.replaceChildren();
       const sw = document.createElement('span');
       const dot = document.createElement('span');
       dot.className = 'swatch';
-      const lineColor = state.role === 'All' ? COLOR.All : COLOR[state.role];
-      dot.style.background = lineColor;
-      sw.append(dot, document.createTextNode(`${METRIC_LABEL[state.metric]} by done year`));
+      dot.style.background = state.role === 'All' ? COLOR.All : COLOR[state.role];
+      sw.append(dot, document.createTextNode(METRIC_LABEL[state.metric]));
       row.appendChild(sw);
-      const tip = document.createElement('span');
-      tip.textContent = 'Click a KPI to change the series · gaps when N = 0 (or N < 10 for medians / %)';
-      row.appendChild(tip);
       return;
     }
-    if (state.mode === 'table') {
-      row.textContent = 'Table: months ↑ · events ↑ · name · light role tint · search jumps to row · CSV = full filter set';
-      return;
-    }
-    row.replaceChildren();
     const roles = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
     roles.forEach((role) => {
       const span = document.createElement('span');
@@ -653,9 +688,6 @@
       span.append(sw, document.createTextNode(role));
       row.appendChild(span);
     });
-    const tip = document.createElement('span');
-    tip.textContent = 'Hover: one dancer · rings · dashed = medians · KPI “≤ both medians” = lower-left share';
-    row.appendChild(tip);
   }
 
   function radialLayout(rows, thr) {
