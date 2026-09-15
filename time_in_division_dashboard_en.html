@@ -40,7 +40,6 @@
       color: var(--wsdc-color-text-muted, #4b5563);
       margin-top: 2px;
     }
-    /* Calendar-like compact filters: centered labels, no field frames */
     .tid-filters {
       display: flex;
       flex-wrap: wrap;
@@ -57,6 +56,7 @@
       min-width: 0;
       align-items: stretch;
     }
+    .tid-filters .filter-field.is-hidden { display: none; }
     .tid-filters .filter-label {
       display: block;
       width: 100%;
@@ -73,22 +73,13 @@
       width: var(--wsdc-dd-width, 7.5rem);
       min-width: 0;
     }
-    .tid-filters .filter-field:has(#divisionSelect) {
-      --wsdc-dd-width: 9rem;
-    }
+    .tid-filters .filter-field:has(#divisionSelect) { --wsdc-dd-width: 9rem; }
     .tid-filters .filter-field:has(#thresholdSelect),
-    .tid-filters .filter-field:has(#roleSelect),
-    .tid-filters .filter-field:has(#modeSelect) {
-      --wsdc-dd-width: 7.25rem;
-    }
+    .tid-filters .filter-field:has(#roleSelect) { --wsdc-dd-width: 7.25rem; }
+    .tid-filters .filter-field:has(#modeSelect) { --wsdc-dd-width: 8.25rem; }
     .tid-filters .filter-field:has(#yearFromSelect),
-    .tid-filters .filter-field:has(#yearToSelect) {
-      --wsdc-dd-width: 4.5rem;
-    }
-    /* Force pill chrome (not bordered field triggers) */
-    .tid-filters .wsdc-dd--field {
-      width: var(--wsdc-dd-width, 7.5rem);
-    }
+    .tid-filters .filter-field:has(#yearToSelect) { --wsdc-dd-width: 4.5rem; }
+    .tid-filters .wsdc-dd--field { width: var(--wsdc-dd-width, 7.5rem); }
     .tid-filters .wsdc-dd--field .wsdc-dd__btn {
       height: 28px;
       min-height: 28px;
@@ -107,9 +98,6 @@
       background: var(--wsdc-color-surface-soft, #f8fafc);
       border-color: var(--wsdc-color-border, #d1d5db);
     }
-    .tid-filters .wsdc-dd--field .wsdc-dd__value {
-      text-align: left;
-    }
     .kpis {
       display: flex;
       flex-wrap: wrap;
@@ -121,6 +109,20 @@
       padding: 8px 12px;
       background: var(--wsdc-color-surface-soft, #f8fafc);
       min-width: 110px;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+    .kpis.is-selectable .kpi {
+      cursor: pointer;
+    }
+    .kpis.is-selectable .kpi:hover {
+      border-color: #9ca3af;
+    }
+    .kpis.is-selectable .kpi.is-active {
+      border-color: var(--wsdc-color-brand-accent, #2563eb);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 25%, transparent);
+      background: #fff;
     }
     .kpi .lbl {
       font-size: 10px;
@@ -159,11 +161,16 @@
       flex-direction: column;
       position: relative;
     }
-    .chart-wrap {
+    .chart-wrap, .table-wrap {
       flex: 1;
       min-height: 280px;
       position: relative;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
     }
+    .chart-wrap.is-active, .table-wrap.is-active { display: flex; }
+    .chart-wrap canvas { width: 100% !important; height: 100% !important; }
     .empty {
       position: absolute;
       inset: 0;
@@ -173,8 +180,119 @@
       color: var(--wsdc-color-text-muted, #4b5563);
       font-size: 14px;
       pointer-events: none;
+      z-index: 2;
     }
     .empty.show { display: flex; }
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 6;
+    }
+    .table-search-wrap {
+      position: relative;
+      flex: 1 1 220px;
+      max-width: 320px;
+    }
+    .table-search-wrap input {
+      width: 100%;
+      height: 32px;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      padding: 0 10px;
+      font: 500 13px Inter, system-ui, sans-serif;
+    }
+    .table-suggest {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      background: #fff;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      box-shadow: var(--wsdc-shadow-card, 0 8px 20px rgba(15, 23, 42, 0.08));
+      max-height: 220px;
+      overflow: auto;
+      display: none;
+      z-index: 20;
+    }
+    .table-suggest.is-open { display: block; }
+    .table-suggest button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      padding: 8px 10px;
+      font: 500 12px Inter, system-ui, sans-serif;
+      cursor: pointer;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .table-suggest button:hover,
+    .table-suggest button.is-active {
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+    }
+    .ghost-btn {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 8px;
+      padding: 0 12px;
+      height: 32px;
+      font: 600 12px Inter, system-ui, sans-serif;
+      cursor: pointer;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .ghost-btn:hover { border-color: #9ca3af; }
+    .ghost-btn:disabled { opacity: 0.45; cursor: default; }
+    .table-page-info {
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      margin-left: auto;
+    }
+    .table-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      background: #fff;
+    }
+    table.tid-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    table.tid-table th,
+    table.tid-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2f7;
+      white-space: nowrap;
+    }
+    table.tid-table th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      z-index: 1;
+    }
+    table.tid-table tr.role-leader td {
+      background: rgba(99, 102, 241, 0.08);
+    }
+    table.tid-table tr.role-follower td {
+      background: rgba(244, 63, 94, 0.08);
+    }
+    table.tid-table tr.is-flash td {
+      outline: 2px solid var(--wsdc-color-brand-accent, #2563eb);
+      outline-offset: -2px;
+    }
     details.method {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 8px;
@@ -200,7 +318,7 @@
       .page { height: auto; min-height: 100dvh; overflow: visible; }
       .content { overflow: visible; }
       .viz-card { flex: 0 0 auto; min-height: 420px; }
-      .chart-wrap { min-height: 360px; }
+      .chart-wrap, .table-wrap { min-height: 360px; }
     }
   </style>
 </head>
@@ -247,34 +365,77 @@
           <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
             <option value="scatter" selected>Scatter</option>
             <option value="density">Density</option>
+            <option value="dynamics">Dynamics</option>
+            <option value="table">Table</option>
           </select>
         </div>
-        <div class="filter-field">
+        <div class="filter-field" id="yearFromField">
           <label class="filter-label" for="yearFromSelect" id="yearFromLabel">From year</label>
           <select id="yearFromSelect" class="wsdc-select" aria-labelledby="yearFromLabel"></select>
         </div>
-        <div class="filter-field">
+        <div class="filter-field" id="yearToField">
           <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
           <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
         </div>
       </div>
 
-      <div class="kpis" aria-live="polite">
-        <div class="kpi"><div class="lbl">N</div><div class="val" id="kpiN">—</div></div>
-        <div class="kpi"><div class="lbl">Median months</div><div class="val" id="kpiMonths">—</div></div>
-        <div class="kpi"><div class="lbl">Median events</div><div class="val" id="kpiEvents">—</div></div>
-        <div class="kpi" title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
+      <div class="kpis" id="kpiRow" aria-live="polite">
+        <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
+          <div class="lbl">N</div>
+          <div class="val" id="kpiN">—</div>
+        </button>
+        <button type="button" class="kpi" data-metric="months" id="kpiBtnMonths">
+          <div class="lbl">Median months</div>
+          <div class="val" id="kpiMonths">—</div>
+        </button>
+        <button type="button" class="kpi" data-metric="events" id="kpiBtnEvents">
+          <div class="lbl">Median events</div>
+          <div class="val" id="kpiEvents">—</div>
+        </button>
+        <button type="button" class="kpi" data-metric="both" id="kpiBtnBoth"
+          title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
           <div class="lbl">≤ both medians</div>
           <div class="val" id="kpiMedianBox">—</div>
-        </div>
+        </button>
       </div>
 
       <div class="legend-row" id="legendRow"></div>
 
-      <section class="viz-card" aria-label="Time in division chart">
-        <div class="chart-wrap">
+      <section class="viz-card" aria-label="Time in division visualization">
+        <div class="chart-wrap is-active" id="chartWrap">
           <canvas id="chart"></canvas>
           <div class="empty" id="emptyState">No spells in this filter</div>
+        </div>
+        <div class="table-wrap" id="tableWrap">
+          <div class="table-toolbar">
+            <div class="table-search-wrap">
+              <input type="search" id="tableSearch" placeholder="Find dancer (name or WSDC ID)" autocomplete="off" aria-label="Find dancer in table" />
+              <div class="table-suggest" id="tableSuggest" role="listbox" aria-label="Search suggestions"></div>
+            </div>
+            <button type="button" class="ghost-btn" id="csvDownload">Download CSV</button>
+            <span class="table-page-info" id="tablePageInfo">—</span>
+            <button type="button" class="ghost-btn" id="tablePrev">Prev</button>
+            <button type="button" class="ghost-btn" id="tableNext">Next</button>
+          </div>
+          <div class="table-scroll" id="tableScroll">
+            <table class="tid-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Division</th>
+                  <th>First ym</th>
+                  <th>Done ym</th>
+                  <th>Months</th>
+                  <th>Events</th>
+                  <th>Threshold</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="tableEmpty">No spells in this filter</div>
         </div>
       </section>
 
@@ -285,13 +446,12 @@
             <li><strong>Spell:</strong> one dancer × division × role (Leader/Follower separately).</li>
             <li><strong>Start:</strong> first event-month with a point in that spell.</li>
             <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars uses champions_allowed / champions_required (OR of Champions pts or All-Stars pts).</li>
-            <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics). Day-level start dates are not required.</li>
-            <li><strong>Events (Y):</strong> unique events with a point in that division×role over the whole career.</li>
-            <li><strong>Window:</strong> keep spells whose done <em>year</em> falls in the selected From–To year range (inclusive). Same year in both = that calendar year only. Data cut-off: <span id="asOfNote">—</span>.</li>
-            <li><strong>Median guides:</strong> dashed gray lines at median months (vertical) and median events (horizontal) for the current filter — four quadrants relative to the typical dancer. Axis limits always include both medians and the full spell range so a long-tail months median cannot fall off the right edge.</li>
-            <li><strong>≤ both medians:</strong> share of spells with months ≤ median months <em>and</em> events ≤ median events (the lower-left rectangle from the origin to the median cross). If months and events were independent, this would be ~25%; correlation pushes it up or down.</li>
-            <li><strong>Density bins:</strong> fixed 6 months × 2 events.</li>
-            <li>Only completed spells (threshold already reached) are plotted. Overlapping values are fanned on a small ring around the true point.</li>
+            <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics).</li>
+            <li><strong>Events:</strong> unique events with a point in that division×role over the whole career.</li>
+            <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To. Data cut-off: <span id="asOfNote">—</span>.</li>
+            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done (full period; From/To hidden). Click a KPI card to choose the series (resets to N when entering Dynamics). Years with N = 0 create a gap. Median months / median events / % ≤ both require N ≥ 10 in that year.</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; typeahead jumps to a row without filtering; CSV exports the full filtered set.</li>
+            <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range.</li>
           </ul>
         </div>
       </details>
@@ -302,9 +462,15 @@
   <script src="static/js/wsdc-select.js"></script>
   <script>
 (function () {
-  /* Modern cool pair, far on hue wheel: indigo ↔ rose */
-  const COLOR = { Leader: '#6366F1', Follower: '#F43F5E' };
-  const COLOR_FILL = { Leader: 'rgba(99, 102, 241, 0.9)', Follower: 'rgba(244, 63, 94, 0.9)' };
+  const COLOR = { Leader: '#6366F1', Follower: '#F43F5E', All: '#6B7280' };
+  const PAGE_SIZE = 50;
+  const MIN_N_LINE = 10;
+  const METRIC_LABEL = {
+    n: 'N',
+    months: 'Median months',
+    events: 'Median events',
+    both: '% ≤ both medians',
+  };
 
   const state = {
     data: null,
@@ -312,6 +478,7 @@
     threshold: 'allowed',
     role: 'All',
     mode: 'scatter',
+    metric: 'n',
     yearFrom: null,
     yearTo: null,
     chart: null,
@@ -319,11 +486,14 @@
     binE: 2,
     medianMonths: null,
     medianEvents: null,
+    tablePage: 0,
+    tableRows: [],
   };
 
   const medianGuidesPlugin = {
     id: 'medianGuides',
     afterDatasetsDraw(chart) {
+      if (state.mode !== 'scatter' && state.mode !== 'density') return;
       const mx = state.medianMonths;
       const my = state.medianEvents;
       if (mx == null || my == null) return;
@@ -332,13 +502,10 @@
       const x = scales.x.getPixelForValue(mx);
       const y = scales.y.getPixelForValue(my);
       if (!Number.isFinite(x) || !Number.isFinite(y)) return;
-
       ctx.save();
       ctx.strokeStyle = '#9CA3AF';
       ctx.lineWidth = 1.25;
       ctx.setLineDash([5, 4]);
-      /* Only draw segments inside the plot — if a median sits past the axis max it
-         used to paint off-canvas and looked like a “missing” months median. */
       if (x >= chartArea.left && x <= chartArea.right) {
         ctx.beginPath();
         ctx.moveTo(x, chartArea.top);
@@ -364,28 +531,6 @@
     return nice * mag;
   }
 
-  /** Keep medians and all spell points inside the visible scale (Chart.js can
-   *  otherwise leave a long-tail median past the right edge). */
-  function applyScaleLimits(chart, rows, thr) {
-    const xScale = chart.options.scales.x;
-    const yScale = chart.options.scales.y;
-    if (!rows.length) {
-      delete xScale.max;
-      delete yScale.max;
-      return;
-    }
-    let xMax = state.medianMonths ?? 0;
-    let yMax = state.medianEvents ?? 0;
-    rows.forEach((s) => {
-      xMax = Math.max(xMax, s[thr].months);
-      yMax = Math.max(yMax, s.events);
-    });
-    xScale.min = 0;
-    yScale.min = 0;
-    xScale.max = niceCeil(xMax);
-    yScale.max = niceCeil(yMax);
-  }
-
   function doneYear(hit) {
     if (!hit || !hit.done_ym) return null;
     const y = Number(String(hit.done_ym).slice(0, 4));
@@ -399,7 +544,15 @@
     return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
   }
 
-  function filteredRows() {
+  function bothShare(rows, thr, medM, medE) {
+    if (!rows.length || medM == null || medE == null) return null;
+    const inside = rows.filter((s) => s[thr].months <= medM && s.events <= medE).length;
+    return (100 * inside) / rows.length;
+  }
+
+  /** @param {{ ignoreYears?: boolean }} [opts] */
+  function filteredRows(opts) {
+    const ignoreYears = !!(opts && opts.ignoreYears);
     const d = state.data;
     if (!d) return [];
     const thr = state.threshold;
@@ -411,9 +564,15 @@
       const hit = s[thr];
       if (!hit) return false;
       const y = doneYear(hit);
-      if (y == null || y0 == null || y1 == null) return false;
+      if (y == null) return false;
+      if (ignoreYears) return true;
+      if (y0 == null || y1 == null) return false;
       return y >= y0 && y <= y1;
     });
+  }
+
+  function kpiRows() {
+    return filteredRows({ ignoreYears: state.mode === 'dynamics' });
   }
 
   function updateKpis(rows, thr) {
@@ -428,16 +587,34 @@
       state.medianEvents == null ? '—' : String(Math.round(state.medianEvents * 10) / 10);
 
     const boxEl = document.getElementById('kpiMedianBox');
-    if (!rows.length || state.medianMonths == null || state.medianEvents == null) {
+    const share = bothShare(rows, thr, state.medianMonths, state.medianEvents);
+    if (share == null) {
       boxEl.textContent = '—';
+      boxEl.removeAttribute('title');
     } else {
       const inside = rows.filter(
         (s) => s[thr].months <= state.medianMonths && s.events <= state.medianEvents
       ).length;
-      const pct = Math.round((1000 * inside) / rows.length) / 10;
-      boxEl.textContent = `${pct}%`;
+      boxEl.textContent = `${Math.round(share * 10) / 10}%`;
       boxEl.title = `${inside} of ${rows.length} spells`;
     }
+  }
+
+  function syncKpiChrome() {
+    const row = document.getElementById('kpiRow');
+    const selectable = state.mode === 'dynamics';
+    row.classList.toggle('is-selectable', selectable);
+    row.querySelectorAll('.kpi').forEach((btn) => {
+      const on = selectable && btn.getAttribute('data-metric') === state.metric;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', selectable ? String(on) : 'false');
+    });
+  }
+
+  function updateYearFieldsVisibility() {
+    const hide = state.mode === 'dynamics';
+    document.getElementById('yearFromField').classList.toggle('is-hidden', hide);
+    document.getElementById('yearToField').classList.toggle('is-hidden', hide);
   }
 
   function updateLegend() {
@@ -445,6 +622,24 @@
     if (state.mode === 'density') {
       row.textContent =
         `Density: darker / larger = more dancers in a ${state.binM}-month × ${state.binE}-event cell · dashed = medians`;
+      return;
+    }
+    if (state.mode === 'dynamics') {
+      row.replaceChildren();
+      const sw = document.createElement('span');
+      const dot = document.createElement('span');
+      dot.className = 'swatch';
+      const lineColor = state.role === 'All' ? COLOR.All : COLOR[state.role];
+      dot.style.background = lineColor;
+      sw.append(dot, document.createTextNode(`${METRIC_LABEL[state.metric]} by done year`));
+      row.appendChild(sw);
+      const tip = document.createElement('span');
+      tip.textContent = 'Click a KPI to change the series · gaps when N = 0 (or N < 10 for medians / %)';
+      row.appendChild(tip);
+      return;
+    }
+    if (state.mode === 'table') {
+      row.textContent = 'Table: months ↑ · events ↑ · name · light role tint · search jumps to row · CSV = full filter set';
       return;
     }
     row.replaceChildren();
@@ -471,7 +666,6 @@
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(s);
     });
-
     const byRole = { Leader: [], Follower: [] };
     groups.forEach((list, key) => {
       const [mx, ey] = key.split('|').map(Number);
@@ -550,11 +744,142 @@
     }];
   }
 
-  function ensureChart() {
+  function metricForGroup(group, thr, metric) {
+    const n = group.length;
+    if (metric === 'n') return n;
+    if (n < MIN_N_LINE) return null;
+    const months = group.map((s) => s[thr].months);
+    const events = group.map((s) => s.events);
+    const medM = median(months);
+    const medE = median(events);
+    if (metric === 'months') return medM;
+    if (metric === 'events') return medE;
+    if (metric === 'both') return bothShare(group, thr, medM, medE);
+    return null;
+  }
+
+  function dynamicsDatasets(rowsAllYears, thr) {
+    const byYear = new Map();
+    rowsAllYears.forEach((s) => {
+      const y = doneYear(s[thr]);
+      if (y == null) return;
+      if (!byYear.has(y)) byYear.set(y, []);
+      byYear.get(y).push(s);
+    });
+    if (!byYear.size) {
+      return [{
+        label: METRIC_LABEL[state.metric],
+        data: [],
+        borderColor: state.role === 'All' ? COLOR.All : COLOR[state.role],
+        backgroundColor: 'transparent',
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        spanGaps: false,
+        tension: 0.15,
+      }];
+    }
+    const years = [...byYear.keys()].sort((a, b) => a - b);
+    const yMin = years[0];
+    const yMax = years[years.length - 1];
+    const data = [];
+    for (let y = yMin; y <= yMax; y++) {
+      const group = byYear.get(y) || [];
+      const n = group.length;
+      if (n === 0) {
+        data.push({ x: y, y: null, n: 0 });
+        continue;
+      }
+      const val = metricForGroup(group, thr, state.metric);
+      data.push({ x: y, y: val, n });
+    }
+    const lineColor = state.role === 'All' ? COLOR.All : COLOR[state.role];
+    return [{
+      label: METRIC_LABEL[state.metric],
+      data,
+      borderColor: lineColor,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      pointBackgroundColor: '#fff',
+      pointBorderColor: lineColor,
+      pointBorderWidth: 1.5,
+      spanGaps: false,
+      tension: 0.15,
+    }];
+  }
+
+  function applyScatterScaleLimits(chart, rows, thr) {
+    const xScale = chart.options.scales.x;
+    const yScale = chart.options.scales.y;
+    xScale.type = 'linear';
+    yScale.type = 'linear';
+    xScale.title.text = 'Months to threshold';
+    yScale.title.text = 'Events with a point (career, division×role)';
+    xScale.beginAtZero = true;
+    yScale.beginAtZero = true;
+    if (!rows.length) {
+      delete xScale.max;
+      delete yScale.max;
+      return;
+    }
+    let xMax = state.medianMonths ?? 0;
+    let yMax = state.medianEvents ?? 0;
+    rows.forEach((s) => {
+      xMax = Math.max(xMax, s[thr].months);
+      yMax = Math.max(yMax, s.events);
+    });
+    xScale.min = 0;
+    yScale.min = 0;
+    xScale.max = niceCeil(xMax);
+    yScale.max = niceCeil(yMax);
+  }
+
+  function applyDynamicsScaleLimits(chart, dataset) {
+    const xScale = chart.options.scales.x;
+    const yScale = chart.options.scales.y;
+    xScale.type = 'linear';
+    yScale.type = 'linear';
+    xScale.title.text = 'Done year';
+    yScale.title.text = METRIC_LABEL[state.metric];
+    xScale.beginAtZero = false;
+    yScale.beginAtZero = state.metric === 'n' || state.metric === 'both';
+    const pts = (dataset && dataset[0] && dataset[0].data) || [];
+    const xs = pts.map((p) => p.x).filter((v) => v != null);
+    const ys = pts.map((p) => p.y).filter((v) => v != null && Number.isFinite(v));
+    if (!xs.length) {
+      delete xScale.min;
+      delete xScale.max;
+      delete yScale.min;
+      delete yScale.max;
+      return;
+    }
+    xScale.min = Math.min(...xs);
+    xScale.max = Math.max(...xs);
+    if (!ys.length) {
+      yScale.min = 0;
+      yScale.max = 10;
+      return;
+    }
+    const yMin = Math.min(...ys);
+    const yMax = Math.max(...ys);
+    yScale.min = state.metric === 'n' || state.metric === 'both' ? 0 : Math.max(0, yMin * 0.92);
+    yScale.max = niceCeil(yMax);
+  }
+
+  function destroyChart() {
+    if (state.chart) {
+      state.chart.destroy();
+      state.chart = null;
+    }
+  }
+
+  function ensureChart(chartType) {
+    if (state.chart && state.chart.config.type !== chartType) destroyChart();
     if (state.chart) return state.chart;
     const ctx = document.getElementById('chart').getContext('2d');
     state.chart = new Chart(ctx, {
-      type: 'scatter',
+      type: chartType,
       data: { datasets: [] },
       plugins: [medianGuidesPlugin],
       options: {
@@ -564,15 +889,15 @@
         animation: false,
         interaction: {
           mode: 'nearest',
-          intersect: true,
-          axis: 'xy',
+          intersect: false,
+          axis: chartType === 'line' ? 'x' : 'xy',
         },
         plugins: {
           legend: { display: false },
           tooltip: {
             enabled: true,
             mode: 'nearest',
-            intersect: true,
+            intersect: chartType !== 'line',
             displayColors: false,
             filter(item, index) {
               return index === 0;
@@ -581,15 +906,25 @@
               title(items) {
                 const raw = items[0]?.raw;
                 if (!raw) return '';
-                if (raw.raw) {
-                  const s = raw.raw;
-                  return `${s.name} · ${s.id}`;
+                if (state.mode === 'dynamics') return String(raw.x);
+                if (raw.raw) return `${raw.raw.name} · ${raw.raw.id}`;
+                if (raw.n != null && raw.raw == null && state.mode === 'density') {
+                  return `${raw.n} dancers in bin`;
                 }
-                if (raw.n != null) return `${raw.n} dancers in bin`;
                 return '';
               },
               label(item) {
                 const raw = item.raw;
+                if (state.mode === 'dynamics') {
+                  if (raw.y == null) return 'No data';
+                  const val = state.metric === 'both'
+                    ? `${Math.round(raw.y * 10) / 10}%`
+                    : String(Math.round(raw.y * 10) / 10);
+                  return [
+                    `${METRIC_LABEL[state.metric]}: ${val}`,
+                    `N: ${raw.n}`,
+                  ];
+                }
                 if (raw?.raw) {
                   const s = raw.raw;
                   const thr = state.threshold;
@@ -616,7 +951,13 @@
             title: { display: true, text: 'Months to threshold' },
             grid: { display: false },
             border: { display: true, color: '#D1D5DB' },
-            ticks: { color: '#6B7280' },
+            ticks: {
+              color: '#6B7280',
+              callback(value) {
+                if (state.mode === 'dynamics') return Number.isInteger(value) ? value : '';
+                return value;
+              },
+            },
             beginAtZero: true,
           },
           y: {
@@ -632,17 +973,203 @@
     return state.chart;
   }
 
-  function render() {
-    const rows = filteredRows();
+  function sortedTableRows(rows, thr) {
+    const thrLabel = thr === 'allowed' ? 'May' : 'Must';
+    return rows
+      .map((s) => ({
+        id: s.id,
+        name: s.name,
+        role: s.role,
+        division: s.division,
+        first_ym: s.first_ym,
+        done_ym: s[thr].done_ym,
+        months: s[thr].months,
+        events: s.events,
+        threshold: thrLabel,
+        _key: `${s.id}-${s.role}-${s.division}`,
+      }))
+      .sort((a, b) => {
+        if (a.months !== b.months) return a.months - b.months;
+        if (a.events !== b.events) return a.events - b.events;
+        return String(a.name).localeCompare(String(b.name));
+      });
+  }
+
+  function renderTable() {
     const thr = state.threshold;
-    updateKpis(rows, thr);
+    const rows = sortedTableRows(filteredRows(), thr);
+    state.tableRows = rows;
+    const maxPage = Math.max(0, Math.ceil(rows.length / PAGE_SIZE) - 1);
+    if (state.tablePage > maxPage) state.tablePage = maxPage;
+    const start = state.tablePage * PAGE_SIZE;
+    const pageRows = rows.slice(start, start + PAGE_SIZE);
+    const tbody = document.getElementById('tableBody');
+    tbody.replaceChildren();
+    pageRows.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
+      tr.dataset.rowKey = r._key;
+      tr.innerHTML =
+        `<td>${r.id}</td>` +
+        `<td>${escapeHtml(r.name)}</td>` +
+        `<td>${r.role}</td>` +
+        `<td>${r.division}</td>` +
+        `<td>${r.first_ym}</td>` +
+        `<td>${r.done_ym}</td>` +
+        `<td>${r.months}</td>` +
+        `<td>${r.events}</td>` +
+        `<td>${r.threshold}</td>`;
+      tbody.appendChild(tr);
+    });
+    const from = rows.length ? start + 1 : 0;
+    const to = Math.min(start + PAGE_SIZE, rows.length);
+    document.getElementById('tablePageInfo').textContent =
+      `${from}–${to} of ${rows.length}`;
+    document.getElementById('tablePrev').disabled = state.tablePage <= 0;
+    document.getElementById('tableNext').disabled = state.tablePage >= maxPage;
+    document.getElementById('tableEmpty').classList.toggle('show', rows.length === 0);
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function downloadCsv() {
+    const rows = state.tableRows;
+    const header = ['id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events', 'threshold'];
+    const lines = [header.join(',')];
+    rows.forEach((r) => {
+      lines.push([
+        r.id,
+        csvEscape(r.name),
+        r.role,
+        r.division,
+        r.first_ym,
+        r.done_ym,
+        r.months,
+        r.events,
+        r.threshold,
+      ].join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    const thr = state.threshold === 'allowed' ? 'may' : 'must';
+    a.href = URL.createObjectURL(blob);
+    a.download = `time_in_division_${state.division}_${thr}_${state.role}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function csvEscape(v) {
+    const s = String(v ?? '');
+    if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    return s;
+  }
+
+  function jumpToRow(rowKey) {
+    const idx = state.tableRows.findIndex((r) => r._key === rowKey);
+    if (idx < 0) return;
+    state.tablePage = Math.floor(idx / PAGE_SIZE);
+    renderTable();
+    requestAnimationFrame(() => {
+      const tr = document.querySelector(`tr[data-row-key="${CSS.escape(rowKey)}"]`);
+      if (!tr) return;
+      tr.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      tr.classList.add('is-flash');
+      setTimeout(() => tr.classList.remove('is-flash'), 1600);
+    });
+  }
+
+  function updateSuggest(q) {
+    const box = document.getElementById('tableSuggest');
+    const query = q.trim().toLowerCase();
+    if (!query) {
+      box.classList.remove('is-open');
+      box.replaceChildren();
+      return;
+    }
+    const matches = [];
+    for (const r of state.tableRows) {
+      const name = String(r.name).toLowerCase();
+      const id = String(r.id).toLowerCase();
+      if (name.includes(query) || id.includes(query)) {
+        matches.push(r);
+        if (matches.length >= 8) break;
+      }
+    }
+    box.replaceChildren();
+    if (!matches.length) {
+      box.classList.remove('is-open');
+      return;
+    }
+    matches.forEach((r) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('role', 'option');
+      btn.textContent = `${r.name} · ${r.id} · ${r.role}`;
+      btn.addEventListener('click', () => {
+        document.getElementById('tableSearch').value = r.name;
+        box.classList.remove('is-open');
+        jumpToRow(r._key);
+      });
+      box.appendChild(btn);
+    });
+    box.classList.add('is-open');
+  }
+
+  function render() {
+    const thr = state.threshold;
+    updateYearFieldsVisibility();
+    syncKpiChrome();
+
+    const chartWrap = document.getElementById('chartWrap');
+    const tableWrap = document.getElementById('tableWrap');
+    const isTable = state.mode === 'table';
+    chartWrap.classList.toggle('is-active', !isTable);
+    tableWrap.classList.toggle('is-active', isTable);
+
+    if (isTable) {
+      destroyChart();
+      const rows = filteredRows();
+      updateKpis(rows, thr);
+      updateLegend();
+      renderTable();
+      return;
+    }
+
+    const rowsForKpi = kpiRows();
+    updateKpis(rowsForKpi, thr);
     updateLegend();
-    document.getElementById('emptyState').classList.toggle('show', rows.length === 0);
-    const chart = ensureChart();
+
+    if (state.mode === 'dynamics') {
+      const rowsAll = filteredRows({ ignoreYears: true });
+      const datasets = dynamicsDatasets(rowsAll, thr);
+      const chart = ensureChart('line');
+      chart.data.datasets = datasets;
+      applyDynamicsScaleLimits(chart, datasets);
+      chart.options.interaction.axis = 'x';
+      chart.options.interaction.intersect = false;
+      chart.options.plugins.tooltip.intersect = false;
+      const hasPoint = datasets[0].data.some((p) => p.y != null);
+      document.getElementById('emptyState').classList.toggle('show', !hasPoint);
+      chart.update('none');
+      return;
+    }
+
+    const rows = filteredRows();
+    const chart = ensureChart('scatter');
     chart.data.datasets = state.mode === 'scatter'
       ? scatterDatasets(rows, thr)
       : densityDatasets(rows, thr);
-    applyScaleLimits(chart, rows, thr);
+    applyScatterScaleLimits(chart, rows, thr);
+    chart.options.interaction.axis = 'xy';
+    chart.options.interaction.intersect = true;
+    chart.options.plugins.tooltip.intersect = true;
+    document.getElementById('emptyState').classList.toggle('show', rows.length === 0);
     chart.update('none');
   }
 
@@ -691,25 +1218,67 @@
   }
 
   async function init() {
-    const bindSelect = (id, key) => {
-      const el = document.getElementById(id);
-      el.addEventListener('change', () => {
-        state[key] = el.value;
-        render();
-      });
+    const onFilterChange = (key, value) => {
+      const prevMode = state.mode;
+      state[key] = value;
+      if (key === 'mode') {
+        if (value === 'dynamics' && prevMode !== 'dynamics') state.metric = 'n';
+        if (value === 'table') state.tablePage = 0;
+        destroyChart();
+      }
+      if (key === 'division' || key === 'threshold' || key === 'role') state.tablePage = 0;
+      render();
+      if (key === 'mode' && window.WsdcSelect) {
+        WsdcSelect.refresh(document.getElementById('modeSelect'));
+      }
     };
-    bindSelect('divisionSelect', 'division');
-    bindSelect('thresholdSelect', 'threshold');
-    bindSelect('roleSelect', 'role');
-    bindSelect('modeSelect', 'mode');
+
+    ['divisionSelect', 'thresholdSelect', 'roleSelect', 'modeSelect'].forEach((id) => {
+      const el = document.getElementById(id);
+      const key = id.replace('Select', '');
+      el.addEventListener('change', () => onFilterChange(key === 'mode' ? 'mode' : key, el.value));
+    });
 
     document.getElementById('yearFromSelect').addEventListener('change', () => {
       syncYearRange('from');
+      state.tablePage = 0;
       render();
     });
     document.getElementById('yearToSelect').addEventListener('change', () => {
       syncYearRange('to');
+      state.tablePage = 0;
       render();
+    });
+
+    document.getElementById('kpiRow').addEventListener('click', (e) => {
+      const btn = e.target.closest('.kpi[data-metric]');
+      if (!btn || state.mode !== 'dynamics') return;
+      state.metric = btn.getAttribute('data-metric');
+      render();
+    });
+
+    document.getElementById('csvDownload').addEventListener('click', downloadCsv);
+    document.getElementById('tablePrev').addEventListener('click', () => {
+      if (state.tablePage > 0) {
+        state.tablePage -= 1;
+        renderTable();
+      }
+    });
+    document.getElementById('tableNext').addEventListener('click', () => {
+      const maxPage = Math.max(0, Math.ceil(state.tableRows.length / PAGE_SIZE) - 1);
+      if (state.tablePage < maxPage) {
+        state.tablePage += 1;
+        renderTable();
+      }
+    });
+
+    const search = document.getElementById('tableSearch');
+    search.addEventListener('input', () => updateSuggest(search.value));
+    search.addEventListener('focus', () => updateSuggest(search.value));
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.table-search-wrap')) {
+        document.getElementById('tableSuggest').classList.remove('is-open');
+      }
     });
 
     const res = await fetch('static/data/time_in_division_spells.json');
