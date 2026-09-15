@@ -1330,7 +1330,7 @@
     const asOfYear = Number(String(state.data.data_as_of).slice(0, 4));
     const maxY = years.length ? years[years.length - 1] : asOfYear;
     const minY = years.length ? years[0] : asOfYear;
-    const DEFAULT_YEAR = 2020;
+    const DEFAULT_YEAR = 2026;
     const yearOpts = years.length ? years : [asOfYear];
     const defaultYearInRange = () => {
       if (yearOpts.includes(DEFAULT_YEAR)) return DEFAULT_YEAR;
