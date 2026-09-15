@@ -523,10 +523,10 @@
     },
   };
 
-  /** Axis max = ceil(dataMax × 1.05) so the extreme point stays visible without empty niceCeil jumps. */
+  /** Axis max with headroom so extreme points (and density bubbles) are not clipped. */
   function axisPadMax(v) {
     if (!Number.isFinite(v) || v <= 0) return 10;
-    return Math.max(Math.ceil(v * 1.05), v);
+    return Math.max(Math.ceil(v * 1.12), Math.ceil(v) + 1);
   }
 
   function doneYear(hit) {
@@ -704,6 +704,7 @@
       pointHoverRadius: 5,
       pointHitRadius: 7,
       pointStyle: 'circle',
+      clip: false,
     }));
   }
 
@@ -739,6 +740,7 @@
       pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 5,
       pointHoverRadius: (ctx) => ((ctx.raw && ctx.raw.r) || 5) + 2,
       pointHitRadius: 8,
+      clip: false,
     }];
   }
 
@@ -774,6 +776,7 @@
         pointHoverRadius: 5,
         spanGaps: false,
         tension: 0.15,
+        clip: false,
       }];
     }
     const years = [...byYear.keys()].sort((a, b) => a - b);
@@ -804,6 +807,7 @@
       pointBorderWidth: 1.5,
       spanGaps: false,
       tension: 0.15,
+      clip: false,
     }];
   }
 
@@ -852,8 +856,11 @@
       delete yScale.max;
       return;
     }
-    xScale.min = Math.min(...xs);
-    xScale.max = Math.max(...xs);
+    const xMin = Math.min(...xs);
+    const xMax = Math.max(...xs);
+    // Half-year pad so first/last year markers are not clipped at the chart edge.
+    xScale.min = xMin - 0.5;
+    xScale.max = xMax === xMin ? xMax + 0.5 : xMax + 0.5;
     yScale.min = 0;
     if (!ys.length) {
       yScale.max = 10;
@@ -882,6 +889,7 @@
         maintainAspectRatio: false,
         parsing: false,
         animation: false,
+        layout: { padding: { top: 10, right: 10, bottom: 4, left: 4 } },
         interaction: {
           mode: 'nearest',
           intersect: false,
@@ -912,6 +920,7 @@
                 const raw = item.raw;
                 if (state.mode === 'dynamics') {
                   if (raw.y == null) return 'No data';
+                  if (state.metric === 'n') return `N: ${raw.n}`;
                   const val = state.metric === 'both'
                     ? `${Math.round(raw.y * 10) / 10}%`
                     : String(Math.round(raw.y * 10) / 10);
