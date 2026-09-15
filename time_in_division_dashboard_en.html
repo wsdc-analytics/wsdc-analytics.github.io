@@ -270,9 +270,13 @@
     table.tid-table th,
     table.tid-table td {
       padding: 8px 10px;
-      text-align: left;
+      text-align: center;
       border-bottom: 1px solid #eef2f7;
       white-space: nowrap;
+    }
+    table.tid-table th:nth-child(2),
+    table.tid-table td:nth-child(2) {
+      text-align: left;
     }
     table.tid-table th {
       position: sticky;
@@ -430,7 +434,6 @@
                   <th>Done ym</th>
                   <th>Months</th>
                   <th>Events</th>
-                  <th>Threshold</th>
                 </tr>
               </thead>
               <tbody id="tableBody"></tbody>
@@ -1021,8 +1024,7 @@
         `<td>${r.first_ym}</td>` +
         `<td>${r.done_ym}</td>` +
         `<td>${r.months}</td>` +
-        `<td>${r.events}</td>` +
-        `<td>${r.threshold}</td>`;
+        `<td>${r.events}</td>`;
       tbody.appendChild(tr);
     });
     const from = rows.length ? start + 1 : 0;
