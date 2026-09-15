@@ -288,7 +288,7 @@
             <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics). Day-level start dates are not required.</li>
             <li><strong>Events (Y):</strong> unique events with a point in that division×role over the whole career.</li>
             <li><strong>Window:</strong> keep spells whose done <em>year</em> falls in the selected From–To year range (inclusive). Same year in both = that calendar year only. Data cut-off: <span id="asOfNote">—</span>.</li>
-            <li><strong>Median guides:</strong> dashed gray lines at median months (vertical) and median events (horizontal) for the current filter — four quadrants relative to the typical dancer.</li>
+            <li><strong>Median guides:</strong> dashed gray lines at median months (vertical) and median events (horizontal) for the current filter — four quadrants relative to the typical dancer. Axis limits always include both medians and the full spell range so a long-tail months median cannot fall off the right edge.</li>
             <li><strong>≤ both medians:</strong> share of spells with months ≤ median months <em>and</em> events ≤ median events (the lower-left rectangle from the origin to the median cross). If months and events were independent, this would be ~25%; correlation pushes it up or down.</li>
             <li><strong>Density bins:</strong> fixed 6 months × 2 events.</li>
             <li>Only completed spells (threshold already reached) are plotted. Overlapping values are fanned on a small ring around the true point.</li>
@@ -337,17 +337,54 @@
       ctx.strokeStyle = '#9CA3AF';
       ctx.lineWidth = 1.25;
       ctx.setLineDash([5, 4]);
-      ctx.beginPath();
-      ctx.moveTo(x, chartArea.top);
-      ctx.lineTo(x, chartArea.bottom);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(chartArea.left, y);
-      ctx.lineTo(chartArea.right, y);
-      ctx.stroke();
+      /* Only draw segments inside the plot — if a median sits past the axis max it
+         used to paint off-canvas and looked like a “missing” months median. */
+      if (x >= chartArea.left && x <= chartArea.right) {
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+      }
+      if (y >= chartArea.top && y <= chartArea.bottom) {
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+      }
       ctx.restore();
     },
   };
+
+  function niceCeil(v) {
+    if (!Number.isFinite(v) || v <= 0) return 10;
+    const pad = v * 1.08;
+    const mag = 10 ** Math.floor(Math.log10(pad));
+    const norm = pad / mag;
+    const nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10;
+    return nice * mag;
+  }
+
+  /** Keep medians and all spell points inside the visible scale (Chart.js can
+   *  otherwise leave a long-tail median past the right edge). */
+  function applyScaleLimits(chart, rows, thr) {
+    const xScale = chart.options.scales.x;
+    const yScale = chart.options.scales.y;
+    if (!rows.length) {
+      delete xScale.max;
+      delete yScale.max;
+      return;
+    }
+    let xMax = state.medianMonths ?? 0;
+    let yMax = state.medianEvents ?? 0;
+    rows.forEach((s) => {
+      xMax = Math.max(xMax, s[thr].months);
+      yMax = Math.max(yMax, s.events);
+    });
+    xScale.min = 0;
+    yScale.min = 0;
+    xScale.max = niceCeil(xMax);
+    yScale.max = niceCeil(yMax);
+  }
 
   function doneYear(hit) {
     if (!hit || !hit.done_ym) return null;
@@ -605,6 +642,7 @@
     chart.data.datasets = state.mode === 'scatter'
       ? scatterDatasets(rows, thr)
       : densityDatasets(rows, thr);
+    applyScaleLimits(chart, rows, thr);
     chart.update('none');
   }
 
