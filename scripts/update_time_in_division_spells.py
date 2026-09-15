@@ -124,26 +124,65 @@ def threshold_for_year(rules: dict, year: int, division: str) -> dict:
     return {}
 
 
-def all_stars_threshold_for_year(rules: dict, year: int) -> dict:
-    """All-Stars→Champions thresholds; pre-2021 epochs inherit the first catalogued All-Stars block.
-
-    Formal champions_allowed/required appear only from 2021 in rules JSON. Without a fallback,
-    early Champions points never count and done_ym jumps to the first post-2021 AS/Champ event.
-    """
-    th = threshold_for_year(rules, year, "All-Stars")
-    if th.get("champions_allowed") or th.get("champions_required"):
-        return th
+def first_all_stars_rules_year(rules: dict) -> int | None:
+    """Earliest valid_from among epochs that define All-Stars→Champions thresholds."""
+    years: list[int] = []
     for epoch in rules.get("epochs", []):
         d = (epoch.get("divisions") or {}).get("All-Stars")
         if not d or "champions_allowed" not in d:
             continue
-        return {
-            "epoch": epoch["id"],
-            "champions_allowed": d["champions_allowed"],
-            "champions_required": d.get("champions_required"),
-            "fallback": True,
-        }
-    return {}
+        vf = epoch.get("valid_from")
+        if vf is not None:
+            years.append(int(vf))
+    return min(years) if years else None
+
+
+def catalogued_all_stars_division(rules: dict) -> dict | None:
+    """First All-Stars block in rules JSON (source of champ/AS point targets)."""
+    for epoch in rules.get("epochs", []):
+        d = (epoch.get("divisions") or {}).get("All-Stars")
+        if d and "champions_allowed" in d:
+            return d
+    return None
+
+
+def all_stars_eval_specs(rules: dict, year: int) -> dict[str, dict]:
+    """May/Must specs for All-Stars at event year.
+
+    - Before formal All-Stars→Champions rules (pre-2021): Champions-point path only
+      (1 / 10). AS-point OR is not applied — that threshold did not exist yet.
+    - From formal rules year onward: full OR (Champ pts or AS pts) from the active epoch.
+    Crossing is recorded only on real AS/Champ events (no synthetic rule-start month).
+    """
+    formal_from = first_all_stars_rules_year(rules)
+    catalog = catalogued_all_stars_division(rules)
+    if not catalog:
+        return {}
+
+    if formal_from is not None and year >= formal_from:
+        th = threshold_for_year(rules, year, "All-Stars")
+        out: dict[str, dict] = {}
+        for key in ("champions_allowed", "champions_required"):
+            spec = th.get(key) if th else None
+            if not isinstance(spec, dict):
+                spec = catalog.get(key)
+            if isinstance(spec, dict):
+                out[key] = {
+                    "champions_points": float(spec.get("champions_points") or 0),
+                    "or_all_star_points": float(spec.get("or_all_star_points") or 0),
+                }
+        return out
+
+    # Pre-formal era: Champ path only (disable AS OR).
+    out = {}
+    for key in ("champions_allowed", "champions_required"):
+        spec = catalog.get(key)
+        if isinstance(spec, dict):
+            out[key] = {
+                "champions_points": float(spec.get("champions_points") or 0),
+                "or_all_star_points": 0.0,
+            }
+    return out
 
 
 def rolling_sum(events: list[dict], div: str, at_ym: tuple[int, int], window: int = 36) -> float:
@@ -229,7 +268,11 @@ def find_all_stars_crossings(
     t0: tuple[int, int],
     rules: dict,
 ) -> dict[str, dict]:
-    """OR rule: champions_points OR all_star_points for allowed/required."""
+    """All-Stars→Champions may/must on real AS/Champ events.
+
+    Pre-formal rules years: Champions points only (1 allowed / 10 required).
+    Formal years (2021+): OR of Champions pts or All-Stars pts from the active epoch.
+    """
     reached: dict[str, dict] = {}
     as_pts = 0.0
     champ_pts = 0.0
@@ -242,8 +285,8 @@ def find_all_stars_crossings(
             champ_pts += e["pts"]
         else:
             continue
-        th = all_stars_threshold_for_year(rules, e["year"])
-        if not th:
+        specs = all_stars_eval_specs(rules, e["year"])
+        if not specs:
             continue
         months = months_between(t0, e["ym"])
         for kind, key in (
@@ -252,7 +295,7 @@ def find_all_stars_crossings(
         ):
             if kind in reached:
                 continue
-            spec = th.get(key)
+            spec = specs.get(key)
             if not isinstance(spec, dict):
                 continue
             need_c = float(spec.get("champions_points") or 0)
@@ -389,7 +432,11 @@ def main() -> None:
             "months": "calendar months between first_ym and done_ym (year-month only)",
             "events": "unique events with a point in that division×role over the career",
             "window_filter": "done_ym inside trailing N years from data_as_of",
-            "all_stars": "champions_allowed/required OR rule; pre-2021 years use first catalogued All-Stars thresholds as fallback",
+            "all_stars": (
+                "pre-formal rules years: Champions pts only (1 may / 10 must) on real events; "
+                "from first All-Stars rules year (2021): full OR Champ pts or AS pts; "
+                "no synthetic done_ym at rule start"
+            ),
         },
         "spells": spells,
     }
