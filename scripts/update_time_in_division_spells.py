@@ -124,6 +124,28 @@ def threshold_for_year(rules: dict, year: int, division: str) -> dict:
     return {}
 
 
+def all_stars_threshold_for_year(rules: dict, year: int) -> dict:
+    """All-Stars→Champions thresholds; pre-2021 epochs inherit the first catalogued All-Stars block.
+
+    Formal champions_allowed/required appear only from 2021 in rules JSON. Without a fallback,
+    early Champions points never count and done_ym jumps to the first post-2021 AS/Champ event.
+    """
+    th = threshold_for_year(rules, year, "All-Stars")
+    if th.get("champions_allowed") or th.get("champions_required"):
+        return th
+    for epoch in rules.get("epochs", []):
+        d = (epoch.get("divisions") or {}).get("All-Stars")
+        if not d or "champions_allowed" not in d:
+            continue
+        return {
+            "epoch": epoch["id"],
+            "champions_allowed": d["champions_allowed"],
+            "champions_required": d.get("champions_required"),
+            "fallback": True,
+        }
+    return {}
+
+
 def rolling_sum(events: list[dict], div: str, at_ym: tuple[int, int], window: int = 36) -> float:
     at = ym_ord(*at_ym)
     lo = at - window + 1
@@ -220,7 +242,7 @@ def find_all_stars_crossings(
             champ_pts += e["pts"]
         else:
             continue
-        th = threshold_for_year(rules, e["year"], "All-Stars")
+        th = all_stars_threshold_for_year(rules, e["year"])
         if not th:
             continue
         months = months_between(t0, e["ym"])
@@ -367,7 +389,7 @@ def main() -> None:
             "months": "calendar months between first_ym and done_ym (year-month only)",
             "events": "unique events with a point in that division×role over the career",
             "window_filter": "done_ym inside trailing N years from data_as_of",
-            "all_stars": "champions_allowed/required OR rule from rules epochs",
+            "all_stars": "champions_allowed/required OR rule; pre-2021 years use first catalogued All-Stars thresholds as fallback",
         },
         "spells": spells,
     }
