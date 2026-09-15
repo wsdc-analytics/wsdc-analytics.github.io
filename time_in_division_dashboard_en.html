@@ -402,10 +402,10 @@
           <div class="filter-field">
             <label class="filter-label" for="modeSelect" id="modeLabel">Chart</label>
             <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
-              <option value="scatter" selected>Scatter</option>
+              <option value="table" selected>Table</option>
+              <option value="scatter">Scatter</option>
               <option value="density">Density</option>
               <option value="dynamics">Dynamics</option>
-              <option value="table">Table</option>
             </select>
           </div>
           <div class="filter-field" id="yearFromField">
@@ -443,11 +443,11 @@
         </div>
 
         <section class="viz-card" aria-label="Time in division visualization">
-          <div class="chart-wrap is-active" id="chartWrap">
+          <div class="chart-wrap" id="chartWrap">
             <canvas id="chart"></canvas>
             <div class="empty" id="emptyState">No spells in this filter</div>
           </div>
-          <div class="table-wrap" id="tableWrap">
+          <div class="table-wrap is-active" id="tableWrap">
             <div class="table-toolbar">
               <div class="table-search-wrap">
                 <input type="search" id="tableSearch" placeholder="Find dancer (name or WSDC ID)" autocomplete="off" aria-label="Find dancer in table" />
@@ -520,7 +520,7 @@
     division: 'Novice',
     threshold: 'allowed',
     role: 'All',
-    mode: 'scatter',
+    mode: 'table',
     metric: 'n',
     yearFrom: null,
     yearTo: null,
@@ -1330,9 +1330,16 @@
     const asOfYear = Number(String(state.data.data_as_of).slice(0, 4));
     const maxY = years.length ? years[years.length - 1] : asOfYear;
     const minY = years.length ? years[0] : asOfYear;
-    const defaultTo = Math.min(maxY, asOfYear);
-    const defaultFrom = Math.max(minY, defaultTo - 4);
-    fillYearSelects(years.length ? years : [asOfYear], defaultFrom, defaultTo);
+    const DEFAULT_YEAR = 2020;
+    const yearOpts = years.length ? years : [asOfYear];
+    const defaultYearInRange = () => {
+      if (yearOpts.includes(DEFAULT_YEAR)) return DEFAULT_YEAR;
+      const atOrAfter = yearOpts.find((y) => y >= DEFAULT_YEAR);
+      return atOrAfter ?? yearOpts[yearOpts.length - 1];
+    };
+    const defaultFrom = defaultYearInRange();
+    const defaultTo = defaultYearInRange();
+    fillYearSelects(yearOpts, defaultFrom, defaultTo);
 
     if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
     render();
