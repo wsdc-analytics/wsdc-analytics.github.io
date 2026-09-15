@@ -18,6 +18,7 @@ Unlisted materials for the analytics committee: how to classify and track Board 
 | [slides_ru.html](slides_ru.html) | Short board-facing deck (RU) |
 | [appendix_en.html](appendix_en.html) | Appendix by C1–C5: Board quote + comment/enabling (EN); C1 full→partial |
 | [appendix_ru.html](appendix_ru.html) | Приложение C1–C5: **русский перевод** цитат Board + комментарий / шаг; C1 полный→частичный |
+| [competitor-list-export/](competitor-list-export/) | Draft scoring-vendor export template (xlsx) for Registry Event Competitor List |
 
 ## Share URLs
 
@@ -43,4 +44,4 @@ Keyboard: `←` `→` `Space` · click left/right edges · `#N` deep-link.
 
 - Publishing into site navigation.
 - Computing Board metric answers (classification only).
-- Building Score Report pipeline or community listing product.
+- Building Score Report pipeline or community listing product (draft export schema only: [competitor-list-export/](competitor-list-export/)).
