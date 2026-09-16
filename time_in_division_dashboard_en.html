@@ -321,25 +321,106 @@
       outline-offset: -2px;
     }
     details.method {
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
-      padding: 8px 12px;
-      background: #fff;
-      flex-shrink: 0;
+      display: none;
     }
-    details.method summary {
-      cursor: pointer;
-      font-weight: 600;
+    .page-head__title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .page-head__title-row h1 {
+      margin: 0;
+    }
+    .method-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      pointer-events: none;
+    }
+    .method-layer.is-open {
+      display: block;
+      pointer-events: auto;
+    }
+    .method-layer__backdrop {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+    }
+    .method-island {
+      position: fixed;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      color: var(--wsdc-color-text, #1f2937);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+    .method-island.is-settled { opacity: 1; }
+    .method-island.is-dragging {
+      transition: none;
+      opacity: 1;
+    }
+    .method-island__head {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px 6px;
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    .method-island.is-dragging .method-island__head { cursor: grabbing; }
+    .method-island__head h2 {
       font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      pointer-events: none;
+      margin: 0;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .method-island__close {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
       color: var(--wsdc-color-text, #1f2937);
     }
-    details.method .body {
-      margin-top: 8px;
+    .method-island__close:hover { background: var(--wsdc-color-surface-soft, #f8fafc); }
+    .method-island__body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 12px 14px 16px;
       font-size: 12px;
       color: var(--wsdc-color-text-muted, #4b5563);
       line-height: 1.5;
+      -webkit-overflow-scrolling: touch;
     }
-    details.method ul { padding-left: 18px; margin-top: 4px; }
+    .method-island__body ul {
+      padding-left: 18px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .method-island__body strong {
+      color: var(--wsdc-color-text, #1f2937);
+      font-weight: 600;
+    }
     @media (max-width: 900px) {
       html, body { height: auto; overflow: auto; }
       .page { height: auto; min-height: 100dvh; overflow: visible; }
@@ -372,7 +453,12 @@
 
     <section class="content">
       <header class="page-head">
-        <h1>Time in division</h1>
+        <div class="page-head__title-row">
+          <h1>Time in division</h1>
+          <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
+            <span aria-hidden="true">i</span>
+          </button>
+        </div>
         <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against career events with a point in that division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
         <div class="tid-filters" role="group" aria-label="Filters">
           <div class="filter-field">
@@ -479,10 +565,22 @@
           </div>
         </section>
       </div>
+    </section>
 
-      <details class="method">
-        <summary>Methodology</summary>
-        <div class="body">
+    <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+      <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+      <div
+        class="method-island"
+        id="methodIsland"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="methodIslandTitle"
+      >
+        <div class="method-island__head" id="methodIslandHead">
+          <h2 id="methodIslandTitle">Methodology</h2>
+          <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+        </div>
+        <div class="method-island__body" id="methodIslandBody">
           <ul>
             <li><strong>Spell:</strong> one dancer × division × role (Leader/Follower separately).</li>
             <li><strong>Start:</strong> first event-month with a point in that spell.</li>
@@ -497,8 +595,8 @@
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
         </div>
-      </details>
-    </section>
+      </div>
+    </div>
   </main>
 
   <script src="static/js/site-chrome.js" defer></script>
@@ -539,6 +637,9 @@
     medianEvents: null,
     tablePage: 0,
     tableRows: [],
+    methodOpen: false,
+    methodMoved: false,
+    methodDrag: null,
   };
 
   const medianGuidesPlugin = {
@@ -1291,6 +1392,184 @@
     fillYearSelects(yearOpts, from, to);
   }
 
+  function methodIslandFinalRect() {
+    const pad = 10;
+    const stage = document.querySelector('.viz-stage');
+    const filters = document.querySelector('.tid-filters');
+    const target = stage && stage.getBoundingClientRect().width
+      ? stage.getBoundingClientRect()
+      : document.querySelector('.content').getBoundingClientRect();
+    const barTop = filters ? filters.getBoundingClientRect().top : NaN;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (vw <= 720) {
+      return {
+        left: pad,
+        top: Math.max(pad, (filters ? filters.getBoundingClientRect().bottom : 56) + 6),
+        width: Math.max(0, vw - pad * 2),
+        height: Math.max(220, vh - (filters ? filters.getBoundingClientRect().bottom : 56) - pad * 2),
+      };
+    }
+    return {
+      left: target.left + pad,
+      top: Number.isFinite(barTop) ? barTop : target.top + pad,
+      width: Math.max(280, target.width - pad * 2),
+      height: Math.max(220, target.height - pad * 2),
+    };
+  }
+
+  function applyMethodIslandRect(el, rect) {
+    el.style.left = Math.round(rect.left) + 'px';
+    el.style.top = Math.round(rect.top) + 'px';
+    el.style.width = Math.round(rect.width) + 'px';
+    el.style.height = Math.round(rect.height) + 'px';
+  }
+
+  function readMethodIslandRect(el) {
+    return {
+      left: parseFloat(el.style.left) || 0,
+      top: parseFloat(el.style.top) || 0,
+      width: parseFloat(el.style.width) || el.offsetWidth,
+      height: parseFloat(el.style.height) || el.offsetHeight,
+    };
+  }
+
+  function clampMethodIslandInViewport(left, top, width, height) {
+    const pad = 8;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const maxL = Math.max(pad, vw - width - pad);
+    const maxT = Math.max(pad, vh - height - pad);
+    return {
+      left: Math.min(Math.max(pad, left), maxL),
+      top: Math.min(Math.max(pad, top), maxT),
+      width,
+      height,
+    };
+  }
+
+  function placeMethodIslandDefault(island) {
+    applyMethodIslandRect(island, methodIslandFinalRect());
+    state.methodMoved = false;
+  }
+
+  function openMethodIsland() {
+    const layer = document.getElementById('methodLayer');
+    const island = document.getElementById('methodIsland');
+    const btn = document.getElementById('methodInfoBtn');
+    if (!layer || !island) return;
+    if (state.methodOpen) {
+      if (!state.methodMoved) placeMethodIslandDefault(island);
+      island.classList.add('is-settled');
+      return;
+    }
+    state.methodOpen = true;
+    state.methodMoved = false;
+    layer.hidden = false;
+    layer.setAttribute('aria-hidden', 'false');
+    layer.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+    placeMethodIslandDefault(island);
+    island.classList.remove('is-settled');
+    void island.offsetWidth;
+    island.classList.add('is-settled');
+    document.getElementById('methodIslandClose').focus();
+  }
+
+  function closeMethodIsland() {
+    if (!state.methodOpen) return;
+    const layer = document.getElementById('methodLayer');
+    const island = document.getElementById('methodIsland');
+    const btn = document.getElementById('methodInfoBtn');
+    island.classList.remove('is-settled', 'is-dragging');
+    layer.classList.remove('is-open');
+    layer.hidden = true;
+    layer.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    state.methodOpen = false;
+    state.methodMoved = false;
+    state.methodDrag = null;
+    btn.focus();
+  }
+
+  function wireMethodIsland() {
+    const btn = document.getElementById('methodInfoBtn');
+    const closeBtn = document.getElementById('methodIslandClose');
+    const backdrop = document.getElementById('methodLayerBackdrop');
+    const head = document.getElementById('methodIslandHead');
+    const island = document.getElementById('methodIsland');
+    if (!btn || !island || !head) return;
+
+    btn.addEventListener('click', () => {
+      if (state.methodOpen) closeMethodIsland();
+      else openMethodIsland();
+    });
+    closeBtn.addEventListener('click', closeMethodIsland);
+    backdrop.addEventListener('click', closeMethodIsland);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.methodOpen) closeMethodIsland();
+    });
+    window.addEventListener('resize', () => {
+      if (!state.methodOpen) return;
+      if (!state.methodMoved) placeMethodIslandDefault(island);
+      else {
+        const cur = readMethodIslandRect(island);
+        const size = methodIslandFinalRect();
+        applyMethodIslandRect(
+          island,
+          clampMethodIslandInViewport(cur.left, cur.top, size.width, size.height)
+        );
+      }
+    });
+
+    head.addEventListener('pointerdown', (e) => {
+      if (!state.methodOpen) return;
+      if (window.innerWidth <= 720) return;
+      if (e.button != null && e.button !== 0) return;
+      if (e.target.closest && e.target.closest('.method-island__close')) return;
+      const cur = readMethodIslandRect(island);
+      state.methodDrag = {
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startY: e.clientY,
+        origLeft: cur.left,
+        origTop: cur.top,
+        width: cur.width,
+        height: cur.height,
+        moved: false,
+      };
+      island.classList.add('is-dragging');
+      try { head.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+      e.preventDefault();
+    });
+    head.addEventListener('pointermove', (e) => {
+      const drag = state.methodDrag;
+      if (!drag || drag.pointerId !== e.pointerId) return;
+      const dx = e.clientX - drag.startX;
+      const dy = e.clientY - drag.startY;
+      if (!drag.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) drag.moved = true;
+      applyMethodIslandRect(
+        island,
+        clampMethodIslandInViewport(
+          drag.origLeft + dx,
+          drag.origTop + dy,
+          drag.width,
+          drag.height
+        )
+      );
+    });
+    const endDrag = (e) => {
+      const drag = state.methodDrag;
+      if (!drag || (e.pointerId != null && drag.pointerId !== e.pointerId)) return;
+      if (drag.moved) state.methodMoved = true;
+      state.methodDrag = null;
+      island.classList.remove('is-dragging');
+      try { head.releasePointerCapture(drag.pointerId); } catch (_) { /* ignore */ }
+    };
+    head.addEventListener('pointerup', endDrag);
+    head.addEventListener('pointercancel', endDrag);
+  }
+
   async function init() {
     const onFilterChange = (key, value) => {
       const prevMode = state.mode;
@@ -1369,6 +1648,7 @@
     applyYearOptionsForDivision(false);
 
     if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
+    wireMethodIsland();
     render();
   }
 
