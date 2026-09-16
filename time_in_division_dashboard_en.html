@@ -128,8 +128,11 @@
       gap: 8px;
       flex: 0 0 9.5rem;
       width: 9.5rem;
-      align-self: stretch;
-      min-height: 0;
+      align-self: flex-start;
+    }
+    .viz-stage.is-table .kpis {
+      /* Drop to the table body top (search/CSV toolbar + its margin). */
+      padding-top: 40px;
     }
     .kpi {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
@@ -140,11 +143,6 @@
       text-align: left;
       font: inherit;
       color: inherit;
-      flex: 1 1 0;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
     }
     .kpis.is-selectable .kpi {
       cursor: pointer;
@@ -463,12 +461,12 @@
         width: auto;
         flex: 0 0 auto;
         align-self: stretch;
+        padding-top: 0 !important;
       }
       .kpi {
         flex: 1 1 7.5rem;
         min-width: 7.5rem;
         width: auto;
-        min-height: 64px;
       }
       .viz-card { flex: 0 0 auto; min-height: 420px; }
       .chart-wrap, .table-wrap { min-height: 360px; }
@@ -810,16 +808,7 @@
   function updateLegend() {
     const row = document.getElementById('legendRow');
     row.replaceChildren();
-    if (state.mode === 'table') return;
-    if (state.mode === 'density') {
-      const span = document.createElement('span');
-      const sw = document.createElement('span');
-      sw.className = 'swatch';
-      sw.style.background = 'rgba(99, 102, 241, 0.75)';
-      span.append(sw, document.createTextNode('Density'));
-      row.appendChild(span);
-      return;
-    }
+    if (state.mode === 'table' || state.mode === 'density') return;
     if (state.mode === 'dynamics') {
       const sw = document.createElement('span');
       const dot = document.createElement('span');
@@ -1317,6 +1306,7 @@
     const chartWrap = document.getElementById('chartWrap');
     const tableWrap = document.getElementById('tableWrap');
     const isTable = state.mode === 'table';
+    document.querySelector('.viz-stage')?.classList.toggle('is-table', isTable);
     chartWrap.classList.toggle('is-active', !isTable);
     tableWrap.classList.toggle('is-active', isTable);
 
