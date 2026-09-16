@@ -52,10 +52,26 @@
       flex-wrap: wrap;
       gap: 8px 10px;
       align-items: flex-end;
+      justify-content: center;
       overflow: visible;
       position: relative;
       z-index: 40;
       margin: 0;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .viz-filters-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 12px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 40;
+    }
+    .viz-filters-row__gutter {
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
     }
     .tid-filters .filter-field {
       display: flex;
@@ -112,6 +128,8 @@
       gap: 8px;
       flex: 0 0 9.5rem;
       width: 9.5rem;
+      align-self: stretch;
+      min-height: 0;
     }
     .kpi {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
@@ -122,6 +140,11 @@
       text-align: left;
       font: inherit;
       color: inherit;
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     .kpis.is-selectable .kpi {
       cursor: pointer;
@@ -425,6 +448,12 @@
       html, body { height: auto; overflow: auto; }
       .page { height: auto; min-height: 100dvh; overflow: visible; }
       .content { overflow: visible; }
+      .viz-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .viz-filters-row__gutter { display: none; }
+      .tid-filters { justify-content: center; }
       .viz-stage {
         flex-direction: column;
       }
@@ -433,11 +462,13 @@
         flex-wrap: wrap;
         width: auto;
         flex: 0 0 auto;
+        align-self: stretch;
       }
       .kpi {
         flex: 1 1 7.5rem;
         min-width: 7.5rem;
         width: auto;
+        min-height: 64px;
       }
       .viz-card { flex: 0 0 auto; min-height: 420px; }
       .chart-wrap, .table-wrap { min-height: 360px; }
@@ -460,6 +491,10 @@
           </button>
         </div>
         <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against career events with a point in that division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
+      </header>
+
+      <div class="viz-filters-row">
+        <div class="viz-filters-row__gutter" aria-hidden="true"></div>
         <div class="tid-filters" role="group" aria-label="Filters">
           <div class="filter-field">
             <label class="filter-label" for="divisionSelect" id="divisionLabel">Division</label>
@@ -503,27 +538,27 @@
             <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
           </div>
         </div>
-      </header>
+      </div>
 
       <div class="legend-row" id="legendRow" aria-label="Legend"></div>
 
       <div class="viz-stage">
         <div class="kpis" id="kpiRow" aria-live="polite">
           <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
-            <div class="lbl">N</div>
+            <div class="lbl">Dancers</div>
             <div class="val" id="kpiN">—</div>
           </button>
           <button type="button" class="kpi" data-metric="months" id="kpiBtnMonths">
-            <div class="lbl">Median months</div>
+            <div class="lbl">Months</div>
             <div class="val" id="kpiMonths">—</div>
           </button>
           <button type="button" class="kpi" data-metric="events" id="kpiBtnEvents">
-            <div class="lbl">Median events</div>
+            <div class="lbl">Events</div>
             <div class="val" id="kpiEvents">—</div>
           </button>
           <button type="button" class="kpi" data-metric="both" id="kpiBtnBoth"
             title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
-            <div class="lbl">≤ both medians</div>
+            <div class="lbl">≤ both</div>
             <div class="val" id="kpiMedianBox">—</div>
           </button>
         </div>
@@ -590,7 +625,8 @@
             <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To, only within the allowed/required era for that division (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). Earlier single-threshold years are excluded — this dashboard focuses on the may/must buffer corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events. KPI “≤ both medians” = share in the lower-left of the median cross.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
-            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). Click a KPI card to choose the series (resets to N when entering Dynamics). Years with N = 0 create a gap. Median months / median events / % ≤ both require N ≥ 10 in that year.</li>
+            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). Click a KPI card to choose the series (resets to Dancers when entering Dynamics). Years with 0 dancers create a gap. Months / Events / ≤ both require at least 10 dancers in that year.</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Months</em> / <em>Events</em> = medians; <em>≤ both</em> = share at or below both medians (lower-left of the median cross).</li>
             <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; typeahead jumps to a row without filtering; CSV exports the full filtered set (includes threshold).</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
@@ -615,10 +651,10 @@
   };
   const DEFAULT_YEAR = 2026;
   const METRIC_LABEL = {
-    n: 'N',
-    months: 'Median months',
-    events: 'Median events',
-    both: '% ≤ both medians',
+    n: 'Dancers',
+    months: 'Months',
+    events: 'Events',
+    both: '≤ both',
   };
 
   const state = {
@@ -965,8 +1001,8 @@
     const yScale = chart.options.scales.y;
     xScale.type = 'linear';
     yScale.type = 'linear';
-    xScale.title.text = 'Months to threshold';
-    yScale.title.text = 'Events with a point (career, division×role)';
+    xScale.title.text = 'Months';
+    yScale.title.text = 'Events';
     xScale.beginAtZero = true;
     yScale.beginAtZero = true;
     if (!rows.length) {
@@ -991,7 +1027,7 @@
     const yScale = chart.options.scales.y;
     xScale.type = 'linear';
     yScale.type = 'linear';
-    xScale.title.text = 'Done year';
+    xScale.title.text = 'Year';
     yScale.title.text = METRIC_LABEL[state.metric];
     xScale.beginAtZero = false;
     yScale.beginAtZero = true;
@@ -1069,13 +1105,13 @@
                 const raw = item.raw;
                 if (state.mode === 'dynamics') {
                   if (raw.y == null) return 'No data';
-                  if (state.metric === 'n') return `N: ${raw.n}`;
+                  if (state.metric === 'n') return `Dancers: ${raw.n}`;
                   const val = state.metric === 'both'
                     ? `${Math.round(raw.y * 10) / 10}%`
                     : String(Math.round(raw.y * 10) / 10);
                   return [
                     `${METRIC_LABEL[state.metric]}: ${val}`,
-                    `N: ${raw.n}`,
+                    `Dancers: ${raw.n}`,
                   ];
                 }
                 if (raw?.raw) {
@@ -1101,7 +1137,7 @@
         },
         scales: {
           x: {
-            title: { display: true, text: 'Months to threshold' },
+            title: { display: true, text: 'Months' },
             grid: { display: false },
             border: { display: true, color: '#D1D5DB' },
             ticks: {
@@ -1114,7 +1150,7 @@
             beginAtZero: true,
           },
           y: {
-            title: { display: true, text: 'Events with a point (career, division×role)' },
+            title: { display: true, text: 'Events' },
             grid: { display: false },
             border: { display: true, color: '#D1D5DB' },
             ticks: { color: '#6B7280' },
