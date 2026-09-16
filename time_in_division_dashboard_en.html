@@ -489,10 +489,10 @@
             <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars: before formal Champions rules (pre-2021) — Champions points only (1 may / 10 must) on real events; from 2021 — OR of Champions pts or All-Stars pts. No synthetic date at rule introduction.</li>
             <li><strong>Months:</strong> calendar months between year-months (same formula as division-transition metrics).</li>
             <li><strong>Events:</strong> unique events with a point in that division×role over the whole career.</li>
-            <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To. Data cut-off: <span id="asOfNote">—</span>.</li>
+            <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To, only within the allowed/required era for that division (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). Earlier single-threshold years are excluded — this dashboard focuses on the may/must buffer corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events. KPI “≤ both medians” = share in the lower-left of the median cross.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
-            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done (full period; From/To hidden). Click a KPI card to choose the series (resets to N when entering Dynamics). Years with N = 0 create a gap. Median months / median events / % ≤ both require N ≥ 10 in that year.</li>
+            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). Click a KPI card to choose the series (resets to N when entering Dynamics). Years with N = 0 create a gap. Median months / median events / % ≤ both require N ≥ 10 in that year.</li>
             <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; typeahead jumps to a row without filtering; CSV exports the full filtered set (includes threshold).</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
@@ -508,6 +508,14 @@
   const COLOR = { Leader: '#6366F1', Follower: '#F43F5E', All: '#6B7280' };
   const PAGE_SIZE = 50;
   const MIN_N_LINE = 10;
+  /** First calendar year of allowed/required (may/must buffer) by division. */
+  const YEAR_FLOOR = {
+    Novice: 2018,
+    Intermediate: 2018,
+    Advanced: 2018,
+    'All-Stars': 2021,
+  };
+  const DEFAULT_YEAR = 2026;
   const METRIC_LABEL = {
     n: 'N',
     months: 'Median months',
@@ -590,6 +598,10 @@
     return (100 * inside) / rows.length;
   }
 
+  function yearFloorForDivision(division) {
+    return YEAR_FLOOR[division] ?? 2018;
+  }
+
   /** @param {{ ignoreYears?: boolean }} [opts] */
   function filteredRows(opts) {
     const ignoreYears = !!(opts && opts.ignoreYears);
@@ -598,13 +610,14 @@
     const thr = state.threshold;
     const y0 = state.yearFrom;
     const y1 = state.yearTo;
+    const floor = yearFloorForDivision(state.division);
     return d.spells.filter((s) => {
       if (s.division !== state.division) return false;
       if (state.role !== 'All' && s.role !== state.role) return false;
       const hit = s[thr];
       if (!hit) return false;
       const y = doneYear(hit);
-      if (y == null) return false;
+      if (y == null || y < floor) return false;
       if (ignoreYears) return true;
       if (y0 == null || y1 == null) return false;
       return y >= y0 && y <= y1;
@@ -1244,20 +1257,44 @@
     state.yearTo = to;
   }
 
-  function collectDoneYears(data) {
+  function collectDoneYearsForDivision(data, division) {
+    const floor = yearFloorForDivision(division);
     const set = new Set();
-    data.spells.forEach((s) => {
+    (data.spells || []).forEach((s) => {
+      if (s.division !== division) return;
       ['allowed', 'required'].forEach((k) => {
         const y = doneYear(s[k]);
-        if (y != null) set.add(y);
+        if (y != null && y >= floor) set.add(y);
       });
     });
     return [...set].sort((a, b) => a - b);
   }
 
+  function pickDefaultYear(yearOpts) {
+    if (yearOpts.includes(DEFAULT_YEAR)) return DEFAULT_YEAR;
+    const atOrAfter = yearOpts.find((y) => y >= DEFAULT_YEAR);
+    return atOrAfter ?? yearOpts[yearOpts.length - 1];
+  }
+
+  /** Rebuild From/To options for the current division; clamp selection into the allowed/required era. */
+  function applyYearOptionsForDivision(preserveSelection) {
+    if (!state.data) return;
+    const floor = yearFloorForDivision(state.division);
+    const years = collectDoneYearsForDivision(state.data, state.division);
+    const yearOpts = years.length ? years : [floor];
+    let from = preserveSelection ? state.yearFrom : null;
+    let to = preserveSelection ? state.yearTo : null;
+    const fallback = pickDefaultYear(yearOpts);
+    if (from == null || !yearOpts.includes(from)) from = fallback;
+    if (to == null || !yearOpts.includes(to)) to = fallback;
+    if (from > to) to = from;
+    fillYearSelects(yearOpts, from, to);
+  }
+
   async function init() {
     const onFilterChange = (key, value) => {
       const prevMode = state.mode;
+      const prevDivision = state.division;
       state[key] = value;
       if (key === 'mode') {
         if (value === 'dynamics' && prevMode !== 'dynamics') state.metric = 'n';
@@ -1265,6 +1302,9 @@
         destroyChart();
       }
       if (key === 'division' || key === 'threshold' || key === 'role') state.tablePage = 0;
+      if (key === 'division' && value !== prevDivision) {
+        applyYearOptionsForDivision(true);
+      }
       render();
       if (key === 'mode' && window.WsdcSelect) {
         WsdcSelect.refresh(document.getElementById('modeSelect'));
@@ -1326,20 +1366,7 @@
     state.binE = Number(state.data.bin_events) || 2;
     document.getElementById('asOfNote').textContent = state.data.data_as_of;
 
-    const years = collectDoneYears(state.data);
-    const asOfYear = Number(String(state.data.data_as_of).slice(0, 4));
-    const maxY = years.length ? years[years.length - 1] : asOfYear;
-    const minY = years.length ? years[0] : asOfYear;
-    const DEFAULT_YEAR = 2026;
-    const yearOpts = years.length ? years : [asOfYear];
-    const defaultYearInRange = () => {
-      if (yearOpts.includes(DEFAULT_YEAR)) return DEFAULT_YEAR;
-      const atOrAfter = yearOpts.find((y) => y >= DEFAULT_YEAR);
-      return atOrAfter ?? yearOpts[yearOpts.length - 1];
-    };
-    const defaultFrom = defaultYearInRange();
-    const defaultTo = defaultYearInRange();
-    fillYearSelects(yearOpts, defaultFrom, defaultTo);
+    applyYearOptionsForDivision(false);
 
     if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
     render();
