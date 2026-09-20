@@ -2,6 +2,8 @@
 
 Документ фиксирует **редакторские принципы** серии. Методология данных (Skill JJ, gaps, метрики) живёт в workspace docs: `projects/wsdc/docs/events/EVENT_ARTICLE_NOTES.md`.
 
+**Дизайн / shell:** новые draft и published article HTML — по [DESIGN_GUIDELINE.md](../docs/DESIGN_GUIDELINE.md) и [DESIGN_CHECKLIST.md](../docs/DESIGN_CHECKLIST.md) (chrome, tokens, article-shell, primitives).
+
 Источник: редакторский разбор пилотной статьи про 4TH of July Convention  
 ([ChatGPT share](https://chatgpt.com/share/6a5f7f6a-ed10-83eb-bf1e-1e43f79f69a4)), плюс правки, согласованные при доработке пилота.
 

@@ -1,23 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Secondary-role points distribution by country</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --surface-card: #ffffff;
-      --text: #2c2f30;
-      --muted-soft: #abadae;
-      --border: rgba(117, 119, 120, 0.16);
-      --primary: #111827;
-      --secondary: #2dd4bf;
-      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-      --radius-outer: 30px;
-      --radius-md: 12px;
+      --bg: var(--wsdc-color-surface-soft, #f8fafc);
+      --card: var(--wsdc-color-surface, #ffffff);
+      --text: var(--wsdc-color-text, #1f2937);
+      --muted: var(--wsdc-color-text-muted, #4b5563);
+      --border: var(--wsdc-color-border, #d1d5db);
+      --accent: var(--wsdc-color-brand-accent, #2563eb);
     }
     * { box-sizing: border-box; }
     html, body {
@@ -361,7 +361,7 @@
     }
   </style>
 </head>
-<body>
+<body class="wsdc-embed-shell">
   <div class="viz-shell">
   <div class="chart-wrap">
       <div class="head">
@@ -370,11 +370,11 @@
             <label for="yearSel">Year</label>
             <div class="select-wrap">
               <span class="material-symbols-outlined select-icon year">calendar_month</span>
-              <select id="yearSel" class="filter-select" aria-label="Filter by year">
+              <select id="yearSel" class="wsdc-select filter-select" aria-label="Filter by year">
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
-                <option value="2026" selected>2026 (partial, as of 2026-08-05)</option>
+                <option value="2026" selected>2026 (partial, as of 2026-09-15)</option>
               </select>
               <span class="material-symbols-outlined select-caret">expand_more</span>
             </div>
@@ -383,7 +383,7 @@
             <label for="groupSel">Role</label>
             <div class="select-wrap">
               <span class="material-symbols-outlined select-icon role">groups</span>
-              <select id="groupSel" class="filter-select" aria-label="Filter by role">
+              <select id="groupSel" class="wsdc-select filter-select" aria-label="Filter by role">
                 <option value="Total">Total</option>
                 <option value="Leader">Leader</option>
                 <option value="Follower">Follower</option>
@@ -395,7 +395,7 @@
             <label for="divisionSel">Division</label>
             <div class="select-wrap">
               <span class="material-symbols-outlined select-icon division">trophy</span>
-              <select id="divisionSel" class="filter-select" aria-label="Filter by division">
+              <select id="divisionSel" class="wsdc-select filter-select" aria-label="Filter by division">
                 <option value="Total">Total</option>
                 <option value="Newcomer">Newcomer</option>
                 <option value="Novice">Novice</option>
@@ -502,6 +502,7 @@
       "Spain": "ES",
       "Slovenia": "SI",
       "Portugal": "PT",
+      "Romania": "RO",
       "Ireland": "IE",
       "Bulgaria": "BG",
       "Malaysia": "MY"
@@ -626,7 +627,7 @@
     let activeGroup = "Total";
     let activeDivision = "Total";
     const pinState = { active: false, point: null, x: 0, y: 0 };
-    const UNIFIED_URL = "./static/data/secondary_country_unified.json?v=20260805-sync";
+    const UNIFIED_URL = "./static/data/secondary_country_unified.json?v=20260915-sync";
     let unifiedData = null;
     let unifiedLoadPromise = null;
 
@@ -1048,5 +1049,6 @@
         // keep legacy embedded DATA as fallback
       });
   </script>
+  <script src="static/js/wsdc-select.js"></script>
 </body>
 </html>

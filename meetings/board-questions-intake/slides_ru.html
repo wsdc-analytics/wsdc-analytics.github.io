@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="WSDC Analytics: концепт приёма вопросов Board (категории 4+1). Unlisted brief.">
+  <title>Приём вопросов Board · 4+1 (RU)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --slide-max: 1080px;
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+    }
+    .deck { height: 100%; display: flex; flex-direction: column; }
+    .chrome {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chrome strong { color: var(--ink); font-weight: 600; }
+    .chrome .navbtns { display: flex; gap: 8px; align-items: center; }
+    .chrome button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .chrome button:hover { border-color: var(--accent); }
+    .chrome button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: auto;
+    }
+    .slide {
+      display: none;
+      width: min(100%, var(--slide-max));
+      min-height: min(72vh, 640px);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 40px 32px;
+      box-shadow: var(--wsdc-shadow-card);
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .badge .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+      line-height: 1.2;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 16px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 46rem;
+    }
+    ul, ol { margin: 0 0 12px; padding-left: 1.2rem; max-width: 46rem; }
+    li { margin: 0.35rem 0; line-height: 1.45; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 8px 0 12px;
+    }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 8px 0 10px;
+    }
+    @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
+    .grid3 .card h3 { font-size: 0.88rem; }
+    .grid3 .card p, .grid3 .card ul { font-size: 0.82rem; line-height: 1.35; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--soft);
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .card p, .card ul { margin: 0; font-size: 0.9rem; }
+    .card ul { padding-left: 1.1rem; }
+    .notes {
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .title-slide { justify-content: center; }
+    .title-slide .meta { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+    .cite { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+    .foot-hint {
+      flex: 0 0 auto;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    kbd {
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: var(--bg);
+    }
+    .cat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 8px 0 12px;
+    }
+    .cat-table th, .cat-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .cat-table th { color: var(--ink); font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86em; }
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .stat {
+      flex: 1 1 90px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: var(--soft);
+      text-align: center;
+    }
+    .stat .n {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .stat .l {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .funnel { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--ink); }
+    .funnel .band p { margin: 0; font-size: 0.86rem; line-height: 1.4; }
+    .cat-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0 8px;
+    }
+    .cat-row {
+      display: grid;
+      grid-template-columns: 3.2rem 1fr;
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--soft);
+    }
+    .cat-row .cid {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      padding-top: 1px;
+    }
+    .cat-row h3 {
+      margin: 0 0 3px;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+    .cat-row p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      color: var(--body);
+    }
+    .cat-row.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .cat-row.c2 { background: #fffbeb; border-color: #fde68a; }
+    .cat-row.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .cat-row.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 10px;
+      margin: 12px 0 8px;
+      align-items: stretch;
+    }
+    @media (max-width: 800px) { .flow { grid-template-columns: 1fr; } }
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .flow-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: var(--soft);
+      flex: 1;
+    }
+    .flow-box h3 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+    .flow-box p {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .flow-box.ready { background: #ecfdf5; border-color: #bbf7d0; }
+    .flow-box.wait { background: #fffbeb; border-color: #fde68a; }
+    .flow-box.idea { background: #eef4fb; border-color: #bfdbfe; }
+    .flow-box.out { background: #f8fafc; }
+    .flow-box.scope {
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      margin-top: 8px;
+    }
+    .flow-arrow {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      padding: 2px 0;
+    }
+    .flow-mid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+    .badge .pill.deep {
+      background: #eef4fb;
+      border-color: #bfdbfe;
+      color: #1e3a5f;
+    }
+    .ladder-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 12px;
+      align-items: center;
+    }
+    .ladder-mini .step {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+    }
+    .ladder-mini .step.on {
+      color: var(--ink);
+    }
+    .ladder-mini .step.on.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .ladder-mini .step.on.c2 { background: #fffbeb; border-color: #fde68a; }
+    .ladder-mini .step.on.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .ladder-mini .step.on.c4 { background: #f8fafc; border-color: #cbd5e1; }
+    .ladder-mini .step.on.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .ladder-mini .arrow {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .ladder-mini .bar {
+      width: 1px;
+      height: 1.05rem;
+      background: var(--line);
+      margin: 0 4px 0 6px;
+    }
+    .examples {
+      margin-top: 8px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #fafbfc;
+    }
+    .examples h3 {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+    .examples ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      max-width: none;
+    }
+    .examples li {
+      margin: 0.22rem 0;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="chrome">
+      <div><strong>Приём вопросов Board</strong> · 16 сентября 2026</div>
+      <div class="navbtns">
+        <span id="counter">1 / 1</span>
+        <button type="button" id="prev" aria-label="Предыдущий слайд">←</button>
+        <button type="button" id="next" aria-label="Следующий слайд">→</button>
+      </div>
+    </div>
+        <div class="stage" id="stage">
+
+      <section class="slide title-slide active" data-notes="Партнёрский тон: рамка процесса; читается и после созвона.">
+        <div class="badge"><span class="pill">Встреча</span> Analytics committee · 16 сентября 2026</div>
+        <h1>Вопросы Board → готовность данных WSDC:<br>одна рамка для приёма</h1>
+        <p class="lead">Как раскладываем запросы Board по готовности данных компании (C1–C5), как вопросы двигаются по мере улучшения источников, и что решаем сегодня — принимаем рамку до сверки матрицы.</p>
+        <p class="meta">Популяции · категории · лестница готовности · процесс · этот драфт Board · следующие шаги</p>
+      </section>
+
+      <section class="slide" data-notes="Правило Kay один раз — позитивно.">
+        <div class="badge"><span class="pill">Scope</span> Зачем классифицировать</div>
+        <h1>Общая рамка усиливает текущую работу</h1>
+        <p class="lead">Вопросы Board приходят смешанными. Рамка называет, что нужно каждому запросу, — комитет может опираться на инфраструктуру и текущие инициативы.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Фокус комитета (Kay)</h3>
+            <p>Усиливать текущие инициативы Board и инфраструктуру. Держать этот фокус, пока Board явно не расширит мандат.</p>
+          </div>
+          <div class="card">
+            <h3>Что даёт классификация</h3>
+            <ul>
+              <li>Дробит одно сообщение на отдельные вопросы</li>
+              <li>Называет слой данных для каждого вопроса</li>
+              <li>Отделяет готовые ответы от подготовительной работы и от решений про мандат</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Тот же funnel, что в brief 1 сентября.">
+        <div class="badge"><span class="pill">Frame</span> Популяции</div>
+        <h1>Три популяции. Не смешивать</h1>
+        <div class="funnel">
+          <div class="band">
+            <h3>Community</h3>
+            <p>Широкий мир WCS: social и обучение — в основном вне реестра.</p>
+          </div>
+          <div class="band mid">
+            <h3>Entry</h3>
+            <p>Все зарегистрированные в WSDC J&amp;J. Уже запрошены в списках участников Score Report — для аналитики нужно хранить их централизованно и связывать по ID танцора и ивента.</p>
+          </div>
+          <div class="band inner">
+            <h3>Scored</h3>
+            <p>Люди с начисленными поинтами / Competitor ID после поинта. Это то, что публичный реестр поддерживает сегодня.</p>
+          </div>
+        </div>
+        <p class="cite">Competitor ID только после поинта — Rules 2026.1B §3.2.2c. Согласовано с analytics brief от 1 сентября.</p>
+      </section>
+
+<section class="slide" data-notes="Категории: данные есть / нет / вне / scope.">
+        <div class="badge"><span class="pill">Model</span> Категории</div>
+        <h1>Как мы раскладываем вопросы Board</h1>
+        <p class="lead">Не «хорошая / плохая база», а <strong>готовность данных компании (WSDC)</strong> к ответу.</p>
+        <div class="cat-stack">
+          <div class="cat-row c1">
+            <div class="cid">C1</div>
+            <div>
+              <h3>Можно отвечать сейчас</h3>
+              <p>Данные уже в рабочем стриме (Points Registry, каталог ивентов). Часть вопросов — <strong>полностью</strong>; часть — <strong>частично</strong> (обычно только Scored), если спрашивающего это устраивает.</p>
+            </div>
+          </div>
+          <div class="cat-row c2">
+            <div class="cid">C2</div>
+            <div>
+              <h3>Данные в контуре WSDC есть — в стрим ещё нельзя</h3>
+              <p>Уже собираются (часто через Google Sheets / Score Report), но не нормализованы, не почищены, нет регулярного пути в аналитику. Нужна доработка: схема, единые названия, связь по ID, централизованное хранение — чтобы сделать пригодными для аналитики.</p>
+            </div>
+          </div>
+          <div class="cat-row c3">
+            <div class="cid">C3</div>
+            <div>
+              <h3>В контуре WSDC, но пока не собирали</h3>
+              <p>Предполагаем, откуда взять (внутри WSDC). Пока сырого потока нет. Сначала научиться брать → затем это станет C2.</p>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cid">C4</div>
+            <div>
+              <h3>Вне WSDC</h3>
+              <p>Локальные танцы, воркшопы, non-WSDC weekends, опросы. Когда данные начнут собирать — попадают в C2 (есть, но ещё не в общем аналитическом стриме).</p>
+            </div>
+          </div>
+          <div class="cat-row c5">
+            <div class="cid">C5</div>
+            <div>
+              <h3>Другой круг: scope / governance</h3>
+              <p>Приоритеты, product, политика, fee — не датасет. К лестнице готовности C1–C4 почти не относится.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Лестница до deep-слайдов — детали можно пролистнуть.">
+        <div class="badge"><span class="pill">Logic</span> Трансформация</div>
+        <h1>Как вопросы двигаются по мере готовности данных</h1>
+        <div class="flow">
+          <div class="flow-col">
+            <div class="flow-box idea">
+              <h3>C3 · ещё не брали</h3>
+              <p>Есть гипотеза, где в WSDC лежат данные. Проработать: к кому идти, можно ли взять, в каком виде.</p>
+            </div>
+            <div class="flow-box out">
+              <h3>C4 · вне WSDC</h3>
+              <p>Community-сбор. Когда поток появится — тоже в C2.</p>
+            </div>
+          </div>
+          <div class="flow-mid">
+            <p class="flow-arrow">научиться брать / собирать →</p>
+            <div class="flow-box wait">
+              <h3>C2 · есть, но не в стриме</h3>
+              <p>Короткий перечень: что получить и чему научиться (регулярный путь: получить → почистить → связать; единые названия). После этого вопросы уходят в C1.</p>
+            </div>
+            <p class="flow-arrow">→ научиться работать со стримом →</p>
+          </div>
+          <div class="flow-col">
+            <div class="flow-box ready">
+              <h3>C1 · отвечаем</h3>
+              <p>Полный ответ или частичный (если устраивает). Сюда схлопывается C2 — и то, что пришло в него из C3 или C4.</p>
+            </div>
+            <div class="flow-box scope">
+              <h3>C5 · отдельно</h3>
+              <p>Стратегия и ownership — не этап этой лестницы.</p>
+            </div>
+          </div>
+        </div>
+        <p class="notes">Развилка C3 / C4 → обе кормят C2. Дальше C2 → C1. Следующие слайды — каждая ступень подробно (на созвоне можно пролистнуть; полезно при чтении после).</p>
+      </section>
+
+<section class="slide" data-notes="C1 подробно: есть / пределы / quality. Можно пролистнуть.">
+        <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C1</span> Можно отвечать сейчас</div>
+        <h1>Рабочий стрим — аналитика уже возможна</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 вне</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 доработка</span>
+        <span class="arrow">→</span>
+        <span class="step on c1">C1 ответ</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
+        </div>
+        <p class="lead">Points Registry и каталог ивентов регулярно обновляются. Полный ответ, где вопрос укладывается в Scored; <strong>частичный</strong> — если спрашивающего устраивает этот слой.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что есть</h3>
+            <ul>
+              <li>Поинты / размещения / Competitor ID после поинта</li>
+              <li>Каталог ивентов и scored-ландшафт YOY</li>
+              <li>Готовая C1-работа (напр. переходы дивизионов)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Ограничения</h3>
+            <ul>
+              <li>Scored ≠ Entry / attendance / «held»</li>
+              <li>Частичный ответ надо явно маркировать — не «вся community»</li>
+              <li>Invitational / no-shows из реестра одними не закрыть</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Качество на этом слое</h3>
+            <ul>
+              <li>Меньше свободного текста; стандартизация сущностей</li>
+              <li>Регулярные таблицы: танцор · ивент · результат</li>
+              <li>Качество WSDC-слоя — не спор «чья база»</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Примеры из этого драфта Board</h3>
+          <ul>
+            <li><span class="mono">JT-1</span> · Tigges — время в дивизионе → <strong>C1 полный</strong> (путь через реестр уже есть)</li>
+            <li><span class="mono">JN-1b</span> · Jen — сколько дошли до All-Star → <strong>C1 полный</strong></li>
+            <li><span class="mono">YV-1</span> · Yvonne — competitors по skill level → <strong>C1 частичный</strong> (только Scored; полный Entry — C2)</li>
+          </ul>
+        </div>
+        <p class="notes">После принятия рамки естественные C1-пакеты: прогрессия / структура поинтов · scored-ландшафт ивентов · пути Champions и inactivity (с оговорками).</p>
+      </section>
+<section class="slide" data-notes="C2 подробно: Score Report ~2023, путь в C1.">
+        <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C2</span> Есть — не в стриме</div>
+        <h1>Уже в контуре WSDC — ещё не стыкуется</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 вне</span>
+        <span class="arrow">→</span>
+        <span class="step on c2">C2 доработка</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 ответ</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
+        </div>
+        <p class="lead">В Score Report / Sheets уже есть зачатки (часто с ~2023). Можно проектировать, как они войдут в общий аналитический стрим рядом с C1.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что уже есть</h3>
+            <ul>
+              <li>Отчёты ивентов: тиры, counts по номинациям / ролям</li>
+              <li>Competitors List — проблемный, но след есть</li>
+              <li>Тот же контур, что требования к спискам участников Score Report</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Ограничения</h3>
+            <ul>
+              <li>Глубина в основном с ~2023</li>
+              <li>Нет устойчивой схемы; не храним централизованно; не связаны по ID танцора / ивента</li>
+              <li>Пока не садится в общий аналитический стрим рядом с C1</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Путь → C1</h3>
+            <ul>
+              <li>Регулярный путь: получить → почистить → сущности → связать с C1</li>
+              <li>Единые названия ивентов и мест</li>
+              <li>Архив до 2023 / пропуски → часто сначала C3, потом C2</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Примеры из этого драфта Board</h3>
+          <ul>
+            <li><span class="mono">YV-1-E</span> · Yvonne — тот же вопрос про competitors → хранить списки Score Report централизованно и связать по ID</li>
+            <li><span class="mono">PL-1b</span> · Paul — prelims / shelf judges → поля есть в Score Report, ещё не в общем стриме</li>
+          </ul>
+        </div>
+        <p class="notes">List участников ещё зачаток: практический добор — scoring-системы. Текущие частичные фиды остаются C2, пока не связаны с C1.</p>
+      </section>
+<section class="slide" data-notes="C3 подробно: найти внутри WSDC, затем повысить.">
+        <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C3</span> В контуре — ещё не брали</div>
+        <h1>Полагаем, что лежит в WSDC — пока не забирали</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step on c3">C3 найти</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 вне</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 доработка</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 ответ</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
+        </div>
+        <p class="lead">По вопросам Board: к кому идти внутри WSDC, что запросить, можно ли взять. Часто — архив / обогащение того же блока, что C2.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Типичные пробелы</h3>
+            <ul>
+              <li>Глубина Score Report / списков до 2023</li>
+              <li>Home city/state, official dates, потоки судей AJP</li>
+              <li>Поля где-то в ops — не в нашем стриме</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Работа сейчас</h3>
+            <ul>
+              <li>Найти владельца и формат внутри WSDC</li>
+              <li>Подтвердить: можно ли получить и на каких правилах</li>
+              <li>Не выдавать за уже готовое к аналитике</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Дальше — повышение</h3>
+            <ul>
+              <li>Нашли и можно брать → <strong>C2</strong></li>
+              <li>Регулярный путь + связь с C1 → <strong>C1</strong></li>
+              <li>Не нашли / вне контура → пересмотр (C4 / парк)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Примеры из этого драфта Board</h3>
+          <ul>
+            <li><span class="mono">JC-3b</span> · Coakley — история Classic/Showcase → нет в Points Registry; сначала искать внутри WSDC</li>
+            <li><span class="mono">PL-3</span> · Paul — реестр сертифицированных судей AJP → дизайн: кто держит и как забрать</li>
+          </ul>
+        </div>
+      </section>
+<section class="slide" data-notes="C4 подробно: вне WSDC, regional leads.">
+        <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C4</span> Вне WSDC</div>
+        <h1>Локальный мир WCS — не контур реестра</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
+        <span class="step on c4">C4 вне</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 доработка</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 ответ</span>
+        <span class="bar"></span>
+        <span class="step">C5 отдельно</span>
+        </div>
+        <p class="lead">Воркшопы, локальные танцы, non-WSDC weekends, популяция WCS вокруг ивентов (напр. JN-3c). Здесь старт — <strong>дизайн сбора</strong>, не extract из Points Registry.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что это</h3>
+            <ul>
+              <li>Community-ландшафт вне ивентов WSDC</li>
+              <li>Радиус от venue / локальная популяция</li>
+              <li>Точность не будет registry-grade</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Как организовать</h3>
+            <ul>
+              <li>Начать с уже собранных community-хабов (примеры ниже), затем закрывать дыры</li>
+              <li>Возможно regional leads из других комитетов</li>
+              <li>Сектора / регионы + cadence проверки; владелец и мандат Board</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Дальше</h3>
+            <ul>
+              <li>Когда поток есть → <strong>C2</strong></li>
+              <li>Комитет может советовать структуру — программа и product остаются у Board</li>
+              <li>Product / fee / hub-политика → <strong>C5</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Примеры из этого драфта Board</h3>
+          <ul>
+            <li><span class="mono">JC-1 / JC-2</span> · Coakley — воркшопы и локальные ивенты по миру → community-сбор</li>
+            <li><span class="mono">JN-3c</span> · Jen — WCS-население в 100 милях от ивента → локальная community, не реестр</li>
+          </ul>
+        </div>
+        <p class="cite">Примеры уже централизованных community-листингов (не WSDC, не registry-grade): <a href="https://weekenders.dance/" target="_blank" rel="noopener noreferrer">weekenders.dance</a> · <a href="https://westiehub.dance/" target="_blank" rel="noopener noreferrer">westiehub.dance</a></p>
+      </section>
+<section class="slide" data-notes="C5 подробно: не вопрос готовности данных. Фокус Kay — второй раз.">
+        <div class="badge"><span class="pill deep">Deep dive · можно пролистнуть</span> <span class="pill">C5</span> Scope / governance</div>
+        <h1>Это не вопрос готовности данных</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 найти</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 вне</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 доработка</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 ответ</span>
+        <span class="bar"></span>
+        <span class="step on c5">C5 отдельно</span>
+        </div>
+        <p class="lead">Отделить аналитику и подготовительную работу с данными от стратегии, продукта и политики — чтобы комитет оставался на готовности данных и текущих инициативах (Kay).</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Что это</h3>
+            <ul>
+              <li>Приоритеты, мандат, растягивание mission</li>
+              <li>Сайт / product (напр. рейтинги на сайте)</li>
+              <li>Fee, merge/delete, <em>политика</em> аудита</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Почему не лестница данных</h3>
+            <ul>
+              <li>Новая таблица этот вопрос не закроет</li>
+              <li>Не двигается по C3 → C2 → C1</li>
+              <li>Нужно решение Board / ops, а не путь данных</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что делаем</h3>
+            <ul>
+              <li>Вернуть Board / ops с ясной рекомендацией (фокус комитета)</li>
+              <li>Можно советовать на уже готовых C1-ответах — не владеть продуктом</li>
+              <li>Паркуем, пока Board не назначит владельца или мандат</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Примеры из этого драфта Board</h3>
+          <ul>
+            <li><span class="mono">JC-7</span> · Coakley — история рейтинга на сайте → product</li>
+            <li><span class="mono">JC-4b</span> · Coakley — listing fees → Board / finance</li>
+            <li><span class="mono">JC-6b</span> · Coakley — политика аудита / merge / delete → Board / ops</li>
+          </ul>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Workflow — один слайд.">
+        <div class="badge"><span class="pill">Process</span> Процесс</div>
+        <h1>От вопроса к трекингу</h1>
+        <ol>
+          <li><strong>Приём</strong> — кто спросил, текст, must-have vs nice-to-have</li>
+          <li><strong>Декомпозиция</strong> — одно сообщение Board → несколько отдельных вопросов</li>
+          <li><strong>Классификация</strong> — C1–C5 + популяция (Community / Entry / Scored)</li>
+          <li><strong>Ответ</strong> — отдать (C1), частичный ответ + подготовительный шаг (C2/C3), дизайн сбора (C4) или вернуть по scope (C5)</li>
+          <li><strong>Трекинг и переклассификация</strong> — когда подготовительный шаг сделан</li>
+        </ol>
+      </section>
+
+<section class="slide" data-notes="Счётчики из MATRIX — evidence, что рамка уже применена.">
+        <div class="badge"><span class="pill">Этот драфт</span> Карта intake</div>
+        <h1>Как ложится текущий драфт Board</h1>
+        <p class="lead">60 отдельных вопросов после разбиения сообщений Board. C1: 10 полных (брать сейчас), затем 12 частичных (Scored / ограниченно). C2: конкретный подготовительный шаг на каждый вопрос.</p>
+        <div class="stat-row">
+          <div class="stat"><span class="n">10</span><span class="l">C1 полный</span></div>
+          <div class="stat"><span class="n">12</span><span class="l">C1 частичный</span></div>
+          <div class="stat"><span class="n">17</span><span class="l">C2 доработка</span></div>
+          <div class="stat"><span class="n">5</span><span class="l">C3 дизайн</span></div>
+          <div class="stat"><span class="n">7</span><span class="l">C4 вне</span></div>
+          <div class="stat"><span class="n">9</span><span class="l">C5 scope</span></div>
+        </div>
+        <p class="notes">C1 делится на полный ответ (брать сейчас) и частичный (та же цитата Board, Scored / ограниченный слой). Entry / списки — в C2 с названным следующим шагом.</p>
+        <p class="notes" style="margin-top:8px"><strong>Приложение:</strong> полный список вопросов по категориям (цитата + комментарий / шаг) → <a href="appendix_ru.html">appendix_ru.html</a> · <a href="appendix_en.html">EN</a></p>
+      </section>
+
+<section class="slide" data-notes="Решение комитета сегодня — не утверждённый план 30/90.">
+        <div class="badge"><span class="pill">Next</span> Что решаем сегодня</div>
+        <h1>Что дальше</h1>
+        <ol>
+          <li><strong>Сегодня</strong> — принимаем рамку C1–C5, правим формулировки или отправляем на доработку</li>
+          <li><strong>Следующий созвон</strong> — сверка матрицы по строкам (согласны / переклассифицируем)</li>
+          <li><strong>После этого</strong> — распределение C1-пакетов и общих подготовительных треков</li>
+        </ol>
+        <p class="notes">Это последовательность шагов, не датированный план. Позже можно коротко вынести Board: подтвердить рамку; назначить владельца, только если community listings (C4) станут программой Board. Публичное подтверждение C1: <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a>.</p>
+      </section>
+
+    </div>
+    <div class="foot-hint">Клавиши <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · клик по краям</div>
+  </div>
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('counter');
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        counter.textContent = (i + 1) + ' / ' + slides.length;
+        const note = slides[i].getAttribute('data-notes') || '';
+        if (note) console.debug('[notes]', note);
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+      document.getElementById('prev').addEventListener('click', () => show(i - 1));
+      document.getElementById('next').addEventListener('click', () => show(i + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); show(i + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); show(i - 1);
+        } else if (e.key === 'Home') show(0);
+        else if (e.key === 'End') show(slides.length - 1);
+      });
+      document.getElementById('stage').addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width * 0.28) show(i - 1);
+        else if (x > rect.width * 0.72) show(i + 1);
+      });
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash - 1 : 0);
+    })();
+  </script>
+</body>
+</html>

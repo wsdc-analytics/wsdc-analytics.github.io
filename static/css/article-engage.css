@@ -1,0 +1,145 @@
+/* Article engage: short Q&A CTA + emoji thumbs on one row */
+
+.article-engage {
+  margin: 20px 0 8px;
+  padding: 14px 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--wsdc-color-border, #d1d5db) 70%, transparent);
+}
+
+.article-engage__row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+.article-engage__cta {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--wsdc-color-text-muted, #4b5563);
+}
+
+.article-engage__cta a {
+  color: var(--wsdc-color-brand-accent, #2563eb);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.article-engage__cta a:hover {
+  color: var(--wsdc-color-text-strong, #0b1221);
+}
+
+.article-engage__thumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.article-engage__btn {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  min-height: 28px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9ca3af;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    transform 120ms ease,
+    opacity 140ms ease;
+}
+
+.article-engage__emoji {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1.15rem;
+  line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  filter: grayscale(1);
+  opacity: 0.85;
+  transition:
+    filter 140ms ease,
+    opacity 140ms ease;
+}
+
+.article-engage__count {
+  display: inline-flex;
+  align-items: center;
+  min-width: 1.1em;
+  height: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: inherit;
+}
+
+.article-engage__btn[data-value="down"] .article-engage__emoji {
+  /* Optical center of 👎 sits higher than 👍 in most emoji fonts */
+  transform: translateY(0.06em);
+}
+
+.article-engage__btn:hover {
+  color: #6b7280;
+}
+
+.article-engage__btn:hover .article-engage__emoji {
+  opacity: 1;
+}
+
+.article-engage__btn:active {
+  transform: scale(0.96);
+}
+
+.article-engage__btn:focus {
+  outline: none;
+}
+
+.article-engage__btn:focus-visible {
+  outline: 2px solid #9ca3af;
+  outline-offset: 2px;
+}
+
+.article-engage__btn.is-active {
+  color: #6b7280;
+}
+
+.article-engage__btn.is-active .article-engage__emoji {
+  filter: none;
+  opacity: 1;
+}
+
+.article-engage__btn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+@media (max-width: 560px) {
+  .article-engage__row {
+    flex-wrap: wrap;
+  }
+
+  .article-engage__thumbs {
+    margin-left: auto;
+  }
+}

@@ -1,0 +1,1010 @@
+(function () {
+  "use strict";
+
+  const cfg = window.QA_CONFIG || {};
+  const SUPABASE_URL = (cfg.supabaseUrl || "").replace(/\/$/, "");
+  const ANON = cfg.supabaseAnonKey || "";
+  const API_BASE = (cfg.apiBase || "").replace(/\/$/, "");
+  const MOD_KEY = "qa_admin_secret_v1";
+  const COOLDOWN_KEY = "qa_last_post_ts";
+  const COOLDOWN_MS = 20000;
+  const I18n = window.QaI18n || null;
+
+  function langFromQuery() {
+    try {
+      const q = new URLSearchParams(location.search).get("lang");
+      if (q && I18n) return I18n.normalizeLang(q);
+      if (q === "ru" || q === "es" || q === "en") return q;
+    } catch {
+      /* ignore */
+    }
+    const stored = localStorage.getItem("wsdc-lang");
+    if (stored === "ru" || stored === "es" || stored === "en") return stored;
+    return "en";
+  }
+
+  function t(key) {
+    if (I18n) return I18n.t(state.lang, key);
+    return key;
+  }
+
+  function localizedBoardTitle(slug, fallback) {
+    if (I18n) return I18n.boardTitle(state.lang, slug, fallback);
+    return fallback || slug;
+  }
+
+  const els = {
+    composeBoard: document.getElementById("qaComposeBoard"),
+    composeBoardDd: document.getElementById("qaComposeBoardDd"),
+    composeBoardBtn: document.getElementById("qaComposeBoardBtn"),
+    composeBoardValue: document.getElementById("qaComposeBoardValue"),
+    composeBoardMenu: document.getElementById("qaComposeBoardMenu"),
+    composeTitle: document.getElementById("qaComposeTitle"),
+    composeLede: document.getElementById("qaComposeLede"),
+    threadBack: document.getElementById("qaThreadBack"),
+    optionalDetails: document.getElementById("qaOptionalDetails"),
+    threadList: document.getElementById("qaThreadList"),
+    threadPanel: document.getElementById("qaThreadPanel"),
+    threadTitle: document.getElementById("qaThreadTitle"),
+    threadMeta: document.getElementById("qaThreadMeta"),
+    posts: document.getElementById("qaPosts"),
+    newThreadForm: document.getElementById("qaNewThreadForm"),
+    replyForm: document.getElementById("qaReplyForm"),
+    status: document.getElementById("qaStatus"),
+    listStatus: document.getElementById("qaListStatus"),
+    modBar: document.getElementById("qaModBar"),
+    modUnlock: document.getElementById("qaModUnlock"),
+    modSecret: document.getElementById("qaModSecret"),
+    modLock: document.getElementById("qaModLock"),
+    modActions: document.getElementById("qaModActions"),
+    stats: document.getElementById("qaStats"),
+    aside: document.getElementById("qaAside"),
+  };
+
+  const state = {
+    lang: langFromQuery(),
+    boards: [],
+    boardSlug: "other",
+    threads: [],
+    threadId: null,
+    thread: null,
+    posts: [],
+    mod: Boolean(localStorage.getItem(MOD_KEY)),
+  };
+
+  function setStatus(msg, kind) {
+    if (!els.status) return;
+    els.status.textContent = msg || "";
+    els.status.classList.toggle("is-error", kind === "error");
+    els.status.classList.toggle("is-ok", kind === "ok");
+  }
+
+  function setListStatus(msg) {
+    if (els.listStatus) els.listStatus.textContent = msg || "";
+  }
+
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function safeHttpsUrl(raw) {
+    const s = String(raw || "").trim();
+    if (!s || s.length > 500) return null;
+    try {
+      const u = new URL(s);
+      if (u.protocol !== "https:") return null;
+      return u.href;
+    } catch {
+      return null;
+    }
+  }
+
+  function fmtDate(iso) {
+    try {
+      const locale =
+        state.lang === "ru" ? "ru-RU" : state.lang === "es" ? "es-ES" : "en-GB";
+      return new Date(iso).toLocaleString(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return iso || "";
+    }
+  }
+
+  function parseHash() {
+    const raw = (location.hash || "").replace(/^#\/?/, "");
+    const parts = raw.split("/").filter(Boolean);
+    if (parts[0] === "thread" && parts[1]) {
+      return { view: "thread", threadId: parts[1], boardSlug: state.boardSlug };
+    }
+    if (parts[0] === "board" && parts[1]) {
+      return { view: "board", boardSlug: parts[1], threadId: null };
+    }
+    return { view: "board", boardSlug: state.boardSlug || "other", threadId: null };
+  }
+
+  function goBoard(slug) {
+    location.hash = `#board/${slug}`;
+  }
+
+  function goThread(id) {
+    location.hash = `#thread/${id}`;
+  }
+
+  function setHubLang(lang) {
+    const next = I18n ? I18n.normalizeLang(lang) : lang === "ru" || lang === "es" ? lang : "en";
+    state.lang = next;
+    localStorage.setItem("wsdc-lang", next);
+    const url = new URL(location.href);
+    url.searchParams.set("lang", next);
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+    if (I18n) I18n.applyStatic(next);
+    const chrome = document.querySelector("[data-site-chrome]");
+    if (chrome) chrome.setAttribute("data-lang", next);
+    renderBoards();
+    syncComposeMode();
+    if (state.thread) renderThread();
+    else renderThreads();
+    if (state.mod) loadStats();
+  }
+
+  function applyLang() {
+    state.lang = langFromQuery();
+    localStorage.setItem("wsdc-lang", state.lang);
+    if (I18n) I18n.applyStatic(state.lang);
+    const chrome = document.querySelector("[data-site-chrome]");
+    if (chrome) {
+      chrome.setAttribute("data-lang", state.lang);
+      if (window.WsdcChrome && typeof window.WsdcChrome.applyLangLabels === "function") {
+        window.WsdcChrome.applyLangLabels(state.lang);
+      }
+    }
+  }
+
+  function applyPrefillFromQuery() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const pageUrl = params.get("page_url");
+      const titleHint = params.get("title");
+      if (!els.newThreadForm) return;
+      if (pageUrl) {
+        const safe = safeHttpsUrl(pageUrl) || pageUrl;
+        const input = els.newThreadForm.querySelector('[name="page_url"]');
+        if (input) {
+          input.value = safe;
+          if (els.optionalDetails) els.optionalDetails.open = true;
+        }
+      }
+      if (titleHint) {
+        const titleInput = els.newThreadForm.querySelector('[name="title"]');
+        if (titleInput && !titleInput.value) {
+          titleInput.value = String(titleHint).slice(0, 160);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  async function sb(path, options = {}) {
+    if (!SUPABASE_URL || !ANON) throw new Error(t("notConfigured"));
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      ...options,
+      headers: {
+        apikey: ANON,
+        Authorization: `Bearer ${ANON}`,
+        "Content-Type": "application/json",
+        Prefer: options.prefer || "return=representation",
+        ...(options.headers || {}),
+      },
+    });
+    const text = await res.text();
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = text;
+    }
+    if (!res.ok) {
+      const msg =
+        (data && data.message) ||
+        (data && data.error_description) ||
+        (typeof data === "string" ? data : "Request failed");
+      throw new Error(msg);
+    }
+    return data;
+  }
+
+  async function modApi(payload) {
+    if (!API_BASE) throw new Error("Moderation API is not configured (apiBase)");
+    const secret = localStorage.getItem(MOD_KEY) || "";
+    const res = await fetch(`${API_BASE}/api/qa-mod`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-qa-admin-secret": secret,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const detail = data.message || data.error || "Moderation failed";
+      throw new Error(detail);
+    }
+    return data;
+  }
+
+  async function notify(payload) {
+    if (!API_BASE) return;
+    try {
+      await fetch(`${API_BASE}/api/qa-notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch {
+      /* soft-fail */
+    }
+  }
+
+  function checkCooldown() {
+    const last = Number(localStorage.getItem(COOLDOWN_KEY) || 0);
+    const wait = COOLDOWN_MS - (Date.now() - last);
+    if (wait > 0) throw new Error(`Please wait ${Math.ceil(wait / 1000)}s before posting again`);
+  }
+
+  function markPosted() {
+    localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
+  }
+
+  function honeypotFilled(form) {
+    const hp = form.querySelector('[name="website"]');
+    return hp && String(hp.value || "").trim() !== "";
+  }
+
+  async function loadBoards() {
+    const rows = await sb("qa_boards?select=id,slug,title,sort_order&order=sort_order.asc");
+    state.boards = rows || [];
+    renderBoards();
+  }
+
+  function closeComposeBoardDd() {
+    if (!els.composeBoardDd) return;
+    els.composeBoardDd.classList.remove("is-open");
+    if (els.composeBoardBtn) els.composeBoardBtn.setAttribute("aria-expanded", "false");
+  }
+
+  function setComposeBoardValue(slug) {
+    const board =
+      state.boards.find((b) => b.slug === slug) || state.boards[0] || null;
+    const next = board ? board.slug : "";
+    if (els.composeBoard) els.composeBoard.value = next;
+    if (els.composeBoardValue && board) {
+      els.composeBoardValue.textContent = localizedBoardTitle(board.slug, board.title);
+    }
+    if (els.composeBoardMenu) {
+      els.composeBoardMenu.querySelectorAll('[role="option"]').forEach((opt) => {
+        opt.setAttribute("aria-selected", String(opt.getAttribute("data-value") === next));
+      });
+    }
+    closeComposeBoardDd();
+  }
+
+  function renderComposeBoardSelect() {
+    if (!els.composeBoardMenu) {
+      if (els.composeBoard && state.boardSlug) els.composeBoard.value = state.boardSlug;
+      return;
+    }
+    els.composeBoardMenu.innerHTML = state.boards
+      .map((b) => {
+        const label = localizedBoardTitle(b.slug, b.title);
+        return `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
+          b.slug === state.boardSlug ? "true" : "false"
+        }">${esc(label)}</button></li>`;
+      })
+      .join("");
+    setComposeBoardValue(state.boardSlug || (state.boards[0] && state.boards[0].slug) || "");
+  }
+
+  function renderBoards() {
+    if (!state.boardSlug && state.boards[0]) state.boardSlug = state.boards[0].slug;
+    renderComposeBoardSelect();
+  }
+
+  async function loadThreads() {
+    setListStatus(t("loading"));
+    const board = state.boards.find((b) => b.slug === state.boardSlug);
+    if (!board) {
+      els.threadList.innerHTML = `<p class="qa-empty">${esc(t("unknownBoard"))}</p>`;
+      setListStatus("");
+      return;
+    }
+
+    if (state.mod && API_BASE) {
+      try {
+        const data = await modApi({ action: "list_threads", board_slug: state.boardSlug });
+        state.threads = data.threads || [];
+      } catch (e) {
+        state.threads = await sb(
+          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
+        );
+      }
+    } else {
+      state.threads = await sb(
+        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at&board_id=eq.${board.id}&order=is_pinned.desc,created_at.desc&limit=80`
+      );
+    }
+    renderThreads();
+    setListStatus("");
+  }
+
+  function renderThreads() {
+    if (!els.threadList) return;
+    if (!state.threads.length) {
+      els.threadList.innerHTML = `<p class="qa-empty">${esc(t("empty"))}</p>`;
+      return;
+    }
+    els.threadList.innerHTML = `<ul class="qa-thread-list">${state.threads
+      .map((row) => {
+        const active = row.id === state.threadId ? " is-active" : "";
+        const badges = [
+          row.is_pinned ? `<span class="qa-flag is-pinned">${esc(t("pin"))}</span>` : "",
+          row.is_hidden ? `<span class="qa-flag is-hidden">${esc(t("hidden"))}</span>` : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+        return `<li>
+          <button type="button" class="qa-thread-item${active}" data-thread="${esc(row.id)}">
+            <div class="qa-thread-title"><span>${esc(row.title)}</span>${badges}</div>
+            <div class="qa-thread-meta"><span class="qa-thread-author${
+              row.is_moderator ? " is-mod" : ""
+            }">${esc(row.author_name)}</span><span class="qa-time">${esc(fmtDate(row.created_at))}</span></div>
+          </button>
+        </li>`;
+      })
+      .join("")}</ul>`;
+  }
+
+  async function loadThread(id) {
+    setStatus(t("loadingThread"));
+    const rows = state.mod && API_BASE
+      ? null
+      : await sb(
+          `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
+            id
+          )}&limit=1`
+        );
+
+    let thread = rows && rows[0];
+    if (!thread && state.mod && API_BASE) {
+      const data = await modApi({ action: "list_threads" });
+      thread = (data.threads || []).find((row) => row.id === id);
+    }
+    if (!thread) {
+      const pub = await sb(
+        `qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at,qa_boards(slug,title)&id=eq.${encodeURIComponent(
+          id
+        )}&limit=1`
+      );
+      thread = pub && pub[0];
+    }
+    if (!thread) throw new Error(t("threadNotFound"));
+
+    state.thread = thread;
+    state.threadId = thread.id;
+    if (thread.qa_boards && thread.qa_boards.slug) {
+      state.boardSlug = thread.qa_boards.slug;
+    }
+
+    let posts = [];
+    if (state.mod && API_BASE) {
+      try {
+        const data = await modApi({ action: "list_posts", thread_id: id });
+        posts = data.posts || [];
+      } catch (e) {
+        posts = await sb(
+          `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
+            id
+          )}&order=created_at.asc`
+        );
+      }
+    } else {
+      posts = await sb(
+        `qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at&thread_id=eq.${encodeURIComponent(
+          id
+        )}&order=created_at.asc`
+      );
+    }
+    state.posts = posts || [];
+    renderThread();
+    renderBoards();
+    renderThreads();
+    setStatus("");
+  }
+
+  function renderThread() {
+    const thr = state.thread;
+    if (!thr || !els.threadPanel) return;
+    els.threadPanel.hidden = false;
+    els.threadTitle.textContent = thr.title;
+    const slug =
+      (thr.qa_boards && thr.qa_boards.slug) ||
+      (state.boards.find((b) => b.id === thr.board_id) || {}).slug ||
+      state.boardSlug;
+    const boardTitle = localizedBoardTitle(
+      slug,
+      (thr.qa_boards && thr.qa_boards.title) || state.boardSlug
+    );
+    els.threadMeta.innerHTML = `${esc(boardTitle)} · ${esc(t("by"))} <strong class="qa-author${
+      thr.is_moderator ? " is-mod" : ""
+    }">${esc(thr.author_name)}</strong> · <span class="qa-time">${esc(
+      fmtDate(thr.created_at)
+    )}</span>${(() => {
+      const href = safeHttpsUrl(thr.page_url);
+      return href
+        ? ` · <a href="${esc(href)}" rel="noopener noreferrer" target="_blank">${esc(t("source"))}</a>`
+        : "";
+    })()}${
+      thr.is_pinned ? ` · <span class="qa-flag is-pinned">${esc(t("pin"))}</span>` : ""
+    }${thr.is_hidden ? ` · <span class="qa-flag is-hidden">${esc(t("hidden"))}</span>` : ""}`;
+
+    const opHtml = `<article class="qa-post qa-post--op">
+      <div class="qa-post-head"><span class="qa-post-author${
+        thr.is_moderator ? " is-mod" : ""
+      }">${esc(thr.author_name)}</span>
+      <span class="qa-time">${esc(fmtDate(thr.created_at))}</span></div>
+      <div class="qa-post-body">${esc(thr.body)}</div>
+    </article>`;
+
+    const replies = (state.posts || [])
+      .filter((p) => !p.is_op)
+      .map((p) => {
+        const hiddenClass = p.is_hidden ? " is-hidden" : "";
+        const hideLabel = p.is_hidden ? t("unhidePost") : t("hidePost");
+        const hideAction = p.is_hidden ? "unhide" : "hide";
+        return `<article class="qa-post qa-post--reply${hiddenClass}" data-post-id="${esc(p.id)}">
+      <div class="qa-post-head"><span class="qa-post-author${
+        p.is_moderator ? " is-mod" : ""
+      }">${esc(p.author_name)}</span>
+      <span class="qa-time">${esc(fmtDate(p.created_at))}</span>
+      ${p.is_hidden ? `<span class="qa-flag is-hidden">${esc(t("hidden"))}</span>` : ""}
+      ${
+        state.mod
+          ? `<span class="qa-mod-inline-group">
+          <button type="button" class="qa-mod-inline" data-mod-post="${esc(
+            p.id
+          )}" data-mod-action="${hideAction}">${esc(hideLabel)}</button>
+          <button type="button" class="qa-mod-inline qa-mod-inline--danger" data-mod-post="${esc(
+            p.id
+          )}" data-mod-action="delete">${esc(t("deletePost"))}</button>
+        </span>`
+          : ""
+      }
+      </div>
+      <div class="qa-post-body">${esc(p.body)}</div>
+    </article>`;
+      })
+      .join("");
+
+    els.posts.innerHTML = opHtml + replies;
+    syncComposeMode();
+    renderModActions();
+  }
+
+  function syncComposeMode() {
+    const replyMode = Boolean(state.threadId && state.thread);
+    if (els.newThreadForm) els.newThreadForm.hidden = replyMode;
+    if (els.replyForm) els.replyForm.hidden = !replyMode;
+    if (els.composeTitle) {
+      els.composeTitle.textContent = replyMode ? t("replyTitle") : t("composeTitle");
+      els.composeTitle.setAttribute("data-qa-i18n", replyMode ? "replyTitle" : "composeTitle");
+    }
+    if (els.composeLede) {
+      if (replyMode) {
+        const title = (state.thread && state.thread.title) || "";
+        els.composeLede.textContent = title
+          ? `${t("replyLede")} — ${title}`
+          : t("replyLede");
+        els.composeLede.removeAttribute("data-qa-i18n");
+      } else {
+        els.composeLede.textContent = t("composeLede");
+        els.composeLede.setAttribute("data-qa-i18n", "composeLede");
+      }
+    }
+  }
+
+  function renderModBar() {
+    if (!els.modBar) return;
+    const unlocked = state.mod;
+    els.modUnlock.hidden = unlocked;
+    els.modLock.hidden = !unlocked;
+    els.modActions.hidden = !unlocked || !state.threadId;
+    if (els.aside) {
+      els.aside.hidden = !unlocked;
+      if (!unlocked) els.aside.open = false;
+    }
+    if (!unlocked) els.modBar.open = false;
+    else if (state.threadId) els.modBar.open = true;
+  }
+
+  function renderModActions() {
+    if (!els.modActions || !state.thread) {
+      if (els.modActions) els.modActions.hidden = true;
+      return;
+    }
+    if (!state.mod) {
+      els.modActions.hidden = true;
+      return;
+    }
+    els.modActions.hidden = false;
+    const thr = state.thread;
+    const currentSlug =
+      (thr.qa_boards && thr.qa_boards.slug) ||
+      (state.boards.find((b) => b.id === thr.board_id) || {}).slug ||
+      state.boardSlug;
+    els.modActions.innerHTML = `
+      <div class="qa-mod-actions-row">
+        <button type="button" class="qa-mod-chip" data-mod-thread="hide">${esc(
+          thr.is_hidden ? t("unhideThread") : t("hideThread")
+        )}</button>
+        <button type="button" class="qa-mod-chip" data-mod-thread="pin">${esc(
+          thr.is_pinned ? t("unpin") : t("pin")
+        )}</button>
+        <button type="button" class="qa-mod-chip qa-mod-chip--danger" data-mod-thread="delete">${esc(
+          t("deleteThread")
+        )}</button>
+      </div>
+      <div class="qa-mod-move">
+        <span class="qa-compose-label" id="qaModMoveLabel">${esc(t("moveBoard"))}</span>
+        <div class="wsdc-dd wsdc-dd--auto qa-compose-board-dd" id="qaModMoveDd">
+          <button type="button" class="wsdc-dd__btn" id="qaModMoveBtn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="qaModMoveLabel">
+            <span class="wsdc-dd__value" id="qaModMoveValue">${esc(
+              localizedBoardTitle(currentSlug, currentSlug)
+            )}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="wsdc-dd__menu" id="qaModMoveMenu" role="listbox">${state.boards
+            .map((b) => {
+              const label = localizedBoardTitle(b.slug, b.title);
+              return `<li><button type="button" role="option" data-value="${esc(b.slug)}" aria-selected="${
+                b.slug === currentSlug ? "true" : "false"
+              }">${esc(label)}</button></li>`;
+            })
+            .join("")}</ul>
+        </div>
+        <input type="hidden" id="qaModMoveBoard" value="${esc(currentSlug || "")}">
+        <button type="button" class="qa-mod-chip" data-mod-thread="move">${esc(t("move"))}</button>
+      </div>`;
+    wireModMoveDd();
+  }
+
+  let modMoveDdWired = false;
+  function wireModMoveDd() {
+    const dd = document.getElementById("qaModMoveDd");
+    const btn = document.getElementById("qaModMoveBtn");
+    const menu = document.getElementById("qaModMoveMenu");
+    const hidden = document.getElementById("qaModMoveBoard");
+    const valueEl = document.getElementById("qaModMoveValue");
+    if (!dd || !btn || !menu || !hidden) return;
+
+    function close() {
+      dd.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const willOpen = !dd.classList.contains("is-open");
+      close();
+      if (willOpen) {
+        dd.classList.add("is-open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    };
+    menu.onclick = (e) => {
+      const opt = e.target.closest('[role="option"]');
+      if (!opt) return;
+      e.stopPropagation();
+      const slug = opt.getAttribute("data-value") || "";
+      hidden.value = slug;
+      if (valueEl) valueEl.textContent = opt.textContent.trim();
+      menu.querySelectorAll('[role="option"]').forEach((o) => {
+        o.setAttribute("aria-selected", String(o === opt));
+      });
+      close();
+    };
+    if (!modMoveDdWired) {
+      modMoveDdWired = true;
+      document.addEventListener("click", close);
+    }
+  }
+
+  async function loadStats() {
+    if (!els.stats || !state.mod || !API_BASE) return;
+    try {
+      const data = await modApi({ action: "stats" });
+      const lines = (data.boards || [])
+        .map((b) => {
+          const title = localizedBoardTitle(b.slug, b.title);
+          return (
+            `<li><strong>${esc(title)}</strong>: ${b.visible_threads} ${esc(t("visible"))}` +
+            (b.hidden_threads ? `, ${b.hidden_threads} ${esc(t("hidden"))}` : "") +
+            `</li>`
+          );
+        })
+        .join("");
+      els.stats.innerHTML = `<strong>${esc(t("boardCounts"))}</strong><ul>${lines}</ul>
+        <p>${esc(t("posts"))}: ${data.posts_total || 0}${
+        data.posts_hidden ? ` (${data.posts_hidden} ${esc(t("hidden"))})` : ""
+      }</p>`;
+    } catch (e) {
+      els.stats.textContent = e.message || t("statsUnavailable");
+    }
+  }
+
+  async function createThread(form) {
+    if (honeypotFilled(form)) return;
+    checkCooldown();
+    const formSlug =
+      (form.board_slug && form.board_slug.value) || state.boardSlug;
+    const board = state.boards.find((b) => b.slug === formSlug);
+    if (!board) throw new Error(t("selectBoard"));
+
+    const title = String(form.title.value || "").trim();
+    const author_name = String(form.author_name.value || "").trim();
+    const author_email = String(form.author_email.value || "").trim() || null;
+    const page_url_raw = String(form.page_url.value || "").trim();
+    const page_url = page_url_raw ? safeHttpsUrl(page_url_raw) : null;
+    if (page_url_raw && !page_url) throw new Error(t("pageUrlHttps"));
+    const body = String(form.body.value || "").trim();
+
+    let thread;
+    if (state.mod && API_BASE) {
+      const data = await modApi({
+        action: "create_thread",
+        board_id: board.id,
+        title,
+        author_name,
+        author_email,
+        page_url,
+        body,
+      });
+      thread = data.thread;
+    } else {
+      const rows = await sb(
+        "qa_threads?select=id,board_id,title,author_name,page_url,body,is_hidden,is_pinned,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            board_id: board.id,
+            title,
+            author_name,
+            author_email,
+            page_url,
+            body,
+          }),
+        }
+      );
+      thread = Array.isArray(rows) ? rows[0] : rows;
+      if (!thread || !thread.id) throw new Error(t("createFailed"));
+
+      await sb(
+        "qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            thread_id: thread.id,
+            author_name,
+            author_email,
+            body,
+            is_op: true,
+          }),
+        }
+      );
+    }
+    if (!thread || !thread.id) throw new Error(t("createFailed"));
+
+    markPosted();
+    await notify({
+      kind: "thread",
+      board: board.slug,
+      title,
+      author_name,
+      thread_id: thread.id,
+      preview: body,
+    });
+    state.boardSlug = board.slug;
+    form.reset();
+    renderComposeBoardSelect();
+    goThread(thread.id);
+    setStatus(t("threadPublished"), "ok");
+  }
+
+  async function createReply(form) {
+    if (honeypotFilled(form)) return;
+    checkCooldown();
+    if (!state.threadId) throw new Error(t("noThread"));
+    const author_name = String(form.author_name.value || "").trim();
+    const author_email = String(form.author_email.value || "").trim() || null;
+    const body = String(form.body.value || "").trim();
+
+    if (state.mod && API_BASE) {
+      await modApi({
+        action: "create_post",
+        thread_id: state.threadId,
+        author_name,
+        author_email,
+        body,
+        is_op: false,
+      });
+    } else {
+      await sb(
+        "qa_posts?select=id,thread_id,author_name,body,is_hidden,is_op,is_moderator,created_at",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            thread_id: state.threadId,
+            author_name,
+            author_email,
+            body,
+            is_op: false,
+          }),
+        }
+      );
+    }
+
+    markPosted();
+    await notify({
+      kind: "reply",
+      board: state.boardSlug,
+      title: state.thread && state.thread.title,
+      author_name,
+      thread_id: state.threadId,
+      preview: body,
+    });
+    form.reset();
+    await loadThread(state.threadId);
+    setStatus(t("replyPublished"), "ok");
+  }
+
+  async function onRoute() {
+    const route = parseHash();
+    state.boardSlug = route.boardSlug || state.boardSlug || "other";
+    renderBoards();
+    renderModBar();
+
+    if (route.view === "thread") {
+      await loadThreads();
+      await loadThread(route.threadId);
+    } else {
+      state.threadId = null;
+      state.thread = null;
+      state.posts = [];
+      if (els.threadPanel) els.threadPanel.hidden = true;
+      syncComposeMode();
+      renderModActions();
+      await loadThreads();
+      setStatus("");
+    }
+    if (state.mod) await loadStats();
+  }
+
+  function wire() {
+    if (els.threadBack) {
+      els.threadBack.addEventListener("click", () => {
+        goBoard(state.boardSlug || "other");
+      });
+    }
+
+    if (els.composeBoardBtn && els.composeBoardDd) {
+      els.composeBoardBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const willOpen = !els.composeBoardDd.classList.contains("is-open");
+        closeComposeBoardDd();
+        if (willOpen) {
+          els.composeBoardDd.classList.add("is-open");
+          els.composeBoardBtn.setAttribute("aria-expanded", "true");
+        }
+      });
+    }
+
+    if (els.composeBoardMenu) {
+      els.composeBoardMenu.addEventListener("click", (e) => {
+        const option = e.target.closest('[role="option"]');
+        if (!option) return;
+        e.stopPropagation();
+        const slug = option.getAttribute("data-value");
+        setComposeBoardValue(slug);
+        if (slug && slug !== state.boardSlug) goBoard(slug);
+      });
+    }
+
+    document.addEventListener("click", closeComposeBoardDd);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeComposeBoardDd();
+    });
+
+    els.threadList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-thread]");
+      if (!btn) return;
+      goThread(btn.getAttribute("data-thread"));
+    });
+
+    els.newThreadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        setStatus(t("publishing"));
+        await createThread(e.target);
+      } catch (err) {
+        setStatus(err.message || "Failed", "error");
+      }
+    });
+
+    els.replyForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        setStatus(t("publishing"));
+        await createReply(e.target);
+      } catch (err) {
+        setStatus(err.message || "Failed", "error");
+      }
+    });
+
+    document.getElementById("qaModUnlockBtn").addEventListener("click", async () => {
+      const secret = String(els.modSecret.value || "").trim();
+      if (!secret) return;
+      localStorage.setItem(MOD_KEY, secret);
+      state.mod = true;
+      els.modSecret.value = "";
+      renderModBar();
+      try {
+        await modApi({ action: "stats" });
+        setStatus(t("modOn"), "ok");
+        await onRoute();
+      } catch (err) {
+        localStorage.removeItem(MOD_KEY);
+        state.mod = false;
+        renderModBar();
+        setStatus(err.message || "Invalid secret / API", "error");
+      }
+    });
+
+    els.modLock.addEventListener("click", () => {
+      localStorage.removeItem(MOD_KEY);
+      state.mod = false;
+      renderModBar();
+      setStatus(t("modOff"));
+      onRoute();
+    });
+
+    els.modActions.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-mod-thread]");
+      if (!btn || !state.thread) return;
+      const act = btn.getAttribute("data-mod-thread");
+      try {
+        if (act === "hide") {
+          await modApi({
+            action: state.thread.is_hidden ? "unhide" : "hide",
+            type: "thread",
+            id: state.thread.id,
+          });
+        } else if (act === "pin") {
+          await modApi({
+            action: state.thread.is_pinned ? "unpin" : "pin",
+            type: "thread",
+            id: state.thread.id,
+          });
+        } else if (act === "move") {
+          const select = els.modActions.querySelector("#qaModMoveBoard");
+          const boardSlug = select && select.value;
+          if (!boardSlug) return;
+          await modApi({
+            action: "move",
+            type: "thread",
+            id: state.thread.id,
+            board_slug: boardSlug,
+          });
+          state.boardSlug = boardSlug;
+        } else if (act === "delete") {
+          const title = state.thread.title || "this thread";
+          if (
+            !window.confirm(
+              `${t("deleteConfirm")}\n\n“${title}”\n\n${t("deleteConfirmReplies")}`
+            )
+          ) {
+            return;
+          }
+          const boardSlug = state.boardSlug;
+          await modApi({
+            action: "delete",
+            type: "thread",
+            id: state.thread.id,
+          });
+          state.threadId = null;
+          state.thread = null;
+          location.hash = `#board/${boardSlug}`;
+          setStatus(t("threadDeleted"), "ok");
+          return;
+        }
+        await onRoute();
+        setStatus(t("updated"), "ok");
+      } catch (err) {
+        setStatus(err.message || "Moderation failed", "error");
+      }
+    });
+
+    els.posts.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-mod-post]");
+      if (!btn) return;
+      const action = btn.getAttribute("data-mod-action");
+      const postId = btn.getAttribute("data-mod-post");
+      try {
+        if (action === "delete") {
+          if (!window.confirm(t("deletePostConfirm"))) return;
+          await modApi({
+            action: "delete",
+            type: "post",
+            id: postId,
+          });
+          await loadThread(state.threadId);
+          setStatus(t("postDeleted"), "ok");
+          return;
+        }
+        await modApi({
+          action,
+          type: "post",
+          id: postId,
+        });
+        await loadThread(state.threadId);
+        setStatus(t("updated"), "ok");
+      } catch (err) {
+        setStatus(err.message || "Moderation failed", "error");
+      }
+    });
+
+    window.addEventListener("hashchange", () => {
+      onRoute().catch((err) => setStatus(err.message || "Error", "error"));
+    });
+
+    function onChromeLang(lang) {
+      if (!lang) return;
+      setHubLang(lang);
+    }
+
+    window.WsdcChrome = window.WsdcChrome || {};
+    const prevLang = window.WsdcChrome.onLangChange;
+    window.WsdcChrome.onLangChange = function (lang) {
+      if (typeof prevLang === "function") prevLang(lang);
+      onChromeLang(lang);
+    };
+
+    document.addEventListener("wsdc:langchange", (e) => {
+      const lang = e && e.detail && e.detail.lang;
+      if (lang) onChromeLang(lang);
+    });
+  }
+
+  async function init() {
+    applyLang();
+    applyPrefillFromQuery();
+    if (!SUPABASE_URL || !ANON) {
+      setStatus(t("notConfigured"), "error");
+      return;
+    }
+    wire();
+    renderModBar();
+    await loadBoards();
+    if (!location.hash) location.hash = `#board/${state.boardSlug}`;
+    else await onRoute();
+  }
+
+  init().catch((err) => setStatus(err.message || "Failed to start", "error"));
+})();

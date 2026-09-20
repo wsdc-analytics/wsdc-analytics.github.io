@@ -36,7 +36,8 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="stylesheet" href="static/css/tokens.css">
-    <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link rel="stylesheet" href="static/css/ui-primitives.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829u">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
     <!-- Google tag (gtag.js) -->
@@ -49,21 +50,21 @@
     </script>
     <style>
         :root {
-            --color-primary: #2d3748;
-            --color-primary-dark: #0B1221;
+            --color-primary: var(--wsdc-color-brand, #111827);
+            --color-primary-dark: var(--wsdc-color-text-strong, #0b1221);
             --color-accent: #2563eb;
             --color-accent-soft: rgba(37, 99, 235, 0.08);
             --medal-gold: #c9a227;
             --medal-silver: #8e8e8e;
             --medal-bronze: #a67c52;
-            --bg-primary: #ffffff;
-            --bg-secondary: #FFFFFF;
-            --bg-tertiary: #f7fafc;
+            --bg-primary: var(--wsdc-color-surface, #ffffff);
+            --bg-secondary: var(--wsdc-color-surface, #ffffff);
+            --bg-tertiary: var(--wsdc-color-surface-soft, #f8fafc);
             --bg-card-hover: #fafbfc;
-            --text-primary: #0B1221;
-            --text-secondary: #4a5568;
-            --text-tertiary: #6B7280;
-            --border-color: #e5e7eb;
+            --text-primary: var(--wsdc-color-text, #1f2937);
+            --text-secondary: var(--wsdc-color-text-muted, #4b5563);
+            --text-tertiary: #6b7280;
+            --border-color: var(--wsdc-color-border, #d1d5db);
             --shadow-soft: 0 1px 3px rgba(0,0,0,0.04);
             --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
             --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
@@ -81,17 +82,30 @@
         }
         .skip-link {
             position: absolute;
-            left: -9999px;
-            top: 0;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
             background: #111827;
             color: #fff;
-            padding: 10px 14px;
             border-radius: 6px;
             z-index: 1000;
         }
         .skip-link:focus {
+            position: fixed;
             left: 12px;
             top: 12px;
+            width: auto;
+            height: auto;
+            margin: 0;
+            padding: 10px 14px;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
         }
         .page-search {
             margin: 14px 0 8px;
@@ -129,8 +143,8 @@
         }
         .search-help .info-icon:hover,
         .search-help .info-icon:focus-visible {
-            border-color: var(--color-primary, var(--color-accent));
-            color: var(--color-primary, var(--color-accent));
+            border-color: var(--color-accent);
+            color: var(--color-accent);
             outline: none;
         }
         .search-help .info-tooltip {
@@ -428,9 +442,30 @@
         }
 
         @media (max-width: 640px) {
+            html {
+                overflow-x: hidden;
+                max-width: 100%;
+            }
+            body {
+                overflow-x: hidden;
+                max-width: 100%;
+                overscroll-behavior-x: none;
+            }
             .page-search { max-width: none; }
             .search-help { margin-top: 10px; }
-            .container { padding: 24px 16px 48px; }
+            .search-help .info-tooltip {
+                left: 0;
+                right: auto;
+                top: calc(100% + 8px);
+                transform: none;
+                width: min(300px, calc(100vw - 48px));
+                max-width: min(300px, calc(100vw - 48px));
+            }
+            .container {
+                max-width: 100%;
+                overflow-x: hidden;
+                padding: 24px 16px 48px;
+            }
             .how-to-read-header { padding: 14px 16px; }
             .how-to-read-body { padding: 0 16px 16px; font-size: 13px; }
             .event-header { padding: 14px 16px; }
@@ -560,17 +595,19 @@
 
     <div class="container">
                 <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
-<h1>Summary Points</h1>
-        <p class="subtitle">Weekly points awarded by event, organized by publication date.</p>
-        <div class="page-search">
+        <header class="wsdc-page-header">
+        <h1 class="wsdc-page-title">Summary Points</h1>
+        <p class="wsdc-page-subtitle subtitle">Weekly points awarded by event, organized by publication date.</p>
+        </header>
+        <div class="page-search wsdc-filter-bar">
             <div class="search-help">
-                <span class="info-icon" aria-label="Brief search instructions (hover or focus to read)" role="img">
+                <span class="info-icon wsdc-info-btn" aria-label="Brief search instructions (hover or focus to read)" role="img">
                     <span aria-hidden="true">i</span>
                     <span class="info-tooltip"><span class="info-tooltip-main">Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</span><span class="info-tooltip-note"><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</span></span>
                 </span>
             </div>
             <div class="search-box">
-                <input type="search" class="search-input" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
+                <input type="search" class="search-input wsdc-field" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
                 <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
             </div>
         </div>
@@ -595,7 +632,7 @@
         <main id="catalog" aria-live="polite"></main>
     </div>
 
-    <script src="static/js/site-chrome.js" defer></script>
+    <script src="static/js/site-chrome.js?v=20260829u" defer></script>
     <script>
         const catalog = document.getElementById('catalog');
         let activeDancerNorm = '';

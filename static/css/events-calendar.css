@@ -45,6 +45,15 @@ body {
 
 [data-site-chrome] { flex: 0 0 auto; }
 
+/* Align Back to home with the inset title column (same track as .page-head). */
+.container > .wsdc-back {
+  width: calc(100% - 200px);
+  max-width: calc(100% - 200px);
+  margin-inline: auto;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
 .page-shell {
   flex: 1 1 auto;
   min-height: 0;
@@ -71,13 +80,27 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 10px;
+  /* Keep filters near the divider so they read with the calendar, not the copy. */
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--border-color);
   min-width: 0;
   /* 100px inset each side vs container content width */
   width: calc(100% - 200px);
   max-width: calc(100% - 200px);
   margin-inline: auto;
+  position: relative;
+  z-index: 40;
+}
+
+/* Shared .wsdc-page-header / .wsdc-filter-bar add tool-page air that is too tall
+   for this full-bleed calendar shell — keep the divider, shrink the gutters. */
+.page-head.wsdc-page-header {
+  margin-bottom: 6px;
+  max-width: calc(100% - 200px);
+}
+
+.page-head .toolbar.wsdc-filter-bar {
+  margin-bottom: 0;
 }
 
 h1 {
@@ -91,207 +114,259 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.page-head__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.data-as-of {
+  margin: 0;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--text-tertiary);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
 .subtitle {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.45;
   margin: 0;
-  max-width: 62rem;
+  width: 100%;
+  max-width: none;
 }
 
 .disclaimer {
   font-size: 12px;
   color: var(--text-tertiary);
-  line-height: 1.4;
+  line-height: 1.45;
   margin: 0;
-  max-width: 62rem;
+  width: 100%;
+  max-width: none;
+}
+
+.disclaimer a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disclaimer a:hover {
+  color: var(--color-primary-dark);
 }
 
 .toolbar {
+  /* Full page-head width: filters align to the 820px calendar left edge;
+     search stays on the far right of the header. */
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 10px 16px;
-  padding-top: 4px;
+  flex-wrap: nowrap;
+  align-items: end;
+  justify-content: flex-start;
+  column-gap: 12px;
+  /* Extra air under subtitle/disclaimer so filters sit with the calendar. */
+  margin-top: 4px;
+  margin-bottom: 0;
+  padding-top: 0;
+  width: 100%;
   min-width: 0;
+  /* Must stay visible — overflow clips absolute dropdown menus. */
+  overflow: visible;
 }
 
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 8px 10px;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 4px 6px;
   min-width: 0;
+  flex: 0 1 auto;
+  /* Match #calendarRoot / .year-grid left edge inside page-head. */
+  margin-left: max(0px, calc((100% - 820px) / 2));
+  overflow: visible;
 }
 
 .filter-field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
+  flex: 0 0 auto;
+}
+
+.filter-field[hidden] {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cal-search-field {
+  flex: 0 0 auto;
+  width: 220px;
+  max-width: min(240px, 100%);
+  min-width: 140px;
+  margin-left: auto;
+  align-items: stretch;
+}
+
+.cal-search-field__label-spacer {
+  visibility: hidden;
+}
+
+.cal-search {
+  position: relative;
+  width: 100%;
+  --cal-search-height: 28px;
+}
+
+.cal-search__input {
+  width: 100%;
+  height: var(--cal-search-height);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 8px 0 28px;
+  border: 1px solid var(--border-color, #d0d7e2);
+  border-radius: 999px;
+  background: var(--bg-primary, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 9px center;
+  color: var(--text-primary, #0f172a);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.cal-search__input::placeholder {
+  color: var(--text-tertiary, #94a3b8);
+}
+
+.cal-search__input:focus {
+  outline: none;
+  border-color: var(--color-accent, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.cal-search__suggestions {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid var(--border-color, #d0d7e2);
+  border-radius: 10px;
+  background: var(--bg-primary, #fff);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+}
+
+.cal-search__suggestions.is-open {
+  display: block;
+}
+
+.cal-search__empty {
+  padding: 10px 12px;
+  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+}
+
+.cal-search__suggestion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cal-search__suggestion:hover,
+.cal-search__suggestion:focus-visible {
+  background: #eff6ff;
+  outline: none;
+}
+
+.cal-search__suggestion-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #0f172a);
+}
+
+.cal-search__suggestion-meta {
+  font-size: 11px;
+  color: var(--text-secondary, #64748b);
+}
+
+.cal-reset-field {
+  flex: 0 0 auto;
+  align-items: stretch;
+}
+
+.cal-reset-btn {
+  height: 28px;
+  margin: 0;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-tertiary, #94a3b8);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cal-reset-btn:hover,
+.cal-reset-btn:focus-visible {
+  outline: none;
+  color: var(--color-primary-dark, #1e3a8a);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .filter-label {
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--text-tertiary);
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
-/* Chrome-matched pill dropdowns (Dashboards pattern) */
-.cal-dd {
-  position: relative;
-  display: inline-flex;
-  width: var(--cal-dd-width, 9rem);
-  flex-shrink: 0;
-}
-
-#yearSelectDd { --cal-dd-width: 5.25rem; }
-#continentFilterDd { --cal-dd-width: 9.5rem; }
-#countryFilterDd { --cal-dd-width: 10.5rem; }
-#statusFilterDd { --cal-dd-width: 13.5rem; }
-#kindFilterDd { --cal-dd-width: 8.75rem; }
-
-.cal-dd__btn {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  box-sizing: border-box;
-  width: 100%;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1;
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    transform 140ms var(--ease-out),
-    background-color 160ms ease,
-    color 160ms ease,
-    border-color 160ms ease;
-}
-
-.cal-dd__btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-}
-
-.cal-dd.is-open .cal-dd__btn {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-  border-color: var(--border-color);
-}
-
-.cal-dd__btn:focus {
-  outline: none;
-}
-
-.cal-dd__btn:focus-visible {
-  outline: 2px solid var(--color-primary-dark);
-  outline-offset: 2px;
-}
-
-.cal-dd__btn:active {
-  transform: scale(0.97);
-}
-
-.cal-dd__value {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-}
-
-.cal-dd__btn svg {
-  flex-shrink: 0;
-  transition: transform 180ms var(--ease-out);
-}
-
-.cal-dd.is-open .cal-dd__btn svg {
-  transform: rotate(180deg);
-}
-
-.cal-dd__menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 20;
-  min-width: 100%;
-  width: max-content;
-  max-width: min(280px, calc(100vw - 32px));
-  max-height: min(280px, 50vh);
-  overflow-y: auto;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: #fff;
-  transform-origin: top left;
-  opacity: 0;
-  transform: scale(0.96);
-  pointer-events: none;
-  transition:
-    opacity 120ms var(--ease-out),
-    transform 120ms var(--ease-out);
-}
-
-.cal-dd.is-open .cal-dd__menu {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-  transition-duration: 180ms;
-}
-
-.cal-dd__menu li {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.cal-dd__menu button {
-  display: block;
-  width: 100%;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 400;
-  text-align: left;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cal-dd__menu button:hover {
-  background: var(--bg-tertiary);
-}
-
-.cal-dd__menu button.is-current {
-  font-weight: 600;
-}
+/* Filter dropdown widths (shared .wsdc-dd styles live in ui-primitives.css) */
+#yearSelectDd { --wsdc-dd-width: 4.25rem; }
+#continentFilterDd { --wsdc-dd-width: 7.25rem; }
+#countryFilterDd { --wsdc-dd-width: 8rem; }
+#statusFilterDd { --wsdc-dd-width: 6.5rem; }
+#kindFilterDd { --wsdc-dd-width: 5.5rem; }
 
 .swatch {
   width: 10px; height: 10px; border-radius: 2px;
@@ -317,7 +392,7 @@ h1 {
   justify-content: center;
   align-items: stretch;
   overflow: hidden;
-  padding: 2px 0 8px;
+  padding: 0 0 8px;
 }
 
 /* Float in the empty gutter left of the centered 820px grid — does not shift the calendar */
@@ -326,13 +401,15 @@ h1 {
   top: 8px;
   left: max(4px, calc(50% - 410px - 120px));
   transform: none;
-  z-index: 2;
+  z-index: 25;
   width: 108px;
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: 0;
   pointer-events: none;
+  /* Tip bubble is absolutely positioned; keep it out of stage overflow clip. */
+  overflow: visible;
 }
 
 .cal-stats__head,
@@ -390,19 +467,21 @@ h1 {
   outline: none;
 }
 
-.cal-stats__tip:focus-visible {
-  outline: 2px solid var(--color-primary-dark);
-  outline-offset: 2px;
-  border-color: var(--color-primary-dark);
-  color: var(--text-primary);
+.cal-stats__tip:focus-visible,
+.cal-stats__tip.is-open {
+  outline: none;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .cal-stats__tip-bubble {
   position: absolute;
   left: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%) scale(0.96);
-  transform-origin: left center;
+  /* Top-align (not vertically centered) so long copy grows downward
+     and is not clipped by .calendar-stage { overflow: hidden }. */
+  top: 0;
+  transform: translateY(0) scale(0.96);
+  transform-origin: left top;
   min-height: 32px;
   display: flex;
   align-items: center;
@@ -414,7 +493,7 @@ h1 {
   line-height: 1.35;
   border-radius: 8px;
   width: max-content;
-  max-width: min(260px, calc(100vw - 48px));
+  max-width: min(280px, calc(100vw - 48px));
   white-space: normal;
   text-align: left;
   text-transform: none;
@@ -432,19 +511,19 @@ h1 {
 .cal-stats__tip:focus-visible .cal-stats__tip-bubble {
   opacity: 1;
   visibility: visible;
-  transform: translateY(-50%) scale(1);
+  transform: translateY(0) scale(1);
   transition-duration: 180ms;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .cal-stats__tip:hover {
-    border-color: var(--color-primary-dark);
-    color: var(--text-primary);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
   .cal-stats__tip:hover .cal-stats__tip-bubble {
     opacity: 1;
     visibility: visible;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(0) scale(1);
     transition-duration: 180ms;
   }
 }
@@ -589,6 +668,44 @@ h1 {
   flex: 0 0 auto;
 }
 
+.month-count {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.month-count__paren,
+.month-count__sep,
+.month-count__expected {
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
+.month-count__held,
+.month-count__confirmed {
+  color: inherit;
+  font-weight: 600;
+}
+
+.month.is-past-month .month-count__held {
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
+.cal-dd__menu .month-count,
+.cal-dd__menu .month-count__paren,
+.cal-dd__menu .month-count__held,
+.cal-dd__menu .month-count__confirmed,
+.cal-dd__menu .month-count__sep,
+.cal-dd__menu .month-count__expected {
+  margin-left: 0;
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
+.cal-dd__menu .month-count {
+  margin-left: 0.15em;
+}
+
 .dow {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -688,6 +805,54 @@ h1 {
   box-shadow: inset 0 0 0 1.5px var(--color-accent), inset 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
+/* Search period = continuous amber band (not Today’s blue day outline). */
+.day.is-search-range {
+  z-index: 2;
+}
+.day.is-search-range > span {
+  position: relative;
+  z-index: 1;
+}
+.day.is-search-range::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 14%;
+  bottom: 14%;
+  background: rgba(245, 158, 11, 0.38);
+  pointer-events: none;
+  z-index: 0;
+}
+.day.is-search-range-start::before {
+  left: 10%;
+  border-radius: 999px 0 0 999px;
+}
+.day.is-search-range-end::before {
+  right: 10%;
+  border-radius: 0 999px 999px 0;
+}
+.day.is-search-range-start.is-search-range-end::before {
+  left: 12%;
+  right: 12%;
+  border-radius: 999px;
+}
+.day.is-search-range.is-occupied {
+  color: #78350f;
+  font-weight: 700;
+}
+.day.is-search-range.is-past {
+  opacity: 0.95;
+}
+/* Today outline stays blue and sits above the amber period band. */
+.day.is-search-range.is-today {
+  box-shadow: inset 0 0 0 1.5px var(--color-accent);
+  color: var(--color-primary-dark);
+}
+.day.is-search-range.is-selected:not(.is-today) {
+  box-shadow: inset 0 0 0 1px #b45309;
+}
+
 .day.has-events:active {
   transform: none;
   filter: brightness(0.96);
@@ -733,14 +898,12 @@ h1 {
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
   overflow: hidden;
   opacity: 0;
-  transform: scale(0.985);
-  transform-origin: center center;
-  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+  /* No transform here: it makes position:fixed tips use the island as containing block. */
+  transition: opacity 180ms var(--ease-out);
 }
 
 .day-island.is-settled {
   opacity: 1;
-  transform: scale(1);
 }
 
 .day-island__head {
@@ -765,7 +928,20 @@ h1 {
 .day-island.is-dragging {
   transition: none;
   opacity: 1;
-  transform: none;
+}
+
+/* Keep open L2 analytics above the Leaflet map so tip bubbles are not covered. */
+.day-island__map-col.has-event .l2-event-card.is-open {
+  position: relative;
+  z-index: 6;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .day-island:has(.l2-info-tip:hover),
+  .day-island:has(.l2-info-tip:focus-visible),
+  .day-island:has(.l2-info-tip.is-open) {
+    overflow: visible;
+  }
 }
 
 .day-island__head h2 {
@@ -811,8 +987,9 @@ h1 {
   flex-direction: column;
 }
 
-/* Map column is always two equal halves: map stays half-height; the other
-   half is empty by default and hosts the event card when selected. */
+/* Empty: two equal halves (map on top, empty slot below).
+   With an event: card sizes to its content (tiers stay inside the contour);
+   map takes the leftover and shrinks a little. */
 .day-island__map-col {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
@@ -823,6 +1000,10 @@ h1 {
   gap: 8px;
   height: 100%;
   align-content: stretch;
+}
+
+.day-island__map-col.has-event {
+  grid-template-rows: auto minmax(0, max-content) minmax(88px, 1fr);
 }
 
 .day-island__map-col #noGeoNote {
@@ -841,6 +1022,8 @@ h1 {
 
 .day-island__map-col.has-event #dayMap {
   grid-area: secondary;
+  position: relative;
+  z-index: 1;
 }
 
 .no-geo {
@@ -952,9 +1135,28 @@ h1 {
   grid-area: primary;
 }
 
+.day-island__map-col.has-event .l2-event-card.is-open {
+  height: auto;
+  align-self: start;
+  padding-bottom: 12px;
+}
+
+.day-island__map-col.has-event .l2-event-card.is-open .l2-event-card__grid {
+  height: auto;
+  grid-template-rows: auto auto auto;
+}
+
+.day-island__map-col.has-event .l2-event-card.is-open .l2-event-card__tiers-body,
+.day-island__map-col.has-event .l2-event-card.is-open .l2-tier-panel,
+.day-island__map-col.has-event .l2-event-card.is-open .l2-tier-table {
+  flex: 0 0 auto;
+  height: auto;
+}
+
 .l2-event-card.is-open {
   opacity: 1;
-  overflow: hidden;
+  /* Tips are absolutely positioned and must not be clipped by the card. */
+  overflow: visible;
   padding: 8px 10px;
   border-color: var(--border-color);
   pointer-events: auto;
@@ -963,22 +1165,112 @@ h1 {
 .l2-event-card__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 8px 10px;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  column-gap: 28px;
+  row-gap: 4px;
   height: 100%;
   min-height: 0;
+  padding: 0 2px;
+  align-items: stretch;
 }
 
-.l2-event-card__series,
-.l2-event-card__last {
+.l2-event-card__grid.is-sparse {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  column-gap: 24px;
+}
+
+.l2-event-card__series-head,
+.l2-event-card__last-head-block {
   min-width: 0;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
+.l2-event-card__series-head {
+  justify-content: flex-start;
+  padding-right: 0;
+}
+
+.l2-event-card__last-head-block {
+  justify-content: flex-end;
+  align-items: stretch;
+  text-align: center;
+  padding-left: 0;
+}
+
+/* Shared baseline row: spark tabs | info | metric labels */
+.l2-event-card__spark-ctrl,
+.l2-event-card__kpi-ctrl {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+  min-height: 26px;
+}
+
+.l2-event-card__spark-ctrl .l2-spark-seg {
+  width: 100%;
+}
+
+.l2-event-card__kpi-ctrl {
+  position: relative;
+}
+
+.l2-kpi-seg-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.l2-kpi-seg-row .l2-metric-seg {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.l2-event-card__chart-body,
+.l2-event-card__tiers-body {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.l2-event-card__chart-body {
+  gap: 8px;
+  padding-top: 6px;
+  padding-right: 0;
+}
+
+.l2-event-card__tiers-body {
+  /* Halve label→KPI gap vs chart padding; keep tiers table Y by compensating gap. */
+  gap: 13px;
+  padding-top: 1px;
+  padding-left: 0;
+}
+
+.l2-event-card__empty {
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.l2-event-card__title-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .l2-event-card h3 {
   margin: 0;
+  flex: 0 1 auto;
+  min-width: 0;
   font-size: 13px;
   font-weight: 650;
   letter-spacing: -0.01em;
@@ -986,6 +1278,19 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.l2-event-card__web {
+  flex: 0 0 auto;
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--color-accent);
+  transition: transform 140ms var(--ease-out), opacity 140ms var(--ease-out);
+}
+
+.l2-event-card__web:active {
+  transform: scale(0.94);
 }
 
 .l2-event-card .badges {
@@ -1002,16 +1307,11 @@ h1 {
   color: var(--text-secondary);
 }
 
-.l2-event-card__where {
+.l2-event-card__where,
+.l2-event-card__meta-line {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.l2-event-card__link {
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.2;
 }
 
 .l2-event-card a { color: var(--color-accent); }
@@ -1019,8 +1319,26 @@ h1 {
 .l2-event-card__last-head {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 6px;
   min-width: 0;
+  width: 100%;
+  min-height: 18px;
+  position: relative;
+}
+
+/* Metrics tip lives in the Last edition row; desktop keeps it in the column gap. */
+.l2-event-card__last-head .l2-info-tip--metrics-between {
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.l2-event-card__last-head .l2-info-tip--metrics-between:active {
+  transform: translate(-50%, -50%) scale(0.94);
 }
 
 .l2-event-card__last-label {
@@ -1029,6 +1347,7 @@ h1 {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-tertiary);
+  flex: 0 0 auto;
 }
 
 .l2-event-card__last-date {
@@ -1038,11 +1357,141 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
-.l2-tier-tip {
+.l2-metric-seg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.05);
+  min-width: 0;
+}
+
+.l2-metric-seg__label {
+  display: block;
+  border-radius: 6px;
+  padding: 3px 4px;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.l2-chart-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.l2-spark-seg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.05);
+  flex: 0 0 auto;
+}
+
+.l2-spark-seg__btn {
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
+  padding: 3px 4px;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out),
+    transform 140ms var(--ease-out);
+}
+
+.l2-spark-seg__btn:active {
+  transform: scale(0.97);
+}
+
+.l2-spark-seg__btn.is-active {
+  background: #fff;
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.l2-chart {
+  display: flex;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.l2-chart__y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 1.6em;
+  max-width: 2.6em;
+  padding: 2px 1px 8px 0;
+  font-size: 8px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+.l2-chart__plot {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.l2-chart__x {
+  display: flex;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  padding: 0 4px;
+  font-size: 8px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.l2-tier-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  height: 100%;
+  flex: 1 1 auto;
   position: relative;
-  margin-left: auto;
+  overflow: visible;
+}
+
+.l2-tier-panel__head {
+  display: none;
+}
+
+.l2-info-tip {
+  position: relative;
   flex: 0 0 auto;
   width: 16px;
   height: 16px;
@@ -1052,20 +1501,37 @@ h1 {
   padding: 0;
   cursor: help;
   color: var(--text-secondary);
+  transition: transform 140ms var(--ease-out), border-color 160ms ease, color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.l2-tier-tip__mark {
+.l2-info-tip:focus {
+  outline: none;
+}
+
+.l2-info-tip:focus-visible,
+.l2-info-tip.is-open {
+  outline: none;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.l2-info-tip:active {
+  transform: scale(0.94);
+}
+
+.l2-info-tip__mark {
   font-size: 9px;
   font-weight: 700;
   line-height: 14px;
 }
 
-.l2-tier-tip__bubble {
+.l2-info-tip__bubble {
   position: absolute;
-  z-index: 5;
+  z-index: 40;
   right: 0;
   top: calc(100% + 6px);
-  width: min(260px, 70vw);
+  width: min(280px, 72vw);
   padding: 8px 9px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(15, 23, 42, 0.1);
@@ -1075,6 +1541,7 @@ h1 {
   font-size: 10px;
   line-height: 1.35;
   text-align: left;
+  white-space: pre-line;
   opacity: 0;
   transform: scale(0.97);
   transform-origin: top right;
@@ -1082,17 +1549,128 @@ h1 {
   transition: opacity 125ms var(--ease-out), transform 125ms var(--ease-out);
 }
 
-.l2-tier-tip:hover .l2-tier-tip__bubble,
-.l2-tier-tip:focus-visible .l2-tier-tip__bubble {
+.l2-info-tip__bubble strong {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Touch/coarse: only .is-open / keyboard focus — never sticky :hover flash. */
+.l2-info-tip:focus-visible .l2-info-tip__bubble,
+.l2-info-tip.is-open .l2-info-tip__bubble,
+.l2-info-tip__bubble.is-visible {
   opacity: 1;
   transform: scale(1);
+}
+
+/* Ported to document.body on mobile — viewport-fixed, above island/map. */
+.l2-info-tip__bubble.is-ported {
+  position: fixed;
+  z-index: 200;
+  right: auto;
+  transform: none;
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l2-info-tip:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .l2-info-tip:hover .l2-info-tip__bubble {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Column-gap bridge: centered between spark tabs and KPI pills. */
+.l2-info-tip--metrics-between {
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.l2-info-tip--metrics-between:active {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
+/* Open tip must stack above the sibling tier info button. */
+.l2-info-tip--metrics-between:focus-visible,
+.l2-info-tip--metrics-between.is-open {
+  z-index: 50;
+}
+
+.l2-info-tip--metrics-between .l2-info-tip__bubble {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%) scale(0.97);
+  transform-origin: top center;
+}
+
+.l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble,
+.l2-info-tip--metrics-between.is-open .l2-info-tip__bubble {
+  transform: translateX(-50%) scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l2-info-tip--metrics-between:hover {
+    z-index: 50;
+  }
+  .l2-info-tip--metrics-between:hover .l2-info-tip__bubble {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* Column-gap bridge: same X as metrics tip, directly underneath. */
+.l2-info-tip--tier-between {
+  position: absolute;
+  left: -14px;
+  top: 2px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.l2-info-tip--tier-between:active {
+  transform: translateX(-50%) scale(0.94);
+}
+
+.l2-info-tip--tier-between:focus-visible,
+.l2-info-tip--tier-between.is-open {
+  z-index: 50;
+}
+
+.l2-info-tip--tier-between .l2-info-tip__bubble {
+  right: auto;
+  left: 50%;
+  /* Compact range list — about half the metrics tip width. */
+  width: min(140px, 40vw);
+  transform: translateX(-50%) scale(0.97);
+  transform-origin: top center;
+}
+
+.l2-info-tip--tier-between:focus-visible .l2-info-tip__bubble,
+.l2-info-tip--tier-between.is-open .l2-info-tip__bubble {
+  transform: translateX(-50%) scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l2-info-tip--tier-between:hover {
+    z-index: 50;
+  }
+  .l2-info-tip--tier-between:hover .l2-info-tip__bubble {
+    transform: translateX(-50%) scale(1);
+  }
 }
 
 .l2-event-card__metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
-  margin-top: 2px;
+  min-width: 0;
+  width: 100%;
 }
 
 .l2-metric {
@@ -1101,6 +1679,9 @@ h1 {
   align-items: center;
   gap: 0;
   min-width: 0;
+  padding: 0;
+  border-radius: 6px;
+  color: inherit;
 }
 
 .l2-metric__value {
@@ -1109,6 +1690,7 @@ h1 {
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .l2-metric__label {
@@ -1119,13 +1701,41 @@ h1 {
   color: var(--text-tertiary);
 }
 
+.l2-spark__svg {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 64px;
+}
+
+.l2-spark__line {
+  stroke: #4f46e5;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.l2-spark__gap {
+  fill: #e8ebf0;
+}
+
+.l2-spark__dot {
+  fill: #4f46e5;
+}
+
+.l2-spark__axis {
+  stroke: rgba(15, 23, 42, 0.16);
+  stroke-width: 1;
+}
+
 .l2-tier-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 4px;
+  margin-top: 0;
   font-size: 9px;
   line-height: 1.15;
   table-layout: fixed;
+  flex: 1 1 auto;
 }
 
 .l2-tier-table th,
@@ -1171,7 +1781,21 @@ h1 {
 @media (max-width: 900px) {
   .l2-event-card__grid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto auto auto auto;
+    row-gap: 6px;
+  }
+
+  .l2-info-tip--metrics-between,
+  .l2-info-tip--tier-between {
+    left: 0;
+    transform: none;
+    position: static;
+    margin: 0 0 4px auto;
+  }
+
+  .l2-info-tip--metrics-between:active,
+  .l2-info-tip--tier-between:active {
+    transform: scale(0.94);
   }
 }
 
@@ -1347,11 +1971,34 @@ h1 {
 }
 
 @media (max-width: 700px) {
+  html {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
   body {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     height: auto;
     min-height: 100dvh;
     display: block;
+    max-width: 100%;
+    overscroll-behavior-x: none;
+  }
+  body.day-layer-open {
+    overflow: hidden;
+  }
+  .page-shell,
+  .container,
+  #calendarRoot,
+  .year-grid {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  /* Keep stage overflow visible so the stats tip bubble is not clipped. */
+  .calendar-stage {
+    max-width: 100%;
+    overflow-x: visible;
+    overflow-y: visible;
   }
   .page-shell { min-height: calc(100dvh - 72px); }
   .container { min-height: 0; padding: 12px 14px 16px; }
@@ -1359,16 +2006,61 @@ h1 {
     width: 100%;
     max-width: 100%;
   }
+  .page-head.wsdc-page-header {
+    max-width: 100%;
+    margin-bottom: 4px;
+  }
+  .container > .wsdc-back {
+    width: 100%;
+    max-width: 100%;
+  }
   h1 { font-size: 1.25rem; }
   .subtitle { font-size: 13px; }
-  .filter-field { flex: 1 1 42%; }
-  .cal-dd {
-    width: 100%;
-    --cal-dd-width: 100%;
+  .toolbar {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
   }
-  .cal-dd__btn { width: 100%; }
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    align-items: end;
+    justify-content: stretch;
+    gap: 8px 6px;
+    width: 100%;
+    margin-left: 0;
+  }
+  .filter-field {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+  }
+  .filter-field .filter-label {
+    text-align: center;
+  }
+  .cal-search-field {
+    grid-column: auto;
+    justify-self: auto;
+    flex: none;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin-left: 0;
+  }
+  .cal-reset-field {
+    flex: none;
+    width: 100%;
+  }
+  .cal-reset-btn { width: 100%; }
   .calendar-stage {
-    overflow: visible;
+    overflow-x: visible;
+    overflow-y: visible;
+    flex-direction: column;
   }
   .cal-stats {
     position: static;
@@ -1376,48 +2068,102 @@ h1 {
     left: auto;
     top: auto;
     width: 100%;
-    margin: 0 0 4px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 8px 14px;
+    /* Slightly more air before the year grid on small screens */
+    margin: 0 0 14px;
+    display: grid;
+    /* tip + 6 tracks: 3 metrics each span 2; row-2 sits between them */
+    grid-template-columns: minmax(28px, auto) repeat(6, minmax(0, 1fr));
+    justify-content: stretch;
+    justify-items: center;
+    align-items: end;
+    column-gap: 0;
+    row-gap: 12px;
     pointer-events: auto;
+    overflow: visible;
+    z-index: 6;
   }
   .cal-stats__head {
-    width: 100%;
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
     min-height: 0;
     margin-bottom: 0;
+    align-self: end;
+    justify-content: center;
+    position: relative;
+    z-index: 7;
   }
-  .cal-stats__group {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 8px 14px;
-  }
+  .cal-stats__group,
   .cal-stats__group--types {
-    margin-top: 0;
-    width: 100%;
-    padding-top: 12px;
+    display: contents;
+    margin: 0;
+    padding: 0;
+    width: auto;
+  }
+  .cal-stats__group > .cal-stats__item:nth-child(1) {
+    grid-column: 2 / 4;
+    grid-row: 1;
+  }
+  .cal-stats__group > .cal-stats__item:nth-child(2) {
+    grid-column: 4 / 6;
+    grid-row: 1;
+  }
+  .cal-stats__group > .cal-stats__item:nth-child(3) {
+    grid-column: 6 / 8;
+    grid-row: 1;
+  }
+  .cal-stats__group--types > .cal-stats__item:nth-child(1) {
+    grid-column: 3 / 5;
+    grid-row: 2;
+  }
+  .cal-stats__group--types > .cal-stats__item:nth-child(2) {
+    grid-column: 5 / 7;
+    grid-row: 2;
+  }
+  .cal-stats__tip {
+    z-index: 8;
   }
   .cal-stats__tip-bubble {
     left: 0;
+    right: auto;
     top: calc(100% + 8px);
     transform: translateY(-4px) scale(0.96);
     transform-origin: top left;
+    max-width: min(280px, calc(100vw - 32px));
+    z-index: 40;
   }
-  .cal-stats__tip:focus-visible .cal-stats__tip-bubble {
+  .cal-stats__tip:focus-visible .cal-stats__tip-bubble,
+  .cal-stats__tip.is-open .cal-stats__tip-bubble {
+    opacity: 1;
+    visibility: visible;
     transform: translateY(0) scale(1);
+    transition-duration: 180ms;
   }
   @media (hover: hover) and (pointer: fine) {
     .cal-stats__tip:hover .cal-stats__tip-bubble {
+      opacity: 1;
+      visibility: visible;
       transform: translateY(0) scale(1);
+      transition-duration: 180ms;
     }
   }
   .cal-stats__item {
-    min-width: 4.5rem;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    text-align: center;
+    padding: 0 4px;
+    gap: 3px;
+  }
+  .cal-stats__label {
+    text-align: center;
+    font-size: 11px;
   }
   .cal-stats__value {
-    font-size: 14px;
+    font-size: 16px;
+  }
+  .cal-stats__of {
+    font-size: 12px;
   }
   .cal-legend {
     position: static;
@@ -1428,22 +2174,22 @@ h1 {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 8px 12px;
   }
   .cal-legend__title {
     width: 100%;
     margin-bottom: 0;
+    text-align: center;
   }
   .cal-legend__group {
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 8px 12px;
   }
   .cal-legend__gap {
     display: none;
-  }
-  .calendar-stage {
-    flex-direction: column;
   }
   #calendarRoot {
     width: 100%;
@@ -1456,8 +2202,208 @@ h1 {
     max-width: 100%;
   }
   .month { padding: 5px 5px 6px; }
-  .month h2 { font-size: 11px; }
+  .month h2 {
+    font-size: 13px;
+    /* Clearer separation from the month grid on mobile */
+    margin: 0 0 4px;
+  }
   .day { font-size: 10px; }
+
+  /* —— Mobile L2: vertical card ——
+     Default: map → event buttons
+     Selected: left analytics → right analytics → map → buttons */
+  .day-island {
+    max-width: none;
+    max-height: none;
+  }
+  /* Override ≤960px map-col floor — contents layout + flex order need no min height. */
+  .day-island__map-col {
+    min-height: 0;
+  }
+  .day-island__head {
+    cursor: default;
+    touch-action: manipulation;
+  }
+  .day-island__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .day-island__map-col,
+  .day-island__list-col {
+    display: contents;
+    min-height: 0;
+  }
+  .day-island__map-col #noGeoNote {
+    order: 0;
+  }
+  #dayMap,
+  .day-island__map-col.has-event #dayMap {
+    grid-area: auto;
+    order: 1;
+    flex: 0 0 auto;
+    width: 100%;
+    height: min(42vw, 240px);
+    min-height: 180px;
+    max-height: 260px;
+  }
+  .day-island__list {
+    order: 2;
+    flex: 0 0 auto;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .l2-event-card,
+  .day-island__map-col.has-event .l2-event-card {
+    grid-area: auto;
+    order: 3;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .l2-event-card:not(.is-open) {
+    display: none;
+  }
+  .l2-event-card.is-open {
+    order: 1;
+    display: block;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: auto;
+  }
+  .day-island__body:has(.l2-event-card.is-open) #dayMap {
+    order: 2;
+  }
+  .day-island__body:has(.l2-event-card.is-open) .day-island__list {
+    order: 3;
+  }
+
+  .l2-event-card__grid,
+  .l2-event-card__grid.is-sparse {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    column-gap: 0;
+    row-gap: 8px;
+    padding: 0;
+  }
+  .l2-event-card__series-head {
+    order: 1;
+    padding-right: 0;
+  }
+  /* Website link: keep large glyph, sit tight to title; expand tap via padding. */
+  .l2-event-card__title-row {
+    align-items: baseline;
+    gap: 2px;
+  }
+  .l2-event-card__web {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 10px;
+    margin: -10px -8px -10px -2px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .l2-event-card__spark-ctrl {
+    order: 2;
+  }
+  .l2-event-card__chart-body {
+    order: 3;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .l2-event-card__last-head-block {
+    order: 4;
+    justify-content: center;
+    text-align: center;
+    padding-left: 0;
+    /* More space after dynamics; compensated on tiers so the table does not drop. */
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+  }
+  .l2-event-card__last-head {
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    position: relative;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    flex: 0 0 auto;
+    z-index: 2;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between:active {
+    transform: translateY(-50%) scale(0.94);
+  }
+  .l2-info-tip--tier-between .l2-info-tip__bubble,
+  .l2-info-tip--tier-between.is-open .l2-info-tip__bubble,
+  .l2-info-tip--tier-between:focus-visible .l2-info-tip__bubble {
+    left: 0;
+    right: auto;
+    width: min(140px, calc(100vw - 32px));
+    max-width: min(140px, calc(100vw - 32px));
+    transform: none;
+    transform-origin: top left;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between.is-open .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble {
+    left: 0;
+    right: auto;
+    width: min(280px, calc(100vw - 32px));
+    max-width: min(280px, calc(100vw - 32px));
+    transform: none;
+    transform-origin: top left;
+  }
+  .l2-event-card__last-head .l2-info-tip--metrics-between.is-open .l2-info-tip__bubble,
+  .l2-event-card__last-head .l2-info-tip--metrics-between:focus-visible .l2-info-tip__bubble,
+  .l2-info-tip--tier-between.is-open .l2-info-tip__bubble,
+  .l2-info-tip--tier-between:focus-visible .l2-info-tip__bubble {
+    opacity: 1;
+  }
+  .l2-info-tip__bubble {
+    width: min(280px, calc(100vw - 32px));
+    max-width: min(280px, calc(100vw - 32px));
+  }
+  .l2-event-card.is-open,
+  .l2-event-card__grid,
+  .l2-event-card__last-head-block,
+  .l2-event-card__last-head,
+  .l2-event-card__tiers-body,
+  .l2-tier-panel {
+    overflow: visible;
+  }
+  .l2-event-card__kpi-ctrl {
+    order: 5;
+    margin-bottom: 0;
+  }
+  .l2-event-card__tiers-body {
+    order: 6;
+    padding-left: 0;
+    padding-top: 0;
+    margin-top: 0;
+    /* Tighten metric values → tiers table (not labels → values). */
+    gap: 8px;
+  }
+  .l2-event-card__chart-body .l2-chart,
+  .l2-event-card__chart-body .l2-chart-panel {
+    min-height: 120px;
+  }
 }
 
 @media (max-width: 420px) {
@@ -1475,9 +2421,11 @@ h1 {
   .day-island__close,
   .l2-row,
   .l2-event-card,
+  .l2-spark-seg__btn,
+  .l2-info-tip,
   .tooltip,
-  .cal-dd__btn,
-  .cal-dd__menu,
+  .wsdc-dd__btn,
+  .wsdc-dd__menu,
   .cal-stats__tip-bubble {
     transition: none;
   }

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-05",
-  "as_of": "2026-08-05",
-  "data_through": "2026-08-31",
+  "generated_at": "2026-09-15",
+  "as_of": "2026-09-15",
+  "data_through": "2026-09-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
     "events_total": "count of occurred WSDC editions in event_editions.csv (result_rows > 0 or event_occurred); one row per event year/month that awarded points",
@@ -11,60 +11,60 @@
     "edition_dates": "event_editions.csv start_date/end_date (edition_date remains YYYY-MM-01 for Tableau)",
     "calendar_archive": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data/edition_calendar_dates.csv",
     "as_of_note": "as_of defaults to today.",
-    "increment_note": "Events/points increments count activity in the window. Dancers increment counts new dancers (first WSDC points), not unique participants. Week/month windows use edition end_date to match WSDC points-month attribution.",
-    "week_note": "Week uses ISO week of edition end_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
-    "month_note": "Month increment = occurred editions with end_date in the current month through as_of (aligns with WSDC end-date month for points); new dancers with first points in that window.",
+    "increment_note": "Events/points increments count activity in the window. Dancers increment counts new dancers (first WSDC points), not unique participants. Week/month windows use edition start_date so cross-month events count once.",
+    "week_note": "Week uses ISO week of edition start_date for occurred events. Never advances to a week with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline since_previous_ended is end of previous calendar month.",
+    "month_note": "Month increment = occurred editions with start_date in the current month through as_of; new dancers with first points in that window.",
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2644,
-    "points": 713734.0,
-    "dancers": 27252
+    "events": 2668,
+    "points": 723792.0,
+    "dancers": 27549
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-07-27",
-        "end": "2026-08-02",
-        "since_previous_ended": "2026-07-31",
-        "iso_week": "2026-W31",
-        "bucket": "edition_end_date",
-        "event_names": "Lisbon Westie Fest, Sea Sun and Swing, Warsaw Summer Nights Westival"
+        "start": "2026-09-07",
+        "end": "2026-09-13",
+        "since_previous_ended": "2026-08-31",
+        "iso_week": "2026-W37",
+        "bucket": "edition_start_date",
+        "event_names": "Bavarian Open, Sea Dance Fest, SwingTime Denver, Trilogy Swing"
       },
       "increment": {
-        "events": 3,
-        "points": 1217.0,
-        "dancers": 40
+        "events": 4,
+        "points": 1857.0,
+        "dancers": 62
       }
     },
     "month": {
       "label": "Month",
       "period": {
-        "start": "2026-08-01",
-        "end": "2026-08-05",
-        "since_previous_ended": "2026-07-31",
-        "bucket": "edition_end_date",
-        "event_names": "Lisbon Westie Fest, Sea Sun and Swing, Warsaw Summer Nights Westival"
+        "start": "2026-09-01",
+        "end": "2026-09-15",
+        "since_previous_ended": "2026-08-31",
+        "bucket": "edition_start_date",
+        "event_names": "Bavarian Open, Korea Westival, River City Swing, Sea Dance Fest, South Bay Dance Fling, SwingTime Denver, Trilogy Swing"
       },
       "increment": {
-        "events": 3,
-        "points": 1217.0,
-        "dancers": 40
+        "events": 7,
+        "points": 2792.0,
+        "dancers": 95
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-08-05",
+        "end": "2026-09-15",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 105,
-        "points": 44260.0,
-        "dancers": 1473
+        "events": 129,
+        "points": 54191.0,
+        "dancers": 1772
       }
     }
   }

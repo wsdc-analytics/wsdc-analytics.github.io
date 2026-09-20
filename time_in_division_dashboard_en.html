@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Time in division: months from first point to may/must threshold vs career events with a point." />
+  <title>Time in division | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+  <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .content {
+      flex: 1;
+      min-height: 0;
+      max-width: var(--wsdc-width-chrome, 1200px);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: var(--wsdc-space-3, 12px) var(--wsdc-space-4, 16px) 16px;
+      gap: 10px;
+      overflow: hidden;
+    }
+    .page-head {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .page-head h1 {
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      letter-spacing: -0.02em;
+    }
+    .page-head .subtitle {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      max-width: 62rem;
+    }
+    .tid-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      position: relative;
+      z-index: 40;
+      margin: 0;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .viz-filters-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 12px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 40;
+    }
+    .viz-filters-row__gutter {
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
+    }
+    .tid-filters .filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      align-items: stretch;
+    }
+    .tid-filters .filter-field.is-hidden { display: none; }
+    .tid-filters .filter-label {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-tertiary, #6b7280);
+      line-height: 1.15;
+    }
+    .tid-filters .wsdc-select-host,
+    .tid-filters .wsdc-dd {
+      width: var(--wsdc-dd-width, 7.5rem);
+      min-width: 0;
+    }
+    .tid-filters .filter-field:has(#divisionSelect) { --wsdc-dd-width: 9rem; }
+    .tid-filters .filter-field:has(#thresholdSelect),
+    .tid-filters .filter-field:has(#roleSelect) { --wsdc-dd-width: 7.25rem; }
+    .tid-filters.is-dynamics-role .filter-field:has(#roleSelect) { --wsdc-dd-width: 11.5rem; }
+    .tid-filters .filter-field:has(#modeSelect) { --wsdc-dd-width: 8.25rem; }
+    .tid-filters .filter-field:has(#yearFromSelect),
+    .tid-filters .filter-field:has(#yearToSelect) { --wsdc-dd-width: 4.5rem; }
+    .tid-filters .wsdc-dd--field { width: var(--wsdc-dd-width, 7.5rem); }
+    .tid-filters .wsdc-dd--field .wsdc-dd__btn {
+      height: 28px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: var(--wsdc-radius-pill, 999px);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: var(--wsdc-font-size-xs, 12px);
+      font-weight: var(--wsdc-font-weight-medium, 500);
+      justify-content: space-between;
+    }
+    .tid-filters .wsdc-dd--field .wsdc-dd__btn:hover,
+    .tid-filters .wsdc-dd--field.is-open .wsdc-dd__btn {
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-color: var(--wsdc-color-border, #d1d5db);
+    }
+    .kpis {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
+      align-self: flex-start;
+    }
+    .viz-stage.is-table .kpis {
+      /* Align with table body top (CSV toolbar + its margin). */
+      padding-top: 40px;
+    }
+    .kpi-hint {
+      margin: 0 0 2px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.35;
+    }
+    .kpi-hint[hidden] { display: none; }
+    .kpi {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      width: 100%;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+    .kpis.is-selectable .kpi {
+      cursor: pointer;
+    }
+    .kpis.is-selectable .kpi:hover {
+      border-color: #9ca3af;
+    }
+    .kpis.is-selectable .kpi.is-active {
+      border-color: var(--wsdc-color-brand-accent, #2563eb);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 25%, transparent);
+      background: #fff;
+    }
+    .kpi .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .kpi .val {
+      font-size: 1.2rem;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      margin-top: 2px;
+    }
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      flex-shrink: 0;
+      min-height: 1.1rem;
+    }
+    .legend-row:empty { display: none; }
+    .swatch {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+    .viz-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .viz-card {
+      background: transparent;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .chart-wrap, .table-wrap {
+      flex: 1;
+      min-height: 280px;
+      position: relative;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .chart-wrap.is-active, .table-wrap.is-active { display: flex; }
+    .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+    .empty {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 14px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .empty.show { display: flex; }
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .ghost-btn {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 8px;
+      padding: 0 12px;
+      height: 32px;
+      font: 600 12px Inter, system-ui, sans-serif;
+      cursor: pointer;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .ghost-btn:hover { border-color: #9ca3af; }
+    .ghost-btn:disabled { opacity: 0.45; cursor: default; }
+    .table-page-info {
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      margin-left: auto;
+    }
+    .table-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      background: #fff;
+    }
+    table.tid-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    table.tid-table th,
+    table.tid-table td {
+      padding: 8px 10px;
+      text-align: center;
+      border-bottom: 1px solid #eef2f7;
+      white-space: nowrap;
+    }
+    table.tid-table th:nth-child(2),
+    table.tid-table td:nth-child(2) {
+      text-align: left;
+    }
+    table.tid-table th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      z-index: 1;
+    }
+    table.tid-table tr.role-leader td {
+      background: rgba(99, 102, 241, 0.08);
+    }
+    table.tid-table tr.role-follower td {
+      background: rgba(244, 63, 94, 0.08);
+    }
+    details.method {
+      display: none;
+    }
+    .page-head__title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .page-head__title-row h1 {
+      margin: 0;
+    }
+    .method-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      pointer-events: none;
+    }
+    .method-layer.is-open {
+      display: block;
+      pointer-events: auto;
+    }
+    .method-layer__backdrop {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+    }
+    .method-island {
+      position: fixed;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      color: var(--wsdc-color-text, #1f2937);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+    .method-island.is-settled { opacity: 1; }
+    .method-island.is-dragging {
+      transition: none;
+      opacity: 1;
+    }
+    .method-island__head {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px 6px;
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    .method-island.is-dragging .method-island__head { cursor: grabbing; }
+    .method-island__head h2 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      pointer-events: none;
+      margin: 0;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .method-island__close {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .method-island__close:hover { background: var(--wsdc-color-surface-soft, #f8fafc); }
+    .method-island__body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 12px 14px 16px;
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.5;
+      -webkit-overflow-scrolling: touch;
+    }
+    .method-island__body ul {
+      padding-left: 18px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .method-island__body strong {
+      color: var(--wsdc-color-text, #1f2937);
+      font-weight: 600;
+    }
+    @media (max-width: 900px) {
+      html, body { height: auto; overflow: auto; }
+      .page { height: auto; min-height: 100dvh; overflow: visible; }
+      .content { overflow: visible; }
+      .viz-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .viz-filters-row__gutter { display: none; }
+      .tid-filters { justify-content: center; }
+      .viz-stage {
+        flex-direction: column;
+      }
+      .kpis {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: auto;
+        flex: 0 0 auto;
+        align-self: stretch;
+        padding-top: 0 !important;
+      }
+      .kpi {
+        flex: 1 1 7.5rem;
+        min-width: 7.5rem;
+        width: auto;
+      }
+      .viz-card { flex: 0 0 auto; min-height: 420px; }
+      .chart-wrap, .table-wrap { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="dash-chrome">
+      <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="time_in_division_dashboard_en.html"></div>
+      <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+    </div>
+
+    <section class="content">
+      <header class="page-head">
+        <div class="page-head__title-row">
+          <h1>Time in division</h1>
+          <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
+            <span aria-hidden="true">i</span>
+          </button>
+        </div>
+        <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against career events with a point in that division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
+      </header>
+
+      <div class="viz-filters-row">
+        <div class="viz-filters-row__gutter" aria-hidden="true"></div>
+        <div class="tid-filters" role="group" aria-label="Filters">
+          <div class="filter-field">
+            <label class="filter-label" for="divisionSelect" id="divisionLabel">Division</label>
+            <select id="divisionSelect" class="wsdc-select" aria-labelledby="divisionLabel">
+              <option value="Novice" selected>Novice</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="All-Stars">All-Stars</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label class="filter-label" for="thresholdSelect" id="thresholdLabel">Threshold</label>
+            <select id="thresholdSelect" class="wsdc-select" aria-labelledby="thresholdLabel">
+              <option value="allowed" selected>May</option>
+              <option value="required">Must</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label class="filter-label" for="roleSelect" id="roleLabel">Role</label>
+            <select id="roleSelect" class="wsdc-select" aria-labelledby="roleLabel">
+              <option value="All" selected>All</option>
+              <option value="Leader">Leader</option>
+              <option value="Follower">Follower</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label class="filter-label" for="modeSelect" id="modeLabel">Chart</label>
+            <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
+              <option value="table" selected>Table</option>
+              <option value="scatter">Scatter</option>
+              <option value="density">Density</option>
+              <option value="dynamics">Dynamics</option>
+            </select>
+          </div>
+          <div class="filter-field" id="yearFromField">
+            <label class="filter-label" for="yearFromSelect" id="yearFromLabel">From year</label>
+            <select id="yearFromSelect" class="wsdc-select" aria-labelledby="yearFromLabel"></select>
+          </div>
+          <div class="filter-field" id="yearToField">
+            <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
+            <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend-row" id="legendRow" aria-label="Legend"></div>
+
+      <div class="viz-stage">
+        <div class="kpis" id="kpiRow" aria-live="polite">
+          <p class="kpi-hint" id="kpiHint" hidden>Use KPI cards as filters</p>
+          <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
+            <div class="lbl">Dancers</div>
+            <div class="val" id="kpiN">—</div>
+          </button>
+          <button type="button" class="kpi" data-metric="months" id="kpiBtnMonths">
+            <div class="lbl">Median months</div>
+            <div class="val" id="kpiMonths">—</div>
+          </button>
+          <button type="button" class="kpi" data-metric="events" id="kpiBtnEvents">
+            <div class="lbl">Median events</div>
+            <div class="val" id="kpiEvents">—</div>
+          </button>
+          <button type="button" class="kpi" data-metric="both" id="kpiBtnBoth"
+            title="Share with months ≤ median months and events ≤ median events (lower-left of the median cross)">
+            <div class="lbl">≤ both</div>
+            <div class="val" id="kpiMedianBox">—</div>
+          </button>
+        </div>
+
+        <section class="viz-card" aria-label="Time in division visualization">
+          <div class="chart-wrap" id="chartWrap">
+            <canvas id="chart"></canvas>
+            <div class="empty" id="emptyState">No spells in this filter</div>
+          </div>
+          <div class="table-wrap is-active" id="tableWrap">
+            <div class="table-toolbar">
+              <button type="button" class="ghost-btn" id="csvDownload">Download CSV</button>
+              <span class="table-page-info" id="tablePageInfo">—</span>
+              <button type="button" class="ghost-btn" id="tablePrev">Prev</button>
+              <button type="button" class="ghost-btn" id="tableNext">Next</button>
+            </div>
+            <div class="table-scroll" id="tableScroll">
+              <table class="tid-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Division</th>
+                    <th>First ym</th>
+                    <th>Done ym</th>
+                    <th>Months</th>
+                    <th>Events</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+            <div class="empty" id="tableEmpty">No spells in this filter</div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+      <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+      <div
+        class="method-island"
+        id="methodIsland"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="methodIslandTitle"
+      >
+        <div class="method-island__head" id="methodIslandHead">
+          <h2 id="methodIslandTitle">Methodology</h2>
+          <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+        </div>
+        <div class="method-island__body" id="methodIslandBody">
+          <ul>
+            <li><strong>Spell:</strong> one dancer × division × role (Leader/Follower separately).</li>
+            <li><strong>Start:</strong> first event-month with a point in that spell.</li>
+            <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars: before formal Champions rules (pre-2021) — Champions points only (1 may / 10 must) on real events; from 2021 — OR of Champions pts or All-Stars pts.</li>
+            <li><strong>Months:</strong> calendar months between year-months.</li>
+            <li><strong>Events:</strong> unique events with a point in that division×role over the whole career.</li>
+            <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To, only within the allowed/required era for that division (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). Earlier single-threshold years are excluded — this dashboard focuses on the may/must buffer corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
+            <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events. KPI “≤ both medians” = share in the lower-left of the median cross.</li>
+            <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
+            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles. Years with 0 dancers create a gap. Months / Events / ≤ both require at least 10 dancers in that year (per line).</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = medians; <em>≤ both</em> = share at or below both medians (lower-left of the median cross). On Dynamics, click a card to choose the plotted metric (KPIs always summarize both roles).</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; CSV exports the full filtered set (includes threshold).</li>
+            <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="static/js/site-chrome.js" defer></script>
+  <script src="static/js/wsdc-select.js"></script>
+  <script>
+(function () {
+  const COLOR = { Leader: '#6366F1', Follower: '#F43F5E', All: '#6B7280' };
+  const PAGE_SIZE = 50;
+  const MIN_N_LINE = 10;
+  /** First calendar year of allowed/required (may/must buffer) by division. */
+  const YEAR_FLOOR = {
+    Novice: 2018,
+    Intermediate: 2018,
+    Advanced: 2018,
+    'All-Stars': 2021,
+  };
+  const DEFAULT_YEAR = 2026;
+  const METRIC_LABEL = {
+    n: 'Dancers',
+    months: 'Median months',
+    events: 'Median events',
+    both: '≤ both',
+  };
+
+  const state = {
+    data: null,
+    division: 'Novice',
+    threshold: 'allowed',
+    role: 'All',
+    mode: 'table',
+    metric: 'n',
+    yearFrom: null,
+    yearTo: null,
+    chart: null,
+    binM: 6,
+    binE: 2,
+    medianMonths: null,
+    medianEvents: null,
+    tablePage: 0,
+    tableRows: [],
+    methodOpen: false,
+    methodMoved: false,
+    methodDrag: null,
+  };
+
+  const medianGuidesPlugin = {
+    id: 'medianGuides',
+    afterDatasetsDraw(chart) {
+      if (state.mode !== 'scatter' && state.mode !== 'density') return;
+      const mx = state.medianMonths;
+      const my = state.medianEvents;
+      if (mx == null || my == null) return;
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea || !scales.x || !scales.y) return;
+      const x = scales.x.getPixelForValue(mx);
+      const y = scales.y.getPixelForValue(my);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+      ctx.save();
+      ctx.strokeStyle = '#9CA3AF';
+      ctx.lineWidth = 1.25;
+      ctx.setLineDash([5, 4]);
+      if (x >= chartArea.left && x <= chartArea.right) {
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+      }
+      if (y >= chartArea.top && y <= chartArea.bottom) {
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    },
+  };
+
+  /** Axis max with headroom so extreme points (and density bubbles) are not clipped. */
+  function axisPadMax(v) {
+    if (!Number.isFinite(v) || v <= 0) return 10;
+    return Math.max(Math.ceil(v * 1.12), Math.ceil(v) + 1);
+  }
+
+  function doneYear(hit) {
+    if (!hit || !hit.done_ym) return null;
+    const y = Number(String(hit.done_ym).slice(0, 4));
+    return Number.isFinite(y) ? y : null;
+  }
+
+  function median(arr) {
+    if (!arr.length) return null;
+    const a = arr.slice().sort((x, y) => x - y);
+    const mid = Math.floor(a.length / 2);
+    return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+  }
+
+  function bothShare(rows, thr, medM, medE) {
+    if (!rows.length || medM == null || medE == null) return null;
+    const inside = rows.filter((s) => s[thr].months <= medM && s.events <= medE).length;
+    return (100 * inside) / rows.length;
+  }
+
+  function yearFloorForDivision(division) {
+    return YEAR_FLOOR[division] ?? 2018;
+  }
+
+  /** Role control: filter on Scatter/Density/Table; view mode on Dynamics. */
+  function syncRoleControl() {
+    const select = document.getElementById('roleSelect');
+    const label = document.getElementById('roleLabel');
+    const filters = document.querySelector('.tid-filters');
+    const dynamics = state.mode === 'dynamics';
+    filters.classList.toggle('is-dynamics-role', dynamics);
+    label.textContent = dynamics ? 'View' : 'Role';
+
+    const wanted = dynamics
+      ? [
+          { value: 'All', text: 'Overall' },
+          { value: 'Both', text: 'Leaders & Followers' },
+        ]
+      : [
+          { value: 'All', text: 'All' },
+          { value: 'Leader', text: 'Leader' },
+          { value: 'Follower', text: 'Follower' },
+        ];
+
+    const curHtml = [...select.options].map((o) => `${o.value}|${o.textContent}`).join(';');
+    const nextHtml = wanted.map((o) => `${o.value}|${o.text}`).join(';');
+    let optionsChanged = false;
+    if (curHtml !== nextHtml) {
+      optionsChanged = true;
+      select.replaceChildren();
+      wanted.forEach(({ value, text }) => {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = text;
+        select.appendChild(opt);
+      });
+    }
+
+    if (dynamics) {
+      if (state.role === 'Leader' || state.role === 'Follower') state.role = 'Both';
+      if (state.role !== 'All' && state.role !== 'Both') state.role = 'All';
+    } else if (state.role === 'Both') {
+      state.role = 'All';
+    }
+
+    const valueChanged = select.value !== state.role;
+    if (valueChanged) select.value = state.role;
+    if ((optionsChanged || valueChanged) && window.WsdcSelect) {
+      WsdcSelect.refresh(select);
+    }
+  }
+
+  /** @param {{ ignoreYears?: boolean }} [opts] */
+  function filteredRows(opts) {
+    const ignoreYears = !!(opts && opts.ignoreYears);
+    const d = state.data;
+    if (!d) return [];
+    const thr = state.threshold;
+    const y0 = state.yearFrom;
+    const y1 = state.yearTo;
+    const floor = yearFloorForDivision(state.division);
+    const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
+    return d.spells.filter((s) => {
+      if (s.division !== state.division) return false;
+      if (roleFilter && s.role !== roleFilter) return false;
+      const hit = s[thr];
+      if (!hit) return false;
+      const y = doneYear(hit);
+      if (y == null || y < floor) return false;
+      if (ignoreYears) return true;
+      if (y0 == null || y1 == null) return false;
+      return y >= y0 && y <= y1;
+    });
+  }
+
+  function kpiRows() {
+    return filteredRows({ ignoreYears: state.mode === 'dynamics' });
+  }
+
+  function updateKpis(rows, thr) {
+    const months = rows.map((s) => s[thr].months);
+    const events = rows.map((s) => s.events);
+    state.medianMonths = median(months);
+    state.medianEvents = median(events);
+    document.getElementById('kpiN').textContent = String(rows.length);
+    document.getElementById('kpiMonths').textContent =
+      state.medianMonths == null ? '—' : String(Math.round(state.medianMonths * 10) / 10);
+    document.getElementById('kpiEvents').textContent =
+      state.medianEvents == null ? '—' : String(Math.round(state.medianEvents * 10) / 10);
+
+    const boxEl = document.getElementById('kpiMedianBox');
+    const share = bothShare(rows, thr, state.medianMonths, state.medianEvents);
+    if (share == null) {
+      boxEl.textContent = '—';
+      boxEl.removeAttribute('title');
+    } else {
+      const inside = rows.filter(
+        (s) => s[thr].months <= state.medianMonths && s.events <= state.medianEvents
+      ).length;
+      boxEl.textContent = `${Math.round(share * 10) / 10}%`;
+      boxEl.title = `${inside} of ${rows.length} spells`;
+    }
+  }
+
+  function syncKpiChrome() {
+    const row = document.getElementById('kpiRow');
+    const selectable = state.mode === 'dynamics';
+    row.classList.toggle('is-selectable', selectable);
+    document.getElementById('kpiHint').hidden = !selectable;
+    row.querySelectorAll('.kpi').forEach((btn) => {
+      const on = selectable && btn.getAttribute('data-metric') === state.metric;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', selectable ? String(on) : 'false');
+    });
+  }
+
+  function updateYearFieldsVisibility() {
+    const hide = state.mode === 'dynamics';
+    document.getElementById('yearFromField').classList.toggle('is-hidden', hide);
+    document.getElementById('yearToField').classList.toggle('is-hidden', hide);
+  }
+
+  function updateLegend() {
+    const row = document.getElementById('legendRow');
+    row.replaceChildren();
+    if (state.mode === 'table' || state.mode === 'density') return;
+    if (state.mode === 'dynamics') {
+      if (state.role !== 'Both') return;
+      ['Leader', 'Follower'].forEach((role) => {
+        const span = document.createElement('span');
+        const sw = document.createElement('span');
+        sw.className = 'swatch';
+        sw.style.background = COLOR[role];
+        span.append(sw, document.createTextNode(role));
+        row.appendChild(span);
+      });
+      return;
+    }
+    const roles = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
+    roles.forEach((role) => {
+      const span = document.createElement('span');
+      const sw = document.createElement('span');
+      sw.className = 'swatch';
+      sw.style.background = COLOR[role];
+      span.append(sw, document.createTextNode(role));
+      row.appendChild(span);
+    });
+  }
+
+  function radialLayout(rows, thr) {
+    const groups = new Map();
+    rows.forEach((s) => {
+      const mx = s[thr].months;
+      const ey = s.events;
+      const key = mx + '|' + ey;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(s);
+    });
+    const byRole = { Leader: [], Follower: [] };
+    groups.forEach((list, key) => {
+      const [mx, ey] = key.split('|').map(Number);
+      list.sort((a, b) => {
+        const id = String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
+        return id || a.role.localeCompare(b.role);
+      });
+      const n = list.length;
+      list.forEach((s, i) => {
+        let x = mx;
+        let y = ey;
+        if (n > 1) {
+          const perRing = 10;
+          const ring = Math.floor(i / perRing);
+          const idx = i % perRing;
+          const onRing = Math.min(perRing, n - ring * perRing);
+          const angle = (2 * Math.PI * idx) / onRing - Math.PI / 2;
+          const r = 0.28 + ring * 0.32;
+          x = mx + Math.cos(angle) * r * 0.95;
+          y = Math.max(0, ey + Math.sin(angle) * r * 0.42);
+        }
+        byRole[s.role].push({ x, y, raw: s });
+      });
+    });
+    return byRole;
+  }
+
+  function scatterDatasets(rows, thr) {
+    const laid = radialLayout(rows, thr);
+    const groups = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
+    return groups.map((role) => ({
+      label: role,
+      data: laid[role] || [],
+      backgroundColor: 'rgba(255, 255, 255, 0)',
+      borderColor: COLOR[role],
+      borderWidth: 1.6,
+      pointRadius: 3.2,
+      pointHoverRadius: 5,
+      pointHitRadius: 7,
+      pointStyle: 'circle',
+      clip: false,
+    }));
+  }
+
+  function densityDatasets(rows, thr) {
+    const bins = new Map();
+    const binM = state.binM;
+    const binE = state.binE;
+    rows.forEach((s) => {
+      const mx = s[thr].months;
+      const ey = s.events;
+      const bx = Math.floor(mx / binM) * binM;
+      const by = Math.floor(ey / binE) * binE;
+      const key = bx + ':' + by;
+      const cur = bins.get(key) || { x: bx + binM / 2, y: by + binE / 2, n: 0 };
+      cur.n += 1;
+      bins.set(key, cur);
+    });
+    const cells = [...bins.values()];
+    const maxN = cells.reduce((m, c) => Math.max(m, c.n), 1);
+    return [{
+      label: 'Density',
+      data: cells.map((c) => ({
+        x: c.x,
+        y: c.y,
+        n: c.n,
+        r: 3 + 14 * (c.n / maxN),
+      })),
+      backgroundColor: cells.map((c) => {
+        const a = 0.28 + 0.62 * (c.n / maxN);
+        return `rgba(99, 102, 241, ${a})`;
+      }),
+      borderWidth: 0,
+      pointRadius: (ctx) => (ctx.raw && ctx.raw.r) || 5,
+      pointHoverRadius: (ctx) => ((ctx.raw && ctx.raw.r) || 5) + 2,
+      pointHitRadius: 8,
+      clip: false,
+    }];
+  }
+
+  function metricForGroup(group, thr, metric) {
+    const n = group.length;
+    if (metric === 'n') return n;
+    if (n < MIN_N_LINE) return null;
+    const months = group.map((s) => s[thr].months);
+    const events = group.map((s) => s.events);
+    const medM = median(months);
+    const medE = median(events);
+    if (metric === 'months') return medM;
+    if (metric === 'events') return medE;
+    if (metric === 'both') return bothShare(group, thr, medM, medE);
+    return null;
+  }
+
+  function dynamicsSeriesData(rowsAllYears, thr) {
+    const byYear = new Map();
+    rowsAllYears.forEach((s) => {
+      const y = doneYear(s[thr]);
+      if (y == null) return;
+      if (!byYear.has(y)) byYear.set(y, []);
+      byYear.get(y).push(s);
+    });
+    if (!byYear.size) return [];
+    const years = [...byYear.keys()].sort((a, b) => a - b);
+    const yMin = years[0];
+    const yMax = years[years.length - 1];
+    const data = [];
+    for (let y = yMin; y <= yMax; y++) {
+      const group = byYear.get(y) || [];
+      const n = group.length;
+      if (n === 0) {
+        data.push({ x: y, y: null, n: 0 });
+        continue;
+      }
+      const val = metricForGroup(group, thr, state.metric);
+      data.push({ x: y, y: val, n });
+    }
+    return data;
+  }
+
+  function dynamicsLineDataset(label, data, lineColor) {
+    return {
+      label,
+      data,
+      borderColor: lineColor,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      pointBackgroundColor: '#fff',
+      pointBorderColor: lineColor,
+      pointBorderWidth: 1.5,
+      spanGaps: false,
+      tension: 0.15,
+      clip: false,
+    };
+  }
+
+  function dynamicsDatasets(rowsAllYears, thr) {
+    if (state.role === 'Both') {
+      const leaders = rowsAllYears.filter((s) => s.role === 'Leader');
+      const followers = rowsAllYears.filter((s) => s.role === 'Follower');
+      const leadData = dynamicsSeriesData(leaders, thr);
+      const follData = dynamicsSeriesData(followers, thr);
+      // Align both series to the shared year span so gaps match.
+      const xs = [...leadData, ...follData].map((p) => p.x);
+      if (!xs.length) {
+        return [
+          dynamicsLineDataset('Leader', [], COLOR.Leader),
+          dynamicsLineDataset('Follower', [], COLOR.Follower),
+        ];
+      }
+      const yMin = Math.min(...xs);
+      const yMax = Math.max(...xs);
+      const fillGaps = (src) => {
+        const map = new Map(src.map((p) => [p.x, p]));
+        const out = [];
+        for (let y = yMin; y <= yMax; y++) {
+          out.push(map.get(y) || { x: y, y: null, n: 0 });
+        }
+        return out;
+      };
+      return [
+        dynamicsLineDataset('Leader', fillGaps(leadData), COLOR.Leader),
+        dynamicsLineDataset('Follower', fillGaps(follData), COLOR.Follower),
+      ];
+    }
+
+    const data = dynamicsSeriesData(rowsAllYears, thr);
+    const lineColor = COLOR.All;
+    if (!data.length) {
+      return [dynamicsLineDataset(METRIC_LABEL[state.metric], [], lineColor)];
+    }
+    return [dynamicsLineDataset(METRIC_LABEL[state.metric], data, lineColor)];
+  }
+
+  function applyScatterScaleLimits(chart, rows, thr) {
+    const xScale = chart.options.scales.x;
+    const yScale = chart.options.scales.y;
+    xScale.type = 'linear';
+    yScale.type = 'linear';
+    xScale.title.text = 'Months';
+    yScale.title.text = 'Events';
+    xScale.beginAtZero = true;
+    yScale.beginAtZero = true;
+    if (!rows.length) {
+      delete xScale.max;
+      delete yScale.max;
+      return;
+    }
+    let xMax = state.medianMonths ?? 0;
+    let yMax = state.medianEvents ?? 0;
+    rows.forEach((s) => {
+      xMax = Math.max(xMax, s[thr].months);
+      yMax = Math.max(yMax, s.events);
+    });
+    xScale.min = 0;
+    yScale.min = 0;
+    xScale.max = axisPadMax(xMax);
+    yScale.max = axisPadMax(yMax);
+  }
+
+  function applyDynamicsScaleLimits(chart, datasets) {
+    const xScale = chart.options.scales.x;
+    const yScale = chart.options.scales.y;
+    xScale.type = 'linear';
+    yScale.type = 'linear';
+    xScale.title.text = 'Year';
+    yScale.title.text = METRIC_LABEL[state.metric];
+    xScale.beginAtZero = false;
+    yScale.beginAtZero = true;
+    const pts = (datasets || []).flatMap((ds) => ds.data || []);
+    const xs = pts.map((p) => p.x).filter((v) => v != null);
+    const ys = pts.map((p) => p.y).filter((v) => v != null && Number.isFinite(v));
+    if (!xs.length) {
+      delete xScale.min;
+      delete xScale.max;
+      delete yScale.min;
+      delete yScale.max;
+      return;
+    }
+    const xMin = Math.min(...xs);
+    const xMax = Math.max(...xs);
+    // Half-year pad so first/last year markers are not clipped at the chart edge.
+    xScale.min = xMin - 0.5;
+    xScale.max = xMax === xMin ? xMax + 0.5 : xMax + 0.5;
+    yScale.min = 0;
+    if (!ys.length) {
+      yScale.max = 10;
+      return;
+    }
+    yScale.max = axisPadMax(Math.max(...ys));
+  }
+
+  function destroyChart() {
+    if (state.chart) {
+      state.chart.destroy();
+      state.chart = null;
+    }
+  }
+
+  function ensureChart(chartType) {
+    if (state.chart && state.chart.config.type !== chartType) destroyChart();
+    if (state.chart) return state.chart;
+    const ctx = document.getElementById('chart').getContext('2d');
+    state.chart = new Chart(ctx, {
+      type: chartType,
+      data: { datasets: [] },
+      plugins: [medianGuidesPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        parsing: false,
+        animation: false,
+        layout: { padding: { top: 10, right: 10, bottom: 4, left: 4 } },
+        interaction: {
+          mode: 'nearest',
+          intersect: false,
+          axis: chartType === 'line' ? 'x' : 'xy',
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: true,
+            mode: 'nearest',
+            intersect: chartType !== 'line',
+            displayColors: chartType === 'line',
+            filter(item, index) {
+              if (state.mode === 'dynamics') return true;
+              return index === 0;
+            },
+            callbacks: {
+              title(items) {
+                const raw = items[0]?.raw;
+                if (!raw) return '';
+                if (state.mode === 'dynamics') return String(raw.x);
+                if (raw.raw) return `${raw.raw.name} · ${raw.raw.id}`;
+                if (raw.n != null && raw.raw == null && state.mode === 'density') {
+                  return `${raw.n} dancers in bin`;
+                }
+                return '';
+              },
+              label(item) {
+                const raw = item.raw;
+                if (state.mode === 'dynamics') {
+                  if (raw.y == null) {
+                    return state.role === 'Both'
+                      ? `${item.dataset.label} · No data`
+                      : 'No data';
+                  }
+                  if (state.metric === 'n') {
+                    return state.role === 'Both'
+                      ? `${item.dataset.label} · Dancers: ${raw.n}`
+                      : `Dancers: ${raw.n}`;
+                  }
+                  const val = state.metric === 'both'
+                    ? `${Math.round(raw.y * 10) / 10}%`
+                    : String(Math.round(raw.y * 10) / 10);
+                  if (state.role === 'Both') {
+                    return `${item.dataset.label} · ${METRIC_LABEL[state.metric]}: ${val} · n=${raw.n}`;
+                  }
+                  return [
+                    `${METRIC_LABEL[state.metric]}: ${val}`,
+                    `Dancers: ${raw.n}`,
+                  ];
+                }
+                if (raw?.raw) {
+                  const s = raw.raw;
+                  const thr = state.threshold;
+                  const hit = s[thr];
+                  return [
+                    `Role: ${s.role}`,
+                    `Months to ${thr === 'allowed' ? 'may' : 'must'}: ${hit.months}`,
+                    `Events: ${s.events}`,
+                  ];
+                }
+                if (raw?.n != null) {
+                  return [
+                    `Bin center ≈ ${Math.round(raw.x)} mo × ${Math.round(raw.y)} events`,
+                    `Count: ${raw.n}`,
+                  ];
+                }
+                return '';
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Months' },
+            grid: { display: false },
+            border: { display: true, color: '#D1D5DB' },
+            ticks: {
+              color: '#6B7280',
+              callback(value) {
+                if (state.mode === 'dynamics') return Number.isInteger(value) ? value : '';
+                return value;
+              },
+            },
+            beginAtZero: true,
+          },
+          y: {
+            title: { display: true, text: 'Events' },
+            grid: { display: false },
+            border: { display: true, color: '#D1D5DB' },
+            ticks: { color: '#6B7280' },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+    return state.chart;
+  }
+
+  function sortedTableRows(rows, thr) {
+    const thrLabel = thr === 'allowed' ? 'May' : 'Must';
+    return rows
+      .map((s) => ({
+        id: s.id,
+        name: s.name,
+        role: s.role,
+        division: s.division,
+        first_ym: s.first_ym,
+        done_ym: s[thr].done_ym,
+        months: s[thr].months,
+        events: s.events,
+        threshold: thrLabel,
+      }))
+      .sort((a, b) => {
+        if (a.months !== b.months) return a.months - b.months;
+        if (a.events !== b.events) return a.events - b.events;
+        return String(a.name).localeCompare(String(b.name));
+      });
+  }
+
+  function renderTable() {
+    const thr = state.threshold;
+    const rows = sortedTableRows(filteredRows(), thr);
+    state.tableRows = rows;
+    const maxPage = Math.max(0, Math.ceil(rows.length / PAGE_SIZE) - 1);
+    if (state.tablePage > maxPage) state.tablePage = maxPage;
+    const start = state.tablePage * PAGE_SIZE;
+    const pageRows = rows.slice(start, start + PAGE_SIZE);
+    const tbody = document.getElementById('tableBody');
+    tbody.replaceChildren();
+    pageRows.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
+      tr.innerHTML =
+        `<td>${r.id}</td>` +
+        `<td>${escapeHtml(r.name)}</td>` +
+        `<td>${r.role}</td>` +
+        `<td>${r.division}</td>` +
+        `<td>${r.first_ym}</td>` +
+        `<td>${r.done_ym}</td>` +
+        `<td>${r.months}</td>` +
+        `<td>${r.events}</td>`;
+      tbody.appendChild(tr);
+    });
+    const from = rows.length ? start + 1 : 0;
+    const to = Math.min(start + PAGE_SIZE, rows.length);
+    document.getElementById('tablePageInfo').textContent =
+      `${from}–${to} of ${rows.length}`;
+    document.getElementById('tablePrev').disabled = state.tablePage <= 0;
+    document.getElementById('tableNext').disabled = state.tablePage >= maxPage;
+    document.getElementById('tableEmpty').classList.toggle('show', rows.length === 0);
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function downloadCsv() {
+    const rows = state.tableRows;
+    const header = ['id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events', 'threshold'];
+    const lines = [header.join(',')];
+    rows.forEach((r) => {
+      lines.push([
+        r.id,
+        csvEscape(r.name),
+        r.role,
+        r.division,
+        r.first_ym,
+        r.done_ym,
+        r.months,
+        r.events,
+        r.threshold,
+      ].join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    const thr = state.threshold === 'allowed' ? 'may' : 'must';
+    a.href = URL.createObjectURL(blob);
+    a.download = `time_in_division_${state.division}_${thr}_${state.role}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function csvEscape(v) {
+    const s = String(v ?? '');
+    if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    return s;
+  }
+
+  function render() {
+    const thr = state.threshold;
+    syncRoleControl();
+    updateYearFieldsVisibility();
+    syncKpiChrome();
+
+    const chartWrap = document.getElementById('chartWrap');
+    const tableWrap = document.getElementById('tableWrap');
+    const isTable = state.mode === 'table';
+    document.querySelector('.viz-stage')?.classList.toggle('is-table', isTable);
+    chartWrap.classList.toggle('is-active', !isTable);
+    tableWrap.classList.toggle('is-active', isTable);
+
+    if (isTable) {
+      destroyChart();
+      const rows = filteredRows();
+      updateKpis(rows, thr);
+      updateLegend();
+      renderTable();
+      return;
+    }
+
+    const rowsForKpi = kpiRows();
+    updateKpis(rowsForKpi, thr);
+    updateLegend();
+
+    if (state.mode === 'dynamics') {
+      const rowsAll = filteredRows({ ignoreYears: true });
+      const datasets = dynamicsDatasets(rowsAll, thr);
+      const chart = ensureChart('line');
+      chart.data.datasets = datasets;
+      applyDynamicsScaleLimits(chart, datasets);
+      const dual = state.role === 'Both';
+      chart.options.interaction.mode = dual ? 'index' : 'nearest';
+      chart.options.interaction.axis = 'x';
+      chart.options.interaction.intersect = false;
+      chart.options.plugins.tooltip.mode = dual ? 'index' : 'nearest';
+      chart.options.plugins.tooltip.intersect = false;
+      const hasPoint = datasets.some((ds) => (ds.data || []).some((p) => p.y != null));
+      document.getElementById('emptyState').classList.toggle('show', !hasPoint);
+      chart.update('none');
+      return;
+    }
+
+    const rows = filteredRows();
+    const chart = ensureChart('scatter');
+    chart.data.datasets = state.mode === 'scatter'
+      ? scatterDatasets(rows, thr)
+      : densityDatasets(rows, thr);
+    applyScatterScaleLimits(chart, rows, thr);
+    chart.options.interaction.axis = 'xy';
+    chart.options.interaction.intersect = true;
+    chart.options.plugins.tooltip.intersect = true;
+    document.getElementById('emptyState').classList.toggle('show', rows.length === 0);
+    chart.update('none');
+  }
+
+  function fillYearSelects(years, fromDefault, toDefault) {
+    const fromEl = document.getElementById('yearFromSelect');
+    const toEl = document.getElementById('yearToSelect');
+    const opts = years.map((y) => `<option value="${y}">${y}</option>`).join('');
+    fromEl.innerHTML = opts;
+    toEl.innerHTML = opts;
+    fromEl.value = String(fromDefault);
+    toEl.value = String(toDefault);
+    state.yearFrom = fromDefault;
+    state.yearTo = toDefault;
+    if (window.WsdcSelect) {
+      WsdcSelect.refresh(fromEl);
+      WsdcSelect.refresh(toEl);
+    }
+  }
+
+  function syncYearRange(changed) {
+    let from = Number(document.getElementById('yearFromSelect').value);
+    let to = Number(document.getElementById('yearToSelect').value);
+    if (from > to) {
+      if (changed === 'from') to = from;
+      else from = to;
+      document.getElementById('yearFromSelect').value = String(from);
+      document.getElementById('yearToSelect').value = String(to);
+      if (window.WsdcSelect) {
+        WsdcSelect.refresh(document.getElementById('yearFromSelect'));
+        WsdcSelect.refresh(document.getElementById('yearToSelect'));
+      }
+    }
+    state.yearFrom = from;
+    state.yearTo = to;
+  }
+
+  function collectDoneYearsForDivision(data, division) {
+    const floor = yearFloorForDivision(division);
+    const set = new Set();
+    (data.spells || []).forEach((s) => {
+      if (s.division !== division) return;
+      ['allowed', 'required'].forEach((k) => {
+        const y = doneYear(s[k]);
+        if (y != null && y >= floor) set.add(y);
+      });
+    });
+    return [...set].sort((a, b) => a - b);
+  }
+
+  function pickDefaultYear(yearOpts) {
+    if (yearOpts.includes(DEFAULT_YEAR)) return DEFAULT_YEAR;
+    const atOrAfter = yearOpts.find((y) => y >= DEFAULT_YEAR);
+    return atOrAfter ?? yearOpts[yearOpts.length - 1];
+  }
+
+  /** Rebuild From/To options for the current division; clamp selection into the allowed/required era. */
+  function applyYearOptionsForDivision(preserveSelection) {
+    if (!state.data) return;
+    const floor = yearFloorForDivision(state.division);
+    const years = collectDoneYearsForDivision(state.data, state.division);
+    const yearOpts = years.length ? years : [floor];
+    let from = preserveSelection ? state.yearFrom : null;
+    let to = preserveSelection ? state.yearTo : null;
+    const fallback = pickDefaultYear(yearOpts);
+    if (from == null || !yearOpts.includes(from)) from = fallback;
+    if (to == null || !yearOpts.includes(to)) to = fallback;
+    if (from > to) to = from;
+    fillYearSelects(yearOpts, from, to);
+  }
+
+  function methodIslandFinalRect() {
+    const pad = 10;
+    const stage = document.querySelector('.viz-stage');
+    const filters = document.querySelector('.tid-filters');
+    const target = stage && stage.getBoundingClientRect().width
+      ? stage.getBoundingClientRect()
+      : document.querySelector('.content').getBoundingClientRect();
+    const barTop = filters ? filters.getBoundingClientRect().top : NaN;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (vw <= 720) {
+      return {
+        left: pad,
+        top: Math.max(pad, (filters ? filters.getBoundingClientRect().bottom : 56) + 6),
+        width: Math.max(0, vw - pad * 2),
+        height: Math.max(220, vh - (filters ? filters.getBoundingClientRect().bottom : 56) - pad * 2),
+      };
+    }
+    return {
+      left: target.left + pad,
+      top: Number.isFinite(barTop) ? barTop : target.top + pad,
+      width: Math.max(280, target.width - pad * 2),
+      height: Math.max(220, target.height - pad * 2),
+    };
+  }
+
+  function applyMethodIslandRect(el, rect) {
+    el.style.left = Math.round(rect.left) + 'px';
+    el.style.top = Math.round(rect.top) + 'px';
+    el.style.width = Math.round(rect.width) + 'px';
+    el.style.height = Math.round(rect.height) + 'px';
+  }
+
+  function readMethodIslandRect(el) {
+    return {
+      left: parseFloat(el.style.left) || 0,
+      top: parseFloat(el.style.top) || 0,
+      width: parseFloat(el.style.width) || el.offsetWidth,
+      height: parseFloat(el.style.height) || el.offsetHeight,
+    };
+  }
+
+  function clampMethodIslandInViewport(left, top, width, height) {
+    const pad = 8;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const maxL = Math.max(pad, vw - width - pad);
+    const maxT = Math.max(pad, vh - height - pad);
+    return {
+      left: Math.min(Math.max(pad, left), maxL),
+      top: Math.min(Math.max(pad, top), maxT),
+      width,
+      height,
+    };
+  }
+
+  function placeMethodIslandDefault(island) {
+    applyMethodIslandRect(island, methodIslandFinalRect());
+    state.methodMoved = false;
+  }
+
+  function openMethodIsland() {
+    const layer = document.getElementById('methodLayer');
+    const island = document.getElementById('methodIsland');
+    const btn = document.getElementById('methodInfoBtn');
+    if (!layer || !island) return;
+    if (state.methodOpen) {
+      if (!state.methodMoved) placeMethodIslandDefault(island);
+      island.classList.add('is-settled');
+      return;
+    }
+    state.methodOpen = true;
+    state.methodMoved = false;
+    layer.hidden = false;
+    layer.setAttribute('aria-hidden', 'false');
+    layer.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+    placeMethodIslandDefault(island);
+    island.classList.remove('is-settled');
+    void island.offsetWidth;
+    island.classList.add('is-settled');
+    document.getElementById('methodIslandClose').focus();
+  }
+
+  function closeMethodIsland() {
+    if (!state.methodOpen) return;
+    const layer = document.getElementById('methodLayer');
+    const island = document.getElementById('methodIsland');
+    const btn = document.getElementById('methodInfoBtn');
+    island.classList.remove('is-settled', 'is-dragging');
+    layer.classList.remove('is-open');
+    layer.hidden = true;
+    layer.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    state.methodOpen = false;
+    state.methodMoved = false;
+    state.methodDrag = null;
+    btn.focus();
+  }
+
+  function wireMethodIsland() {
+    const btn = document.getElementById('methodInfoBtn');
+    const closeBtn = document.getElementById('methodIslandClose');
+    const backdrop = document.getElementById('methodLayerBackdrop');
+    const head = document.getElementById('methodIslandHead');
+    const island = document.getElementById('methodIsland');
+    if (!btn || !island || !head) return;
+
+    btn.addEventListener('click', () => {
+      if (state.methodOpen) closeMethodIsland();
+      else openMethodIsland();
+    });
+    closeBtn.addEventListener('click', closeMethodIsland);
+    backdrop.addEventListener('click', closeMethodIsland);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.methodOpen) closeMethodIsland();
+    });
+    window.addEventListener('resize', () => {
+      if (!state.methodOpen) return;
+      if (!state.methodMoved) placeMethodIslandDefault(island);
+      else {
+        const cur = readMethodIslandRect(island);
+        const size = methodIslandFinalRect();
+        applyMethodIslandRect(
+          island,
+          clampMethodIslandInViewport(cur.left, cur.top, size.width, size.height)
+        );
+      }
+    });
+
+    head.addEventListener('pointerdown', (e) => {
+      if (!state.methodOpen) return;
+      if (window.innerWidth <= 720) return;
+      if (e.button != null && e.button !== 0) return;
+      if (e.target.closest && e.target.closest('.method-island__close')) return;
+      const cur = readMethodIslandRect(island);
+      state.methodDrag = {
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startY: e.clientY,
+        origLeft: cur.left,
+        origTop: cur.top,
+        width: cur.width,
+        height: cur.height,
+        moved: false,
+      };
+      island.classList.add('is-dragging');
+      try { head.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+      e.preventDefault();
+    });
+    head.addEventListener('pointermove', (e) => {
+      const drag = state.methodDrag;
+      if (!drag || drag.pointerId !== e.pointerId) return;
+      const dx = e.clientX - drag.startX;
+      const dy = e.clientY - drag.startY;
+      if (!drag.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) drag.moved = true;
+      applyMethodIslandRect(
+        island,
+        clampMethodIslandInViewport(
+          drag.origLeft + dx,
+          drag.origTop + dy,
+          drag.width,
+          drag.height
+        )
+      );
+    });
+    const endDrag = (e) => {
+      const drag = state.methodDrag;
+      if (!drag || (e.pointerId != null && drag.pointerId !== e.pointerId)) return;
+      if (drag.moved) state.methodMoved = true;
+      state.methodDrag = null;
+      island.classList.remove('is-dragging');
+      try { head.releasePointerCapture(drag.pointerId); } catch (_) { /* ignore */ }
+    };
+    head.addEventListener('pointerup', endDrag);
+    head.addEventListener('pointercancel', endDrag);
+  }
+
+  async function init() {
+    const onFilterChange = (key, value) => {
+      const prevMode = state.mode;
+      const prevDivision = state.division;
+      state[key] = value;
+      if (key === 'mode') {
+        if (value === 'dynamics' && prevMode !== 'dynamics') state.metric = 'n';
+        if (value === 'table') state.tablePage = 0;
+        destroyChart();
+      }
+      if (key === 'division' || key === 'threshold' || key === 'role') state.tablePage = 0;
+      if (key === 'division' && value !== prevDivision) {
+        applyYearOptionsForDivision(true);
+      }
+      render();
+      if (key === 'mode' && window.WsdcSelect) {
+        WsdcSelect.refresh(document.getElementById('modeSelect'));
+      }
+    };
+
+    ['divisionSelect', 'thresholdSelect', 'roleSelect', 'modeSelect'].forEach((id) => {
+      const el = document.getElementById(id);
+      const key = id.replace('Select', '');
+      el.addEventListener('change', () => onFilterChange(key === 'mode' ? 'mode' : key, el.value));
+    });
+
+    document.getElementById('yearFromSelect').addEventListener('change', () => {
+      syncYearRange('from');
+      state.tablePage = 0;
+      render();
+    });
+    document.getElementById('yearToSelect').addEventListener('change', () => {
+      syncYearRange('to');
+      state.tablePage = 0;
+      render();
+    });
+
+    document.getElementById('kpiRow').addEventListener('click', (e) => {
+      const btn = e.target.closest('.kpi[data-metric]');
+      if (!btn || state.mode !== 'dynamics') return;
+      state.metric = btn.getAttribute('data-metric');
+      render();
+    });
+
+    document.getElementById('csvDownload').addEventListener('click', downloadCsv);
+    document.getElementById('tablePrev').addEventListener('click', () => {
+      if (state.tablePage > 0) {
+        state.tablePage -= 1;
+        renderTable();
+      }
+    });
+    document.getElementById('tableNext').addEventListener('click', () => {
+      const maxPage = Math.max(0, Math.ceil(state.tableRows.length / PAGE_SIZE) - 1);
+      if (state.tablePage < maxPage) {
+        state.tablePage += 1;
+        renderTable();
+      }
+    });
+
+    const res = await fetch('static/data/time_in_division_spells.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    state.data = await res.json();
+    state.binM = Number(state.data.bin_months) || 6;
+    state.binE = Number(state.data.bin_events) || 2;
+    document.getElementById('asOfNote').textContent = state.data.data_as_of;
+
+    applyYearOptionsForDivision(false);
+
+    if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
+    wireMethodIsland();
+    render();
+  }
+
+  init().catch((err) => {
+    document.getElementById('emptyState').textContent = 'Failed to load data';
+    document.getElementById('emptyState').classList.add('show');
+    console.error(err);
+  });
+})();
+  </script>
+</body>
+</html>

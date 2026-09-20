@@ -1,27 +1,23 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Second role dynamics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #f5f6f7;
-      --surface-card: #ffffff;
-      --text: #2c2f30;
-      --muted: #757778;
-      --muted-soft: #abadae;
-      --border: rgba(117, 119, 120, 0.16);
-      --primary: #111827;
-      --secondary: #2dd4bf;
-      --total: #475569;
-      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-      --radius-outer: 30px;
-      --radius-lg: 16px;
-      --radius-md: 12px;
+      --bg: var(--wsdc-color-surface-soft, #f8fafc);
+      --card: var(--wsdc-color-surface, #ffffff);
+      --text: var(--wsdc-color-text, #1f2937);
+      --muted: var(--wsdc-color-text-muted, #4b5563);
+      --border: var(--wsdc-color-border, #d1d5db);
+      --accent: var(--wsdc-color-brand-accent, #2563eb);
     }
     * { box-sizing: border-box; }
     html, body {
@@ -218,7 +214,7 @@
     }
   </style>
 </head>
-<body>
+<body class="wsdc-embed-shell">
   <div class="chart-wrap">
       <div class="chart-top">
         <div class="chart-controls">
@@ -227,7 +223,7 @@
               <label for="metric" data-i18n="metricLabel">Показатель</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon metric">analytics</span>
-                <select id="metric">
+                <select id="metric" class="wsdc-select">
                   <option value="percent" data-i18n="optPercent">Доля поинтов, %</option>
                   <option value="absolute" data-i18n="optAbsolute">Количество поинтов</option>
                 </select>
@@ -238,7 +234,7 @@
               <label for="division" data-i18n="divisionLabel">Номинация</label>
               <div class="select-wrap">
                 <span class="material-symbols-outlined select-icon division">trophy</span>
-                <select id="division">
+                <select id="division" class="wsdc-select">
                   <option value="Total" data-i18n="optTotal">Все номинации</option>
                   <option value="Newcomer">Newcomer</option>
                   <option value="Novice">Novice</option>
@@ -417,5 +413,6 @@
       });
     }
   </script>
+  <script src="static/js/wsdc-select.js"></script>
 </body>
 </html>

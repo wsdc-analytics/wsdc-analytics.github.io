@@ -15,12 +15,12 @@ Uses event_editions.csv precise calendar dates:
   start_date, end_date, calendar_status, event_occurred
 (edition_date stays YYYY-MM-01 for Tableau.)
 
-Week/month buckets use end_date (WSDC points month attribution follows
-event end; cross-month weekends land in the month they finish).
+Week/month buckets use start_date (event start; avoids double-counting
+cross-month weekends).
 
-- week: editions bucketed by ISO week of end_date; latest non-empty week
+- week: editions bucketed by ISO week of start_date; latest non-empty week
   at/before as_of (do not advance into a week with no occurred events yet)
-- month: occurred editions with end_date in the current month (through as_of)
+- month: occurred editions with start_date in the current month (through as_of)
 - year: WSDC results year (event_year), not calendar end_date year — so
   New Year events that start in late December still count toward the new year
 
@@ -372,12 +372,12 @@ def build_week_increment(
     first_points: dict[str, date],
     as_of: date,
 ) -> dict:
-    """Latest non-empty ISO week by edition end_date (occurred events only)."""
+    """Latest non-empty ISO week by edition start_date (occurred events only)."""
     by_week: dict[tuple[int, int], list[Edition]] = defaultdict(list)
     for ed in editions:
-        if not ed.occurred or ed.end_date > as_of:
+        if not ed.occurred or ed.start_date > as_of:
             continue
-        iso = ed.end_date.isocalendar()
+        iso = ed.start_date.isocalendar()
         by_week[(int(iso.year), int(iso.week))].append(ed)
 
     as_of_week = as_of.isocalendar()
@@ -409,7 +409,7 @@ def build_week_increment(
         since=since,
         extra={
             "iso_week": f"{cur[0]}-W{cur[1]:02d}",
-            "bucket": "edition_end_date",
+            "bucket": "edition_start_date",
             "event_names": ", ".join(sorted({e.event_name for e in week_editions})),
         },
     )
@@ -427,9 +427,9 @@ def build_month_increment(
         ed
         for ed in editions
         if ed.occurred
-        and ed.end_date.year == as_of.year
-        and ed.end_date.month == as_of.month
-        and ed.end_date <= as_of
+        and ed.start_date.year == as_of.year
+        and ed.start_date.month == as_of.month
+        and ed.start_date <= as_of
     ]
     period_start = month_start(*cur)
     new_dancers = count_new_dancers(first_points, period_start, as_of)
@@ -441,7 +441,7 @@ def build_month_increment(
         snap=snap,
         since=month_end(*prev),
         extra={
-            "bucket": "edition_end_date",
+            "bucket": "edition_start_date",
             "event_names": ", ".join(sorted({e.event_name for e in month_editions})),
         },
     )
@@ -536,16 +536,16 @@ def main() -> None:
             "increment_note": (
                 "Events/points increments count activity in the window. "
                 "Dancers increment counts new dancers (first WSDC points), not unique participants. "
-                "Week/month windows use edition end_date to match WSDC points-month attribution."
+                "Week/month windows use edition start_date so cross-month events count once."
             ),
             "week_note": (
-                "Week uses ISO week of edition end_date for occurred events. Never advances to a week "
+                "Week uses ISO week of edition start_date for occurred events. Never advances to a week "
                 "with no occurred events (e.g. Jul 13-19 empty → keep Jul 6-12). Baseline "
                 "since_previous_ended is end of previous calendar month."
             ),
             "month_note": (
-                "Month increment = occurred editions with end_date in the current month through as_of "
-                "(aligns with WSDC end-date month for points); new dancers with first points in that window."
+                "Month increment = occurred editions with start_date in the current month through as_of; "
+                "new dancers with first points in that window."
             ),
             "year_note": (
                 "Year increment uses WSDC event_year (not calendar end_date year), so late-December "

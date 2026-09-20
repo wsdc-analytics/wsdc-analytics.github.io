@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="WSDC Analytics Brief для analytics committee. 1 сентября 2026.">
+  <title>WSDC Analytics Brief · ограничения Points Registry (RU)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --slide-max: 1080px;
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+    }
+    .deck { height: 100%; display: flex; flex-direction: column; }
+    .chrome {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chrome strong { color: var(--ink); font-weight: 600; }
+    .chrome .navbtns { display: flex; gap: 8px; align-items: center; }
+    .chrome button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .chrome button:hover { border-color: var(--accent); }
+    .chrome button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: auto;
+    }
+    .slide {
+      display: none;
+      width: min(100%, var(--slide-max));
+      min-height: min(72vh, 640px);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 40px 32px;
+      box-shadow: var(--wsdc-shadow-card);
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .badge .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    .badge .pill.app { color: #1e3a5f; background: #e8f0fe; border-color: #bfdbfe; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+      line-height: 1.2;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 16px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 46rem;
+    }
+    ul, ol { margin: 0 0 12px; padding-left: 1.2rem; max-width: 46rem; }
+    li { margin: 0.35rem 0; line-height: 1.45; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    @media (max-width: 800px) {
+      .slide { padding: 24px 20px; }
+      .grid2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 0.92rem; color: var(--ink); }
+    .card p, .card li { font-size: 0.92rem; }
+    .card p { margin: 0; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-right: 6px;
+      background: #ffedd5;
+      color: var(--warn);
+    }
+    .matrix { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 8px; }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+    .matrix th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .notes {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .notes a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .notes a:hover { color: var(--ink); }
+    .lead a, .card a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .notes strong { color: var(--body); }
+    .title-slide { justify-content: center; }
+    .title-slide .meta { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86em; }
+    .foot-hint {
+      flex: 0 0 auto;
+      text-align: center;
+      padding: 6px 12px 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    kbd {
+      font: inherit;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 0 5px;
+      background: var(--bg);
+    }
+    .example {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      margin: 8px 0;
+      font-size: 0.92rem;
+    }
+    .example .label { font-weight: 600; color: var(--ink); }
+    .cite { font-size: 0.78rem; color: var(--muted); }
+    .evidence {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .evidence figure {
+      margin: 0;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    .evidence img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      background: #1f2937;
+    }
+    .evidence figcaption {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: var(--body);
+    }
+    .evidence figcaption strong { color: var(--ink); }
+    @media (max-width: 800px) {
+      .evidence { grid-template-columns: 1fr; }
+    }
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+      max-width: 42rem;
+    }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.outer { width: 100%; }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .funnel .band p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--body);
+      line-height: 1.4;
+    }
+    .funnel .band .src {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="chrome">
+      <div><strong>WSDC Analytics Brief</strong> · 1 сентября 2026</div>
+      <div class="navbtns">
+        <span id="counter">1 / 1</span>
+        <button type="button" id="prev" aria-label="Предыдущий слайд">←</button>
+        <button type="button" id="next" aria-label="Следующий слайд">→</button>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+
+      <section class="slide title-slide active" data-section="core" data-notes="Открыть спокойно: рамка по данным, не обвинение.">
+        <div class="badge"><span class="pill">Core</span> Встреча · analytics committee</div>
+        <h1>Points Registry и аналитика board:<br>что видно снаружи, чего не хватает</h1>
+        <p class="lead">Разбор того, что реально даёт публичный реестр, где правила уже просят больше данных, и что нужно упорядочить в процессах, чтобы отвечать на вопросы комитета.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Партнёрский тон. wsdc-analytics : proof of work, не pitch стека.">
+        <div class="badge"><span class="pill">Core</span> Зачем этот разговор</div>
+        <h1>Что хотим получить с созвона</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>По делу</h3>
+            <ul>
+              <li>Сверить: какие данные есть публично, какие уже сдаются по правилам, какие реально хранятся</li>
+              <li>Привязать повестку board к ограничениям этих данных</li>
+              <li>Согласовать, какие процессы чинить в первую очередь</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Не сегодня</h3>
+            <ul>
+              <li>Не разбор «плохой базы». Речь о том, что видно при глубокой работе с открытым registry</li>
+              <li>Сначала общая рамка данных и процессов; как именно внедрять инструменты решает комитет</li>
+              <li>Не обещание готовых цифр по всем вопросам board до сверки источников</li>
+            </ul>
+          </div>
+        </div>
+        <p class="notes"><strong>На полях:</strong> на <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a> уже есть аналитика на публичных данных. Это пример того, что можно сделать снаружи, не требование к комитету.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Публичный слой = Points Registry lookup / scored history.">
+        <div class="badge"><span class="pill">Core</span> 1 · Инвентарь</div>
+        <h1>Что даёт публичный Points Registry</h1>
+        <p class="lead">Официальная запись результатов WSDC Jack &amp; Jill на Registry Events. Снаружи это в основном истории танцоров с поинтами.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Есть</h3>
+            <ul>
+              <li>Танцоры с WSDC Competitor ID и начисленными поинтами</li>
+              <li>Издания ивентов и scored-результаты по номинациям</li>
+              <li>Tier как сигнал размера дивизиона×роли (диапазон, не точный headcount)</li>
+              <li>Календарь / список registry events (отдельно от «кто вышел на паркет»)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>В открытом слое нет</h3>
+            <ul>
+              <li>Надёжного forward-сигнала, что edition этого года состоится (в правилах confirmed — post-event Update Form)</li>
+              <li>Полного стартового листа номинации в удобном для аналитики виде</li>
+              <li>Танцоров, которые участвовали, но так и не получили поинт</li>
+              <li>«Чистой» географии без ручной нормализации имён и локаций</li>
+            </ul>
+          </div>
+        </div>
+        <p class="cite">Источник определения registry: WSDC Registry Event Rules 2026.1B, Overview / Points Registry.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="§2.3 уже просит full list. Score Report v2026.1B: Competitors List + Dual Roles. Спросить retention/format/ID.">
+        <div class="badge"><span class="pill">Core</span> 1 · Инвентарь</div>
+        <h1>Что правила уже просят сдавать</h1>
+        <p class="lead">По §2.3 Competitor Results Reporting члены сдают результаты всех WSDC J&amp;J. Живой носитель — workbook <strong>Score Report</strong> (v2026.1B): там уже заложено больше, чем видно в публичном lookup.</p>
+        <ul>
+          <li>Все petitions</li>
+          <li>WSDC ID финалистов (если ID уже выдан)</li>
+          <li>Число конкурентов в каждом дивизионе (для Tier)</li>
+          <li><strong>List of all competitors registered</strong> — лист Score Report <span class="mono">Competitors List</span></li>
+          <li>Плюс лист <span class="mono">Dual / Multiple Roles</span> для тех, кто танцевал в двух ролях</li>
+        </ul>
+        <div class="card" style="margin-top:14px">
+          <h3>Вопрос не «надо ли собирать списки»</h3>
+          <p>Листы уже есть. Открытые вопросы: обязательные колонки (нужен ли <strong>WSDC ID</strong> в каждой строке, включая тех, у кого ещё нет поинтов?), машиночитаемый формат, и уходят ли сданные xlsx только с протоколами ивента или попадают в рабочую базу, которую можно стыковать с Points Registry.</p>
+        </div>
+        <p class="cite">Registry Event Rules 2026.1B §2.3 (items 1-4); Score Report Form v2026.1B на <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">WSDC Forms</a>. Срок сдачи: не позднее 3 дней после закрытия ивента.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Визуальный якорь для всех gap. В каждом отчёте board подписывать популяцию.">
+        <div class="badge"><span class="pill">Core</span> Рамка</div>
+        <h1>Три популяции. Не смешивать в одном отчёте</h1>
+        <p class="lead">Вопросы board смешивают эти слои, если не назвать, о каком именно речь.</p>
+        <div class="funnel">
+          <div class="band outer">
+            <h3>Community (широко)</h3>
+            <p>Люди вне scored-исходов и, возможно, вне registry events.</p>
+            <span class="src">Источник: отдельная методология — не только Points Registry</span>
+          </div>
+          <div class="band mid">
+            <h3>Entry population</h3>
+            <p>Все зарегистрированные в WSDC J&amp;J. Уже собираются в листах Score Report.</p>
+            <span class="src">Источник: Competitors List / Dual Roles — нужны схема и retention</span>
+          </div>
+          <div class="band inner">
+            <h3>Scored population (публичный)</h3>
+            <p>Уникальные WSDC ID с поинтами. То, что видно в открытом Points Registry.</p>
+            <span class="src">Источник: публичный lookup / scored history</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Якорь повестки Denis.">
+        <div class="badge"><span class="pill">Core</span> 2 · Повестка board</div>
+        <h1>Четыре направления из запроса комитета</h1>
+        <ol>
+          <li><strong>Competitor base 2021-2026</strong>: сколько танцоров по skill levels; community overall; по возможности регион</li>
+          <li><strong>Points &amp; tiers</strong>: текущая структура, влияние изменений; прогрессия большинства</li>
+          <li><strong>Event landscape &amp; capacity</strong>: где рост обоснован (организатор на месте + case территории); когда ограничивать новые ивенты</li>
+          <li><strong>Point structure</strong>: как проверить данными, нужно ли менять структуру поинтов</li>
+        </ol>
+        <p class="notes">Дальше — карта ограничений, не цифры board.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Четыре блока A-D.">
+        <div class="badge"><span class="pill">Core</span> Мост</div>
+        <h1>От повестки к четырём разрывам</h1>
+        <p class="lead">Без общих определений «танцора», «участника», «региона» и «ивента» отчёты board будут спорить сами с собой.</p>
+        <div class="grid2">
+          <div class="card"><h3>A. Identity</h3><p>ID появляется после первого поинта. До этого человека нет в registry как сущности.</p></div>
+          <div class="card"><h3>B. Coverage</h3><p>Публичный слой = scored history. Полные списки в Score Report — формат и retention неясны.</p></div>
+          <div class="card"><h3>C. Data quality</h3><p>Free-text intake в Event Update / New Event Application / Score Report плодит drift имён и локаций.</p></div>
+          <div class="card"><h3>D. Landscape / calendar</h3><p>Capacity нужен организатор на месте и case территории; аналитика только подтверждает спрос. В правилах нет forward-подтверждения в календаре WSDC.</p></div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты Identity + Impact. §3.2.2c официально.">
+        <div class="badge"><span class="pill">Core</span> Gap A · Identity</div>
+        <h1>ID только после поинта — и что из этого следует</h1>
+        <p class="lead">По правилам Competitor ID назначается только после поинта. До этого человека нет в публичном Points Registry.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Бьёт по повестке</h3>
+            <ul>
+              <li><strong>Counts:</strong> занижение «активных», особенно Newcomer и Novice</li>
+              <li><strong>Progression:</strong> воронка входа обрезана до тех, кто уже получил поинт</li>
+              <li><strong>Capacity:</strong> спрос новичков почти не виден в registry</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что делать в процессах</h3>
+            <ul>
+              <li>Оставить «ID после поинта» или менять — в любом случае честно подписывать отчёты</li>
+              <li>Если после поинта: писать <em>scored population</em>, не «вся community»</li>
+              <li>Полная популяция — через листы Score Report, когда ясны схема и retention</li>
+            </ul>
+          </div>
+        </div>
+        <p class="cite">Registry Event Rules 2026.1B §3.2.2c.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты Coverage + Impact. Списки есть; спросить схему/ID/путь.">
+        <div class="badge"><span class="pill">Core</span> Gap B · Coverage</div>
+        <h1>Списки собираются — ещё не рабочий слой аналитики</h1>
+        <p class="lead">В Score Report уже есть <span class="mono">Competitors List</span> и <span class="mono">Dual / Multiple Roles</span>. Публичный registry по-прежнему показывает в основном тех, кто получил поинт. Открыты вопросы формата, ID и куда уходят файлы после сдачи.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Почему важно</h3>
+            <ul>
+              <li><strong>Counts:</strong> skill counts по registry = scored, не starters</li>
+              <li><strong>Progression:</strong> нельзя отделить «мало танцуют» от «не доходят до поинтов»</li>
+              <li><strong>Capacity / point structure:</strong> без воронки входа остаются хрупкими</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Что зафиксировать</h3>
+            <ul>
+              <li>Схема листа: обязательные поля; как вводить WSDC ID, если ID ещё нет</li>
+              <li>Путь после сдачи: только xlsx с протоколами или хранилище со стыковкой к Points Registry?</li>
+              <li>Если сегодня только файлы — спроектировать это хранилище</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Примеры из открытых данных. Причина: free-text формы.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Data quality</div>
+        <h1>Качество сущностей: что всплывает в открытых данных</h1>
+        <p class="lead">Расхождения имён и локаций — следствие free-text intake в существующих <a href="https://worldsdc.com/wsdc-forms/" target="_blank" rel="noopener noreferrer">формах WSDC</a>, а не «злой умысел».</p>
+        <div class="example">
+          <div class="label">1. Разные названия одной серии</div>
+          <span class="mono">Asia WCS Open XI</span>, <span class="mono">XIII</span>, <span class="mono">10th Anniversary</span> → канон <span class="mono">Asia WCS Open</span>. Без aliases ряды ломаются.
+        </div>
+        <div class="example">
+          <div class="label">2. Пустая локация</div>
+          Scandinavian Open: пустая локация во всех 993 строках локального extract.
+        </div>
+        <div class="example">
+          <div class="label">3. Варианты написания бренда</div>
+          <span class="mono">St.Petersburg</span> / <span class="mono">Saint Petersburg WCS Nights</span>; <span class="mono">Vestigala</span> / <span class="mono">Westie Gala</span>.
+        </div>
+        <div class="example">
+          <div class="label">4. Одно имя, разные истории</div>
+          Spring Swing: Stockholm и Detroit. Sunny Side Dance Camp: Crimea, затем Torrevieja.
+        </div>
+        <p class="notes"><strong>Откуда входит:</strong> Event Update, New Event Application и Score Report Info Summary принимают название и локацию free text. Набор с пустой формы → новые aliases и написания гео.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Скрины — выборка. Решение один раз на следующем слайде.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Локации</div>
+        <h1>Мусор в локациях: зачем нужна стандартизация</h1>
+        <p class="lead">Одни и те же поля пишутся по-разному. Маленькая выборка из открытых данных.</p>
+        <div class="evidence">
+          <figure>
+            <img src="examples/loc-local-language.png" alt="KING SWING: Kraków, malopolska, Polska">
+            <figcaption><strong>Локальный язык + регистр:</strong> <span class="mono">Kraków, malopolska, Polska</span> вместо Kraków / Poland.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-country-only.png" alt="Swing Fiction: Czech Republic">
+            <figcaption><strong>Нет города:</strong> только <span class="mono">Czech Republic</span>.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-country-formats.png" alt="USA vs US vs United States">
+            <figcaption><strong>Страна в 3 форматах:</strong> <span class="mono">USA</span> / <span class="mono">US</span> / <span class="mono">United States</span>.</figcaption>
+          </figure>
+          <figure>
+            <img src="examples/loc-no-country.png" alt="Swing Dance America: Lake Geneva, IL">
+            <figcaption><strong>Страны нет:</strong> <span class="mono">Lake Geneva, IL</span>.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты Impact + Governance. Одно решение.">
+        <div class="badge"><span class="pill">Core</span> Gap C · Решение</div>
+        <h1>Справочники + формы, которые их закрепляют</h1>
+        <p class="lead">Без master-данных ломаются ряды по ивентам и странам, издания двоятся или пропадают, автоматизация копирует мусор. Правим существующие формы — не изобретаем параллельный paper trail.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Справочники</h3>
+            <ul>
+              <li>Ивенты: одно canonical name / один ID</li>
+              <li>Локации: city + country (для US — ещё штат)</li>
+              <li>Типы изменений заранее: новый ивент, rename, смена локации, правка ошибки</li>
+              <li>Орги отвечают за актуальность своих записей</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Как формы это закрепляют</h3>
+            <ul>
+              <li><strong>Event Update:</strong> выбрать ивент → prefill; без набора name/location с пустой формы</li>
+              <li><strong>New Event Application:</strong> после approval → новая строка справочника</li>
+              <li><strong>Score Report:</strong> Event Name / Location из справочника или Event ID</li>
+              <li>Free text OK: контакты, ops по venue, ownership, shuttle</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты Landscape + Impact.">
+        <div class="badge"><span class="pill">Core</span> Gap D · Landscape</div>
+        <h1>Landscape и capacity: сначала организатор</h1>
+        <p class="lead">WSDC не проводит ивенты. «Белого пятна» на карте недостаточно — нужен организатор на месте, который несёт риск, и обоснованный case территории.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Организатор в процессе</h3>
+            <ul>
+              <li>Именованный организатор берёт операционную и финансовую ответственность</li>
+              <li>Структурировать case, уже заложенный в New Event Application (viability + сверка с сеткой)</li>
+              <li>Перегруженный регион vs один крупный ивент и растущая сцена — разные решения</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Где помогает аналитика</h3>
+            <ul>
+              <li>Подтверждает сигналы спроса: entry на соседних ивентах, плотность, scored-активность</li>
+              <li>Не заменяет план организатора и не гарантирует окупаемость</li>
+              <li>Name/location не free text; отдельно: supply, scored demand, entry demand</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Не только аналитика: confirmed в правилах = post-event Update Form. Предложить pre-event deadline + модель статусов.">
+        <div class="badge"><span class="pill">Core</span> Gap D · Календарь</div>
+        <h1>Календарь ивентов: «confirmed» только после проведения</h1>
+        <p class="lead">WSDC Events calendar — публичный список registry events — но правила требуют <strong>post-event</strong> подтверждения. По одним источникам WSDC community не может понять, состоится ли edition этого года, пока ивент не прошёл (или не объявлен hiatus).</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Что в правилах сейчас (2026.1B)</h3>
+            <ul>
+              <li><strong>§1.1.4:</strong> Registry Event Update Form — в течение <strong>45 дней после закрытия</strong> → confirmed в WSDC Events calendar</li>
+              <li><strong>§1.3.2:</strong> Trial — list on WSDC website после одобрения Board (без срока в днях до ивента)</li>
+              <li><strong>§1.1.9:</strong> за 90 дней — rules и schedule на <strong>сайте организатора</strong>, не в календаре WSDC</li>
+              <li>Нет требования опубликовать edition этого года в календаре WSDC до даты ивента</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Почему это больше, чем аналитика</h3>
+            <ul>
+              <li>«Confirmed» появляется <strong>задним числом</strong> — слабый сигнал для travel, trial и сверки сетки</li>
+              <li>До hiatus (6 месяцев notice) или post-event Update — только догадка по прошлому году</li>
+              <li>У trial-оргов нет одного публичного view, что реально запланировано в регионе</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Изменение правил — обсудить</h3>
+          <p>Требовать <strong>подтверждение upcoming edition</strong> в календаре WSDC к фиксированной дате до ивента (горизонт выбирает комитет — например, стыковка с 6-месячными окнами change/hiatus). Разделить статусы: <em>scheduled</em> / <em>confirmed will run</em> / <em>hiatus or cancelled</em> / <em>confirmed ran</em>. Питать через Event Update + event directory, чтобы календарь, Time/Distance и аналитика брали один источник.</p>
+        </div>
+        <p class="cite">Registry Event Rules 2026.1B §1.1.4, §1.3.2, §1.4, §1.5; <a href="https://worldsdc.com/rules/" target="_blank" rel="noopener noreferrer">WSDC Events calendar</a>.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Главный слайд для board. Вслух: на публичных данных ни один пункт не закрыт полностью.">
+        <div class="badge"><span class="pill">Core</span> Сводка</div>
+        <h1>Матрица: что можно ответить на публичных данных</h1>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Вопрос board</th>
+              <th>Сейчас (публичный registry)</th>
+              <th>Что разблокирует полный ответ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Competitors by skill 2021-2026 (+ region)</td>
+              <td><span class="tag">Частично</span> уникальные ID с поинтами; регион слабо / через proxy ивентов</td>
+              <td>Хранение/стыковка списков Score Report + политика ID + чистая гео</td>
+            </tr>
+            <tr>
+              <td>Points/tiers &amp; progression majority</td>
+              <td><span class="tag">Частично</span> распределение поинтов и переходы по scored; воронка входа обрезана</td>
+              <td>Entries + явное определение «majority»</td>
+            </tr>
+            <tr>
+              <td>Event landscape &amp; capacity / where needed</td>
+              <td><span class="tag">Частично</span> карта ивентов и scored активности; нет forward-подтверждения в календаре; заявки оргов не стандартизированы</td>
+              <td>Правило pre-event confirmation + workflow case орга + entry lists + DQ гео + сверка с сеткой</td>
+            </tr>
+            <tr>
+              <td>Point structure change analysis</td>
+              <td><span class="tag">Частично</span> симуляции на scored истории; без полной воронки ограничено</td>
+              <td>Согласованные KPI/сценарии + entries для чувствительности</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="notes">На одном только публичном registry ни один пункт не закрывается полностью.</p>
+      </section>
+
+      <section class="slide" data-section="core" data-notes="Слиты checklist + discovery. Задать вслух, записать ответы.">
+        <div class="badge"><span class="pill">Core</span> Финал</div>
+        <h1>Что упорядочить — и три вопроса</h1>
+        <div class="grid2">
+          <div class="card">
+            <h3>Checklist</h3>
+            <ol>
+              <li><strong>Листы Score Report:</strong> схема (в т.ч. WSDC ID, если ID ещё нет) + куда уходят файлы после сдачи</li>
+              <li><strong>Правило ID:</strong> оставляем «только после поинта» или меняем; как подписывать метрики</li>
+              <li><strong>Справочники + формы:</strong> Event Update prefills; без free-text name/location</li>
+              <li><strong>Словарь метрик:</strong> scored vs entry vs community</li>
+              <li><strong>Trial / new events:</strong> структурировать case New Event Application vs сетка ивентов</li>
+              <li><strong>Правила календаря:</strong> pre-event confirmation + модель статусов (scheduled / will run / hiatus / ran)</li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>Спросить на созвоне</h3>
+            <ol>
+              <li>После сдачи Score Report: только xlsx с протоколами или центральное хранилище?</li>
+              <li>Должен ли Update Form подтверждать <strong>upcoming</strong> edition до ивента — а не только после закрытия?</li>
+              <li>За 2021-2026 Competitors List / Dual Roles ещё восстановимы?</li>
+              <li>Кто владеет intake Event Update / New Event Application / Score Report — и кто может менять правила календаря?</li>
+            </ol>
+          </div>
+        </div>
+        <p class="notes"><strong>Закрытие:</strong> на публичных данных уже можно делать осторожную аналитику. Устойчивые ответы board нуждаются в списках Score Report как рабочем слое и Event Update без free-text drift имён/локаций. Инструменты комитет выбирает сам.</p>
+      </section>
+
+    </div>
+    <div class="foot-hint">Клавиши <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · клик по краям</div>
+  </div>
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('counter');
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        counter.textContent = (i + 1) + ' / ' + slides.length;
+        const note = slides[i].getAttribute('data-notes') || '';
+        if (note) console.debug('[notes]', note);
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+      document.getElementById('prev').addEventListener('click', () => show(i - 1));
+      document.getElementById('next').addEventListener('click', () => show(i + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); show(i + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); show(i - 1);
+        } else if (e.key === 'Home') show(0);
+        else if (e.key === 'End') show(slides.length - 1);
+      });
+      document.getElementById('stage').addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width * 0.28) show(i - 1);
+        else if (x > rect.width * 0.72) show(i + 1);
+      });
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash - 1 : 0);
+    })();
+  </script>
+</body>
+</html>

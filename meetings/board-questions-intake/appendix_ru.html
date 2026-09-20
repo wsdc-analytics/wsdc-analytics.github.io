@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Приложение: вопросы Board по категориям C1–C5 — полный русский перевод.">
+  <title>Приём вопросов Board · Приложение по категориям (RU)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+      --max: 820px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+      line-height: 1.45;
+    }
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .top strong { color: var(--ink); }
+    .top a { color: var(--accent); }
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .toc a {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .toc a:hover { border-color: var(--accent); }
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.65rem;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .lead { margin: 0 0 20px; color: var(--body); max-width: 40rem; }
+    .meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    section.cat {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px 22px 8px;
+      margin-bottom: 18px;
+      box-shadow: var(--wsdc-shadow-card);
+    }
+    section.cat h2 {
+      margin: 0 0 4px;
+      font-size: 1.15rem;
+      color: var(--ink);
+    }
+    section.cat .blurb {
+      margin: 0 0 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .item {
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+    }
+    .item .who {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .item .who .id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 500;
+      margin-right: 6px;
+      color: var(--ink);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .item .q {
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-size: 0.98rem;
+    }
+    .item .why {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+    .item .why strong { color: var(--body); font-weight: 600; }
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-left: 6px;
+      color: var(--muted);
+      vertical-align: middle;
+    }
+    .tag.reuse { border-color: #bfdbfe; background: #e8f0fe; color: #1e3a5f; }
+    .tag.full { border-color: #bbf7d0; background: #ecfdf5; color: #14532d; }
+    .tag.partial { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+    .quote {
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+    .quote::before { content: "«"; }
+    .quote::after { content: "»"; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <strong>Приложение</strong> · классификация по категориям
+      · <a href="slides_ru.html">← основная презентация</a>
+      · <a href="appendix_en.html">EN</a>
+    </div>
+    <nav class="toc" aria-label="Категории">
+      <a href="#c1">C1 · 22</a>
+      <a href="#c2">C2 · 17</a>
+      <a href="#c3">C3 · 5</a>
+      <a href="#c4">C4 · 7</a>
+      <a href="#c5">C5 · 9</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <h1>Вопросы Board по категориям</h1>
+    <p class="lead">В каждом ряду — <strong>цитата Board на русском</strong> (при дроблении — полный вопрос). C1: сначала полные (10), затем частичные (12). C2: конкретные шаги для полного ответа.</p>
+    <p class="meta">Источник: MATRIX.md · 60 атомов · C1 22 (полных 10 · частичных 12) · C2 17 · C3 5 · C4 7 · C5 9</p>
+    <section class="cat" id="c1">
+      <h2>C1 — Можно ответить сейчас (22)</h2>
+      <p class="blurb">Сначала <strong>полный</strong> ответ (брать в работу), затем <strong>частичный</strong> (та же цитата Board, только Scored / ограниченный слой).</p>
+      <div class="item">
+        <div class="who"><span class="id">JT-1</span> Jim Tigges <span class="tag full">полный</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">Длительность для каждого конкурента от момента, когда он впервые получает поинт в дивизионе, до момента, когда он «закончен» в этом дивизионе</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №1. Перешедшие + цензурированные отдельно; переиспользовать статью / dwell.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-2</span> Jim Tigges <span class="tag full">полный</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">Длительность для каждого конкурента от последнего поинта в нижнем дивизионе до первого поинта в более высоком</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №2. Метрика last_to_first; переиспользовать.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-3</span> Jim Tigges <span class="tag full">полный</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">Длительность от достижения порога «may» move up до «must» move up — и сколько оставались, пока не набрали 25%, 50% и 75% дополнительных поинтов до must</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №3. Время до allowed / required; переиспользовать.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-4</span> Jim Tigges <span class="tag full">полный</span></div>
+        <p class="quote">Сколько ивентов в каждом году у каждого конкурента дали поинт на любом уровне (+ корзины 12+ / 6–12 / 3–6 / 0–1)</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №4. Только ивенты с поинтом — формулировка уже исключает attendance.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-6</span> Jim Tigges <span class="tag full">полный</span></div>
+        <p class="quote">Сколько людей могли бы «спуститься», ЕСЛИ разрешить «дисконтировать» поинты старше 10 лет (или 8 / 5 лет)</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №6 — аналитика. Политическое решение = JT-6b (C5).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-8</span> Jim Tigges <span class="tag full">полный</span></div>
+        <p class="quote">У нас есть xx лет результатов ивентов: перечень по каждому ивенту и году — растут, сжимаются, стабильны… а если сжимаются — есть ли рядом новые ивенты в регионе</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №8. Scored-размер YOY + соседние новые ивенты; причинность — интерпретация.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-1b</span> Jen <span class="tag full">полный</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">Общее число людей, которые за 10+ лет дошли до квалификации, чтобы выступать в дивизионе All-Star</p>
+        <p class="why"><strong>Комментарий:</strong> Jen №1. Уточнить метрику: допуск в Advanced vs первый поинт All-Star. Переиспользовать путь из статьи.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-1d</span> Jen <span class="tag full">полный</span></div>
+        <p class="quote">…а также число чемпионов, которые не получили ни одного поинта после ковида</p>
+        <p class="why"><strong>Комментарий:</strong> Jen №1. Фильтр inactivity по Champions.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">PL-1c</span> Paul <span class="tag full">полный</span></div>
+        <p class="quote">Указать, где поинты начислялись людям с менее чем 11 champion-поинтами</p>
+        <p class="why"><strong>Комментарий:</strong> Paul №1. Join размещений к карьерным итогам Champion.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-5</span> Jim Tigges <span class="tag full">полный</span></div>
+        <p class="quote">Сколько ивентов каждый год проводят разные дивизионы WSDC и сколько на каждом уровне (за каждую роль) приходится на разные Tiers (например, половина и больше Novice — Tier 3+? Сколько ивентов с Tier 1 All-Star? и т.д.)</p>
+        <p class="why"><strong>Комментарий:</strong> Tigges №5. Вопрос про tier mix, не точный Entry headcount — отвечаем полосами размера из реестра (наличие дивизиона + tier по scored-размеру номинации).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">YV-1</span> Yvonne <span class="tag partial">частичный</span></div>
+        <p class="quote">Сколько конкурентов в каждом skill level с 2021 по 2026?</p>
+        <p class="why"><strong>Комментарий:</strong> Сейчас отвечаем только по Scored (роль×дивизион). Полные «competitors» = Entry → YV-1-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">YV-3</span> Yvonne <span class="tag partial">частичный</span></div>
+        <p class="quote">Исходя из данных, какой прогноз числа конкурентов в каждой роли на 2027, 2028, 2029, 2030 и 2031?</p>
+        <p class="why"><strong>Комментарий:</strong> Только scored-сценарий / прогноз; 2026 YTD неполный. Entry-прогноз → YV-3-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">KY-1</span> Kay <span class="tag partial">частичный</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">Ближе посмотреть на текущую структуру поинтов и тиров и влияние возможных изменений, особенно на прогрессию большинства танцоров (многие поинты забирает одно и то же небольшое меньшинство)</p>
+        <p class="why"><strong>Комментарий:</strong> Сейчас: scored-прогрессия / концентрация среди тех, у кого уже есть поинты (переиспользовать статью). «Большинство танцоров» vs меньшинство point-winners требует всех, кто участвовал → KY-1-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-1a</span> Jen <span class="tag partial">частичный</span> <span class="tag reuse">reuse</span></div>
+        <p class="quote">Средняя траектория человека, начавшего WCS после ковида, от Novice до All-Star по среднему числу ивентов, которые он посещает (growth-регионы vs Европа vs США) — нужно знать разницу в числе предлагаемых ивентов YOY</p>
+        <p class="why"><strong>Комментарий:</strong> Scored-траектория + ивенты-с-поинтом как прокси «посещает»; срез по регионам. Реальный attendance → JN-1a-E. Переиспользовать статью.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-1c</span> Jen <span class="tag partial">частичный</span></div>
+        <p class="quote">Статистика по текущим чемпионам с 10+ поинтами: сколько они уже чемпионы, сколько шли до дивизиона, среднее число ивентов и выходов в финал в год</p>
+        <p class="why"><strong>Комментарий:</strong> Время в Champions / время до дивизиона / финалы (где есть place) = C1. «На скольких ивентах выступали» ≠ известно — только ивенты с поинтом. Реальный compete count → JN-1c-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-2b</span> Jen <span class="tag partial">частичный</span></div>
+        <p class="quote">Сколько людей не соревновались (или не получили поинт, если нет регистрационных данных) после ковида — в каких штатах / странах сильнее спад</p>
+        <p class="why"><strong>Комментарий:</strong> Только среди тех, кто уже есть в Points Registry (когда-то получал поинт): нет поинтов после ковида / geo последнего поинта. Кто никогда не scored — невидим. Полный «не соревновались» / Entry no-shows → JN-2b-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">PL-1a</span> Paul <span class="tag partial">частичный</span></div>
+        <p class="quote">Сколько ивентов проводили Champion и/или Invitational (окна 3 / 6 / 9 лет)</p>
+        <p class="why"><strong>Комментарий:</strong> Только Champions и только где в результатах начислялись поинты. «Held» для Invitational из Points Registry так не отвечаем — нужен Score Report / программы / другой источник.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-2a</span> Jen <span class="tag partial">частичный</span></div>
+        <p class="quote">В каких штатах / странах больше всего зарегистрированных WCS-конкурентов и как рос этот показатель за последние 10 лет</p>
+        <p class="why"><strong>Комментарий:</strong> Scored unique по geo ивента (или танцора) — явно подписать, не «registered Entry». Полный Entry → JN-2a-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-3a</span> Jen <span class="tag partial">частичный</span></div>
+        <p class="quote">Число добавленных ивентов YOY по странам с количеством конкурентов на каждом ивенте</p>
+        <p class="why"><strong>Комментарий:</strong> Ивенты YOY = C1; конкуренты = scored unique ID. Entry headcount → JN-3a-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-7</span> Jim Tigges <span class="tag partial">частичный</span></div>
+        <p class="quote">Карта ивентов… и число конкурентов (например, во Франции 12 ивентов — в среднем 200 или 400 конкурентов?)</p>
+        <p class="why"><strong>Комментарий:</strong> Карта + scored unique на edition. Entry-размер ивента → JT-7-E.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">KY-2</span> Kay <span class="tag partial">частичный</span></div>
+        <p class="quote">Что можно понять из текущих данных о ландшафте ивентов и capacity — особенно когда речь о лимите новых ивентов при миссии про growth?</p>
+        <p class="why"><strong>Комментарий:</strong> Сейчас: ландшафт + scored-нагрузка YOY. Capacity / customer base → KY-2-E; «где нужны» → KY-2c.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-3a</span> Jim Coakley <span class="tag partial">частичный</span></div>
+        <p class="quote">Проанализировать данные по routine-дивизионам за 15 лет. Показать, на каких ивентах были Classic, Showcase, Sophisticated, Masters и Juniors. … Routines на спаде?</p>
+        <p class="why"><strong>Комментарий:</strong> Только age J&amp;J (Sophisticated / Masters / Juniors) и только там, где начислялись поинты — не полная история «проводили» и не гарантированно 15 лет. Classic/Showcase → JC-3b. Уточнить у Jim.</p>
+      </div>
+    </section>
+
+    <section class="cat" id="c2">
+      <h2>C2 — После гигиены источников (17)</h2>
+      <p class="blurb">Та же цитата Board; в каждом ряду — <strong>что конкретно сделать</strong>, чтобы ответить полностью.</p>
+      <div class="item">
+        <div class="who"><span class="id">YV-1-E</span> Yvonne</div>
+        <p class="quote">Сколько конкурентов в каждом skill level с 2021 по 2026?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: сохранять Competitors List из Score Report; схема + join dancer ID в пайплайн; skill/role в entry-листе. Тогда полные Entry-счёты по skill.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">YV-2a</span> Yvonne</div>
+        <p class="quote">Общий размер community и, если возможно, регион?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: согласовать с Board определение «community» (только Entry или шире); retention + join Competitors List (как YV-1-E). Регион без списков всё ещё заблокирован.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">YV-2b</span> Yvonne</div>
+        <p class="quote">Общий размер community и, если возможно, регион?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать (scored-регион): Gap C — алиасы event/location; зафиксировать country/state ивента; развести geo ивента vs home танцора. После алиасов возможен частичный scored-by-event-country.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">YV-2b-E</span> Yvonne</div>
+        <p class="quote">Общий размер community и, если возможно, регион?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: join списков как в YV-1-E плюс чистая Entry-geo (поля списка или verified home).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">YV-3-E</span> Yvonne</div>
+        <p class="quote">Исходя из данных, какой прогноз числа конкурентов в каждой роли на 2027, 2028, 2029, 2030 и 2031?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: сначала многолетний Entry time series из YV-1-E; только потом сценарий прогноза по Entry.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">KY-1-E</span> Kay</div>
+        <p class="quote">Ближе посмотреть на текущую структуру поинтов и тиров и влияние возможных изменений, особенно на прогрессию большинства танцоров (многие поинты забирает одно и то же небольшое меньшинство)</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: join Competitors List, чтобы знаменатель = все, кто зашёл (majority on the floor), а не только scored ID; тогда доля вошедших с поинтами / прогрессия большинства без поинтов.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">KY-2-E</span> Kay</div>
+        <p class="quote">Что можно понять из текущих данных о ландшафте ивентов и capacity — особенно когда речь о лимите новых ивентов при миссии про growth?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Entry headcount на ивент/год из Competitors List (join + retention) как сигнал capacity.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-6a</span> Jim Coakley</div>
+        <p class="quote">Аудиты базы: были люди без поинтов. Мы это поправили?</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: ops-экспорт реестра от Paul; чеклист «zero-point record»; ежегодный повтор.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-1a-E</span> Jen</div>
+        <p class="quote">Средняя траектория человека, начавшего WCS после ковида, от Novice до All-Star по среднему числу ивентов, которые он посещает (growth-регионы vs Европа vs США) — нужно знать разницу в числе предлагаемых ивентов YOY</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Competitors List / слой attendance, сджойненный с ID, чтобы «events attended» ≠ ивенты-с-поинтом.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-1c-E</span> Jen</div>
+        <p class="quote">Статистика по текущим чемпионам с 10+ поинтами: сколько они уже чемпионы, сколько шли до дивизиона, среднее число ивентов и выходов в финал в год</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Competitors List / attendance, сджойненный с ID чемпионов, чтобы «events they compete at» = старты, а не ивенты-с-поинтом.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-2a-E</span> Jen</div>
+        <p class="quote">В каких штатах / странах больше всего зарегистрированных WCS-конкурентов и как рос этот показатель за последние 10 лет</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Entry-списки + geo-поля (или home) с retention и join; алиасы Gap C.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-2b-E</span> Jen</div>
+        <p class="quote">Сколько людей не соревновались (или не получили поинт, если нет регистрационных данных) после ковида — в каких штатах / странах сильнее спад</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Entry-списки по ивентам + identity — кто заходил, но никогда не scored, и настоящие no-shows; из одного Points Registry это не вывести.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-3a-E</span> Jen</div>
+        <p class="quote">Число добавленных ивентов YOY по странам с количеством конкурентов на каждом ивенте</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Competitors List на edition, сджойненный с каталогом ивентов (Gap B).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-3b</span> Jen</div>
+        <p class="quote">По соревнованиям: топ 5–10 крупнейших ивентов в каждой стране/регионе с долей «локальных» конкурентов (напр. French Open: 50% французов в 2023…)</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: гигиена nationality / home country танцора (Score Report / verification); одной страны ивента недостаточно.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">PL-1b</span> Paul</div>
+        <p class="quote">Указать те, где были prelims, и те, где shelf judges</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: вытащить поля prelims / shelf-judge из Score Report (или протоколов) в joinable-таблицу event×year.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">PL-2</span> Paul</div>
+        <p class="quote">По данным Yvonne и Jennifer, что ~25% ивентов — «problem child»: детальнее влияние этих ~25 на календарь registry, правило 6/15, time-distance и другие метрики управления ивентами</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: зафиксированный Board-список «problem child» + полные official dates / distance (см. JC-5a).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-7-E</span> Jim Tigges</div>
+        <p class="quote">Карта ивентов… и число конкурентов (например, во Франции 12 ивентов — в среднем 200 или 400 конкурентов?)</p>
+        <p class="why"><strong>Что сделать:</strong> Что сделать: Entry headcount на edition из Competitors List + join к geo.</p>
+      </div>
+    </section>
+
+    <section class="cat" id="c3">
+      <h2>C3 — Нужен дизайн сбора внутри WSDC (5)</h2>
+      <p class="blurb">Внутри WSDC логично, но usable stream ещё нет.</p>
+      <div class="item">
+        <div class="who"><span class="id">KY-2c</span> Kay</div>
+        <p class="quote">Есть ли способ понять, где нужны ивенты относительно customer base?</p>
+        <p class="why"><strong>Дизайн:</strong> Дизайн: поток residence / customer base (добровольный home или политика Entry-geo), пока «где нужны» не отвечаемо.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-3b</span> Jim Coakley</div>
+        <p class="quote">Проанализировать данные по routine-дивизионам за 15 лет. Показать, на каких ивентах были Classic, Showcase, Sophisticated, Masters и Juniors. … Routines на спаде?</p>
+        <p class="why"><strong>Дизайн:</strong> Дизайн / поиск источника: Classic и Showcase нет в публичном Points Registry — Score Report contests, программы или другой intake WSDC; иначе C4 web-сбор.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-5a</span> Jim Coakley</div>
+        <p class="quote">Paul уже работает над Excel-экспортом 6/15. Нужно довести кусок official dates.</p>
+        <p class="why"><strong>Дизайн:</strong> Дизайн/ops: полнота поля official dates в NEA / экспорте 6/15; комитет может задать validation checks.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-5d</span> Jim Coakley</div>
+        <p class="quote">Какие data points комитет считает нужными для исключений? Запрос Jen: число танцоров в радиусе 100 миль…</p>
+        <p class="why"><strong>Дизайн:</strong> Какие метрики для исключений NEA. Полный запрос Jen (JN-3c) = C4 local WCS; WSDC-прокси потребовал бы home city/state + радиус (отдельный дизайн).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">PL-3</span> Paul</div>
+        <p class="quote">Продолжить сбор данных по интеграции сертификации судей WSDC / AJP с марта 2027… смогут ли ивенты набрать 25% по списку судей pre-registration… прогноз на 40% и 50%</p>
+        <p class="why"><strong>Дизайн:</strong> Дизайн: поток roster сертифицированных судей + назначенные судьи J&amp;J на ивент.</p>
+      </div>
+    </section>
+
+    <section class="cat" id="c4">
+      <h2>C4 — Вне WSDC (7)</h2>
+      <p class="blurb">Community / non-registry ландшафт.</p>
+      <div class="item">
+        <div class="who"><span class="id">JC-1</span> Jim Coakley</div>
+        <p class="quote">Собрать список workshop weekends и specialty day intensive по миру и категоризировать по state/country/region</p>
+        <p class="why"><strong>Комментарий:</strong> Программа community-сбора + верификация (владелец TBD).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JN-3c</span> Jen</div>
+        <p class="quote">Популяция WCS в радиусе 100 миль вокруг каждого ивента</p>
+        <p class="why"><strong>Комментарий:</strong> Community / локальный WCS, не реестр WSDC: центр = venue ивента; счёт = локальная популяция вне контура WSDC. То же семейство, что JC-5c / JC-1–2. (WSDC home-city × радиус — более узкий прокси, только если Jen согласится.)</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-2</span> Jim Coakley</div>
+        <p class="quote">Собрать локальные dance events по миру и категоризировать по state/country/region</p>
+        <p class="why"><strong>Комментарий:</strong> Та же программа, что JC-1.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-2b</span> Jim Coakley</div>
+        <p class="quote">Нужен процесс верификации раз в месяц или неделю… Нельзя, чтобы люди ехали на ивент, которого уже нет или который сменил место/даты</p>
+        <p class="why"><strong>Комментарий:</strong> Советовать схему/каденс; не брать тихо ownership сборки (фильтр Kay).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-3d</span> Jim Coakley</div>
+        <p class="quote">Также можно опросить community: где есть интерес к большим routine-дивизионам и какие стопперы</p>
+        <p class="why"><strong>Комментарий:</strong> Дизайн опроса вне реестра.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-4</span> Jim Coakley</div>
+        <p class="quote">Также включить NON-WSDC weekend events или social events</p>
+        <p class="why"><strong>Комментарий:</strong> Та же listings-программа, что JC-1/2.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-5c</span> Jim Coakley</div>
+        <p class="quote">…собрать данные о local dance attendance, чтобы понять размер community…</p>
+        <p class="why"><strong>Комментарий:</strong> Сбор attendance вне реестра.</p>
+      </div>
+    </section>
+
+    <section class="cat" id="c5">
+      <h2>C5 — Governance / scope (9)</h2>
+      <p class="blurb">Стратегия, продукт или ops — не ещё один датасет.</p>
+      <div class="item">
+        <div class="who"><span class="id">KY-S</span> Kay</div>
+        <p class="quote">Хочу, чтобы комитет поддерживал текущую работу, миссию и стратегию. … Нужно осторожно не использовать комитет для расширения scope</p>
+        <p class="why"><strong>Комментарий:</strong> Постоянное правило для всего intake.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">KY-3</span> Kay</div>
+        <p class="quote">Где комитет может облегчить или поддержать текущую работу — особенно вокруг points database, коммуникации и инфраструктуры?</p>
+        <p class="why"><strong>Комментарий:</strong> Kay №3. Advisory; без ownership новых задач без мандата.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-2c</span> Jim Coakley</div>
+        <p class="quote">Стать хабом информации о WCS поможет образовательным инициативам…</p>
+        <p class="why"><strong>Комментарий:</strong> Расширение product/mission; фильтр Kay.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-3c</span> Jim Coakley</div>
+        <p class="quote">Можно фильтры на календаре показывать ивенты с этими номинациями… Комитет может дать feedback по другим фильтрам на сайте</p>
+        <p class="why"><strong>Комментарий:</strong> Website product; список фильтров можно опереть на инвентарь JC-3a.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-4b</span> Jim Coakley</div>
+        <p class="quote">Для этих страниц листинги лучше бесплатные. … Может, 3 года бесплатно, потом $20 в год…</p>
+        <p class="why"><strong>Комментарий:</strong> Board / finance.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-5b</span> Jim Coakley</div>
+        <p class="quote">Есть ли у комитета идеи другой аналитики, полезной для заявок на новые ивенты (New Event Applications)?</p>
+        <p class="why"><strong>Комментарий:</strong> Стратегический / initiative-вопрос про NEA — не C1-deliverable из Points Registry. Product NEA за Board/ops; комитет советует только по мандату (фильтр Kay).</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-6b</span> Jim Coakley</div>
+        <p class="quote">А люди, танцевавшие не в том дивизионе? Аудит и снятие поинтов? … дубликаты… мержить записи? … записи, которые выглядят на удаление</p>
+        <p class="why"><strong>Комментарий:</strong> Политика аудита — Board/ops; правила детекции можно предложить позже.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JC-7</span> Jim Coakley</div>
+        <p class="quote">История point ranking по ивенту и по человеку. Хотим ли добавить это на сайт?</p>
+        <p class="why"><strong>Комментарий:</strong> Product-решение.</p>
+      </div>
+      <div class="item">
+        <div class="who"><span class="id">JT-6b</span> Jim Tigges</div>
+        <p class="quote">…ЕСЛИ разрешить «дисконтировать» поинты… (политика разрешения move-down)</p>
+        <p class="why"><strong>Комментарий:</strong> Решение Board по правилам; аналитическая поддержка = JT-6.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

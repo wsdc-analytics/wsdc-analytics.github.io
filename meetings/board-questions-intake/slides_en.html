@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="WSDC Analytics: Board questions intake concept (4+1 categories). Unlisted brief.">
+  <title>Board Questions Intake · 4+1 (EN)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/tokens.css">
+  <style>
+    :root {
+      --slide-max: 1080px;
+      --ink: var(--wsdc-color-text-strong);
+      --body: var(--wsdc-color-text);
+      --muted: var(--wsdc-color-text-muted);
+      --line: var(--wsdc-color-border);
+      --bg: var(--wsdc-color-surface);
+      --soft: var(--wsdc-color-surface-soft);
+      --accent: var(--wsdc-color-brand-accent);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: var(--wsdc-font-sans);
+      background: #e8eef5;
+      color: var(--body);
+    }
+    .deck { height: 100%; display: flex; flex-direction: column; }
+    .chrome {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chrome strong { color: var(--ink); font-weight: 600; }
+    .chrome .navbtns { display: flex; gap: 8px; align-items: center; }
+    .chrome button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .chrome button:hover { border-color: var(--accent); }
+    .chrome button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: auto;
+    }
+    .slide {
+      display: none;
+      width: min(100%, var(--slide-max));
+      min-height: min(72vh, 640px);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 40px 32px;
+      box-shadow: var(--wsdc-shadow-card);
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .badge .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+      line-height: 1.2;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 16px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 46rem;
+    }
+    ul, ol { margin: 0 0 12px; padding-left: 1.2rem; max-width: 46rem; }
+    li { margin: 0.35rem 0; line-height: 1.45; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 8px 0 12px;
+    }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 8px 0 10px;
+    }
+    @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
+    .grid3 .card h3 { font-size: 0.88rem; }
+    .grid3 .card p, .grid3 .card ul { font-size: 0.82rem; line-height: 1.35; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--soft);
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .card p, .card ul { margin: 0; font-size: 0.9rem; }
+    .card ul { padding-left: 1.1rem; }
+    .notes {
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .title-slide { justify-content: center; }
+    .title-slide .meta { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+    .cite { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+    .foot-hint {
+      flex: 0 0 auto;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    kbd {
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: var(--bg);
+    }
+    .cat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 8px 0 12px;
+    }
+    .cat-table th, .cat-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .cat-table th { color: var(--ink); font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86em; }
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .stat {
+      flex: 1 1 90px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: var(--soft);
+      text-align: center;
+    }
+    .stat .n {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .stat .l {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .funnel { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .funnel .band {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: var(--soft);
+    }
+    .funnel .band.mid { width: 88%; margin-left: 6%; background: #eef4fb; }
+    .funnel .band.inner {
+      width: 76%;
+      margin-left: 12%;
+      background: #e8f0fe;
+      border-color: #bfdbfe;
+    }
+    .funnel .band h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--ink); }
+    .funnel .band p { margin: 0; font-size: 0.86rem; line-height: 1.4; }
+    .cat-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0 8px;
+    }
+    .cat-row {
+      display: grid;
+      grid-template-columns: 3.2rem 1fr;
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--soft);
+    }
+    .cat-row .cid {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      padding-top: 1px;
+    }
+    .cat-row h3 {
+      margin: 0 0 3px;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+    .cat-row p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      color: var(--body);
+    }
+    .cat-row.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .cat-row.c2 { background: #fffbeb; border-color: #fde68a; }
+    .cat-row.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .cat-row.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 10px;
+      margin: 12px 0 8px;
+      align-items: stretch;
+    }
+    @media (max-width: 800px) { .flow { grid-template-columns: 1fr; } }
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .flow-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: var(--soft);
+      flex: 1;
+    }
+    .flow-box h3 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+    .flow-box p {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .flow-box.ready { background: #ecfdf5; border-color: #bbf7d0; }
+    .flow-box.wait { background: #fffbeb; border-color: #fde68a; }
+    .flow-box.idea { background: #eef4fb; border-color: #bfdbfe; }
+    .flow-box.out { background: #f8fafc; }
+    .flow-box.scope {
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      margin-top: 8px;
+    }
+    .flow-arrow {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      padding: 2px 0;
+    }
+    .flow-mid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+    .badge .pill.deep {
+      background: #eef4fb;
+      border-color: #bfdbfe;
+      color: #1e3a5f;
+    }
+    .ladder-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 12px;
+      align-items: center;
+    }
+    .ladder-mini .step {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+    }
+    .ladder-mini .step.on {
+      color: var(--ink);
+    }
+    .ladder-mini .step.on.c1 { background: #ecfdf5; border-color: #bbf7d0; }
+    .ladder-mini .step.on.c2 { background: #fffbeb; border-color: #fde68a; }
+    .ladder-mini .step.on.c3 { background: #eef4fb; border-color: #bfdbfe; }
+    .ladder-mini .step.on.c4 { background: #f8fafc; border-color: #cbd5e1; }
+    .ladder-mini .step.on.c5 { background: #f4f4f5; border-color: #d4d4d8; }
+    .ladder-mini .arrow {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .ladder-mini .bar {
+      width: 1px;
+      height: 1.05rem;
+      background: var(--line);
+      margin: 0 4px 0 6px;
+    }
+    .examples {
+      margin-top: 8px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #fafbfc;
+    }
+    .examples h3 {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+    .examples ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      max-width: none;
+    }
+    .examples li {
+      margin: 0.22rem 0;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="chrome">
+      <div><strong>Board Questions Intake</strong> · 16 September 2026</div>
+      <div class="navbtns">
+        <span id="counter">1 / 1</span>
+        <button type="button" id="prev" aria-label="Previous slide">←</button>
+        <button type="button" id="next" aria-label="Next slide">→</button>
+      </div>
+    </div>
+        <div class="stage" id="stage">
+
+      <section class="slide title-slide active" data-notes="Partner open: shared frame for intake; readable after the call.">
+        <div class="badge"><span class="pill">Meeting</span> Analytics committee · 16 September 2026</div>
+        <h1>From Board questions to WSDC data readiness:<br>one intake frame</h1>
+        <p class="lead">How we sort Board asks by company data readiness (C1–C5), how questions move as sources improve, and what we decide today — accept the frame before we walk the matrix.</p>
+        <p class="meta">Populations · categories · readiness ladder · process · this Board draft · next steps</p>
+      </section>
+
+      <section class="slide" data-notes="Kay standing rule once — positive framing.">
+        <div class="badge"><span class="pill">Scope</span> Why classify</div>
+        <h1>A shared frame keeps current work strong</h1>
+        <p class="lead">Board asks arrive mixed. A shared frame names what each ask needs, so the committee can keep supporting infrastructure and current initiatives.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3>Committee focus (Kay)</h3>
+            <p>Use this committee to strengthen current Board initiatives and infrastructure. Stay with that focus unless the Board explicitly expands the mandate.</p>
+          </div>
+          <div class="card">
+            <h3>What classification does</h3>
+            <ul>
+              <li>Splits one message into separate questions</li>
+              <li>Names the data layer each question needs</li>
+              <li>Separates answers we can ship from preparatory work and from mandate decisions</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Same funnel as Sep 1 brief.">
+        <div class="badge"><span class="pill">Frame</span> Populations</div>
+        <h1>Three populations. Do not mix them</h1>
+        <div class="funnel">
+          <div class="band">
+            <h3>Community</h3>
+            <p>Broader WCS social and learning world — mostly outside the registry.</p>
+          </div>
+          <div class="band mid">
+            <h3>Entry</h3>
+            <p>Everyone registered in WSDC J&amp;J. Already requested in Score Report competitor lists — for analytics we need to keep those lists centrally and link them to dancer and event IDs.</p>
+          </div>
+          <div class="band inner">
+            <h3>Scored</h3>
+            <p>People with awarded points / Competitor ID after a point. This is what the public registry supports today.</p>
+          </div>
+        </div>
+        <p class="cite">Competitor ID only after a point — Rules 2026.1B §3.2.2c. Aligns with the 1 September analytics brief.</p>
+      </section>
+
+<section class="slide" data-notes="Categories: have data / not ready / not collected / outside / scope.">
+        <div class="badge"><span class="pill">Model</span> Categories</div>
+        <h1>How we sort Board questions</h1>
+        <p class="lead">Not “good vs bad database” — <strong>how ready WSDC company data</strong> is to answer.</p>
+        <div class="cat-stack">
+          <div class="cat-row c1">
+            <div class="cid">C1</div>
+            <div>
+              <h3>Answerable now</h3>
+              <p>Already in a working stream (Points Registry, event catalog). Some asks <strong>fully</strong>; some only <strong>partially</strong> (usually Scored) — if that works for the asker.</p>
+            </div>
+          </div>
+          <div class="cat-row c2">
+            <div class="cid">C2</div>
+            <div>
+              <h3>Data exists in WSDC — not in the analytics stream yet</h3>
+              <p>Already collected (often Google Sheets / Score Report), but not normalized or cleaned, no regular path into analytics. Need company-side prep: consistent names, link by ID, keep centrally — to make it usable.</p>
+            </div>
+          </div>
+          <div class="cat-row c3">
+            <div class="cid">C3</div>
+            <div>
+              <h3>Inside WSDC contour — not collected yet</h3>
+              <p>We believe where to get it inside WSDC. No raw stream yet. First learn to collect → then it becomes C2.</p>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cid">C4</div>
+            <div>
+              <h3>Outside WSDC</h3>
+              <p>Local dances, workshops, non-WSDC weekends, polls. Once collected, those feeds land in C2 (exist, not yet in the shared analytics stream).</p>
+            </div>
+          </div>
+          <div class="cat-row c5">
+            <div class="cid">C5</div>
+            <div>
+              <h3>Separate circle: scope / governance</h3>
+              <p>Priorities, product, policy, fees — not a dataset. Outside the C1–C4 readiness ladder.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Ladder before deep dives — skippable detail follows.">
+        <div class="badge"><span class="pill">Logic</span> Transformation</div>
+        <h1>How asks move as data readiness improves</h1>
+        <div class="flow">
+          <div class="flow-col">
+            <div class="flow-box idea">
+              <h3>C3 · not collected yet</h3>
+              <p>Hypothesis where data lives in WSDC. Work: who to ask, can we get it, in what form.</p>
+            </div>
+            <div class="flow-box out">
+              <h3>C4 · outside WSDC</h3>
+              <p>Community collection. When a feed exists → also C2.</p>
+            </div>
+          </div>
+          <div class="flow-mid">
+            <p class="flow-arrow">learn to collect →</p>
+            <div class="flow-box wait">
+              <h3>C2 · exists, not in stream</h3>
+              <p>Short list: what to obtain and what to learn (regular path: get → clean → link; consistent names). Then asks move to C1.</p>
+            </div>
+            <p class="flow-arrow">→ learn to run the stream →</p>
+          </div>
+          <div class="flow-col">
+            <div class="flow-box ready">
+              <h3>C1 · we answer</h3>
+              <p>Full or partial (if accepted). C2 lands here — including what arrived into C2 from C3 or C4.</p>
+            </div>
+            <div class="flow-box scope">
+              <h3>C5 · aside</h3>
+              <p>Strategy and ownership — not a rung on this ladder.</p>
+            </div>
+          </div>
+        </div>
+        <p class="notes">Fork: C3 / C4 both feed C2. Then C2 → C1. Next slides detail each step — skippable live; useful when reading after the call.</p>
+      </section>
+
+<section class="slide" data-notes="C1 deep: have / limits / quality. Skippable live.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C1</span> Answerable now</div>
+        <h1>Working stream — we can analyze today</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step on c1">C1 answer</span>
+        <span class="bar"></span>
+        <span class="step">C5 aside</span>
+        </div>
+        <p class="lead">Points Registry and the event catalog already refresh regularly. Full answers where the ask fits Scored; <strong>partial</strong> when that scope is enough for the asker.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What we have</h3>
+            <ul>
+              <li>Points / placements / Competitor IDs after a point</li>
+              <li>Event catalog &amp; scored landscape YOY</li>
+              <li>Reusable C1 work (e.g. division transitions)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Limits</h3>
+            <ul>
+              <li>Scored ≠ Entry / attendance / “held”</li>
+              <li>Partial must be labeled — Scored is not the whole community</li>
+              <li>Invitational / no-shows not from registry alone</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Quality on this layer</h3>
+            <ul>
+              <li>Less free-text drift; standardize entities</li>
+              <li>Refreshable tables: dancer · event · result</li>
+              <li>WSDC-layer quality work — not “whose database”</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JT-1</span> · Tigges — time in a division → <strong>C1 full</strong> (registry path already exists)</li>
+            <li><span class="mono">JN-1b</span> · Jen — how many reached All-Star → <strong>C1 full</strong></li>
+            <li><span class="mono">YV-1</span> · Yvonne — competitors per skill level → <strong>C1 partial</strong> (Scored only; full Entry is C2)</li>
+          </ul>
+        </div>
+        <p class="notes">After the frame is accepted, natural C1 packages: progression / points structure · scored event landscape · champion paths &amp; inactivity (with caveats).</p>
+      </section>
+<section class="slide" data-notes="C2 deep: Score Report ~2023, path to C1.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C2</span> Exists — not in stream</div>
+        <h1>Already in the WSDC contour — not yet linked into the stream</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step on c2">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="bar"></span>
+        <span class="step">C5 aside</span>
+        </div>
+        <p class="lead">Score Report / Sheets hold usable beginnings (often from ~2023). We can start designing how they enter the shared analytics stream next to C1.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What we already have</h3>
+            <ul>
+              <li>Event reports: tiers, counts by division / role</li>
+              <li>Competitors Lists — imperfect, but a trail exists</li>
+              <li>Same contour as Score Report competitor-list requirements</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Limits</h3>
+            <ul>
+              <li>Depth mostly ~2023 onward</li>
+              <li>No stable schema; not kept centrally; not linked by dancer/event ID yet</li>
+              <li>Cannot sit cleanly in the shared analytics stream beside C1</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Path → C1</h3>
+            <ul>
+              <li>Regular path: get → clean → entities → link to C1</li>
+              <li>Consistent event and place names</li>
+              <li>Pre-2023 / missing archives → often C3 first, then C2</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">YV-1-E</span> · Yvonne — same “competitors per skill” ask → keep Score Report lists centrally and link to IDs</li>
+            <li><span class="mono">PL-1b</span> · Paul — prelims / shelf judges → fields exist in Score Report, not yet in the shared stream</li>
+          </ul>
+        </div>
+        <p class="notes">Competitors List is still early: scoring systems are the practical source to grow this block — current partial feeds stay C2 until they link cleanly to C1.</p>
+      </section>
+<section class="slide" data-notes="C3 deep: find inside WSDC, then promote.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C3</span> Inside WSDC — not collected</div>
+        <h1>We believe it lives in WSDC — we have not taken it yet</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step on c3">C3 find</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="bar"></span>
+        <span class="step">C5 aside</span>
+        </div>
+        <p class="lead">From Board asks: who to approach inside WSDC, what to request, whether it is obtainable. Often archive / enrichment for the same block as C2.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>Typical gaps</h3>
+            <ul>
+              <li>Pre-2023 Score Report / list depth</li>
+              <li>Home city/state, official dates, AJP judge feeds</li>
+              <li>Fields that exist somewhere in ops — not in our stream</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Work now</h3>
+            <ul>
+              <li>Map owner + format inside WSDC</li>
+              <li>Confirm: can we get it, under what policy?</li>
+              <li>Do not pretend it is already analytics-ready</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Then promote</h3>
+            <ul>
+              <li>Found &amp; collectable → <strong>C2</strong></li>
+              <li>Regular path + link to C1 → <strong>C1</strong></li>
+              <li>Not findable / out of contour → rethink (C4 / park)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JC-3b</span> · Coakley — Classic/Showcase history → not in Points Registry; hunt inside WSDC first</li>
+            <li><span class="mono">PL-3</span> · Paul — AJP certified-judge roster feed → design who holds it and how we get it</li>
+          </ul>
+        </div>
+      </section>
+<section class="slide" data-notes="C4 deep: outside WSDC, regional leads.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C4</span> Outside WSDC</div>
+        <h1>Local WCS world — not the registry contour</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="arrow">/</span>
+        <span class="step on c4">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="bar"></span>
+        <span class="step">C5 aside</span>
+        </div>
+        <p class="lead">Workshops, local dances, non-WSDC weekends, WCS population around events (e.g. JN-3c). Analytics here starts with <strong>collection design</strong>, not Points Registry extracts.</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What it is</h3>
+            <ul>
+              <li>Community landscape beyond WSDC events</li>
+              <li>Venue radius / local population asks</li>
+              <li>Accuracy will not be registry-grade</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>How to organize</h3>
+            <ul>
+              <li>Start from existing community hubs (examples below), then fill gaps</li>
+              <li>Possible regional leads from other committees</li>
+              <li>Sector / region split + verification cadence; Board owner + mandate</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Then</h3>
+            <ul>
+              <li>When a feed exists → <strong>C2</strong></li>
+              <li>Committee can advise on structure — Board owns program and product calls</li>
+              <li>Product / fee / hub policy → <strong>C5</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JC-1 / JC-2</span> · Coakley — workshop weekends &amp; local dances globally → community collection</li>
+            <li><span class="mono">JN-3c</span> · Jen — WCS population within 100 miles of an event → local community, not registry</li>
+          </ul>
+        </div>
+        <p class="cite">Examples of already-centralized community listings (not WSDC, not registry-grade): <a href="https://weekenders.dance/" target="_blank" rel="noopener noreferrer">weekenders.dance</a> · <a href="https://westiehub.dance/" target="_blank" rel="noopener noreferrer">westiehub.dance</a></p>
+      </section>
+<section class="slide" data-notes="C5 deep: not a data readiness question. Kay focus restated once.">
+        <div class="badge"><span class="pill deep">Deep dive · skippable</span> <span class="pill">C5</span> Scope / governance</div>
+        <h1>Not a data readiness question</h1>
+        <div class="ladder-mini" aria-hidden="true">
+        <span class="step">C3 find</span>
+        <span class="arrow">/</span>
+        <span class="step">C4 outside</span>
+        <span class="arrow">→</span>
+        <span class="step">C2 prepare</span>
+        <span class="arrow">→</span>
+        <span class="step">C1 answer</span>
+        <span class="bar"></span>
+        <span class="step on c5">C5 aside</span>
+        </div>
+        <p class="lead">Separate analytics and preparatory data work from strategy, product, and policy — so the committee stays on data readiness and current initiatives (Kay).</p>
+        <div class="grid3">
+          <div class="card">
+            <h3>What it is</h3>
+            <ul>
+              <li>Priorities, mandate, mission stretch</li>
+              <li>Website / product features (e.g. rankings on site)</li>
+              <li>Fees, merge/delete, audit <em>policy</em></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Why it stays off the ladder</h3>
+            <ul>
+              <li>A new table would not settle this</li>
+              <li>Does not move C3 → C2 → C1</li>
+              <li>Needs a Board / ops decision, not a data path</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>What we do</h3>
+            <ul>
+              <li>Return to Board / ops with a clear recommendation (committee focus)</li>
+              <li>May advise with C1 evidence — not own the product</li>
+              <li>Park until Board names an owner or a mandate</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples">
+          <h3>Examples from this Board draft</h3>
+          <ul>
+            <li><span class="mono">JC-7</span> · Coakley — point ranking history on the website → product call</li>
+            <li><span class="mono">JC-4b</span> · Coakley — listing fees → Board / finance</li>
+            <li><span class="mono">JC-6b</span> · Coakley — audit / merge / delete policy → Board / ops</li>
+          </ul>
+        </div>
+      </section>
+
+<section class="slide" data-notes="Workflow one slide.">
+        <div class="badge"><span class="pill">Process</span> Workflow</div>
+        <h1>From ask to track</h1>
+        <ol>
+          <li><strong>Intake</strong> — asker, text, must-have vs nice-to-have</li>
+          <li><strong>Decompose</strong> — one Board message → several separate questions</li>
+          <li><strong>Classify</strong> — C1–C5 + population (Community / Entry / Scored)</li>
+          <li><strong>Respond</strong> — deliver (C1), partial + preparatory step (C2/C3), collection design (C4), or return on scope (C5)</li>
+          <li><strong>Track &amp; reclassify</strong> when a preparatory step ships</li>
+        </ol>
+      </section>
+
+<section class="slide" data-notes="Counts from MATRIX — evidence the frame was applied.">
+        <div class="badge"><span class="pill">This draft</span> Intake map</div>
+        <h1>How this Board draft maps</h1>
+        <p class="lead">60 separate questions after splitting Board messages. C1: 10 full (take now) then 12 partial (Scored/limited). C2: a concrete preparatory step per ask.</p>
+        <div class="stat-row">
+          <div class="stat"><span class="n">10</span><span class="l">C1 full</span></div>
+          <div class="stat"><span class="n">12</span><span class="l">C1 partial</span></div>
+          <div class="stat"><span class="n">17</span><span class="l">C2 prepare</span></div>
+          <div class="stat"><span class="n">5</span><span class="l">C3 design</span></div>
+          <div class="stat"><span class="n">7</span><span class="l">C4 outside</span></div>
+          <div class="stat"><span class="n">9</span><span class="l">C5 scope</span></div>
+        </div>
+        <p class="notes">C1 is split into full (take now) vs partial (same Board quote, Scored/limited scope). Entry / list-dependent asks sit in C2 with a named next step.</p>
+        <p class="notes" style="margin-top:8px"><strong>Appendix:</strong> full question list by category (quote + comment / step) → <a href="appendix_en.html">appendix_en.html</a></p>
+      </section>
+
+<section class="slide" data-notes="Committee decision today — not a locked 30/90 plan.">
+        <div class="badge"><span class="pill">Next</span> What we decide today</div>
+        <h1>What happens next</h1>
+        <ol>
+          <li><strong>Today</strong> — accept the C1–C5 frame, adjust wording, or send it back for a rewrite</li>
+          <li><strong>Next call</strong> — walk the matrix line by line (agree / reclassify)</li>
+          <li><strong>After that</strong> — assign C1 packages and any shared preparatory tracks</li>
+        </ol>
+        <p class="notes">Sequence, not a dated plan. Later we can take a short Board ask: confirm the frame, and name an owner only if community listings (C4) become a Board program. Public C1 evidence: <a href="https://wsdc-analytics.github.io/" target="_blank" rel="noopener noreferrer">WSDC Analytics</a>.</p>
+      </section>
+
+    </div>
+    <div class="foot-hint">Keys <kbd>←</kbd> <kbd>→</kbd> · <kbd>Space</kbd> · click edges</div>
+  </div>
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('counter');
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        counter.textContent = (i + 1) + ' / ' + slides.length;
+        const note = slides[i].getAttribute('data-notes') || '';
+        if (note) console.debug('[notes]', note);
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+      document.getElementById('prev').addEventListener('click', () => show(i - 1));
+      document.getElementById('next').addEventListener('click', () => show(i + 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); show(i + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault(); show(i - 1);
+        } else if (e.key === 'Home') show(0);
+        else if (e.key === 'End') show(slides.length - 1);
+      });
+      document.getElementById('stage').addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width * 0.28) show(i - 1);
+        else if (x > rect.width * 0.72) show(i + 1);
+      });
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash - 1 : 0);
+    })();
+  </script>
+</body>
+</html>

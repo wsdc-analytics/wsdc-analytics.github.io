@@ -204,6 +204,8 @@ def validate_event_l2_cards() -> None:
         fail(f"event_l2_cards.json.cards[{sample_key}] must be an object")
     if "series" not in sample:
         fail(f"event_l2_cards.json.cards[{sample_key}] missing series")
+    if "history" in sample and not isinstance(sample["history"], list):
+        fail(f"event_l2_cards.json.cards[{sample_key}].history must be a list")
     print(f"[OK] event_l2_cards.json ({len(cards)} cards)")
 
 

@@ -10,7 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="static/css/tokens.css">
+    <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link rel="stylesheet" href="static/css/dashboard-shell.css">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
@@ -21,60 +23,18 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <style>
+        html, body { overflow: hidden; height: 100%; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-        }
-        body {
-            font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--wsdc-color-surface, #fff);
-            color: var(--wsdc-color-text, #1f2937);
-            line-height: 1.6;
-        }
-        .page {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .dash-chrome {
-            flex-shrink: 0;
-        }
-.viz-frame {
-            flex: 1;
-            min-height: 0;
-            margin: 0;
-            border: none;
-            border-radius: 0;
-            background: var(--wsdc-color-surface, #fff);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .viz-viewport {
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-        .viz-scaled {
-            transform-origin: center center;
-        }
-        .viz-scaled .tableauPlaceholder {
-            display: inline-block;
-        }
+        .viz-frame { padding: 0; display: flex; flex-direction: column; }
+        .viz-frame .viz-viewport { flex: 1; padding: 0; }
     </style>
 </head>
 <body>
     <div class="page">
         <div class="dash-chrome">
             <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="dashboard.html"></div>
-                        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
-</div>
+            <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+        </div>
 
         <div class="viz-frame">
             <div class="viz-viewport" id="vizViewport">
@@ -107,19 +67,10 @@
     </div>
 
     <script src="static/js/site-chrome.js" defer></script>
+    <script src="static/js/dashboard-fit-viz.js"></script>
     <script type='text/javascript'>
         var VIZ_WIDTH = 1600;
         var VIZ_HEIGHT = 1127;
-
-        function fitViz() {
-            var viewport = document.getElementById('vizViewport');
-            var scaled = document.getElementById('vizScaled');
-            var availableW = viewport.clientWidth;
-            var availableH = viewport.clientHeight;
-            var scale = Math.min(availableW / VIZ_WIDTH, availableH / VIZ_HEIGHT);
-            scale = Math.min(scale, 1);
-            scaled.style.transform = 'scale(' + scale + ')';
-        }
 
         var divElement = document.getElementById('viz1770821220405');
         var vizElement = divElement.getElementsByTagName('object')[0];
@@ -131,15 +82,15 @@
         vizElement.parentNode.insertBefore(scriptElement, vizElement);
 
         scriptElement.onload = function() {
-            fitViz();
+            if (window.wsdcBindFitViz) {
+                wsdcBindFitViz({ width: VIZ_WIDTH, height: VIZ_HEIGHT });
+            }
             var iframe = divElement.querySelector('iframe');
             if (iframe) {
                 iframe.style.width = VIZ_WIDTH + 'px';
                 iframe.style.height = VIZ_HEIGHT + 'px';
             }
         };
-
-        window.addEventListener('resize', fitViz);
     </script>
 </body>
 </html>

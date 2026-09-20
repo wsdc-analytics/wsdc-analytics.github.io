@@ -2,6 +2,8 @@
 
 This map helps find reusable components quickly for article updates.
 
+**UI consistency:** follow [DESIGN_GUIDELINE.md](DESIGN_GUIDELINE.md) and [DESIGN_CHECKLIST.md](DESIGN_CHECKLIST.md) for any new page, article, or draft. Shared assets: `static/css/tokens.css`, `ui-primitives.css`, `site-chrome.css`, `article-shell.css`.
+
 ## Website Pages
 
 - Root-level `*.html` files are primary published pages and article entries.
@@ -13,6 +15,7 @@ This map helps find reusable components quickly for article updates.
 ## Interactive Charts
 
 - Chart pages are standalone HTML files embedded via iframe in article pages.
+- They must **not** mount site chrome (parent page owns nav); they should load `tokens.css` + `ui-primitives.css`.
 - Reuse pattern:
   - article page controls chart language via `?lang=ru|en|es`,
   - chart page reads the language parameter and applies labels/translations.

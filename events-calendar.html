@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta name="description" content="WSDC year event calendar with weekend map drill-down: confirmed, expected, and hiatus editions.">
+    <meta name="description" content="Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.">
     <meta name="keywords" content="WSDC, events calendar, West Coast Swing, registry events, trial events, map">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta property="og:title" content="Events Calendar | WSDC Analytics">
-    <meta property="og:description" content="Year calendar of WSDC events with weekend geography and event cards.">
+    <meta property="og:title" content="WSDC Events Calendar | WSDC Analytics">
+    <meta property="og:description" content="Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://wsdc-analytics.github.io/events-calendar.html">
-    <meta property="twitter:title" content="Events Calendar | WSDC Analytics">
-    <meta property="twitter:description" content="Year calendar of WSDC events with weekend geography and event cards.">
-    <title>Events Calendar | WSDC Analytics</title>
+    <meta property="twitter:title" content="WSDC Events Calendar | WSDC Analytics">
+    <meta property="twitter:description" content="Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.">
+    <title>WSDC Events Calendar | WSDC Analytics</title>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "Events Calendar | WSDC Analytics",
+      "name": "WSDC Events Calendar | WSDC Analytics",
       "url": "https://wsdc-analytics.github.io/events-calendar.html",
-      "description": "Year calendar of WSDC events with weekend geography and event cards.",
+      "description": "Expected, confirmed, and paused WSDC events for the selected year — with filters, search, map, and short event analytics.",
       "publisher": { "@type": "Organization", "name": "WSDC Analytics" }
     }
     </script>
@@ -29,10 +29,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="stylesheet" href="static/css/tokens.css">
-    <link rel="stylesheet" href="static/css/site-chrome.css">
+    <link rel="stylesheet" href="static/css/ui-primitives.css">
+    <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829u">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260806a" as="fetch" crossorigin>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20260915-sync" as="fetch" crossorigin>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -40,68 +41,94 @@
       gtag('js', new Date());
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
-    <link rel="stylesheet" href="static/css/events-calendar.css">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913d">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <div data-site-chrome data-active="calendar" data-lang="en" data-current-dash="events-calendar.html"></div>
+    <div data-site-chrome data-active="calendar" data-lang="en" data-home-href="index.html"></div>
     <div class="page-shell">
     <main id="main" class="container">
-        <header class="page-head">
-            <h1 data-i18n="title">Events Calendar</h1>
-            <p class="subtitle" data-i18n="subtitle">Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.</p>
+        <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+        <header class="page-head wsdc-page-header">
+            <div class="page-head__title-row">
+                <h1 class="wsdc-page-title" data-i18n="title">WSDC Events Calendar</h1>
+                <time class="data-as-of" id="dataAsOf" hidden></time>
+            </div>
+            <p class="subtitle wsdc-page-subtitle" data-i18n="subtitle">A calendar of expected, confirmed, and paused (hiatus) events for the selected year. Filter the list or use search. Click a date for the map with location and a short analytics view of the event. Month labels and filter options show held events for past periods, or confirmed/expected for the current and upcoming ones (counted by start date).</p>
             <p class="disclaimer" id="disclaimer"></p>
-            <div class="toolbar">
+            <div class="toolbar wsdc-filter-bar">
                 <div class="filters" role="toolbar" aria-label="Filters">
                     <div class="filter-field" data-cal-dd>
                         <span class="filter-label" id="yearFilterLabel" data-i18n="year">Year</span>
-                        <div class="cal-dd" id="yearSelectDd">
-                            <button type="button" class="cal-dd__btn" id="yearSelectBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="yearSelectMenu" aria-labelledby="yearFilterLabel yearSelectValue">
-                                <span class="cal-dd__value" id="yearSelectValue"></span>
+                        <div class="wsdc-dd cal-dd" id="yearSelectDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="yearSelectBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="yearSelectMenu" aria-labelledby="yearFilterLabel yearSelectValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="yearSelectValue"></span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <ul class="cal-dd__menu" id="yearSelectMenu" role="listbox" aria-labelledby="yearFilterLabel" aria-hidden="true"></ul>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="yearSelectMenu" role="listbox" aria-labelledby="yearFilterLabel" aria-hidden="true"></ul>
                         </div>
                     </div>
                     <div class="filter-field" data-cal-dd>
                         <span class="filter-label" id="continentFilterLabel" data-i18n="continent">Continent</span>
-                        <div class="cal-dd" id="continentFilterDd">
-                            <button type="button" class="cal-dd__btn" id="continentFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="continentFilterMenu" aria-labelledby="continentFilterLabel continentFilterValue">
-                                <span class="cal-dd__value" id="continentFilterValue"></span>
+                        <div class="wsdc-dd cal-dd" id="continentFilterDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="continentFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="continentFilterMenu" aria-labelledby="continentFilterLabel continentFilterValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="continentFilterValue"></span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <ul class="cal-dd__menu" id="continentFilterMenu" role="listbox" aria-labelledby="continentFilterLabel" aria-hidden="true"></ul>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="continentFilterMenu" role="listbox" aria-labelledby="continentFilterLabel" aria-hidden="true"></ul>
                         </div>
                     </div>
                     <div class="filter-field" data-cal-dd>
                         <span class="filter-label" id="countryFilterLabel" data-i18n="country">Country</span>
-                        <div class="cal-dd" id="countryFilterDd">
-                            <button type="button" class="cal-dd__btn" id="countryFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="countryFilterMenu" aria-labelledby="countryFilterLabel countryFilterValue">
-                                <span class="cal-dd__value" id="countryFilterValue"></span>
+                        <div class="wsdc-dd cal-dd" id="countryFilterDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="countryFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="countryFilterMenu" aria-labelledby="countryFilterLabel countryFilterValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="countryFilterValue"></span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <ul class="cal-dd__menu" id="countryFilterMenu" role="listbox" aria-labelledby="countryFilterLabel" aria-hidden="true"></ul>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="countryFilterMenu" role="listbox" aria-labelledby="countryFilterLabel" aria-hidden="true"></ul>
+                        </div>
+                    </div>
+                    <div class="filter-field" data-cal-dd data-state-filter hidden>
+                        <span class="filter-label" id="stateFilterLabel" data-i18n="usState">State</span>
+                        <div class="wsdc-dd cal-dd" id="stateFilterDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="stateFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="stateFilterMenu" aria-labelledby="stateFilterLabel stateFilterValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="stateFilterValue"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="stateFilterMenu" role="listbox" aria-labelledby="stateFilterLabel" aria-hidden="true"></ul>
                         </div>
                     </div>
                     <div class="filter-field" data-cal-dd>
                         <span class="filter-label" id="statusFilterLabel" data-i18n="confirmStatus">Confirm status</span>
-                        <div class="cal-dd" id="statusFilterDd">
-                            <button type="button" class="cal-dd__btn" id="statusFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="statusFilterMenu" aria-labelledby="statusFilterLabel statusFilterValue">
-                                <span class="cal-dd__value" id="statusFilterValue"></span>
+                        <div class="wsdc-dd cal-dd" id="statusFilterDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="statusFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="statusFilterMenu" aria-labelledby="statusFilterLabel statusFilterValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="statusFilterValue"></span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <ul class="cal-dd__menu" id="statusFilterMenu" role="listbox" aria-labelledby="statusFilterLabel" aria-hidden="true"></ul>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="statusFilterMenu" role="listbox" aria-labelledby="statusFilterLabel" aria-hidden="true"></ul>
                         </div>
                     </div>
                     <div class="filter-field" data-cal-dd>
                         <span class="filter-label" id="kindFilterLabel" data-i18n="eventType">Event type</span>
-                        <div class="cal-dd" id="kindFilterDd">
-                            <button type="button" class="cal-dd__btn" id="kindFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="kindFilterMenu" aria-labelledby="kindFilterLabel kindFilterValue">
-                                <span class="cal-dd__value" id="kindFilterValue"></span>
+                        <div class="wsdc-dd cal-dd" id="kindFilterDd">
+                            <button type="button" class="wsdc-dd__btn cal-dd__btn" id="kindFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="kindFilterMenu" aria-labelledby="kindFilterLabel kindFilterValue">
+                                <span class="wsdc-dd__value cal-dd__value" id="kindFilterValue"></span>
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <ul class="cal-dd__menu" id="kindFilterMenu" role="listbox" aria-labelledby="kindFilterLabel" aria-hidden="true"></ul>
+                            <ul class="wsdc-dd__menu cal-dd__menu" id="kindFilterMenu" role="listbox" aria-labelledby="kindFilterLabel" aria-hidden="true"></ul>
                         </div>
+                    </div>
+                    <div class="filter-field cal-reset-field">
+                        <span class="filter-label" aria-hidden="true">&nbsp;</span>
+                        <button type="button" class="cal-reset-btn wsdc-btn wsdc-btn--secondary" id="clearFiltersBtn" data-i18n="clearFilters">Clear</button>
+                    </div>
+                </div>
+                <div class="filter-field cal-search-field">
+                    <span class="filter-label cal-search-field__label-spacer" aria-hidden="true">&nbsp;</span>
+                    <span class="visually-hidden" id="eventSearchLabel" data-i18n="search">Search</span>
+                    <div class="cal-search" id="eventSearch">
+                        <input type="search" class="cal-search__input wsdc-field" id="eventSearchInput" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="eventSearchSuggestions" aria-labelledby="eventSearchLabel" data-i18n-placeholder="searchPlaceholder" placeholder="Event name…">
+                        <div class="cal-search__suggestions" id="eventSearchSuggestions" role="listbox" aria-label="Matching events" hidden></div>
                     </div>
                 </div>
             </div>
@@ -109,9 +136,9 @@
         <div class="calendar-stage">
             <aside class="cal-stats" id="calStats" aria-label="Selection counts">
                 <div class="cal-stats__head">
-                    <button type="button" class="cal-stats__tip" id="calStatsTip" aria-label="About these counts">
+                    <button type="button" class="cal-stats__tip wsdc-info-btn" id="calStatsTip" aria-label="About these counts">
                         <span class="cal-stats__tip-mark" aria-hidden="true">i</span>
-                        <span class="cal-stats__tip-bubble" id="calStatsTipText" role="tooltip" data-i18n="statTip">For the current year, remaining counts with muted year totals; past and future years show full-year totals.</span>
+                        <span class="cal-stats__tip-bubble" id="calStatsTipText" role="tooltip" data-i18n="statTip">Counts of shown events by status and type. For the current year, each metric shows remaining (not yet held) events out of the year's total for that status or type.</span>
                     </button>
                 </div>
                 <div class="cal-stats__group" aria-label="Confirm status">
@@ -210,7 +237,7 @@
             </div>
         </div>
     </div>
-    <script src="static/js/site-chrome.js"></script>
+    <script src="static/js/site-chrome.js?v=20260829u"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
 (function () {
@@ -218,17 +245,27 @@
 
   var I18N = {
     en: {
-      title: "Events Calendar",
-      subtitle: "Year overview of WSDC registry and trial events. Day fill shows how many events overlap that date (1–2 / 3–4 / 5+). Click a day for the map and event list. Past years and past days are muted; today is outlined.",
+      title: "WSDC Events Calendar",
+      asOf: "As of {date}",
+      subtitle: "A calendar of expected, confirmed, and paused (hiatus) events for the selected year. Filter the list or use search. Click a date for the map with location and a short analytics view of the event. Month labels and filter options show held events for past periods, or confirmed/expected for the current and upcoming ones (counted by start date).",
+      disclaimer: "Important: Expected events are those whose dates were not yet confirmed in the {link} as of the latest update, but that ran around these dates the year before with no cancellation or hiatus reported. Expected dates in the calendar are approximate and may change once the event becomes confirmed.",
+      wsdcEventsList: "official WSDC Events List",
       year: "Year",
       continent: "Continent",
       country: "Country",
-      confirmStatus: "Confirm status",
-      eventType: "Event type",
+      usState: "State",
+      confirmStatus: "Status",
+      eventType: "Type",
+      search: "Search",
+      searchPlaceholder: "Event name…",
+      searchAria: "Search events by name in the selected year",
+      searchNoMatches: "No matching events",
+      clearFilters: "Clear",
       allContinents: "All continents",
       allCountries: "All countries",
-      allConfirmStatuses: "All confirm statuses",
-      allEventTypes: "All event types",
+      allStates: "All states",
+      allConfirmStatuses: "All statuses",
+      allEventTypes: "All types",
       close: "Close",
       legDens1: "1–2",
       legDens2: "3–4",
@@ -242,7 +279,7 @@
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "of {n}",
-      statTip: "After filters. Past years: Confirmed counts distinct events with competition results. Future years show full-year calendar totals. For the current year, Confirmed / Expected / Registry / Trial show remaining (not yet ended as of the data date), with the year total in quieter type — not a separate highlight. Hiatus is always the full-year count.",
+      statTip: "Counts of shown events by status and type. In the current year, events that have not yet been held are shown out of the total for that status and type.",
       statAria: "Selection counts",
       empty: "No day-precision events for this year yet.",
       day: "Day",
@@ -261,25 +298,44 @@
       firstEdition: "First",
       editionsCount: "Editions",
       lastEdition: "Last edition",
+      thisEdition: "Edition",
       metricDancers: "Dancers",
       metricPoints: "Points",
       metricNew: "New",
+      sparkAria: "Edition trend",
+      sparkSeries: "Trend metric",
+      noLastEdition: "No scored edition stats yet",
+      noThisEdition: "No scored stats for this edition",
+      trialNoStats: "No scored edition stats yet (trial)",
+      metricTipAria: "About metrics",
+      metricTip: "Dancers: sum of the midpoints of each Tier in Skill-Level nominations. Not an exact event participant count and is indicative only!\nPoints: sum of all points awarded in Skill-Level nominations.\nNew: dancers who earned their first WSDC points at this event.",
+      websiteAria: "Event website",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
       tierTipAria: "About tiers"
     },
     ru: {
-      title: "Календарь ивентов",
-      subtitle: "Годовой обзор registry и trial ивентов WSDC. Заливка дня = сколько ивентов пересекаются с датой (1–2 / 3–4 / 5+). Клик открывает карту и список. Прошлые годы и прошедшие дни приглушены, сегодня — обведено.",
+      title: "WSDC Events Calendar",
+      asOf: "По состоянию на {date}",
+      subtitle: "Календарь ожидаемых, подтверждённых и приостановленных (hiatus) ивентов за выбранный год. Можно отфильтровать список или воспользоваться поиском. Клик по дате открывает карту с локацией и краткую аналитику по ивенту. У названий месяцев и в опциях фильтров — число состоявшихся ивентов для прошедших периодов или confirmed/expected для текущего и будущих (по start date).",
+      disclaimer: "Важно: ожидаемые ивенты — те, чьи даты на момент последнего обновления ещё не подтверждены в {link}, но годом раньше ивент шёл примерно в эти дни и нет сведений об отмене или hiatus. Даты ожидаемых ивентов ориентировочные и могут измениться после подтверждения.",
+      wsdcEventsList: "официальном списке ивентов WSDC",
       year: "Год",
       continent: "Континент",
       country: "Страна",
-      confirmStatus: "Подтверждение",
-      eventType: "Тип ивента",
+      usState: "Штат",
+      confirmStatus: "Статус",
+      eventType: "Тип",
+      search: "Поиск",
+      searchPlaceholder: "Название ивента…",
+      searchAria: "Поиск ивентов по названию в выбранном году",
+      searchNoMatches: "Нет совпадений",
+      clearFilters: "Сброс",
       allContinents: "Все континенты",
       allCountries: "Все страны",
-      allConfirmStatuses: "Все статусы подтверждения",
+      allStates: "Все штаты",
+      allConfirmStatuses: "Все статусы",
       allEventTypes: "Все типы",
       close: "Закрыть",
       legDens1: "1–2",
@@ -294,7 +350,7 @@
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "из {n}",
-      statTip: "После фильтров. Прошлый год: Confirmed — число уникальных ивентов с результатами. Будущий год — полные календарные итоги. Для текущего года Confirmed / Expected / Registry / Trial показывают остаток (ещё не закончились на дату данных), а итог года — приглушённо, без отдельной подсветки. Hiatus всегда за весь год.",
+      statTip: "Количество показанных ивентов по статусам и типам. В текущем году показываются ивенты, которые ещё не проведены, от общего количества ивентов этого статуса и типа.",
       statAria: "Счётчики выборки",
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
@@ -313,25 +369,43 @@
       firstEdition: "Первый",
       editionsCount: "Издания",
       lastEdition: "Последний",
-      metricDancers: "Танцоры",
+      thisEdition: "Издание",
       metricPoints: "Очки",
       metricNew: "Новые",
+      sparkAria: "Динамика editions",
+      sparkSeries: "Метрика тренда",
+      noLastEdition: "Пока нет статистики scored edition",
+      noThisEdition: "Нет scored-статистики для этого edition",
+      trialNoStats: "Пока нет статистики scored edition (trial)",
+      metricTipAria: "О метриках",
+      metricTip: "Dancers: сумма средних значений каждого Tier в Skill-Level номинациях. Не является точным количеством участников ивента и носит ориентировочный характер!\nPoints: сумма всех поинтов, начисленных в Skill-Level номинациях.\nNew: количество танцоров, получивших свои первые поинты WSDC на этом ивенте.",
+      websiteAria: "Сайт ивента",
       tierPrefix: "ТИР",
       colLeader: "L",
       colFollower: "F",
       tierTipAria: "О тирах"
     },
     es: {
-      title: "Calendario de eventos",
-      subtitle: "Vista anual de eventos registry y trial de WSDC. El color del dia indica cuantos eventos coinciden (1–2 / 3–4 / 5+). Haz clic para el mapa y la lista. Los años y dias pasados se atenúan; hoy va marcado.",
+      title: "WSDC Events Calendar",
+      asOf: "Actualizado al {date}",
+      subtitle: "Calendario de eventos esperados, confirmados y en pausa (hiatus) para el año seleccionado. Puedes filtrar la lista o usar la búsqueda. Al hacer clic en una fecha verás el mapa con la ubicación y una breve analítica del evento. En los meses y en las opciones de filtro: eventos celebrados en periodos pasados, o confirmed/expected en el actual y los siguientes (por start date).",
+      disclaimer: "Importante: los eventos esperados son aquellos cuyas fechas, a la última actualización, aún no están confirmadas en {link}, pero el año anterior se celebraron aproximadamente en esos días y no hay información de cancelación o hiatus. Las fechas esperadas son orientativas y pueden cambiar cuando el evento pase a confirmado.",
+      wsdcEventsList: "la lista oficial de eventos WSDC",
       year: "Año",
       continent: "Continente",
       country: "País",
-      confirmStatus: "Confirmación",
-      eventType: "Tipo de evento",
+      usState: "Estado (EE. UU.)",
+      confirmStatus: "Estado",
+      eventType: "Tipo",
+      search: "Buscar",
+      searchPlaceholder: "Nombre del evento…",
+      searchAria: "Buscar eventos por nombre en el año seleccionado",
+      searchNoMatches: "Sin coincidencias",
+      clearFilters: "Limpiar",
       allContinents: "Todos los continentes",
       allCountries: "Todos los países",
-      allConfirmStatuses: "Todas las confirmaciones",
+      allStates: "Todos los estados (EE. UU.)",
+      allConfirmStatuses: "Todos los estados de confirmación",
       allEventTypes: "Todos los tipos",
       close: "Cerrar",
       legDens1: "1–2",
@@ -346,7 +420,7 @@
       statRegistry: "Registry",
       statTrial: "Trial",
       statOf: "de {n}",
-      statTip: "Tras los filtros. Años pasados: Confirmed cuenta eventos distintos con resultados. Años futuros: totales del calendario. En el año actual, Confirmed / Expected / Registry / Trial muestran lo que queda (aún no terminados a la fecha de los datos), con el total del año en tipografía más discreta. Hiatus es siempre el total del año.",
+      statTip: "Cantidad de eventos mostrados por estado y tipo. En el año actual se muestran los eventos que aún no se han celebrado, del total de eventos de ese estado y tipo.",
       statAria: "Conteos de la selección",
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
@@ -365,9 +439,18 @@
       firstEdition: "Primero",
       editionsCount: "Ediciones",
       lastEdition: "Última edición",
+      thisEdition: "Edición",
       metricDancers: "Bailarines",
       metricPoints: "Puntos",
       metricNew: "Nuevos",
+      sparkAria: "Tendencia de ediciones",
+      sparkSeries: "Métrica de tendencia",
+      noLastEdition: "Aún no hay estadísticas de edición",
+      noThisEdition: "No hay estadísticas para esta edición",
+      trialNoStats: "Aún no hay estadísticas de edición (trial)",
+      metricTipAria: "Sobre métricas",
+      metricTip: "Dancers: suma de los valores medios de cada Tier en nominaciones Skill-Level. No es el número exacto de participantes del evento y tiene carácter orientativo!\nPoints: suma de todos los puntos otorgados en nominaciones Skill-Level.\nNew: bailarines que obtuvieron sus primeros puntos WSDC en este evento.",
+      websiteAria: "Sitio del evento",
       tierPrefix: "TIER",
       colLeader: "L",
       colFollower: "F",
@@ -378,6 +461,7 @@
   var CONTINENTS = ["America", "Europe", "Asia", "Australia"];
   var STATUSES = ["confirmed", "expected", "hiatus"];
   var KINDS = ["registry", "trial"];
+  var US_COUNTRY = "United States";
 
   var state = {
     lang: "en",
@@ -385,12 +469,14 @@
     year: null,
     continent: "",
     country: "",
+    usState: "",
     status: "",
     kind: "",
     byDay: {},
     selectedDay: null,
     selectedEventId: null,
     hoverEventId: null,
+    highlight: null,
     l2Open: false,
     skipDayTip: false,
     l2Origin: null,
@@ -399,7 +485,9 @@
     map: null,
     markers: null,
     markerById: {},
-    eventCards: null
+    eventCards: null,
+    l2SparkMetric: "unique_dancers",
+    l2TipIgnoreDocCloseUntil: 0
   };
 
   function t(key) {
@@ -412,15 +500,76 @@
       var key = el.getAttribute("data-i18n");
       el.textContent = t(key);
     });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n-placeholder");
+      el.setAttribute("placeholder", t(key));
+    });
     document.documentElement.lang = state.lang;
-    if (state.data && state.data.disclaimer) {
-      document.getElementById("disclaimer").textContent =
-        state.data.disclaimer[state.lang] || state.data.disclaimer.en || "";
-    }
+    renderDisclaimer();
+    renderDataAsOf();
     var stats = document.getElementById("calStats");
     if (stats) stats.setAttribute("aria-label", t("statAria"));
     var tip = document.getElementById("calStatsTip");
     if (tip) tip.setAttribute("aria-label", t("statTip"));
+    var searchInput = document.getElementById("eventSearchInput");
+    if (searchInput) searchInput.setAttribute("aria-label", t("searchAria"));
+    var suggestions = document.getElementById("eventSearchSuggestions");
+    if (suggestions) suggestions.setAttribute("aria-label", t("search"));
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function renderDisclaimer() {
+    var el = document.getElementById("disclaimer");
+    if (!el) return;
+    var link =
+      '<a href="https://www.worldsdc.com/events/" target="_blank" rel="noopener noreferrer">' +
+      escapeHtml(t("wsdcEventsList")) +
+      "</a>";
+    el.innerHTML = t("disclaimer").replace("{link}", link);
+  }
+
+  function formatAsOfDisplay(iso) {
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return "";
+    var locale =
+      state.lang === "ru" ? "ru-RU" : state.lang === "es" ? "es-ES" : "en-US";
+    try {
+      return new Date(iso + "T12:00:00").toLocaleDateString(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    } catch (err) {
+      return iso;
+    }
+  }
+
+  function renderDataAsOf() {
+    var el = document.getElementById("dataAsOf");
+    if (!el) return;
+    var iso = state.data && state.data.as_of;
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+      el.hidden = true;
+      el.textContent = "";
+      el.removeAttribute("datetime");
+      el.removeAttribute("title");
+      return;
+    }
+    var label = t("asOf").replace("{date}", formatAsOfDisplay(iso));
+    el.hidden = false;
+    el.textContent = label;
+    el.setAttribute("datetime", iso);
+    if (state.data.generated_at) {
+      el.setAttribute("title", state.data.generated_at);
+    } else {
+      el.removeAttribute("title");
+    }
   }
 
   function dataAsOf() {
@@ -541,14 +690,52 @@
     });
   }
 
+  function eventPassesFilters(e) {
+    if (state.continent && e.continent !== state.continent) return false;
+    if (state.country && e.country !== state.country) return false;
+    if (state.country === US_COUNTRY && state.usState && e.state !== state.usState) return false;
+    if (state.status && normalizeStatus(e.status) !== state.status) return false;
+    if (state.kind && e.kind !== state.kind) return false;
+    return true;
+  }
+
+  function isUsCountrySelected() {
+    return state.country === US_COUNTRY;
+  }
+
+  function updateStateFilterVisibility() {
+    var field = document.querySelector("[data-state-filter]");
+    if (!field) return;
+    var show = isUsCountrySelected();
+    field.hidden = !show;
+    if (!show) {
+      state.usState = "";
+      closeAllFilterDropdowns();
+    }
+  }
+
   function eventsForYear(year) {
     return (state.data.events || []).filter(function (e) {
       if (e.year !== year) return false;
-      if (state.continent && e.continent !== state.continent) return false;
-      if (state.country && e.country !== state.country) return false;
-      if (state.status && normalizeStatus(e.status) !== state.status) return false;
-      if (state.kind && e.kind !== state.kind) return false;
-      return true;
+      return eventPassesFilters(e);
+    });
+  }
+
+  /**
+   * NYE festivals are bucketed to the end/results year (Jan), but their real
+   * start is in December of the prior calendar year. Include those Dec days
+   * when viewing the start year so confirmed/held dates are not “shifted” to Jan.
+   */
+  function nyeDecSpillEventsForYear(year) {
+    var yNext = year + 1;
+    var prefix = String(year) + "-12-";
+    return (state.data.events || []).filter(function (e) {
+      if (e.stats_only || !e.start_date) return false;
+      if (e.year !== yNext) return false;
+      if (!eventPassesFilters(e)) return false;
+      // Concrete published/scheduled dates, or projected stubs that correctly
+      // kept a Dec→Jan span after YoY projection.
+      return String(e.start_date).indexOf(prefix) === 0;
     });
   }
 
@@ -599,7 +786,14 @@
       btn.type = "button";
       btn.setAttribute("role", "option");
       btn.setAttribute("data-value", opt.value);
-      btn.textContent = opt.label;
+      if (opt.countHtml) {
+        btn.innerHTML = escapeHtml(opt.label) + opt.countHtml;
+        if (opt.countAria) {
+          btn.setAttribute("aria-label", opt.label + ", " + opt.countAria);
+        }
+      } else {
+        btn.textContent = opt.label;
+      }
       if (opt.value === effective) {
         btn.classList.add("is-current");
         btn.setAttribute("aria-selected", "true");
@@ -613,27 +807,177 @@
     valueEl.textContent = currentLabel;
   }
 
+  function isCalendarYearPast(year) {
+    return Number(year) < new Date().getFullYear();
+  }
+
+  function emptyEventCounts() {
+    return { held: 0, confirmed: 0, expected: 0 };
+  }
+
+  function tallyEventCounts(events) {
+    var seen = {};
+    var held = 0;
+    var confirmed = 0;
+    var expected = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (e.has_results) held += 1;
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed") confirmed += 1;
+      else if (st === "expected") expected += 1;
+    });
+    return { held: held, confirmed: confirmed, expected: expected };
+  }
+
+  function countsByField(events, fieldGetter) {
+    var buckets = {};
+    var seen = {};
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      var field = fieldGetter(e);
+      if (!field) return;
+      if (!buckets[field]) buckets[field] = emptyEventCounts();
+      if (e.has_results) buckets[field].held += 1;
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed") buckets[field].confirmed += 1;
+      else if (st === "expected") buckets[field].expected += 1;
+    });
+    return buckets;
+  }
+
+  function geoSortKey(counts, yearPast) {
+    if (!counts) return 0;
+    return yearPast ? counts.held : counts.confirmed + counts.expected;
+  }
+
+  function compareFilterOpts(a, b) {
+    var ka = a.sortKey != null ? a.sortKey : 0;
+    var kb = b.sortKey != null ? b.sortKey : 0;
+    if (kb !== ka) return kb - ka;
+    return String(a.label || "").localeCompare(String(b.label || ""));
+  }
+
+  function filterCountHtml(counts, yearPast) {
+    return monthCountHtml(counts || emptyEventCounts(), yearPast);
+  }
+
+  function filterCountAria(counts, yearPast) {
+    var c = counts || emptyEventCounts();
+    if (yearPast) return String(c.held | 0);
+    return (c.confirmed | 0) + " / " + (c.expected | 0);
+  }
+
+  function filterSingleCountHtml(n) {
+    var num = n | 0;
+    return (
+      ' <span class="month-count" title="Events">' +
+      '<span class="month-count__paren">(</span>' +
+      '<span class="month-count__held">' +
+      num +
+      '</span><span class="month-count__paren">)</span></span>'
+    );
+  }
+
+  function attachGeoCountMeta(opt, counts, yearPast) {
+    var c = counts || emptyEventCounts();
+    opt.countHtml = filterCountHtml(c, yearPast);
+    opt.countAria = filterCountAria(c, yearPast);
+    opt.sortKey = geoSortKey(c, yearPast);
+    return opt;
+  }
+
+  function attachSingleCountMeta(opt, n) {
+    var num = n | 0;
+    opt.countHtml = filterSingleCountHtml(num);
+    opt.countAria = String(num);
+    opt.sortKey = num;
+    return opt;
+  }
+
+  function statusOptionCount(events, statusKey, yearPast) {
+    var seen = {};
+    var n = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (yearPast && statusKey === "confirmed") {
+        if (e.has_results) n += 1;
+        return;
+      }
+      if (normalizeStatus(e.status) === statusKey) n += 1;
+    });
+    return n;
+  }
+
+  function kindOptionCount(events, kindKey, yearPast) {
+    var seen = {};
+    var n = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only || !e.start_date) return;
+      if (e.kind !== kindKey) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (yearPast) {
+        if (e.has_results) n += 1;
+        return;
+      }
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed" || st === "expected") n += 1;
+    });
+    return n;
+  }
+
   function closeAllFilterDropdowns() {
-    document.querySelectorAll(".cal-dd.is-open").forEach(function (dd) {
+    document.querySelectorAll(".wsdc-dd.is-open").forEach(function (dd) {
       dd.classList.remove("is-open");
-      var btn = dd.querySelector(".cal-dd__btn");
-      var menu = dd.querySelector(".cal-dd__menu");
+      var btn = dd.querySelector(".wsdc-dd__btn");
+      var menu = dd.querySelector(".wsdc-dd__menu");
       if (btn) btn.setAttribute("aria-expanded", "false");
       if (menu) menu.setAttribute("aria-hidden", "true");
     });
+    hideEventSearchSuggestions();
   }
 
   function refreshFilterOptions() {
-    var continents = (state.data && state.data.continents) || CONTINENTS;
+    var yearPast = isCalendarYearPast(state.year);
+    var yearAll = eventsInYearRaw(state.year);
+    var continentPresent = {};
+    yearAll.forEach(function (e) {
+      if (e.continent) continentPresent[e.continent] = true;
+    });
+    var continentBuckets = countsByField(yearAll, function (e) { return e.continent; });
+    var catalogContinents = (state.data && state.data.continents) || CONTINENTS;
+    var continentOpts = catalogContinents.filter(function (c) {
+      return continentPresent[c];
+    }).map(function (c) {
+      return attachGeoCountMeta(
+        { value: c, label: continentLabel(c) },
+        continentBuckets[c],
+        yearPast
+      );
+    }).sort(compareFilterOpts);
+    if (state.continent && continentPresent[state.continent] !== true) {
+      state.continent = "";
+    }
     fillDropdown(
       document.getElementById("continentFilterMenu"),
       document.getElementById("continentFilterValue"),
-      continents.map(function (c) { return { value: c, label: continentLabel(c) }; }),
+      continentOpts,
       state.continent,
       t("allContinents")
     );
 
-    var yearEvents = eventsInYearRaw(state.year).filter(function (e) {
+    var yearEvents = yearAll.filter(function (e) {
       if (state.continent && e.continent !== state.continent) return false;
       return true;
     });
@@ -641,23 +985,75 @@
     yearEvents.forEach(function (e) {
       if (e.country) countries[e.country] = true;
     });
-    var countryList = Object.keys(countries).sort(function (a, b) {
-      return a.localeCompare(b);
-    });
+    var countryBuckets = countsByField(yearEvents, function (e) { return e.country; });
+    var countryList = Object.keys(countries).map(function (c) {
+      return attachGeoCountMeta(
+        { value: c, label: c },
+        countryBuckets[c],
+        yearPast
+      );
+    }).sort(compareFilterOpts);
     if (state.country && countries[state.country] !== true) {
       state.country = "";
     }
     fillDropdown(
       document.getElementById("countryFilterMenu"),
       document.getElementById("countryFilterValue"),
-      countryList.map(function (c) { return { value: c, label: c }; }),
+      countryList,
       state.country,
       t("allCountries")
     );
 
-    var statusOpts = STATUSES.map(function (s) {
-      return { value: s, label: statusLabel(s) };
+    updateStateFilterVisibility();
+
+    var statePool = yearEvents.filter(function (e) {
+      if (state.country && e.country !== state.country) return false;
+      return true;
     });
+    if (isUsCountrySelected()) {
+      var states = {};
+      statePool.forEach(function (e) {
+        if (e.state) states[e.state] = true;
+      });
+      var stateBuckets = countsByField(statePool, function (e) { return e.state; });
+      var stateList = Object.keys(states).map(function (s) {
+        return attachGeoCountMeta(
+          { value: s, label: s },
+          stateBuckets[s],
+          yearPast
+        );
+      }).sort(compareFilterOpts);
+      if (state.usState && states[state.usState] !== true) {
+        state.usState = "";
+      }
+      fillDropdown(
+        document.getElementById("stateFilterMenu"),
+        document.getElementById("stateFilterValue"),
+        stateList,
+        state.usState,
+        t("allStates")
+      );
+    }
+
+    var statusPool = statePool.filter(function (e) {
+      if (isUsCountrySelected() && state.usState && e.state !== state.usState) return false;
+      return true;
+    });
+    var statusPresent = {};
+    statusPool.forEach(function (e) {
+      statusPresent[normalizeStatus(e.status)] = true;
+    });
+    var statusOpts = STATUSES.filter(function (s) {
+      return statusPresent[s];
+    }).map(function (s) {
+      return attachSingleCountMeta(
+        { value: s, label: statusLabel(s) },
+        statusOptionCount(statusPool, s, yearPast)
+      );
+    }).sort(compareFilterOpts);
+    if (state.status && statusPresent[state.status] !== true) {
+      state.status = "";
+    }
     fillDropdown(
       document.getElementById("statusFilterMenu"),
       document.getElementById("statusFilterValue"),
@@ -666,8 +1062,7 @@
       t("allConfirmStatuses")
     );
 
-    var kindPool = yearEvents.filter(function (e) {
-      if (state.country && e.country !== state.country) return false;
+    var kindPool = statusPool.filter(function (e) {
       if (state.status && normalizeStatus(e.status) !== state.status) return false;
       return true;
     });
@@ -676,8 +1071,11 @@
       if (e.kind) kindPresent[e.kind] = true;
     });
     var kindOpts = KINDS.filter(function (k) { return kindPresent[k]; }).map(function (k) {
-      return { value: k, label: kindLabel(k) };
-    });
+      return attachSingleCountMeta(
+        { value: k, label: kindLabel(k) },
+        kindOptionCount(kindPool, k, yearPast)
+      );
+    }).sort(compareFilterOpts);
     if (state.kind && kindPresent[state.kind] !== true) {
       state.kind = "";
     }
@@ -707,6 +1105,219 @@
     }
   }
 
+  function normalizeSearchText(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function eventSearchHaystack(e) {
+    return normalizeSearchText([e.name, e.city, e.country].filter(Boolean).join(" "));
+  }
+
+  function eventDateSpanInYear(e, year) {
+    if (!e || !e.start_date || e.stats_only) return null;
+    var start = e.start_date.slice(0, 10);
+    var end = (e.end_date || e.start_date).slice(0, 10);
+    var yearStart = year + "-01-01";
+    var yearEnd = year + "-12-31";
+    if (end < yearStart || start > yearEnd) return null;
+    return {
+      start: start < yearStart ? yearStart : start,
+      end: end > yearEnd ? yearEnd : end
+    };
+  }
+
+  function clearEventHighlight(resetInput) {
+    state.highlight = null;
+    if (resetInput) {
+      var input = document.getElementById("eventSearchInput");
+      if (input) input.value = "";
+    }
+    hideEventSearchSuggestions();
+  }
+
+  function hideEventSearchSuggestions() {
+    var box = document.getElementById("eventSearchSuggestions");
+    var input = document.getElementById("eventSearchInput");
+    if (box) {
+      box.innerHTML = "";
+      box.hidden = true;
+      box.classList.remove("is-open");
+    }
+    if (input) input.setAttribute("aria-expanded", "false");
+  }
+
+  function matchEventsForSearch(query) {
+    var q = normalizeSearchText(query);
+    if (!q || q.length < 1) return [];
+    var rows = eventsInYearRaw(state.year).filter(function (e) {
+      return !e.stats_only && e.start_date && eventSearchHaystack(e).indexOf(q) !== -1;
+    });
+    rows.sort(function (a, b) {
+      var an = normalizeSearchText(a.name);
+      var bn = normalizeSearchText(b.name);
+      var aStarts = an.indexOf(q) === 0 ? 0 : 1;
+      var bStarts = bn.indexOf(q) === 0 ? 0 : 1;
+      if (aStarts !== bStarts) return aStarts - bStarts;
+      var byName = String(a.name || "").localeCompare(String(b.name || ""), undefined, {
+        sensitivity: "base"
+      });
+      if (byName) return byName;
+      return String(a.start_date || "").localeCompare(String(b.start_date || ""));
+    });
+    return rows.slice(0, 10);
+  }
+
+  function formatSearchMeta(e) {
+    var bits = [];
+    if (e.start_date) {
+      bits.push(e.end_date && e.end_date !== e.start_date
+        ? e.start_date.slice(5) + "–" + e.end_date.slice(5)
+        : e.start_date.slice(5));
+    }
+    if (e.city) bits.push(e.city);
+    bits.push(statusLabel(e.status));
+    return bits.join(" · ");
+  }
+
+  function renderEventSearchSuggestions(query) {
+    var box = document.getElementById("eventSearchSuggestions");
+    var input = document.getElementById("eventSearchInput");
+    if (!box || !input) return;
+    var q = normalizeSearchText(query);
+    if (!q) {
+      hideEventSearchSuggestions();
+      return;
+    }
+    var matches = matchEventsForSearch(query);
+    if (!matches.length) {
+      box.innerHTML = '<div class="cal-search__empty">' + esc(t("searchNoMatches")) + "</div>";
+      box.hidden = false;
+      box.classList.add("is-open");
+      input.setAttribute("aria-expanded", "true");
+      return;
+    }
+    box.innerHTML = matches.map(function (e, idx) {
+      return '<button type="button" class="cal-search__suggestion" role="option" id="eventSearchOpt' + idx + '" data-event-key="' + esc(e.id) + '">' +
+        '<span class="cal-search__suggestion-name">' + esc(e.name || "") + "</span>" +
+        '<span class="cal-search__suggestion-meta">' + esc(formatSearchMeta(e)) + "</span>" +
+        "</button>";
+    }).join("");
+    box.hidden = false;
+    box.classList.add("is-open");
+    input.setAttribute("aria-expanded", "true");
+  }
+
+  function findEventByKey(key) {
+    if (!key || !state.data) return null;
+    var list = state.data.events || [];
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i].id) === String(key)) return list[i];
+    }
+    return null;
+  }
+
+  function scrollHighlightIntoView() {
+    var hit = document.querySelector(".day.is-search-range");
+    if (!hit) return;
+    var month = hit.closest(".month");
+    var target = month || hit;
+    if (target && target.scrollIntoView) {
+      target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    }
+  }
+
+  function applyHighlightForEvent(e, opts) {
+    opts = opts || {};
+    if (!e) {
+      state.highlight = null;
+      return false;
+    }
+    var span = eventDateSpanInYear(e, state.year);
+    if (!span) {
+      state.highlight = null;
+      return false;
+    }
+    state.highlight = {
+      key: e.id,
+      eventId: e.event_id != null ? e.event_id : null,
+      nameNorm: normalizeSearchText(e.name),
+      start: span.start,
+      end: span.end
+    };
+    if (opts.syncInput) {
+      var input = document.getElementById("eventSearchInput");
+      if (input) input.value = e.name || "";
+    }
+    return true;
+  }
+
+  function rematchHighlightForYear() {
+    var h = state.highlight;
+    var input = document.getElementById("eventSearchInput");
+    var nameNorm = (h && h.nameNorm) || (input ? normalizeSearchText(input.value) : "");
+    if ((!h || h.eventId == null) && !nameNorm) {
+      state.highlight = null;
+      return;
+    }
+    var pool = eventsInYearRaw(state.year).filter(function (e) {
+      return !e.stats_only && e.start_date;
+    });
+    var match = null;
+    if (h && h.eventId != null) {
+      for (var i = 0; i < pool.length; i++) {
+        if (String(pool[i].event_id) === String(h.eventId)) {
+          match = pool[i];
+          break;
+        }
+      }
+    }
+    if (!match && nameNorm) {
+      for (var j = 0; j < pool.length; j++) {
+        if (normalizeSearchText(pool[j].name) === nameNorm) {
+          match = pool[j];
+          break;
+        }
+      }
+    }
+    if (!match && nameNorm) {
+      for (var k = 0; k < pool.length; k++) {
+        if (eventSearchHaystack(pool[k]).indexOf(nameNorm) !== -1) {
+          match = pool[k];
+          break;
+        }
+      }
+    }
+    if (match) applyHighlightForEvent(match);
+    else state.highlight = null;
+  }
+
+  function clearAllFilters() {
+    state.continent = "";
+    state.country = "";
+    state.usState = "";
+    state.status = "";
+    state.kind = "";
+    forceCloseDayIsland();
+    refreshFilterOptions();
+    renderCalendar();
+  }
+
+  function selectEventFromSearch(eventKey) {
+    var e = findEventByKey(eventKey);
+    hideEventSearchSuggestions();
+    if (!e) return;
+    if (!applyHighlightForEvent(e, { syncInput: true })) return;
+    renderCalendar();
+    requestAnimationFrame(function () {
+      scrollHighlightIntoView();
+    });
+  }
+
   function indexByDay(events, year) {
     var map = {};
     events.forEach(function (e) {
@@ -723,11 +1334,75 @@
     return map;
   }
 
+  function eventDedupKey(e) {
+    if (e.event_id != null) return "id:" + e.event_id;
+    return "name:" + (e.name || "") + "|" + (e.start_date || "");
+  }
+
+  /** Unique events whose start_date falls in a calendar month. */
+  function countEventsForMonth(events, year, monthIndex) {
+    var mm = monthIndex + 1;
+    var seen = {};
+    var held = 0;
+    var confirmed = 0;
+    var expected = 0;
+    (events || []).forEach(function (e) {
+      if (e.stats_only) return;
+      var start = e.start_date;
+      if (!start) return;
+      if (parseInt(start.slice(0, 4), 10) !== year) return;
+      if (parseInt(start.slice(5, 7), 10) !== mm) return;
+      var key = eventDedupKey(e);
+      if (seen[key]) return;
+      seen[key] = true;
+      if (e.has_results) held += 1;
+      var st = normalizeStatus(e.status);
+      if (st === "confirmed") confirmed += 1;
+      else if (st === "expected") expected += 1;
+    });
+    return { held: held, confirmed: confirmed, expected: expected };
+  }
+
+  function monthCountHtml(counts, monthPast) {
+    var held = (counts && counts.held) | 0;
+    var confirmed = (counts && counts.confirmed) | 0;
+    var expected = (counts && counts.expected) | 0;
+    if (monthPast) {
+      return (
+        ' <span class="month-count" title="Held events">' +
+        '<span class="month-count__paren">(</span>' +
+        '<span class="month-count__held">' +
+        held +
+        '</span><span class="month-count__paren">)</span></span>'
+      );
+    }
+    return (
+      ' <span class="month-count" title="Confirmed / expected">' +
+      '<span class="month-count__paren">(</span>' +
+      '<span class="month-count__confirmed">' +
+      confirmed +
+      '</span><span class="month-count__sep">/</span><span class="month-count__expected">' +
+      expected +
+      '</span><span class="month-count__paren">)</span></span>'
+    );
+  }
+
   function renderYearSelect() {
     var years = (state.data.years || []).filter(function (y) {
       return Number(y) >= 2025;
     }).map(function (y) {
-      return { value: String(y), label: String(y) };
+      return Number(y);
+    }).sort(function (a, b) {
+      return a - b;
+    }).map(function (yn) {
+      var counts = tallyEventCounts(eventsInYearRaw(yn));
+      var past = isCalendarYearPast(yn);
+      return {
+        value: String(yn),
+        label: String(yn),
+        countHtml: filterCountHtml(counts, past),
+        countAria: filterCountAria(counts, past)
+      };
     });
     if (!years.length) return;
     if (!years.some(function (opt) { return Number(opt.value) === state.year; })) {
@@ -745,9 +1420,10 @@
   function renderCalendar() {
     var root = document.getElementById("calendarRoot");
     var events = eventsForYear(state.year);
-    state.byDay = indexByDay(events, state.year);
+    var gridEvents = events.concat(nyeDecSpillEventsForYear(state.year));
+    state.byDay = indexByDay(gridEvents, state.year);
     renderFilterStats(events);
-    if (!events.length) {
+    if (!events.length && !gridEvents.length) {
       root.innerHTML = '<div class="empty-year">' + t("empty") + "</div>";
       return;
     }
@@ -761,7 +1437,14 @@
     var html = '<div class="year-grid">';
     for (var m = 0; m < 12; m++) {
       var monthPast = yearIsPast || (yearIsCurrent && m < now.getMonth());
-      html += '<section class="month' + (monthPast ? " is-past-month" : "") + '"><h2>' + months[m] + "</h2>";
+      var monthCounts = countEventsForMonth(gridEvents, state.year, m);
+      html +=
+        '<section class="month' +
+        (monthPast ? " is-past-month" : "") +
+        '"><h2>' +
+        months[m] +
+        monthCountHtml(monthCounts, monthPast) +
+        "</h2>";
       html += '<div class="dow" aria-hidden="true">' + dow.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div>";
       html += '<div class="days">';
       var first = new Date(state.year, m, 1);
@@ -790,12 +1473,28 @@
           dens: dens,
           count: list.length,
           selected: occupied && state.selectedDay === iso,
+          searchHit: !!(
+            state.highlight &&
+            iso >= state.highlight.start &&
+            iso <= state.highlight.end
+          ),
           today: yearIsCurrent && iso === todayIso,
           past: yearIsPast || (yearIsCurrent && iso < todayIso)
         });
       }
       while (cells.length < 42) {
         cells.push({ empty: true });
+      }
+      for (i = 0; i < cells.length; i++) {
+        var cell = cells[i];
+        if (!cell.searchHit) continue;
+        var row = Math.floor(i / 7);
+        var prev = i > 0 ? cells[i - 1] : null;
+        var next = i < cells.length - 1 ? cells[i + 1] : null;
+        var prevSameWeek = prev && Math.floor((i - 1) / 7) === row && prev.searchHit;
+        var nextSameWeek = next && Math.floor((i + 1) / 7) === row && next.searchHit;
+        cell.searchRangeStart = !prevSameWeek;
+        cell.searchRangeEnd = !nextSameWeek;
       }
       for (i = 0; i < cells.length; i++) {
         var c = cells[i];
@@ -806,12 +1505,18 @@
         var cls = "day";
         if (c.occupied) cls += " has-events is-occupied dens-" + c.dens;
         if (c.selected) cls += " is-selected";
+        if (c.searchHit) {
+          cls += " is-search-range";
+          if (c.searchRangeStart) cls += " is-search-range-start";
+          if (c.searchRangeEnd) cls += " is-search-range-end";
+        }
         if (c.today) cls += " is-today";
         if (c.past) cls += " is-past";
         html += '<button type="button" class="' + cls + '" data-date="' + c.iso + '"' +
           (c.occupied ? "" : " disabled") +
           ' aria-label="' + c.iso + (c.occupied ? ", " + c.count + " events" : "") +
-          (c.today ? ", today" : "") + '">';
+          (c.today ? ", today" : "") +
+          (c.searchHit ? ", search period" : "") + '">';
         html += "<span>" + c.day + "</span>";
         html += "</button>";
       }
@@ -1028,18 +1733,61 @@
     return document.getElementById("calendarRoot");
   }
 
+  var MOBILE_L2_MQ = "(max-width: 700px)";
+
+  function isMobileL2Layout() {
+    return window.matchMedia(MOBILE_L2_MQ).matches;
+  }
+
+  function mobileIslandRect() {
+    var pad = 10;
+    var vv = window.visualViewport;
+    var vw = vv && vv.width ? vv.width : (window.innerWidth || document.documentElement.clientWidth);
+    var vh = vv && vv.height ? vv.height : (window.innerHeight || document.documentElement.clientHeight);
+    var offsetTop = vv && typeof vv.offsetTop === "number" ? vv.offsetTop : 0;
+    var offsetLeft = vv && typeof vv.offsetLeft === "number" ? vv.offsetLeft : 0;
+    var safeBottom = 8;
+    var top = offsetTop + 8;
+
+    var chrome = document.querySelector("[data-site-chrome]");
+    if (chrome) {
+      var chromeBottom = chrome.getBoundingClientRect().bottom;
+      if (Number.isFinite(chromeBottom)) top = Math.max(top, chromeBottom + 6);
+    }
+
+    // If filters are still on-screen, sit the card just under them.
+    var filters = document.querySelector(".toolbar") || document.querySelector(".filters");
+    if (filters) {
+      var fr = filters.getBoundingClientRect();
+      if (fr.bottom > top && fr.top < vh * 0.45) {
+        top = Math.max(top, fr.bottom + 6);
+      }
+    }
+
+    var maxBottom = offsetTop + vh - safeBottom;
+    return {
+      left: offsetLeft + pad,
+      top: top,
+      width: Math.max(0, vw - pad * 2),
+      height: Math.max(0, maxBottom - top)
+    };
+  }
+
   function islandFinalRect() {
+    if (isMobileL2Layout()) return mobileIslandRect();
+    var pad = 10;
     var grid = gridEl();
+    var toolbar = document.querySelector(".toolbar");
     var filters = document.querySelector(".filters");
     var target = grid && grid.getBoundingClientRect().width
       ? grid.getBoundingClientRect()
       : stageEl().getBoundingClientRect();
-    var pad = 10;
-    var filterTop = filters ? filters.getBoundingClientRect().top : NaN;
+    var bar = toolbar || filters;
+    var barTop = bar ? bar.getBoundingClientRect().top : NaN;
     // Same size as the month-grid inset; only the top edge moves up to the filters row.
     return {
       left: target.left + pad,
-      top: Number.isFinite(filterTop) ? filterTop : target.top + pad,
+      top: Number.isFinite(barTop) ? barTop : target.top + pad,
       width: Math.max(280, target.width - pad * 2),
       height: Math.max(220, target.height - pad * 2)
     };
@@ -1326,7 +2074,7 @@
       renderCalendar();
       populateDayIsland(iso);
       var island = document.getElementById("dayIsland");
-      if (state.l2Moved) placeIslandKeepingOffset(island);
+      if (state.l2Moved && !isMobileL2Layout()) placeIslandKeepingOffset(island);
       else placeIslandDefault(island);
       island.classList.add("is-settled");
       setTimeout(function () {
@@ -1389,6 +2137,7 @@
     state.selectedEventId = null;
     state.hoverEventId = null;
     state.skipDayTip = false;
+    state.l2SparkMetric = "unique_dancers";
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
     var mapCol = document.getElementById("dayMapCol");
@@ -1434,19 +2183,100 @@
   }
 
   function eventCardPayload(e) {
-    if (!e || e.kind === "trial" || e.event_id == null) return null;
+    // Trial: show L2 stats once the series has scored results (same payload as registry).
+    // Upcoming / unlinked trials (no event_id or no card yet) fall through to empty state.
+    if (!e || e.event_id == null) return null;
     var cards = state.eventCards && state.eventCards.cards;
     if (!cards) return null;
     return cards[String(e.event_id)] || null;
   }
 
+  function calendarAsOfIso() {
+    return dataAsOf();
+  }
+
+  function calendarEventHasEnded(e) {
+    var end = eventEndDate(e);
+    if (!end) return false;
+    return String(end).slice(0, 10) < dataAsOf();
+  }
+
+  function findEditionForCalendarEvent(card, e) {
+    if (!card || !e) return null;
+    var year = Number(e.year);
+    var month = null;
+    if (e.start_date && String(e.start_date).length >= 7) {
+      month = Number(String(e.start_date).slice(5, 7));
+    }
+    var pool = Array.isArray(card.editions) && card.editions.length
+      ? card.editions
+      : (card.history || []);
+    var byYm = null;
+    var byYear = null;
+    for (var i = 0; i < pool.length; i++) {
+      var row = pool[i];
+      if (Number(row.year) !== year) continue;
+      byYear = row;
+      if (month != null && Number(row.month) === month) byYm = row;
+    }
+    if (byYm) return byYm;
+    if (byYear) return byYear;
+    var last = card.last_edition;
+    if (last && Number(last.year) === year) {
+      if (month == null || Number(last.month) === month) return last;
+      return last;
+    }
+    return null;
+  }
+
+  function resolveRightEdition(card, e) {
+    if (!card) return { edition: null, mode: "none" };
+    if (!calendarEventHasEnded(e)) {
+      return {
+        edition: card.last_edition || null,
+        mode: card.last_edition ? "last" : "none"
+      };
+    }
+    var found = findEditionForCalendarEvent(card, e);
+    if (found) return { edition: found, mode: "edition" };
+    // Past calendar slot with no scored row (hiatus / unscored): fall back to last edition.
+    if (card.last_edition) {
+      return { edition: card.last_edition, mode: "last" };
+    }
+    return { edition: null, mode: "missing" };
+  }
+
+  function buildInfoTipHtml(ariaLabel, bodyHtml, extraClass) {
+    if (!bodyHtml) return "";
+    var cls = "l2-info-tip" + (extraClass ? " " + extraClass : "");
+    return '<button type="button" class="' + cls + '" aria-label="' + esc(ariaLabel) + '">' +
+      '<span class="l2-info-tip__mark" aria-hidden="true">i</span>' +
+      '<span class="l2-info-tip__bubble" role="tooltip">' + bodyHtml + "</span>" +
+      "</button>";
+  }
+
+  /** Bold metric names before the first ":" on each line; escape the rest. */
+  function metricTipHtml() {
+    return String(t("metricTip") || "")
+      .split("\n")
+      .map(function (line) {
+        var idx = line.indexOf(":");
+        if (idx <= 0) return esc(line);
+        return "<strong>" + esc(line.slice(0, idx)) + "</strong>" + esc(line.slice(idx));
+      })
+      .join("\n");
+  }
+
   function buildTierTableHtml(tiers) {
-    var order = ["Novice", "Intermediate", "Advanced", "All-Star", "Champions"];
+    var order = ["Newcomer", "Novice", "Intermediate", "Advanced", "All-Star", "Champions"];
     var rows = order.filter(function (div) {
       return tiers && tiers[div] && tiers[div].Leader != null && tiers[div].Follower != null;
     });
     if (!rows.length) return "";
-    var html = '<table class="l2-tier-table">' +
+    var tipHtml = buildInfoTipHtml(t("tierTipAria"), esc(tierTipText()), "l2-info-tip--tier-between");
+    var html = '<div class="l2-tier-panel">' +
+      tipHtml +
+      '<table class="l2-tier-table">' +
       "<thead><tr>" +
       "<th></th>" +
       '<th class="is-lead">' + esc(t("colLeader")) + "</th>" +
@@ -1459,7 +2289,7 @@
         '<td class="is-follow">' + esc(tierLabel(tiers[div].Follower)) + "</td>" +
         "</tr>";
     });
-    html += "</tbody></table>";
+    html += "</tbody></table></div>";
     return html;
   }
 
@@ -1470,68 +2300,425 @@
     return "";
   }
 
+  function sparkMetricKey() {
+    var key = state.l2SparkMetric;
+    if (key === "points" || key === "new_dancers" || key === "unique_dancers") return key;
+    return "unique_dancers";
+  }
+
+  function buildSparklineHtml(history) {
+    var rows = Array.isArray(history) ? history : [];
+    if (!rows.length) {
+      return '<div class="l2-chart" aria-hidden="true"></div>';
+    }
+    var key = sparkMetricKey();
+    var values = rows.map(function (r) {
+      var n = Number(r[key]);
+      return Number.isFinite(n) ? n : 0;
+    });
+    var w = 240;
+    var h = 88;
+    // Tight plot inset; year/value padding handled in axis domains.
+    var padL = 4;
+    var padR = 4;
+    var padT = 3;
+    var padB = 3;
+    var dataMin = Math.min.apply(null, values);
+    var dataMax = Math.max.apply(null, values);
+    var yPadMin = Math.max(Math.abs(dataMin) * 0.1, 0);
+    var yPadMax = Math.max(Math.abs(dataMax) * 0.1, 0);
+    if (yPadMin === 0 && yPadMax === 0) {
+      yPadMin = 1;
+      yPadMax = 1;
+    } else if (yPadMin === 0) {
+      yPadMin = yPadMax;
+    } else if (yPadMax === 0) {
+      yPadMax = yPadMin;
+    }
+    var min = dataMin - yPadMin;
+    var max = dataMax + yPadMax;
+    var span = max - min || 1;
+    var plotW = w - padL - padR;
+    var plotH = h - padT - padB;
+
+    var xVals = rows.map(function (r) {
+      var y = Number(r.year);
+      var m = Number(r.month);
+      if (!Number.isFinite(y)) return 0;
+      if (!Number.isFinite(m) || m < 1) m = 1;
+      return y + (m - 1) / 12;
+    });
+    var xDataMin = Math.min.apply(null, xVals);
+    var xDataMax = Math.max.apply(null, xVals);
+    var xMin = xDataMin - 1;
+    var xMax = xDataMax + 1;
+    var xSpan = xMax - xMin || 1;
+
+    function xAt(xv) {
+      return padL + ((xv - xMin) / xSpan) * plotW;
+    }
+
+    var points = values.map(function (v, i) {
+      var x = xAt(xVals[i]);
+      var y = h - padB - ((v - min) / span) * plotH;
+      return {
+        x: x,
+        y: y,
+        v: v,
+        label: String(rows[i].year),
+        year: Number(rows[i].year)
+      };
+    });
+
+    // Same idea as event portraits: break the line across missing calendar years
+    // and shade the gap band (COVID etc.).
+    var pathD = "";
+    var gapRects = "";
+    var started = false;
+    points.forEach(function (p, i) {
+      if (i > 0) {
+        var yPrev = points[i - 1].year;
+        var yCur = p.year;
+        if (Number.isFinite(yPrev) && Number.isFinite(yCur) && yCur - yPrev > 1) {
+          started = false;
+          var gx0 = xAt(yPrev + 1);
+          var gx1 = xAt(yCur);
+          var gw = Math.max(gx1 - gx0, 2);
+          gapRects += '<rect class="l2-spark__gap" x="' + gx0.toFixed(1) +
+            '" y="' + padT + '" width="' + gw.toFixed(1) +
+            '" height="' + plotH.toFixed(1) + '"></rect>';
+        }
+      }
+      pathD += (started ? "L" : "M") + p.x.toFixed(1) + "," + p.y.toFixed(1) + " ";
+      started = true;
+    });
+
+    var dots = points.map(function (p) {
+      return '<circle class="l2-spark__dot" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="2.4"><title>' + esc(p.label + ": " + String(p.v)) + "</title></circle>";
+    }).join("");
+    var axis =
+      '<line class="l2-spark__axis" x1="' + padL + '" y1="' + padT + '" x2="' + padL +
+      '" y2="' + (h - padB) + '"></line>' +
+      '<line class="l2-spark__axis" x1="' + padL + '" y1="' + (h - padB) + '" x2="' + (w - padR) +
+      '" y2="' + (h - padB) + '"></line>';
+
+    var yearTicks = [];
+    var yFirst = Number(rows[0].year);
+    var yLast = Number(rows[rows.length - 1].year);
+    if (rows.length === 1 || yFirst === yLast) {
+      yearTicks = [yFirst];
+    } else if (rows.length === 2) {
+      yearTicks = [yFirst, yLast];
+    } else {
+      yearTicks = [yFirst, Math.round((yFirst + yLast) / 2), yLast];
+    }
+    var xHtml = yearTicks.map(function (yr) {
+      return "<span>" + esc(String(yr)) + "</span>";
+    }).join("");
+
+    function axisLabel(n) {
+      return String(Math.round(n));
+    }
+
+    return '<div class="l2-chart" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
+      '<div class="l2-chart__y" aria-hidden="true">' +
+      "<span>" + esc(axisLabel(max)) + "</span>" +
+      "<span>" + esc(axisLabel(min)) + "</span>" +
+      "</div>" +
+      '<div class="l2-chart__plot">' +
+      '<svg class="l2-spark__svg" viewBox="0 0 ' + w + " " + h +
+      '" width="100%" height="100%" preserveAspectRatio="none">' +
+      gapRects +
+      axis +
+      '<path class="l2-spark__line" fill="none" d="' + pathD.trim() + '"></path>' +
+      dots +
+      "</svg>" +
+      '<div class="l2-chart__x" aria-hidden="true">' + xHtml + "</div>" +
+      "</div></div>";
+  }
+
+  function buildSparkSegHtml() {
+    var active = sparkMetricKey();
+    function seriesBtn(key, label) {
+      var isOn = active === key;
+      return '<button type="button" class="l2-spark-seg__btn' + (isOn ? " is-active" : "") +
+        '" role="tab" aria-selected="' + (isOn ? "true" : "false") +
+        '" data-spark="' + key + '">' +
+        esc(label) + "</button>";
+    }
+    return '<div class="l2-spark-seg" role="tablist" aria-label="' + esc(t("sparkSeries")) + '">' +
+      seriesBtn("unique_dancers", t("metricDancers")) +
+      seriesBtn("points", t("metricPoints")) +
+      seriesBtn("new_dancers", t("metricNew")) +
+      "</div>";
+  }
+
+  function buildSeriesTrendHtml(history) {
+    var rows = Array.isArray(history) ? history : [];
+    if (!rows.length) return "";
+    return '<div class="l2-chart-panel">' + buildSparklineHtml(rows) + "</div>";
+  }
+
+  function formatMetricValue(value, approx) {
+    if (value == null || value === "") return "—";
+    var text = String(value);
+    return approx ? "~" + text : text;
+  }
+
+  function buildMetricLabelsHtml() {
+    return '<div class="l2-metric-seg" aria-hidden="true">' +
+      '<span class="l2-metric-seg__label">' + esc(t("metricDancers")) + "</span>" +
+      '<span class="l2-metric-seg__label">' + esc(t("metricPoints")) + "</span>" +
+      '<span class="l2-metric-seg__label">' + esc(t("metricNew")) + "</span>" +
+      "</div>";
+  }
+
+  function buildLastMetricsHtml(last) {
+    var dancersApprox = !!(last && last.dancers_approx);
+    function valueCell(value, approx) {
+      return '<div class="l2-metric">' +
+        '<span class="l2-metric__value">' + esc(formatMetricValue(value, approx)) + "</span>" +
+        "</div>";
+    }
+    return '<div class="l2-event-card__metrics">' +
+      valueCell(last.unique_dancers, dancersApprox) +
+      valueCell(last.points, false) +
+      valueCell(last.new_dancers, false) +
+      "</div>";
+  }
+
+  function buildMetricTipHtml() {
+    return buildInfoTipHtml(t("metricTipAria"), metricTipHtml(), "l2-info-tip--metrics-between");
+  }
+
+  function buildKpiSegHtml() {
+    return '<div class="l2-kpi-seg-row">' +
+      buildMetricLabelsHtml() +
+      "</div>";
+  }
+
   function showEventCard(e) {
     var detail = document.getElementById("eventDetail");
     var mapCol = document.getElementById("dayMapCol");
     var where = [e.city, e.country].filter(Boolean).join(", ");
     var card = eventCardPayload(e);
-    var tip = tierTipText();
-
-    var left = '<div class="l2-event-card__series">' +
-      "<h3>" + esc(e.name) + "</h3>" +
-      '<div class="badges">' +
-      '<span class="badge ' + esc(normalizeStatus(e.status)) + '">' + esc(statusLabel(e.status)) + "</span>" +
-      '<span class="badge ' + (e.kind === "trial" ? "trial" : "registry") + '">' +
-      esc(e.kind === "trial" ? t("trial") : t("registry")) + "</span></div>";
-    if (where) left += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
-    if (e.url) {
-      left += '<p class="l2-event-card__link"><a href="' + esc(e.url) +
-        '" target="_blank" rel="noopener noreferrer">' + t("website") + "</a></p>";
+    var restoreSpark = null;
+    if (detail.contains(document.activeElement)) {
+      var activeSpark = document.activeElement.closest("[data-spark]");
+      if (activeSpark) restoreSpark = activeSpark.getAttribute("data-spark");
     }
+
+    var titleRow = '<div class="l2-event-card__title-row">' +
+      "<h3>" + esc(e.name) + "</h3>";
+    if (e.url) {
+      titleRow += '<a class="l2-event-card__web" href="' + esc(e.url) +
+        '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(t("websiteAria")) +
+        '" title="' + esc(t("website")) + '">↗</a>';
+    }
+    titleRow += "</div>";
+
+    var seriesHead = '<div class="l2-event-card__series-head">' + titleRow;
+    if (where) seriesHead += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
     if (card && card.series) {
+      var metaBits = [];
       var first = card.series.first_edition;
       if (first) {
-        left += '<p class="event-meta">' + esc(t("firstEdition")) + ": " +
-          esc(monthYearLabel(first.year, first.month)) + "</p>";
+        metaBits.push(t("firstEdition") + ": " + monthYearLabel(first.year, first.month));
       }
       if (card.series.editions_with_results != null) {
-        left += '<p class="event-meta">' + esc(t("editionsCount")) + ": " +
-          esc(String(card.series.editions_with_results)) + "</p>";
+        metaBits.push(t("editionsCount") + ": " + String(card.series.editions_with_results));
+      }
+      if (metaBits.length) {
+        seriesHead += '<p class="event-meta l2-event-card__meta-line">' + esc(metaBits.join(" · ")) + "</p>";
       }
     }
-    left += "</div>";
+    seriesHead += "</div>";
 
-    var right = '<div class="l2-event-card__last">';
-    if (card && card.last_edition) {
-      var last = card.last_edition;
-      right += '<div class="l2-event-card__last-head">' +
-        '<span class="l2-event-card__last-label">' + esc(t("lastEdition")) + "</span>" +
+    var hasHistory = !!(card && card.series && (card.history || []).length);
+    var right = resolveRightEdition(card, e);
+    var focusEdition = right.edition;
+    var hasFocus = !!focusEdition;
+
+    var sparkCtrl = '<div class="l2-event-card__spark-ctrl">';
+    if (hasHistory) sparkCtrl += buildSparkSegHtml();
+    sparkCtrl += "</div>";
+
+    var lastHead = '<div class="l2-event-card__last-head-block">';
+    var kpiCtrl = '<div class="l2-event-card__kpi-ctrl">';
+    var chartBody = '<div class="l2-event-card__chart-body">';
+    var tiersBody = '<div class="l2-event-card__tiers-body">';
+
+    if (hasHistory) {
+      chartBody += buildSeriesTrendHtml(card.history || []);
+    }
+
+    if (hasFocus) {
+      var labelKey = right.mode === "edition" ? "thisEdition" : "lastEdition";
+      lastHead += '<div class="l2-event-card__last-head">' +
+        buildMetricTipHtml() +
+        '<span class="l2-event-card__last-label">' + esc(t(labelKey)) + "</span>" +
         '<span class="l2-event-card__last-date">' +
-        esc(monthYearLabel(last.year, last.month)) + "</span>";
-      if (tip) {
-        right += '<button type="button" class="l2-tier-tip" id="l2TierTip" aria-label="' +
-          esc(t("tierTipAria")) + '">' +
-          '<span class="l2-tier-tip__mark" aria-hidden="true">i</span>' +
-          '<span class="l2-tier-tip__bubble" role="tooltip">' + esc(tip) + "</span>" +
-          "</button>";
-      }
-      right += "</div>";
-      right += '<div class="l2-event-card__metrics">' +
-        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.unique_dancers)) +
-        '</span><span class="l2-metric__label">' + esc(t("metricDancers")) + "</span></div>" +
-        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.points)) +
-        '</span><span class="l2-metric__label">' + esc(t("metricPoints")) + "</span></div>" +
-        '<div class="l2-metric"><span class="l2-metric__value">' + esc(String(last.new_dancers)) +
-        '</span><span class="l2-metric__label">' + esc(t("metricNew")) + "</span></div>" +
+        esc(monthYearLabel(focusEdition.year, focusEdition.month)) + "</span>" +
         "</div>";
-      right += buildTierTableHtml(last.tiers || {});
+      kpiCtrl += buildKpiSegHtml();
+      tiersBody += buildLastMetricsHtml(focusEdition);
+      tiersBody += buildTierTableHtml(focusEdition.tiers || {});
+    } else {
+      var emptyMsg = right.mode === "missing"
+        ? t("noThisEdition")
+        : (e.kind === "trial" ? t("trialNoStats") : t("noLastEdition"));
+      lastHead += '<p class="event-meta l2-event-card__empty">' + esc(emptyMsg) + "</p>";
     }
-    right += "</div>";
+    lastHead += "</div>";
+    kpiCtrl += "</div>";
+    chartBody += "</div>";
+    tiersBody += "</div>";
 
-    detail.innerHTML = '<div class="l2-event-card__grid">' + left + right + "</div>";
+    var gridClass = "l2-event-card__grid" + (hasFocus ? "" : " is-sparse");
+    detail.innerHTML = '<div class="' + gridClass + '">' +
+      seriesHead + lastHead + sparkCtrl + kpiCtrl + chartBody + tiersBody +
+      "</div>";
     detail.classList.add("is-open");
     if (mapCol) mapCol.classList.add("has-event");
+    if (restoreSpark) {
+      var focusBtn = detail.querySelector('[data-spark="' + restoreSpark + '"]');
+      if (focusBtn) focusBtn.focus();
+    }
+    wireL2InfoTips(detail);
+    if (isMobileL2Layout()) {
+      var body = document.querySelector(".day-island__body");
+      if (body) body.scrollTop = 0;
+    }
     refreshDayMapSize(preferReducedMotion() ? 0 : 230);
+  }
+
+  function getL2TipBubble(btn) {
+    if (!btn) return null;
+    if (btn._l2Bubble && btn._l2Bubble.isConnected) return btn._l2Bubble;
+    var bubble = btn.querySelector(".l2-info-tip__bubble");
+    if (bubble) btn._l2Bubble = bubble;
+    return bubble || null;
+  }
+
+  function clearL2TipBubblePosition(btn) {
+    var bubble = getL2TipBubble(btn);
+    if (!bubble) return;
+    bubble.classList.remove("is-ported", "is-visible");
+    bubble.style.position = "";
+    bubble.style.left = "";
+    bubble.style.top = "";
+    bubble.style.right = "";
+    bubble.style.width = "";
+    bubble.style.maxWidth = "";
+    bubble.style.transform = "";
+    bubble.style.zIndex = "";
+    if (btn._l2BubbleHome && bubble.parentNode !== btn._l2BubbleHome) {
+      btn._l2BubbleHome.appendChild(bubble);
+    }
+  }
+
+  function placeL2TipBubble(btn) {
+    var bubble = getL2TipBubble(btn);
+    if (!bubble) return;
+    if (!isMobileL2Layout()) {
+      clearL2TipBubblePosition(btn);
+      return;
+    }
+    if (!btn._l2BubbleHome) btn._l2BubbleHome = bubble.parentNode;
+    // Port to body so fixed coords are viewport-relative (island must not be a fixed CB).
+    if (bubble.parentNode !== document.body) {
+      document.body.appendChild(bubble);
+    }
+    bubble.classList.add("is-ported", "is-visible");
+
+    var isTier = btn.classList.contains("l2-info-tip--tier-between");
+    var pad = 12;
+    var maxW = isTier
+      ? Math.min(140, Math.max(96, Math.floor((window.innerWidth - pad * 2) * 0.42)))
+      : Math.min(280, window.innerWidth - pad * 2);
+
+    function applyPos() {
+      if (!btn.classList.contains("is-open")) return;
+      var r = btn.getBoundingClientRect();
+      var vv = window.visualViewport;
+      var vx = vv && typeof vv.offsetLeft === "number" ? vv.offsetLeft : 0;
+      var vy = vv && typeof vv.offsetTop === "number" ? vv.offsetTop : 0;
+      var vw = vv && vv.width ? vv.width : window.innerWidth;
+      var vh = vv && vv.height ? vv.height : window.innerHeight;
+
+      bubble.style.position = "fixed";
+      bubble.style.zIndex = "200";
+      bubble.style.right = "auto";
+      bubble.style.transform = "none";
+      bubble.style.width = maxW + "px";
+      bubble.style.maxWidth = maxW + "px";
+
+      var h = bubble.getBoundingClientRect().height || 0;
+      var left = Math.min(Math.max(pad + vx, r.left), vx + vw - pad - maxW);
+      var top = r.bottom + 8;
+      if (h && top + h > vy + vh - pad && r.top - 8 - h >= vy + pad) {
+        top = r.top - 8 - h;
+      }
+      bubble.style.left = Math.round(left) + "px";
+      bubble.style.top = Math.round(top) + "px";
+    }
+
+    applyPos();
+    requestAnimationFrame(function () {
+      requestAnimationFrame(applyPos);
+    });
+  }
+
+  function closeAllL2InfoTips(scope) {
+    var root = scope || document;
+    root.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
+      el.classList.remove("is-open");
+      clearL2TipBubblePosition(el);
+    });
+  }
+
+  function wireL2InfoTips(root) {
+    if (!root) return;
+    root.querySelectorAll(".l2-info-tip").forEach(function (btn) {
+      if (btn.getAttribute("data-tip-wired") === "1") return;
+      btn.setAttribute("data-tip-wired", "1");
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Desktop with real hover: CSS :hover shows the tip.
+        // Mobile / coarse pointer (and mobile L2 layout): tap toggles .is-open.
+        var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        if (finePointer && !isMobileL2Layout()) return;
+
+        var open = btn.classList.contains("is-open");
+        closeAllL2InfoTips(root);
+        if (!open) {
+          btn.classList.add("is-open");
+          placeL2TipBubble(btn);
+          // Ignore the document click synthesized for this same tap.
+          state.l2TipIgnoreDocCloseUntil = Date.now() + 400;
+        }
+      });
+    });
+
+    var body = document.querySelector(".day-island__body");
+    if (body && body.getAttribute("data-l2-tip-scroll") !== "1") {
+      body.setAttribute("data-l2-tip-scroll", "1");
+      body.addEventListener(
+        "scroll",
+        function () {
+          closeAllL2InfoTips(root);
+        },
+        { passive: true }
+      );
+    }
+  }
+
+  function refreshOpenEventCard() {
+    if (!state.selectedEventId) return;
+    var e = findEventById(state.selectedEventId);
+    if (e) showEventCard(e);
   }
 
   function clearEventSelection() {
@@ -1542,16 +2729,27 @@
     fitDayMap(dayMapBounds(), { animate: true });
   }
 
+  function findEventById(id) {
+    var sid = String(id);
+    var pools = [
+      eventsForYear(state.year),
+      eventsInYearRaw(state.year),
+      nyeDecSpillEventsForYear(state.year)
+    ];
+    var i;
+    for (i = 0; i < pools.length; i++) {
+      var hit = pools[i].find(function (x) { return String(x.id) === sid; });
+      if (hit) return hit;
+    }
+    return (state.data.events || []).find(function (x) { return String(x.id) === sid; }) || null;
+  }
+
   function selectEvent(id) {
     if (state.selectedEventId != null && String(state.selectedEventId) === String(id)) {
       clearEventSelection();
       return;
     }
-    var events = eventsForYear(state.year);
-    var e = events.find(function (x) { return String(x.id) === String(id); });
-    if (!e) {
-      e = eventsInYearRaw(state.year).find(function (x) { return String(x.id) === String(id); });
-    }
+    var e = findEventById(id);
     if (!e) return;
     state.selectedEventId = id;
     paintRowHighlights();
@@ -1563,12 +2761,13 @@
   function setYear(y) {
     state.year = y;
     forceCloseDayIsland();
-    state.country = "";
-    state.status = "";
-    state.kind = "";
     renderYearSelect();
     refreshFilterOptions();
+    rematchHighlightForYear();
     renderCalendar();
+    requestAnimationFrame(function () {
+      if (state.highlight) scrollHighlightIntoView();
+    });
   }
 
   function applyFiltersAndRender() {
@@ -1608,6 +2807,7 @@
     closeAllFilterDropdowns();
     state.continent = btn.getAttribute("data-value") || "";
     state.country = "";
+    state.usState = "";
     state.status = "";
     state.kind = "";
     applyFiltersAndRender();
@@ -1618,6 +2818,17 @@
     e.stopPropagation();
     closeAllFilterDropdowns();
     state.country = btn.getAttribute("data-value") || "";
+    state.usState = "";
+    state.status = "";
+    state.kind = "";
+    applyFiltersAndRender();
+  });
+  document.getElementById("stateFilterMenu").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-value]");
+    if (!btn) return;
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    state.usState = btn.getAttribute("data-value") || "";
     state.status = "";
     state.kind = "";
     applyFiltersAndRender();
@@ -1640,9 +2851,99 @@
     applyFiltersAndRender();
   });
 
-  document.querySelectorAll(".cal-dd").forEach(function (dd) {
-    var toggle = dd.querySelector(".cal-dd__btn");
-    var menu = dd.querySelector(".cal-dd__menu");
+  (function wireEventSearch() {
+    var input = document.getElementById("eventSearchInput");
+    var box = document.getElementById("eventSearchSuggestions");
+    var wrap = document.getElementById("eventSearch");
+    if (!input || !box || !wrap) return;
+
+    input.addEventListener("input", function () {
+      var value = input.value;
+      if (!normalizeSearchText(value)) {
+        clearEventHighlight(false);
+        hideEventSearchSuggestions();
+        renderCalendar();
+        return;
+      }
+      // Typing a new query clears the previous highlight until a suggestion is chosen.
+      if (state.highlight) {
+        state.highlight = null;
+        renderCalendar();
+      }
+      renderEventSearchSuggestions(value);
+    });
+
+    input.addEventListener("focus", function () {
+      closeAllFilterDropdowns();
+      if (normalizeSearchText(input.value)) {
+        renderEventSearchSuggestions(input.value);
+      }
+    });
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        if (!box.hidden) {
+          e.preventDefault();
+          e.stopPropagation();
+          hideEventSearchSuggestions();
+          return;
+        }
+        if (state.highlight || input.value) {
+          e.preventDefault();
+          clearEventHighlight(true);
+          renderCalendar();
+        }
+        return;
+      }
+      if (e.key === "Enter") {
+        var first = box.querySelector(".cal-search__suggestion");
+        if (first && !box.hidden) {
+          e.preventDefault();
+          selectEventFromSearch(first.getAttribute("data-event-key"));
+        }
+      }
+    });
+
+    box.addEventListener("click", function (e) {
+      var btn = e.target.closest(".cal-search__suggestion");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      selectEventFromSearch(btn.getAttribute("data-event-key"));
+    });
+
+    wrap.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+  })();
+
+  document.getElementById("clearFiltersBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    closeAllFilterDropdowns();
+    clearAllFilters();
+  });
+
+  document.getElementById("eventDetail").addEventListener("click", function (e) {
+    var sparkBtn = e.target.closest("[data-spark]");
+    if (sparkBtn) {
+      e.stopPropagation();
+      var nextSpark = sparkBtn.getAttribute("data-spark");
+      if (
+        nextSpark !== "unique_dancers" &&
+        nextSpark !== "points" &&
+        nextSpark !== "new_dancers"
+      ) {
+        return;
+      }
+      if (state.l2SparkMetric === nextSpark) return;
+      state.l2SparkMetric = nextSpark;
+      refreshOpenEventCard();
+    }
+  });
+
+  document.querySelectorAll(".wsdc-dd").forEach(function (dd) {
+    var toggle = dd.querySelector(".wsdc-dd__btn");
+    var menu = dd.querySelector(".wsdc-dd__menu");
     if (!toggle || !menu) return;
     toggle.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -1670,8 +2971,46 @@
         return;
       }
       closeAllFilterDropdowns();
+      var openTip = document.querySelector(".cal-stats__tip.is-open");
+      if (openTip) openTip.classList.remove("is-open");
     }
   });
+
+  (function wireStatsTip() {
+    var tip = document.getElementById("calStatsTip");
+    if (!tip) return;
+
+    function closeTip() {
+      tip.classList.remove("is-open");
+    }
+
+    tip.addEventListener("click", function (e) {
+      // Mobile/touch: hover is unreliable — toggle the bubble on tap.
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        e.preventDefault();
+        e.stopPropagation();
+        tip.classList.toggle("is-open");
+        return;
+      }
+      // Desktop: keep native hover/focus; still allow click to pin open briefly.
+      tip.classList.add("is-open");
+    });
+
+    document.addEventListener("click", function (e) {
+      if (tip.classList.contains("is-open") && !(e.target.closest && e.target.closest("#calStatsTip"))) {
+        closeTip();
+      }
+      if (state.l2TipIgnoreDocCloseUntil && Date.now() < state.l2TipIgnoreDocCloseUntil) {
+        return;
+      }
+      document.querySelectorAll(".l2-info-tip.is-open").forEach(function (el) {
+        if (!(e.target.closest && e.target.closest(".l2-info-tip") === el)) {
+          el.classList.remove("is-open");
+          clearL2TipBubblePosition(el);
+        }
+      });
+    });
+  })();
 
   document.getElementById("closeDayIsland").addEventListener("click", function () {
     closeDayIsland();
@@ -1687,6 +3026,7 @@
 
     head.addEventListener("pointerdown", function (e) {
       if (!state.l2Open) return;
+      if (isMobileL2Layout()) return;
       if (e.button != null && e.button !== 0) return;
       if (e.target.closest && e.target.closest(".day-island__close")) return;
       var cur = readIslandRect(island);
@@ -1733,21 +3073,25 @@
     head.addEventListener("pointercancel", endDrag);
   })();
 
-  window.addEventListener("resize", function () {
+  function relocateOpenIsland() {
     if (!state.l2Open) return;
     var island = document.getElementById("dayIsland");
-    if (state.l2Moved) placeIslandKeepingOffset(island);
-    else placeIslandDefault(island);
+    if (!island) return;
+    // Mobile: always snap to the visible viewport under chrome/filters.
+    if (isMobileL2Layout() || !state.l2Moved) placeIslandDefault(island);
+    else placeIslandKeepingOffset(island);
     island.classList.add("is-settled");
     if (state.map) {
       state.map.invalidateSize();
-      var bounds = Object.keys(state.markerById).map(function (id) {
-        var e = state.markerById[id].event;
-        return [e.lat, e.lon];
-      });
-      fitDayMap(bounds);
+      fitDayMap(dayMapBounds());
     }
-  });
+  }
+
+  window.addEventListener("resize", relocateOpenIsland);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", relocateOpenIsland);
+    window.visualViewport.addEventListener("scroll", relocateOpenIsland);
+  }
   window.WsdcChrome = window.WsdcChrome || {};
   window.WsdcChrome.onLangChange = function (lang) {
     state.lang = lang;
@@ -1772,14 +3116,15 @@
   if (stored && I18N[stored]) state.lang = stored;
   var params = new URLSearchParams(window.location.search);
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
+  applyStaticI18n();
 
-  fetch("static/data/events_year_calendar.json?v=20260806a")
+  fetch("static/data/events_year_calendar.json?v=20260915-sync")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
     })
     .then(function (calendar) {
-      return fetch("static/data/event_l2_cards.json?v=20260806a")
+      return fetch("static/data/event_l2_cards.json?v=20260915-sync")
         .then(function (r) {
           if (!r.ok) return null;
           return r.json();

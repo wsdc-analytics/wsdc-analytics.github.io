@@ -8,7 +8,7 @@ import statistics
 from collections import defaultdict
 from pathlib import Path
 
-SOURCE = Path("/Users/ania/.cursor/projects/tableau/My-Tableau-Projects/WSDC/WSDC Points")
+SOURCE = Path("/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data")
 RULES_PATH = Path(__file__).resolve().parents[1] / "static/data/rules_advancement_thresholds.json"
 MIN_N = 30
 
@@ -26,7 +26,7 @@ YEARS = list(range(2015, 2026))
 
 def norm_div(value: str) -> str | None:
     v = (value or "").strip()
-    if v in {"All Star", "All Stars", "All-Stars"}:
+    if v in {"All Star", "All-Star", "All Stars", "All-Stars"}:
         return "All-Stars"
     if v in {"Champion", "Champions"}:
         return "Champions"
