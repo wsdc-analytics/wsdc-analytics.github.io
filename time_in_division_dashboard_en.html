@@ -100,6 +100,7 @@
     .tid-filters .filter-field:has(#divisionSelect) { --wsdc-dd-width: 9rem; }
     .tid-filters .filter-field:has(#thresholdSelect),
     .tid-filters .filter-field:has(#roleSelect) { --wsdc-dd-width: 7.25rem; }
+    .tid-filters.is-dynamics-role .filter-field:has(#roleSelect) { --wsdc-dd-width: 11.5rem; }
     .tid-filters .filter-field:has(#modeSelect) { --wsdc-dd-width: 8.25rem; }
     .tid-filters .filter-field:has(#yearFromSelect),
     .tid-filters .filter-field:has(#yearToSelect) { --wsdc-dd-width: 4.5rem; }
@@ -131,9 +132,19 @@
       align-self: flex-start;
     }
     .viz-stage.is-table .kpis {
-      /* Drop to the table body top (search/CSV toolbar + its margin). */
+      /* Align with table body top (CSV toolbar + its margin). */
       padding-top: 40px;
     }
+    .kpi-hint {
+      margin: 0 0 2px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.35;
+    }
+    .kpi-hint[hidden] { display: none; }
     .kpi {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 8px;
@@ -237,49 +248,6 @@
       position: relative;
       z-index: 1;
     }
-    .table-search-wrap {
-      position: relative;
-      flex: 1 1 220px;
-      max-width: 320px;
-    }
-    .table-search-wrap input {
-      width: 100%;
-      height: 32px;
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
-      padding: 0 10px;
-      font: 500 13px Inter, system-ui, sans-serif;
-    }
-    .table-suggest {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: calc(100% + 4px);
-      background: #fff;
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
-      box-shadow: var(--wsdc-shadow-card, 0 8px 20px rgba(15, 23, 42, 0.08));
-      max-height: 220px;
-      overflow: auto;
-      display: none;
-      z-index: 20;
-    }
-    .table-suggest.is-open { display: block; }
-    .table-suggest button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border: 0;
-      background: transparent;
-      padding: 8px 10px;
-      font: 500 12px Inter, system-ui, sans-serif;
-      cursor: pointer;
-      color: var(--wsdc-color-text, #1f2937);
-    }
-    .table-suggest button:hover,
-    .table-suggest button.is-active {
-      background: var(--wsdc-color-surface-soft, #f8fafc);
-    }
     .ghost-btn {
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       background: #fff;
@@ -336,10 +304,6 @@
     }
     table.tid-table tr.role-follower td {
       background: rgba(244, 63, 94, 0.08);
-    }
-    table.tid-table tr.is-flash td {
-      outline: 2px solid var(--wsdc-color-brand-accent, #2563eb);
-      outline-offset: -2px;
     }
     details.method {
       display: none;
@@ -542,6 +506,7 @@
 
       <div class="viz-stage">
         <div class="kpis" id="kpiRow" aria-live="polite">
+          <p class="kpi-hint" id="kpiHint" hidden>Use KPI cards as filters</p>
           <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
             <div class="lbl">Dancers</div>
             <div class="val" id="kpiN">—</div>
@@ -568,10 +533,6 @@
           </div>
           <div class="table-wrap is-active" id="tableWrap">
             <div class="table-toolbar">
-              <div class="table-search-wrap">
-                <input type="search" id="tableSearch" placeholder="Find dancer (name or WSDC ID)" autocomplete="off" aria-label="Find dancer in table" />
-                <div class="table-suggest" id="tableSuggest" role="listbox" aria-label="Search suggestions"></div>
-              </div>
               <button type="button" class="ghost-btn" id="csvDownload">Download CSV</button>
               <span class="table-page-info" id="tablePageInfo">—</span>
               <button type="button" class="ghost-btn" id="tablePrev">Prev</button>
@@ -623,9 +584,9 @@
             <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To, only within the allowed/required era for that division (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). Earlier single-threshold years are excluded — this dashboard focuses on the may/must buffer corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events. KPI “≤ both medians” = share in the lower-left of the median cross.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
-            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). Click a KPI card to choose the series (resets to Dancers when entering Dynamics). Years with 0 dancers create a gap. Months / Events / ≤ both require at least 10 dancers in that year.</li>
-            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = medians; <em>≤ both</em> = share at or below both medians (lower-left of the median cross).</li>
-            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; typeahead jumps to a row without filtering; CSV exports the full filtered set (includes threshold).</li>
+            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles. Years with 0 dancers create a gap. Months / Events / ≤ both require at least 10 dancers in that year (per line).</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = medians; <em>≤ both</em> = share at or below both medians (lower-left of the median cross). On Dynamics, click a card to choose the plotted metric (KPIs always summarize both roles).</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; CSV exports the full filtered set (includes threshold).</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
         </div>
@@ -737,6 +698,54 @@
     return YEAR_FLOOR[division] ?? 2018;
   }
 
+  /** Role control: filter on Scatter/Density/Table; view mode on Dynamics. */
+  function syncRoleControl() {
+    const select = document.getElementById('roleSelect');
+    const label = document.getElementById('roleLabel');
+    const filters = document.querySelector('.tid-filters');
+    const dynamics = state.mode === 'dynamics';
+    filters.classList.toggle('is-dynamics-role', dynamics);
+    label.textContent = dynamics ? 'View' : 'Role';
+
+    const wanted = dynamics
+      ? [
+          { value: 'All', text: 'Overall' },
+          { value: 'Both', text: 'Leaders & Followers' },
+        ]
+      : [
+          { value: 'All', text: 'All' },
+          { value: 'Leader', text: 'Leader' },
+          { value: 'Follower', text: 'Follower' },
+        ];
+
+    const curHtml = [...select.options].map((o) => `${o.value}|${o.textContent}`).join(';');
+    const nextHtml = wanted.map((o) => `${o.value}|${o.text}`).join(';');
+    let optionsChanged = false;
+    if (curHtml !== nextHtml) {
+      optionsChanged = true;
+      select.replaceChildren();
+      wanted.forEach(({ value, text }) => {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = text;
+        select.appendChild(opt);
+      });
+    }
+
+    if (dynamics) {
+      if (state.role === 'Leader' || state.role === 'Follower') state.role = 'Both';
+      if (state.role !== 'All' && state.role !== 'Both') state.role = 'All';
+    } else if (state.role === 'Both') {
+      state.role = 'All';
+    }
+
+    const valueChanged = select.value !== state.role;
+    if (valueChanged) select.value = state.role;
+    if ((optionsChanged || valueChanged) && window.WsdcSelect) {
+      WsdcSelect.refresh(select);
+    }
+  }
+
   /** @param {{ ignoreYears?: boolean }} [opts] */
   function filteredRows(opts) {
     const ignoreYears = !!(opts && opts.ignoreYears);
@@ -746,9 +755,10 @@
     const y0 = state.yearFrom;
     const y1 = state.yearTo;
     const floor = yearFloorForDivision(state.division);
+    const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
     return d.spells.filter((s) => {
       if (s.division !== state.division) return false;
-      if (state.role !== 'All' && s.role !== state.role) return false;
+      if (roleFilter && s.role !== roleFilter) return false;
       const hit = s[thr];
       if (!hit) return false;
       const y = doneYear(hit);
@@ -792,6 +802,7 @@
     const row = document.getElementById('kpiRow');
     const selectable = state.mode === 'dynamics';
     row.classList.toggle('is-selectable', selectable);
+    document.getElementById('kpiHint').hidden = !selectable;
     row.querySelectorAll('.kpi').forEach((btn) => {
       const on = selectable && btn.getAttribute('data-metric') === state.metric;
       btn.classList.toggle('is-active', on);
@@ -810,12 +821,15 @@
     row.replaceChildren();
     if (state.mode === 'table' || state.mode === 'density') return;
     if (state.mode === 'dynamics') {
-      const sw = document.createElement('span');
-      const dot = document.createElement('span');
-      dot.className = 'swatch';
-      dot.style.background = state.role === 'All' ? COLOR.All : COLOR[state.role];
-      sw.append(dot, document.createTextNode(METRIC_LABEL[state.metric]));
-      row.appendChild(sw);
+      if (state.role !== 'Both') return;
+      ['Leader', 'Follower'].forEach((role) => {
+        const span = document.createElement('span');
+        const sw = document.createElement('span');
+        sw.className = 'swatch';
+        sw.style.background = COLOR[role];
+        span.append(sw, document.createTextNode(role));
+        row.appendChild(span);
+      });
       return;
     }
     const roles = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
@@ -932,7 +946,7 @@
     return null;
   }
 
-  function dynamicsDatasets(rowsAllYears, thr) {
+  function dynamicsSeriesData(rowsAllYears, thr) {
     const byYear = new Map();
     rowsAllYears.forEach((s) => {
       const y = doneYear(s[thr]);
@@ -940,19 +954,7 @@
       if (!byYear.has(y)) byYear.set(y, []);
       byYear.get(y).push(s);
     });
-    if (!byYear.size) {
-      return [{
-        label: METRIC_LABEL[state.metric],
-        data: [],
-        borderColor: state.role === 'All' ? COLOR.All : COLOR[state.role],
-        backgroundColor: 'transparent',
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        spanGaps: false,
-        tension: 0.15,
-        clip: false,
-      }];
-    }
+    if (!byYear.size) return [];
     const years = [...byYear.keys()].sort((a, b) => a - b);
     const yMin = years[0];
     const yMax = years[years.length - 1];
@@ -967,9 +969,12 @@
       const val = metricForGroup(group, thr, state.metric);
       data.push({ x: y, y: val, n });
     }
-    const lineColor = state.role === 'All' ? COLOR.All : COLOR[state.role];
-    return [{
-      label: METRIC_LABEL[state.metric],
+    return data;
+  }
+
+  function dynamicsLineDataset(label, data, lineColor) {
+    return {
+      label,
       data,
       borderColor: lineColor,
       backgroundColor: 'transparent',
@@ -982,7 +987,45 @@
       spanGaps: false,
       tension: 0.15,
       clip: false,
-    }];
+    };
+  }
+
+  function dynamicsDatasets(rowsAllYears, thr) {
+    if (state.role === 'Both') {
+      const leaders = rowsAllYears.filter((s) => s.role === 'Leader');
+      const followers = rowsAllYears.filter((s) => s.role === 'Follower');
+      const leadData = dynamicsSeriesData(leaders, thr);
+      const follData = dynamicsSeriesData(followers, thr);
+      // Align both series to the shared year span so gaps match.
+      const xs = [...leadData, ...follData].map((p) => p.x);
+      if (!xs.length) {
+        return [
+          dynamicsLineDataset('Leader', [], COLOR.Leader),
+          dynamicsLineDataset('Follower', [], COLOR.Follower),
+        ];
+      }
+      const yMin = Math.min(...xs);
+      const yMax = Math.max(...xs);
+      const fillGaps = (src) => {
+        const map = new Map(src.map((p) => [p.x, p]));
+        const out = [];
+        for (let y = yMin; y <= yMax; y++) {
+          out.push(map.get(y) || { x: y, y: null, n: 0 });
+        }
+        return out;
+      };
+      return [
+        dynamicsLineDataset('Leader', fillGaps(leadData), COLOR.Leader),
+        dynamicsLineDataset('Follower', fillGaps(follData), COLOR.Follower),
+      ];
+    }
+
+    const data = dynamicsSeriesData(rowsAllYears, thr);
+    const lineColor = COLOR.All;
+    if (!data.length) {
+      return [dynamicsLineDataset(METRIC_LABEL[state.metric], [], lineColor)];
+    }
+    return [dynamicsLineDataset(METRIC_LABEL[state.metric], data, lineColor)];
   }
 
   function applyScatterScaleLimits(chart, rows, thr) {
@@ -1011,7 +1054,7 @@
     yScale.max = axisPadMax(yMax);
   }
 
-  function applyDynamicsScaleLimits(chart, dataset) {
+  function applyDynamicsScaleLimits(chart, datasets) {
     const xScale = chart.options.scales.x;
     const yScale = chart.options.scales.y;
     xScale.type = 'linear';
@@ -1020,7 +1063,7 @@
     yScale.title.text = METRIC_LABEL[state.metric];
     xScale.beginAtZero = false;
     yScale.beginAtZero = true;
-    const pts = (dataset && dataset[0] && dataset[0].data) || [];
+    const pts = (datasets || []).flatMap((ds) => ds.data || []);
     const xs = pts.map((p) => p.x).filter((v) => v != null);
     const ys = pts.map((p) => p.y).filter((v) => v != null && Number.isFinite(v));
     if (!xs.length) {
@@ -1075,8 +1118,9 @@
             enabled: true,
             mode: 'nearest',
             intersect: chartType !== 'line',
-            displayColors: false,
+            displayColors: chartType === 'line',
             filter(item, index) {
+              if (state.mode === 'dynamics') return true;
               return index === 0;
             },
             callbacks: {
@@ -1093,11 +1137,22 @@
               label(item) {
                 const raw = item.raw;
                 if (state.mode === 'dynamics') {
-                  if (raw.y == null) return 'No data';
-                  if (state.metric === 'n') return `Dancers: ${raw.n}`;
+                  if (raw.y == null) {
+                    return state.role === 'Both'
+                      ? `${item.dataset.label} · No data`
+                      : 'No data';
+                  }
+                  if (state.metric === 'n') {
+                    return state.role === 'Both'
+                      ? `${item.dataset.label} · Dancers: ${raw.n}`
+                      : `Dancers: ${raw.n}`;
+                  }
                   const val = state.metric === 'both'
                     ? `${Math.round(raw.y * 10) / 10}%`
                     : String(Math.round(raw.y * 10) / 10);
+                  if (state.role === 'Both') {
+                    return `${item.dataset.label} · ${METRIC_LABEL[state.metric]}: ${val} · n=${raw.n}`;
+                  }
                   return [
                     `${METRIC_LABEL[state.metric]}: ${val}`,
                     `Dancers: ${raw.n}`,
@@ -1164,7 +1219,6 @@
         months: s[thr].months,
         events: s.events,
         threshold: thrLabel,
-        _key: `${s.id}-${s.role}-${s.division}`,
       }))
       .sort((a, b) => {
         if (a.months !== b.months) return a.months - b.months;
@@ -1186,7 +1240,6 @@
     pageRows.forEach((r) => {
       const tr = document.createElement('tr');
       tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
-      tr.dataset.rowKey = r._key;
       tr.innerHTML =
         `<td>${r.id}</td>` +
         `<td>${escapeHtml(r.name)}</td>` +
@@ -1247,59 +1300,9 @@
     return s;
   }
 
-  function jumpToRow(rowKey) {
-    const idx = state.tableRows.findIndex((r) => r._key === rowKey);
-    if (idx < 0) return;
-    state.tablePage = Math.floor(idx / PAGE_SIZE);
-    renderTable();
-    requestAnimationFrame(() => {
-      const tr = document.querySelector(`tr[data-row-key="${CSS.escape(rowKey)}"]`);
-      if (!tr) return;
-      tr.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      tr.classList.add('is-flash');
-      setTimeout(() => tr.classList.remove('is-flash'), 1600);
-    });
-  }
-
-  function updateSuggest(q) {
-    const box = document.getElementById('tableSuggest');
-    const query = q.trim().toLowerCase();
-    if (!query) {
-      box.classList.remove('is-open');
-      box.replaceChildren();
-      return;
-    }
-    const matches = [];
-    for (const r of state.tableRows) {
-      const name = String(r.name).toLowerCase();
-      const id = String(r.id).toLowerCase();
-      if (name.includes(query) || id.includes(query)) {
-        matches.push(r);
-        if (matches.length >= 8) break;
-      }
-    }
-    box.replaceChildren();
-    if (!matches.length) {
-      box.classList.remove('is-open');
-      return;
-    }
-    matches.forEach((r) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.setAttribute('role', 'option');
-      btn.textContent = `${r.name} · ${r.id} · ${r.role}`;
-      btn.addEventListener('click', () => {
-        document.getElementById('tableSearch').value = r.name;
-        box.classList.remove('is-open');
-        jumpToRow(r._key);
-      });
-      box.appendChild(btn);
-    });
-    box.classList.add('is-open');
-  }
-
   function render() {
     const thr = state.threshold;
+    syncRoleControl();
     updateYearFieldsVisibility();
     syncKpiChrome();
 
@@ -1329,10 +1332,13 @@
       const chart = ensureChart('line');
       chart.data.datasets = datasets;
       applyDynamicsScaleLimits(chart, datasets);
+      const dual = state.role === 'Both';
+      chart.options.interaction.mode = dual ? 'index' : 'nearest';
       chart.options.interaction.axis = 'x';
       chart.options.interaction.intersect = false;
+      chart.options.plugins.tooltip.mode = dual ? 'index' : 'nearest';
       chart.options.plugins.tooltip.intersect = false;
-      const hasPoint = datasets[0].data.some((p) => p.y != null);
+      const hasPoint = datasets.some((ds) => (ds.data || []).some((p) => p.y != null));
       document.getElementById('emptyState').classList.toggle('show', !hasPoint);
       chart.update('none');
       return;
@@ -1652,15 +1658,6 @@
       if (state.tablePage < maxPage) {
         state.tablePage += 1;
         renderTable();
-      }
-    });
-
-    const search = document.getElementById('tableSearch');
-    search.addEventListener('input', () => updateSuggest(search.value));
-    search.addEventListener('focus', () => updateSuggest(search.value));
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.table-search-wrap')) {
-        document.getElementById('tableSuggest').classList.remove('is-open');
       }
     });
 
