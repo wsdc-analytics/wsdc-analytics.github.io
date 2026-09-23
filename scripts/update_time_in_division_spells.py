@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Build spell-level time-in-division rows for the Time in division dashboard.
 
-Spell = (dancer × division × role). Duration = months from first point in that
-spell until the selected rules threshold (allowed / required) is first reached.
-Event count = unique events in that division×role up to and including the
-crossing event for that threshold (not the whole career in the division).
+Spell = (dancer × division × role). Duration = inclusive calendar months from
+first point in that spell until the selected rules threshold (allowed / required)
+is first reached (same month = 1; Nov→Mar = 5). Event count = unique event
+editions in that division×role up to and including the crossing event for that
+threshold (not the whole career in the division).
 
 Reuses year-month arithmetic and rules epochs from division-transition analysis.
 """
@@ -74,8 +75,12 @@ def ym_ord(y: int, m: int) -> int:
     return y * 12 + m
 
 
-def months_between(a: tuple[int, int], b: tuple[int, int]) -> int:
-    return (b[0] - a[0]) * 12 + (b[1] - a[1])
+def months_inclusive(a: tuple[int, int], b: tuple[int, int]) -> int:
+    """Inclusive calendar months from first to done (same month → 1; Nov→Mar → 5).
+
+    Day-of-month is unknown, so we count months touched rather than index delta.
+    """
+    return (b[0] - a[0]) * 12 + (b[1] - a[1]) + 1
 
 
 def ym_str(ym: tuple[int, int]) -> str:
@@ -209,7 +214,7 @@ def find_nov_int_crossings(
             continue
         seen_events.add(e["eid"])
         cum += e["pts"]
-        months = months_between(t0, e["ym"])
+        months = months_inclusive(t0, e["ym"])
         for kind in ("allowed", "required"):
             if kind in reached:
                 continue
@@ -253,7 +258,7 @@ def find_advanced_crossings(
             score = rolling_sum(events, "Advanced", e["ym"], 36)
         else:
             score = cum
-        months = months_between(t0, e["ym"])
+        months = months_inclusive(t0, e["ym"])
         for kind in ("allowed", "required"):
             if kind in reached:
                 continue
@@ -297,7 +302,7 @@ def find_all_stars_crossings(
         specs = all_stars_eval_specs(rules, e["year"])
         if not specs:
             continue
-        months = months_between(t0, e["ym"])
+        months = months_inclusive(t0, e["ym"])
         for kind, key in (
             ("allowed", "champions_allowed"),
             ("required", "champions_required"),
@@ -436,7 +441,7 @@ def main() -> None:
         "excluded_counts": excluded,
         "methodology": {
             "spell": "dancer × division × event_role",
-            "months": "calendar months between first_ym and done_ym (year-month only)",
+            "months": "inclusive calendar months from first_ym through done_ym (same month = 1; Nov→Mar = 5); day-of-month unknown",
             "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
             "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym",
             "all_stars": (
