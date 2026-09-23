@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-22",
-  "as_of": "2026-09-22",
+  "generated_at": "2026-09-23",
+  "as_of": "2026-09-23",
   "data_through": "2026-09-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,9 +17,9 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2671,
-    "points": 725028.0,
-    "dancers": 27582
+    "events": 2672,
+    "points": 725475.0,
+    "dancers": 27598
   },
   "comparisons": {
     "week": {
@@ -30,41 +30,41 @@
         "since_previous_ended": "2026-08-31",
         "iso_week": "2026-W38",
         "bucket": "edition_start_date",
-        "event_names": "Finnfest, Retaliation Swing, WCS Party"
+        "event_names": "Austin Rocks, Finnfest, Retaliation Swing, WCS Party"
       },
       "increment": {
-        "events": 3,
-        "points": 1236.0,
-        "dancers": 23
+        "events": 4,
+        "points": 1683.0,
+        "dancers": 39
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-09-01",
-        "end": "2026-09-22",
+        "end": "2026-09-23",
         "since_previous_ended": "2026-08-31",
         "bucket": "edition_start_date",
-        "event_names": "Bavarian Open, Finnfest, Korea Westival, Retaliation Swing, River City Swing, Sea Dance Fest, South Bay Dance Fling, SwingTime Denver, Trilogy Swing, WCS Party"
+        "event_names": "Austin Rocks, Bavarian Open, Finnfest, Korea Westival, Retaliation Swing, River City Swing, Sea Dance Fest, South Bay Dance Fling, SwingTime Denver, Trilogy Swing, WCS Party"
       },
       "increment": {
-        "events": 10,
-        "points": 4028.0,
-        "dancers": 131
+        "events": 11,
+        "points": 4475.0,
+        "dancers": 147
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-09-22",
+        "end": "2026-09-23",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 132,
-        "points": 55427.0,
-        "dancers": 1807
+        "events": 133,
+        "points": 55874.0,
+        "dancers": 1823
       }
     }
   }
