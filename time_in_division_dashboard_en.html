@@ -313,9 +313,18 @@
       align-items: center;
       gap: 10px;
       min-width: 0;
+      width: 100%;
     }
     .page-head__title-row h1 {
       margin: 0;
+    }
+    .page-head__updated {
+      margin: 0 0 0 auto;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
     }
     .method-layer {
       position: fixed;
@@ -451,6 +460,7 @@
           <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
             <span aria-hidden="true">i</span>
           </button>
+          <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
         <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against career events with a point in that division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
       </header>
@@ -1668,6 +1678,10 @@
     state.binM = Number(state.data.bin_months) || 6;
     state.binE = Number(state.data.bin_events) || 2;
     document.getElementById('asOfNote').textContent = state.data.data_as_of;
+    const updatedEl = document.getElementById('dataUpdated');
+    if (updatedEl && state.data.data_as_of) {
+      updatedEl.textContent = `Updated ${state.data.data_as_of}`;
+    }
 
     applyYearOptionsForDivision(false);
 
