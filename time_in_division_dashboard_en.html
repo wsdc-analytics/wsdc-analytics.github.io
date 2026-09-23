@@ -1662,7 +1662,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=0');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260923-manual');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.binM = Number(state.data.bin_months) || 6;
