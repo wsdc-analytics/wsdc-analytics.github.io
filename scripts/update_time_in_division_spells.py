@@ -376,9 +376,10 @@ def main() -> None:
                 excluded["invalid_date"] += 1
                 continue
             y, m = dt
-            eid = (row.get("event_name_id") or row.get("event_name") or "").strip()
-            if not eid:
-                eid = f"{row.get('event_name')}_{y}_{m}"
+            # Edition-unique id: event_name alone collides across years (e.g. annual MADjam),
+            # which under-counts events-to-threshold when the spell spans the year floor.
+            eid_base = (row.get("event_name_id") or row.get("event_name") or "").strip() or "event"
+            eid = f"{eid_base}|{y:04d}-{m:02d}"
             events_by_spell_role[(did, role)].append(
                 {"div": div, "pts": pts, "ym": dt, "year": y, "eid": eid}
             )
@@ -436,8 +437,8 @@ def main() -> None:
         "methodology": {
             "spell": "dancer × division × event_role",
             "months": "calendar months between first_ym and done_ym (year-month only)",
-            "events": "unique events in that division×role up to and including the crossing event for the selected threshold",
-            "window_filter": "done_ym inside trailing N years from data_as_of",
+            "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
+            "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym",
             "all_stars": (
                 "pre-formal rules years: Champions pts only (1 may / 10 must) on real events; "
                 "from first All-Stars rules year (2021): full OR Champ pts or AS pts; "
