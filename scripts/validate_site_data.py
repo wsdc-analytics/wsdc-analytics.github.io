@@ -245,6 +245,32 @@ def validate_homepage_kpis() -> None:
     print("[OK] homepage_kpis.json")
 
 
+def validate_time_in_division_spells() -> None:
+    path = DATA_DIR / "time_in_division_spells.json"
+    if not path.exists():
+        print("[SKIP] time_in_division_spells.json (optional until first sync)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("time_in_division_spells.json must be an object")
+    for field in ("data_as_of", "spells", "n_spells", "divisions"):
+        if field not in data:
+            fail(f"time_in_division_spells.json missing field: {field}")
+    spells = data["spells"]
+    if not isinstance(spells, list) or not spells:
+        fail("time_in_division_spells.json.spells must be a non-empty list")
+    n = data["n_spells"]
+    if not isinstance(n, int) or n != len(spells):
+        fail("time_in_division_spells.json.n_spells must equal len(spells)")
+    sample = spells[0]
+    if not isinstance(sample, dict):
+        fail("time_in_division_spells.json.spells[0] must be an object")
+    for field in ("id", "name", "role", "division", "first_ym", "events"):
+        if field not in sample:
+            fail(f"time_in_division_spells.json.spells[0] missing: {field}")
+    print(f"[OK] time_in_division_spells.json ({n} spells, as_of={data['data_as_of']})")
+
+
 def main() -> None:
     validate_articles()
     validate_points_summaries()
@@ -252,6 +278,7 @@ def main() -> None:
     validate_homepage_kpis()
     validate_events_year_calendar()
     validate_event_l2_cards()
+    validate_time_in_division_spells()
     print("[OK] Data validation passed.")
 
 if __name__ == "__main__":
