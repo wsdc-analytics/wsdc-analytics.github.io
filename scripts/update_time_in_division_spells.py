@@ -3,7 +3,8 @@
 
 Spell = (dancer × division × role). Duration = months from first point in that
 spell until the selected rules threshold (allowed / required) is first reached.
-Event count = unique events with a point in that division×role over the career.
+Event count = unique events in that division×role up to and including the
+crossing event for that threshold (not the whole career in the division).
 
 Reuses year-month arithmetic and rules epochs from division-transition analysis.
 """
@@ -199,12 +200,14 @@ def find_nov_int_crossings(
 ) -> dict[str, dict]:
     reached: dict[str, dict] = {}
     cum = 0.0
+    seen_events: set[str] = set()
     for e in events:
         if e["div"] != division or e["ym"] < t0:
             continue
         th = threshold_for_year(rules, e["year"], division)
         if not th or th.get("allowed") is None:
             continue
+        seen_events.add(e["eid"])
         cum += e["pts"]
         months = months_between(t0, e["ym"])
         for kind in ("allowed", "required"):
@@ -216,6 +219,7 @@ def find_nov_int_crossings(
                     "months": months,
                     "done_ym": ym_str(e["ym"]),
                     "threshold": float(target),
+                    "events": len(seen_events),
                 }
         if len(reached) == 2:
             break
@@ -235,9 +239,11 @@ def find_advanced_crossings(
     """
     reached: dict[str, dict] = {}
     cum = 0.0
+    seen_events: set[str] = set()
     for e in events:
         if e["div"] != "Advanced" or e["ym"] < t0:
             continue
+        seen_events.add(e["eid"])
         cum += e["pts"]
         th = threshold_for_year(rules, e["year"], "Advanced")
         if not th or th.get("allowed") is None:
@@ -257,6 +263,7 @@ def find_advanced_crossings(
                     "months": months,
                     "done_ym": ym_str(e["ym"]),
                     "threshold": float(target),
+                    "events": len(seen_events),
                 }
         if len(reached) == 2:
             break
@@ -276,6 +283,7 @@ def find_all_stars_crossings(
     reached: dict[str, dict] = {}
     as_pts = 0.0
     champ_pts = 0.0
+    seen_events: set[str] = set()
     for e in events:
         if e["ym"] < t0:
             continue
@@ -285,6 +293,7 @@ def find_all_stars_crossings(
             champ_pts += e["pts"]
         else:
             continue
+        seen_events.add(e["eid"])
         specs = all_stars_eval_specs(rules, e["year"])
         if not specs:
             continue
@@ -308,6 +317,7 @@ def find_all_stars_crossings(
                     "threshold_all_stars": need_as,
                     "champions_points_at_done": round(champ_pts, 2),
                     "all_stars_points_at_done": round(as_pts, 2),
+                    "events": len(seen_events),
                 }
         if len(reached) == 2:
             break
@@ -328,8 +338,6 @@ def main() -> None:
 
     # events keyed by (dancer_id, role)
     events_by_spell_role: dict[tuple[str, str], list[dict]] = defaultdict(list)
-    # unique events per (dancer, role, division)
-    event_ids: dict[tuple[str, str, str], set[str]] = defaultdict(set)
     first_pts: dict[tuple[str, str, str], tuple[int, int]] = {}
 
     excluded = {
@@ -375,7 +383,6 @@ def main() -> None:
                 {"div": div, "pts": pts, "ym": dt, "year": y, "eid": eid}
             )
             key = (did, role, div)
-            event_ids[key].add(eid)
             if key not in first_pts or dt < first_pts[key]:
                 first_pts[key] = dt
 
@@ -409,7 +416,6 @@ def main() -> None:
             "role": role,
             "division": div,
             "first_ym": ym_str(t0),
-            "events": len(event_ids[(did, role, div)]),
         }
         if "allowed" in crossings:
             row["allowed"] = crossings["allowed"]
@@ -430,7 +436,7 @@ def main() -> None:
         "methodology": {
             "spell": "dancer × division × event_role",
             "months": "calendar months between first_ym and done_ym (year-month only)",
-            "events": "unique events with a point in that division×role over the career",
+            "events": "unique events in that division×role up to and including the crossing event for the selected threshold",
             "window_filter": "done_ym inside trailing N years from data_as_of",
             "all_stars": (
                 "pre-formal rules years: Champions pts only (1 may / 10 must) on real events; "

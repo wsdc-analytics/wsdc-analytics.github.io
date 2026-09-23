@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Time in division: months from first point to may/must threshold vs career events with a point." />
+  <meta name="description" content="Time in division: months from first point to may/must threshold vs events needed to reach that threshold." />
   <title>Time in division | WSDC Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -462,7 +462,7 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against career events with a point in that division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
+        <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against events needed to reach that threshold in the same division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
       </header>
 
       <div class="viz-filters-row">
@@ -590,7 +590,7 @@
             <li><strong>Start:</strong> first event-month with a point in that spell.</li>
             <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars: before formal Champions rules (pre-2021) — Champions points only (1 may / 10 must) on real events; from 2021 — OR of Champions pts or All-Stars pts.</li>
             <li><strong>Months:</strong> calendar months between year-months.</li>
-            <li><strong>Events:</strong> unique events with a point in that division×role over the whole career.</li>
+            <li><strong>Events:</strong> unique events in that division×role <em>up to and including</em> the crossing event for the selected threshold (May or Must) — not every career event in the division after the threshold.</li>
             <li><strong>Window (Scatter / Density / Table):</strong> done year in From–To, only within the allowed/required era for that division (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). Earlier single-threshold years are excluded — this dashboard focuses on the may/must buffer corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events. KPI “≤ both medians” = share in the lower-left of the median cross.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
@@ -699,9 +699,16 @@
     return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
   }
 
+  /** Unique events up to the selected threshold crossing (not career total). */
+  function spellEvents(s, thr) {
+    const hit = s && s[thr];
+    if (hit && hit.events != null) return hit.events;
+    return s && s.events != null ? s.events : 0;
+  }
+
   function bothShare(rows, thr, medM, medE) {
     if (!rows.length || medM == null || medE == null) return null;
-    const inside = rows.filter((s) => s[thr].months <= medM && s.events <= medE).length;
+    const inside = rows.filter((s) => s[thr].months <= medM && spellEvents(s, thr) <= medE).length;
     return (100 * inside) / rows.length;
   }
 
@@ -786,7 +793,7 @@
 
   function updateKpis(rows, thr) {
     const months = rows.map((s) => s[thr].months);
-    const events = rows.map((s) => s.events);
+    const events = rows.map((s) => spellEvents(s, thr));
     state.medianMonths = median(months);
     state.medianEvents = median(events);
     document.getElementById('kpiN').textContent = String(rows.length);
@@ -802,7 +809,7 @@
       boxEl.removeAttribute('title');
     } else {
       const inside = rows.filter(
-        (s) => s[thr].months <= state.medianMonths && s.events <= state.medianEvents
+        (s) => s[thr].months <= state.medianMonths && spellEvents(s, thr) <= state.medianEvents
       ).length;
       boxEl.textContent = `${Math.round(share * 10) / 10}%`;
       boxEl.title = `${inside} of ${rows.length} spells`;
@@ -858,7 +865,7 @@
     const groups = new Map();
     rows.forEach((s) => {
       const mx = s[thr].months;
-      const ey = s.events;
+      const ey = spellEvents(s, thr);
       const key = mx + '|' + ey;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(s);
@@ -913,7 +920,7 @@
     const binE = state.binE;
     rows.forEach((s) => {
       const mx = s[thr].months;
-      const ey = s.events;
+      const ey = spellEvents(s, thr);
       const bx = Math.floor(mx / binM) * binM;
       const by = Math.floor(ey / binE) * binE;
       const key = bx + ':' + by;
@@ -948,7 +955,7 @@
     if (metric === 'n') return n;
     if (n < MIN_N_LINE) return null;
     const months = group.map((s) => s[thr].months);
-    const events = group.map((s) => s.events);
+    const events = group.map((s) => spellEvents(s, thr));
     const medM = median(months);
     const medE = median(events);
     if (metric === 'months') return medM;
@@ -1057,7 +1064,7 @@
     let yMax = state.medianEvents ?? 0;
     rows.forEach((s) => {
       xMax = Math.max(xMax, s[thr].months);
-      yMax = Math.max(yMax, s.events);
+      yMax = Math.max(yMax, spellEvents(s, thr));
     });
     xScale.min = 0;
     yScale.min = 0;
@@ -1176,7 +1183,7 @@
                   return [
                     `Role: ${s.role}`,
                     `Months to ${thr === 'allowed' ? 'may' : 'must'}: ${hit.months}`,
-                    `Events: ${s.events}`,
+                    `Events: ${spellEvents(s, thr)}`,
                   ];
                 }
                 if (raw?.n != null) {
@@ -1228,7 +1235,7 @@
         first_ym: s.first_ym,
         done_ym: s[thr].done_ym,
         months: s[thr].months,
-        events: s.events,
+        events: spellEvents(s, thr),
         threshold: thrLabel,
       }))
       .sort((a, b) => {
@@ -1672,7 +1679,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260923-manual');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260923-events-thr');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.binM = Number(state.data.bin_months) || 6;

@@ -265,9 +265,16 @@ def validate_time_in_division_spells() -> None:
     sample = spells[0]
     if not isinstance(sample, dict):
         fail("time_in_division_spells.json.spells[0] must be an object")
-    for field in ("id", "name", "role", "division", "first_ym", "events"):
+    for field in ("id", "name", "role", "division", "first_ym"):
         if field not in sample:
             fail(f"time_in_division_spells.json.spells[0] missing: {field}")
+    thr_keys = [k for k in ("allowed", "required") if k in sample]
+    if not thr_keys:
+        fail("time_in_division_spells.json.spells[0] needs allowed and/or required")
+    for key in thr_keys:
+        hit = sample[key]
+        if not isinstance(hit, dict) or "events" not in hit or "months" not in hit:
+            fail(f"time_in_division_spells.json.spells[0].{key} must include months and events")
     print(f"[OK] time_in_division_spells.json ({n} spells, as_of={data['data_as_of']})")
 
 
