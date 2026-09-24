@@ -596,7 +596,7 @@
             <li><strong>Spell:</strong> one dancer × division × role (Leader/Follower separately).</li>
             <li><strong>Start:</strong> first event-month with a point in that spell.</li>
             <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars: before formal Champions rules (pre-2021) — Champions points only (1 may / 10 must) on real events; from 2021 — OR of Champions pts or All-Stars pts.</li>
-            <li><strong>Months:</strong> inclusive calendar months from first through done (same month = 1; Nov→Mar = 5). Day-of-month is unknown, so we count months touched, not a zero-based gap.</li>
+            <li><strong>Months:</strong> prefer edition <code>start_date</code> (else <code>end_date</code>) from <code>event_editions</code>: <em>days / 30.44</em>, rounded to 0.1 month (minimum 1 day when both dates are valid and end ≥ start). If either endpoint has no usable date (or end &lt; start), fall back to inclusive calendar months (same month = 1; Nov→Mar = 5). Each hit/pause stores <code>months_basis</code> = <code>day</code> or <code>ym</code>. Cohort year filters still use event year / <code>done_ym</code>. Advanced rolling 36-month <em>scoring</em> stays calendar months.</li>
             <li><strong>Events:</strong> unique event editions (name + year-month) in that division×role <em>up to and including</em> the crossing for the selected threshold. Points and months always start from the first point in the spell — including years <em>before</em> the dashboard year floor.</li>
             <li><strong>Window (Scatter / Density / Table):</strong> <em>display filter only</em> — done year in From–To, within the allowed/required era (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). The floor does not restart the clock or drop earlier events from the count. Earlier single-threshold done years are hidden so the chart focuses on the may/must corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events.</li>
@@ -1817,7 +1817,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-sync');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-day-duration');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
