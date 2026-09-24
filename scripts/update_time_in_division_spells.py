@@ -358,8 +358,17 @@ def buffer_done(
     return len(buffer) >= len(BUFFER_FRACS)
 
 
-def hit_dict(months: float, done_ym: str, events: int, **extra) -> dict:
+def hit_dict(
+    months: float,
+    done_ym: str,
+    events: int,
+    *,
+    done_date: date | None = None,
+    **extra,
+) -> dict:
     out = {"months": months, "done_ym": done_ym, "events": events}
+    if done_date is not None:
+        out["done_date"] = done_date.isoformat()
     out.update(extra)
     return out
 
@@ -373,6 +382,7 @@ def record_buffer_marks(
     allowed_t: float | None,
     required_t: float | None,
     months_basis: str = "ym",
+    done_date: date | None = None,
 ) -> None:
     """Mark 25/50/75% of the may→must point gap once allowed is known."""
     if allowed_t is None or required_t is None:
@@ -389,6 +399,7 @@ def record_buffer_marks(
                 months,
                 done_ym,
                 events,
+                done_date=done_date,
                 months_basis=months_basis,
                 score_target=round(target, 2),
                 buffer_frac=frac,
@@ -426,6 +437,7 @@ def find_nov_int_crossings(
                     months,
                     done,
                     len(seen_events),
+                    done_date=e.get("day"),
                     months_basis=basis,
                     threshold=float(target),
                 )
@@ -439,6 +451,7 @@ def find_nov_int_crossings(
                 reached["allowed"].get("threshold"),
                 th.get("required"),
                 months_basis=basis,
+                done_date=e.get("day"),
             )
         if "required" in reached and buffer_done(
             buffer, reached["allowed"].get("threshold"), th.get("required")
@@ -491,6 +504,7 @@ def find_advanced_crossings(
                     months,
                     done,
                     len(seen_events),
+                    done_date=e.get("day"),
                     months_basis=basis,
                     threshold=float(target),
                 )
@@ -504,6 +518,7 @@ def find_advanced_crossings(
                 reached["allowed"].get("threshold"),
                 th.get("required"),
                 months_basis=basis,
+                done_date=e.get("day"),
             )
         if "required" in reached and buffer_done(
             buffer, reached["allowed"].get("threshold"), th.get("required")
@@ -570,6 +585,7 @@ def find_all_stars_crossings(
                     months,
                     done,
                     len(seen_events),
+                    done_date=e.get("day"),
                     months_basis=basis,
                     threshold_champions=need_c,
                     threshold_all_stars=need_as,
@@ -586,6 +602,7 @@ def find_all_stars_crossings(
                 allowed_champ_t,
                 required_champ_t,
                 months_basis=basis,
+                done_date=e.get("day"),
             )
         # Required done: stop. Champ-path buffer is best-effort (AS-OR crossings may leave it empty).
         if "required" in reached:
@@ -680,6 +697,10 @@ def build_transitions(
                 "last_ym": ym_str(last_e["ym"]),
                 "first_ym": ym_str(first_e["ym"]),
             }
+            if last_e.get("day") is not None:
+                row["last_date"] = last_e["day"].isoformat()
+            if first_e.get("day") is not None:
+                row["first_date"] = first_e["day"].isoformat()
             for kind, months_key, path_key, basis_key in (
                 ("allowed", "months_allowed", "pause_basis_allowed", "months_basis_allowed"),
                 ("required", "months_required", "pause_basis_required", "months_basis_required"),
@@ -853,6 +874,10 @@ def main() -> None:
             "division": div,
             "first_ym": ym_str(t0),
         }
+        start_div = "All-Stars" if div == "All-Stars" else div
+        start_ev = first_event_in_div(evs, start_div, t0)
+        if start_ev and start_ev.get("day") is not None:
+            row["first_date"] = start_ev["day"].isoformat()
         if "allowed" in crossings:
             row["allowed"] = crossings["allowed"]
         if "required" in crossings:
@@ -922,6 +947,10 @@ def main() -> None:
             "qualify": "JN-1b yearly n and cumulative: Advanced allowed (eligible) vs first All-Stars point (entered)",
             "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym; pause/qualify sheets do not use the may/must year floor",
             "data_stamp": "generated_at = calendar date this JSON was rebuilt; data_through = latest event year-month in the source export",
+            "table_dates": (
+                "first_date / done_date on spells and first_date / last_date on transitions are edition "
+                "start_date (else end_date) of the milestone event; first_ym / done_ym / last_ym kept for filters"
+            ),
             "all_stars": (
                 "pre-formal rules years: Champions pts only (1 may / 10 must) on real events; "
                 "from first All-Stars rules year (2021): full OR Champ pts or AS pts; "
