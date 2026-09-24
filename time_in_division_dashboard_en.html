@@ -529,11 +529,6 @@
             <div class="lbl">Median events</div>
             <div class="val" id="kpiEvents">—</div>
           </button>
-          <button type="button" class="kpi" data-metric="pause" id="kpiBtnPause"
-            title="Median inclusive months from last point in the previous division to first point in this division (same role). Overlaps excluded. Novice has no previous division.">
-            <div class="lbl">Median pause</div>
-            <div class="val" id="kpiPause">—</div>
-          </button>
         </div>
 
         <section class="viz-card" aria-label="Time in division visualization">
@@ -560,6 +555,8 @@
                     <th>Done ym</th>
                     <th>Months</th>
                     <th>Events</th>
+                    <th title="First year-month with a point in the next division (same role)">Next first ym</th>
+                    <th title="Inclusive months from last point in this division to first point in the next (overlap = still scoring here after entering next)">Pause mo</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -595,9 +592,9 @@
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
             <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles.</li>
-            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, and <em>Median pause</em> plot only when that year has <strong>at least 10</strong> spells with a usable value (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks.</li>
-            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = time and events to the selected May/Must threshold; <em>Median pause</em> = months from last point in the previous division to first point in this division (same role; overlaps excluded; blank for Novice). On Dynamics, click a card to choose the plotted metric (KPIs always summarize both roles).</li>
-            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; CSV exports the full filtered set (includes threshold).</li>
+            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em> and <em>Median events</em> plot only when that year has <strong>at least 10 spells</strong> (Overall: combined count; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks.</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = time and events to the selected May/Must threshold. On Dynamics, click a card to choose the plotted metric (KPIs always summarize both roles).</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; plus <em>Next first ym</em> (first point in the next division, same role) and <em>Pause mo</em> (inclusive months from last point in this division to that first next point; blank if never scored next; “overlap” if they still scored here after entering next). CSV includes those columns.</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
         </div>
@@ -624,7 +621,6 @@
     n: 'Dancers',
     months: 'Median months',
     events: 'Median events',
-    pause: 'Median pause',
   };
 
   const state = {
@@ -641,8 +637,7 @@
     binE: 2,
     medianMonths: null,
     medianEvents: null,
-    medianPause: null,
-    pauseIndex: null,
+    nextIndex: null,
     tablePage: 0,
     tableRows: [],
     methodOpen: false,
@@ -708,20 +703,18 @@
     return s && s.events != null ? s.events : 0;
   }
 
-  /** Map id|role|to_division → pause months (non-overlap only). */
-  function buildPauseIndex(data) {
+  /** Map id|role|from_division → next-division transition (JT-2). */
+  function buildNextIndex(data) {
     const m = new Map();
     (data.transitions || []).forEach((t) => {
-      if (t.overlap || t.months == null || !Number.isFinite(t.months)) return;
-      m.set(`${t.id}|${t.role}|${t.to_division}`, t.months);
+      m.set(`${t.id}|${t.role}|${t.from_division}`, t);
     });
     return m;
   }
 
-  function pauseMonthsForSpell(s) {
-    if (!state.pauseIndex || !s) return null;
-    const v = state.pauseIndex.get(`${s.id}|${s.role}|${s.division}`);
-    return v != null && Number.isFinite(v) ? v : null;
+  function nextTransitionForSpell(s) {
+    if (!state.nextIndex || !s) return null;
+    return state.nextIndex.get(`${s.id}|${s.role}|${s.division}`) || null;
   }
 
   function yearFloorForDivision(division) {
@@ -806,22 +799,13 @@
   function updateKpis(rows, thr) {
     const months = rows.map((s) => s[thr].months);
     const events = rows.map((s) => spellEvents(s, thr));
-    const pauses = rows.map(pauseMonthsForSpell).filter((m) => m != null);
     state.medianMonths = median(months);
     state.medianEvents = median(events);
-    state.medianPause = median(pauses);
     document.getElementById('kpiN').textContent = String(rows.length);
     document.getElementById('kpiMonths').textContent =
       state.medianMonths == null ? '—' : String(Math.round(state.medianMonths * 10) / 10);
     document.getElementById('kpiEvents').textContent =
       state.medianEvents == null ? '—' : String(Math.round(state.medianEvents * 10) / 10);
-    const pauseEl = document.getElementById('kpiPause');
-    pauseEl.textContent =
-      state.medianPause == null ? '—' : String(Math.round(state.medianPause * 10) / 10);
-    pauseEl.title =
-      pauses.length
-        ? `Among ${pauses.length} of ${rows.length} spells with a prior division (non-overlap)`
-        : 'No prior-division pause in this filter (e.g. Novice)';
   }
 
   function syncKpiChrome() {
@@ -961,11 +945,6 @@
   function metricForGroup(group, thr, metric) {
     const n = group.length;
     if (metric === 'n') return n;
-    if (metric === 'pause') {
-      const pauses = group.map(pauseMonthsForSpell).filter((m) => m != null);
-      if (pauses.length < MIN_N_LINE) return null;
-      return median(pauses);
-    }
     if (n < MIN_N_LINE) return null;
     const months = group.map((s) => s[thr].months);
     const events = group.map((s) => spellEvents(s, thr));
@@ -1235,17 +1214,29 @@
   function sortedTableRows(rows, thr) {
     const thrLabel = thr === 'allowed' ? 'May' : 'Must';
     return rows
-      .map((s) => ({
-        id: s.id,
-        name: s.name,
-        role: s.role,
-        division: s.division,
-        first_ym: s.first_ym,
-        done_ym: s[thr].done_ym,
-        months: s[thr].months,
-        events: spellEvents(s, thr),
-        threshold: thrLabel,
-      }))
+      .map((s) => {
+        const next = nextTransitionForSpell(s);
+        let pauseMo = '';
+        let nextFirst = '';
+        if (next) {
+          nextFirst = next.first_ym || '';
+          if (next.overlap) pauseMo = 'overlap';
+          else if (next.months != null && Number.isFinite(next.months)) pauseMo = String(next.months);
+        }
+        return {
+          id: s.id,
+          name: s.name,
+          role: s.role,
+          division: s.division,
+          first_ym: s.first_ym,
+          done_ym: s[thr].done_ym,
+          months: s[thr].months,
+          events: spellEvents(s, thr),
+          next_first_ym: nextFirst,
+          pause_mo: pauseMo,
+          threshold: thrLabel,
+        };
+      })
       .sort((a, b) => {
         if (a.months !== b.months) return a.months - b.months;
         if (a.events !== b.events) return a.events - b.events;
@@ -1274,7 +1265,9 @@
         `<td>${r.first_ym}</td>` +
         `<td>${r.done_ym}</td>` +
         `<td>${r.months}</td>` +
-        `<td>${r.events}</td>`;
+        `<td>${r.events}</td>` +
+        `<td>${r.next_first_ym || '—'}</td>` +
+        `<td>${r.pause_mo !== '' ? r.pause_mo : '—'}</td>`;
       tbody.appendChild(tr);
     });
     const from = rows.length ? start + 1 : 0;
@@ -1296,7 +1289,10 @@
 
   function downloadCsv() {
     const rows = state.tableRows;
-    const header = ['id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events', 'threshold'];
+    const header = [
+      'id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events',
+      'next_first_ym', 'pause_mo', 'threshold',
+    ];
     const lines = [header.join(',')];
     rows.forEach((r) => {
       lines.push([
@@ -1308,6 +1304,8 @@
         r.done_ym,
         r.months,
         r.events,
+        r.next_first_ym || '',
+        r.pause_mo || '',
         r.threshold,
       ].join(','));
     });
@@ -1687,10 +1685,10 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-pause-kpi');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-table-next');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
-    state.pauseIndex = buildPauseIndex(state.data);
+    state.nextIndex = buildNextIndex(state.data);
     state.binM = Number(state.data.bin_months) || 6;
     state.binE = Number(state.data.bin_events) || 2;
     document.getElementById('asOfNote').textContent =
