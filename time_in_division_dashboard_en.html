@@ -535,7 +535,7 @@
             <div class="val" id="kpiNextShare">—</div>
           </button>
           <button type="button" class="kpi kpi-table-dyn" data-metric="next_pause" id="kpiBtnNextPause"
-            title="Mean inclusive months from last point here to first point in the next division — only among those who entered next (overlaps excluded)">
+            title="Mean inclusive months from May/Must (points path) to first point in the next division — among those who entered next; Champions-only / petition use last→first">
             <div class="lbl">Avg pause</div>
             <div class="val" id="kpiNextPause">—</div>
           </button>
@@ -566,7 +566,7 @@
                     <th>Months</th>
                     <th>Events</th>
                     <th title="First year-month with a point in the next division (same role)">Next first ym</th>
-                    <th title="Inclusive months from last point in this division to first point in the next (overlap = still scoring here after entering next)">Pause mo</th>
+                    <th title="Inclusive months from May/Must (points path in this division) to first point in the next; if May/Must was not earned via division points (e.g. Champions petition), last point here → first next">Pause mo</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -603,8 +603,8 @@
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
             <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles.</li>
             <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, <em>Share next</em>, and <em>Avg pause</em> plot only when that year has <strong>at least 10</strong> usable spells (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks.</li>
-            <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); <em>Avg pause</em> = mean pause months among those who entered next (overlaps excluded). Dynamics lines use the <strong>done year</strong> of May/Must — so recent cohorts often show a lower share (less time elapsed). On Dynamics, click a card to choose the plotted metric.</li>
-            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; plus <em>Next first ym</em> (first point in the next division, same role) and <em>Pause mo</em> (inclusive months from last point in this division to that first next point; blank if never scored next; “overlap” if they still scored here after entering next). CSV includes those columns.</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); <em>Avg pause</em> = mean pause months among those who entered next. Pause = May/Must done (points path in this division) → first next point; All-Stars Champions-only / petition entries use last point here → first Champions instead. Dynamics lines use the <strong>done year</strong> of May/Must — recent cohorts often show a lower share (less time elapsed). On Dynamics, click a card to choose the plotted metric.</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; plus <em>Next first ym</em> (first point in the next division, same role) and <em>Pause mo</em> (see KPI pause rule; blank if never scored next). CSV includes those columns.</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
         </div>
@@ -734,15 +734,25 @@
     return state.nextIndex.get(`${s.id}|${s.role}|${s.division}`) || null;
   }
 
-  /** Share who entered next + mean pause among clean transitions. */
+  function pauseMonths(t, thr) {
+    if (!t) return null;
+    const key = thr === 'required' ? 'months_required' : 'months_allowed';
+    let v = t[key];
+    if (v == null) v = t.months;
+    return v != null && Number.isFinite(v) ? v : null;
+  }
+
+  /** Share who entered next + mean pause (May/Must→first next, or last→first fallback). */
   function nextStats(rows) {
     let withNext = 0;
     const pauses = [];
+    const thr = state.threshold;
     rows.forEach((s) => {
       const t = nextTransitionForSpell(s);
       if (!t) return;
       withNext += 1;
-      if (!t.overlap && t.months != null && Number.isFinite(t.months)) pauses.push(t.months);
+      const m = pauseMonths(t, thr);
+      if (m != null) pauses.push(m);
     });
     return {
       n: rows.length,
@@ -853,8 +863,8 @@
     pauseEl.textContent =
       st.avgPause == null ? '—' : String(Math.round(st.avgPause * 10) / 10);
     pauseEl.title = st.pauseN
-      ? `Mean of ${st.pauseN} clean pauses (entered next, no overlap)`
-      : 'No clean next-division pauses in this filter';
+      ? `Mean of ${st.pauseN} pauses among those who entered next`
+      : 'No next-division pauses in this filter';
   }
 
   function syncKpiChrome() {
@@ -1292,8 +1302,8 @@
         let nextFirst = '';
         if (next) {
           nextFirst = next.first_ym || '';
-          if (next.overlap) pauseMo = 'overlap';
-          else if (next.months != null && Number.isFinite(next.months)) pauseMo = String(next.months);
+          const m = pauseMonths(next, thr);
+          if (m != null) pauseMo = String(m);
         }
         return {
           id: s.id,
@@ -1761,7 +1771,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-next-share');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-pause-may');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
