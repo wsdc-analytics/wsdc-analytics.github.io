@@ -535,8 +535,8 @@
             <div class="val" id="kpiNextShare">—</div>
           </button>
           <button type="button" class="kpi kpi-table-dyn" data-metric="next_pause" id="kpiBtnNextPause"
-            title="Dynamics: mean pause by year of first point in the next division (back to May/Must). KPI card: mean among the current May/Must filter who entered next">
-            <div class="lbl">Avg pause</div>
+            title="Dynamics: median pause by year of first point in the next division (back to May/Must; May/Must on/after division year floor). KPI card: median among the current filter who entered next">
+            <div class="lbl">Median pause</div>
             <div class="val" id="kpiNextPause">—</div>
           </button>
         </div>
@@ -602,8 +602,8 @@
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
             <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles.</li>
-            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, <em>Share next</em>, and <em>Avg pause</em> plot only when that year has <strong>at least 10</strong> usable spells (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks. <em>Avg pause</em> years are <strong>entry years</strong> into the next division (not May/Must done years).</li>
-            <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); Dynamics Share next is by <strong>May/Must done year</strong>. <em>Avg pause</em> = mean pause among those who entered next; Dynamics Avg pause is by <strong>year of first point in the next division</strong>, measuring back to May/Must (points path) in this division — Champions-only / petition use last→first. On Dynamics, click a card to choose the plotted metric.</li>
+            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, <em>Share next</em>, and <em>Median pause</em> plot only when that year has <strong>at least 10</strong> usable spells (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks. <em>Median pause</em> years are <strong>entry years</strong> into the next division (not May/Must done years).</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); Dynamics Share next is by <strong>May/Must done year</strong>. <em>Median pause</em> = median pause among those who entered next (May/Must on/after the division year floor); Dynamics groups by <strong>year of first point in the next division</strong>, measuring back to May/Must (points path) — Champions-only / petition use last→first. Mean would be pulled up by rare multi-year gaps (e.g. May in 2011, first Intermediate in 2026). On Dynamics, click a card to choose the plotted metric.</li>
             <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; plus <em>Next first ym</em> (first point in the next division, same role) and <em>Pause mo</em> (see KPI pause rule; blank if never scored next). CSV includes those columns.</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
@@ -632,7 +632,7 @@
     months: 'Median months',
     events: 'Median events',
     next_share: 'Share next',
-    next_pause: 'Avg pause',
+    next_pause: 'Median pause',
   };
 
   const state = {
@@ -742,7 +742,7 @@
     return v != null && Number.isFinite(v) ? v : null;
   }
 
-  /** Share who entered next + mean pause (May/Must→first next, or last→first fallback). */
+  /** Share who entered next + median pause (May/Must→first next, or last→first fallback). */
   function nextStats(rows) {
     let withNext = 0;
     const pauses = [];
@@ -759,6 +759,7 @@
       withNext,
       share: rows.length ? (100 * withNext) / rows.length : null,
       avgPause: mean(pauses),
+      medianPause: median(pauses),
       pauseN: pauses.length,
     };
   }
@@ -861,9 +862,9 @@
       ? `${st.withNext} of ${rows.length} already scored in the next division`
       : '';
     pauseEl.textContent =
-      st.avgPause == null ? '—' : String(Math.round(st.avgPause * 10) / 10);
+      st.medianPause == null ? '—' : String(Math.round(st.medianPause * 10) / 10);
     pauseEl.title = st.pauseN
-      ? `Mean of ${st.pauseN} pauses among those who entered next`
+      ? `Median of ${st.pauseN} pauses among those who entered next`
       : 'No next-division pauses in this filter';
   }
 
@@ -1023,7 +1024,7 @@
     if (metric === 'next_pause') {
       const st = nextStats(group);
       if (st.pauseN < MIN_N_LINE) return null;
-      return st.avgPause;
+      return st.medianPause;
     }
     if (n < MIN_N_LINE) return null;
     const months = group.map((s) => s[thr].months);
@@ -1042,17 +1043,22 @@
   }
 
   /**
-   * Spells for Dynamics Avg pause: keep May/Must hit, but do not apply the
-   * done-year floor here — floor is applied to entry year instead.
+   * Spells for Dynamics Median pause: May/Must on/after the division year floor;
+   * series X is still entry year into the next division.
    */
   function spellsForPauseByEntry(thr) {
     const d = state.data;
     if (!d) return [];
+    const floor = yearFloorForDivision(state.division);
     const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
     return d.spells.filter((s) => {
       if (s.division !== state.division) return false;
       if (roleFilter && s.role !== roleFilter) return false;
-      return !!s[thr];
+      const hit = s[thr];
+      if (!hit) return false;
+      const y = doneYear(hit);
+      if (y == null || y < floor) return false;
+      return true;
     });
   }
 
@@ -1811,7 +1817,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-pause-entry');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-pause-median');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
