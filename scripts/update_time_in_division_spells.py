@@ -428,11 +428,49 @@ def find_all_stars_crossings(
     return out
 
 
+def all_stars_points_path(hit: dict) -> bool:
+    """True when May/Must was earned via All-Stars points (not Champions-only / petition)."""
+    need_as = float(hit.get("threshold_all_stars") or 0)
+    got_as = float(hit.get("all_stars_points_at_done") or 0)
+    return need_as > 0 and got_as >= need_as
+
+
+def pause_months_for_threshold(
+    spell: dict | None,
+    kind: str,
+    from_division: str,
+    last_lo: tuple[int, int],
+    first_hi: tuple[int, int],
+) -> tuple[int | None, str | None]:
+    """Pause: May/Must (points path) → first next; else last point in D → first in D+1.
+
+    All-Stars points path = reached via AS-point OR (e.g. 150 AS). Champions-only /
+    petition entries fall back to last→first. Chronology that cannot form a pause
+    returns (None, None).
+    """
+    hit = (spell or {}).get(kind) if spell else None
+    if hit and hit.get("done_ym"):
+        use_threshold = (
+            all_stars_points_path(hit)
+            if from_division == "All-Stars"
+            else True
+        )
+        if use_threshold:
+            done = parse_date(str(hit["done_ym"]))
+            if done is not None and ym_ord(*first_hi) >= ym_ord(*done):
+                return months_inclusive(done, first_hi), "threshold"
+    if ym_ord(*first_hi) >= ym_ord(*last_lo):
+        return months_inclusive(last_lo, first_hi), "last_point"
+    return None, None
+
+
 def build_transitions(
     events_by_spell_role: dict[tuple[str, str], list[dict]],
     name_by_id: dict[str, str],
+    spells: list[dict],
 ) -> list[dict]:
-    """JT-2: inclusive months from last point in D to first point in D+1 (same role)."""
+    """JT-2: pause from May/Must (points path) or last point in D → first in D+1."""
+    spell_ix = {(s["id"], s["role"], s["division"]): s for s in spells}
     rows: list[dict] = []
     for (did, role), evs in events_by_spell_role.items():
         by_div: dict[str, list[tuple[int, int]]] = defaultdict(list)
@@ -444,8 +482,8 @@ def build_transitions(
                 continue
             last_lo = max(by_div[lo])
             first_hi = min(by_div[hi])
-            overlap = ym_ord(*first_hi) < ym_ord(*last_lo)
-            row = {
+            spell = spell_ix.get((did, role, lo))
+            row: dict = {
                 "id": did,
                 "name": name_by_id.get(did) or did,
                 "role": role,
@@ -453,10 +491,22 @@ def build_transitions(
                 "to_division": hi,
                 "last_ym": ym_str(last_lo),
                 "first_ym": ym_str(first_hi),
-                "overlap": overlap,
             }
-            if not overlap:
-                row["months"] = months_inclusive(last_lo, first_hi)
+            for kind, months_key, basis_key in (
+                ("allowed", "months_allowed", "pause_basis_allowed"),
+                ("required", "months_required", "pause_basis_required"),
+            ):
+                months, basis = pause_months_for_threshold(
+                    spell, kind, lo, last_lo, first_hi
+                )
+                if months is not None:
+                    row[months_key] = months
+                    row[basis_key] = basis
+            # Prefer May months as the generic field (dashboard picks by threshold).
+            if "months_allowed" in row:
+                row["months"] = row["months_allowed"]
+            elif "months_required" in row:
+                row["months"] = row["months_required"]
             rows.append(row)
     rows.sort(key=lambda r: (r["from_division"], r["to_division"], r["role"], r["id"]))
     return rows
@@ -600,7 +650,7 @@ def main() -> None:
         spells.append(row)
 
     spells.sort(key=lambda r: (r["division"], r["role"], r["id"]))
-    transitions = build_transitions(events_by_spell_role, name_by_id)
+    transitions = build_transitions(events_by_spell_role, name_by_id, spells)
     qualify = build_qualify_series(spells, first_pts)
 
     payload = {
@@ -620,7 +670,12 @@ def main() -> None:
             "months": "inclusive calendar months from first_ym through done_ym (same month = 1; Nov→Mar = 5); day-of-month unknown",
             "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
             "buffer": "p25/p50/p75 = first reach of allowed + frac×(required−allowed) points; share among spells that reached May",
-            "pause": "JT-2 inclusive months from last point in division D to first in D+1 (same role); overlap flagged and excluded from pause median",
+            "pause": (
+                "JT-2 inclusive months from May/Must done_ym (points path in D) to first point in D+1 "
+                "(same role). All-Stars points path = reached via AS-point OR (e.g. 150 AS); "
+                "Champions-only / petition entries use last point in D → first in D+1 instead. "
+                "No overlap flag."
+            ),
             "qualify": "JN-1b yearly n and cumulative: Advanced allowed (eligible) vs first All-Stars point (entered)",
             "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym; pause/qualify sheets do not use the may/must year floor",
             "data_stamp": "generated_at = calendar date this JSON was rebuilt; data_through = latest event year-month in the source export",
