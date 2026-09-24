@@ -1817,7 +1817,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-pause-median');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-sync');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
