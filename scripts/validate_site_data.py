@@ -253,7 +253,7 @@ def validate_time_in_division_spells() -> None:
     data = load_json(path)
     if not isinstance(data, dict):
         fail("time_in_division_spells.json must be an object")
-    for field in ("data_as_of", "spells", "n_spells", "divisions"):
+    for field in ("data_as_of", "generated_at", "data_through", "spells", "n_spells", "divisions"):
         if field not in data:
             fail(f"time_in_division_spells.json missing field: {field}")
     spells = data["spells"]
@@ -275,7 +275,10 @@ def validate_time_in_division_spells() -> None:
         hit = sample[key]
         if not isinstance(hit, dict) or "events" not in hit or "months" not in hit:
             fail(f"time_in_division_spells.json.spells[0].{key} must include months and events")
-    print(f"[OK] time_in_division_spells.json ({n} spells, as_of={data['data_as_of']})")
+    print(
+        f"[OK] time_in_division_spells.json ({n} spells, "
+        f"generated_at={data.get('generated_at')}, data_through={data.get('data_through')})"
+    )
 
 
 def main() -> None:

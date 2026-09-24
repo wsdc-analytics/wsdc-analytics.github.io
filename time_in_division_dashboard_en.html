@@ -1679,15 +1679,19 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260923-sync');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-generated-at');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.binM = Number(state.data.bin_months) || 6;
     state.binE = Number(state.data.bin_events) || 2;
-    document.getElementById('asOfNote').textContent = state.data.data_as_of;
+    document.getElementById('asOfNote').textContent =
+      state.data.data_through
+        ? `${state.data.data_through} (refreshed ${state.data.generated_at || state.data.data_as_of || '—'})`
+        : (state.data.generated_at || state.data.data_as_of || '—');
     const updatedEl = document.getElementById('dataUpdated');
-    if (updatedEl && state.data.data_as_of) {
-      updatedEl.textContent = `Updated ${state.data.data_as_of}`;
+    const stamp = state.data.generated_at || state.data.data_as_of;
+    if (updatedEl && stamp) {
+      updatedEl.textContent = `Updated ${stamp}`;
     }
 
     applyYearOptionsForDivision(false);

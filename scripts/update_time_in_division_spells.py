@@ -399,7 +399,11 @@ def main() -> None:
         (e["ym"] for evs in events_by_spell_role.values() for e in evs),
         default=(date.today().year, date.today().month),
     )
-    data_as_of = f"{observation_end[0]:04d}-{observation_end[1]:02d}-01"
+    # Concrete calendar date of this rebuild (title-row "Updated"), not event month.
+    generated_at = date.today().isoformat()
+    data_through = f"{observation_end[0]:04d}-{observation_end[1]:02d}"
+    # Backward-compatible alias: dashboards historically read data_as_of as the stamp.
+    data_as_of = generated_at
 
     spells: list[dict] = []
     for (did, role, div), t0 in first_pts.items():
@@ -433,6 +437,8 @@ def main() -> None:
 
     payload = {
         "data_as_of": data_as_of,
+        "generated_at": generated_at,
+        "data_through": data_through,
         "rules_ref": "rules_advancement_thresholds.json",
         "bin_months": 6,
         "bin_events": 2,
@@ -444,6 +450,7 @@ def main() -> None:
             "months": "inclusive calendar months from first_ym through done_ym (same month = 1; Nov→Mar = 5); day-of-month unknown",
             "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
             "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym",
+            "data_stamp": "generated_at = calendar date this JSON was rebuilt; data_through = latest event year-month in the source export",
             "all_stars": (
                 "pre-formal rules years: Champions pts only (1 may / 10 must) on real events; "
                 "from first All-Stars rules year (2021): full OR Champ pts or AS pts; "
@@ -456,7 +463,7 @@ def main() -> None:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"Wrote {len(spells)} spells -> {args.output}")
-    print(f"data_as_of={data_as_of} excluded={excluded}")
+    print(f"generated_at={generated_at} data_through={data_through} excluded={excluded}")
 
 
 if __name__ == "__main__":
