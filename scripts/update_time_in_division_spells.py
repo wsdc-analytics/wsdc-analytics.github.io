@@ -192,7 +192,8 @@ def duration_months(
             if months < 0.1:
                 months = 0.1
             return months, "day"
-    return float(months_inclusive(start_ym, end_ym)), "ym"
+    # Inclusive YM never returns < 1 for ordered endpoints; clamp guards inverted YM.
+    return float(max(months_inclusive(start_ym, end_ym), 1)), "ym"
 
 
 def first_event_in_div(
@@ -200,12 +201,14 @@ def first_event_in_div(
     division: str,
     t0: tuple[int, int],
 ) -> dict | None:
-    for e in events:
-        if e["div"] == division and e["ym"] == t0:
-            return e
-    for e in events:
-        if e["div"] == division and e["ym"] >= t0:
-            return e
+    same = [e for e in events if e["div"] == division and e["ym"] == t0]
+    if same:
+        with_day = [e for e in same if e.get("day") is not None]
+        return (with_day or same)[0]
+    later = [e for e in events if e["div"] == division and e["ym"] >= t0]
+    if later:
+        with_day = [e for e in later if e.get("day") is not None]
+        return (with_day or later)[0]
     return None
 
 
