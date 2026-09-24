@@ -561,12 +561,12 @@
                     <th>Name</th>
                     <th>Role</th>
                     <th>Division</th>
-                    <th>First ym</th>
-                    <th>Done ym</th>
+                    <th title="Edition start_date of the first point in this division×role (falls back to year-month if no date)">First date</th>
+                    <th title="Edition start_date of the May/Must crossing event (falls back to year-month if no date)">Done date</th>
                     <th>Months</th>
                     <th>Events</th>
-                    <th title="First year-month with a point in the next division (same role)">Next first ym</th>
-                    <th title="Inclusive months from May/Must (points path in this division) to first point in the next; if May/Must was not earned via division points (e.g. Champions petition), last point here → first next">Pause mo</th>
+                    <th title="Edition start_date of the first point in the next division, same role">Next first date</th>
+                    <th title="Months from May/Must (points path) to first next; Champions-only / petition use last→first. Day-based when edition dates exist.">Pause mo</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -604,7 +604,7 @@
             <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles.</li>
             <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, <em>Share next</em>, and <em>Median pause</em> plot only when that year has <strong>at least 10</strong> usable spells (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks. <em>Median pause</em> years are <strong>entry years</strong> into the next division (not May/Must done years).</li>
             <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); Dynamics Share next is by <strong>May/Must done year</strong>. <em>Median pause</em> = median pause among those who entered next (May/Must on/after the division year floor); Dynamics groups by <strong>year of first point in the next division</strong>, measuring back to May/Must (points path) — Champions-only / petition use last→first. Mean would be pulled up by rare multi-year gaps (e.g. May in 2011, first Intermediate in 2026). On Dynamics, click a card to choose the plotted metric.</li>
-            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; plus <em>Next first ym</em> (first point in the next division, same role) and <em>Pause mo</em> (see KPI pause rule; blank if never scored next). CSV includes those columns.</li>
+            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name. Date columns use the edition <em>start_date</em> of the event where that milestone happened (first point / May or Must crossing / first next); if no edition date, fall back to year-month. Also <em>Pause mo</em> (see KPI pause rule). CSV includes date + ym columns.</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
         </div>
@@ -1337,15 +1337,24 @@
     return state.chart;
   }
 
+  function eventDateLabel(iso, ym) {
+    if (iso) return String(iso);
+    if (ym) return String(ym);
+    return '';
+  }
+
   function sortedTableRows(rows, thr) {
     const thrLabel = thr === 'allowed' ? 'May' : 'Must';
     return rows
       .map((s) => {
+        const hit = s[thr];
         const next = nextTransitionForSpell(s);
         let pauseMo = '';
         let nextFirst = '';
+        let nextFirstYm = '';
         if (next) {
-          nextFirst = next.first_ym || '';
+          nextFirstYm = next.first_ym || '';
+          nextFirst = eventDateLabel(next.first_date, next.first_ym);
           const m = pauseMonths(next, thr);
           if (m != null) pauseMo = String(m);
         }
@@ -1355,10 +1364,16 @@
           role: s.role,
           division: s.division,
           first_ym: s.first_ym,
-          done_ym: s[thr].done_ym,
-          months: s[thr].months,
+          first_date: s.first_date || '',
+          first_display: eventDateLabel(s.first_date, s.first_ym),
+          done_ym: hit.done_ym,
+          done_date: hit.done_date || '',
+          done_display: eventDateLabel(hit.done_date, hit.done_ym),
+          months: hit.months,
           events: spellEvents(s, thr),
-          next_first_ym: nextFirst,
+          next_first_ym: nextFirstYm,
+          next_first_date: next ? (next.first_date || '') : '',
+          next_first_display: nextFirst,
           pause_mo: pauseMo,
           threshold: thrLabel,
         };
@@ -1388,11 +1403,11 @@
         `<td>${escapeHtml(r.name)}</td>` +
         `<td>${r.role}</td>` +
         `<td>${r.division}</td>` +
-        `<td>${r.first_ym}</td>` +
-        `<td>${r.done_ym}</td>` +
+        `<td>${r.first_display || '—'}</td>` +
+        `<td>${r.done_display || '—'}</td>` +
         `<td>${r.months}</td>` +
         `<td>${r.events}</td>` +
-        `<td>${r.next_first_ym || '—'}</td>` +
+        `<td>${r.next_first_display || '—'}</td>` +
         `<td>${r.pause_mo !== '' ? r.pause_mo : '—'}</td>`;
       tbody.appendChild(tr);
     });
@@ -1416,8 +1431,10 @@
   function downloadCsv() {
     const rows = state.tableRows;
     const header = [
-      'id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events',
-      'next_first_ym', 'pause_mo', 'threshold',
+      'id', 'name', 'role', 'division',
+      'first_date', 'first_ym', 'done_date', 'done_ym',
+      'months', 'events',
+      'next_first_date', 'next_first_ym', 'pause_mo', 'threshold',
     ];
     const lines = [header.join(',')];
     rows.forEach((r) => {
@@ -1426,10 +1443,13 @@
         csvEscape(r.name),
         r.role,
         r.division,
-        r.first_ym,
-        r.done_ym,
+        r.first_date || '',
+        r.first_ym || '',
+        r.done_date || '',
+        r.done_ym || '',
         r.months,
         r.events,
+        r.next_first_date || '',
         r.next_first_ym || '',
         r.pause_mo || '',
         r.threshold,
@@ -1817,7 +1837,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-day-duration');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-table-dates');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
