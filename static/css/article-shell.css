@@ -129,10 +129,14 @@ h2,
   border-left-color: var(--wsdc-color-border, #d1d5db);
 }
 
-/* Links */
+/* Links — skip filled CTA / button-style anchors (white-on-blue would vanish) */
 a.rules-evolution-link,
-.article-content a:not(.wsdc-back):not(.back-link) {
+.article-content a:not(.wsdc-back):not(.back-link):not(.timeline-link):not(.catalog-cta-btn):not(.wsdc-btn):not(.article-feedback-button) {
   color: var(--wsdc-color-brand-accent, #2563eb);
+}
+
+.article-content a.timeline-link {
+  color: #ffffff;
 }
 
 /* Reaction / interactive focus */
