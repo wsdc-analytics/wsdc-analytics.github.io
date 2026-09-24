@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 """Build spell-level time-in-division rows for the Time in division dashboard.
 
-Spell = (dancer × division × role). Duration = inclusive calendar months from
-first point in that spell until the selected rules threshold (allowed / required)
-is first reached (same month = 1; Nov→Mar = 5). Event count = unique event
-editions in that division×role up to and including the crossing event for that
-threshold (not the whole career in the division).
+Spell = (dancer × division × role). Duration prefers edition calendar dates
+(start_date → end_date): days / 30.44, rounded to 0.1 month (min 1 day when
+dates are valid). If either endpoint lacks a usable date (or end < start),
+falls back to inclusive calendar months (same month = 1; Nov→Mar = 5).
+Event count = unique event editions in that division×role up to and including
+the crossing event for that threshold.
 
-Reuses year-month arithmetic and rules epochs from division-transition analysis.
+Rolling 36-month Advanced scoring windows stay calendar months (rules), not days.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import difflib
 import json
+import re
 from collections import defaultdict
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +30,10 @@ DEFAULT_OUTPUT = REPO_ROOT / "static" / "data" / "time_in_division_spells.json"
 SKILL_DIVISIONS = ["Novice", "Intermediate", "Advanced", "All-Stars", "Champions"]
 DASHBOARD_DIVISIONS = ["Novice", "Intermediate", "Advanced", "All-Stars"]
 ROLES = ("Leader", "Follower")
+
+AVG_DAYS_PER_MONTH = 30.44
+MIN_DAY_DURATION = 1
+FUZZY_NAME_CUTOFF = 0.62
 
 
 def parse_args() -> argparse.Namespace:
@@ -85,6 +92,143 @@ def months_inclusive(a: tuple[int, int], b: tuple[int, int]) -> int:
 
 def ym_str(ym: tuple[int, int]) -> str:
     return f"{ym[0]:04d}-{ym[1]:02d}"
+
+
+def norm_event_name(value: str) -> str:
+    s = (value or "").lower().strip()
+    s = re.sub(r"[^a-z0-9]+", " ", s)
+    return " ".join(s.split())
+
+
+def parse_iso_date(value: str | None) -> date | None:
+    s = (value or "").strip()
+    if not s:
+        return None
+    try:
+        return datetime.strptime(s[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def edition_anchor_date(row: dict) -> date | None:
+    """Prefer start_date, else end_date."""
+    for key in ("start_date", "end_date", "planned_start_date", "planned_end_date"):
+        d = parse_iso_date(row.get(key))
+        if d is not None:
+            return d
+    return None
+
+
+def load_edition_day_index(
+    source: Path,
+) -> tuple[dict[tuple[str, int, int], date], dict[tuple[int, int], list[tuple[str, date]]]]:
+    """Exact (norm_name, year, month) → date, plus same-YM candidates for fuzzy match."""
+    path = source / "event_editions.csv"
+    exact: dict[tuple[str, int, int], date] = {}
+    by_ym: dict[tuple[int, int], list[tuple[str, date]]] = defaultdict(list)
+    if not path.exists():
+        return exact, by_ym
+    with path.open("r", encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            try:
+                y = int(float(row.get("event_year") or 0))
+                m = int(float(row.get("event_month") or 0))
+            except ValueError:
+                continue
+            if y < 1900 or not (1 <= m <= 12):
+                continue
+            day = edition_anchor_date(row)
+            if day is None:
+                continue
+            name = norm_event_name(row.get("event_name") or "")
+            if not name:
+                continue
+            key = (name, y, m)
+            prev = exact.get(key)
+            if prev is None or day < prev:
+                exact[key] = day
+            by_ym[(y, m)].append((name, day))
+    return exact, by_ym
+
+
+def lookup_edition_day(
+    exact: dict[tuple[str, int, int], date],
+    by_ym: dict[tuple[int, int], list[tuple[str, date]]],
+    event_name: str,
+    year: int,
+    month: int,
+) -> date | None:
+    name = norm_event_name(event_name)
+    if not name:
+        return None
+    hit = exact.get((name, year, month))
+    if hit is not None:
+        return hit
+    cands = by_ym.get((year, month)) or []
+    if not cands:
+        return None
+    names = list({n for n, _ in cands})
+    match = difflib.get_close_matches(name, names, n=1, cutoff=FUZZY_NAME_CUTOFF)
+    if not match:
+        return None
+    matched = match[0]
+    days = [d for n, d in cands if n == matched]
+    return min(days) if days else None
+
+
+def duration_months(
+    start_ym: tuple[int, int],
+    end_ym: tuple[int, int],
+    start_day: date | None,
+    end_day: date | None,
+) -> tuple[float, str]:
+    """Day-path when both dates usable; else inclusive YM. Returns (months, basis)."""
+    if start_day is not None and end_day is not None:
+        delta = (end_day - start_day).days
+        if delta >= 0:
+            days = max(delta, MIN_DAY_DURATION)
+            months = round(days / AVG_DAYS_PER_MONTH, 1)
+            # 1 day ≈ 0.03 → would round to 0.0; keep a visible 0.1 floor on day-path.
+            if months < 0.1:
+                months = 0.1
+            return months, "day"
+    # Inclusive YM never returns < 1 for ordered endpoints; clamp guards inverted YM.
+    return float(max(months_inclusive(start_ym, end_ym), 1)), "ym"
+
+
+def first_event_in_div(
+    events: list[dict],
+    division: str,
+    t0: tuple[int, int],
+) -> dict | None:
+    same = [e for e in events if e["div"] == division and e["ym"] == t0]
+    if same:
+        with_day = [e for e in same if e.get("day") is not None]
+        return (with_day or same)[0]
+    later = [e for e in events if e["div"] == division and e["ym"] >= t0]
+    if later:
+        with_day = [e for e in later if e.get("day") is not None]
+        return (with_day or later)[0]
+    return None
+
+
+def day_for_ym(
+    events: list[dict],
+    ym: tuple[int, int],
+    divs: set[str] | None = None,
+    prefer: str = "last",
+) -> date | None:
+    cands = [
+        e
+        for e in events
+        if e["ym"] == ym and (divs is None or e["div"] in divs)
+    ]
+    if not cands:
+        return None
+    with_day = [e for e in cands if e.get("day") is not None]
+    pool = with_day or cands
+    pick = pool[-1] if prefer == "last" else pool[0]
+    return pick.get("day")
 
 
 def epoch_for_year(rules: dict, year: int) -> dict | None:
@@ -214,7 +358,7 @@ def buffer_done(
     return len(buffer) >= len(BUFFER_FRACS)
 
 
-def hit_dict(months: int, done_ym: str, events: int, **extra) -> dict:
+def hit_dict(months: float, done_ym: str, events: int, **extra) -> dict:
     out = {"months": months, "done_ym": done_ym, "events": events}
     out.update(extra)
     return out
@@ -223,11 +367,12 @@ def hit_dict(months: int, done_ym: str, events: int, **extra) -> dict:
 def record_buffer_marks(
     buffer: dict[str, dict],
     score: float,
-    months: int,
+    months: float,
     done_ym: str,
     events: int,
     allowed_t: float | None,
     required_t: float | None,
+    months_basis: str = "ym",
 ) -> None:
     """Mark 25/50/75% of the may→must point gap once allowed is known."""
     if allowed_t is None or required_t is None:
@@ -244,6 +389,7 @@ def record_buffer_marks(
                 months,
                 done_ym,
                 events,
+                months_basis=months_basis,
                 score_target=round(target, 2),
                 buffer_frac=frac,
             )
@@ -259,6 +405,8 @@ def find_nov_int_crossings(
     buffer: dict[str, dict] = {}
     cum = 0.0
     seen_events: set[str] = set()
+    start_ev = first_event_in_div(events, division, t0)
+    start_day = (start_ev or {}).get("day")
     for e in events:
         if e["div"] != division or e["ym"] < t0:
             continue
@@ -267,14 +415,20 @@ def find_nov_int_crossings(
             continue
         seen_events.add(e["eid"])
         cum += e["pts"]
-        months = months_inclusive(t0, e["ym"])
+        months, basis = duration_months(t0, e["ym"], start_day, e.get("day"))
         done = ym_str(e["ym"])
         for kind in ("allowed", "required"):
             if kind in reached:
                 continue
             target = th.get(kind)
             if target is not None and cum >= float(target):
-                reached[kind] = hit_dict(months, done, len(seen_events), threshold=float(target))
+                reached[kind] = hit_dict(
+                    months,
+                    done,
+                    len(seen_events),
+                    months_basis=basis,
+                    threshold=float(target),
+                )
         if "allowed" in reached:
             record_buffer_marks(
                 buffer,
@@ -284,6 +438,7 @@ def find_nov_int_crossings(
                 len(seen_events),
                 reached["allowed"].get("threshold"),
                 th.get("required"),
+                months_basis=basis,
             )
         if "required" in reached and buffer_done(
             buffer, reached["allowed"].get("threshold"), th.get("required")
@@ -310,6 +465,8 @@ def find_advanced_crossings(
     buffer: dict[str, dict] = {}
     cum = 0.0
     seen_events: set[str] = set()
+    start_ev = first_event_in_div(events, "Advanced", t0)
+    start_day = (start_ev or {}).get("day")
     for e in events:
         if e["div"] != "Advanced" or e["ym"] < t0:
             continue
@@ -323,14 +480,20 @@ def find_advanced_crossings(
             score = rolling_sum(events, "Advanced", e["ym"], 36)
         else:
             score = cum
-        months = months_inclusive(t0, e["ym"])
+        months, basis = duration_months(t0, e["ym"], start_day, e.get("day"))
         done = ym_str(e["ym"])
         for kind in ("allowed", "required"):
             if kind in reached:
                 continue
             target = th.get(kind)
             if target is not None and score >= float(target):
-                reached[kind] = hit_dict(months, done, len(seen_events), threshold=float(target))
+                reached[kind] = hit_dict(
+                    months,
+                    done,
+                    len(seen_events),
+                    months_basis=basis,
+                    threshold=float(target),
+                )
         if "allowed" in reached:
             record_buffer_marks(
                 buffer,
@@ -340,6 +503,7 @@ def find_advanced_crossings(
                 len(seen_events),
                 reached["allowed"].get("threshold"),
                 th.get("required"),
+                months_basis=basis,
             )
         if "required" in reached and buffer_done(
             buffer, reached["allowed"].get("threshold"), th.get("required")
@@ -369,6 +533,8 @@ def find_all_stars_crossings(
     seen_events: set[str] = set()
     allowed_champ_t: float | None = None
     required_champ_t: float | None = None
+    start_ev = first_event_in_div(events, "All-Stars", t0)
+    start_day = (start_ev or {}).get("day")
     for e in events:
         if e["ym"] < t0:
             continue
@@ -382,7 +548,7 @@ def find_all_stars_crossings(
         specs = all_stars_eval_specs(rules, e["year"])
         if not specs:
             continue
-        months = months_inclusive(t0, e["ym"])
+        months, basis = duration_months(t0, e["ym"], start_day, e.get("day"))
         done = ym_str(e["ym"])
         for kind, key in (
             ("allowed", "champions_allowed"),
@@ -404,6 +570,7 @@ def find_all_stars_crossings(
                     months,
                     done,
                     len(seen_events),
+                    months_basis=basis,
                     threshold_champions=need_c,
                     threshold_all_stars=need_as,
                     champions_points_at_done=round(champ_pts, 2),
@@ -418,6 +585,7 @@ def find_all_stars_crossings(
                 len(seen_events),
                 allowed_champ_t,
                 required_champ_t,
+                months_basis=basis,
             )
         # Required done: stop. Champ-path buffer is best-effort (AS-OR crossings may leave it empty).
         if "required" in reached:
@@ -439,15 +607,17 @@ def pause_months_for_threshold(
     spell: dict | None,
     kind: str,
     from_division: str,
-    last_lo: tuple[int, int],
-    first_hi: tuple[int, int],
-) -> tuple[int | None, str | None]:
+    events: list[dict],
+    last_e: dict,
+    first_e: dict,
+) -> tuple[float | None, str | None, str | None]:
     """Pause: May/Must (points path) → first next; else last point in D → first in D+1.
 
-    All-Stars points path = reached via AS-point OR (e.g. 150 AS). Champions-only /
-    petition entries fall back to last→first. Chronology that cannot form a pause
-    returns (None, None).
+    Returns (months, pause_path, months_basis) where pause_path is threshold|last_point
+    and months_basis is day|ym. Chronology that cannot form a pause returns None.
     """
+    last_lo = last_e["ym"]
+    first_hi = first_e["ym"]
     hit = (spell or {}).get(kind) if spell else None
     if hit and hit.get("done_ym"):
         use_threshold = (
@@ -458,10 +628,22 @@ def pause_months_for_threshold(
         if use_threshold:
             done = parse_date(str(hit["done_ym"]))
             if done is not None and ym_ord(*first_hi) >= ym_ord(*done):
-                return months_inclusive(done, first_hi), "threshold"
+                done_divs = (
+                    {"All-Stars", "Champions"}
+                    if from_division == "All-Stars"
+                    else {from_division}
+                )
+                done_day = day_for_ym(events, done, done_divs, prefer="last")
+                months, mbasis = duration_months(
+                    done, first_hi, done_day, first_e.get("day")
+                )
+                return months, "threshold", mbasis
     if ym_ord(*first_hi) >= ym_ord(*last_lo):
-        return months_inclusive(last_lo, first_hi), "last_point"
-    return None, None
+        months, mbasis = duration_months(
+            last_lo, first_hi, last_e.get("day"), first_e.get("day")
+        )
+        return months, "last_point", mbasis
+    return None, None, None
 
 
 def build_transitions(
@@ -473,15 +655,21 @@ def build_transitions(
     spell_ix = {(s["id"], s["role"], s["division"]): s for s in spells}
     rows: list[dict] = []
     for (did, role), evs in events_by_spell_role.items():
-        by_div: dict[str, list[tuple[int, int]]] = defaultdict(list)
+        by_div: dict[str, list[dict]] = defaultdict(list)
         for e in evs:
-            by_div[e["div"]].append(e["ym"])
+            by_div[e["div"]].append(e)
         for i in range(len(LADDER) - 1):
             lo, hi = LADDER[i], LADDER[i + 1]
             if lo not in by_div or hi not in by_div:
                 continue
-            last_lo = max(by_div[lo])
-            first_hi = min(by_div[hi])
+            last_e = max(
+                by_div[lo],
+                key=lambda e: (ym_ord(*e["ym"]), e.get("day") or date.min),
+            )
+            first_e = min(
+                by_div[hi],
+                key=lambda e: (ym_ord(*e["ym"]), e.get("day") or date.max),
+            )
             spell = spell_ix.get((did, role, lo))
             row: dict = {
                 "id": did,
@@ -489,24 +677,29 @@ def build_transitions(
                 "role": role,
                 "from_division": lo,
                 "to_division": hi,
-                "last_ym": ym_str(last_lo),
-                "first_ym": ym_str(first_hi),
+                "last_ym": ym_str(last_e["ym"]),
+                "first_ym": ym_str(first_e["ym"]),
             }
-            for kind, months_key, basis_key in (
-                ("allowed", "months_allowed", "pause_basis_allowed"),
-                ("required", "months_required", "pause_basis_required"),
+            for kind, months_key, path_key, basis_key in (
+                ("allowed", "months_allowed", "pause_basis_allowed", "months_basis_allowed"),
+                ("required", "months_required", "pause_basis_required", "months_basis_required"),
             ):
-                months, basis = pause_months_for_threshold(
-                    spell, kind, lo, last_lo, first_hi
+                months, path, mbasis = pause_months_for_threshold(
+                    spell, kind, lo, evs, last_e, first_e
                 )
                 if months is not None:
                     row[months_key] = months
-                    row[basis_key] = basis
+                    row[path_key] = path
+                    row[basis_key] = mbasis
             # Prefer May months as the generic field (dashboard picks by threshold).
             if "months_allowed" in row:
                 row["months"] = row["months_allowed"]
+                if "months_basis_allowed" in row:
+                    row["months_basis"] = row["months_basis_allowed"]
             elif "months_required" in row:
                 row["months"] = row["months_required"]
+                if "months_basis_required" in row:
+                    row["months_basis"] = row["months_basis_required"]
             rows.append(row)
     rows.sort(key=lambda r: (r["from_division"], r["to_division"], r["role"], r["id"]))
     return rows
@@ -547,6 +740,7 @@ def main() -> None:
     args = parse_args()
     source = args.source_dir
     rules = json.loads(args.rules.read_text(encoding="utf-8"))
+    edition_exact, edition_by_ym = load_edition_day_index(source)
 
     name_by_id: dict[str, str] = {}
     with (source / "dancer_role_info.csv").open("r", encoding="utf-8-sig", newline="") as f:
@@ -565,6 +759,8 @@ def main() -> None:
         "bad_role": 0,
         "non_positive_points": 0,
     }
+    edition_date_hits = 0
+    edition_date_misses = 0
 
     with (source / "dancers_results_info.csv").open("r", encoding="utf-8-sig", newline="") as f:
         for row in csv.DictReader(f):
@@ -599,15 +795,31 @@ def main() -> None:
             # which under-counts events-to-threshold when the spell spans the year floor.
             eid_base = (row.get("event_name_id") or row.get("event_name") or "").strip() or "event"
             eid = f"{eid_base}|{y:04d}-{m:02d}"
+            event_name = (row.get("event_name") or "").strip()
+            day = lookup_edition_day(edition_exact, edition_by_ym, event_name, y, m)
+            if day is not None:
+                edition_date_hits += 1
+            else:
+                edition_date_misses += 1
             events_by_spell_role[(did, role)].append(
-                {"div": div, "pts": pts, "ym": dt, "year": y, "eid": eid}
+                {
+                    "div": div,
+                    "pts": pts,
+                    "ym": dt,
+                    "year": y,
+                    "eid": eid,
+                    "name": event_name,
+                    "day": day,
+                }
             )
             key = (did, role, div)
             if key not in first_pts or dt < first_pts[key]:
                 first_pts[key] = dt
 
     for key in events_by_spell_role:
-        events_by_spell_role[key].sort(key=lambda e: (ym_ord(*e["ym"]), e["eid"]))
+        events_by_spell_role[key].sort(
+            key=lambda e: (ym_ord(*e["ym"]), e.get("day") or date.min, e["eid"])
+        )
 
     observation_end = max(
         (e["ym"] for evs in events_by_spell_role.values() for e in evs),
@@ -653,6 +865,32 @@ def main() -> None:
     transitions = build_transitions(events_by_spell_role, name_by_id, spells)
     qualify = build_qualify_series(spells, first_pts)
 
+    def count_basis(objs: list[dict], key: str = "months_basis") -> dict[str, int]:
+        out = {"day": 0, "ym": 0}
+        for obj in objs:
+            b = obj.get(key)
+            if b in out:
+                out[b] += 1
+        return out
+
+    spell_basis = {"day": 0, "ym": 0}
+    for s in spells:
+        for thr in ("allowed", "required"):
+            hit = s.get(thr)
+            if isinstance(hit, dict):
+                b = hit.get("months_basis")
+                if b in spell_basis:
+                    spell_basis[b] += 1
+        buf = s.get("buffer") or {}
+        if isinstance(buf, dict):
+            for mark in buf.values():
+                if isinstance(mark, dict):
+                    b = mark.get("months_basis")
+                    if b in spell_basis:
+                        spell_basis[b] += 1
+
+    pause_basis = count_basis(transitions, "months_basis")
+
     payload = {
         "data_as_of": data_as_of,
         "generated_at": generated_at,
@@ -667,13 +905,18 @@ def main() -> None:
         "excluded_counts": excluded,
         "methodology": {
             "spell": "dancer × division × event_role",
-            "months": "inclusive calendar months from first_ym through done_ym (same month = 1; Nov→Mar = 5); day-of-month unknown",
+            "months": (
+                "prefer edition start_date (else end_date) from event_editions.csv: "
+                "days/30.44 rounded to 0.1 (min 1 day → at least 0.1 mo when both dates valid and end≥start); "
+                "else inclusive calendar months first_ym→done_ym (same month = 1; Nov→Mar = 5). "
+                "Per hit/pause: months_basis day|ym. Cohort year filters still use event_year/done_ym."
+            ),
             "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
-            "buffer": "p25/p50/p75 = first reach of allowed + frac×(required−allowed) points; share among spells that reached May",
+            "buffer": "p25/p50/p75 = first reach of allowed + frac×(required−allowed) points; share among spells that reached May; duration uses same day/YM rule as dwell",
             "pause": (
-                "JT-2 inclusive months from May/Must done_ym (points path in D) to first point in D+1 "
-                "(same role). All-Stars points path = reached via AS-point OR (e.g. 150 AS); "
-                "Champions-only / petition entries use last point in D → first in D+1 instead. "
+                "JT-2 months from May/Must done (points path in D) to first point in D+1 "
+                "(same role), day-based when both edition dates exist. All-Stars points path = "
+                "reached via AS-point OR (e.g. 150 AS); Champions-only / petition use last→first. "
                 "No overlap flag."
             ),
             "qualify": "JN-1b yearly n and cumulative: Advanced allowed (eligible) vs first All-Stars point (entered)",
@@ -684,6 +927,15 @@ def main() -> None:
                 "from first All-Stars rules year (2021): full OR Champ pts or AS pts; "
                 "no synthetic done_ym at rule start"
             ),
+            "rolling_window": "Advanced rolling_36mo scoring stays calendar months (rules), not day-based",
+            "edition_dates": {
+                "source": "event_editions.csv",
+                "join": "exact norm(name)+year+month, else fuzzy name in same YM (cutoff 0.62)",
+                "result_rows_with_day": edition_date_hits,
+                "result_rows_without_day": edition_date_misses,
+                "spell_hit_months_basis": spell_basis,
+                "transition_months_basis": pause_basis,
+            },
         },
         "spells": spells,
         "transitions": transitions,
@@ -694,6 +946,10 @@ def main() -> None:
     args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"Wrote {len(spells)} spells, {len(transitions)} transitions -> {args.output}")
     print(f"generated_at={generated_at} data_through={data_through} excluded={excluded}")
+    print(
+        f"edition days hit={edition_date_hits} miss={edition_date_misses} "
+        f"spell_basis={spell_basis} pause_basis={pause_basis}"
+    )
 
 
 if __name__ == "__main__":

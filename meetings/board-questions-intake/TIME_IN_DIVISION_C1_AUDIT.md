@@ -11,7 +11,7 @@ This document matches the **current** Time in Division product to **C1 full** Bo
 
 Closed by **comment intent**, not every phrase of the Board quote.
 
-- **May** and **Must** are **two separate threshold metrics**. Each answers: inclusive months and unique event editions from first point in that division×role until that threshold (allowed or required).
+- **May** and **Must** are **two separate threshold metrics**. Each answers: months (day-based when edition dates exist, else inclusive YM) and unique event editions from first point in that division×role until that threshold (allowed or required).
 - They are **not** a definition of “done in that division.” JT-1 stays open until “done” is chosen case-by-case.
 
 ## Current mechanism (what the tool actually measures)
@@ -19,7 +19,7 @@ Closed by **comment intent**, not every phrase of the Board quote.
 | Piece | Behavior |
 |-------|----------|
 | Unit | Spell = dancer × division × role |
-| Clocks | Inclusive calendar months (same month = 1; Nov→Mar = 5); unique editions (`name\|YYYY-MM`) up to the selected crossing |
+| Clocks | Prefer edition `start_date`→`end_date` → `days/30.44` (0.1 mo, min 1 day); else inclusive YM (same month = 1; Nov→Mar = 5). `months_basis` day\|ym per hit. Unique editions (`name\|YYYY-MM`) up to the selected crossing. Rolling 36mo scoring stays calendar months. |
 | Population on chart | Only spells that **crossed** the selected threshold |
 | Display filter | Done year in From–To; Nov/Int/Adv floor 2018, All-Stars 2021 — **display only**; history before the floor still counts toward months/events |
 | Divisions in UI | Novice, Intermediate, Advanced, All-Stars (Champions parsed but not plotted) |
@@ -100,7 +100,7 @@ Inside that interval there are **no points in those two divisions**: lower strea
 |-------|------------|------------|
 | Start | First point in division D | Last point in D |
 | End | Crossing allowed or required in D | First point in D+1 |
-| Length | Inclusive months + editions to threshold | Inclusive months only |
+| Length | Months (day/30.44 or YM fallback) + editions to threshold | Months only (same clock) |
 | Events axis | Meaningful | Empty by definition for D ∪ D+1 in the gap |
 
 **Row definition (when built):**
