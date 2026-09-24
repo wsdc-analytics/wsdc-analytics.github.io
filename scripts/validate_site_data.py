@@ -253,7 +253,7 @@ def validate_time_in_division_spells() -> None:
     data = load_json(path)
     if not isinstance(data, dict):
         fail("time_in_division_spells.json must be an object")
-    for field in ("data_as_of", "generated_at", "data_through", "spells", "n_spells", "divisions"):
+    for field in ("data_as_of", "generated_at", "data_through", "spells", "n_spells", "divisions", "transitions", "qualify"):
         if field not in data:
             fail(f"time_in_division_spells.json missing field: {field}")
     spells = data["spells"]
@@ -262,6 +262,14 @@ def validate_time_in_division_spells() -> None:
     n = data["n_spells"]
     if not isinstance(n, int) or n != len(spells):
         fail("time_in_division_spells.json.n_spells must equal len(spells)")
+    transitions = data["transitions"]
+    if not isinstance(transitions, list):
+        fail("time_in_division_spells.json.transitions must be a list")
+    if data.get("n_transitions") is not None and data["n_transitions"] != len(transitions):
+        fail("time_in_division_spells.json.n_transitions must equal len(transitions)")
+    qualify = data["qualify"]
+    if not isinstance(qualify, dict) or "advanced_allowed" not in qualify or "first_all_stars" not in qualify:
+        fail("time_in_division_spells.json.qualify needs advanced_allowed and first_all_stars")
     sample = spells[0]
     if not isinstance(sample, dict):
         fail("time_in_division_spells.json.spells[0] must be an object")
@@ -276,7 +284,7 @@ def validate_time_in_division_spells() -> None:
         if not isinstance(hit, dict) or "events" not in hit or "months" not in hit:
             fail(f"time_in_division_spells.json.spells[0].{key} must include months and events")
     print(
-        f"[OK] time_in_division_spells.json ({n} spells, "
+        f"[OK] time_in_division_spells.json ({n} spells, {len(transitions)} transitions, "
         f"generated_at={data.get('generated_at')}, data_through={data.get('data_through')})"
     )
 

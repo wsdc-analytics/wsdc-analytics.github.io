@@ -197,6 +197,58 @@ def rolling_sum(events: list[dict], div: str, at_ym: tuple[int, int], window: in
     return sum(e["pts"] for e in events if e["div"] == div and lo <= ym_ord(*e["ym"]) <= at)
 
 
+BUFFER_FRACS = (("p25", 0.25), ("p50", 0.50), ("p75", 0.75))
+LADDER = ["Novice", "Intermediate", "Advanced", "All-Stars", "Champions"]
+
+
+def buffer_done(
+    buffer: dict[str, dict],
+    allowed_t: float | None,
+    required_t: float | None,
+) -> bool:
+    """True when buffer marks are complete or the may/must gap has no room for them."""
+    if allowed_t is None or required_t is None:
+        return True
+    if float(required_t) - float(allowed_t) <= 0:
+        return True
+    return len(buffer) >= len(BUFFER_FRACS)
+
+
+def hit_dict(months: int, done_ym: str, events: int, **extra) -> dict:
+    out = {"months": months, "done_ym": done_ym, "events": events}
+    out.update(extra)
+    return out
+
+
+def record_buffer_marks(
+    buffer: dict[str, dict],
+    score: float,
+    months: int,
+    done_ym: str,
+    events: int,
+    allowed_t: float | None,
+    required_t: float | None,
+) -> None:
+    """Mark 25/50/75% of the may→must point gap once allowed is known."""
+    if allowed_t is None or required_t is None:
+        return
+    span = float(required_t) - float(allowed_t)
+    if span <= 0:
+        return
+    for key, frac in BUFFER_FRACS:
+        if key in buffer:
+            continue
+        target = float(allowed_t) + frac * span
+        if score >= target:
+            buffer[key] = hit_dict(
+                months,
+                done_ym,
+                events,
+                score_target=round(target, 2),
+                buffer_frac=frac,
+            )
+
+
 def find_nov_int_crossings(
     events: list[dict],
     division: str,
@@ -204,6 +256,7 @@ def find_nov_int_crossings(
     rules: dict,
 ) -> dict[str, dict]:
     reached: dict[str, dict] = {}
+    buffer: dict[str, dict] = {}
     cum = 0.0
     seen_events: set[str] = set()
     for e in events:
@@ -215,20 +268,31 @@ def find_nov_int_crossings(
         seen_events.add(e["eid"])
         cum += e["pts"]
         months = months_inclusive(t0, e["ym"])
+        done = ym_str(e["ym"])
         for kind in ("allowed", "required"):
             if kind in reached:
                 continue
             target = th.get(kind)
             if target is not None and cum >= float(target):
-                reached[kind] = {
-                    "months": months,
-                    "done_ym": ym_str(e["ym"]),
-                    "threshold": float(target),
-                    "events": len(seen_events),
-                }
-        if len(reached) == 2:
+                reached[kind] = hit_dict(months, done, len(seen_events), threshold=float(target))
+        if "allowed" in reached:
+            record_buffer_marks(
+                buffer,
+                cum,
+                months,
+                done,
+                len(seen_events),
+                reached["allowed"].get("threshold"),
+                th.get("required"),
+            )
+        if "required" in reached and buffer_done(
+            buffer, reached["allowed"].get("threshold"), th.get("required")
+        ):
             break
-    return reached
+    out = dict(reached)
+    if buffer:
+        out["buffer"] = buffer
+    return out
 
 
 def find_advanced_crossings(
@@ -243,6 +307,7 @@ def find_advanced_crossings(
     Rolling eras still evaluate the 36-month window at each event.
     """
     reached: dict[str, dict] = {}
+    buffer: dict[str, dict] = {}
     cum = 0.0
     seen_events: set[str] = set()
     for e in events:
@@ -259,20 +324,31 @@ def find_advanced_crossings(
         else:
             score = cum
         months = months_inclusive(t0, e["ym"])
+        done = ym_str(e["ym"])
         for kind in ("allowed", "required"):
             if kind in reached:
                 continue
             target = th.get(kind)
             if target is not None and score >= float(target):
-                reached[kind] = {
-                    "months": months,
-                    "done_ym": ym_str(e["ym"]),
-                    "threshold": float(target),
-                    "events": len(seen_events),
-                }
-        if len(reached) == 2:
+                reached[kind] = hit_dict(months, done, len(seen_events), threshold=float(target))
+        if "allowed" in reached:
+            record_buffer_marks(
+                buffer,
+                score,
+                months,
+                done,
+                len(seen_events),
+                reached["allowed"].get("threshold"),
+                th.get("required"),
+            )
+        if "required" in reached and buffer_done(
+            buffer, reached["allowed"].get("threshold"), th.get("required")
+        ):
             break
-    return reached
+    out = dict(reached)
+    if buffer:
+        out["buffer"] = buffer
+    return out
 
 
 def find_all_stars_crossings(
@@ -284,11 +360,15 @@ def find_all_stars_crossings(
 
     Pre-formal rules years: Champions points only (1 allowed / 10 required).
     Formal years (2021+): OR of Champions pts or All-Stars pts from the active epoch.
+    Buffer marks use Champions-point path only (numeric Champ targets).
     """
     reached: dict[str, dict] = {}
+    buffer: dict[str, dict] = {}
     as_pts = 0.0
     champ_pts = 0.0
     seen_events: set[str] = set()
+    allowed_champ_t: float | None = None
+    required_champ_t: float | None = None
     for e in events:
         if e["ym"] < t0:
             continue
@@ -303,6 +383,7 @@ def find_all_stars_crossings(
         if not specs:
             continue
         months = months_inclusive(t0, e["ym"])
+        done = ym_str(e["ym"])
         for kind, key in (
             ("allowed", "champions_allowed"),
             ("required", "champions_required"),
@@ -314,19 +395,102 @@ def find_all_stars_crossings(
                 continue
             need_c = float(spec.get("champions_points") or 0)
             need_as = float(spec.get("or_all_star_points") or 0)
+            if kind == "allowed":
+                allowed_champ_t = need_c or None
+            else:
+                required_champ_t = need_c or None
             if (need_c and champ_pts >= need_c) or (need_as and as_pts >= need_as):
-                reached[kind] = {
-                    "months": months,
-                    "done_ym": ym_str(e["ym"]),
-                    "threshold_champions": need_c,
-                    "threshold_all_stars": need_as,
-                    "champions_points_at_done": round(champ_pts, 2),
-                    "all_stars_points_at_done": round(as_pts, 2),
-                    "events": len(seen_events),
-                }
-        if len(reached) == 2:
+                reached[kind] = hit_dict(
+                    months,
+                    done,
+                    len(seen_events),
+                    threshold_champions=need_c,
+                    threshold_all_stars=need_as,
+                    champions_points_at_done=round(champ_pts, 2),
+                    all_stars_points_at_done=round(as_pts, 2),
+                )
+        if "allowed" in reached and allowed_champ_t and required_champ_t:
+            record_buffer_marks(
+                buffer,
+                champ_pts,
+                months,
+                done,
+                len(seen_events),
+                allowed_champ_t,
+                required_champ_t,
+            )
+        # Required done: stop. Champ-path buffer is best-effort (AS-OR crossings may leave it empty).
+        if "required" in reached:
             break
-    return reached
+    out = dict(reached)
+    if buffer:
+        out["buffer"] = buffer
+    return out
+
+
+def build_transitions(
+    events_by_spell_role: dict[tuple[str, str], list[dict]],
+    name_by_id: dict[str, str],
+) -> list[dict]:
+    """JT-2: inclusive months from last point in D to first point in D+1 (same role)."""
+    rows: list[dict] = []
+    for (did, role), evs in events_by_spell_role.items():
+        by_div: dict[str, list[tuple[int, int]]] = defaultdict(list)
+        for e in evs:
+            by_div[e["div"]].append(e["ym"])
+        for i in range(len(LADDER) - 1):
+            lo, hi = LADDER[i], LADDER[i + 1]
+            if lo not in by_div or hi not in by_div:
+                continue
+            last_lo = max(by_div[lo])
+            first_hi = min(by_div[hi])
+            overlap = ym_ord(*first_hi) < ym_ord(*last_lo)
+            row = {
+                "id": did,
+                "name": name_by_id.get(did) or did,
+                "role": role,
+                "from_division": lo,
+                "to_division": hi,
+                "last_ym": ym_str(last_lo),
+                "first_ym": ym_str(first_hi),
+                "overlap": overlap,
+            }
+            if not overlap:
+                row["months"] = months_inclusive(last_lo, first_hi)
+            rows.append(row)
+    rows.sort(key=lambda r: (r["from_division"], r["to_division"], r["role"], r["id"]))
+    return rows
+
+
+def build_qualify_series(
+    spells: list[dict],
+    first_pts: dict[tuple[str, str, str], tuple[int, int]],
+) -> dict:
+    """JN-1b: yearly counts — Advanced may (eligible) vs first All-Stars point."""
+    adv_allowed: dict[str, int] = defaultdict(int)
+    first_as: dict[str, int] = defaultdict(int)
+    for s in spells:
+        if s.get("division") == "Advanced" and "allowed" in s:
+            y = str(s["allowed"]["done_ym"])[:4]
+            adv_allowed[y] += 1
+    for (did, role, div), t0 in first_pts.items():
+        if div != "All-Stars":
+            continue
+        first_as[f"{t0[0]:04d}"] += 1
+
+    def series(by_year: dict[str, int]) -> list[dict]:
+        years = sorted(by_year)
+        cum = 0
+        out = []
+        for y in years:
+            cum += by_year[y]
+            out.append({"year": int(y), "n": by_year[y], "cumulative": cum})
+        return out
+
+    return {
+        "advanced_allowed": series(adv_allowed),
+        "first_all_stars": series(first_as),
+    }
 
 
 def main() -> None:
@@ -431,9 +595,13 @@ def main() -> None:
             row["allowed"] = crossings["allowed"]
         if "required" in crossings:
             row["required"] = crossings["required"]
+        if "buffer" in crossings:
+            row["buffer"] = crossings["buffer"]
         spells.append(row)
 
     spells.sort(key=lambda r: (r["division"], r["role"], r["id"]))
+    transitions = build_transitions(events_by_spell_role, name_by_id)
+    qualify = build_qualify_series(spells, first_pts)
 
     payload = {
         "data_as_of": data_as_of,
@@ -443,13 +611,18 @@ def main() -> None:
         "bin_months": 6,
         "bin_events": 2,
         "divisions": DASHBOARD_DIVISIONS,
+        "ladder": LADDER,
         "n_spells": len(spells),
+        "n_transitions": len(transitions),
         "excluded_counts": excluded,
         "methodology": {
             "spell": "dancer × division × event_role",
             "months": "inclusive calendar months from first_ym through done_ym (same month = 1; Nov→Mar = 5); day-of-month unknown",
             "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
-            "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym",
+            "buffer": "p25/p50/p75 = first reach of allowed + frac×(required−allowed) points; share among spells that reached May",
+            "pause": "JT-2 inclusive months from last point in division D to first in D+1 (same role); overlap flagged and excluded from pause median",
+            "qualify": "JN-1b yearly n and cumulative: Advanced allowed (eligible) vs first All-Stars point (entered)",
+            "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym; pause/qualify sheets do not use the may/must year floor",
             "data_stamp": "generated_at = calendar date this JSON was rebuilt; data_through = latest event year-month in the source export",
             "all_stars": (
                 "pre-formal rules years: Champions pts only (1 may / 10 must) on real events; "
@@ -458,11 +631,13 @@ def main() -> None:
             ),
         },
         "spells": spells,
+        "transitions": transitions,
+        "qualify": qualify,
     }
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"Wrote {len(spells)} spells -> {args.output}")
+    print(f"Wrote {len(spells)} spells, {len(transitions)} transitions -> {args.output}")
     print(f"generated_at={generated_at} data_through={data_through} excluded={excluded}")
 
 

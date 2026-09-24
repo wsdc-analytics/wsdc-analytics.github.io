@@ -97,6 +97,7 @@
       width: var(--wsdc-dd-width, 7.5rem);
       min-width: 0;
     }
+    .tid-filters .filter-field:has(#sheetSelect) { --wsdc-dd-width: 11.5rem; }
     .tid-filters .filter-field:has(#divisionSelect) { --wsdc-dd-width: 9rem; }
     .tid-filters .filter-field:has(#thresholdSelect),
     .tid-filters .filter-field:has(#roleSelect) { --wsdc-dd-width: 7.25rem; }
@@ -462,12 +463,21 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against events needed to reach that threshold in the same division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
+        <p class="subtitle">Board-aligned sheets: <strong>Threshold</strong> (May/Must dwell — including Division <em>All-Stars</em> as before), <strong>May→MUST corridor</strong> (buffer p25/p50/p75), <strong>Division pause</strong> (JT-2 gap), and <strong>AS entry counts</strong> (JN-1b yearly totals — not the All-Stars dwell chart). Default is Threshold.</p>
       </header>
 
       <div class="viz-filters-row">
         <div class="viz-filters-row__gutter" aria-hidden="true"></div>
         <div class="tid-filters" role="group" aria-label="Filters">
+          <div class="filter-field">
+            <label class="filter-label" for="sheetSelect" id="sheetLabel">Sheet</label>
+            <select id="sheetSelect" class="wsdc-select" aria-labelledby="sheetLabel">
+              <option value="dwell" selected>Threshold</option>
+              <option value="corridor">May→MUST corridor</option>
+              <option value="pause">Division pause</option>
+              <option value="qualify">AS entry counts</option>
+            </select>
+          </div>
           <div class="filter-field">
             <label class="filter-label" for="divisionSelect" id="divisionLabel">Division</label>
             <select id="divisionSelect" class="wsdc-select" aria-labelledby="divisionLabel">
@@ -550,7 +560,7 @@
             </div>
             <div class="table-scroll" id="tableScroll">
               <table class="tid-table">
-                <thead>
+                <thead id="tableHead">
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -599,6 +609,9 @@
             <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = medians; <em>≤ both</em> = share at or below both medians (lower-left of the median cross). On Dynamics, click a card to choose the plotted metric (KPIs always summarize both roles).</li>
             <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; light role tint; CSV exports the full filtered set (includes threshold).</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
+            <li><strong>May→MUST corridor (JT-3):</strong> among spells that reached <em>May</em>, buffer steps p25/p50/p75 = first month at allowed + fraction×(required−allowed) points; <em>Must</em> = required crossing when present. Dynamics: among each May done year cohort, share who later reached each buffer step (n≥10 to plot).</li>
+            <li><strong>Division pause (JT-2):</strong> inclusive months from last point in division D to first in D+1 (same role). Division filter = <em>from</em> division (All-Stars → Champions entry). Overlap spells flagged; median pause excludes overlaps. Year window uses entry (<em>first_ym</em>) year — no May/Must floor.</li>
+            <li><strong>AS entry counts (JN-1b):</strong> yearly n and cumulative — Advanced <em>allowed</em> (eligible for All-Stars) vs first All-Stars point (entered). Separate from Threshold → All-Stars (dwell to Champions May/Must).</li>
           </ul>
         </div>
       </div>
@@ -625,10 +638,25 @@
     months: 'Median months',
     events: 'Median events',
     both: '≤ both',
+    p25: '% reached p25',
+    p50: '% reached p50',
+    p75: '% reached p75',
+    must: '% reached Must',
+    overlap: 'Overlap share',
+    cum_adv: 'Cumulative Advanced allowed',
+    cum_as: 'Cumulative first All-Stars',
+  };
+
+  const PAUSE_FROM = {
+    Novice: 'Novice',
+    Intermediate: 'Intermediate',
+    Advanced: 'Advanced',
+    'All-Stars': 'All-Stars',
   };
 
   const state = {
     data: null,
+    sheet: 'dwell',
     division: 'Novice',
     threshold: 'allowed',
     role: 'All',
@@ -651,6 +679,7 @@
   const medianGuidesPlugin = {
     id: 'medianGuides',
     afterDatasetsDraw(chart) {
+      if (state.sheet !== 'dwell') return;
       if (state.mode !== 'scatter' && state.mode !== 'density') return;
       const mx = state.medianMonths;
       const my = state.medianEvents;
@@ -692,6 +721,40 @@
     return Number.isFinite(y) ? y : null;
   }
 
+  function ymYear(ym) {
+    if (!ym) return null;
+    const y = Number(String(ym).slice(0, 4));
+    return Number.isFinite(y) ? y : null;
+  }
+
+  function pauseFromDivision(division) {
+    return PAUSE_FROM[division] ?? division;
+  }
+
+  function corridorStepReached(s, step) {
+    if (step === 'must') return !!(s.required && s.required.done_ym);
+    const buf = s.buffer && s.buffer[step];
+    return !!(buf && buf.done_ym);
+  }
+
+  function corridorStepMonths(s, step) {
+    if (step === 'must') return s.required ? s.required.months : null;
+    const buf = s.buffer && s.buffer[step];
+    return buf && buf.months != null ? buf.months : null;
+  }
+
+  function corridorStepEvents(s, step) {
+    if (step === 'must') return s.required ? spellEvents(s, 'required') : null;
+    const buf = s.buffer && s.buffer[step];
+    return buf && buf.events != null ? buf.events : null;
+  }
+
+  function corridorShare(rows, step) {
+    if (!rows.length) return null;
+    const n = rows.filter((s) => corridorStepReached(s, step)).length;
+    return (100 * n) / rows.length;
+  }
+
   function median(arr) {
     if (!arr.length) return null;
     const a = arr.slice().sort((x, y) => x - y);
@@ -716,8 +779,102 @@
     return YEAR_FLOOR[division] ?? 2018;
   }
 
+  function syncSheetChrome() {
+    const sheet = state.sheet;
+    const thrField = document.getElementById('thresholdSelect')?.closest('.filter-field');
+    const divField = document.getElementById('divisionSelect')?.closest('.filter-field');
+    const roleField = document.getElementById('roleSelect')?.closest('.filter-field');
+    if (thrField) thrField.classList.toggle('is-hidden', sheet !== 'dwell');
+    if (divField) divField.classList.toggle('is-hidden', sheet === 'qualify');
+    if (roleField) roleField.classList.toggle('is-hidden', sheet === 'qualify');
+
+    const modeSelect = document.getElementById('modeSelect');
+    const modeWanted =
+      sheet === 'corridor' || sheet === 'qualify'
+        ? [
+            { value: 'table', text: 'Table' },
+            { value: 'dynamics', text: 'Dynamics' },
+          ]
+        : [
+            { value: 'table', text: 'Table' },
+            { value: 'scatter', text: 'Scatter' },
+            { value: 'density', text: 'Density' },
+            { value: 'dynamics', text: 'Dynamics' },
+          ];
+    const curModeHtml = [...modeSelect.options].map((o) => `${o.value}|${o.textContent}`).join(';');
+    const nextModeHtml = modeWanted.map((o) => `${o.value}|${o.text}`).join(';');
+    if (curModeHtml !== nextModeHtml) {
+      modeSelect.replaceChildren();
+      modeWanted.forEach(({ value, text }) => {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = text;
+        modeSelect.appendChild(opt);
+      });
+      if (!modeWanted.some((o) => o.value === state.mode)) {
+        state.mode = 'table';
+        destroyChart();
+      }
+      modeSelect.value = state.mode;
+      if (window.WsdcSelect) WsdcSelect.refresh(modeSelect);
+    }
+
+    const lblN = document.querySelector('#kpiBtnN .lbl');
+    const lblM = document.querySelector('#kpiBtnMonths .lbl');
+    const lblE = document.querySelector('#kpiBtnEvents .lbl');
+    const lblB = document.querySelector('#kpiBtnBoth .lbl');
+    const btnN = document.getElementById('kpiBtnN');
+    const btnM = document.getElementById('kpiBtnMonths');
+    const btnE = document.getElementById('kpiBtnEvents');
+    const btnB = document.getElementById('kpiBtnBoth');
+
+    btnN.hidden = false;
+    btnM.hidden = false;
+    btnE.hidden = false;
+    btnB.hidden = false;
+
+    if (sheet === 'dwell') {
+      lblN.textContent = 'Dancers';
+      lblM.textContent = 'Median months';
+      lblE.textContent = 'Median events';
+      lblB.textContent = '≤ both';
+      btnN.setAttribute('data-metric', 'n');
+      btnM.setAttribute('data-metric', 'months');
+      btnE.setAttribute('data-metric', 'events');
+      btnB.setAttribute('data-metric', 'both');
+    } else if (sheet === 'corridor') {
+      lblN.textContent = 'May reachers';
+      lblM.textContent = '% p25';
+      lblE.textContent = '% p50';
+      lblB.textContent = '% p75';
+      btnN.setAttribute('data-metric', 'n');
+      btnM.setAttribute('data-metric', 'p25');
+      btnE.setAttribute('data-metric', 'p50');
+      btnB.setAttribute('data-metric', 'p75');
+    } else if (sheet === 'pause') {
+      lblN.textContent = 'Transitions';
+      lblM.textContent = 'Median pause mo';
+      lblE.textContent = 'Overlap share';
+      lblB.textContent = '';
+      btnN.setAttribute('data-metric', 'n');
+      btnM.setAttribute('data-metric', 'months');
+      btnE.setAttribute('data-metric', 'overlap');
+      btnB.hidden = true;
+    } else if (sheet === 'qualify') {
+      lblN.textContent = 'Adv allowed (cum)';
+      lblM.textContent = 'First AS (cum)';
+      lblE.textContent = '';
+      lblB.textContent = '';
+      btnN.removeAttribute('data-metric');
+      btnM.removeAttribute('data-metric');
+      btnE.hidden = true;
+      btnB.hidden = true;
+    }
+  }
+
   /** Role control: filter on Scatter/Density/Table; view mode on Dynamics. */
   function syncRoleControl() {
+    if (state.sheet === 'qualify') return;
     const select = document.getElementById('roleSelect');
     const label = document.getElementById('roleLabel');
     const filters = document.querySelector('.tid-filters');
@@ -765,7 +922,7 @@
   }
 
   /** @param {{ ignoreYears?: boolean }} [opts] */
-  function filteredRows(opts) {
+  function filterDwellSpells(opts) {
     const ignoreYears = !!(opts && opts.ignoreYears);
     const d = state.data;
     if (!d) return [];
@@ -774,7 +931,7 @@
     const y1 = state.yearTo;
     const floor = yearFloorForDivision(state.division);
     const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
-    return d.spells.filter((s) => {
+    return (d.spells || []).filter((s) => {
       if (s.division !== state.division) return false;
       if (roleFilter && s.role !== roleFilter) return false;
       const hit = s[thr];
@@ -787,11 +944,62 @@
     });
   }
 
-  function kpiRows() {
-    return filteredRows({ ignoreYears: state.mode === 'dynamics' });
+  /** @param {{ ignoreYears?: boolean }} [opts] */
+  function filterCorridorSpells(opts) {
+    const ignoreYears = !!(opts && opts.ignoreYears);
+    const d = state.data;
+    if (!d) return [];
+    const y0 = state.yearFrom;
+    const y1 = state.yearTo;
+    const floor = yearFloorForDivision(state.division);
+    const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
+    return (d.spells || []).filter((s) => {
+      if (s.division !== state.division) return false;
+      if (roleFilter && s.role !== roleFilter) return false;
+      if (!s.allowed || !s.allowed.done_ym) return false;
+      const y = doneYear(s.allowed);
+      if (y == null || y < floor) return false;
+      if (ignoreYears) return true;
+      if (y0 == null || y1 == null) return false;
+      return y >= y0 && y <= y1;
+    });
   }
 
-  function updateKpis(rows, thr) {
+  /** @param {{ ignoreYears?: boolean }} [opts] */
+  function filteredSpells(opts) {
+    if (state.sheet === 'dwell') return filterDwellSpells(opts);
+    if (state.sheet === 'corridor') return filterCorridorSpells(opts);
+    return [];
+  }
+
+  /** @param {{ ignoreYears?: boolean }} [opts] */
+  function filteredTransitions(opts) {
+    const ignoreYears = !!(opts && opts.ignoreYears);
+    const d = state.data;
+    if (!d || !d.transitions) return [];
+    const fromDiv = pauseFromDivision(state.division);
+    const y0 = state.yearFrom;
+    const y1 = state.yearTo;
+    const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
+    return d.transitions.filter((t) => {
+      if (t.from_division !== fromDiv) return false;
+      if (roleFilter && t.role !== roleFilter) return false;
+      const y = ymYear(t.first_ym);
+      if (y == null) return false;
+      if (ignoreYears) return true;
+      if (y0 == null || y1 == null) return false;
+      return y >= y0 && y <= y1;
+    });
+  }
+
+  function kpiRows() {
+    if (state.sheet === 'pause') {
+      return filteredTransitions({ ignoreYears: state.mode === 'dynamics' });
+    }
+    return filteredSpells({ ignoreYears: state.mode === 'dynamics' });
+  }
+
+  function updateDwellKpis(rows, thr) {
     const months = rows.map((s) => s[thr].months);
     const events = rows.map((s) => spellEvents(s, thr));
     state.medianMonths = median(months);
@@ -816,9 +1024,79 @@
     }
   }
 
+  function updateCorridorKpis(rows) {
+    state.medianMonths = null;
+    state.medianEvents = null;
+    document.getElementById('kpiN').textContent = String(rows.length);
+    const steps = ['p25', 'p50', 'p75'];
+    const els = [
+      document.getElementById('kpiMonths'),
+      document.getElementById('kpiEvents'),
+      document.getElementById('kpiMedianBox'),
+    ];
+    steps.forEach((step, i) => {
+      const sh = corridorShare(rows, step);
+      els[i].textContent = sh == null ? '—' : `${Math.round(sh * 10) / 10}%`;
+    });
+    const mustSh = corridorShare(rows, 'must');
+    if (mustSh != null) {
+      document.getElementById('kpiMedianBox').title = `% Must: ${Math.round(mustSh * 10) / 10}%`;
+    } else {
+      document.getElementById('kpiMedianBox').removeAttribute('title');
+    }
+  }
+
+  function updatePauseKpis(rows) {
+    const non = rows.filter((t) => !t.overlap);
+    const months = non.map((t) => t.months).filter((m) => m != null && Number.isFinite(m));
+    state.medianMonths = median(months);
+    state.medianEvents = null;
+    document.getElementById('kpiN').textContent = String(non.length);
+    document.getElementById('kpiMonths').textContent =
+      state.medianMonths == null ? '—' : String(Math.round(state.medianMonths * 10) / 10);
+    const overlapN = rows.filter((t) => t.overlap).length;
+    const overlapSh = rows.length ? (100 * overlapN) / rows.length : null;
+    document.getElementById('kpiEvents').textContent =
+      overlapSh == null ? '—' : `${Math.round(overlapSh * 10) / 10}%`;
+    document.getElementById('kpiMedianBox').textContent = '—';
+    document.getElementById('kpiMedianBox').removeAttribute('title');
+  }
+
+  function updateQualifyKpis() {
+    state.medianMonths = null;
+    state.medianEvents = null;
+    const q = (state.data && state.data.qualify) || {};
+    const adv = q.advanced_allowed || [];
+    const as = q.first_all_stars || [];
+    const lastAdv = adv.length ? adv[adv.length - 1].cumulative : null;
+    const lastAs = as.length ? as[as.length - 1].cumulative : null;
+    document.getElementById('kpiN').textContent = lastAdv == null ? '—' : String(lastAdv);
+    document.getElementById('kpiMonths').textContent = lastAs == null ? '—' : String(lastAs);
+    document.getElementById('kpiEvents').textContent = '—';
+    document.getElementById('kpiMedianBox').textContent = '—';
+  }
+
+  function updateKpis(rows, thr) {
+    if (state.sheet === 'corridor') {
+      updateCorridorKpis(rows);
+      return;
+    }
+    if (state.sheet === 'pause') {
+      updatePauseKpis(rows);
+      return;
+    }
+    if (state.sheet === 'qualify') {
+      updateQualifyKpis();
+      return;
+    }
+    updateDwellKpis(rows, thr);
+  }
+
   function syncKpiChrome() {
     const row = document.getElementById('kpiRow');
-    const selectable = state.mode === 'dynamics';
+    const selectable =
+      state.mode === 'dynamics' &&
+      (state.sheet === 'dwell' || state.sheet === 'pause');
     row.classList.toggle('is-selectable', selectable);
     document.getElementById('kpiHint').hidden = !selectable;
     row.querySelectorAll('.kpi').forEach((btn) => {
@@ -829,7 +1107,9 @@
   }
 
   function updateYearFieldsVisibility() {
-    const hide = state.mode === 'dynamics';
+    const hide =
+      state.sheet === 'qualify' ||
+      (state.mode === 'dynamics' && state.sheet !== 'pause');
     document.getElementById('yearFromField').classList.toggle('is-hidden', hide);
     document.getElementById('yearToField').classList.toggle('is-hidden', hide);
   }
@@ -837,6 +1117,37 @@
   function updateLegend() {
     const row = document.getElementById('legendRow');
     row.replaceChildren();
+    if (state.sheet === 'corridor' && state.mode === 'dynamics') {
+      [
+        ['p25', '#6366F1'],
+        ['p50', '#0EA5E9'],
+        ['p75', '#10B981'],
+        ['must', '#F59E0B'],
+      ].forEach(([label, color]) => {
+        const span = document.createElement('span');
+        const sw = document.createElement('span');
+        sw.className = 'swatch';
+        sw.style.background = color;
+        span.append(sw, document.createTextNode(label === 'must' ? 'Must' : label));
+        row.appendChild(span);
+      });
+      return;
+    }
+    if (state.sheet === 'qualify' && state.mode === 'dynamics') {
+      [
+        ['Advanced allowed', COLOR.Leader],
+        ['First All-Stars', COLOR.Follower],
+      ].forEach(([label, color]) => {
+        const span = document.createElement('span');
+        const sw = document.createElement('span');
+        sw.className = 'swatch';
+        sw.style.background = color;
+        span.append(sw, document.createTextNode(label));
+        row.appendChild(span);
+      });
+      return;
+    }
+    if (state.sheet !== 'dwell') return;
     if (state.mode === 'table' || state.mode === 'density') return;
     if (state.mode === 'dynamics') {
       if (state.role !== 'Both') return;
@@ -1046,6 +1357,138 @@
     return [dynamicsLineDataset(METRIC_LABEL[state.metric], data, lineColor)];
   }
 
+  function corridorDynamicsSeries(rowsAllYears, step) {
+    const byYear = new Map();
+    rowsAllYears.forEach((s) => {
+      const y = doneYear(s.allowed);
+      if (y == null) return;
+      if (!byYear.has(y)) byYear.set(y, []);
+      byYear.get(y).push(s);
+    });
+    if (!byYear.size) return [];
+    const years = [...byYear.keys()].sort((a, b) => a - b);
+    const yMin = years[0];
+    const yMax = years[years.length - 1];
+    const data = [];
+    for (let y = yMin; y <= yMax; y++) {
+      const group = byYear.get(y) || [];
+      const n = group.length;
+      if (n === 0) {
+        data.push({ x: y, y: null, n: 0 });
+        continue;
+      }
+      const val = n < MIN_N_LINE ? null : corridorShare(group, step);
+      data.push({ x: y, y: val, n });
+    }
+    return data;
+  }
+
+  function corridorDynamicsDatasets(rowsAllYears) {
+    const colors = { p25: '#6366F1', p50: '#0EA5E9', p75: '#10B981', must: '#F59E0B' };
+    return ['p25', 'p50', 'p75', 'must'].map((step) =>
+      dynamicsLineDataset(
+        step === 'must' ? 'Must' : step,
+        corridorDynamicsSeries(rowsAllYears, step),
+        colors[step]
+      )
+    );
+  }
+
+  function pauseDynamicsSeries(rowsAllYears) {
+    const byYear = new Map();
+    rowsAllYears.forEach((t) => {
+      const y = ymYear(t.first_ym);
+      if (y == null) return;
+      if (!byYear.has(y)) byYear.set(y, []);
+      byYear.get(y).push(t);
+    });
+    if (!byYear.size) return [];
+    const years = [...byYear.keys()].sort((a, b) => a - b);
+    const yMin = years[0];
+    const yMax = years[years.length - 1];
+    const data = [];
+    for (let y = yMin; y <= yMax; y++) {
+      const group = byYear.get(y) || [];
+      const total = group.length;
+      if (total === 0) {
+        data.push({ x: y, y: null, n: 0 });
+        continue;
+      }
+      const non = group.filter((t) => !t.overlap);
+      const n = non.length;
+      let val = null;
+      if (state.metric === 'n') {
+        val = n;
+      } else if (state.metric === 'overlap') {
+        val = total < MIN_N_LINE ? null : (100 * group.filter((t) => t.overlap).length) / total;
+      } else {
+        const months = non.map((t) => t.months).filter((m) => m != null);
+        val = n < MIN_N_LINE ? null : median(months);
+      }
+      data.push({ x: y, y: val, n: state.metric === 'n' ? n : total });
+    }
+    return data;
+  }
+
+  function pauseHistogramDataset(rows) {
+    const non = rows.filter((t) => !t.overlap && t.months != null);
+    const bins = new Map();
+    const binM = state.binM;
+    non.forEach((t) => {
+      const bx = Math.floor(t.months / binM) * binM;
+      bins.set(bx, (bins.get(bx) || 0) + 1);
+    });
+    const keys = [...bins.keys()].sort((a, b) => a - b);
+    return [{
+      label: 'Pause months',
+      data: keys.map((k) => ({ x: k + binM / 2, y: bins.get(k) })),
+      backgroundColor: 'rgba(99, 102, 241, 0.55)',
+      borderColor: '#6366F1',
+      borderWidth: 1,
+      barPercentage: 0.92,
+      categoryPercentage: 0.95,
+    }];
+  }
+
+  function qualifyDynamicsDatasets() {
+    const q = (state.data && state.data.qualify) || {};
+    const adv = q.advanced_allowed || [];
+    const as = q.first_all_stars || [];
+    const advData = adv.map((r) => ({ x: r.year, y: r.cumulative, n: r.n }));
+    const asData = as.map((r) => ({ x: r.year, y: r.cumulative, n: r.n }));
+    return [
+      dynamicsLineDataset('Advanced allowed', advData, COLOR.Leader),
+      dynamicsLineDataset('First All-Stars', asData, COLOR.Follower),
+    ];
+  }
+
+  function applyPauseBarScaleLimits(chart, dataset) {
+    const xScale = chart.options.scales.x;
+    const yScale = chart.options.scales.y;
+    xScale.type = 'linear';
+    yScale.type = 'linear';
+    xScale.title.text = 'Pause months (bin center)';
+    yScale.title.text = 'Count';
+    xScale.beginAtZero = true;
+    yScale.beginAtZero = true;
+    const pts = (dataset && dataset[0] && dataset[0].data) || [];
+    if (!pts.length) {
+      delete xScale.max;
+      yScale.max = 10;
+      return;
+    }
+    const xs = pts.map((p) => p.x);
+    const ys = pts.map((p) => p.y);
+    xScale.min = 0;
+    xScale.max = axisPadMax(Math.max(...xs));
+    yScale.max = axisPadMax(Math.max(...ys));
+  }
+
+  function applyQualifyScaleLimits(chart, datasets) {
+    applyDynamicsScaleLimits(chart, datasets);
+    chart.options.scales.y.title.text = 'Cumulative dancers';
+  }
+
   function applyScatterScaleLimits(chart, rows, thr) {
     const xScale = chart.options.scales.x;
     const yScale = chart.options.scales.y;
@@ -1156,9 +1599,15 @@
                 const raw = item.raw;
                 if (state.mode === 'dynamics') {
                   if (raw.y == null) {
-                    return state.role === 'Both'
+                    return state.role === 'Both' || state.sheet === 'corridor' || state.sheet === 'qualify'
                       ? `${item.dataset.label} · No data`
                       : 'No data';
+                  }
+                  if (state.sheet === 'qualify') {
+                    return `${item.dataset.label}: ${raw.y} (n=${raw.n} that year)`;
+                  }
+                  if (state.sheet === 'corridor') {
+                    return `${item.dataset.label}: ${Math.round(raw.y * 10) / 10}% · n=${raw.n}`;
                   }
                   if (state.metric === 'n') {
                     return state.role === 'Both'
@@ -1175,6 +1624,9 @@
                     `${METRIC_LABEL[state.metric]}: ${val}`,
                     `Dancers: ${raw.n}`,
                   ];
+                }
+                if (state.sheet === 'pause' && state.mode !== 'table') {
+                  return [`Months: ${Math.round(raw.x)}`, `Count: ${raw.y}`];
                 }
                 if (raw?.raw) {
                   const s = raw.raw;
@@ -1224,9 +1676,80 @@
     return state.chart;
   }
 
-  function sortedTableRows(rows, thr) {
+  function setTableHead(cells) {
+    const tr = document.querySelector('#tableHead tr');
+    if (!tr) return;
+    tr.replaceChildren();
+    cells.forEach((text) => {
+      const th = document.createElement('th');
+      th.textContent = text;
+      tr.appendChild(th);
+    });
+  }
+
+  function tableRowsForSheet() {
+    if (state.sheet === 'corridor') {
+      return filterCorridorSpells()
+        .map((s) => ({
+          id: s.id,
+          name: s.name,
+          role: s.role,
+          may_ym: s.allowed.done_ym,
+          m_p25: corridorStepMonths(s, 'p25'),
+          m_p50: corridorStepMonths(s, 'p50'),
+          m_p75: corridorStepMonths(s, 'p75'),
+          m_must: corridorStepMonths(s, 'must'),
+          e_p25: corridorStepEvents(s, 'p25'),
+          e_p50: corridorStepEvents(s, 'p50'),
+          e_p75: corridorStepEvents(s, 'p75'),
+          e_must: corridorStepEvents(s, 'must'),
+        }))
+        .sort((a, b) => {
+          const am = a.m_p25 ?? a.m_must ?? 9999;
+          const bm = b.m_p25 ?? b.m_must ?? 9999;
+          if (am !== bm) return am - bm;
+          return String(a.name).localeCompare(String(b.name));
+        });
+    }
+    if (state.sheet === 'pause') {
+      return filteredTransitions()
+        .map((t) => ({
+          id: t.id,
+          name: t.name,
+          role: t.role,
+          from_division: t.from_division,
+          to_division: t.to_division,
+          last_ym: t.last_ym,
+          first_ym: t.first_ym,
+          months: t.overlap ? null : t.months,
+          overlap: t.overlap,
+        }))
+        .sort((a, b) => {
+          const am = a.months ?? 9999;
+          const bm = b.months ?? 9999;
+          if (am !== bm) return am - bm;
+          return String(a.name).localeCompare(String(b.name));
+        });
+    }
+    if (state.sheet === 'qualify') {
+      const q = (state.data && state.data.qualify) || {};
+      const adv = q.advanced_allowed || [];
+      const as = q.first_all_stars || [];
+      const byYear = new Map();
+      adv.forEach((r) => {
+        byYear.set(r.year, { year: r.year, adv_n: r.n, adv_cum: r.cumulative, as_n: null, as_cum: null });
+      });
+      as.forEach((r) => {
+        const cur = byYear.get(r.year) || { year: r.year, adv_n: null, adv_cum: null, as_n: null, as_cum: null };
+        cur.as_n = r.n;
+        cur.as_cum = r.cumulative;
+        byYear.set(r.year, cur);
+      });
+      return [...byYear.values()].sort((a, b) => a.year - b.year);
+    }
+    const thr = state.threshold;
     const thrLabel = thr === 'allowed' ? 'May' : 'Must';
-    return rows
+    return filterDwellSpells()
       .map((s) => ({
         id: s.id,
         name: s.name,
@@ -1245,16 +1768,60 @@
       });
   }
 
-  function renderTable() {
-    const thr = state.threshold;
-    const rows = sortedTableRows(filteredRows(), thr);
-    state.tableRows = rows;
-    const maxPage = Math.max(0, Math.ceil(rows.length / PAGE_SIZE) - 1);
-    if (state.tablePage > maxPage) state.tablePage = maxPage;
-    const start = state.tablePage * PAGE_SIZE;
-    const pageRows = rows.slice(start, start + PAGE_SIZE);
+  function renderTableBody(pageRows) {
     const tbody = document.getElementById('tableBody');
     tbody.replaceChildren();
+    if (state.sheet === 'corridor') {
+      setTableHead([
+        'ID', 'Name', 'Role', 'May ym',
+        'Mo p25', 'Mo p50', 'Mo p75', 'Mo must',
+        'Ev p25', 'Ev p50', 'Ev p75', 'Ev must',
+      ]);
+      pageRows.forEach((r) => {
+        const tr = document.createElement('tr');
+        tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
+        const cell = (v) => (v == null ? '—' : v);
+        tr.innerHTML =
+          `<td>${r.id}</td><td>${escapeHtml(r.name)}</td><td>${r.role}</td><td>${r.may_ym}</td>` +
+          `<td>${cell(r.m_p25)}</td><td>${cell(r.m_p50)}</td><td>${cell(r.m_p75)}</td><td>${cell(r.m_must)}</td>` +
+          `<td>${cell(r.e_p25)}</td><td>${cell(r.e_p50)}</td><td>${cell(r.e_p75)}</td><td>${cell(r.e_must)}</td>`;
+        tbody.appendChild(tr);
+      });
+      return;
+    }
+    if (state.sheet === 'pause') {
+      setTableHead([
+        'ID', 'Name', 'Role', 'From', 'To', 'Last ym', 'Entry ym', 'Months', 'Overlap',
+      ]);
+      pageRows.forEach((r) => {
+        const tr = document.createElement('tr');
+        tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
+        tr.innerHTML =
+          `<td>${r.id}</td><td>${escapeHtml(r.name)}</td><td>${r.role}</td>` +
+          `<td>${r.from_division}</td><td>${r.to_division}</td>` +
+          `<td>${r.last_ym}</td><td>${r.first_ym}</td>` +
+          `<td>${r.months == null ? '—' : r.months}</td><td>${r.overlap ? 'Yes' : 'No'}</td>`;
+        tbody.appendChild(tr);
+      });
+      return;
+    }
+    if (state.sheet === 'qualify') {
+      setTableHead([
+        'Year', 'Adv n', 'Adv cumulative', 'First AS n', 'First AS cumulative',
+      ]);
+      pageRows.forEach((r) => {
+        const tr = document.createElement('tr');
+        const cell = (v) => (v == null ? '—' : v);
+        tr.innerHTML =
+          `<td>${r.year}</td><td>${cell(r.adv_n)}</td><td>${cell(r.adv_cum)}</td>` +
+          `<td>${cell(r.as_n)}</td><td>${cell(r.as_cum)}</td>`;
+        tbody.appendChild(tr);
+      });
+      return;
+    }
+    setTableHead([
+      'ID', 'Name', 'Role', 'Division', 'First ym', 'Done ym', 'Months', 'Events',
+    ]);
     pageRows.forEach((r) => {
       const tr = document.createElement('tr');
       tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
@@ -1269,6 +1836,16 @@
         `<td>${r.events}</td>`;
       tbody.appendChild(tr);
     });
+  }
+
+  function renderTable() {
+    const rows = tableRowsForSheet();
+    state.tableRows = rows;
+    const maxPage = Math.max(0, Math.ceil(rows.length / PAGE_SIZE) - 1);
+    if (state.tablePage > maxPage) state.tablePage = maxPage;
+    const start = state.tablePage * PAGE_SIZE;
+    const pageRows = rows.slice(start, start + PAGE_SIZE);
+    renderTableBody(pageRows);
     const from = rows.length ? start + 1 : 0;
     const to = Math.min(start + PAGE_SIZE, rows.length);
     document.getElementById('tablePageInfo').textContent =
@@ -1288,26 +1865,58 @@
 
   function downloadCsv() {
     const rows = state.tableRows;
-    const header = ['id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events', 'threshold'];
-    const lines = [header.join(',')];
-    rows.forEach((r) => {
-      lines.push([
-        r.id,
-        csvEscape(r.name),
-        r.role,
-        r.division,
-        r.first_ym,
-        r.done_ym,
-        r.months,
-        r.events,
-        r.threshold,
-      ].join(','));
-    });
+    let header;
+    let lines;
+    let fname;
+    if (state.sheet === 'corridor') {
+      header = [
+        'id', 'name', 'role', 'may_ym',
+        'months_p25', 'months_p50', 'months_p75', 'months_must',
+        'events_p25', 'events_p50', 'events_p75', 'events_must',
+      ];
+      lines = [header.join(',')];
+      rows.forEach((r) => {
+        lines.push([
+          r.id, csvEscape(r.name), r.role, r.may_ym,
+          r.m_p25 ?? '', r.m_p50 ?? '', r.m_p75 ?? '', r.m_must ?? '',
+          r.e_p25 ?? '', r.e_p50 ?? '', r.e_p75 ?? '', r.e_must ?? '',
+        ].join(','));
+      });
+      fname = `time_in_division_corridor_${state.division}_${state.role}.csv`;
+    } else if (state.sheet === 'pause') {
+      header = ['id', 'name', 'role', 'from_division', 'to_division', 'last_ym', 'first_ym', 'months', 'overlap'];
+      lines = [header.join(',')];
+      rows.forEach((r) => {
+        lines.push([
+          r.id, csvEscape(r.name), r.role, r.from_division, r.to_division,
+          r.last_ym, r.first_ym, r.months ?? '', r.overlap ? 'yes' : 'no',
+        ].join(','));
+      });
+      fname = `time_in_division_pause_${state.division}_${state.role}.csv`;
+    } else if (state.sheet === 'qualify') {
+      header = ['year', 'advanced_allowed_n', 'advanced_allowed_cumulative', 'first_all_stars_n', 'first_all_stars_cumulative'];
+      lines = [header.join(',')];
+      rows.forEach((r) => {
+        lines.push([
+          r.year, r.adv_n ?? '', r.adv_cum ?? '', r.as_n ?? '', r.as_cum ?? '',
+        ].join(','));
+      });
+      fname = 'time_in_division_qualify.csv';
+    } else {
+      header = ['id', 'name', 'role', 'division', 'first_ym', 'done_ym', 'months', 'events', 'threshold'];
+      lines = [header.join(',')];
+      rows.forEach((r) => {
+        lines.push([
+          r.id, csvEscape(r.name), r.role, r.division, r.first_ym, r.done_ym, r.months, r.events, r.threshold,
+        ].join(','));
+      });
+      const thr = state.threshold === 'allowed' ? 'may' : 'must';
+      fname = `time_in_division_${state.division}_${thr}_${state.role}.csv`;
+    }
     const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
-    const thr = state.threshold === 'allowed' ? 'may' : 'must';
     a.href = URL.createObjectURL(blob);
-    a.download = `time_in_division_${state.division}_${thr}_${state.role}.csv`;
+    a.download = fname;
     a.click();
     URL.revokeObjectURL(a.href);
   }
@@ -1318,34 +1927,9 @@
     return s;
   }
 
-  function render() {
-    const thr = state.threshold;
-    syncRoleControl();
-    updateYearFieldsVisibility();
-    syncKpiChrome();
-
-    const chartWrap = document.getElementById('chartWrap');
-    const tableWrap = document.getElementById('tableWrap');
-    const isTable = state.mode === 'table';
-    document.querySelector('.viz-stage')?.classList.toggle('is-table', isTable);
-    chartWrap.classList.toggle('is-active', !isTable);
-    tableWrap.classList.toggle('is-active', isTable);
-
-    if (isTable) {
-      destroyChart();
-      const rows = filteredRows();
-      updateKpis(rows, thr);
-      updateLegend();
-      renderTable();
-      return;
-    }
-
-    const rowsForKpi = kpiRows();
-    updateKpis(rowsForKpi, thr);
-    updateLegend();
-
+  function renderDwellChart(thr) {
     if (state.mode === 'dynamics') {
-      const rowsAll = filteredRows({ ignoreYears: true });
+      const rowsAll = filterDwellSpells({ ignoreYears: true });
       const datasets = dynamicsDatasets(rowsAll, thr);
       const chart = ensureChart('line');
       chart.data.datasets = datasets;
@@ -1361,8 +1945,7 @@
       chart.update('none');
       return;
     }
-
-    const rows = filteredRows();
+    const rows = filterDwellSpells();
     const chart = ensureChart('scatter');
     chart.data.datasets = state.mode === 'scatter'
       ? scatterDatasets(rows, thr)
@@ -1373,6 +1956,128 @@
     chart.options.plugins.tooltip.intersect = true;
     document.getElementById('emptyState').classList.toggle('show', rows.length === 0);
     chart.update('none');
+  }
+
+  function renderCorridorChart() {
+    if (state.mode === 'dynamics') {
+      const rowsAll = filterCorridorSpells({ ignoreYears: true });
+      const datasets = corridorDynamicsDatasets(rowsAll);
+      const chart = ensureChart('line');
+      chart.data.datasets = datasets;
+      applyDynamicsScaleLimits(chart, datasets);
+      chart.options.scales.y.title.text = 'Share of May cohort (%)';
+      chart.options.interaction.mode = 'index';
+      chart.options.interaction.axis = 'x';
+      chart.options.interaction.intersect = false;
+      chart.options.plugins.tooltip.mode = 'index';
+      chart.options.plugins.tooltip.intersect = false;
+      const hasPoint = datasets.some((ds) => (ds.data || []).some((p) => p.y != null));
+      document.getElementById('emptyState').classList.toggle('show', !hasPoint);
+      chart.update('none');
+      return;
+    }
+    document.getElementById('emptyState').classList.add('show');
+  }
+
+  function renderPauseChart() {
+    const rows = filteredTransitions();
+    if (state.mode === 'dynamics') {
+      const rowsAll = filteredTransitions({ ignoreYears: true });
+      const data = pauseDynamicsSeries(rowsAll);
+      const datasets = [dynamicsLineDataset('Median pause months', data, COLOR.All)];
+      const chart = ensureChart('line');
+      chart.data.datasets = datasets;
+      applyDynamicsScaleLimits(chart, datasets);
+      chart.options.scales.y.title.text =
+        state.metric === 'overlap'
+          ? 'Overlap share (%)'
+          : state.metric === 'n'
+            ? 'Non-overlap transitions'
+            : 'Median pause months';
+      chart.options.interaction.mode = 'nearest';
+      chart.options.interaction.axis = 'x';
+      chart.options.interaction.intersect = false;
+      chart.options.plugins.tooltip.mode = 'nearest';
+      chart.options.plugins.tooltip.intersect = false;
+      const hasPoint = data.some((p) => p.y != null);
+      document.getElementById('emptyState').classList.toggle('show', !hasPoint);
+      chart.update('none');
+      return;
+    }
+    const datasets = pauseHistogramDataset(rows);
+    const chart = ensureChart('bar');
+    chart.data.datasets = datasets;
+    applyPauseBarScaleLimits(chart, datasets);
+    chart.options.interaction.axis = 'x';
+    chart.options.interaction.intersect = false;
+    chart.options.plugins.tooltip.intersect = false;
+    const hasBar = datasets[0] && datasets[0].data && datasets[0].data.length > 0;
+    document.getElementById('emptyState').classList.toggle('show', !hasBar);
+    chart.update('none');
+  }
+
+  function renderQualifyChart() {
+    const datasets = qualifyDynamicsDatasets();
+    const chart = ensureChart('line');
+    chart.data.datasets = datasets;
+    applyQualifyScaleLimits(chart, datasets);
+    chart.options.interaction.mode = 'index';
+    chart.options.interaction.axis = 'x';
+    chart.options.interaction.intersect = false;
+    chart.options.plugins.tooltip.mode = 'index';
+    chart.options.plugins.tooltip.intersect = false;
+    const hasPoint = datasets.some((ds) => (ds.data || []).some((p) => p.y != null));
+    document.getElementById('emptyState').classList.toggle('show', !hasPoint);
+    chart.update('none');
+  }
+
+  function render() {
+    const thr = state.threshold;
+    syncSheetChrome();
+    syncRoleControl();
+    updateYearFieldsVisibility();
+    syncKpiChrome();
+
+    const chartWrap = document.getElementById('chartWrap');
+    const tableWrap = document.getElementById('tableWrap');
+    const isTable = state.mode === 'table';
+    document.querySelector('.viz-stage')?.classList.toggle('is-table', isTable);
+    chartWrap.classList.toggle('is-active', !isTable);
+    tableWrap.classList.toggle('is-active', isTable);
+
+    const rowsForKpi =
+      state.sheet === 'qualify'
+        ? []
+        : state.sheet === 'pause'
+          ? kpiRows()
+          : kpiRows();
+
+    if (isTable) {
+      destroyChart();
+      updateKpis(rowsForKpi, thr);
+      updateLegend();
+      renderTable();
+      return;
+    }
+
+    updateKpis(rowsForKpi, thr);
+    updateLegend();
+
+    if (state.sheet === 'dwell') {
+      renderDwellChart(thr);
+      return;
+    }
+    if (state.sheet === 'corridor') {
+      renderCorridorChart();
+      return;
+    }
+    if (state.sheet === 'pause') {
+      renderPauseChart();
+      return;
+    }
+    if (state.sheet === 'qualify') {
+      renderQualifyChart();
+    }
   }
 
   function fillYearSelects(years, fromDefault, toDefault) {
@@ -1427,6 +2132,17 @@
     return atOrAfter ?? yearOpts[yearOpts.length - 1];
   }
 
+  function collectPauseYears() {
+    const set = new Set();
+    const fromDiv = pauseFromDivision(state.division);
+    (state.data.transitions || []).forEach((t) => {
+      if (t.from_division !== fromDiv) return;
+      const y = ymYear(t.first_ym);
+      if (y != null) set.add(y);
+    });
+    return [...set].sort((a, b) => a - b);
+  }
+
   /** Rebuild From/To options for the current division; clamp selection into the allowed/required era. */
   function applyYearOptionsForDivision(preserveSelection) {
     if (!state.data) return;
@@ -1440,6 +2156,24 @@
     if (to == null || !yearOpts.includes(to)) to = fallback;
     if (from > to) to = from;
     fillYearSelects(yearOpts, from, to);
+  }
+
+  function applyYearOptionsForSheet(preserveSelection) {
+    if (!state.data) return;
+    if (state.sheet === 'qualify') return;
+    if (state.sheet === 'pause') {
+      const years = collectPauseYears();
+      const yearOpts = years.length ? years : [DEFAULT_YEAR];
+      let from = preserveSelection ? state.yearFrom : null;
+      let to = preserveSelection ? state.yearTo : null;
+      const fallback = pickDefaultYear(yearOpts);
+      if (from == null || !yearOpts.includes(from)) from = fallback;
+      if (to == null || !yearOpts.includes(to)) to = fallback;
+      if (from > to) to = from;
+      fillYearSelects(yearOpts, from, to);
+      return;
+    }
+    applyYearOptionsForDivision(preserveSelection);
   }
 
   function methodIslandFinalRect() {
@@ -1624,15 +2358,28 @@
     const onFilterChange = (key, value) => {
       const prevMode = state.mode;
       const prevDivision = state.division;
+      const prevSheet = state.sheet;
       state[key] = value;
+      if (key === 'sheet') {
+        state.tablePage = 0;
+        if (value !== prevSheet) {
+          if (value === 'dwell') state.metric = 'n';
+          else if (value === 'pause') state.metric = 'months';
+          else state.metric = 'n';
+          destroyChart();
+        }
+        applyYearOptionsForSheet(false);
+      }
       if (key === 'mode') {
-        if (value === 'dynamics' && prevMode !== 'dynamics') state.metric = 'n';
+        if (value === 'dynamics' && prevMode !== 'dynamics') {
+          state.metric = state.sheet === 'pause' ? 'months' : 'n';
+        }
         if (value === 'table') state.tablePage = 0;
         destroyChart();
       }
       if (key === 'division' || key === 'threshold' || key === 'role') state.tablePage = 0;
       if (key === 'division' && value !== prevDivision) {
-        applyYearOptionsForDivision(true);
+        applyYearOptionsForSheet(true);
       }
       render();
       if (key === 'mode' && window.WsdcSelect) {
@@ -1640,7 +2387,7 @@
       }
     };
 
-    ['divisionSelect', 'thresholdSelect', 'roleSelect', 'modeSelect'].forEach((id) => {
+    ['sheetSelect', 'divisionSelect', 'thresholdSelect', 'roleSelect', 'modeSelect'].forEach((id) => {
       const el = document.getElementById(id);
       const key = id.replace('Select', '');
       el.addEventListener('change', () => onFilterChange(key === 'mode' ? 'mode' : key, el.value));
@@ -1659,7 +2406,7 @@
 
     document.getElementById('kpiRow').addEventListener('click', (e) => {
       const btn = e.target.closest('.kpi[data-metric]');
-      if (!btn || state.mode !== 'dynamics') return;
+      if (!btn || state.mode !== 'dynamics' || state.sheet === 'qualify' || state.sheet === 'corridor') return;
       state.metric = btn.getAttribute('data-metric');
       render();
     });
@@ -1679,7 +2426,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-sync');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-c1-extend2');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.binM = Number(state.data.bin_months) || 6;
@@ -1694,7 +2441,7 @@
       updatedEl.textContent = `Updated ${stamp}`;
     }
 
-    applyYearOptionsForDivision(false);
+    applyYearOptionsForSheet(false);
 
     if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
     wireMethodIsland();
