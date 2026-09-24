@@ -463,7 +463,7 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">Board-aligned sheets: <strong>Threshold</strong> (May/Must dwell), <strong>May→MUST corridor</strong> (buffer p25/p50/p75), <strong>Division pause</strong> (JT-2 gap between divisions), and <strong>All-Stars qualify</strong> (JN-1b). Default Threshold view — months from first point to the rules crossing vs events in the same division×role; other sheets switch population and KPIs via the Sheet control.</p>
+        <p class="subtitle">Board-aligned sheets: <strong>Threshold</strong> (May/Must dwell — including Division <em>All-Stars</em> as before), <strong>May→MUST corridor</strong> (buffer p25/p50/p75), <strong>Division pause</strong> (JT-2 gap), and <strong>AS entry counts</strong> (JN-1b yearly totals — not the All-Stars dwell chart). Default is Threshold.</p>
       </header>
 
       <div class="viz-filters-row">
@@ -475,7 +475,7 @@
               <option value="dwell" selected>Threshold</option>
               <option value="corridor">May→MUST corridor</option>
               <option value="pause">Division pause</option>
-              <option value="qualify">All-Stars qualify</option>
+              <option value="qualify">AS entry counts</option>
             </select>
           </div>
           <div class="filter-field">
@@ -611,7 +611,7 @@
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
             <li><strong>May→MUST corridor (JT-3):</strong> among spells that reached <em>May</em>, buffer steps p25/p50/p75 = first month at allowed + fraction×(required−allowed) points; <em>Must</em> = required crossing when present. Dynamics: among each May done year cohort, share who later reached each buffer step (n≥10 to plot).</li>
             <li><strong>Division pause (JT-2):</strong> inclusive months from last point in division D to first in D+1 (same role). Division filter = <em>from</em> division (All-Stars → Champions entry). Overlap spells flagged; median pause excludes overlaps. Year window uses entry (<em>first_ym</em>) year — no May/Must floor.</li>
-            <li><strong>All-Stars qualify (JN-1b):</strong> yearly counts and cumulative totals — Advanced <em>allowed</em> (eligible) vs first All-Stars point (entered). Not split by role.</li>
+            <li><strong>AS entry counts (JN-1b):</strong> yearly n and cumulative — Advanced <em>allowed</em> (eligible for All-Stars) vs first All-Stars point (entered). Separate from Threshold → All-Stars (dwell to Champions May/Must).</li>
           </ul>
         </div>
       </div>
@@ -2426,7 +2426,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-c1-extend');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-c1-extend2');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.binM = Number(state.data.bin_months) || 6;

@@ -201,6 +201,19 @@ BUFFER_FRACS = (("p25", 0.25), ("p50", 0.50), ("p75", 0.75))
 LADDER = ["Novice", "Intermediate", "Advanced", "All-Stars", "Champions"]
 
 
+def buffer_done(
+    buffer: dict[str, dict],
+    allowed_t: float | None,
+    required_t: float | None,
+) -> bool:
+    """True when buffer marks are complete or the may/must gap has no room for them."""
+    if allowed_t is None or required_t is None:
+        return True
+    if float(required_t) - float(allowed_t) <= 0:
+        return True
+    return len(buffer) >= len(BUFFER_FRACS)
+
+
 def hit_dict(months: int, done_ym: str, events: int, **extra) -> dict:
     out = {"months": months, "done_ym": done_ym, "events": events}
     out.update(extra)
@@ -272,7 +285,9 @@ def find_nov_int_crossings(
                 reached["allowed"].get("threshold"),
                 th.get("required"),
             )
-        if "required" in reached and len(buffer) == len(BUFFER_FRACS):
+        if "required" in reached and buffer_done(
+            buffer, reached["allowed"].get("threshold"), th.get("required")
+        ):
             break
     out = dict(reached)
     if buffer:
@@ -326,7 +341,9 @@ def find_advanced_crossings(
                 reached["allowed"].get("threshold"),
                 th.get("required"),
             )
-        if "required" in reached and len(buffer) == len(BUFFER_FRACS):
+        if "required" in reached and buffer_done(
+            buffer, reached["allowed"].get("threshold"), th.get("required")
+        ):
             break
     out = dict(reached)
     if buffer:
@@ -402,9 +419,9 @@ def find_all_stars_crossings(
                 allowed_champ_t,
                 required_champ_t,
             )
-        if "required" in reached and (not buffer or len(buffer) == len(BUFFER_FRACS)):
-            if "required" in reached and (len(buffer) == len(BUFFER_FRACS) or not allowed_champ_t):
-                break
+        # Required done: stop. Champ-path buffer is best-effort (AS-OR crossings may leave it empty).
+        if "required" in reached:
+            break
     out = dict(reached)
     if buffer:
         out["buffer"] = buffer
