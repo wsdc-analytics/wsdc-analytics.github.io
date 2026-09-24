@@ -529,6 +529,16 @@
             <div class="lbl">Median events</div>
             <div class="val" id="kpiEvents">—</div>
           </button>
+          <button type="button" class="kpi kpi-table-dyn" data-metric="next_share" id="kpiBtnNextShare"
+            title="Share of this May/Must cohort who already have a point in the next division (as of data refresh)">
+            <div class="lbl">Share next</div>
+            <div class="val" id="kpiNextShare">—</div>
+          </button>
+          <button type="button" class="kpi kpi-table-dyn" data-metric="next_pause" id="kpiBtnNextPause"
+            title="Mean inclusive months from last point here to first point in the next division — only among those who entered next (overlaps excluded)">
+            <div class="lbl">Avg pause</div>
+            <div class="val" id="kpiNextPause">—</div>
+          </button>
         </div>
 
         <section class="viz-card" aria-label="Time in division visualization">
@@ -592,8 +602,8 @@
             <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events.</li>
             <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
             <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles.</li>
-            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em> and <em>Median events</em> plot only when that year has <strong>at least 10 spells</strong> (Overall: combined count; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks.</li>
-            <li><strong>KPIs:</strong> <em>Dancers</em> = spell count in the current filter; <em>Median months</em> / <em>Median events</em> = time and events to the selected May/Must threshold. On Dynamics, click a card to choose the plotted metric (KPIs always summarize both roles).</li>
+            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, <em>Share next</em>, and <em>Avg pause</em> plot only when that year has <strong>at least 10</strong> usable spells (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks.</li>
+            <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); <em>Avg pause</em> = mean pause months among those who entered next (overlaps excluded). Dynamics lines use the <strong>done year</strong> of May/Must — so recent cohorts often show a lower share (less time elapsed). On Dynamics, click a card to choose the plotted metric.</li>
             <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name; plus <em>Next first ym</em> (first point in the next division, same role) and <em>Pause mo</em> (inclusive months from last point in this division to that first next point; blank if never scored next; “overlap” if they still scored here after entering next). CSV includes those columns.</li>
             <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
           </ul>
@@ -621,6 +631,8 @@
     n: 'Dancers',
     months: 'Median months',
     events: 'Median events',
+    next_share: 'Share next',
+    next_pause: 'Avg pause',
   };
 
   const state = {
@@ -696,6 +708,11 @@
     return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
   }
 
+  function mean(arr) {
+    if (!arr.length) return null;
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  }
+
   /** Unique events up to the selected threshold crossing (not career total). */
   function spellEvents(s, thr) {
     const hit = s && s[thr];
@@ -715,6 +732,25 @@
   function nextTransitionForSpell(s) {
     if (!state.nextIndex || !s) return null;
     return state.nextIndex.get(`${s.id}|${s.role}|${s.division}`) || null;
+  }
+
+  /** Share who entered next + mean pause among clean transitions. */
+  function nextStats(rows) {
+    let withNext = 0;
+    const pauses = [];
+    rows.forEach((s) => {
+      const t = nextTransitionForSpell(s);
+      if (!t) return;
+      withNext += 1;
+      if (!t.overlap && t.months != null && Number.isFinite(t.months)) pauses.push(t.months);
+    });
+    return {
+      n: rows.length,
+      withNext,
+      share: rows.length ? (100 * withNext) / rows.length : null,
+      avgPause: mean(pauses),
+      pauseN: pauses.length,
+    };
   }
 
   function yearFloorForDivision(division) {
@@ -806,14 +842,39 @@
       state.medianMonths == null ? '—' : String(Math.round(state.medianMonths * 10) / 10);
     document.getElementById('kpiEvents').textContent =
       state.medianEvents == null ? '—' : String(Math.round(state.medianEvents * 10) / 10);
+
+    const st = nextStats(rows);
+    const shareEl = document.getElementById('kpiNextShare');
+    const pauseEl = document.getElementById('kpiNextPause');
+    shareEl.textContent = st.share == null ? '—' : `${Math.round(st.share * 10) / 10}%`;
+    shareEl.title = rows.length
+      ? `${st.withNext} of ${rows.length} already scored in the next division`
+      : '';
+    pauseEl.textContent =
+      st.avgPause == null ? '—' : String(Math.round(st.avgPause * 10) / 10);
+    pauseEl.title = st.pauseN
+      ? `Mean of ${st.pauseN} clean pauses (entered next, no overlap)`
+      : 'No clean next-division pauses in this filter';
   }
 
   function syncKpiChrome() {
     const row = document.getElementById('kpiRow');
+    const tableOrDyn = state.mode === 'table' || state.mode === 'dynamics';
     const selectable = state.mode === 'dynamics';
     row.classList.toggle('is-selectable', selectable);
     document.getElementById('kpiHint').hidden = !selectable;
+    row.querySelectorAll('.kpi-table-dyn').forEach((btn) => {
+      btn.hidden = !tableOrDyn;
+    });
+    if (!tableOrDyn && (state.metric === 'next_share' || state.metric === 'next_pause')) {
+      state.metric = 'n';
+    }
     row.querySelectorAll('.kpi').forEach((btn) => {
+      if (btn.hidden) {
+        btn.classList.remove('is-active');
+        btn.setAttribute('aria-pressed', 'false');
+        return;
+      }
       const on = selectable && btn.getAttribute('data-metric') === state.metric;
       btn.classList.toggle('is-active', on);
       btn.setAttribute('aria-pressed', selectable ? String(on) : 'false');
@@ -945,6 +1006,15 @@
   function metricForGroup(group, thr, metric) {
     const n = group.length;
     if (metric === 'n') return n;
+    if (metric === 'next_share') {
+      if (n < MIN_N_LINE) return null;
+      return nextStats(group).share;
+    }
+    if (metric === 'next_pause') {
+      const st = nextStats(group);
+      if (st.pauseN < MIN_N_LINE) return null;
+      return st.avgPause;
+    }
     if (n < MIN_N_LINE) return null;
     const months = group.map((s) => s[thr].months);
     const events = group.map((s) => spellEvents(s, thr));
@@ -1154,7 +1224,9 @@
                       ? `${item.dataset.label} · Dancers: ${raw.n}`
                       : `Dancers: ${raw.n}`;
                   }
-                  const val = String(Math.round(raw.y * 10) / 10);
+                  const val = state.metric === 'next_share'
+                    ? `${Math.round(raw.y * 10) / 10}%`
+                    : String(Math.round(raw.y * 10) / 10);
                   if (state.role === 'Both') {
                     return `${item.dataset.label} · ${METRIC_LABEL[state.metric]}: ${val} · n=${raw.n}`;
                   }
@@ -1633,6 +1705,10 @@
       state[key] = value;
       if (key === 'mode') {
         if (value === 'dynamics' && prevMode !== 'dynamics') state.metric = 'n';
+        if ((value === 'scatter' || value === 'density') &&
+            (state.metric === 'next_share' || state.metric === 'next_pause')) {
+          state.metric = 'n';
+        }
         if (value === 'table') state.tablePage = 0;
         destroyChart();
       }
@@ -1685,7 +1761,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-table-next');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-next-share');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
