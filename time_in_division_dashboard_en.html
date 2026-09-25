@@ -47,6 +47,7 @@
       color: var(--wsdc-color-text-muted, #4b5563);
       max-width: 62rem;
     }
+    .page-head .subtitle-i { font-size: 0.85em; }
     .tid-filters {
       display: flex;
       flex-wrap: wrap;
@@ -85,13 +86,15 @@
       display: block;
       width: 100%;
       text-align: center;
-      font-size: 9px;
+      font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: var(--text-tertiary, #6b7280);
-      line-height: 1.15;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.2;
+      padding: 0 2px;
     }
+    .tid-filters .filter-field { gap: 4px; }
     .tid-filters .wsdc-select-host,
     .tid-filters .wsdc-dd {
       width: var(--wsdc-dd-width, 7.5rem);
@@ -126,7 +129,7 @@
     .kpis {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 0;
       flex: 0 0 9.5rem;
       width: 9.5rem;
       align-self: flex-start;
@@ -136,7 +139,7 @@
       padding-top: 40px;
     }
     .kpi-hint {
-      margin: 0 0 2px;
+      margin: 0 0 6px;
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -146,25 +149,53 @@
     }
     .kpi-hint[hidden] { display: none; }
     .kpi {
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
-      padding: 10px 12px;
-      background: var(--wsdc-color-surface-soft, #f8fafc);
+      position: relative;
+      display: block;
       width: 100%;
+      padding: 9px 10px 10px 12px;
+      border: 0;
+      border-top: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 0;
+      background: transparent;
       text-align: left;
       font: inherit;
       color: inherit;
+      transition: background-color 120ms ease;
     }
-    .kpis.is-selectable .kpi {
-      cursor: pointer;
+    .kpi-hint + .kpi,
+    .kpi:first-child { border-top: 0; }
+    .kpi[hidden] { display: none; }
+    .kpi::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 2px;
+      background: transparent;
+      transition: background-color 120ms ease;
     }
+    .kpis.is-selectable .kpi { cursor: pointer; }
     .kpis.is-selectable .kpi:hover {
-      border-color: #9ca3af;
+      background: var(--wsdc-color-surface-soft, #f8fafc);
     }
-    .kpis.is-selectable .kpi.is-active {
-      border-color: var(--wsdc-color-brand-accent, #2563eb);
-      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 25%, transparent);
-      background: #fff;
+    .kpis.is-selectable .kpi:focus-visible {
+      outline: var(--wsdc-focus-ring, 2px solid #2563eb);
+      outline-offset: -2px;
+      border-radius: 6px;
+    }
+    .kpis.is-selectable .kpi.is-active::before {
+      background: var(--wsdc-color-brand-accent, #2563eb);
+    }
+    .kpis.is-selectable .kpi.is-active .val {
+      color: var(--wsdc-color-brand-accent, #2563eb);
+    }
+    .kpi__head {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 16px;
     }
     .kpi .lbl {
       font-size: 10px;
@@ -172,13 +203,126 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.2;
     }
     .kpi .val {
-      font-size: 1.2rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
       color: var(--wsdc-color-text-strong, #0b1221);
-      margin-top: 2px;
+      margin-top: 1px;
+      line-height: 1.15;
+    }
+
+    /* Small inline "i" that opens a short explanation. */
+    .info-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      padding: 0;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font: italic 600 9px/1 'DM Sans', var(--wsdc-font-sans), serif;
+      cursor: help;
+      vertical-align: middle;
+      flex: 0 0 auto;
+    }
+    .info-tip:hover,
+    .info-tip:focus-visible,
+    .info-tip.is-open {
+      border-color: var(--wsdc-color-text-muted, #4b5563);
+      color: var(--wsdc-color-text-strong, #0b1221);
+      outline: none;
+    }
+    th .info-tip { margin-left: 4px; }
+
+    /* Shared white card used by chart tooltips and info popovers. */
+    .chartjs-ext-tooltip,
+    .tid-pop {
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width: 160px;
+      max-width: 280px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.97);
+      border: 1px solid rgba(117, 119, 120, 0.24);
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      color: var(--wsdc-color-text, #1f2937);
+      transition: opacity 90ms ease;
+    }
+    .tid-pop {
+      position: fixed;
+      z-index: 80;
+      max-width: 260px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .tid-pop.is-open { opacity: 1; }
+    .tid-pop .tt-title { margin-bottom: 4px; }
+    .tt-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      margin: 0 0 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tt-sub {
+      font-size: 11px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      margin: -4px 0 8px;
+      white-space: nowrap;
+    }
+    .tt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 14px;
+      font-size: 12px;
+      line-height: 1.35;
+      margin: 2px 0;
+      white-space: nowrap;
+    }
+    .tt-label {
+      font-weight: 600;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tt-value {
+      margin-left: auto;
+      font-weight: 700;
+      text-align: right;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-variant-numeric: tabular-nums;
+    }
+    .tt-sep {
+      height: 1px;
+      background: var(--wsdc-color-border, #d1d5db);
+      margin: 7px 0 6px;
+      opacity: 0.7;
+    }
+    .tt-muted { color: var(--wsdc-color-text-muted, #4b5563); font-weight: 500; }
+    .tt-swatch {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex: 0 0 auto;
     }
     .legend-row {
       display: flex;
@@ -226,6 +370,7 @@
     }
     .chart-wrap.is-active, .table-wrap.is-active { display: flex; }
     .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+    .chart-wrap { position: relative; }
     .empty {
       position: absolute;
       inset: 0;
@@ -270,41 +415,67 @@
       min-height: 0;
       overflow: auto;
       border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
+      border-radius: 10px;
       background: #fff;
     }
     table.tid-table {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
     }
     table.tid-table th,
     table.tid-table td {
-      padding: 8px 10px;
-      text-align: center;
+      padding: 8px 9px;
+      text-align: right;
       border-bottom: 1px solid #eef2f7;
       white-space: nowrap;
     }
+    table.tid-table th:nth-child(1),
+    table.tid-table td:nth-child(1),
     table.tid-table th:nth-child(2),
-    table.tid-table td:nth-child(2) {
+    table.tid-table td:nth-child(2),
+    table.tid-table th:nth-child(3),
+    table.tid-table td:nth-child(3),
+    table.tid-table th:nth-child(4),
+    table.tid-table td:nth-child(4) {
       text-align: left;
+    }
+    table.tid-table td:nth-child(2) {
+      font-weight: 600;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    table.tid-table td:nth-child(1) {
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 12px;
     }
     table.tid-table th {
       position: sticky;
       top: 0;
-      background: #f8fafc;
-      font-size: 10px;
+      background: #fff;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--wsdc-color-text-muted, #4b5563);
       z-index: 1;
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+      box-shadow: 0 1px 0 var(--wsdc-color-border, #d1d5db);
     }
+    table.tid-table th .th-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    table.tid-table tr:last-child td { border-bottom: 0; }
     table.tid-table tr.role-leader td {
-      background: rgba(99, 102, 241, 0.08);
+      background: rgba(99, 102, 241, 0.07);
     }
     table.tid-table tr.role-follower td {
-      background: rgba(244, 63, 94, 0.08);
+      background: rgba(244, 63, 94, 0.07);
     }
+    table.tid-table td.is-empty { color: #9ca3af; }
     details.method {
       display: none;
     }
@@ -404,17 +575,73 @@
       line-height: 1.5;
       -webkit-overflow-scrolling: touch;
     }
-    .method-island__body ul {
-      padding-left: 18px;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    .method-island__body {
+      font-size: 13px;
+      line-height: 1.55;
+      padding: 6px 14px 16px;
     }
     .method-island__body strong {
       color: var(--wsdc-color-text, #1f2937);
       font-weight: 600;
     }
+    .method-island__body p { margin: 0 0 8px; }
+    .method-island__body p:last-child { margin-bottom: 0; }
+    .method-island__body ul {
+      padding-left: 18px;
+      margin: 0 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .method-sec {
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+    }
+    .method-sec:last-of-type { border-bottom: 0; }
+    .method-sec > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      user-select: none;
+    }
+    .method-sec > summary::-webkit-details-marker { display: none; }
+    .method-sec > summary::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-right: 1.5px solid var(--wsdc-color-text-muted, #4b5563);
+      border-bottom: 1.5px solid var(--wsdc-color-text-muted, #4b5563);
+      transform: rotate(-45deg);
+      transition: transform 140ms ease;
+      flex: 0 0 auto;
+      margin-left: 2px;
+    }
+    .method-sec[open] > summary::before { transform: rotate(45deg); }
+    .method-sec > summary:hover { color: var(--wsdc-color-brand-accent, #2563eb); }
+    .method-sec > summary:focus-visible {
+      outline: var(--wsdc-focus-ring, 2px solid #2563eb);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .method-sec__body {
+      padding: 0 0 12px 16px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .method-example {
+      margin: 6px 0 8px;
+      padding: 8px 10px;
+      border-left: 3px solid var(--wsdc-color-border, #d1d5db);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-radius: 0 8px 8px 0;
+      font-size: 12.5px;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .method-example strong { font-weight: 700; }
     @media (max-width: 900px) {
       html, body { height: auto; overflow: auto; }
       .page { height: auto; min-height: 100dvh; overflow: visible; }
@@ -440,6 +667,8 @@
         flex: 1 1 7.5rem;
         min-width: 7.5rem;
         width: auto;
+        border-top: 0;
+        border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
       }
       .viz-card { flex: 0 0 auto; min-height: 420px; }
       .chart-wrap, .table-wrap { min-height: 360px; }
@@ -462,7 +691,7 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">How long dancers stay in a division before they <em>may</em> or <em>must</em> move up — in months from the first point to the rules threshold, plotted against events needed to reach that threshold in the same division×role. Use Scatter or Density for the cloud, Dynamics for KPI trends by done year, and Table to browse or export spells.</p>
+        <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. Switch between Table, Scatter, Density and Dynamics; the <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
       </header>
 
       <div class="viz-filters-row">
@@ -516,29 +745,47 @@
 
       <div class="viz-stage">
         <div class="kpis" id="kpiRow" aria-live="polite">
-          <p class="kpi-hint" id="kpiHint" hidden>Use KPI cards as filters</p>
-          <button type="button" class="kpi" data-metric="n" id="kpiBtnN">
-            <div class="lbl">Dancers</div>
+          <p class="kpi-hint" id="kpiHint" hidden>Click a card to plot it</p>
+          <div class="kpi" data-metric="n" id="kpiBtnN">
+            <div class="kpi__head">
+              <span class="lbl">Dancers</span>
+              <button type="button" class="info-tip" aria-label="What is Dancers?"
+                data-tip="How many dancer × role spells match the current filters. A dancer who competes as both Leader and Follower counts twice.">i</button>
+            </div>
             <div class="val" id="kpiN">—</div>
-          </button>
-          <button type="button" class="kpi" data-metric="months" id="kpiBtnMonths">
-            <div class="lbl">Median months</div>
+          </div>
+          <div class="kpi" data-metric="months" id="kpiBtnMonths">
+            <div class="kpi__head">
+              <span class="lbl">Median months</span>
+              <button type="button" class="info-tip" aria-label="What is Median months?"
+                data-tip="Typical time from a dancer's first point in this division to the May / Must threshold. Half of the dancers were faster, half slower.">i</button>
+            </div>
             <div class="val" id="kpiMonths">—</div>
-          </button>
-          <button type="button" class="kpi" data-metric="events" id="kpiBtnEvents">
-            <div class="lbl">Median events</div>
+          </div>
+          <div class="kpi" data-metric="events" id="kpiBtnEvents">
+            <div class="kpi__head">
+              <span class="lbl">Median events</span>
+              <button type="button" class="info-tip" aria-label="What is Median events?"
+                data-tip="Typical number of events a dancer scored at in this division before reaching the threshold — counting the first point and the event that crossed it.">i</button>
+            </div>
             <div class="val" id="kpiEvents">—</div>
-          </button>
-          <button type="button" class="kpi kpi-table-dyn" data-metric="next_share" id="kpiBtnNextShare"
-            title="Share of this May/Must cohort who already have a point in the next division (as of data refresh)">
-            <div class="lbl">Share next</div>
+          </div>
+          <div class="kpi kpi-table-dyn" data-metric="next_share" id="kpiBtnNextShare">
+            <div class="kpi__head">
+              <span class="lbl">Share next</span>
+              <button type="button" class="info-tip" aria-label="What is Share next?"
+                data-tip="Of the dancers who reached the threshold, the share who have already scored at least one point in the next division (as of the latest data refresh).">i</button>
+            </div>
             <div class="val" id="kpiNextShare">—</div>
-          </button>
-          <button type="button" class="kpi kpi-table-dyn" data-metric="next_pause" id="kpiBtnNextPause"
-            title="Dynamics: median pause by year of first point in the next division (back to May/Must; May/Must on/after division year floor). KPI card: median among the current filter who entered next">
-            <div class="lbl">Median pause</div>
+          </div>
+          <div class="kpi kpi-table-dyn" data-metric="next_pause" id="kpiBtnNextPause">
+            <div class="kpi__head">
+              <span class="lbl">Median pause</span>
+              <button type="button" class="info-tip" aria-label="What is Median pause?"
+                data-tip="Typical wait between reaching the threshold and the first point in the next division, among those who have moved up. In Dynamics the year is the year they entered the next division.">i</button>
+            </div>
             <div class="val" id="kpiNextPause">—</div>
-          </button>
+          </div>
         </div>
 
         <section class="viz-card" aria-label="Time in division visualization">
@@ -561,12 +808,18 @@
                     <th>Name</th>
                     <th>Role</th>
                     <th>Division</th>
-                    <th title="Edition start_date of the first point in this division×role (falls back to year-month if no date)">First date</th>
-                    <th title="Edition start_date of the May/Must crossing event (falls back to year-month if no date)">Done date</th>
-                    <th>Months</th>
-                    <th>Events</th>
-                    <th title="Edition start_date of the first point in the next division, same role">Next first date</th>
-                    <th title="Months from May/Must (points path) to first next; Champions-only / petition use last→first. Day-based when edition dates exist.">Pause mo</th>
+                    <th><span class="th-inner">First point<button type="button" class="info-tip" aria-label="About First point"
+                      data-tip="Start date of the event where this dancer earned their first point in this division and role.">i</button></span></th>
+                    <th><span class="th-inner"><span id="thDone">May reached</span><button type="button" class="info-tip" aria-label="About the threshold date"
+                      data-tip="Start date of the event where the dancer crossed the selected threshold (May = allowed to move up, Must = required to move up).">i</button></span></th>
+                    <th><span class="th-inner">Months<button type="button" class="info-tip" aria-label="About Months"
+                      data-tip="Months between the first point and the threshold event, measured in days between event start dates and shown to one decimal.">i</button></span></th>
+                    <th><span class="th-inner">Events<button type="button" class="info-tip" aria-label="About Events"
+                      data-tip="Number of different events where the dancer scored in this division and role, from the first point up to and including the threshold event.">i</button></span></th>
+                    <th><span class="th-inner">Entered next<button type="button" class="info-tip" aria-label="About Entered next"
+                      data-tip="Start date of the event where the dancer earned their first point in the next division, same role. Blank if they have not scored there yet.">i</button></span></th>
+                    <th><span class="th-inner">Pause, mo<button type="button" class="info-tip" aria-label="About Pause"
+                      data-tip="Months between reaching the threshold and the first point in the next division. For dancers who moved up by petition (no threshold reached) we count from their last point in this division.">i</button></span></th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -592,21 +845,87 @@
           <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
         </div>
         <div class="method-island__body" id="methodIslandBody">
-          <ul>
-            <li><strong>Spell:</strong> one dancer × division × role (Leader/Follower separately).</li>
-            <li><strong>Start:</strong> first event-month with a point in that spell.</li>
-            <li><strong>Done (May / Must):</strong> first month the rules threshold is reached for that era (allowed / required). All-Stars: before formal Champions rules (pre-2021) — Champions points only (1 may / 10 must) on real events; from 2021 — OR of Champions pts or All-Stars pts.</li>
-            <li><strong>Months:</strong> prefer edition <code>start_date</code> (else <code>end_date</code>) from <code>event_editions</code>: <em>days / 30.44</em>, rounded to 0.1 month (minimum 1 day when both dates are valid and end ≥ start). If either endpoint has no usable date (or end &lt; start), fall back to inclusive calendar months (same month = 1; Nov→Mar = 5). Each hit/pause stores <code>months_basis</code> = <code>day</code> or <code>ym</code>. Cohort year filters still use event year / <code>done_ym</code>. Advanced rolling 36-month <em>scoring</em> stays calendar months.</li>
-            <li><strong>Events:</strong> unique event editions (name + year-month) in that division×role <em>up to and including</em> the crossing for the selected threshold. Points and months always start from the first point in the spell — including years <em>before</em> the dashboard year floor.</li>
-            <li><strong>Window (Scatter / Density / Table):</strong> <em>display filter only</em> — done year in From–To, within the allowed/required era (Novice / Intermediate / Advanced from <strong>2018</strong>; All-Stars from <strong>2021</strong>). The floor does not restart the clock or drop earlier events from the count. Earlier single-threshold done years are hidden so the chart focuses on the may/must corridor. Data cut-off: <span id="asOfNote">—</span>.</li>
-            <li><strong>Scatter:</strong> one point per spell (rings when many share a cell). Hover shows one dancer. Dashed lines = median months / events.</li>
-            <li><strong>Density:</strong> darker / larger = more dancers in a bin (default 6 months × 2 events). Dashed lines = medians.</li>
-            <li><strong>Dynamics:</strong> line of one KPI by calendar year of done in that same era (full era span; From/To hidden). KPI cards choose the metric. The Role control becomes a <em>view mode</em>: <em>Overall</em> = one combined line; <em>Leaders &amp; Followers</em> = two lines to compare roles.</li>
-            <li><strong>Dynamics gaps:</strong> a missing point is not “no median in the data” — that year’s sample was too small to plot a stable summary. <em>Dancers</em> plots every year with at least one spell. <em>Median months</em>, <em>Median events</em>, <em>Share next</em>, and <em>Median pause</em> plot only when that year has <strong>at least 10</strong> usable spells (Overall: combined; Leaders &amp; Followers: each line uses its own role count). Years below that threshold are left blank and the line breaks. <em>Median pause</em> years are <strong>entry years</strong> into the next division (not May/Must done years).</li>
-            <li><strong>KPIs:</strong> <em>Dancers</em> / <em>Median months</em> / <em>Median events</em> always. On <em>Table</em> and <em>Dynamics</em> only: <em>Share next</em> = % of the current May/Must cohort who already scored in the next division (as of refresh); Dynamics Share next is by <strong>May/Must done year</strong>. <em>Median pause</em> = median pause among those who entered next (May/Must on/after the division year floor); Dynamics groups by <strong>year of first point in the next division</strong>, measuring back to May/Must (points path) — Champions-only / petition use last→first. Mean would be pulled up by rare multi-year gaps (e.g. May in 2011, first Intermediate in 2026). On Dynamics, click a card to choose the plotted metric.</li>
-            <li><strong>Table:</strong> same filtered spells, sorted months ↑ then events ↑ then name. Date columns use the edition <em>start_date</em> of the event where that milestone happened (first point / May or Must crossing / first next); if no edition date, fall back to year-month. Also <em>Pause mo</em> (see KPI pause rule). CSV includes date + ym columns.</li>
-            <li><strong>Median guides (Scatter/Density):</strong> dashed lines at median months / events; axis limits include medians and full spell range with headroom so edge points stay visible.</li>
-          </ul>
+          <details class="method-sec" open>
+            <summary>What this shows</summary>
+            <div class="method-sec__body">
+              <p>Every row in this tool is one <strong>dancer in one division and one role</strong> — Leader and Follower are tracked separately, so a dancer who competes in both roles appears twice. We follow each of them from their <strong>first point</strong> in the division to the moment the WSDC rules say they <strong>may</strong> move up (the lower threshold) or <strong>must</strong> move up (the upper one), and then on to their <strong>first point in the next division</strong>.</p>
+              <p class="method-example"><strong>Example.</strong> Anna scored her first Novice point as a Follower in March 2019. By October 2020 she had enough points to be allowed into Intermediate (May). She kept dancing Novice, reached the Must threshold in April 2021, and scored her first Intermediate point in September 2021. Her Novice spell: 18.9 months and 9 events to May; pause after May 11.5 months.</p>
+              <p>We only show spells whose threshold was reached in the years when both thresholds existed in the rules: <strong>Novice, Intermediate and Advanced from 2018</strong>, <strong>All-Stars from 2021</strong>. Earlier points still count toward months and events — the year floor only decides which spells are displayed. Data cut-off: <span id="asOfNote">—</span>.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Filters &amp; KPIs</summary>
+            <div class="method-sec__body">
+              <ul>
+                <li><strong>Division</strong> and <strong>Role</strong> pick the spells. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
+                <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone.</li>
+                <li><strong>From / To year</strong> limit the Table, Scatter and Density to spells whose threshold was reached in those years. Dynamics always shows the full span.</li>
+              </ul>
+              <p>The cards on the left summarise whatever is currently filtered:</p>
+              <ul>
+                <li><strong>Dancers</strong> — how many spells match.</li>
+                <li><strong>Median months</strong> / <strong>Median events</strong> — the typical time and number of events from the first point to the threshold. Half of the dancers were faster, half slower; medians are not pulled up by a few very long spells.</li>
+                <li><strong>Share next</strong> — of those who reached the threshold, how many already have a point in the next division.</li>
+                <li><strong>Median pause</strong> — among those who moved up, the typical wait between the threshold and their first next-level point.</li>
+              </ul>
+              <p class="method-example"><strong>Reading the cards.</strong> Suppose Novice · Follower · May shows <em>Dancers 412 · Median months 8.1 · Median events 5 · Share next 63% · Median pause 6.4</em>. A typical Novice Follower in that selection needed about eight months and five events to be allowed up, roughly two in three have since scored in Intermediate, and those who did usually waited about half a year.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Scatter</summary>
+            <div class="method-sec__body">
+              <p>One dot per dancer. Left to right: <strong>months</strong> from the first point to the threshold. Bottom to top: <strong>events</strong> it took. When several dancers land on exactly the same spot, the dots are arranged in a small ring so each one stays visible. Dashed lines mark the <strong>median</strong> months and events for the current filter.</p>
+              <p>Hover a dot to see who it is, the dates of their first point and threshold, and — if they have already moved up — when they entered the next division and how long the pause was.</p>
+              <p class="method-example"><strong>Reading it.</strong> A dot far to the right but low on the chart is a dancer who took years but only a handful of events — someone who competes rarely. A dot high and to the left is a dancer who crossed quickly by attending many events in a short time.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Density</summary>
+            <div class="method-sec__body">
+              <p>The same picture as Scatter, but dancers are grouped into <strong>bins of 6 months × 2 events</strong>. The darker and larger the bubble, the more dancers fall into that bin. Use it when the Scatter is too crowded to read.</p>
+              <p>Hover a bubble to see the bin range in plain words, how many dancers are in it, and what share of the current selection that is.</p>
+              <p class="method-example"><strong>Example.</strong> A bubble labelled <em>6–12 months · 4–6 events · Dancers 84 · 21% of selection</em> means 84 dancers — about one in five — reached the threshold between six months and a year after their first point, scoring at four or five events along the way.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Dynamics</summary>
+            <div class="method-sec__body">
+              <p>One KPI as a line over calendar years. <strong>Click a card on the left</strong> to choose which one. For Dancers, Median months, Median events and Share next the year is when the dancer <strong>reached the threshold</strong>. For Median pause the year is when they <strong>entered the next division</strong>, and the pause is measured back to the threshold.</p>
+              <p>A gap in a line does not mean there is no data — it means fewer than <strong>10 dancers</strong> that year, too few for a stable median or share. Dancers itself is drawn for every year with at least one spell.</p>
+              <p class="method-example"><strong>Example.</strong> Median pause for Novice Followers reads <em>2023 → 7.5</em>: dancers who scored their first Intermediate point in 2023 had typically waited seven and a half months since reaching May. If 2019 shows no point, fewer than ten Followers entered Intermediate that year.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Table &amp; CSV</summary>
+            <div class="method-sec__body">
+              <p>Every filtered spell as a row, sorted by months, then events, then name. Rows are tinted by role. The columns:</p>
+              <ul>
+                <li><strong>First point</strong> — date of the event where the dancer scored their first point in this division and role.</li>
+                <li><strong>May reached</strong> / <strong>Must reached</strong> — date of the event where they crossed the selected threshold.</li>
+                <li><strong>Months</strong>, <strong>Events</strong> — the distance between those two events.</li>
+                <li><strong>Entered next</strong> — date of their first point in the next division, same role; blank if it has not happened yet.</li>
+                <li><strong>Pause, mo</strong> — months from the threshold to Entered next.</li>
+              </ul>
+              <p>Dates are the <strong>start day of the event</strong>. <em>Download CSV</em> exports the whole filtered list (not just the visible page) with both the dates and the year-month codes.</p>
+              <p class="method-example"><strong>Example row.</strong> <em>Anna Example · Follower · Novice · 2019-03-15 · 2020-10-09 · 18.9 · 9 · 2021-09-24 · 11.5</em>.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>How we count months and events</summary>
+            <div class="method-sec__body">
+              <p><strong>Months</strong> are the number of days between the start dates of two events, divided by the average month length (30.44 days) and rounded to one decimal. Two points at the same event count as 0.1 month, not zero. When an event has no known dates, we fall back to counting calendar months inclusively (March to July = 5).</p>
+              <p><strong>Events</strong> are distinct competitions where the dancer scored in this division and role — the first-point event and the threshold event both count.</p>
+              <p><strong>Pause</strong> runs from the threshold event to the first event in the next division. Some dancers move up before they reach the threshold, for example All-Stars who enter Champions by petition; for them we count from their <em>last</em> point in the division instead, so the pause is never negative.</p>
+              <p><strong>All-Stars</strong> before 2021 had no formal Champions rules, so only Champions points counted; from 2021 either Champions or All-Stars points can satisfy the threshold. <strong>Advanced</strong> points expire on a rolling 36-month window — that window is still checked in calendar months, exactly as the WSDC does.</p>
+              <p class="method-example"><strong>Example.</strong> First Novice point at an event starting 15 March 2019, May threshold at an event starting 9 October 2020: 574 days ÷ 30.44 = <strong>18.9 months</strong>. Between them Anna scored at seven more events, so <strong>Events = 9</strong>.</p>
+            </div>
+          </details>
         </div>
       </div>
     </div>
@@ -652,6 +971,8 @@
     nextIndex: null,
     tablePage: 0,
     tableRows: [],
+    infoOpen: null,
+    infoPinned: false,
     methodOpen: false,
     methodMoved: false,
     methodDrag: null,
@@ -673,17 +994,58 @@
       ctx.strokeStyle = '#9CA3AF';
       ctx.lineWidth = 1.25;
       ctx.setLineDash([5, 4]);
-      if (x >= chartArea.left && x <= chartArea.right) {
+      const showX = x >= chartArea.left && x <= chartArea.right;
+      const showY = y >= chartArea.top && y <= chartArea.bottom;
+      if (showX) {
         ctx.beginPath();
         ctx.moveTo(x, chartArea.top);
         ctx.lineTo(x, chartArea.bottom);
         ctx.stroke();
       }
-      if (y >= chartArea.top && y <= chartArea.bottom) {
+      if (showY) {
         ctx.beginPath();
         ctx.moveTo(chartArea.left, y);
         ctx.lineTo(chartArea.right, y);
         ctx.stroke();
+      }
+      // Small labels: value of each median, white backing so they read over points.
+      ctx.setLineDash([]);
+      ctx.font = "600 10px 'DM Sans', system-ui, sans-serif";
+      ctx.fillStyle = '#6B7280';
+      const drawLabel = (text, tx, ty, align, baseline) => {
+        ctx.textAlign = align;
+        ctx.textBaseline = baseline;
+        const w = ctx.measureText(text).width;
+        const padX = 4;
+        const h = 14;
+        let bx = tx;
+        if (align === 'right') bx = tx - w;
+        else if (align === 'center') bx = tx - w / 2;
+        let by = ty;
+        if (baseline === 'bottom') by = ty - h;
+        else if (baseline === 'middle') by = ty - h / 2;
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,0.88)';
+        ctx.fillRect(bx - padX, by, w + padX * 2, h);
+        ctx.restore();
+        ctx.fillText(text, tx, ty);
+      };
+      if (showX) {
+        const label = `median ${Math.round(mx * 10) / 10} mo`;
+        // Place to the right of the line unless too close to the right edge.
+        const roomRight = chartArea.right - x;
+        const align = roomRight > 90 ? 'left' : 'right';
+        const tx = align === 'left' ? x + 6 : x - 6;
+        drawLabel(label, tx, chartArea.top + 2, align, 'top');
+      }
+      if (showY) {
+        const ev = Math.round(my * 10) / 10;
+        const label = `median ${ev} ${ev === 1 ? 'event' : 'events'}`;
+        // Above the line, hugging the right edge; drop below if near the top.
+        const roomTop = y - chartArea.top;
+        const baseline = roomTop > 18 ? 'bottom' : 'top';
+        const ty = baseline === 'bottom' ? y - 3 : y + 3;
+        drawLabel(label, chartArea.right - 2, ty, 'right', baseline);
       }
       ctx.restore();
     },
@@ -858,14 +1220,23 @@
     const shareEl = document.getElementById('kpiNextShare');
     const pauseEl = document.getElementById('kpiNextPause');
     shareEl.textContent = st.share == null ? '—' : `${Math.round(st.share * 10) / 10}%`;
-    shareEl.title = rows.length
-      ? `${st.withNext} of ${rows.length} already scored in the next division`
-      : '';
     pauseEl.textContent =
       st.medianPause == null ? '—' : String(Math.round(st.medianPause * 10) / 10);
-    pauseEl.title = st.pauseN
-      ? `Median of ${st.pauseN} pauses among those who entered next`
-      : 'No next-division pauses in this filter';
+    // Live detail appended to the ⓘ explanations (counts behind the two "next" cards).
+    const shareTip = document.querySelector('#kpiBtnNextShare .info-tip');
+    const pauseTip = document.querySelector('#kpiBtnNextPause .info-tip');
+    if (shareTip) {
+      shareTip.dataset.tipLive = rows.length
+        ? `Now: ${st.withNext} of ${rows.length} dancers.`
+        : '';
+    }
+    if (pauseTip) {
+      pauseTip.dataset.tipLive = st.pauseN
+        ? `Now: median of ${st.pauseN} pauses.`
+        : '';
+    }
+    const thDone = document.getElementById('thDone');
+    if (thDone) thDone.textContent = thr === 'allowed' ? 'May reached' : 'Must reached';
   }
 
   function syncKpiChrome() {
@@ -881,14 +1252,22 @@
       state.metric = 'n';
     }
     row.querySelectorAll('.kpi').forEach((btn) => {
+      if (selectable) {
+        btn.setAttribute('role', 'button');
+        btn.setAttribute('tabindex', '0');
+      } else {
+        btn.removeAttribute('role');
+        btn.removeAttribute('tabindex');
+        btn.removeAttribute('aria-pressed');
+      }
       if (btn.hidden) {
         btn.classList.remove('is-active');
-        btn.setAttribute('aria-pressed', 'false');
+        if (selectable) btn.setAttribute('aria-pressed', 'false');
         return;
       }
       const on = selectable && btn.getAttribute('data-metric') === state.metric;
       btn.classList.toggle('is-active', on);
-      btn.setAttribute('aria-pressed', selectable ? String(on) : 'false');
+      if (selectable) btn.setAttribute('aria-pressed', String(on));
     });
   }
 
@@ -988,18 +1367,22 @@
       const bx = Math.floor(mx / binM) * binM;
       const by = Math.floor(ey / binE) * binE;
       const key = bx + ':' + by;
-      const cur = bins.get(key) || { x: bx + binM / 2, y: by + binE / 2, n: 0 };
+      const cur = bins.get(key) || { x: bx + binM / 2, y: by + binE / 2, n: 0, bx, by };
       cur.n += 1;
       bins.set(key, cur);
     });
     const cells = [...bins.values()];
     const maxN = cells.reduce((m, c) => Math.max(m, c.n), 1);
+    const total = rows.length;
     return [{
       label: 'Density',
       data: cells.map((c) => ({
         x: c.x,
         y: c.y,
         n: c.n,
+        bx: c.bx,
+        by: c.by,
+        total,
         r: 3 + 14 * (c.n / maxN),
       })),
       backgroundColor: cells.map((c) => {
@@ -1157,8 +1540,9 @@
     const yScale = chart.options.scales.y;
     xScale.type = 'linear';
     yScale.type = 'linear';
-    xScale.title.text = 'Months';
-    yScale.title.text = 'Events';
+    const thrWord = thr === 'allowed' ? 'May' : 'Must';
+    xScale.title.text = `Months to ${thrWord}`;
+    yScale.title.text = `Events to ${thrWord}`;
     xScale.beginAtZero = true;
     yScale.beginAtZero = true;
     if (!rows.length) {
@@ -1217,6 +1601,274 @@
       state.chart.destroy();
       state.chart = null;
     }
+    const tt = document.querySelector('#chartWrap .chartjs-ext-tooltip');
+    if (tt) tt.style.opacity = 0;
+  }
+
+  /* ---------- External (HTML) chart tooltip ---------- */
+
+  function fmt1(v) {
+    return v == null || !Number.isFinite(v) ? '—' : String(Math.round(v * 10) / 10);
+  }
+
+  function ttRow(label, value, opts = {}) {
+    const swatch = opts.color
+      ? `<span class="tt-swatch" style="background:${opts.color}"></span>`
+      : '';
+    const cls = opts.muted ? 'tt-value tt-muted' : 'tt-value';
+    return `<div class="tt-row"><span class="tt-label">${swatch}${label}</span><span class="${cls}">${value}</span></div>`;
+  }
+
+  function scatterTooltipHtml(s) {
+    const thr = state.threshold;
+    const thrWord = thr === 'allowed' ? 'May' : 'Must';
+    const hit = s[thr];
+    const next = nextTransitionForSpell(s);
+    let html = `<div class="tt-title">${escapeHtml(s.name)}</div>`;
+    html += `<div class="tt-sub">${s.role} · ${s.division} · #${s.id}</div>`;
+    html += ttRow('First point', eventDateLabel(s.first_date, s.first_ym) || '—');
+    html += ttRow(`${thrWord} reached`, eventDateLabel(hit.done_date, hit.done_ym) || '—');
+    html += ttRow('Months', fmt1(hit.months));
+    html += ttRow('Events', String(spellEvents(s, thr)));
+    if (next) {
+      const pause = pauseMonths(next, thr);
+      html += '<div class="tt-sep"></div>';
+      html += ttRow('Entered next', eventDateLabel(next.first_date, next.first_ym) || '—');
+      if (pause != null) html += ttRow('Pause', `${fmt1(pause)} mo`);
+    } else {
+      html += '<div class="tt-sep"></div>';
+      html += ttRow('Next division', 'not yet', { muted: true });
+    }
+    return html;
+  }
+
+  function densityTooltipHtml(raw) {
+    const binM = state.binM;
+    const binE = state.binE;
+    const bx = raw.bx != null ? raw.bx : Math.floor(raw.x / binM) * binM;
+    const by = raw.by != null ? raw.by : Math.floor(raw.y / binE) * binE;
+    const mFrom = Math.round(bx * 10) / 10;
+    const mTo = Math.round((bx + binM) * 10) / 10;
+    const eFrom = by;
+    const eTo = by + binE - 1;
+    const evWord = eFrom === eTo ? `${eFrom} ${eFrom === 1 ? 'event' : 'events'}` : `${eFrom}–${eTo} events`;
+    const title = `${mFrom}–${mTo} months · ${evWord}`;
+    const total = raw.total || 0;
+    const share = total ? Math.round((raw.n / total) * 1000) / 10 : null;
+    let html = `<div class="tt-title">${title}</div>`;
+    html += ttRow('Dancers', String(raw.n));
+    if (share != null) html += ttRow('Share of selection', `${share}%`);
+    return html;
+  }
+
+  function dynamicsTooltipHtml(dataPoints) {
+    const first = dataPoints[0];
+    const year = first ? String(first.raw.x) : '';
+    const title = state.metric === 'next_pause' ? `Entered next in ${year}` : year;
+    const dual = state.role === 'Both';
+    const metricLabel = METRIC_LABEL[state.metric];
+    let html = `<div class="tt-title">${title}</div>`;
+    dataPoints.forEach((dp, idx) => {
+      const raw = dp.raw || {};
+      const color = dual ? dp.dataset.borderColor : null;
+      const roleLabel = dual ? dp.dataset.label : null;
+      if (dual && idx > 0) html += '<div class="tt-sep"></div>';
+      if (dual) html += `<div class="tt-row"><span class="tt-label"><span class="tt-swatch" style="background:${color}"></span>${roleLabel}</span></div>`;
+      if (raw.y == null) {
+        html += ttRow(state.metric === 'n' ? 'Dancers' : metricLabel, 'too few dancers', { muted: true });
+        return;
+      }
+      if (state.metric === 'n') {
+        html += ttRow('Dancers', String(raw.n));
+        return;
+      }
+      const val = state.metric === 'next_share' ? `${fmt1(raw.y)}%` : fmt1(raw.y);
+      html += ttRow(metricLabel, val);
+      html += ttRow('Dancers', String(raw.n));
+    });
+    return html;
+  }
+
+  function getOrCreateTooltipEl(chart) {
+    const parent = chart.canvas.parentNode;
+    let el = parent.querySelector('.chartjs-ext-tooltip');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'chartjs-ext-tooltip';
+      el.setAttribute('role', 'tooltip');
+      parent.appendChild(el);
+    }
+    return el;
+  }
+
+  function externalTooltip({ chart, tooltip }) {
+    const el = getOrCreateTooltipEl(chart);
+    const points = tooltip.dataPoints || [];
+    if (tooltip.opacity === 0 || !points.length) {
+      el.style.opacity = 0;
+      return;
+    }
+    let html = '';
+    if (state.mode === 'dynamics') {
+      html = dynamicsTooltipHtml(points);
+    } else if (state.mode === 'density') {
+      html = densityTooltipHtml(points[0].raw || {});
+    } else {
+      const raw = points[0].raw;
+      const s = raw && raw.raw;
+      if (!s) { el.style.opacity = 0; return; }
+      html = scatterTooltipHtml(s);
+    }
+    el.innerHTML = html;
+
+    const canvas = chart.canvas;
+    const parent = canvas.parentNode;
+    const pad = 8;
+    const cx = canvas.offsetLeft + tooltip.caretX;
+    const cy = canvas.offsetTop + tooltip.caretY;
+    el.style.left = `${cx}px`;
+    el.style.top = `${cy}px`;
+    el.style.opacity = 1;
+    const tw = el.offsetWidth;
+    const th = el.offsetHeight;
+    const pw = parent.clientWidth;
+    const ph = parent.clientHeight;
+    const gap = 12;
+    let dx;
+    let dy;
+    if (cx - tw / 2 < pad) {
+      // Near the left edge: sit to the right of the point, vertically centred.
+      dx = gap;
+      dy = -th / 2;
+    } else if (cx + tw / 2 > pw - pad) {
+      dx = -tw - gap;
+      dy = -th / 2;
+    } else {
+      // Above the point by default; flip below when there is no room.
+      dx = -tw / 2;
+      dy = (cy - th - gap) < 0 ? gap : -(th + gap);
+    }
+    if (cy + dy < pad) dy = pad - cy;
+    if (cy + dy + th > ph - pad) dy = ph - pad - cy - th;
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+  }
+
+  /* ---------- ⓘ info popovers (hover · focus · tap · Esc) ---------- */
+
+  function getInfoPop() {
+    let pop = document.getElementById('tidInfoPop');
+    if (!pop) {
+      pop = document.createElement('div');
+      pop.id = 'tidInfoPop';
+      pop.className = 'tid-pop';
+      pop.setAttribute('role', 'tooltip');
+      document.body.appendChild(pop);
+    }
+    return pop;
+  }
+
+  function showInfoPop(btn) {
+    const pop = getInfoPop();
+    const text = btn.dataset.tip || '';
+    const live = btn.dataset.tipLive || '';
+    const title = btn.closest('.kpi')?.querySelector('.lbl')?.textContent
+      || btn.closest('th')?.querySelector('.th-inner')?.firstChild?.textContent
+      || '';
+    pop.innerHTML =
+      (title ? `<div class="tt-title">${escapeHtml(title.trim())}</div>` : '') +
+      `<div>${escapeHtml(text)}</div>` +
+      (live ? `<div class="tt-muted" style="margin-top:4px">${escapeHtml(live)}</div>` : '');
+    document.querySelectorAll('.info-tip.is-open').forEach((b) => b.classList.remove('is-open'));
+    btn.classList.add('is-open');
+    btn.setAttribute('aria-describedby', 'tidInfoPop');
+    state.infoOpen = btn;
+
+    const r = btn.getBoundingClientRect();
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('is-open');
+    const pw = pop.offsetWidth;
+    const ph = pop.offsetHeight;
+    const pad = 8;
+    let left = r.left + r.width / 2 - pw / 2;
+    left = Math.max(pad, Math.min(left, window.innerWidth - pw - pad));
+    let top = r.bottom + 8;
+    if (top + ph > window.innerHeight - pad) top = r.top - ph - 8;
+    pop.style.left = `${Math.round(left)}px`;
+    pop.style.top = `${Math.round(top)}px`;
+  }
+
+  function hideInfoPop() {
+    const pop = document.getElementById('tidInfoPop');
+    if (pop) pop.classList.remove('is-open');
+    if (state.infoOpen) {
+      state.infoOpen.classList.remove('is-open');
+      state.infoOpen.removeAttribute('aria-describedby');
+    }
+    state.infoOpen = null;
+    state.infoPinned = false;
+  }
+
+  function wireInfoTips() {
+    document.addEventListener('mouseover', (e) => {
+      const btn = e.target.closest?.('.info-tip');
+      if (!btn) return;
+      if (state.infoPinned && state.infoOpen !== btn) return;
+      showInfoPop(btn);
+    });
+    document.addEventListener('mouseout', (e) => {
+      const btn = e.target.closest?.('.info-tip');
+      if (!btn || state.infoPinned) return;
+      if (e.relatedTarget && btn.contains(e.relatedTarget)) return;
+      hideInfoPop();
+    });
+    document.addEventListener('focusin', (e) => {
+      const btn = e.target.closest?.('.info-tip');
+      if (btn) showInfoPop(btn);
+    });
+    document.addEventListener('focusout', (e) => {
+      const btn = e.target.closest?.('.info-tip');
+      if (btn && !state.infoPinned) hideInfoPop();
+    });
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest?.('.info-tip');
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (state.infoOpen === btn && state.infoPinned) {
+          hideInfoPop();
+        } else {
+          showInfoPop(btn);
+          state.infoPinned = true;
+        }
+        return;
+      }
+      if (state.infoOpen) hideInfoPop();
+    }, true);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.infoOpen) {
+        const b = state.infoOpen;
+        hideInfoPop();
+        b.blur();
+        e.stopImmediatePropagation();
+      }
+    }, true);
+    window.addEventListener('scroll', () => { if (state.infoOpen) hideInfoPop(); }, true);
+    window.addEventListener('resize', () => { if (state.infoOpen) hideInfoPop(); });
+  }
+
+  /* ---------- Methodology accordion: one section open at a time ---------- */
+
+  function wireMethodAccordion() {
+    const body = document.getElementById('methodIslandBody');
+    if (!body) return;
+    body.addEventListener('toggle', (e) => {
+      const opened = e.target;
+      if (!(opened instanceof HTMLDetailsElement) || !opened.open) return;
+      body.querySelectorAll('details.method-sec[open]').forEach((d) => {
+        if (d !== opened) d.open = false;
+      });
+    }, true);
   }
 
   function ensureChart(chartType) {
@@ -1241,73 +1893,14 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            enabled: true,
+            enabled: false,
             mode: 'nearest',
             intersect: chartType !== 'line',
-            displayColors: chartType === 'line',
             filter(item, index) {
               if (state.mode === 'dynamics') return true;
               return index === 0;
             },
-            callbacks: {
-              title(items) {
-                const raw = items[0]?.raw;
-                if (!raw) return '';
-                if (state.mode === 'dynamics') {
-                  const yr = String(raw.x);
-                  return state.metric === 'next_pause'
-                    ? `Entered next · ${yr}`
-                    : yr;
-                }
-                if (raw.raw) return `${raw.raw.name} · ${raw.raw.id}`;
-                if (raw.n != null && raw.raw == null && state.mode === 'density') {
-                  return `${raw.n} dancers in bin`;
-                }
-                return '';
-              },
-              label(item) {
-                const raw = item.raw;
-                if (state.mode === 'dynamics') {
-                  if (raw.y == null) {
-                    return state.role === 'Both'
-                      ? `${item.dataset.label} · No data`
-                      : 'No data';
-                  }
-                  if (state.metric === 'n') {
-                    return state.role === 'Both'
-                      ? `${item.dataset.label} · Dancers: ${raw.n}`
-                      : `Dancers: ${raw.n}`;
-                  }
-                  const val = state.metric === 'next_share'
-                    ? `${Math.round(raw.y * 10) / 10}%`
-                    : String(Math.round(raw.y * 10) / 10);
-                  if (state.role === 'Both') {
-                    return `${item.dataset.label} · ${METRIC_LABEL[state.metric]}: ${val} · n=${raw.n}`;
-                  }
-                  return [
-                    `${METRIC_LABEL[state.metric]}: ${val}`,
-                    `Dancers: ${raw.n}`,
-                  ];
-                }
-                if (raw?.raw) {
-                  const s = raw.raw;
-                  const thr = state.threshold;
-                  const hit = s[thr];
-                  return [
-                    `Role: ${s.role}`,
-                    `Months to ${thr === 'allowed' ? 'may' : 'must'}: ${hit.months}`,
-                    `Events: ${spellEvents(s, thr)}`,
-                  ];
-                }
-                if (raw?.n != null) {
-                  return [
-                    `Bin center ≈ ${Math.round(raw.x)} mo × ${Math.round(raw.y)} events`,
-                    `Count: ${raw.n}`,
-                  ];
-                }
-                return '';
-              },
-            },
+            external: externalTooltip,
           },
         },
         scales: {
@@ -1407,8 +2000,8 @@
         `<td>${r.done_display || '—'}</td>` +
         `<td>${r.months}</td>` +
         `<td>${r.events}</td>` +
-        `<td>${r.next_first_display || '—'}</td>` +
-        `<td>${r.pause_mo !== '' ? r.pause_mo : '—'}</td>`;
+        (r.next_first_display ? `<td>${r.next_first_display}</td>` : '<td class="is-empty">—</td>') +
+        (r.pause_mo !== '' ? `<td>${r.pause_mo}</td>` : '<td class="is-empty">—</td>');
       tbody.appendChild(tr);
     });
     const from = rows.length ? start + 1 : 0;
@@ -1815,11 +2408,19 @@
       render();
     });
 
-    document.getElementById('kpiRow').addEventListener('click', (e) => {
-      const btn = e.target.closest('.kpi[data-metric]');
+    const pickKpi = (target) => {
+      if (target.closest('.info-tip')) return;
+      const btn = target.closest('.kpi[data-metric]');
       if (!btn || state.mode !== 'dynamics') return;
       state.metric = btn.getAttribute('data-metric');
       render();
+    };
+    document.getElementById('kpiRow').addEventListener('click', (e) => pickKpi(e.target));
+    document.getElementById('kpiRow').addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (!e.target.classList?.contains('kpi')) return;
+      e.preventDefault();
+      pickKpi(e.target);
     });
 
     document.getElementById('csvDownload').addEventListener('click', downloadCsv);
@@ -1837,7 +2438,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260924-table-dates');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260925-design-pass');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
@@ -1857,6 +2458,8 @@
 
     if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
     wireMethodIsland();
+    wireMethodAccordion();
+    wireInfoTips();
     render();
   }
 
