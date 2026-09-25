@@ -911,7 +911,7 @@
                 <li><strong>Entered next</strong> — date of their first point in the next division, same role; blank if it has not happened yet.</li>
                 <li><strong>Pause, mo</strong> — months from the threshold to Entered next.</li>
               </ul>
-              <p>Dates are the <strong>start day of the event</strong>. <em>Download CSV</em> exports the whole filtered list (not just the visible page) with both the dates and the year-month codes.</p>
+              <p>Dates are the <strong>start day of the event</strong>. <em>Download CSV</em> exports the whole filtered list (not just the visible page), with the same date columns as the table.</p>
               <p class="method-example"><strong>Example row.</strong> <em>Anna Example · Follower · Novice · 2019-03-15 · 2020-10-09 · 18.9 · 9 · 2021-09-24 · 11.5</em>.</p>
             </div>
           </details>
@@ -2025,9 +2025,9 @@
     const rows = state.tableRows;
     const header = [
       'id', 'name', 'role', 'division',
-      'first_date', 'first_ym', 'done_date', 'done_ym',
+      'first_date', 'done_date',
       'months', 'events',
-      'next_first_date', 'next_first_ym', 'pause_mo', 'threshold',
+      'next_first_date', 'pause_mo', 'threshold',
     ];
     const lines = [header.join(',')];
     rows.forEach((r) => {
@@ -2036,14 +2036,11 @@
         csvEscape(r.name),
         r.role,
         r.division,
-        r.first_date || '',
-        r.first_ym || '',
-        r.done_date || '',
-        r.done_ym || '',
+        r.first_date || r.first_ym || '',
+        r.done_date || r.done_ym || '',
         r.months,
         r.events,
-        r.next_first_date || '',
-        r.next_first_ym || '',
+        r.next_first_date || r.next_first_ym || '',
         r.pause_mo || '',
         r.threshold,
       ].join(','));
