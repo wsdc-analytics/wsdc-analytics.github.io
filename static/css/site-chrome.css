@@ -652,18 +652,14 @@ a.back-link.is-on-hero:focus-visible {
     padding: 0;
   }
 
-  /* Keep Dashboards visible on mobile (audit 2026-09). */
   .wsdc-chrome__cluster[data-chrome-nav="dashboards"] {
-    order: 6;
-    flex: 1 1 100%;
-    max-width: 100%;
-    margin: 0;
+    display: none;
   }
 
   /* Row 2: equal-width Points + Champions */
   .wsdc-chrome__cluster[data-chrome-nav="points"],
   .wsdc-chrome__cluster[data-chrome-nav="champions"] {
-    order: 7;
+    order: 6;
     flex: 1 1 calc(50% - 2px);
     max-width: calc(50% - 2px);
     min-width: 0;
