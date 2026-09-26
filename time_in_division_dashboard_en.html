@@ -894,7 +894,7 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. Switch between Table, Scatter, Density and Dynamics; the <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
+        <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. Switch between Table, Scatter, Density and Dynamics; on Scatter and Density you can also run a <em>Timeline</em> month by month. The <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
       </header>
 
       <div class="tid-filter-stack">
@@ -1090,7 +1090,7 @@
               <ul>
                 <li><strong>Division</strong> and <strong>Role</strong> pick the spells. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
                 <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone.</li>
-                <li><strong>From / To year</strong> limit the Table, Scatter and Density to spells whose threshold was reached in those years. Dynamics always shows the full span.</li>
+                <li><strong>From / To year</strong> limit the Table, Scatter and Density to spells whose threshold was reached in those years. Dynamics always shows the full span. In <em>Timeline</em> (Scatter / Density) the year range is replaced by the month scrubber — see Timeline below.</li>
               </ul>
               <p>The cards on the left summarise whatever is currently filtered:</p>
               <ul>
@@ -1099,6 +1099,7 @@
                 <li><strong>Share next</strong> — of those who reached the threshold, how many already have a point in the next division.</li>
                 <li><strong>Median pause</strong> — among those who moved up, the typical wait between the threshold and their first next-level point.</li>
               </ul>
+              <p>In Timeline the same cards update for the month under the scrubber. Share next and Median pause only count dancers who had already entered the next division <em>by that month</em> — not anyone who moved up later in the data.</p>
               <p class="method-example"><strong>Reading the cards.</strong> Suppose Novice · Follower · May shows <em>Dancers 412 · Median months 8.1 · Median events 5 · Share next 63% · Median pause 6.4</em>. A typical Novice Follower in that selection needed about eight months and five events to be allowed up, roughly two in three have since scored in Intermediate, and those who did usually waited about half a year.</p>
             </div>
           </details>
@@ -1118,6 +1119,16 @@
               <p>The same picture as Scatter, but dancers are grouped into <strong>bins of 6 months × 2 events</strong>. The darker and larger the bubble, the more dancers fall into that bin. Use it when the Scatter is too crowded to read.</p>
               <p>Hover a bubble to see the bin range in plain words, how many dancers are in it, and what share of the current selection that is.</p>
               <p class="method-example"><strong>Example.</strong> A bubble labelled <em>6–12 months · 4–6 events · Dancers 84 · 21% of selection</em> means 84 dancers — about one in five — reached the threshold between six months and a year after their first point, scoring at four or five events along the way.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Timeline</summary>
+            <div class="method-sec__body">
+              <p>On Scatter and Density, switch from <strong>Static</strong> to <strong>Timeline</strong> to watch the same picture build month by month. Instead of From / To year, a scrubber runs from the division’s year floor (<strong>January 2018</strong> for Novice, Intermediate and Advanced; <strong>January 2021</strong> for All-Stars) through the latest month in the data. Each frame shows every spell whose threshold was reached <strong>on or before</strong> that month — a running cumulative, not a single-month slice.</p>
+              <p>The chart axes stay fixed to the full cumulative range so the field does not jump when a late outlier appears; dashed median lines and the KPI cards move with the scrubber. Play steps one month at a time (×1 is the default pace; ×0.25 is slower, ×2 faster). Pause keeps your place; Reset returns to the floor. Changing a filter, or leaving Timeline and coming back, also resets to the start.</p>
+              <p>While fewer than <strong>10 dancers</strong> are on screen, medians and pause are shown as a dash — the same stability rule as in Dynamics. Hover still works during Play: if the point under the cursor disappears on the next frame, the tooltip closes.</p>
+              <p class="method-example"><strong>Reading it.</strong> Novice · May · Timeline at <em>As of Jan 2019</em> with <em>Dancers 615</em> means 615 Novice spells had already crossed May by that month. Drag forward and watch the cloud fill in; Share next rises only when those dancers later score in Intermediate <em>no later than the month you are on</em>.</p>
             </div>
           </details>
 
