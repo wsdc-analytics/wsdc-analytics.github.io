@@ -3035,7 +3035,7 @@
       return;
     }
     // Fallback: legacy monolith
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260925-design-pass');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260926-sync');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
