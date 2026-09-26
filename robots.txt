@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
 
+# Unpublished / draft content
+Disallow: /events/*/draft
+Disallow: /events/*/source
+Disallow: /events/*/draft_
+Disallow: /meetings/
+Disallow: /wsdc-article/
+
 Sitemap: https://wsdc-analytics.github.io/sitemap.xml

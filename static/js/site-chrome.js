@@ -622,9 +622,55 @@
     onLangChange: existingOnLangChange,
   };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountAll);
-  } else {
+  function tableauPublicUrl(embed) {
+    var nameParam = embed.querySelector("param[name='name']");
+    if (nameParam && nameParam.value) {
+      return "https://public.tableau.com/views/" + nameParam.value.replace(/&#47;/g, "/");
+    }
+    var iframe = embed.querySelector("iframe") || embed;
+    return iframe.src || "https://public.tableau.com/";
+  }
+
+  function enhanceTableauShells() {
+    var embeds = document.querySelectorAll(
+      '.tableauPlaceholder, iframe[src*="public.tableau.com"]'
+    );
+    embeds.forEach(function (embed) {
+      if (embed.tagName === "IFRAME" && embed.closest(".tableauPlaceholder")) return;
+      var shell =
+        embed.closest(".wsdc-tableau-shell") ||
+        embed.closest(".viz-viewport") ||
+        (embed.tagName === "IFRAME" ? embed.parentElement : embed);
+      if (!shell || shell.querySelector(".wsdc-tableau-mobile-fallback")) return;
+      shell.classList.add("wsdc-tableau-shell");
+      var note = document.createElement("div");
+      note.className = "wsdc-tableau-mobile-fallback";
+      note.innerHTML =
+        "<strong>Best on a larger screen</strong>" +
+        '<p style="margin:.4rem 0 .75rem">This Tableau dashboard is hard to use on a phone. ' +
+        "Open it on desktop, or launch Tableau Public directly.</p>";
+      var linkP = document.createElement("p");
+      linkP.style.margin = "0";
+      var link = document.createElement("a");
+      link.href = tableauPublicUrl(embed);
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "Open in Tableau Public";
+      linkP.appendChild(link);
+      note.appendChild(linkP);
+      shell.style.position = shell.style.position || "relative";
+      shell.appendChild(note);
+    });
+  }
+
+  function onReady() {
     mountAll();
+    enhanceTableauShells();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", onReady);
+  } else {
+    onReady();
   }
 })();

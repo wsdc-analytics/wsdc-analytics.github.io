@@ -1,10 +1,12 @@
 const GITHUB_API = 'https://api.github.com';
+const { allowOrigin } = require('./_cors');
 
 function setCors(res, origin) {
-  const allow = origin || '*';
-  res.setHeader('Access-Control-Allow-Origin', allow);
+  const allowed = allowOrigin(origin);
+  res.setHeader('Access-Control-Allow-Origin', allowed);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Vary', 'Origin');
 }
 
 function sendJson(res, data, status = 200, origin) {
@@ -39,7 +41,7 @@ async function parseBody(req) {
 }
 
 module.exports = async function handler(req, res) {
-  const origin = req.headers.origin || '*';
+  const origin = req.headers.origin || '';
 
   if (req.method === 'OPTIONS') {
     setCors(res, origin);

@@ -175,6 +175,33 @@ def validate_events_year_calendar() -> None:
             fail(f"events_year_calendar.events[{idx}] start_date must be YYYY-MM-DD")
         if not date_re.match(str(event.get("weekend_key") or "")):
             fail(f"events_year_calendar.events[{idx}] weekend_key must be YYYY-MM-DD")
+        end_date = event.get("end_date")
+        if end_date is not None and str(end_date).strip():
+            if not date_re.match(str(end_date)):
+                fail(
+                    f"events_year_calendar.events[{idx}] end_date must be YYYY-MM-DD, "
+                    f"got {end_date!r}"
+                )
+            if str(end_date) < str(event.get("start_date")):
+                fail(
+                    f"events_year_calendar.events[{idx}] end_date {end_date!r} "
+                    f"precedes start_date {event.get('start_date')!r}"
+                )
+    # Duplicate edition keys in the published calendar payload.
+    seen_keys: dict[tuple, int] = {}
+    for idx, event in enumerate(data["events"]):
+        key = (
+            event.get("event_id") or event.get("id"),
+            event.get("year"),
+            event.get("start_date"),
+        )
+        if key in seen_keys:
+            fail(
+                f"events_year_calendar duplicate event "
+                f"(event_id/year/start_date)={key!r} at indexes "
+                f"{seen_keys[key]} and {idx}"
+            )
+        seen_keys[key] = idx
     print("[OK] events_year_calendar.json")
 
 
@@ -246,6 +273,23 @@ def validate_homepage_kpis() -> None:
 
 
 def validate_time_in_division_spells() -> None:
+    shard_index = DATA_DIR / "time_in_division" / "index.json"
+    if shard_index.exists():
+        index = load_json(shard_index)
+        if not isinstance(index, dict):
+            fail("time_in_division/index.json must be an object")
+        shards = index.get("shards")
+        if not isinstance(shards, list) or not shards:
+            fail("time_in_division/index.json.shards must be a non-empty list")
+        for div in shards:
+            safe = str(div).lower().replace(" ", "_").replace("/", "_")
+            shard_path = DATA_DIR / "time_in_division" / f"{safe}.json"
+            shard = load_json(shard_path)
+            if not isinstance(shard, dict) or "spells" not in shard:
+                fail(f"{shard_path.name} must contain spells")
+        print(f"[OK] time_in_division shards ({len(shards)} divisions)")
+        return
+
     path = DATA_DIR / "time_in_division_spells.json"
     if not path.exists():
         print("[SKIP] time_in_division_spells.json (optional until first sync)")

@@ -52,15 +52,8 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="preload" href="static/data/articles.json" as="fetch" crossorigin>
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LMLCY5PE8Z');
-    </script>
+    <script src="static/js/analytics.js" defer></script>
+
     <style>
         :root {
             /* Remap legacy locals onto Evolved C tokens */
@@ -1251,9 +1244,16 @@
             }
         }
     </style>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="WSDC Analytics">
+  <meta property="og:description" content="Data-driven insights on the West Coast Swing community">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+    <a href="#main-content" class="skip-link" data-i18n-skip="skip">Skip to content</a>
 
     <div
         data-site-chrome

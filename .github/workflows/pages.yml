@@ -1,4 +1,4 @@
-# Deploy to GitHub Pages (static site — no Jekyll build)
+# Deploy to GitHub Pages (static site — filtered artifact, no Python/scripts/drafts)
 name: Deploy to GitHub Pages
 
 on:
@@ -17,15 +17,16 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Validate site data
         run: python3 scripts/validate_site_data.py
@@ -33,13 +34,46 @@ jobs:
       - name: Smoke check critical pages
         run: python3 scripts/smoke_check_site_files.py
 
+      - name: Build filtered Pages dist
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist
+          # Copy publishable surfaces only (exclude Python, drafts, meetings, legacy nest).
+          rsync -a \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'dist/' \
+            --exclude 'node_modules/' \
+            --exclude '__pycache__/' \
+            --exclude '*.py' \
+            --exclude '*.pyc' \
+            --exclude 'scripts/' \
+            --exclude 'docs/' \
+            --exclude 'meetings/' \
+            --exclude 'wsdc-article/' \
+            --exclude 'events/*/draft*.html' \
+            --exclude 'events/*/source*.html' \
+            --exclude 'events/_rebuild/' \
+            --exclude 'static/data/divisions_structure_sample.json' \
+            --exclude '*.csv' \
+            --exclude '.env' \
+            --exclude '.venv/' \
+            ./ dist/
+          # Keep api/ for Vercel; GitHub Pages ignores serverless but path is harmless.
+          test -f dist/index.html
+          test -f dist/events-calendar.html
+          test ! -f dist/scripts/validate_site_data.py
+          echo "dist bytes: $(du -sh dist | cut -f1)"
+
       - name: Upload artifact (static site)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
     needs: build
     environment:
       name: github-pages
@@ -52,5 +86,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          # Default 10m aborts while Pages is still in deployment_queued and can wedge the SHA.
           timeout: 1800000
