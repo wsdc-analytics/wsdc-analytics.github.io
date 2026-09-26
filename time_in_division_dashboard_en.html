@@ -420,6 +420,7 @@
     }
     table.tid-table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: separate;
       border-spacing: 0;
       font-size: 13px;
@@ -427,21 +428,37 @@
     }
     table.tid-table th,
     table.tid-table td {
-      padding: 8px 9px;
+      padding: 8px 6px;
       text-align: right;
       border-bottom: 1px solid #eef2f7;
       white-space: nowrap;
+      vertical-align: middle;
     }
     table.tid-table th:nth-child(1),
-    table.tid-table td:nth-child(1),
+    table.tid-table td:nth-child(1) { width: 4.5%; text-align: left; }
     table.tid-table th:nth-child(2),
-    table.tid-table td:nth-child(2),
-    table.tid-table th:nth-child(3),
-    table.tid-table td:nth-child(3),
-    table.tid-table th:nth-child(4),
-    table.tid-table td:nth-child(4) {
+    table.tid-table td:nth-child(2) {
+      width: 14%;
       text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+    table.tid-table th:nth-child(3),
+    table.tid-table td:nth-child(3) { width: 7.5%; text-align: left; }
+    table.tid-table th:nth-child(4),
+    table.tid-table td:nth-child(4) { width: 9.5%; text-align: left; }
+    table.tid-table th:nth-child(5),
+    table.tid-table td:nth-child(5),
+    table.tid-table th:nth-child(6),
+    table.tid-table td:nth-child(6),
+    table.tid-table th:nth-child(9),
+    table.tid-table td:nth-child(9) { width: 11.5%; }
+    table.tid-table th:nth-child(7),
+    table.tid-table td:nth-child(7) { width: 8%; }
+    table.tid-table th:nth-child(8),
+    table.tid-table td:nth-child(8) { width: 7.5%; }
+    table.tid-table th:nth-child(10),
+    table.tid-table td:nth-child(10) { width: 10%; }
     table.tid-table td:nth-child(2) {
       font-weight: 600;
       color: var(--wsdc-color-text-strong, #0b1221);
@@ -467,6 +484,7 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      max-width: 100%;
     }
     table.tid-table tr:last-child td { border-bottom: 0; }
     table.tid-table tr.role-leader td {
@@ -1993,7 +2011,7 @@
       tr.className = r.role === 'Leader' ? 'role-leader' : 'role-follower';
       tr.innerHTML =
         `<td>${r.id}</td>` +
-        `<td>${escapeHtml(r.name)}</td>` +
+        `<td title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</td>` +
         `<td>${r.role}</td>` +
         `<td>${r.division}</td>` +
         `<td>${r.first_display || '—'}</td>` +
@@ -2011,6 +2029,8 @@
     document.getElementById('tablePrev').disabled = state.tablePage <= 0;
     document.getElementById('tableNext').disabled = state.tablePage >= maxPage;
     document.getElementById('tableEmpty').classList.toggle('show', rows.length === 0);
+    const scroll = document.getElementById('tableScroll');
+    if (scroll) scroll.scrollLeft = 0;
   }
 
   function escapeHtml(s) {
