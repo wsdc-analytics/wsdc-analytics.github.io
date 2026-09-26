@@ -58,17 +58,24 @@
       position: relative;
       z-index: 40;
       margin: 0;
-      flex: 1 1 auto;
       min-width: 0;
+      grid-column: 2;
+      grid-row: 1;
     }
-    .viz-filters-row {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      gap: 12px;
+    .tid-filter-stack {
+      display: grid;
+      grid-template-columns: 9.5rem minmax(0, 1fr) auto;
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: start;
       flex-shrink: 0;
       position: relative;
       z-index: 40;
+    }
+    .tid-filter-stack > .viz-filters-row__gutter {
+      grid-column: 1;
+      grid-row: 1;
+      width: 9.5rem;
     }
     .viz-filters-row__gutter {
       flex: 0 0 9.5rem;
@@ -82,6 +89,175 @@
       align-items: stretch;
     }
     .tid-filters .filter-field.is-hidden { display: none; }
+    .tid-view-toggle {
+      display: none;
+      grid-column: 3;
+      grid-row: 1;
+      align-self: start;
+      align-items: center;
+      /* Sit on the filter-label row (not next to the selects). */
+      margin-top: 0;
+      padding-top: 0;
+    }
+    .tid-view-toggle.is-visible { display: flex; }
+    .seg-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      padding: 1px;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: var(--wsdc-radius-pill, 999px);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      height: 24px;
+      box-sizing: border-box;
+    }
+    .seg-toggle__btn {
+      border: 0;
+      background: transparent;
+      border-radius: var(--wsdc-radius-pill, 999px);
+      padding: 0 8px;
+      height: 20px;
+      font: 600 10px/1 'DM Sans', var(--wsdc-font-sans), system-ui, sans-serif;
+      letter-spacing: 0.01em;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      cursor: pointer;
+    }
+    .seg-toggle__btn.is-active {
+      background: #fff;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+    .seg-toggle__btn:focus-visible {
+      outline: var(--wsdc-focus-ring, 2px solid #2563eb);
+      outline-offset: 1px;
+    }
+    .tid-timeline {
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      grid-column: 2;
+      grid-row: 2;
+      min-width: 0;
+      padding: 0;
+      margin: 0;
+    }
+    .tid-timeline.is-visible { display: flex; }
+    .tid-timeline[hidden] { display: none !important; }
+    .tid-timeline__controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 6px;
+    }
+    .tid-timeline__btns {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tid-tl-btn {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 6px;
+      height: 22px;
+      min-width: 22px;
+      padding: 0 7px;
+      font: 600 10px/1 'DM Sans', var(--wsdc-font-sans), system-ui, sans-serif;
+      color: var(--wsdc-color-text, #1f2937);
+      cursor: pointer;
+    }
+    .tid-tl-btn:hover { border-color: #9ca3af; }
+    .tid-tl-btn:disabled { opacity: 0.45; cursor: default; }
+    .tid-tl-btn.is-active {
+      border-color: var(--wsdc-color-text-strong, #0b1221);
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+    }
+    .tid-tl-btn:focus-visible {
+      outline: var(--wsdc-focus-ring, 2px solid #2563eb);
+      outline-offset: 1px;
+    }
+    .tid-timeline__speed {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .tid-timeline__scrub {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 6px;
+      align-items: center;
+      min-width: 0;
+      min-height: 14px;
+    }
+    .tid-timeline__end {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .tid-timeline__range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      height: 14px;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+    .tid-timeline__range:focus { outline: none; }
+    .tid-timeline__range:focus-visible::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+    .tid-timeline__range::-webkit-slider-runnable-track {
+      height: 2px;
+      border-radius: 1px;
+      background: var(--wsdc-color-border, #d1d5db);
+    }
+    .tid-timeline__range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      margin-top: -4px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--wsdc-color-brand-accent, #2563eb);
+      cursor: pointer;
+    }
+    .tid-timeline__range::-moz-range-track {
+      height: 2px;
+      border-radius: 1px;
+      background: var(--wsdc-color-border, #d1d5db);
+      border: 0;
+    }
+    .tid-timeline__range::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--wsdc-color-brand-accent, #2563eb);
+      cursor: pointer;
+    }
+    .tid-timeline__now {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-variant-numeric: tabular-nums;
+      min-width: 4.75rem;
+    }
+    .chart-asof {
+      margin: 0 0 2px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .chart-asof[hidden] { display: none; }
     .tid-filters .filter-label {
       display: block;
       width: 100%;
@@ -664,12 +840,21 @@
       html, body { height: auto; overflow: auto; }
       .page { height: auto; min-height: 100dvh; overflow: visible; }
       .content { overflow: visible; }
-      .viz-filters-row {
-        flex-direction: column;
-        align-items: stretch;
+      .tid-filter-stack {
+        grid-template-columns: 1fr;
+        row-gap: 8px;
       }
-      .viz-filters-row__gutter { display: none; }
-      .tid-filters { justify-content: center; }
+      .tid-filter-stack > .viz-filters-row__gutter { display: none; }
+      .tid-filters,
+      .tid-view-toggle,
+      .tid-timeline {
+        grid-column: 1;
+      }
+      .tid-filters { justify-content: center; grid-row: auto; }
+      .tid-view-toggle { justify-content: center; grid-row: auto; }
+      .tid-timeline { grid-row: auto; }
+      .tid-timeline__scrub { grid-template-columns: 1fr; }
+      .tid-timeline__end:last-child { text-align: right; }
       .viz-stage {
         flex-direction: column;
       }
@@ -712,7 +897,7 @@
         <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. Switch between Table, Scatter, Density and Dynamics; the <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
       </header>
 
-      <div class="viz-filters-row">
+      <div class="tid-filter-stack">
         <div class="viz-filters-row__gutter" aria-hidden="true"></div>
         <div class="tid-filters" role="group" aria-label="Filters">
           <div class="filter-field">
@@ -755,6 +940,32 @@
           <div class="filter-field" id="yearToField">
             <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
             <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
+          </div>
+        </div>
+        <div class="tid-view-toggle" id="viewToggleWrap" aria-label="Static or Timeline">
+          <div class="seg-toggle" role="group" aria-label="View mode">
+            <button type="button" class="seg-toggle__btn is-active" id="viewStaticBtn" aria-pressed="true">Static</button>
+            <button type="button" class="seg-toggle__btn" id="viewTimelineBtn" aria-pressed="false">Timeline</button>
+          </div>
+        </div>
+
+        <div class="tid-timeline" id="timelineBar" hidden>
+          <div class="tid-timeline__controls">
+            <div class="tid-timeline__btns">
+              <button type="button" class="tid-tl-btn" id="tlPlayBtn" aria-label="Play">Play</button>
+              <button type="button" class="tid-tl-btn" id="tlResetBtn" aria-label="Reset to start">Reset</button>
+            </div>
+            <div class="tid-timeline__speed" role="group" aria-label="Playback speed">
+              <button type="button" class="tid-tl-btn" data-speed="0.25" id="tlSpeed025">×0.25</button>
+              <button type="button" class="tid-tl-btn is-active" data-speed="1" id="tlSpeed1">×1</button>
+              <button type="button" class="tid-tl-btn" data-speed="2" id="tlSpeed2">×2</button>
+            </div>
+            <span class="tid-timeline__now" id="tlNowLabel">—</span>
+          </div>
+          <div class="tid-timeline__scrub">
+            <span class="tid-timeline__end" id="tlStartLabel">—</span>
+            <input type="range" class="tid-timeline__range" id="tlScrub" min="0" max="0" value="0" step="1" aria-label="Timeline month">
+            <span class="tid-timeline__end" id="tlEndLabel">—</span>
           </div>
         </div>
       </div>
@@ -807,6 +1018,7 @@
         </div>
 
         <section class="viz-card" aria-label="Time in division visualization">
+          <p class="chart-asof" id="chartAsof" hidden aria-live="off">As of —</p>
           <div class="chart-wrap" id="chartWrap">
             <canvas id="chart"></canvas>
             <div class="empty" id="emptyState">No spells in this filter</div>
@@ -956,6 +1168,10 @@
   const COLOR = { Leader: '#6366F1', Follower: '#F43F5E', All: '#6B7280' };
   const PAGE_SIZE = 50;
   const MIN_N_LINE = 10;
+  /** Timeline: ms per month at ×1 (= former ×0.5; ≈30–45s Novice run). */
+  const TL_BASE_MS = 440;
+  const TL_FADE_MS = 200;
+  const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   /** First calendar year of allowed/required (may/must buffer) by division. */
   const YEAR_FLOOR = {
     Novice: 2018,
@@ -978,6 +1194,7 @@
     threshold: 'allowed',
     role: 'All',
     mode: 'table',
+    viewMode: 'static',
     metric: 'n',
     yearFrom: null,
     yearTo: null,
@@ -994,6 +1211,22 @@
     methodOpen: false,
     methodMoved: false,
     methodDrag: null,
+    tl: {
+      months: [],
+      index: 0,
+      playing: false,
+      speed: 1,
+      raf: 0,
+      fadeRaf: 0,
+      acc: 0,
+      lastTs: 0,
+      visibleKeys: new Set(),
+      fading: new Map(),
+      pointerEvent: null,
+      sortedCacheKey: '',
+      sortedRows: null,
+      finalMaxN: 1,
+    },
   };
 
   const medianGuidesPlugin = {
@@ -1127,8 +1360,9 @@
     let withNext = 0;
     const pauses = [];
     const thr = state.threshold;
+    const asOf = isTimelineActive() ? timelineAsOfYm() : null;
     rows.forEach((s) => {
-      const t = nextTransitionForSpell(s);
+      const t = nextTransitionAsOf(s, asOf);
       if (!t) return;
       withNext += 1;
       const m = pauseMonths(t, thr);
@@ -1144,8 +1378,325 @@
     };
   }
 
+  /** Transition only if first next-division point is on/before as-of month (Timeline). */
+  function nextTransitionAsOf(s, asOfYm) {
+    const t = nextTransitionForSpell(s);
+    if (!t) return null;
+    if (asOfYm && t.first_ym && String(t.first_ym).slice(0, 7) > asOfYm) return null;
+    return t;
+  }
+
   function yearFloorForDivision(division) {
     return YEAR_FLOOR[division] ?? 2018;
+  }
+
+  function isTimelineActive() {
+    return state.viewMode === 'timeline' && (state.mode === 'scatter' || state.mode === 'density');
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function formatYm(ym) {
+    if (!ym || typeof ym !== 'string' || ym.length < 7) return '—';
+    const y = ym.slice(0, 4);
+    const m = Number(ym.slice(5, 7));
+    if (!Number.isFinite(m) || m < 1 || m > 12) return ym;
+    return `${MONTH_SHORT[m - 1]} ${y}`;
+  }
+
+  function colorAlpha(hex, a) {
+    const h = String(hex || '#6B7280').replace('#', '');
+    const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+    const n = parseInt(full, 16);
+    if (!Number.isFinite(n)) return `rgba(107,114,128,${a})`;
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+
+  function spellKey(s) {
+    return `${s.id}|${s.role}|${s.division}`;
+  }
+
+  function addMonth(ym, delta) {
+    let y = Number(ym.slice(0, 4));
+    let m = Number(ym.slice(5, 7)) + delta;
+    while (m > 12) { m -= 12; y += 1; }
+    while (m < 1) { m += 12; y -= 1; }
+    return `${y}-${String(m).padStart(2, '0')}`;
+  }
+
+  function dataThroughYm() {
+    const raw = state.data && state.data.data_through;
+    if (raw && /^\d{4}-\d{2}/.test(raw)) return raw.slice(0, 7);
+    return '2026-09';
+  }
+
+  function buildTimelineMonths(division) {
+    const start = `${yearFloorForDivision(division)}-01`;
+    const end = dataThroughYm();
+    const out = [];
+    let cur = start;
+    while (cur <= end) {
+      out.push(cur);
+      cur = addMonth(cur, 1);
+    }
+    return out;
+  }
+
+  function timelineAsOfYm() {
+    const months = state.tl.months;
+    if (!months.length) return dataThroughYm();
+    const i = Math.max(0, Math.min(state.tl.index, months.length - 1));
+    return months[i];
+  }
+
+  function fadeDurationMs() {
+    if (prefersReducedMotion()) return 0;
+    const frameMs = TL_BASE_MS / Math.max(0.25, state.tl.speed);
+    return Math.min(TL_FADE_MS, Math.floor(frameMs * 0.8));
+  }
+
+  function alphaForKey(key, now) {
+    const fade = state.tl.fading.get(key);
+    if (!fade) return 1;
+    const t = now != null ? now : performance.now();
+    const dur = Math.max(1, fade.dur);
+    const a = Math.min(1, Math.max(0, (t - fade.start) / dur));
+    if (a >= 1) {
+      state.tl.fading.delete(key);
+      return 1;
+    }
+    return a;
+  }
+
+  function fadesActive() {
+    return state.tl.fading.size > 0;
+  }
+
+  function beginFrameFades(prevKeys, nextKeys) {
+    // Density: no layer crossfade (it strobes). Bins only grow in colour/size via final maxN.
+    // Scatter: fade in newly appeared points only.
+    state.tl.fading.clear();
+    if (state.mode === 'density' || prefersReducedMotion()) {
+      state.tl.visibleKeys = new Set(nextKeys);
+      return;
+    }
+    const dur = fadeDurationMs();
+    const now = performance.now();
+    if (dur <= 0) {
+      state.tl.visibleKeys = new Set(nextKeys);
+      return;
+    }
+    nextKeys.forEach((key) => {
+      if (!prevKeys.has(key)) {
+        state.tl.fading.set(key, { start: now, dur });
+      }
+    });
+    state.tl.visibleKeys = new Set(nextKeys);
+    ensureFadeLoop();
+  }
+
+  function stopFadeLoop() {
+    if (state.tl.fadeRaf) {
+      cancelAnimationFrame(state.tl.fadeRaf);
+      state.tl.fadeRaf = 0;
+    }
+  }
+
+  function ensureFadeLoop() {
+    if (state.tl.fadeRaf || state.tl.playing) return;
+    const step = (ts) => {
+      if (!fadesActive(ts) || state.tl.playing) {
+        state.tl.fadeRaf = 0;
+        if (!state.tl.playing && isTimelineActive()) render();
+        return;
+      }
+      render();
+      state.tl.fadeRaf = requestAnimationFrame(step);
+    };
+    state.tl.fadeRaf = requestAnimationFrame(step);
+  }
+
+  function stopTimelinePlay() {
+    state.tl.playing = false;
+    if (state.tl.raf) {
+      cancelAnimationFrame(state.tl.raf);
+      state.tl.raf = 0;
+    }
+    state.tl.acc = 0;
+    syncTimelineChrome();
+    if (fadesActive()) ensureFadeLoop();
+  }
+
+  function timelineSortedRows() {
+    const thr = state.threshold;
+    const floor = yearFloorForDivision(state.division);
+    const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
+    const key = `${state.division}|${thr}|${state.role}|${floor}`;
+    if (state.tl.sortedCacheKey === key && state.tl.sortedRows) return state.tl.sortedRows;
+    const rows = (state.data?.spells || []).filter((s) => {
+      if (s.division !== state.division) return false;
+      if (roleFilter && s.role !== roleFilter) return false;
+      const hit = s[thr];
+      if (!hit || !hit.done_ym) return false;
+      const y = doneYear(hit);
+      if (y == null || y < floor) return false;
+      return true;
+    }).slice().sort((a, b) => {
+      const ya = a[thr].done_ym.localeCompare(b[thr].done_ym);
+      if (ya) return ya;
+      const id = String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
+      return id || a.role.localeCompare(b.role);
+    });
+    state.tl.sortedCacheKey = key;
+    state.tl.sortedRows = rows;
+    state.tl.finalMaxN = densityMaxN(rows, thr);
+    return rows;
+  }
+
+  function densityMaxN(rows, thr) {
+    const bins = new Map();
+    const binM = state.binM;
+    const binE = state.binE;
+    rows.forEach((s) => {
+      const mx = s[thr].months;
+      const ey = spellEvents(s, thr);
+      const bx = Math.floor(mx / binM) * binM;
+      const by = Math.floor(ey / binE) * binE;
+      const key = bx + ':' + by;
+      bins.set(key, (bins.get(key) || 0) + 1);
+    });
+    let maxN = 1;
+    bins.forEach((n) => { if (n > maxN) maxN = n; });
+    return maxN;
+  }
+
+  function rowsAsOfYm(ym) {
+    const rows = timelineSortedRows();
+    const thr = state.threshold;
+    let lo = 0;
+    let hi = rows.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (rows[mid][thr].done_ym <= ym) lo = mid + 1;
+      else hi = mid;
+    }
+    return rows.slice(0, lo);
+  }
+
+  function resetTimelineToFloor() {
+    stopTimelinePlay();
+    stopFadeLoop();
+    state.tl.months = buildTimelineMonths(state.division);
+    state.tl.index = 0;
+    state.tl.sortedCacheKey = '';
+    state.tl.sortedRows = null;
+    state.tl.fading.clear();
+    state.tl.visibleKeys = new Set();
+    syncTimelineChrome();
+  }
+
+  function setTimelineIndex(index, opts) {
+    const months = state.tl.months;
+    if (!months.length) return;
+    const next = Math.max(0, Math.min(index, months.length - 1));
+    const changed = next !== state.tl.index;
+    state.tl.index = next;
+    if (changed || (opts && opts.forceFade)) {
+      const ym = timelineAsOfYm();
+      const rows = rowsAsOfYm(ym);
+      const nextKeys = new Set(rows.map(spellKey));
+      const prevKeys = opts && opts.resetSeen ? new Set() : state.tl.visibleKeys;
+      beginFrameFades(prevKeys, nextKeys);
+    }
+    syncTimelineChrome();
+  }
+
+  function syncTimelineChrome() {
+    const toggle = document.getElementById('viewToggleWrap');
+    const bar = document.getElementById('timelineBar');
+    const asof = document.getElementById('chartAsof');
+    const chartCapable = state.mode === 'scatter' || state.mode === 'density';
+    toggle.classList.toggle('is-visible', chartCapable);
+    if (!chartCapable && state.viewMode === 'timeline') {
+      state.viewMode = 'static';
+      stopTimelinePlay();
+    }
+    const tlOn = isTimelineActive();
+    bar.hidden = !tlOn;
+    bar.classList.toggle('is-visible', tlOn);
+    asof.hidden = !tlOn;
+    document.getElementById('viewStaticBtn').classList.toggle('is-active', state.viewMode === 'static');
+    document.getElementById('viewTimelineBtn').classList.toggle('is-active', state.viewMode === 'timeline');
+    document.getElementById('viewStaticBtn').setAttribute('aria-pressed', String(state.viewMode === 'static'));
+    document.getElementById('viewTimelineBtn').setAttribute('aria-pressed', String(state.viewMode === 'timeline'));
+
+    if (!tlOn) return;
+
+    const months = state.tl.months;
+    const scrub = document.getElementById('tlScrub');
+    scrub.max = String(Math.max(0, months.length - 1));
+    scrub.value = String(state.tl.index);
+    const startYm = months[0] || `${yearFloorForDivision(state.division)}-01`;
+    const endYm = months[months.length - 1] || dataThroughYm();
+    document.getElementById('tlStartLabel').textContent = formatYm(startYm);
+    const throughDay = state.data && state.data.data_as_of
+      ? String(state.data.data_as_of).slice(8, 10)
+      : '';
+    const endLabel = formatYm(endYm);
+    document.getElementById('tlEndLabel').textContent =
+      throughDay && endYm === dataThroughYm()
+        ? `${endLabel} (to ${Number(throughDay)})`
+        : endLabel;
+    const asOf = timelineAsOfYm();
+    document.getElementById('tlNowLabel').textContent = formatYm(asOf);
+    asof.textContent = `As of ${formatYm(asOf)}`;
+    asof.setAttribute('aria-live', state.tl.playing ? 'off' : 'polite');
+
+    const playBtn = document.getElementById('tlPlayBtn');
+    playBtn.textContent = state.tl.playing ? 'Pause' : 'Play';
+    playBtn.setAttribute('aria-label', state.tl.playing ? 'Pause' : 'Play');
+    const atEnd = state.tl.index >= months.length - 1;
+    playBtn.disabled = atEnd && !state.tl.playing;
+
+    document.querySelectorAll('.tid-timeline__speed .tid-tl-btn').forEach((btn) => {
+      const sp = Number(btn.getAttribute('data-speed'));
+      btn.classList.toggle('is-active', sp === state.tl.speed);
+    });
+  }
+
+  function startTimelinePlay() {
+    if (!isTimelineActive()) return;
+    if (state.tl.index >= state.tl.months.length - 1) return;
+    stopFadeLoop();
+    state.tl.playing = true;
+    state.tl.acc = 0;
+    state.tl.lastTs = performance.now();
+    syncTimelineChrome();
+    const tick = (ts) => {
+      if (!state.tl.playing) return;
+      const dt = ts - state.tl.lastTs;
+      state.tl.lastTs = ts;
+      state.tl.acc += dt;
+      const frameMs = TL_BASE_MS / Math.max(0.25, state.tl.speed);
+      let steps = 0;
+      while (state.tl.acc >= frameMs) {
+        state.tl.acc -= frameMs;
+        steps += 1;
+        if (state.tl.index + steps >= state.tl.months.length - 1) {
+          state.tl.acc = 0;
+          setTimelineIndex(state.tl.months.length - 1);
+          stopTimelinePlay();
+          render();
+          return;
+        }
+      }
+      if (steps) setTimelineIndex(state.tl.index + steps);
+      if (steps || fadesActive(ts)) render();
+      state.tl.raf = requestAnimationFrame(tick);
+    };
+    state.tl.raf = requestAnimationFrame(tick);
   }
 
   /** Role control: filter on Scatter/Density/Table; view mode on Dynamics. */
@@ -1201,6 +1752,9 @@
     const ignoreYears = !!(opts && opts.ignoreYears);
     const d = state.data;
     if (!d) return [];
+    if (isTimelineActive() && !ignoreYears) {
+      return rowsAsOfYm(timelineAsOfYm());
+    }
     const thr = state.threshold;
     const y0 = state.yearFrom;
     const y1 = state.yearTo;
@@ -1226,8 +1780,9 @@
   function updateKpis(rows, thr) {
     const months = rows.map((s) => s[thr].months);
     const events = rows.map((s) => spellEvents(s, thr));
-    state.medianMonths = median(months);
-    state.medianEvents = median(events);
+    const thin = isTimelineActive() && rows.length < MIN_N_LINE;
+    state.medianMonths = thin ? null : median(months);
+    state.medianEvents = thin ? null : median(events);
     document.getElementById('kpiN').textContent = String(rows.length);
     document.getElementById('kpiMonths').textContent =
       state.medianMonths == null ? '—' : String(Math.round(state.medianMonths * 10) / 10);
@@ -1237,20 +1792,24 @@
     const st = nextStats(rows);
     const shareEl = document.getElementById('kpiNextShare');
     const pauseEl = document.getElementById('kpiNextPause');
-    shareEl.textContent = st.share == null ? '—' : `${Math.round(st.share * 10) / 10}%`;
+    shareEl.textContent =
+      thin || st.share == null ? '—' : `${Math.round(st.share * 10) / 10}%`;
     pauseEl.textContent =
-      st.medianPause == null ? '—' : String(Math.round(st.medianPause * 10) / 10);
+      thin || st.medianPause == null || (isTimelineActive() && st.pauseN < MIN_N_LINE)
+        ? '—'
+        : String(Math.round(st.medianPause * 10) / 10);
     // Live detail appended to the ⓘ explanations (counts behind the two "next" cards).
     const shareTip = document.querySelector('#kpiBtnNextShare .info-tip');
     const pauseTip = document.querySelector('#kpiBtnNextPause .info-tip');
+    const asOfNote = isTimelineActive() ? ` as of ${formatYm(timelineAsOfYm())}` : '';
     if (shareTip) {
       shareTip.dataset.tipLive = rows.length
-        ? `Now: ${st.withNext} of ${rows.length} dancers.`
+        ? `Now: ${st.withNext} of ${rows.length} dancers${asOfNote}.`
         : '';
     }
     if (pauseTip) {
       pauseTip.dataset.tipLive = st.pauseN
-        ? `Now: median of ${st.pauseN} pauses.`
+        ? `Now: median of ${st.pauseN} pauses${asOfNote}.`
         : '';
     }
     const thDone = document.getElementById('thDone');
@@ -1290,7 +1849,7 @@
   }
 
   function updateYearFieldsVisibility() {
-    const hide = state.mode === 'dynamics';
+    const hide = state.mode === 'dynamics' || isTimelineActive();
     document.getElementById('yearFromField').classList.toggle('is-hidden', hide);
     document.getElementById('yearToField').classList.toggle('is-hidden', hide);
   }
@@ -1332,9 +1891,14 @@
       groups.get(key).push(s);
     });
     const byRole = { Leader: [], Follower: [] };
+    const stable = isTimelineActive();
     groups.forEach((list, key) => {
       const [mx, ey] = key.split('|').map(Number);
       list.sort((a, b) => {
+        if (stable) {
+          const ya = String(a[thr].done_ym).localeCompare(String(b[thr].done_ym));
+          if (ya) return ya;
+        }
         const id = String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
         return id || a.role.localeCompare(b.role);
       });
@@ -1346,13 +1910,14 @@
           const perRing = 10;
           const ring = Math.floor(i / perRing);
           const idx = i % perRing;
-          const onRing = Math.min(perRing, n - ring * perRing);
+          // Timeline: fixed 10-slot angles so earlier points do not jump when a peer arrives.
+          const onRing = stable ? perRing : Math.min(perRing, n - ring * perRing);
           const angle = (2 * Math.PI * idx) / onRing - Math.PI / 2;
           const r = 0.28 + ring * 0.32;
           x = mx + Math.cos(angle) * r * 0.95;
           y = Math.max(0, ey + Math.sin(angle) * r * 0.42);
         }
-        byRole[s.role].push({ x, y, raw: s });
+        byRole[s.role].push({ x, y, raw: s, key: spellKey(s) });
       });
     });
     return byRole;
@@ -1365,7 +1930,12 @@
       label: role,
       data: laid[role] || [],
       backgroundColor: 'rgba(255, 255, 255, 0)',
-      borderColor: COLOR[role],
+      borderColor: (ctx) => {
+        const raw = ctx.raw;
+        const key = raw && raw.key;
+        const a = key && isTimelineActive() ? alphaForKey(key) : 1;
+        return colorAlpha(COLOR[role], a);
+      },
       borderWidth: 1.6,
       pointRadius: 3.2,
       pointHoverRadius: 5,
@@ -1390,7 +1960,9 @@
       bins.set(key, cur);
     });
     const cells = [...bins.values()];
-    const maxN = cells.reduce((m, c) => Math.max(m, c.n), 1);
+    const maxN = isTimelineActive()
+      ? Math.max(1, state.tl.finalMaxN || densityMaxN(timelineSortedRows(), thr))
+      : cells.reduce((m, c) => Math.max(m, c.n), 1);
     const total = rows.length;
     return [{
       label: 'Density',
@@ -1404,6 +1976,7 @@
         r: 3 + 14 * (c.n / maxN),
       })),
       backgroundColor: cells.map((c) => {
+        // Timeline: fixed maxN → cells only darken/grow as count rises (no whole-layer flash).
         const a = 0.28 + 0.62 * (c.n / maxN);
         return `rgba(99, 102, 241, ${a})`;
       }),
@@ -1563,14 +2136,16 @@
     yScale.title.text = `Events to ${thrWord}`;
     xScale.beginAtZero = true;
     yScale.beginAtZero = true;
-    if (!rows.length) {
+    // Timeline: fix domain to full cumulative so axes/medians do not jump frame-to-frame.
+    const scaleRows = isTimelineActive() ? timelineSortedRows() : rows;
+    if (!scaleRows.length) {
       delete xScale.max;
       delete yScale.max;
       return;
     }
-    let xMax = state.medianMonths ?? 0;
-    let yMax = state.medianEvents ?? 0;
-    rows.forEach((s) => {
+    let xMax = isTimelineActive() ? 0 : (state.medianMonths ?? 0);
+    let yMax = isTimelineActive() ? 0 : (state.medianEvents ?? 0);
+    scaleRows.forEach((s) => {
       xMax = Math.max(xMax, s[thr].months);
       yMax = Math.max(yMax, spellEvents(s, thr));
     });
@@ -1641,7 +2216,8 @@
     const thr = state.threshold;
     const thrWord = thr === 'allowed' ? 'May' : 'Must';
     const hit = s[thr];
-    const next = nextTransitionForSpell(s);
+    const asOf = isTimelineActive() ? timelineAsOfYm() : null;
+    const next = nextTransitionAsOf(s, asOf);
     let html = `<div class="tt-title">${escapeHtml(s.name)}</div>`;
     html += `<div class="tt-sub">${s.role} · ${s.division} · #${s.id}</div>`;
     html += ttRow('First point', eventDateLabel(s.first_date, s.first_ym) || '—');
@@ -2083,6 +2659,7 @@
   function render() {
     const thr = state.threshold;
     syncRoleControl();
+    syncTimelineChrome();
     updateYearFieldsVisibility();
     syncKpiChrome();
 
@@ -2127,6 +2704,9 @@
     }
 
     const rows = filteredRows();
+    if (isTimelineActive() && state.tl.visibleKeys.size === 0 && rows.length) {
+      state.tl.visibleKeys = new Set(rows.map(spellKey));
+    }
     const chart = ensureChart('scatter');
     chart.data.datasets = state.mode === 'scatter'
       ? scatterDatasets(rows, thr)
@@ -2137,6 +2717,28 @@
     chart.options.plugins.tooltip.intersect = true;
     document.getElementById('emptyState').classList.toggle('show', rows.length === 0);
     chart.update('none');
+    refreshTimelineHover(chart);
+  }
+
+  function refreshTimelineHover(chart) {
+    if (!isTimelineActive() || !chart || !state.tl.pointerEvent) return;
+    const ev = state.tl.pointerEvent;
+    const els = chart.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, true);
+    if (!els.length) {
+      chart.setActiveElements([]);
+      chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+      const tip = document.querySelector('#chartWrap .chartjs-ext-tooltip');
+      if (tip) tip.style.opacity = 0;
+      chart.draw();
+      return;
+    }
+    chart.setActiveElements(els.map((e) => ({ datasetIndex: e.datasetIndex, index: e.index })));
+    const rect = chart.canvas.getBoundingClientRect();
+    chart.tooltip.setActiveElements(
+      els.map((e) => ({ datasetIndex: e.datasetIndex, index: e.index })),
+      { x: ev.clientX - rect.left, y: ev.clientY - rect.top }
+    );
+    chart.draw();
   }
 
   function fillYearSelects(years, fromDefault, toDefault) {
@@ -2397,8 +2999,24 @@
         }
         if (value === 'table') state.tablePage = 0;
         destroyChart();
+        // Timeline only for Scatter/Density; leaving chart modes resets to Static floor.
+        if (value !== 'scatter' && value !== 'density') {
+          if (state.viewMode === 'timeline') {
+            state.viewMode = 'static';
+            stopTimelinePlay();
+            stopFadeLoop();
+          }
+        } else if (state.viewMode === 'timeline') {
+          resetTimelineToFloor();
+        }
       }
-      if (key === 'division' || key === 'threshold' || key === 'role') state.tablePage = 0;
+      if (key === 'division' || key === 'threshold' || key === 'role') {
+        state.tablePage = 0;
+        if (isTimelineActive() || state.viewMode === 'timeline') {
+          // Pause + Reset on filter change while Timeline is selected.
+          resetTimelineToFloor();
+        }
+      }
       if (key === 'division' && value !== prevDivision) {
         applyYearOptionsForDivision(true);
       }
@@ -2423,6 +3041,66 @@
       syncYearRange('to');
       state.tablePage = 0;
       render();
+    });
+
+    const setViewMode = (mode) => {
+      if (mode !== 'static' && mode !== 'timeline') return;
+      if (mode === state.viewMode) return;
+      if (mode === 'timeline') {
+        if (state.mode !== 'scatter' && state.mode !== 'density') {
+          state.mode = 'scatter';
+          document.getElementById('modeSelect').value = 'scatter';
+          if (window.WsdcSelect) WsdcSelect.refresh(document.getElementById('modeSelect'));
+          destroyChart();
+        }
+        state.viewMode = 'timeline';
+        resetTimelineToFloor();
+      } else {
+        stopTimelinePlay();
+        stopFadeLoop();
+        state.viewMode = 'static';
+        state.tl.fading.clear();
+        state.tl.visibleKeys = new Set();
+      }
+      render();
+    };
+    document.getElementById('viewStaticBtn').addEventListener('click', () => setViewMode('static'));
+    document.getElementById('viewTimelineBtn').addEventListener('click', () => setViewMode('timeline'));
+
+    document.getElementById('tlPlayBtn').addEventListener('click', () => {
+      if (!isTimelineActive()) return;
+      if (state.tl.playing) stopTimelinePlay();
+      else startTimelinePlay();
+    });
+    document.getElementById('tlResetBtn').addEventListener('click', () => {
+      if (!isTimelineActive()) return;
+      resetTimelineToFloor();
+      setTimelineIndex(0, { forceFade: true, resetSeen: true });
+      render();
+    });
+    document.querySelectorAll('.tid-timeline__speed .tid-tl-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.tl.speed = Number(btn.getAttribute('data-speed')) || 1;
+        syncTimelineChrome();
+      });
+    });
+    document.getElementById('tlScrub').addEventListener('input', (e) => {
+      if (!isTimelineActive()) return;
+      if (state.tl.playing) stopTimelinePlay();
+      const idx = Number(e.target.value);
+      if (!Number.isFinite(idx)) return;
+      setTimelineIndex(idx, { forceFade: true });
+      render();
+    });
+
+    const canvasHost = document.getElementById('chartWrap');
+    canvasHost.addEventListener('mousemove', (e) => {
+      if (!isTimelineActive()) return;
+      // Snapshot coords — native MouseEvent objects can be reused by the browser.
+      state.tl.pointerEvent = { clientX: e.clientX, clientY: e.clientY };
+    });
+    canvasHost.addEventListener('mouseleave', () => {
+      state.tl.pointerEvent = null;
     });
 
     const pickKpi = (target) => {
@@ -2472,11 +3150,13 @@
     }
 
     applyYearOptionsForDivision(false);
+    state.tl.months = buildTimelineMonths(state.division);
 
     if (window.WsdcSelect) WsdcSelect.enhanceAll(document.querySelector('.tid-filters'));
     wireMethodIsland();
     wireMethodAccordion();
     wireInfoTips();
+    syncTimelineChrome();
     render();
   }
 
