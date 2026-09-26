@@ -623,8 +623,33 @@
   };
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountAll);
+    
+  function enhanceTableauShells() {
+    var iframes = document.querySelectorAll('iframe[src*="public.tableau.com"]');
+    iframes.forEach(function (iframe) {
+      var shell = iframe.closest('.wsdc-tableau-shell') || iframe.parentElement;
+      if (!shell || shell.querySelector('.wsdc-tableau-mobile-fallback')) return;
+      shell.classList.add('wsdc-tableau-shell');
+      var note = document.createElement('div');
+      note.className = 'wsdc-tableau-mobile-fallback';
+      note.innerHTML =
+        '<strong>Best on a larger screen</strong>' +
+        '<p style="margin:.4rem 0 .75rem">This Tableau dashboard is hard to use on a phone. ' +
+        'Open it on desktop, or launch Tableau Public directly.</p>' +
+        '<p style="margin:0"><a href="' + iframe.src + '" target="_blank" rel="noopener">Open in Tableau Public</a></p>';
+      shell.style.position = shell.style.position || 'relative';
+      shell.appendChild(note);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", mountAll);
   } else {
     mountAll();
   }
 })();
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", enhanceTableauShells);
+  } else {
+    enhanceTableauShells();
+  }

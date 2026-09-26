@@ -42,6 +42,14 @@
       gtag('config', 'G-LMLCY5PE8Z');
     </script>
     <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913d">
+    <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="WSDC Events Calendar | WSDC Analytics">
+  <meta property="og:description" content="Year calendar of confirmed, expected, and hiatus WSDC events">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.svg">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -145,21 +153,21 @@
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statConfirmed">Confirmed</span>
                     <span class="cal-stats__nums" data-stat="confirmed">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statExpected">Expected</span>
                     <span class="cal-stats__nums" data-stat="expected">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statPaused">Hiatus</span>
                     <span class="cal-stats__nums" data-stat="paused">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
@@ -168,7 +176,7 @@
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statRegistry">Registry</span>
                     <span class="cal-stats__nums" data-stat="registry">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
@@ -3124,6 +3132,11 @@
       return r.json();
     })
     .then(function (calendar) {
+      // Boot calendar immediately; L2 cards (~3MB) load in the background.
+      bootAll(calendar, null);
+      document.querySelectorAll(".cal-stats__value").forEach(function (el) {
+        el.classList.remove("is-skeleton");
+      });
       return fetch("static/data/event_l2_cards.json?v=20260924-sync")
         .then(function (r) {
           if (!r.ok) return null;
@@ -3131,7 +3144,8 @@
         })
         .catch(function () { return null; })
         .then(function (cards) {
-          bootAll(calendar, cards);
+          state.eventCards = cards || null;
+          if (state.selectedDay) openDay(state.selectedDay);
         });
     })
     .catch(function (err) {

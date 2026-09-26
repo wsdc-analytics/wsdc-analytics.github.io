@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4" crossorigin="anonymous"></script>
   <style>
     html, body { height: 100%; overflow: hidden; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -877,6 +877,14 @@
       .chart-wrap, .table-wrap { min-height: 360px; }
     }
   </style>
+    <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="Time in Division | WSDC Analytics">
+  <meta property="og:description" content="How long dancers stay in each WSDC division">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/time_in_division_dashboard_en.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.svg">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
   <main class="page">
@@ -2997,8 +3005,44 @@
     head.addEventListener('pointercancel', endDrag);
   }
 
+  async function loadDivisionShard(division) {
+    const safe = String(division || 'Novice').toLowerCase().replace(/\s+/g, '_').replace(/\//g, '_');
+    const shardUrl = `static/data/time_in_division/${safe}.json?v=20260926-shards`;
+    const res = await fetch(shardUrl);
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + shardUrl);
+    return res.json();
+  }
+
+  async function ensureDataForDivision(division) {
+    // Prefer per-division shards (~0.3–6 MB) over the 9.4 MB monolith.
+    if (!state._tidMeta) {
+      try {
+        const idxRes = await fetch('static/data/time_in_division/index.json?v=20260926-shards');
+        if (idxRes.ok) {
+          state._tidMeta = await idxRes.json();
+        }
+      } catch (_) {
+        state._tidMeta = null;
+      }
+    }
+    if (state._tidMeta && Array.isArray(state._tidMeta.shards)) {
+      const shard = await loadDivisionShard(division);
+      state.data = Object.assign({}, state._tidMeta, {
+        spells: shard.spells || [],
+        transitions: shard.transitions || [],
+      });
+      state.nextIndex = buildNextIndex(state.data);
+      return;
+    }
+    // Fallback: legacy monolith
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260925-design-pass');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    state.data = await res.json();
+    state.nextIndex = buildNextIndex(state.data);
+  }
+
   async function init() {
-    const onFilterChange = (key, value) => {
+    const onFilterChange = async (key, value) => {
       const prevMode = state.mode;
       const prevDivision = state.division;
       state[key] = value;
@@ -3029,7 +3073,13 @@
         }
       }
       if (key === 'division' && value !== prevDivision) {
+        try {
+          await ensureDataForDivision(value);
+        } catch (err) {
+          console.error(err);
+        }
         applyYearOptionsForDivision(true);
+        state.tl.months = buildTimelineMonths(state.division);
       }
       render();
       if (key === 'mode' && window.WsdcSelect) {
@@ -3144,10 +3194,7 @@
       }
     });
 
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260925-design-pass');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    state.data = await res.json();
-    state.nextIndex = buildNextIndex(state.data);
+    await ensureDataForDivision(state.division);
     state.binM = Number(state.data.bin_months) || 6;
     state.binE = Number(state.data.bin_events) || 2;
     document.getElementById('asOfNote').textContent =

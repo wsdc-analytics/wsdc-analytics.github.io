@@ -2433,3 +2433,18 @@ h1 {
     transform: none;
   }
 }
+
+
+.cal-stats__value.is-skeleton {
+  color: transparent;
+  background: linear-gradient(90deg, #e8edf2 25%, #f5f7fa 50%, #e8edf2 75%);
+  background-size: 200% 100%;
+  animation: cal-skel 1.2s ease-in-out infinite;
+  border-radius: 4px;
+  min-width: 1.5rem;
+  display: inline-block;
+}
+@keyframes cal-skel {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
