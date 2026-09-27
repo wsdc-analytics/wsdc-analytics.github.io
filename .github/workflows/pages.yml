@@ -59,8 +59,14 @@ jobs:
             --exclude '*.csv' \
             --exclude '.env' \
             --exclude '.venv/' \
+            --exclude '/api/' \
+            --exclude '/supabase/' \
+            --exclude '/*.md' \
+            --exclude '/*.sh' \
+            --exclude '/russian_dancer_ids.txt' \
+            --exclude '/divisions_*.json' \
             ./ dist/
-          # Keep api/ for Vercel; GitHub Pages ignores serverless but path is harmless.
+          # api/ is Vercel serverless source; Pages cannot run it.
           test -f dist/index.html
           test -f dist/events-calendar.html
           test ! -f dist/scripts/validate_site_data.py

@@ -59,7 +59,6 @@
 
     gtag("js", new Date());
     gtag("config", MEASUREMENT_ID, {
-      anonymize_ip: true,
       send_page_view: true,
       page_type: pageType(),
       language: lang(),
@@ -107,7 +106,7 @@
 
   function track(name, params) {
     if (typeof window.gtag !== "function") return;
-    var payload = params || {};
+    var payload = Object.assign({}, params);
     payload.page_type = payload.page_type || pageType();
     payload.language = payload.language || lang();
     window.gtag("event", name, payload);
@@ -146,6 +145,11 @@
     document.addEventListener(
       "click",
       function (ev) {
+        var opt = ev.target.closest(".cal-dd__menu [role='option']");
+        if (opt) {
+          var dd = opt.closest(".cal-dd");
+          track("calendar_filter", { filter_id: (dd && dd.id) || "unknown" });
+        }
         var langBtn = ev.target.closest("[data-lang-switch], .wsdc-chrome__langs button");
         if (langBtn) {
           track("language_switch", { to: langBtn.getAttribute("data-lang") || langBtn.textContent });
