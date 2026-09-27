@@ -144,13 +144,7 @@ def head_extras(t: dict) -> str:
     "mainEntityOfPage": {{ "@type": "WebPage", "@id": "{url}" }}
   }}
   </script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){{dataLayer.push(arguments);}}
-    gtag('js', new Date());
-    gtag('config', 'G-LMLCY5PE8Z');
-  </script>
+  <script src="../../static/js/analytics.js" defer></script>
 """
 
 
