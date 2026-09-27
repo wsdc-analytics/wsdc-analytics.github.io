@@ -7,7 +7,8 @@
  *   data-lang            ru | en | es
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
- *   data-home-href       brand logo link (default index.html) — return home
+ *   data-home-href       text-brand / back-link home (default index.html)
+ *                        Logo brand always links to https://www.worldsdc.com/
  *   data-path-prefix     prefix for dashboard / points / champions / calendar / qa hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
@@ -32,6 +33,8 @@
     return prefix + href;
   }
 
+  var WSDC_SITE_URL = "https://www.worldsdc.com/";
+
   var LABELS = {
     dashboards: { ru: "Дашборды", en: "Dashboards", es: "Paneles" },
     points: { ru: "Summary Points", en: "Summary Points", es: "Summary Points" },
@@ -42,6 +45,11 @@
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
     facebook: { ru: "Написать в Facebook", en: "Message on Facebook", es: "Escribir en Facebook" },
     home: { ru: "На главную", en: "Back to home", es: "Volver al inicio" },
+    wsdcSite: {
+      ru: "Сайт World Swing Dance Council",
+      en: "World Swing Dance Council website",
+      es: "Sitio del World Swing Dance Council",
+    },
     dashTip: {
       ru: "Информационные дашборды WSDC",
       en: "WSDC informational dashboards",
@@ -218,7 +226,6 @@
     var brandMode = root.getAttribute("data-brand") || "logo";
     var homeHref = root.getAttribute("data-home-href") || "index.html";
     var currentDash = root.getAttribute("data-current-dash") || currentPageName();
-    var onHome = active === "home" && (currentPageName() === "" || currentPageName() === "index.html");
 
     var wrapClass = "wsdc-chrome-wrap" + (fixed ? " is-fixed" : "");
     var dashActive = active === "dashboards" ? " is-active" : "";
@@ -226,6 +233,7 @@
     var championsActive = active === "champions" ? " is-active" : "";
     var calendarActive = active === "calendar" ? " is-active" : "";
     var homeLabel = LABELS.home[lang] || LABELS.home.en;
+    var wsdcLabel = LABELS.wsdcSite[lang] || LABELS.wsdcSite.en;
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
     var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
@@ -243,14 +251,12 @@
         '">WSDC</a>';
     } else {
       brandHtml =
-        '<a class="wsdc-chrome__brand' +
-        (onHome ? " is-current-home" : "") +
-        '" href="' +
-        esc(homeHref) +
-        '" id="logoLink" data-chrome-home aria-label="' +
-        esc(homeLabel) +
+        '<a class="wsdc-chrome__brand" href="' +
+        esc(WSDC_SITE_URL) +
+        '" id="logoLink" data-chrome-wsdc target="_blank" rel="noopener noreferrer" aria-label="' +
+        esc(wsdcLabel) +
         '" title="' +
-        esc(homeLabel) +
+        esc(wsdcLabel) +
         '"><span class="wsdc-chrome__brand-logo"><img src="https://www.worldsdc.com/wp-content/uploads/2019/10/WSDC_WHITE.gif" alt="WSDC" height="22" loading="eager"></span></a>';
     }
 
@@ -450,6 +456,12 @@
       el.setAttribute("href", homeHref);
       el.setAttribute("aria-label", homeLabel);
       el.setAttribute("title", homeLabel);
+    });
+    var wsdcLabel = LABELS.wsdcSite[lang] || LABELS.wsdcSite.en;
+    root.querySelectorAll("[data-chrome-wsdc]").forEach(function (el) {
+      el.setAttribute("href", WSDC_SITE_URL);
+      el.setAttribute("aria-label", wsdcLabel);
+      el.setAttribute("title", wsdcLabel);
     });
 
     syncBackLinks(lang, root.getAttribute("data-home-href") || "index.html");
