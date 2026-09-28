@@ -1719,8 +1719,25 @@ h1 {
   fill: #e8ebf0;
 }
 
+.l2-spark__hit {
+  fill: transparent;
+  cursor: pointer;
+  pointer-events: all;
+}
+
 .l2-spark__dot {
   fill: #4f46e5;
+  pointer-events: none;
+  transition: r 160ms ease, fill 160ms ease;
+}
+
+.l2-spark__dot.is-active {
+  fill: #312e81;
+}
+
+.l2-spark__point.is-active .l2-spark__hit {
+  stroke: rgba(79, 70, 229, 0.28);
+  stroke-width: 2;
 }
 
 .l2-spark__axis {
