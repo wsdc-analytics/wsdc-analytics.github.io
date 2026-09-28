@@ -1,4 +1,4 @@
-# Deploy to GitHub Pages (static site — filtered artifact, no Python/scripts/drafts)
+# Deploy to GitHub Pages (static site — filtered artifact, no Python/scripts)
 name: Deploy to GitHub Pages
 
 on:
@@ -39,7 +39,8 @@ jobs:
           set -euo pipefail
           rm -rf dist
           mkdir -p dist
-          # Copy publishable surfaces only (exclude Python, drafts, meetings, legacy nest).
+          # Publish site surfaces including meetings + event draft articles.
+          # Still exclude Python tooling, docs, and events/_rebuild intermediates.
           rsync -a \
             --exclude '.git/' \
             --exclude '.github/' \
@@ -50,10 +51,6 @@ jobs:
             --exclude '*.pyc' \
             --exclude 'scripts/' \
             --exclude 'docs/' \
-            --exclude 'meetings/' \
-            --exclude 'wsdc-article/' \
-            --exclude 'events/*/draft*.html' \
-            --exclude 'events/*/source*.html' \
             --exclude 'events/_rebuild/' \
             --exclude 'static/data/divisions_structure_sample.json' \
             --exclude '*.csv' \
@@ -69,6 +66,8 @@ jobs:
           # api/ is Vercel serverless source; Pages cannot run it.
           test -f dist/index.html
           test -f dist/events-calendar.html
+          test -f dist/meetings/board-questions-intake/appendix_en.html
+          test -f dist/events/001-arizona-4th-of-july/draft_ru.html
           test ! -f dist/scripts/validate_site_data.py
           echo "dist bytes: $(du -sh dist | cut -f1)"
 
