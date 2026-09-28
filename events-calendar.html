@@ -305,6 +305,7 @@
       metricNew: "New",
       sparkAria: "Edition trend",
       sparkSeries: "Trend metric",
+      sparkPickAria: "Show metrics for {year}",
       noLastEdition: "No scored edition stats yet",
       noThisEdition: "No scored stats for this edition",
       trialNoStats: "No scored edition stats yet (trial)",
@@ -375,6 +376,7 @@
       metricNew: "Новые",
       sparkAria: "Динамика editions",
       sparkSeries: "Метрика тренда",
+      sparkPickAria: "Показать метрики за {year}",
       noLastEdition: "Пока нет статистики scored edition",
       noThisEdition: "Нет scored-статистики для этого edition",
       trialNoStats: "Пока нет статистики scored edition (trial)",
@@ -446,6 +448,7 @@
       metricNew: "Nuevos",
       sparkAria: "Tendencia de ediciones",
       sparkSeries: "Métrica de tendencia",
+      sparkPickAria: "Mostrar métricas de {year}",
       noLastEdition: "Aún no hay estadísticas de edición",
       noThisEdition: "No hay estadísticas para esta edición",
       trialNoStats: "Aún no hay estadísticas de edición (trial)",
@@ -488,6 +491,7 @@
     markerById: {},
     eventCards: null,
     l2SparkMetric: "unique_dancers",
+    l2SparkEditionKey: null,
     l2TipIgnoreDocCloseUntil: 0
   };
 
@@ -2139,6 +2143,7 @@
     state.hoverEventId = null;
     state.skipDayTip = false;
     state.l2SparkMetric = "unique_dancers";
+    state.l2SparkEditionKey = null;
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
     var mapCol = document.getElementById("dayMapCol");
@@ -2307,6 +2312,34 @@
     return "unique_dancers";
   }
 
+  function sparkEditionKey(year, month) {
+    var y = Number(year);
+    var m = Number(month);
+    if (!Number.isFinite(y)) return "";
+    if (!Number.isFinite(m) || m < 1) m = 1;
+    return String(y) + "-" + String(m);
+  }
+
+  function findHistoryEditionByKey(card, key) {
+    if (!card || !key) return null;
+    var pool = Array.isArray(card.editions) && card.editions.length
+      ? card.editions
+      : (card.history || []);
+    for (var i = 0; i < pool.length; i++) {
+      var row = pool[i];
+      if (sparkEditionKey(row.year, row.month) === key) return row;
+    }
+    var last = card.last_edition;
+    if (last && sparkEditionKey(last.year, last.month) === key) return last;
+    return null;
+  }
+
+  function resolveFocusEdition(card, e) {
+    var picked = findHistoryEditionByKey(card, state.l2SparkEditionKey);
+    if (picked) return { edition: picked, mode: "edition" };
+    return resolveRightEdition(card, e);
+  }
+
   function buildSparklineHtml(history) {
     var rows = Array.isArray(history) ? history : [];
     if (!rows.length) {
@@ -2362,12 +2395,15 @@
     var points = values.map(function (v, i) {
       var x = xAt(xVals[i]);
       var y = h - padB - ((v - min) / span) * plotH;
+      var ym = sparkEditionKey(rows[i].year, rows[i].month);
       return {
         x: x,
         y: y,
         v: v,
         label: String(rows[i].year),
-        year: Number(rows[i].year)
+        year: Number(rows[i].year),
+        ym: ym,
+        active: !!ym && state.l2SparkEditionKey === ym
       };
     });
 
@@ -2395,8 +2431,18 @@
     });
 
     var dots = points.map(function (p) {
-      return '<circle class="l2-spark__dot" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-        '" r="2.4"><title>' + esc(p.label + ": " + String(p.v)) + "</title></circle>";
+      var aria = String(t("sparkPickAria") || "").replace("{year}", p.label);
+      var tip = p.label + ": " + String(p.v);
+      var cls = "l2-spark__dot" + (p.active ? " is-active" : "");
+      var r = p.active ? "3.4" : "2.4";
+      return '<g class="l2-spark__point' + (p.active ? " is-active" : "") + '">' +
+        '<circle class="l2-spark__hit" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="9" data-spark-ym="' + esc(p.ym) + '" role="button" tabindex="0" aria-label="' +
+        esc(aria) + '" aria-pressed="' + (p.active ? "true" : "false") + '">' +
+        "<title>" + esc(tip) + "</title></circle>" +
+        '<circle class="' + cls + '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="' + r + '" aria-hidden="true"></circle>' +
+        "</g>";
     }).join("");
     var axis =
       '<line class="l2-spark__axis" x1="' + padL + '" y1="' + padT + '" x2="' + padL +
@@ -2422,7 +2468,7 @@
       return String(Math.round(n));
     }
 
-    return '<div class="l2-chart" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
+    return '<div class="l2-chart" role="group" aria-label="' + esc(t("sparkAria")) + '">' +
       '<div class="l2-chart__y" aria-hidden="true">' +
       "<span>" + esc(axisLabel(max)) + "</span>" +
       "<span>" + esc(axisLabel(min)) + "</span>" +
@@ -2540,7 +2586,7 @@
     seriesHead += "</div>";
 
     var hasHistory = !!(card && card.series && (card.history || []).length);
-    var right = resolveRightEdition(card, e);
+    var right = resolveFocusEdition(card, e);
     var focusEdition = right.edition;
     var hasFocus = !!focusEdition;
 
@@ -2727,6 +2773,7 @@
 
   function clearEventSelection() {
     state.selectedEventId = null;
+    state.l2SparkEditionKey = null;
     paintRowHighlights();
     paintMarkerStyles();
     hideEventCard();
@@ -2756,6 +2803,7 @@
     var e = findEventById(id);
     if (!e) return;
     state.selectedEventId = id;
+    state.l2SparkEditionKey = null;
     paintRowHighlights();
     paintMarkerStyles();
     showEventCard(e);
@@ -2928,6 +2976,17 @@
   });
 
   document.getElementById("eventDetail").addEventListener("click", function (e) {
+    var editionHit = e.target.closest("[data-spark-ym]");
+    if (editionHit) {
+      e.stopPropagation();
+      e.preventDefault();
+      var ym = editionHit.getAttribute("data-spark-ym");
+      if (!ym) return;
+      if (state.l2SparkEditionKey === ym) return;
+      state.l2SparkEditionKey = ym;
+      refreshOpenEventCard();
+      return;
+    }
     var sparkBtn = e.target.closest("[data-spark]");
     if (sparkBtn) {
       e.stopPropagation();
@@ -2939,10 +2998,31 @@
       ) {
         return;
       }
-      if (state.l2SparkMetric === nextSpark) return;
+      var metricChanged = state.l2SparkMetric !== nextSpark;
+      var hadEdition = !!state.l2SparkEditionKey;
+      state.l2SparkEditionKey = null;
+      if (!metricChanged && !hadEdition) return;
       state.l2SparkMetric = nextSpark;
       refreshOpenEventCard();
+      return;
     }
+    // Any other click in the L2 card resets spark year to the default edition.
+    if (state.l2SparkEditionKey) {
+      state.l2SparkEditionKey = null;
+      refreshOpenEventCard();
+    }
+  });
+
+  document.getElementById("eventDetail").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var editionHit = e.target.closest("[data-spark-ym]");
+    if (!editionHit) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var ym = editionHit.getAttribute("data-spark-ym");
+    if (!ym || state.l2SparkEditionKey === ym) return;
+    state.l2SparkEditionKey = ym;
+    refreshOpenEventCard();
   });
 
   document.querySelectorAll(".wsdc-dd").forEach(function (dd) {
