@@ -309,7 +309,7 @@
       noThisEdition: "No scored stats for this edition",
       trialNoStats: "No scored edition stats yet (trial)",
       metricTipAria: "About metrics",
-      metricTip: "Dancers: sum of Leaders + Followers from Skill-Level entry counts (Newcomer–Champion) when the dump has ≥2 complete divisions; otherwise a Tier-midpoint estimate (~), or unique dancers who scored points if neither is available. Entry sums are not unique people — switch roles can be counted twice.\nPoints: sum of all points awarded in Skill-Level nominations.\nNew: dancers who earned their first WSDC points at this event.",
+      metricTip: "Dancers: sum of Leaders + Followers from Skill-Level entry counts. ~ = Tier-midpoint estimate. * = unique dancers who scored points. Entry sums are not unique people — switch roles can be counted twice.\nPoints: sum of all points awarded in Skill-Level nominations.\nNew: dancers who earned their first WSDC points at this event.",
       websiteAria: "Event website",
       tierPrefix: "TIER",
       colLeader: "L",
@@ -379,7 +379,7 @@
       noThisEdition: "Нет scored-статистики для этого edition",
       trialNoStats: "Пока нет статистики scored edition (trial)",
       metricTipAria: "О метриках",
-      metricTip: "Dancers: сумма Leaders + Followers из заявок Skill-Level (Newcomer–Champion), если в дампе ≥2 полных дивизиона; иначе оценка по серединам Tier (~), или уникальные танцоры с поинтами, если нет ни того ни другого. Сумма заявок — не уникальные люди: switch-роли могут считаться дважды.\nPoints: сумма всех поинтов, начисленных в Skill-Level номинациях.\nNew: количество танцоров, получивших свои первые поинты WSDC на этом ивенте.",
+      metricTip: "Dancers: сумма Leaders + Followers из заявок Skill-Level. ~ = оценка по серединам Tier. * = уникальные танцоры с поинтами. Сумма заявок — не уникальные люди: switch-роли могут считаться дважды.\nPoints: сумма всех поинтов, начисленных в Skill-Level номинациях.\nNew: количество танцоров, получивших свои первые поинты WSDC на этом ивенте.",
       websiteAria: "Сайт ивента",
       tierPrefix: "ТИР",
       colLeader: "L",
@@ -450,7 +450,7 @@
       noThisEdition: "No hay estadísticas para esta edición",
       trialNoStats: "Aún no hay estadísticas de edición (trial)",
       metricTipAria: "Sobre métricas",
-      metricTip: "Dancers: suma de Leaders + Followers de inscripciones Skill-Level (Newcomer–Champion) cuando el dump tiene ≥2 divisiones completas; si no, estimación por punto medio de Tier (~), o bailarines únicos con puntos si no hay ninguna de las dos. Las sumas de inscripción no son personas únicas — quienes cambian de rol pueden contarse dos veces.\nPoints: suma de todos los puntos otorgados en nominaciones Skill-Level.\nNew: bailarines que obtuvieron sus primeros puntos WSDC en este evento.",
+      metricTip: "Dancers: suma de Leaders + Followers de inscripciones Skill-Level. ~ = estimación por punto medio de Tier. * = bailarines únicos con puntos. Las sumas de inscripción no son personas únicas — quienes cambian de rol pueden contarse dos veces.\nPoints: suma de todos los puntos otorgados en nominaciones Skill-Level.\nNew: bailarines que obtuvieron sus primeros puntos WSDC en este evento.",
       websiteAria: "Sitio del evento",
       tierPrefix: "TIER",
       colLeader: "L",
@@ -2461,10 +2461,12 @@
     return '<div class="l2-chart-panel">' + buildSparklineHtml(rows) + "</div>";
   }
 
-  function formatMetricValue(value, approx) {
+  function formatMetricValue(value, approx, uniqueMark) {
     if (value == null || value === "") return "—";
     var text = String(value);
-    return approx ? "~" + text : text;
+    if (approx) return "~" + text;
+    if (uniqueMark) return "*" + text;
+    return text;
   }
 
   function buildMetricLabelsHtml() {
@@ -2477,15 +2479,16 @@
 
   function buildLastMetricsHtml(last) {
     var dancersApprox = !!(last && last.dancers_approx);
-    function valueCell(value, approx) {
+    var dancersUnique = !!(last && last.dancers_unique);
+    function valueCell(value, approx, uniqueMark) {
       return '<div class="l2-metric">' +
-        '<span class="l2-metric__value">' + esc(formatMetricValue(value, approx)) + "</span>" +
+        '<span class="l2-metric__value">' + esc(formatMetricValue(value, approx, uniqueMark)) + "</span>" +
         "</div>";
     }
     return '<div class="l2-event-card__metrics">' +
-      valueCell(last.unique_dancers, dancersApprox) +
-      valueCell(last.points, false) +
-      valueCell(last.new_dancers, false) +
+      valueCell(last.unique_dancers, dancersApprox, dancersUnique) +
+      valueCell(last.points, false, false) +
+      valueCell(last.new_dancers, false, false) +
       "</div>";
   }
 
