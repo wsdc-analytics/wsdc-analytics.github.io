@@ -2982,8 +2982,12 @@
       e.preventDefault();
       var ym = editionHit.getAttribute("data-spark-ym");
       if (!ym) return;
-      if (state.l2SparkEditionKey === ym) return;
-      state.l2SparkEditionKey = ym;
+      // Second click on the active point clears back to the default edition.
+      if (state.l2SparkEditionKey === ym) {
+        state.l2SparkEditionKey = null;
+      } else {
+        state.l2SparkEditionKey = ym;
+      }
       refreshOpenEventCard();
       return;
     }
@@ -3006,6 +3010,9 @@
       refreshOpenEventCard();
       return;
     }
+    // Don't rebuild the card under interactive children (site link / tips) —
+    // that would destroy the target mid-click and cancel navigation.
+    if (e.target.closest("a, .l2-event-card__web, .l2-info-tip")) return;
     // Any other click in the L2 card resets spark year to the default edition.
     if (state.l2SparkEditionKey) {
       state.l2SparkEditionKey = null;
@@ -3020,8 +3027,12 @@
     e.preventDefault();
     e.stopPropagation();
     var ym = editionHit.getAttribute("data-spark-ym");
-    if (!ym || state.l2SparkEditionKey === ym) return;
-    state.l2SparkEditionKey = ym;
+    if (!ym) return;
+    if (state.l2SparkEditionKey === ym) {
+      state.l2SparkEditionKey = null;
+    } else {
+      state.l2SparkEditionKey = ym;
+    }
     refreshOpenEventCard();
   });
 

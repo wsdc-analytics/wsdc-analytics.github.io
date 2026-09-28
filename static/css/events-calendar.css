@@ -1725,10 +1725,19 @@ h1 {
   pointer-events: all;
 }
 
+.l2-spark__hit:focus {
+  outline: none;
+}
+
+.l2-spark__hit:focus-visible {
+  stroke: #4f46e5;
+  stroke-width: 2;
+  stroke-opacity: 0.55;
+}
+
 .l2-spark__dot {
   fill: #4f46e5;
   pointer-events: none;
-  transition: r 160ms ease, fill 160ms ease;
 }
 
 .l2-spark__dot.is-active {
