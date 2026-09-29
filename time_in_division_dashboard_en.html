@@ -1152,7 +1152,7 @@
           <details class="method-sec">
             <summary>Table &amp; CSV</summary>
             <div class="method-sec__body">
-              <p>Every filtered spell as a row, sorted by months, then events, then name. Rows are tinted by role. The columns:</p>
+              <p>Every filtered spell as a row, sorted by months, then First point, then Entered next. Rows are tinted by role. The columns:</p>
               <ul>
                 <li><strong>First point</strong> — date of the event where the dancer scored their first point in this division and role.</li>
                 <li><strong>May reached</strong> / <strong>Must reached</strong> — date of the event where they crossed the selected threshold.</li>
@@ -2586,7 +2586,16 @@
       })
       .sort((a, b) => {
         if (a.months !== b.months) return a.months - b.months;
-        if (a.events !== b.events) return a.events - b.events;
+        const firstCmp = String(a.first_date || a.first_ym || '').localeCompare(
+          String(b.first_date || b.first_ym || '')
+        );
+        if (firstCmp !== 0) return firstCmp;
+        const nextA = a.next_first_date || a.next_first_ym || '';
+        const nextB = b.next_first_date || b.next_first_ym || '';
+        // Blank Entered next last among equal First point.
+        if (!nextA && nextB) return 1;
+        if (nextA && !nextB) return -1;
+        if (nextA !== nextB) return String(nextA).localeCompare(String(nextB));
         return String(a.name).localeCompare(String(b.name));
       });
   }
@@ -3007,7 +3016,7 @@
 
   async function loadDivisionShard(division) {
     const safe = String(division || 'Novice').toLowerCase().replace(/\s+/g, '_').replace(/\//g, '_');
-    const shardUrl = `static/data/time_in_division/${safe}.json?v=20260929-shards`;
+    const shardUrl = `static/data/time_in_division/${safe}.json?v=20260929-sort`;
     const res = await fetch(shardUrl);
     if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + shardUrl);
     return res.json();
@@ -3017,7 +3026,7 @@
     // Prefer per-division shards (~0.3–6 MB) over the 9.4 MB monolith.
     if (!state._tidMeta) {
       try {
-        const idxRes = await fetch('static/data/time_in_division/index.json?v=20260929-shards');
+        const idxRes = await fetch('static/data/time_in_division/index.json?v=20260929-sort');
         if (idxRes.ok) {
           state._tidMeta = await idxRes.json();
         }
@@ -3035,7 +3044,7 @@
       return;
     }
     // Fallback: legacy monolith
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260929-shards');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260929-sort');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
