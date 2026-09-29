@@ -3007,7 +3007,7 @@
 
   async function loadDivisionShard(division) {
     const safe = String(division || 'Novice').toLowerCase().replace(/\s+/g, '_').replace(/\//g, '_');
-    const shardUrl = `static/data/time_in_division/${safe}.json?v=20260926-shards`;
+    const shardUrl = `static/data/time_in_division/${safe}.json?v=20260929-shards`;
     const res = await fetch(shardUrl);
     if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + shardUrl);
     return res.json();
@@ -3017,7 +3017,7 @@
     // Prefer per-division shards (~0.3–6 MB) over the 9.4 MB monolith.
     if (!state._tidMeta) {
       try {
-        const idxRes = await fetch('static/data/time_in_division/index.json?v=20260926-shards');
+        const idxRes = await fetch('static/data/time_in_division/index.json?v=20260929-shards');
         if (idxRes.ok) {
           state._tidMeta = await idxRes.json();
         }
@@ -3035,7 +3035,7 @@
       return;
     }
     // Fallback: legacy monolith
-    const res = await fetch('static/data/time_in_division_spells.json?v=20260929-sync');
+    const res = await fetch('static/data/time_in_division_spells.json?v=20260929-shards');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);

@@ -980,6 +980,62 @@ def main() -> None:
         f"spell_basis={spell_basis} pause_basis={pause_basis}"
     )
 
+    # Dashboard prefers per-division shards over the monolith; keep them in sync.
+    write_division_shards(payload, args.output.parent / "time_in_division")
+
+
+def _shard_filename(division: str) -> str:
+    return (
+        str(division or "Novice")
+        .lower()
+        .replace(" ", "_")
+        .replace("/", "_")
+    )
+
+
+def write_division_shards(payload: dict, shard_dir: Path) -> None:
+    """Write index.json + one JSON per division (spells/transitions only).
+
+    ``time_in_division_dashboard_en.html`` reads index for meta stamps
+    (``Updated …``) and loads division shards for table data. If only the
+    monolith is refreshed, the UI keeps showing a stale Updated date.
+    """
+    shard_dir.mkdir(parents=True, exist_ok=True)
+    divisions = list(payload.get("divisions") or DASHBOARD_DIVISIONS)
+    for div in divisions:
+        spells = [s for s in payload.get("spells") or [] if s.get("division") == div]
+        transitions = [
+            t
+            for t in payload.get("transitions") or []
+            if t.get("from_division") == div
+        ]
+        path = shard_dir / f"{_shard_filename(div)}.json"
+        path.write_text(
+            json.dumps(
+                {"spells": spells, "transitions": transitions},
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+            encoding="utf-8",
+        )
+        print(f"  shard {div}: {len(spells)} spells, {len(transitions)} transitions -> {path}")
+
+    index = {
+        key: value
+        for key, value in payload.items()
+        if key not in {"spells", "transitions"}
+    }
+    index["spells"] = []
+    index["transitions"] = []
+    index["shards"] = divisions
+    index["shard_base"] = "static/data/time_in_division"
+    index_path = shard_dir / "index.json"
+    index_path.write_text(
+        json.dumps(index, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    print(f"Wrote shard index -> {index_path}")
+
 
 if __name__ == "__main__":
     main()
