@@ -272,6 +272,46 @@ def validate_homepage_kpis() -> None:
     print("[OK] homepage_kpis.json")
 
 
+def validate_event_tiers_by_year() -> None:
+    path = DATA_DIR / "event_tiers_by_year.json"
+    if not path.exists():
+        print("[SKIP] event_tiers_by_year.json (optional until first sync)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("event_tiers_by_year.json must be an object")
+    for field in (
+        "generated_at",
+        "data_through",
+        "year_floor",
+        "year_max",
+        "n_editions",
+        "editions",
+        "divisions_default",
+        "roles",
+    ):
+        if field not in data:
+            fail(f"event_tiers_by_year.json missing field: {field}")
+    editions = data["editions"]
+    if not isinstance(editions, list) or not editions:
+        fail("event_tiers_by_year.json.editions must be a non-empty list")
+    if data["n_editions"] != len(editions):
+        fail("event_tiers_by_year.json.n_editions must equal len(editions)")
+    sample = editions[0]
+    if not isinstance(sample, dict):
+        fail("event_tiers_by_year.json.editions[0] must be an object")
+    for field in ("event_id", "name", "year", "tiers"):
+        if field not in sample:
+            fail(f"event_tiers_by_year.json.editions[0] missing: {field}")
+    if not isinstance(sample["tiers"], dict) or not sample["tiers"]:
+        fail("event_tiers_by_year.json.editions[0].tiers must be a non-empty object")
+    print(
+        f"[OK] event_tiers_by_year.json ({len(editions)} editions, "
+        f"years {data.get('year_floor')}–{data.get('year_max')}, "
+        f"generated_at={data.get('generated_at')})"
+    )
+
+
 def validate_time_in_division_spells() -> None:
     shard_index = DATA_DIR / "time_in_division" / "index.json"
     if shard_index.exists():
@@ -340,6 +380,7 @@ def main() -> None:
     validate_homepage_kpis()
     validate_events_year_calendar()
     validate_event_l2_cards()
+    validate_event_tiers_by_year()
     validate_time_in_division_spells()
     print("[OK] Data validation passed.")
 
