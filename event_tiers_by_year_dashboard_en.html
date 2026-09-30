@@ -425,48 +425,61 @@
       letter-spacing: 0;
     }
     table.hm th.hm-year,
-    table.hm td.hm-year {
+    table.hm td.hm-year,
+    table.hm th.hm-total,
+    table.hm td.hm-total {
       position: sticky;
-      left: 0;
       z-index: 2;
       background: #fff;
       text-align: left;
       padding: 0 10px;
       font-weight: 700;
       color: var(--wsdc-color-text-strong, #0b1221);
-      /* Fixed sticky width (border-box) so Total Events can pin beside Year. */
+      box-sizing: border-box;
+      border-right: 1px solid #dbe3ea;
+    }
+    table.hm th.hm-year,
+    table.hm td.hm-year {
+      left: 0;
       width: 4.5rem;
       min-width: 4.5rem;
-      box-sizing: border-box;
     }
-    table.hm thead th.hm-year { z-index: 4; background: #f8fafc; }
-    table.hm td.hm-year { border-right: 1px solid #dbe3ea; }
     table.hm th.hm-total,
     table.hm td.hm-total {
-      position: sticky;
       left: calc(4.5rem + 1px);
-      z-index: 2;
-      background: #fff;
-      min-width: 4.2rem;
-      border-right: 1px solid #dbe3ea;
-      box-sizing: border-box;
+      width: 5.25rem;
+      min-width: 5.25rem;
     }
+    table.hm thead th.hm-year,
     table.hm thead th.hm-total {
       z-index: 4;
       background: #f8fafc;
+    }
+    table.hm thead th.hm-total {
       white-space: normal;
       line-height: 1.15;
-      max-width: 4.6rem;
-      padding: 6px 6px;
+      padding: 6px 10px;
     }
-    table.hm td.hm-total .hm-cell {
-      min-width: 4.2rem;
-      font-weight: 600;
-      color: var(--wsdc-color-text-strong, #0b1221);
-      background: #f8fafc;
+    button.hm-total__btn {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      font-weight: 700;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      min-height: 34px;
     }
-    table.hm td.hm-total .hm-cell:hover {
-      background: #eef2f7;
+    button.hm-total__btn:hover {
+      color: #2563eb;
+    }
+    button.hm-total__btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: -2px;
     }
 
     .hm-cell {
@@ -1275,13 +1288,19 @@
   function renderTotalEventsCell(year, total) {
     const count = total ? total.count : 0;
     return `<td class="hm-total">` +
-      `<button type="button" class="hm-cell"` +
+      `<button type="button" class="hm-total__btn"` +
       ` data-year="${year}" data-key="total"` +
       ` data-count="${count}" data-share="" data-den="${count}"` +
       ` data-label="Total events" data-share-of="events that year"` +
-      ` aria-label="Total events ${year}">` +
-      `<span class="hm-cell__val">${count}</span>` +
-      `</button></td>`;
+      ` aria-label="Total events ${year}">${count}</button></td>`;
+  }
+
+  function indexCellsWithTotals(cells, yearTotals) {
+    const out = Object.assign({}, cells);
+    Object.keys(yearTotals || {}).forEach((year) => {
+      out[`${year}|total`] = yearTotals[year];
+    });
+    return out;
   }
 
   function renderCellButton(year, col, cell, rowMax) {
@@ -1306,8 +1325,9 @@
       `</button></td>`;
   }
 
-  function renderDivisionsTable(years, cols, cells, rowMax) {
+  function renderDivisionsTable(years, cols, cells, rowMax, yearTotals) {
     let head = '<thead><tr><th class="hm-year">Year</th>';
+    head += '<th class="hm-total">Total Events</th>';
     cols.forEach((col) => {
       head += `<th class="hm-div" data-col="${esc(col.key)}">` +
         `<button type="button" class="hm-expand" data-open-div="${esc(col.div)}" aria-label="Open ${esc(col.div)} tiers">▸</button>` +
@@ -1319,6 +1339,7 @@
     let body = '<tbody>';
     years.forEach((year) => {
       body += `<tr><td class="hm-year">${year}</td>`;
+      body += renderTotalEventsCell(year, yearTotals && yearTotals[year]);
       cols.forEach((col) => {
         body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
       });
@@ -1353,7 +1374,7 @@
     let body = '<tbody>';
     years.forEach((year) => {
       body += `<tr><td class="hm-year">${year}</td>`;
-      body += renderTotalEventsCell(year, yearTotals[year]);
+      body += renderTotalEventsCell(year, yearTotals && yearTotals[year]);
       ordered.forEach((col) => {
         body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
       });
@@ -1445,17 +1466,16 @@
       tableHost.innerHTML = renderTiersTable(
         mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals, state.focusDiv
       );
-      state.cellIndex = Object.assign({}, mat.cells);
-      Object.keys(mat.yearTotals).forEach((year) => {
-        state.cellIndex[`${year}|total`] = mat.yearTotals[year];
-      });
+      state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
       return;
     }
 
     const cols = buildDivisionColumns();
     const mat = computeMatrix(rows, cols);
-    tableHost.innerHTML = renderDivisionsTable(mat.years, mat.cols, mat.cells, mat.rowMax);
-    state.cellIndex = mat.cells;
+    tableHost.innerHTML = renderDivisionsTable(
+      mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals
+    );
+    state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
   }
 
   function showCellTip(btn, clientX, clientY) {
@@ -1679,7 +1699,7 @@
         openDivision(openDiv.getAttribute('data-open-div'));
         return;
       }
-      const cell = e.target.closest('.hm-cell');
+      const cell = e.target.closest('.hm-cell, .hm-total__btn');
       if (!cell) return;
       openEventModal(
         cell.getAttribute('data-year'),
