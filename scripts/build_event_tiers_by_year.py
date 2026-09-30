@@ -7,10 +7,14 @@ site calendar JSON).
 
 Usage (from repo root):
     python3 scripts/build_event_tiers_by_year.py
+    python3 scripts/build_event_tiers_by_year.py \\
+      --source-dir /path/to/pipeline/data \\
+      --site-repo /path/to/wsdc-analytics-repo
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import os
@@ -19,12 +23,13 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-PIPE = Path(
+DEFAULT_PIPE = Path(
     os.environ.get(
         "WSDC_PIPELINE_DATA",
         str(Path.home() / ".cursor/projects/python/wsdc-data-pipeline/data"),
     )
 )
+PIPE = DEFAULT_PIPE
 OUT = REPO / "static" / "data" / "event_tiers_by_year.json"
 YEAR_FLOOR = 2018
 
@@ -45,9 +50,35 @@ def require_file(path: Path) -> Path:
     if not path.is_file():
         raise FileNotFoundError(
             f"Missing required input: {path}\n"
-            f"Set WSDC_PIPELINE_DATA to the pipeline data directory (currently {PIPE})."
+            f"Pass --source-dir or set WSDC_PIPELINE_DATA "
+            f"(currently {PIPE})."
         )
     return path
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build event_tiers_by_year.json for the analytics site."
+    )
+    parser.add_argument(
+        "--source-dir",
+        type=Path,
+        default=DEFAULT_PIPE,
+        help="Pipeline data directory (event_catalog.csv, event_editions.csv, …)",
+    )
+    parser.add_argument(
+        "--site-repo",
+        type=Path,
+        default=REPO,
+        help="Analytics site repo root (reads event_l2_cards.json + calendar)",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="Output JSON path (default: <site-repo>/static/data/event_tiers_by_year.json)",
+    )
+    return parser.parse_args()
 
 # Fallback when country is missing from the live calendar map.
 COUNTRY_CONTINENT = {
@@ -229,6 +260,12 @@ def pick_edition_row(rows: list[dict], month: int | None) -> dict | None:
 
 
 def main() -> int:
+    global PIPE, REPO, OUT
+    args = parse_args()
+    PIPE = args.source_dir.resolve()
+    REPO = args.site_repo.resolve()
+    OUT = (args.output or (REPO / "static" / "data" / "event_tiers_by_year.json")).resolve()
+
     cards_path = require_file(REPO / "static" / "data" / "event_l2_cards.json")
     cards = json.loads(cards_path.read_text())
     continent_by_country = load_continent_by_country()
