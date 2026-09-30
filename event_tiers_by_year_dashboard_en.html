@@ -431,34 +431,33 @@
       position: sticky;
       z-index: 2;
       background: #fff;
-      text-align: left;
-      padding: 0 10px;
+      text-align: center;
+      padding: 0 8px;
       font-weight: 700;
       color: var(--wsdc-color-text-strong, #0b1221);
       box-sizing: border-box;
       border-right: 1px solid #dbe3ea;
+      vertical-align: middle;
     }
     table.hm th.hm-year,
     table.hm td.hm-year {
       left: 0;
-      width: 4.5rem;
-      min-width: 4.5rem;
+      width: 4.25rem;
+      min-width: 4.25rem;
     }
     table.hm th.hm-total,
     table.hm td.hm-total {
-      left: calc(4.5rem + 1px);
-      width: 5.25rem;
-      min-width: 5.25rem;
+      left: calc(4.25rem + 1px);
+      width: 4.75rem;
+      min-width: 4.75rem;
     }
     table.hm thead th.hm-year,
     table.hm thead th.hm-total {
       z-index: 4;
       background: #f8fafc;
-    }
-    table.hm thead th.hm-total {
-      white-space: normal;
-      line-height: 1.15;
-      padding: 6px 10px;
+      white-space: nowrap;
+      padding: 6px 8px;
+      line-height: 1.2;
     }
     button.hm-total__btn {
       display: block;
@@ -470,7 +469,7 @@
       font: inherit;
       font-weight: 700;
       color: inherit;
-      text-align: left;
+      text-align: center;
       cursor: pointer;
       min-height: 34px;
     }
@@ -1234,7 +1233,7 @@
     return cols;
   }
 
-  function computeMatrix(rows, cols) {
+  function computeMatrix(rows, cols, totalDiv) {
     const byYear = groupByYear(rows);
     const years = [];
     const cells = {};
@@ -1243,11 +1242,15 @@
     byYear.forEach(([year, list]) => {
       years.push(year);
       const nAll = list.length;
+      // Overview: all filtered events that year. Tiers: only events that ran this division.
+      const totalEvents = totalDiv
+        ? list.filter((e) => divisionPresent(e, totalDiv))
+        : list;
       yearTotals[year] = {
-        count: nAll,
+        count: totalEvents.length,
         share: null,
-        den: nAll,
-        events: list,
+        den: totalEvents.length,
+        events: totalEvents,
       };
       cols.forEach((col) => {
         let matched;
@@ -1285,14 +1288,16 @@
     return { years, cols, cells, rowMax, yearTotals };
   }
 
-  function renderTotalEventsCell(year, total) {
+  function renderTotalEventsCell(year, total, div) {
     const count = total ? total.count : 0;
+    const label = div ? `${div} · # Events` : '# Events';
+    const aria = div ? `${div} events ${year}` : `Events ${year}`;
     return `<td class="hm-total">` +
       `<button type="button" class="hm-total__btn"` +
       ` data-year="${year}" data-key="total"` +
       ` data-count="${count}" data-share="" data-den="${count}"` +
-      ` data-label="Total events" data-share-of="events that year"` +
-      ` aria-label="Total events ${year}">${count}</button></td>`;
+      ` data-label="${esc(label)}" data-share-of="events that year"` +
+      ` aria-label="${esc(aria)}">${count}</button></td>`;
   }
 
   function indexCellsWithTotals(cells, yearTotals) {
@@ -1327,7 +1332,7 @@
 
   function renderDivisionsTable(years, cols, cells, rowMax, yearTotals) {
     let head = '<thead><tr><th class="hm-year">Year</th>';
-    head += '<th class="hm-total">Total Events</th>';
+    head += '<th class="hm-total"># Events</th>';
     cols.forEach((col) => {
       head += `<th class="hm-div" data-col="${esc(col.key)}">` +
         `<button type="button" class="hm-expand" data-open-div="${esc(col.div)}" aria-label="Open ${esc(col.div)} tiers">▸</button>` +
@@ -1339,7 +1344,7 @@
     let body = '<tbody>';
     years.forEach((year) => {
       body += `<tr><td class="hm-year">${year}</td>`;
-      body += renderTotalEventsCell(year, yearTotals && yearTotals[year]);
+      body += renderTotalEventsCell(year, yearTotals && yearTotals[year], null);
       cols.forEach((col) => {
         body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
       });
@@ -1354,7 +1359,7 @@
     const followerCols = cols.filter((c) => c.role === 'Follower');
     let head = '<thead>';
     head += '<tr><th class="hm-year" rowspan="2">Year</th>';
-    head += '<th class="hm-total" rowspan="2">Total Events</th>';
+    head += '<th class="hm-total" rowspan="2"># Events</th>';
     if (leaderCols.length) {
       head += `<th class="hm-role-leader" colspan="${leaderCols.length}">Leader</th>`;
     }
@@ -1374,7 +1379,7 @@
     let body = '<tbody>';
     years.forEach((year) => {
       body += `<tr><td class="hm-year">${year}</td>`;
-      body += renderTotalEventsCell(year, yearTotals && yearTotals[year]);
+      body += renderTotalEventsCell(year, yearTotals && yearTotals[year], div);
       ordered.forEach((col) => {
         body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
       });
@@ -1462,7 +1467,7 @@
         state.cellIndex = {};
         return;
       }
-      const mat = computeMatrix(rows, cols);
+      const mat = computeMatrix(rows, cols, state.focusDiv);
       tableHost.innerHTML = renderTiersTable(
         mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals, state.focusDiv
       );
