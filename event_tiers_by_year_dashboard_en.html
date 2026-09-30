@@ -434,10 +434,40 @@
       padding: 0 10px;
       font-weight: 700;
       color: var(--wsdc-color-text-strong, #0b1221);
-      min-width: 3.5rem;
+      /* Fixed sticky width (border-box) so Total Events can pin beside Year. */
+      width: 4.5rem;
+      min-width: 4.5rem;
+      box-sizing: border-box;
     }
     table.hm thead th.hm-year { z-index: 4; background: #f8fafc; }
     table.hm td.hm-year { border-right: 1px solid #dbe3ea; }
+    table.hm th.hm-total,
+    table.hm td.hm-total {
+      position: sticky;
+      left: calc(4.5rem + 1px);
+      z-index: 2;
+      background: #fff;
+      min-width: 4.2rem;
+      border-right: 1px solid #dbe3ea;
+      box-sizing: border-box;
+    }
+    table.hm thead th.hm-total {
+      z-index: 4;
+      background: #f8fafc;
+      white-space: normal;
+      line-height: 1.15;
+      max-width: 4.6rem;
+      padding: 6px 6px;
+    }
+    table.hm td.hm-total .hm-cell {
+      min-width: 4.2rem;
+      font-weight: 600;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: #f8fafc;
+    }
+    table.hm td.hm-total .hm-cell:hover {
+      background: #eef2f7;
+    }
 
     .hm-cell {
       display: block;
@@ -1195,10 +1225,17 @@
     const byYear = groupByYear(rows);
     const years = [];
     const cells = {};
+    const yearTotals = {};
 
     byYear.forEach(([year, list]) => {
       years.push(year);
       const nAll = list.length;
+      yearTotals[year] = {
+        count: nAll,
+        share: null,
+        den: nAll,
+        events: list,
+      };
       cols.forEach((col) => {
         let matched;
         let den;
@@ -1232,7 +1269,19 @@
       rowMax[year] = max;
     });
 
-    return { years, cols, cells, rowMax };
+    return { years, cols, cells, rowMax, yearTotals };
+  }
+
+  function renderTotalEventsCell(year, total) {
+    const count = total ? total.count : 0;
+    return `<td class="hm-total">` +
+      `<button type="button" class="hm-cell"` +
+      ` data-year="${year}" data-key="total"` +
+      ` data-count="${count}" data-share="" data-den="${count}"` +
+      ` data-label="Total events" data-share-of="events that year"` +
+      ` aria-label="Total events ${year}">` +
+      `<span class="hm-cell__val">${count}</span>` +
+      `</button></td>`;
   }
 
   function renderCellButton(year, col, cell, rowMax) {
@@ -1279,11 +1328,12 @@
     return `<table class="hm" id="hmTable" aria-label="Event divisions by year">${head}${body}</table>`;
   }
 
-  function renderTiersTable(years, cols, cells, rowMax, div) {
+  function renderTiersTable(years, cols, cells, rowMax, yearTotals, div) {
     const leaderCols = cols.filter((c) => c.role === 'Leader');
     const followerCols = cols.filter((c) => c.role === 'Follower');
     let head = '<thead>';
     head += '<tr><th class="hm-year" rowspan="2">Year</th>';
+    head += '<th class="hm-total" rowspan="2">Total Events</th>';
     if (leaderCols.length) {
       head += `<th class="hm-role-leader" colspan="${leaderCols.length}">Leader</th>`;
     }
@@ -1303,6 +1353,7 @@
     let body = '<tbody>';
     years.forEach((year) => {
       body += `<tr><td class="hm-year">${year}</td>`;
+      body += renderTotalEventsCell(year, yearTotals[year]);
       ordered.forEach((col) => {
         body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
       });
@@ -1391,8 +1442,13 @@
         return;
       }
       const mat = computeMatrix(rows, cols);
-      tableHost.innerHTML = renderTiersTable(mat.years, mat.cols, mat.cells, mat.rowMax, state.focusDiv);
-      state.cellIndex = mat.cells;
+      tableHost.innerHTML = renderTiersTable(
+        mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals, state.focusDiv
+      );
+      state.cellIndex = Object.assign({}, mat.cells);
+      Object.keys(mat.yearTotals).forEach((year) => {
+        state.cellIndex[`${year}|total`] = mat.yearTotals[year];
+      });
       return;
     }
 
@@ -1411,10 +1467,13 @@
     const year = btn.getAttribute('data-year');
     const share = shareRaw === '' ? null : Number(shareRaw);
     const shareOf = btn.getAttribute('data-share-of') || 'events';
+    const isTotal = btn.getAttribute('data-key') === 'total';
     let html = `<strong>${esc(label)} · ${esc(year)}</strong>`;
     html += `<div>Events: <b>${count}</b></div>`;
-    if (share == null) html += `<div class="muted">Share: — no ${esc(shareOf)}</div>`;
-    else html += `<div>Share: <b>${share}%</b> <span class="muted">of ${den} ${esc(shareOf)}</span></div>`;
+    if (!isTotal) {
+      if (share == null) html += `<div class="muted">Share: — no ${esc(shareOf)}</div>`;
+      else html += `<div>Share: <b>${share}%</b> <span class="muted">of ${den} ${esc(shareOf)}</span></div>`;
+    }
     html += `<div class="muted" style="margin-top:4px">Click to see the events</div>`;
     tip.innerHTML = html;
     tip.classList.add('is-open');
@@ -1435,6 +1494,9 @@
 
   function parseCellKey(key) {
     const parts = String(key || '').split('|');
+    if (parts[0] === 'total') {
+      return { type: 'total' };
+    }
     if (parts[0] === 'tier' && parts.length >= 4) {
       return { type: 'tier', div: parts[1], role: parts[2], tier: Number(parts[3]) };
     }
@@ -1485,7 +1547,7 @@
       ? `events with ${ctx.div} ${ctx.role}s`
       : 'events that year';
     const metricNote = `${n} event${n === 1 ? '' : 's'}` +
-      (state.metric === 'share' && cell && cell.share != null
+      (state.metric === 'share' && ctx && ctx.type !== 'total' && cell && cell.share != null
         ? ` · ${cell.share}% of ${cell.den} ${shareOf}`
         : '');
     document.getElementById('eventModalSub').textContent = metricNote;
