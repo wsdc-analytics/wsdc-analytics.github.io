@@ -253,7 +253,9 @@
           if (!actionBtn) return;
           event.preventDefault();
           if (!pinState.point) return;
-          await openDancerDrawer(pinState.point);
+          const point = pinState.point;
+          clearPin(chart);
+          await openDancerDrawer(point);
         });
       }
       return tooltipEl;
