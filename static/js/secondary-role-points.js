@@ -167,12 +167,50 @@
       const maxY = points.reduce((m, p) => Math.max(m, Number(p.y) || 0), 0);
       const maxR = points.reduce((m, p) => Math.max(m, Number(p.r) || 0), 0);
       const xPad = Math.min(3.6, Math.max(1.2, maxR * 0.12));
-      const yPad = Math.max(6, maxR * 1.45);
+      // Convert bubble pixel radius into Y data units so large countries (USA)
+      // stay inside the plot and do not collide with the filter row above.
+      const rawAreaH = chart.chartArea
+        ? chart.chartArea.bottom - chart.chartArea.top
+        : 0;
+      const areaH = rawAreaH > 1 ? rawAreaH : 400;
+      const yPadFromRadius = maxY > 0 ? (maxY * (maxR * 1.35)) / areaH : maxR;
+      const yPad = Math.max(6, maxY * 0.06, yPadFromRadius);
       const xMax = Math.max(5, maxX + xPad);
       xScale.min = 0;
       xScale.max = Math.ceil(xMax / 5) * 5;
       yScale.beginAtZero = true;
       yScale.max = Math.ceil((maxY + yPad) / 5) * 5;
+    }
+
+    /** Place external tooltip inside the chart box; flip below when near the top. */
+    function placeExtTooltip(tooltipEl, cx, cy, parent) {
+      const pad = 10;
+      const gap = 8;
+      tooltipEl.style.left = `${cx}px`;
+      tooltipEl.style.top = `${cy}px`;
+      const tw = tooltipEl.offsetWidth;
+      const th = tooltipEl.offsetHeight;
+      const pw = parent.clientWidth;
+      const ph = parent.clientHeight;
+      if (!tw || !pw) {
+        tooltipEl.style.transform = `translate(-50%, calc(-100% - ${gap}px))`;
+        return;
+      }
+      let dx;
+      let dy;
+      if (cx - tw / 2 < pad) {
+        dx = gap;
+        dy = -th / 2;
+      } else if (cx + tw / 2 > pw - pad) {
+        dx = -tw - gap;
+        dy = -th / 2;
+      } else {
+        dx = -tw / 2;
+        dy = cy - th - gap < pad ? gap : -(th + gap);
+      }
+      if (cy + dy < pad) dy = pad - cy;
+      if (cy + dy + th > ph - pad) dy = ph - pad - cy - th;
+      tooltipEl.style.transform = `translate(${dx}px, ${dy}px)`;
     }
 
     const ctx = document.getElementById("geoBubble");
@@ -327,24 +365,10 @@
       tooltipEl.innerHTML = `<div class="tt-title">${pinState.point.country || "—"}</div>${formatTooltipRows(pinState.point)}`;
       const canvas = chart.canvas;
       const parent = canvas.parentNode;
-      const pad = 10;
       const cx = canvas.offsetLeft + pinState.x;
       const cy = canvas.offsetTop + pinState.y;
       tooltipEl.style.opacity = 1;
-      tooltipEl.style.left = `${cx}px`;
-      tooltipEl.style.top = `${cy}px`;
-      requestAnimationFrame(() => {
-        const tw = tooltipEl.offsetWidth;
-        const pw = parent.clientWidth;
-        if (!tw || !pw) {
-          tooltipEl.style.transform = "translate(-50%, calc(-100% - 8px))";
-          return;
-        }
-        let dx = -tw / 2;
-        if (cx + dx < pad) dx = pad - cx;
-        if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
-        tooltipEl.style.transform = `translate(${dx}px, calc(-100% - 8px))`;
-      });
+      requestAnimationFrame(() => placeExtTooltip(tooltipEl, cx, cy, parent));
     }
 
     function setSummaryKpis(points) {
@@ -526,24 +550,10 @@
               tooltipEl.innerHTML = `<div class="tt-title">${title}</div>${formatTooltipRows(d)}`;
               const canvas = chart.canvas;
               const parent = canvas.parentNode;
-              const pad = 10;
               const cx = canvas.offsetLeft + tooltip.caretX;
               const cy = canvas.offsetTop + tooltip.caretY;
               tooltipEl.style.opacity = 1;
-              tooltipEl.style.left = `${cx}px`;
-              tooltipEl.style.top = `${cy}px`;
-              requestAnimationFrame(() => {
-                const tw = tooltipEl.offsetWidth;
-                const pw = parent.clientWidth;
-                if (!tw || !pw) {
-                  tooltipEl.style.transform = "translate(-50%, calc(-100% - 8px))";
-                  return;
-                }
-                let dx = -tw / 2;
-                if (cx + dx < pad) dx = pad - cx;
-                if (cx + dx + tw > pw - pad) dx = pw - pad - cx - tw;
-                tooltipEl.style.transform = `translate(${dx}px, calc(-100% - 8px))`;
-              });
+              requestAnimationFrame(() => placeExtTooltip(tooltipEl, cx, cy, parent));
             }
           }
         },
