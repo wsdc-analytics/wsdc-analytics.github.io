@@ -396,7 +396,7 @@
 
     const referenceMeanLinesPlugin = {
       id: "referenceMeanLinesPlugin",
-      beforeDatasetsDraw(chart) {
+      afterDatasetsDraw(chart) {
         const dataset = chart.data && chart.data.datasets && chart.data.datasets[0];
         const points = (dataset && dataset.data) ? dataset.data : [];
         const valid = points.filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
@@ -416,19 +416,63 @@
 
         const ctx = chart.ctx;
         ctx.save();
-        ctx.setLineDash([6, 6]);
-        ctx.lineWidth = 1.1;
-        ctx.strokeStyle = "rgba(107, 114, 128, 0.65)";
+        ctx.strokeStyle = "#9CA3AF";
+        ctx.lineWidth = 1.25;
+        ctx.setLineDash([5, 4]);
 
-        ctx.beginPath();
-        ctx.moveTo(xPx, area.top);
-        ctx.lineTo(xPx, area.bottom);
-        ctx.stroke();
+        const showX = xPx >= area.left && xPx <= area.right;
+        const showY = yPx >= area.top && yPx <= area.bottom;
+        if (showX) {
+          ctx.beginPath();
+          ctx.moveTo(xPx, area.top);
+          ctx.lineTo(xPx, area.bottom);
+          ctx.stroke();
+        }
+        if (showY) {
+          ctx.beginPath();
+          ctx.moveTo(area.left, yPx);
+          ctx.lineTo(area.right, yPx);
+          ctx.stroke();
+        }
 
-        ctx.beginPath();
-        ctx.moveTo(area.left, yPx);
-        ctx.lineTo(area.right, yPx);
-        ctx.stroke();
+        // Same label treatment as TID scatter medians: small text + white backing.
+        ctx.setLineDash([]);
+        ctx.font = "italic 600 10px 'DM Sans', system-ui, sans-serif";
+        ctx.fillStyle = "#6B7280";
+        const drawLabel = (text, tx, ty, align, baseline) => {
+          ctx.textAlign = align;
+          ctx.textBaseline = baseline;
+          const w = ctx.measureText(text).width;
+          const padX = 4;
+          const h = 14;
+          let bx = tx;
+          if (align === "right") bx = tx - w;
+          else if (align === "center") bx = tx - w / 2;
+          let by = ty;
+          if (baseline === "bottom") by = ty - h;
+          else if (baseline === "middle") by = ty - h / 2;
+          ctx.save();
+          ctx.fillStyle = "rgba(255,255,255,0.88)";
+          ctx.fillRect(bx - padX, by, w + padX * 2, h);
+          ctx.restore();
+          ctx.fillStyle = "#6B7280";
+          ctx.fillText(text, tx, ty);
+        };
+        if (showX) {
+          const label = `average ${meanX.toFixed(1)}%`;
+          const roomRight = area.right - xPx;
+          const align = roomRight > 100 ? "left" : "right";
+          const tx = align === "left" ? xPx + 6 : xPx - 6;
+          drawLabel(label, tx, area.top + 2, align, "top");
+        }
+        if (showY) {
+          const pts = Math.round(meanY);
+          const label = `average ${pts} ${pts === 1 ? "pt" : "pts"}`;
+          const roomTop = yPx - area.top;
+          const baseline = roomTop > 18 ? "bottom" : "top";
+          const ty = baseline === "bottom" ? yPx - 3 : yPx + 3;
+          drawLabel(label, area.right - 2, ty, "right", baseline);
+        }
 
         ctx.restore();
       }
@@ -487,7 +531,7 @@
 
     const chart = new Chart(ctx, {
       type: "bubble",
-      plugins: [referenceMeanLinesPlugin, flagBubblePlugin],
+      plugins: [flagBubblePlugin, referenceMeanLinesPlugin],
       data: {
         datasets: [{
           label: "Countries",
