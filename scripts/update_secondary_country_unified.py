@@ -2,7 +2,12 @@
 """Build unified secondary-role country dataset for dashboard.
 
 Output schema:
-  year -> role_group -> division -> [country rows]
+  {
+    "data_as_of": "YYYY-MM-DD",
+    "years": {
+      year -> role_group -> division -> [country rows]
+    }
+  }
 
 Role-group semantics:
   - Leader/Follower: selected floor role (event_role)
@@ -20,6 +25,7 @@ import argparse
 import csv
 import json
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import sys
@@ -58,6 +64,11 @@ def parse_args() -> argparse.Namespace:
         nargs="+",
         default=["2023", "2024", "2025", "2026"],
         help="Years to include",
+    )
+    parser.add_argument(
+        "--as-of",
+        default=None,
+        help="ISO date for data_as_of (default: today UTC)",
     )
     return parser.parse_args()
 
@@ -185,9 +196,12 @@ def main() -> None:
                 )
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(out_obj, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    as_of = args.as_of or datetime.now(timezone.utc).date().isoformat()
+    payload = {"data_as_of": as_of, "years": out_obj}
+    output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     print(f"Updated: {output}")
+    print(f"data_as_of: {as_of}")
     print(f"Years included: {', '.join(sorted(years))}")
 
 
