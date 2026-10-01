@@ -33,7 +33,7 @@
       display: flex;
       flex-direction: column;
       padding: var(--wsdc-space-3, 12px) var(--wsdc-space-4, 16px) 16px;
-      gap: 10px;
+      gap: 6px;
       overflow: hidden;
     }
     .page-head {
@@ -89,8 +89,15 @@
       flex: 0 0 9.5rem;
       width: 9.5rem;
     }
-    .srp-filters {
+    .srp-filter-main {
       grid-column: 2;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-width: 0;
+    }
+    .srp-filters {
       display: flex;
       flex-wrap: wrap;
       gap: 8px 10px;
@@ -167,16 +174,18 @@
       accent-color: var(--wsdc-color-brand-accent, #2563eb);
     }
     .legend-row {
+      position: absolute;
+      right: 0;
+      bottom: 4px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
       align-items: center;
       justify-content: flex-end;
       font-size: 12px;
       color: var(--wsdc-color-text-muted, #4b5563);
-      flex-shrink: 0;
-      min-height: 1.1rem;
-      padding-left: calc(9.5rem + 12px);
+      pointer-events: none;
+      white-space: nowrap;
+      padding: 0;
+      min-height: 0;
     }
     .legend-row .legend-note {
       font-size: 12px;
@@ -290,7 +299,8 @@
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
       padding: 8px 10px;
       min-width: 180px;
-      z-index: 5;
+      /* Above .srp-filter-stack (z-index: 40) so USA title is never under filter pills. */
+      z-index: 50;
       font-size: 12px;
       color: var(--wsdc-color-text, #1f2937);
     }
@@ -479,44 +489,45 @@
 
       <div class="srp-filter-stack">
         <div class="viz-filters-row__gutter" aria-hidden="true"></div>
-        <div class="srp-filters" role="group" aria-label="Filters">
-          <div class="filter-field">
-            <label class="filter-label" for="yearSel">Year</label>
-            <select id="yearSel" class="wsdc-select" aria-label="Filter by year">
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026" selected>2026</option>
-            </select>
+        <div class="srp-filter-main">
+          <div class="srp-filters" role="group" aria-label="Filters">
+            <div class="filter-field">
+              <label class="filter-label" for="yearSel">Year</label>
+              <select id="yearSel" class="wsdc-select" aria-label="Filter by year">
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="groupSel">Role</label>
+              <select id="groupSel" class="wsdc-select" aria-label="Filter by role">
+                <option value="Total" selected>Total</option>
+                <option value="Leader">Leader</option>
+                <option value="Follower">Follower</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="divisionSel">Division</label>
+              <select id="divisionSel" class="wsdc-select" aria-label="Filter by division">
+                <option value="Total" selected>Total</option>
+                <option value="Newcomer">Newcomer</option>
+                <option value="Novice">Novice</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="All-Stars">All-Stars</option>
+              </select>
+            </div>
+            <div class="filter-field filter-field--toggle">
+              <span class="filter-label" aria-hidden="true">&nbsp;</span>
+              <label class="toggle"><input type="checkbox" id="hideUsa" /> Hide USA</label>
+            </div>
           </div>
-          <div class="filter-field">
-            <label class="filter-label" for="groupSel">Role</label>
-            <select id="groupSel" class="wsdc-select" aria-label="Filter by role">
-              <option value="Total" selected>Total</option>
-              <option value="Leader">Leader</option>
-              <option value="Follower">Follower</option>
-            </select>
-          </div>
-          <div class="filter-field">
-            <label class="filter-label" for="divisionSel">Division</label>
-            <select id="divisionSel" class="wsdc-select" aria-label="Filter by division">
-              <option value="Total" selected>Total</option>
-              <option value="Newcomer">Newcomer</option>
-              <option value="Novice">Novice</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-              <option value="All-Stars">All-Stars</option>
-            </select>
-          </div>
-          <div class="filter-field filter-field--toggle">
-            <span class="filter-label" aria-hidden="true">&nbsp;</span>
-            <label class="toggle"><input type="checkbox" id="hideUsa" /> Hide USA</label>
+          <div class="legend-row" aria-label="Legend">
+            <span class="legend-note">Bubble size = # of dancers</span>
           </div>
         </div>
-      </div>
-
-      <div class="legend-row" aria-label="Legend">
-        <span class="legend-note">Bubble size = # of dancers</span>
       </div>
 
       <div class="viz-stage" aria-label="Secondary role points by country">
@@ -601,7 +612,6 @@
             <summary>Data coverage</summary>
             <div class="method-sec__body">
               <p>Snapshots cover <strong>2023–2026</strong> Skill Level points from the WSDC Points Registry. The <em>Updated</em> date next to the title is the data cut-off for the latest refresh (including a partial current year when that year is selected).</p>
-              <p>Source file: <code>static/data/secondary_country_unified.json</code>.</p>
             </div>
           </details>
         </div>
@@ -611,6 +621,6 @@
 
   <script src="static/js/site-chrome.js" defer></script>
   <script src="static/js/wsdc-select.js"></script>
-  <script src="static/js/secondary-role-points.js?v=20261001e"></script>
+  <script src="static/js/secondary-role-points.js?v=20261001f"></script>
 </body>
 </html>
