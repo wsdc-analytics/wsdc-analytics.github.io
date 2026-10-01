@@ -72,25 +72,39 @@
       max-width: 62rem;
     }
     .page-head .subtitle-i { font-size: 0.85em; }
-    .srp-filters-row {
+    .srp-filter-stack {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      column-gap: 16px;
-      align-items: end;
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+      column-gap: 12px;
+      align-items: start;
+      flex-shrink: 0;
       position: relative;
       z-index: 40;
     }
+    .srp-filter-stack > .viz-filters-row__gutter {
+      grid-column: 1;
+      width: 9.5rem;
+    }
+    .viz-filters-row__gutter {
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
+    }
     .srp-filters {
+      grid-column: 2;
       display: flex;
       flex-wrap: wrap;
       gap: 8px 10px;
       align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      min-width: 0;
     }
     .srp-filters .filter-field {
       display: flex;
       flex-direction: column;
       gap: 4px;
       min-width: 0;
+      align-items: stretch;
     }
     .srp-filters .filter-label {
       display: block;
@@ -152,55 +166,61 @@
       height: 14px;
       accent-color: var(--wsdc-color-brand-accent, #2563eb);
     }
-    .srp-legend {
+    .legend-row {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
-      justify-self: end;
-      flex: 0 0 auto;
-      align-items: stretch;
-      font-size: 11px;
-      color: var(--wsdc-color-text-muted, #4b5563);
-    }
-    .srp-legend__body {
-      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
       align-items: center;
-      gap: 8px;
-      height: 32px;
-      box-sizing: border-box;
-    }
-    .srp-legend__note {
-      font-size: 11px;
+      justify-content: flex-end;
+      font-size: 12px;
       color: var(--wsdc-color-text-muted, #4b5563);
-      white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 1.1rem;
+      padding-left: calc(9.5rem + 12px);
+    }
+    .legend-row .legend-note {
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .viz-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: stretch;
+      border: 0;
+      background: transparent;
+      overflow: visible;
+      border-radius: 0;
+      position: relative;
     }
     .kpis {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 0;
-      flex: 0 0 auto;
-      width: 100%;
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 8px;
-      background: #fff;
-      overflow: hidden;
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
+      align-self: flex-start;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      overflow: visible;
     }
     .kpi {
       position: relative;
       display: block;
-      flex: 1 1 0;
-      min-width: 7.5rem;
+      width: 100%;
       padding: 9px 10px 10px 12px;
       border: 0;
-      border-left: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-top: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 0;
       background: transparent;
       text-align: left;
       font: inherit;
       color: inherit;
     }
-    .kpi:first-child { border-left: 0; }
+    .kpi:first-child { border-top: 0; }
     .kpi__head {
       display: flex;
       align-items: center;
@@ -225,6 +245,19 @@
       margin-top: 1px;
       line-height: 1.15;
     }
+    .chart-box {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .chart-box canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
     .wsdc-info-btn, .info-tip {
       display: inline-flex;
       align-items: center;
@@ -246,27 +279,6 @@
       border-color: var(--wsdc-color-text-muted, #4b5563);
       color: var(--wsdc-color-text-strong, #0b1221);
       outline: none;
-    }
-    .viz-stage {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: 10px;
-      background: #fff;
-      overflow: hidden;
-    }
-    .chart-box {
-      position: relative;
-      flex: 1;
-      min-height: 0;
-      padding: 8px 10px 6px;
-    }
-    .chart-box canvas {
-      width: 100% !important;
-      height: 100% !important;
     }
     .chartjs-ext-tooltip {
       position: absolute;
@@ -463,97 +475,93 @@
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
         <p class="subtitle">Where do secondary-role points concentrate — and how strong is that practice by country? This tool maps each country’s secondary-role points against their share of all points in the selected year, role and division. Use the filters to compare slices; the <span class="subtitle-i">ⓘ</span> tips and Methodology explain the numbers.</p>
-
-        <div class="srp-filters-row" role="toolbar" aria-label="Filters and size legend">
-          <div class="srp-filters" role="group" aria-label="Filters">
-            <div class="filter-field">
-              <label class="filter-label" for="yearSel">Year</label>
-              <select id="yearSel" class="wsdc-select" aria-label="Filter by year">
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026" selected>2026</option>
-              </select>
-            </div>
-            <div class="filter-field">
-              <label class="filter-label" for="groupSel">Role</label>
-              <select id="groupSel" class="wsdc-select" aria-label="Filter by role">
-                <option value="Total" selected>Total</option>
-                <option value="Leader">Leader</option>
-                <option value="Follower">Follower</option>
-              </select>
-            </div>
-            <div class="filter-field">
-              <label class="filter-label" for="divisionSel">Division</label>
-              <select id="divisionSel" class="wsdc-select" aria-label="Filter by division">
-                <option value="Total" selected>Total</option>
-                <option value="Newcomer">Newcomer</option>
-                <option value="Novice">Novice</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-                <option value="All-Stars">All-Stars</option>
-              </select>
-            </div>
-            <div class="filter-field filter-field--toggle">
-              <span class="filter-label" aria-hidden="true">&nbsp;</span>
-              <label class="toggle"><input type="checkbox" id="hideUsa" /> Hide USA</label>
-            </div>
-          </div>
-          <div class="srp-legend" aria-label="Bubble size legend">
-            <span class="filter-label">Bubble size</span>
-            <div class="srp-legend__body">
-              <button type="button" class="info-tip" aria-label="About bubble size"
-                data-tip="Bubble size is the number of dancers who scored points in a secondary role in the current year, role and division slice.">i</button>
-              <span class="srp-legend__note">= dancers with secondary-role points</span>
-            </div>
-          </div>
-        </div>
       </header>
 
-      <div class="kpis" id="kpiRow" aria-live="polite">
-        <div class="kpi">
-          <div class="kpi__head">
-            <span class="lbl">Total points</span>
-            <button type="button" class="info-tip" aria-label="What is Total points?"
-              data-tip="All Skill Level points earned in the selected year, role and division across the countries shown (after Hide USA).">i</button>
+      <div class="srp-filter-stack">
+        <div class="viz-filters-row__gutter" aria-hidden="true"></div>
+        <div class="srp-filters" role="group" aria-label="Filters">
+          <div class="filter-field">
+            <label class="filter-label" for="yearSel">Year</label>
+            <select id="yearSel" class="wsdc-select" aria-label="Filter by year">
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+            </select>
           </div>
-          <div class="val" id="kpiTotal">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi__head">
-            <span class="lbl">Secondary points</span>
-            <button type="button" class="info-tip" aria-label="What is Secondary points?"
-              data-tip="Points earned in the selected role by dancers whose primary (dominant) role is the other role.">i</button>
+          <div class="filter-field">
+            <label class="filter-label" for="groupSel">Role</label>
+            <select id="groupSel" class="wsdc-select" aria-label="Filter by role">
+              <option value="Total" selected>Total</option>
+              <option value="Leader">Leader</option>
+              <option value="Follower">Follower</option>
+            </select>
           </div>
-          <div class="val" id="kpiSecondary">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi__head">
-            <span class="lbl">Secondary share</span>
-            <button type="button" class="info-tip" aria-label="What is Secondary share?"
-              data-tip="Secondary-role points divided by total points in the current slice, across the countries shown.">i</button>
+          <div class="filter-field">
+            <label class="filter-label" for="divisionSel">Division</label>
+            <select id="divisionSel" class="wsdc-select" aria-label="Filter by division">
+              <option value="Total" selected>Total</option>
+              <option value="Newcomer">Newcomer</option>
+              <option value="Novice">Novice</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="All-Stars">All-Stars</option>
+            </select>
           </div>
-          <div class="val" id="kpiShare">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi__head">
-            <span class="lbl">Average share</span>
-            <button type="button" class="info-tip" aria-label="What is Average share?"
-              data-tip="Mean of each country’s secondary-role share (equal weight per country on the chart). The dashed vertical line on the chart marks this value.">i</button>
+          <div class="filter-field filter-field--toggle">
+            <span class="filter-label" aria-hidden="true">&nbsp;</span>
+            <label class="toggle"><input type="checkbox" id="hideUsa" /> Hide USA</label>
           </div>
-          <div class="val" id="kpiMeanShare">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi__head">
-            <span class="lbl">Average points</span>
-            <button type="button" class="info-tip" aria-label="What is Average points?"
-              data-tip="Mean of each country’s secondary-role points (equal weight per country on the chart). The dashed horizontal line on the chart marks this value.">i</button>
-          </div>
-          <div class="val" id="kpiMeanPoints">—</div>
         </div>
       </div>
 
-      <section class="viz-stage" aria-label="Secondary role points by country">
+      <div class="legend-row" aria-label="Legend">
+        <span class="legend-note">Bubble size = dancers</span>
+      </div>
+
+      <div class="viz-stage" aria-label="Secondary role points by country">
+        <div class="kpis" id="kpiRow" aria-live="polite">
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Total points</span>
+              <button type="button" class="info-tip" aria-label="What is Total points?"
+                data-tip="All Skill Level points earned in the selected year, role and division across the countries shown (after Hide USA).">i</button>
+            </div>
+            <div class="val" id="kpiTotal">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Secondary points</span>
+              <button type="button" class="info-tip" aria-label="What is Secondary points?"
+                data-tip="Points earned in the selected role by dancers whose primary (dominant) role is the other role.">i</button>
+            </div>
+            <div class="val" id="kpiSecondary">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Secondary share</span>
+              <button type="button" class="info-tip" aria-label="What is Secondary share?"
+                data-tip="Secondary-role points divided by total points in the current slice, across the countries shown.">i</button>
+            </div>
+            <div class="val" id="kpiShare">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Average share</span>
+              <button type="button" class="info-tip" aria-label="What is Average share?"
+                data-tip="Mean of each country’s secondary-role share (equal weight per country on the chart). The dashed vertical line on the chart marks this value.">i</button>
+            </div>
+            <div class="val" id="kpiMeanShare">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Average points</span>
+              <button type="button" class="info-tip" aria-label="What is Average points?"
+                data-tip="Mean of each country’s secondary-role points (equal weight per country on the chart). The dashed horizontal line on the chart marks this value.">i</button>
+            </div>
+            <div class="val" id="kpiMeanPoints">—</div>
+          </div>
+        </div>
         <div class="chart-box">
           <canvas id="geoBubble"></canvas>
           <div id="dancerDrawer" class="dancer-drawer" hidden>
@@ -564,7 +572,7 @@
             <div id="dancerDrawerBody" class="dancer-drawer__body"></div>
           </div>
         </div>
-      </section>
+      </div>
     </section>
 
     <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
@@ -603,6 +611,6 @@
 
   <script src="static/js/site-chrome.js" defer></script>
   <script src="static/js/wsdc-select.js"></script>
-  <script src="static/js/secondary-role-points.js?v=20261001c"></script>
+  <script src="static/js/secondary-role-points.js?v=20261001d"></script>
 </body>
 </html>
