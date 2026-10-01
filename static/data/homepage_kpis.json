@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-29",
-  "as_of": "2026-09-29",
+  "generated_at": "2026-10-01",
+  "as_of": "2026-10-01",
   "data_through": "2026-09-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,9 +17,9 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2679,
-    "points": 727937.0,
-    "dancers": 27648
+    "events": 2680,
+    "points": 728135.0,
+    "dancers": 27661
   },
   "comparisons": {
     "week": {
@@ -30,41 +30,41 @@
         "since_previous_ended": "2026-08-31",
         "iso_week": "2026-W39",
         "bucket": "edition_start_date",
-        "event_names": "Best of the Best WCS, Meet Me In St Louis, Midland Swing Open, Mooseland Swing, Philly Swing Classic, The Aloha Open"
+        "event_names": "Best of the Best WCS, Calgary Town Open, Meet Me In St Louis, Midland Swing Open, Mooseland Swing, Philly Swing Classic, The Aloha Open"
       },
       "increment": {
-        "events": 6,
-        "points": 1649.0,
-        "dancers": 61
+        "events": 7,
+        "points": 1847.0,
+        "dancers": 74
       }
     },
     "month": {
       "label": "Month",
       "period": {
-        "start": "2026-09-01",
-        "end": "2026-09-29",
-        "since_previous_ended": "2026-08-31",
+        "start": "2026-10-01",
+        "end": "2026-10-01",
+        "since_previous_ended": "2026-09-30",
         "bucket": "edition_start_date",
-        "event_names": "Austin Rocks, Bavarian Open, Best of the Best WCS, Finnfest, Global Grand Prix -- West Coast Swing Championships, Korea Westival, Meet Me In St Louis, Midland Swing Open, Mooseland Swing, Philly Swing Classic, Retaliation Swing, River City Swing, Sea Dance Fest, South Bay Dance Fling, SwingTime Denver, The Aloha Open, Trilogy Swing, WCS Party"
+        "event_names": ""
       },
       "increment": {
-        "events": 18,
-        "points": 6623.0,
-        "dancers": 198
+        "events": 0,
+        "points": 0.0,
+        "dancers": 0
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-09-29",
+        "end": "2026-10-01",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 140,
-        "points": 58022.0,
-        "dancers": 1874
+        "events": 141,
+        "points": 58220.0,
+        "dancers": 1887
       }
     }
   }
