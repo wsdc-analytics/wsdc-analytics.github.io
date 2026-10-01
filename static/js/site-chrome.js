@@ -23,8 +23,8 @@
     { href: "rankings.html", label: "Dancer's Ranking" },
     { href: "dancer-profile.html", label: "Dancer Profile" },
     { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points" },
-    { href: "time_in_division_dashboard_en.html", label: "Time in division" },
-    { href: "event_tiers_by_year_dashboard_en.html", label: "Event tiers by year" },
+    { href: "time_in_division_dashboard_en.html", label: "Time In Division" },
+    { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year" },
     { href: "city-clouds.html", label: "Cities Cloud" },
   ];
 
