@@ -72,7 +72,7 @@ Notable All-Star starters:
 
 ---
 
-## Asia West Coast Swing Open (event_id=218, 004)
+## Asia West Coast Swing Open (event_id=218, 003)
 
 - Location: Singapore, Singapore (Singapore)
 - Years: 2013–2026 (11 editions)
