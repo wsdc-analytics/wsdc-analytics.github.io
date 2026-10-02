@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How many WSDC events held each division every year since 2018, and how big their Leader and Follower fields were — Tier 1 to Tier 6. Filter by years and location." />
+  <title>Event tiers by year | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+  <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="Event tiers by year | WSDC Analytics">
+  <meta property="og:description" content="How many WSDC events held each division every year, and how big their Leader and Follower fields were.">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/event_tiers_by_year_dashboard_en.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    html, body { height: 100%; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, var(--wsdc-font-sans), system-ui, sans-serif;
+      color: var(--wsdc-color-text, #1f2937);
+      background: var(--wsdc-color-bg, #fff);
+    }
+    .page {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .content {
+      flex: 1;
+      min-height: 0;
+      max-width: var(--wsdc-width-chrome, 1200px);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px 20px;
+      gap: 10px;
+    }
+    .page-head {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--wsdc-color-border, #e5e7eb);
+      min-width: 0;
+      position: relative;
+      z-index: 40; /* above heatmap so filter menus are not covered */
+      overflow: visible;
+    }
+    .page-head__title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .page-head h1 {
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      letter-spacing: -0.02em;
+    }
+    .page-head__updated {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .subtitle {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      max-width: none;
+      width: 100%;
+    }
+    .subtitle-i { font-size: 0.85em; }
+
+    /* Filters centered over the table by default (Events Calendar–style placement).
+       When State appears (United States), JS shifts the group left so Metric↔legend stay put. */
+    .ety-filters-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
+      column-gap: 12px;
+      flex-shrink: 0;
+      width: 100%;
+      min-width: 0;
+      overflow: visible;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+    .ety-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      align-items: flex-end;
+      justify-content: flex-start;
+      grid-column: 2;
+      justify-self: center;
+      flex: 0 1 auto;
+      min-width: 0;
+      overflow: visible;
+    }
+    .filter-field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+    .filter-label {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #6b7280);
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+    .ety-filters .wsdc-select-host,
+    .ety-filters .wsdc-dd {
+      width: var(--wsdc-dd-width, 7.25rem);
+      max-width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+    /* WsdcSelect adds .wsdc-dd--field / --auto — neutralize to calendar compact pill */
+    .ety-filters .wsdc-dd.wsdc-dd--auto,
+    .ety-filters .wsdc-dd--field {
+      width: var(--wsdc-dd-width, 7.25rem);
+      min-width: 0;
+      max-width: 100%;
+    }
+    .ety-filters .filter-field:has(#yearFromSelect),
+    .ety-filters .filter-field:has(#yearToSelect) { --wsdc-dd-width: 5rem; }
+    .ety-filters .filter-field:has(#continentSelect) { --wsdc-dd-width: 8.5rem; }
+    .ety-filters .filter-field:has(#countrySelect) { --wsdc-dd-width: 9.5rem; }
+    .ety-filters .filter-field:has(#stateSelect) { --wsdc-dd-width: 8.5rem; }
+    .filter-field.is-hidden,
+    .filter-field[hidden] { display: none !important; }
+
+    .ety-filters .wsdc-dd--field .wsdc-dd__btn {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      height: 32px;
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 12px;
+      font-weight: 500;
+      justify-content: space-between;
+      gap: 4px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .ety-filters .wsdc-dd--field .wsdc-dd__value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+    }
+    .ety-filters .wsdc-dd--field .wsdc-dd__btn:hover,
+    .ety-filters .wsdc-dd--field.is-open .wsdc-dd__btn {
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-color: var(--wsdc-color-border, #d1d5db);
+    }
+
+    .seg-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      padding: 1px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      height: 32px;
+      min-height: 32px;
+      box-sizing: border-box;
+    }
+    .seg-toggle:hover,
+    .seg-toggle:focus-within {
+      border-color: var(--wsdc-color-border, #d1d5db);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+    }
+    .seg-toggle__btn {
+      border: 0;
+      background: transparent;
+      border-radius: 999px;
+      padding: 0 12px;
+      height: 28px;
+      font: 600 11px/1 'DM Sans', system-ui, sans-serif;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      cursor: pointer;
+    }
+    .seg-toggle__btn.is-active {
+      background: #fff;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+    .ghost-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 999px;
+      padding: 0 10px;
+      height: 28px;
+      font: 600 11px/1 Inter, system-ui, sans-serif;
+      cursor: pointer;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .ghost-btn:hover {
+      border-color: var(--wsdc-color-border, #d1d5db);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+
+    .ety-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      grid-column: 3;
+      justify-self: end;
+      flex: 0 0 auto;
+      margin-left: 0;
+      align-items: stretch;
+      font-size: 11px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .ety-legend__body {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      box-sizing: border-box;
+    }
+    .ety-legend__scale {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ety-legend__scale[hidden] { display: none !important; }
+    .ety-legend__bar {
+      width: 100px;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #f8fafc 0%, #cbd5e1 55%, #94a3b8 100%);
+    }
+    .ety-legend__swatches {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ety-legend__swatches[hidden] { display: none !important; }
+    .ety-legend__swatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+    }
+    .ety-legend__swatch i {
+      width: 14px;
+      height: 8px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+    .ety-legend__swatch--leader i {
+      background: linear-gradient(90deg, #f1f2fe, #a5a7f2);
+    }
+    .ety-legend__swatch--follower i {
+      background: linear-gradient(90deg, #fff4f6, #faa8b4);
+    }
+
+    .hm-stack {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      z-index: 0;
+    }
+    .hm-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      min-height: 28px;
+    }
+    .hm-toolbar__title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .hm-toolbar__note {
+      font-size: 11px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .hm-toolbar__div {
+      --wsdc-dd-width: 10rem;
+    }
+    .hm-toolbar__div .wsdc-dd--field .wsdc-dd__btn {
+      height: 30px;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-size: 13px;
+      font-weight: 700;
+      justify-content: space-between;
+    }
+    .hm-toolbar__div .wsdc-dd--field .wsdc-dd__btn:hover,
+    .hm-toolbar__div .wsdc-dd--field.is-open .wsdc-dd__btn {
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-color: var(--wsdc-color-border, #d1d5db);
+    }
+    .hm-wrap {
+      flex: 1;
+      min-height: 200px;
+      overflow: auto;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      position: relative;
+    }
+    th.hm-role-leader {
+      background: rgba(99, 102, 241, 0.1);
+      color: #4f46e5;
+    }
+    th.hm-role-follower {
+      background: rgba(244, 63, 94, 0.1);
+      color: #e11d48;
+    }
+    th.hm-tier-leader { background: rgba(99, 102, 241, 0.05); }
+    th.hm-tier-follower { background: rgba(244, 63, 94, 0.05); }
+
+    .wsdc-info-btn, .info-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font: italic 600 10px/1 'DM Sans', serif;
+      cursor: help;
+      padding: 0;
+    }
+    .info-tip { width: 14px; height: 14px; font-size: 9px; }
+    .ety-pop {
+      position: fixed;
+      z-index: 80;
+      max-width: 260px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(117,119,120,0.24);
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.12);
+      font-size: 12px;
+      line-height: 1.45;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .ety-pop.is-open { opacity: 1; }
+
+    .hm-empty {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 14px;
+      z-index: 2;
+      background: rgba(255,255,255,0.75);
+    }
+    .hm-empty.show { display: flex; }
+
+    table.hm {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: max-content;
+      min-width: 100%;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    table.hm th, table.hm td {
+      border-bottom: 1px solid #eef2f7;
+      border-right: 1px solid #eef2f7;
+      padding: 0;
+      text-align: center;
+      vertical-align: middle;
+    }
+    table.hm thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: #f8fafc;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      padding: 6px 4px;
+      white-space: nowrap;
+    }
+    table.hm thead th.hm-div {
+      font-size: 11px;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    table.hm th.hm-year,
+    table.hm td.hm-year,
+    table.hm th.hm-total,
+    table.hm td.hm-total {
+      position: sticky;
+      z-index: 2;
+      background: #fff;
+      text-align: center;
+      padding: 0 8px;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      box-sizing: border-box;
+      border-right: 1px solid #dbe3ea;
+      vertical-align: middle;
+    }
+    table.hm th.hm-year,
+    table.hm td.hm-year {
+      left: 0;
+      width: 4.25rem;
+      min-width: 4.25rem;
+    }
+    table.hm th.hm-total,
+    table.hm td.hm-total {
+      left: calc(4.25rem + 1px);
+      width: 4.75rem;
+      min-width: 4.75rem;
+    }
+    table.hm thead th.hm-year,
+    table.hm thead th.hm-total {
+      z-index: 4;
+      background: #f8fafc;
+      white-space: nowrap;
+      padding: 6px 8px;
+      line-height: 1.2;
+    }
+    button.hm-total__btn {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      font-weight: 700;
+      color: inherit;
+      text-align: center;
+      cursor: pointer;
+      min-height: 34px;
+    }
+    button.hm-total__btn:hover {
+      color: #2563eb;
+    }
+    button.hm-total__btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: -2px;
+    }
+
+    .hm-cell {
+      display: block;
+      width: 100%;
+      min-width: 3.4rem;
+      min-height: 34px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      padding: 4px 3px;
+      font: inherit;
+      color: inherit;
+    }
+    .hm-cell:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: -2px;
+    }
+    .hm-cell__val {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(15, 23, 42, 0.55);
+      line-height: 1.1;
+    }
+    .hm-cell.is-empty .hm-cell__val { color: transparent; }
+    .hm-cell.is-dash .hm-cell__val { color: rgba(15, 23, 42, 0.28); }
+    .hm-cell.is-dark .hm-cell__val { color: rgba(255, 255, 255, 0.72); }
+    .hm-cell.is-dark.is-dash .hm-cell__val { color: rgba(255, 255, 255, 0.4); }
+
+    .hm-expand {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      margin-right: 2px;
+      border-radius: 4px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 12px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+    .hm-expand:hover { background: #eef2f7; color: #0b1221; }
+    button.hm-div-link {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      color: inherit;
+      padding: 0 2px;
+      border-radius: 4px;
+    }
+    button.hm-div-link:hover { background: #eef2f7; }
+
+    .tt-card {
+      position: fixed;
+      z-index: 60;
+      min-width: 180px;
+      max-width: 280px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(117,119,120,0.24);
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.12);
+      font-size: 12px;
+      line-height: 1.4;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .tt-card.is-open { opacity: 1; }
+    .tt-card strong { display: block; margin-bottom: 4px; color: #0b1221; }
+    .tt-card .muted { color: #64748b; }
+
+    .modal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-layer.is-open { display: flex; }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+    }
+    .modal {
+      position: relative;
+      z-index: 1;
+      width: min(920px, 100%);
+      max-height: min(80vh, 720px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(15,23,42,0.22);
+      padding: 16px 18px 18px;
+    }
+    .modal__head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .modal__head h2 {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0b1221;
+    }
+    .modal__sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .modal__close {
+      margin-left: auto;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 8px;
+      height: 32px;
+      padding: 0 12px;
+      font: 600 12px Inter, system-ui, sans-serif;
+      cursor: pointer;
+    }
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .event-card {
+      position: relative;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 10px 12px;
+      padding-right: 3.25rem;
+      background: #fafbfc;
+    }
+    .event-card__name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #0b1221;
+      margin-bottom: 4px;
+      padding-right: 4px;
+    }
+    .event-card__meta {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+    .event-card__pills {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+    }
+    .event-card__pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.1rem;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .event-card__pill--leader {
+      color: #4338ca;
+      background: rgba(99, 102, 241, 0.16);
+    }
+    .event-card__pill--follower {
+      color: #be123c;
+      background: rgba(244, 63, 94, 0.14);
+    }
+    .modal-empty {
+      color: #64748b;
+      font-size: 13px;
+      padding: 12px 0;
+    }
+
+    /* Methodology island — compact reuse of TID pattern */
+    .method-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none;
+    }
+    .method-layer.is-open { display: block; }
+    .method-layer__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.28);
+    }
+    .method-island {
+      position: absolute;
+      width: min(420px, calc(100vw - 24px));
+      max-height: min(70vh, 560px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.18);
+      border: 1px solid #e5e7eb;
+    }
+    .method-island__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eef2f7;
+      cursor: grab;
+      user-select: none;
+    }
+    .method-island__head h2 {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .method-island__close {
+      margin-left: auto;
+      border: 0;
+      background: transparent;
+      font: 600 12px Inter, system-ui, sans-serif;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .method-island__body { padding: 8px 14px 14px; }
+    .method-sec { border-bottom: 1px solid #eef2f7; }
+    .method-sec:last-of-type { border-bottom: 0; }
+    .method-sec > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 0;
+      font-weight: 700;
+      font-size: 13px;
+      color: #0b1221;
+    }
+    .method-sec > summary::-webkit-details-marker { display: none; }
+    .method-sec__body {
+      padding: 0 0 10px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: #4b5563;
+    }
+    .method-sec__body p + p { margin-top: 8px; }
+    .method-example {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-left: 3px solid #d1d5db;
+      background: #f8fafc;
+      border-radius: 0 8px 8px 0;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .event-grid { grid-template-columns: 1fr; }
+      .page-head__updated { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="dash-chrome">
+      <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="event_tiers_by_year_dashboard_en.html"></div>
+      <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+    </div>
+
+    <section class="content">
+      <header class="page-head">
+        <div class="page-head__title-row">
+          <h1>Event tiers by year</h1>
+          <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
+            <span aria-hidden="true">i</span>
+          </button>
+          <p class="page-head__updated" id="dataUpdated">Updated —</p>
+        </div>
+        <p class="subtitle">Which divisions do WSDC events run each year — and how big are those fields? This tool counts, year by year, how many events held Newcomer through Champions. Open any division to see how often its Leader and Follower fields reached each tier, from <em>Tier 1</em> (5–10 competitors) to <em>Tier 6</em> (130+). Narrow it down by years and location, switch between Count and Share, and click any cell to see the events behind the number. The <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
+
+        <div class="ety-filters-row" role="toolbar" aria-label="Filters and color legend">
+          <div class="ety-filters" role="group" aria-label="Filters">
+            <div class="filter-field">
+              <label class="filter-label" for="yearFromSelect">From year</label>
+              <select id="yearFromSelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="yearToSelect">To year</label>
+              <select id="yearToSelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="continentSelect">Continent</label>
+              <select id="continentSelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="countrySelect">Country</label>
+              <select id="countrySelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field is-hidden" id="stateField">
+              <label class="filter-label" for="stateSelect">State</label>
+              <select id="stateSelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field">
+              <span class="filter-label">Metric</span>
+              <div class="seg-toggle" role="group" aria-label="Count or Share">
+                <button type="button" class="seg-toggle__btn is-active" id="metricCountBtn" aria-pressed="true">Count</button>
+                <button type="button" class="seg-toggle__btn" id="metricShareBtn" aria-pressed="false">Share</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ety-legend" aria-label="Color legend">
+            <span class="filter-label">Color scale · each year on its own</span>
+            <div class="ety-legend__body">
+              <button type="button" class="info-tip" id="legendTip" aria-label="About the color scale"
+                data-tip-divisions="Each year is shaded on its own: the darker the cell, the more events held that division that year. Compare cells within a row, not across years."
+                data-tip-tiers="Each year is shaded on its own: the darker the cell, the more often that tier came up that year. Leaders are blue, Followers are pink. Compare cells within a row, not across years."
+                data-tip="Each year is shaded on its own: the darker the cell, the more events held that division that year. Compare cells within a row, not across years.">i</button>
+              <span class="ety-legend__scale" id="legendScale">
+                <span>low</span>
+                <div class="ety-legend__bar" aria-hidden="true"></div>
+                <span>high</span>
+              </span>
+              <span class="ety-legend__swatches" id="roleSwatches" hidden>
+                <span class="ety-legend__swatch ety-legend__swatch--leader"><i></i>Leader</span>
+                <span class="ety-legend__swatch ety-legend__swatch--follower"><i></i>Follower</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="hm-stack" id="hmStack">
+        <div class="hm-empty" id="hmEmpty">No events match these filters</div>
+        <div class="hm-toolbar" id="hmToolbar">
+          <button type="button" class="ghost-btn" id="backToDivisionsBtn" hidden>← All divisions</button>
+          <span class="hm-toolbar__title" id="hmToolbarTitle">Divisions</span>
+          <div class="filter-field hm-toolbar__div" id="hmToolbarDivField" hidden>
+            <label class="filter-label" for="focusDivSelect" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Division</label>
+            <select id="focusDivSelect" class="wsdc-select" aria-label="Switch division"></select>
+          </div>
+          <span class="hm-toolbar__note" id="hmToolbarNote">Click a division to see its tiers for Leaders and Followers</span>
+        </div>
+        <div class="hm-wrap" id="hmWrap">
+          <table class="hm" id="hmTable" aria-label="Event tiers heatmap"></table>
+        </div>
+      </div>
+    </section>
+
+    <div class="tt-card" id="cellTip" role="tooltip"></div>
+
+    <div class="modal-layer" id="eventModal" hidden>
+      <div class="modal-backdrop" id="eventModalBackdrop"></div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+        <div class="modal__head">
+          <div>
+            <h2 id="eventModalTitle">Events</h2>
+            <p class="modal__sub" id="eventModalSub"></p>
+          </div>
+          <button type="button" class="modal__close" id="eventModalClose">Close</button>
+        </div>
+        <div id="eventModalBody"></div>
+      </div>
+    </div>
+
+    <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+      <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+      <div class="method-island" id="methodIsland" role="dialog" aria-modal="true" aria-labelledby="methodIslandTitle">
+        <div class="method-island__head" id="methodIslandHead">
+          <h2 id="methodIslandTitle">Methodology</h2>
+          <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+        </div>
+        <div class="method-island__body">
+          <details class="method-sec" open>
+            <summary>What this shows</summary>
+            <div class="method-sec__body">
+              <p>Every row is one <strong>year</strong>, and every event is counted once for each year it took place — a series that runs every year appears in every year. For each event we note which <strong>divisions</strong> it held and how big each field was. Leaders and Followers are counted separately, because the same Novice can draw very different numbers of Leaders and Followers.</p>
+              <p>The tool opens on <strong>Divisions</strong>: how many events held Newcomer, Novice, Intermediate, Advanced, All-Star and Champions each year. Click a division name to open its <strong>tiers</strong> — one column per tier for Leaders and one for Followers. <em>← All divisions</em> takes you back; the drop-down next to it switches straight to another division.</p>
+              <p class="method-example"><strong>Example.</strong> Austin Swing Dance Championships 2018 held Novice with 47 Leaders and 87 Followers. In the Divisions view it adds one to <em>Novice · 2018</em>. In the Novice tiers view it adds one to <em>Leader Tier 4</em> and one to <em>Follower Tier 5</em>.</p>
+              <p>The data starts in <strong>2018</strong>. Years with no events in the current filter are left out.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>Tiers</summary>
+            <div class="method-sec__body">
+              <p>The WSDC gives every competition a <strong>tier</strong> based on how many dancers competed in one role. The bigger the field, the higher the tier — and the more points the finalists earn.</p>
+              <ul>
+                <li><strong>Tier 1</strong> — 5–10 competitors</li>
+                <li><strong>Tier 2</strong> — 11–19</li>
+                <li><strong>Tier 3</strong> — 20–39</li>
+                <li><strong>Tier 4</strong> — 40–79</li>
+                <li><strong>Tier 5</strong> — 80–129</li>
+                <li><strong>Tier 6</strong> — 130 or more</li>
+              </ul>
+              <p>Leaders and Followers get their own tier, so one Novice can be Tier 4 for Leaders and Tier 5 for Followers at the same event.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>Count &amp; Share</summary>
+            <div class="method-sec__body">
+              <p><strong>Count</strong> is the number of events. <strong>Share</strong> turns it into a percentage, and what it is a percentage <em>of</em> depends on the view:</p>
+              <ul>
+                <li>In <strong>Divisions</strong> — of all events that year in the current filter.</li>
+                <li>In <strong>tiers</strong> — of the events that year that held this division for this role.</li>
+              </ul>
+              <p class="method-example"><strong>Example.</strong> In 2024 there were 139 events, and 113 of them held All-Star: <em>Count 113 · Share 81.3%</em>. Open Advanced: 135 events held Advanced for Leaders, and 54 of those were Tier 3 — <em>Count 54 · Share 40%</em>.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>Colors</summary>
+            <div class="method-sec__body">
+              <p>Each year is shaded <strong>on its own</strong>: the darkest cell in a row is the division or tier that came up most often that year. This makes it easy to see what was typical in a given year, but it is not meant for comparing years with each other — for that, read the numbers.</p>
+              <p>In the tiers view, <strong>Leaders are blue</strong> and <strong>Followers are pink</strong>.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>Location filters</summary>
+            <div class="method-sec__body">
+              <p>Pick a <strong>Continent</strong>, then a <strong>Country</strong>; for the United States a <strong>State</strong> filter appears as well. Each list starts with the places that hosted the most events in the selected years. Location is where the event took place that year, so a series that has since stopped still keeps its country.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>Event lists</summary>
+            <div class="method-sec__body">
+              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. For a few events the exact numbers are not available, and the tags are left out.</p>
+              <p>An empty cell means there were no such events that year. A dash in Share means there was nothing to compare with: no event that year held this division for this role.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="static/js/site-chrome.js" defer></script>
+  <script src="static/js/wsdc-select.js"></script>
+  <script>
+(function () {
+  const US = 'United States';
+  const DIV_FALLBACK = ['Newcomer', 'Novice', 'Intermediate', 'Advanced', 'All-Star', 'Champions'];
+
+  const state = {
+    data: null,
+    yearFrom: 2018,
+    yearTo: 2026,
+    continent: 'All',
+    country: 'All',
+    state: 'All',
+    metric: 'count', // count | share
+    view: 'divisions', // divisions | tiers
+    focusDiv: null,
+    tipEl: null,
+    tipPinned: false,
+    modalReturnFocus: null,
+    cellIndex: {},
+  };
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function allDivisions() {
+    const def = state.data && state.data.divisions_default;
+    const opt = state.data && state.data.divisions_optional;
+    if (def && def.length) {
+      const list = [];
+      if (opt && opt.includes('Newcomer')) list.push('Newcomer');
+      def.forEach((d) => { if (!list.includes(d)) list.push(d); });
+      if (opt && opt.includes('Champions') && !list.includes('Champions')) list.push('Champions');
+      return list;
+    }
+    return DIV_FALLBACK.slice();
+  }
+
+  /** Keep current if valid; otherwise All. Used for continent always, country/state when preserving. */
+  function pickGeoValue(current, options, preserve) {
+    if (preserve && options.includes(current)) return current;
+    return 'All';
+  }
+
+  function filteredEditions() {
+    const d = state.data;
+    if (!d) return [];
+    return d.editions.filter((e) => {
+      if (e.year < state.yearFrom || e.year > state.yearTo) return false;
+      if (state.continent !== 'All' && e.continent !== state.continent) return false;
+      if (state.country !== 'All' && e.country !== state.country) return false;
+      if (state.country === US && state.state !== 'All' && e.state !== state.state) return false;
+      return true;
+    });
+  }
+
+  function groupByYear(rows) {
+    const map = new Map();
+    rows.forEach((e) => {
+      if (!map.has(e.year)) map.set(e.year, []);
+      map.get(e.year).push(e);
+    });
+    return [...map.entries()].sort((a, b) => a[0] - b[0]);
+  }
+
+  function divisionPresent(ed, div) {
+    return !!(ed.tiers && ed.tiers[div]);
+  }
+
+  function tierValue(ed, div, role) {
+    const block = ed.tiers && ed.tiers[div];
+    if (!block) return null;
+    const v = block[role];
+    return v == null ? null : Number(v);
+  }
+
+  function tiersPresentInRange(rows, div, role) {
+    const set = new Set();
+    rows.forEach((ed) => {
+      const v = tierValue(ed, div, role);
+      if (v != null) set.add(v);
+    });
+    return [...set].sort((a, b) => a - b);
+  }
+
+  function colorFor(value, max, empty, family) {
+    // TID table hues (Leader #6366F1, Follower #F43F5E), soft pastels only — never dark.
+    const palettes = {
+      // Overview (divisions): cool slate that sits with TID indigo/rose
+      neutral: { c0: [248, 250, 252], c1: [203, 213, 225], c2: [148, 163, 184] },
+      leader: { c0: [241, 242, 254], c1: [199, 201, 248], c2: [165, 167, 242] },
+      follower: { c0: [255, 244, 246], c1: [253, 198, 208], c2: [250, 168, 180] },
+    };
+    const pal = palettes[family] || palettes.neutral;
+    if (empty || value == null || !Number.isFinite(value)) {
+      return { css: `rgb(${pal.c0.join(',')})`, r: pal.c0[0], g: pal.c0[1], b: pal.c0[2] };
+    }
+    if (!max || max <= 0) {
+      return { css: `rgb(${pal.c0.join(',')})`, r: pal.c0[0], g: pal.c0[1], b: pal.c0[2] };
+    }
+    const t = Math.max(0, Math.min(1, value / max));
+    const mid = 0.55;
+    let a, b, u;
+    if (t < mid) {
+      a = pal.c0; b = pal.c1; u = t / mid;
+    } else {
+      a = pal.c1; b = pal.c2; u = (t - mid) / (1 - mid);
+    }
+    const r = Math.round(a[0] + (b[0] - a[0]) * u);
+    const g = Math.round(a[1] + (b[1] - a[1]) * u);
+    const bl = Math.round(a[2] + (b[2] - a[2]) * u);
+    return { css: `rgb(${r},${g},${bl})`, r, g, b: bl };
+  }
+
+  function isDarkBg(rgb) {
+    if (!rgb) return false;
+    const L = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
+    return L < 160;
+  }
+
+  function colorFamilyForCol(col) {
+    if (col.type === 'tier' && col.role === 'Leader') return 'leader';
+    if (col.type === 'tier' && col.role === 'Follower') return 'follower';
+    return 'neutral';
+  }
+
+  function fmtShare(n, den) {
+    if (!den) return null;
+    return Math.round((1000 * n) / den) / 10;
+  }
+
+  function fmtCell(metric, count, share) {
+    if (metric === 'share') {
+      if (share == null) return { text: '—', kind: 'dash', colorVal: null };
+      if (count === 0) return { text: '', kind: 'empty', colorVal: 0 };
+      return { text: `${share}%`, kind: 'val', colorVal: share };
+    }
+    if (count === 0) return { text: '', kind: 'empty', colorVal: 0 };
+    return { text: String(count), kind: 'val', colorVal: count };
+  }
+
+  function placeLabel(e) {
+    if (!e.city && !e.country) return '—';
+    if (e.country === US && e.state_abbr) {
+      return `${e.city || '—'}, ${e.state_abbr}, ${e.country}`;
+    }
+    if (e.city && e.country) return `${e.city}, ${e.country}`;
+    return e.country || e.city || '—';
+  }
+
+  function dateLabel(e) {
+    if (e.start && e.end) return `${e.start} – ${e.end}`;
+    if (e.start) return e.start;
+    if (e.year && e.month) return `${e.year}-${String(e.month).padStart(2, '0')}`;
+    return String(e.year || '—');
+  }
+
+  function fillSelect(el, options, value) {
+    el.innerHTML = options.map((o) => {
+      const v = typeof o === 'object' ? o.value : o;
+      const t = typeof o === 'object' ? o.text : o;
+      return `<option value="${esc(v)}">${esc(t)}</option>`;
+    }).join('');
+    el.value = value;
+    if (window.WsdcSelect) WsdcSelect.refresh(el);
+  }
+
+  function countByField(editions, field) {
+    const counts = new Map();
+    (editions || []).forEach((e) => {
+      const key = e[field];
+      if (!key) return;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    return counts;
+  }
+
+  /** Desc by event count, then A→Z — same idea as Events Calendar, without showing numbers. */
+  function sortKeysByCountDesc(keys, counts) {
+    return [...keys].sort((a, b) => {
+      const ca = counts.get(a) || 0;
+      const cb = counts.get(b) || 0;
+      if (cb !== ca) return cb - ca;
+      return String(a).localeCompare(String(b));
+    });
+  }
+
+  function editionsInYearRange() {
+    const d = state.data;
+    if (!d) return [];
+    return d.editions.filter((e) => e.year >= state.yearFrom && e.year <= state.yearTo);
+  }
+
+  function syncGeoOptions(preserveDownstream) {
+    const d = state.data;
+    if (!d) return;
+    const yearPool = editionsInYearRange();
+
+    const contCounts = countByField(yearPool, 'continent');
+    const continentKeys = sortKeysByCountDesc([...contCounts.keys()], contCounts);
+    const continents = ['All', ...continentKeys];
+    // Continent must survive rebuilds (e.g. after continent change refreshes countries).
+    const contVal = continents.includes(state.continent) ? state.continent : 'All';
+    state.continent = contVal;
+    fillSelect(
+      document.getElementById('continentSelect'),
+      continents.map((c) => ({ value: c, text: c === 'All' ? 'All continents' : c })),
+      contVal
+    );
+
+    const countryPool = yearPool.filter((e) =>
+      state.continent === 'All' || e.continent === state.continent
+    );
+    const countryCounts = countByField(countryPool, 'country');
+    const countryKeys = sortKeysByCountDesc([...countryCounts.keys()], countryCounts);
+    const countryList = ['All', ...countryKeys];
+    const countryVal = pickGeoValue(state.country, countryList, !!preserveDownstream);
+    state.country = countryVal;
+    fillSelect(
+      document.getElementById('countrySelect'),
+      countryList.map((c) => ({ value: c, text: c === 'All' ? 'All countries' : c })),
+      countryVal
+    );
+
+    const stateField = document.getElementById('stateField');
+    const showState = state.country === US;
+    stateField.classList.toggle('is-hidden', !showState);
+    if (!showState) {
+      state.state = 'All';
+      syncFilterStateShift();
+      return;
+    }
+    const statePool = countryPool.filter((e) => e.country === US);
+    const stateCounts = countByField(statePool, 'state');
+    const stateKeys = sortKeysByCountDesc([...stateCounts.keys()], stateCounts);
+    const stateList = ['All', ...stateKeys];
+    const stateVal = pickGeoValue(state.state, stateList, !!preserveDownstream);
+    state.state = stateVal;
+    fillSelect(
+      document.getElementById('stateSelect'),
+      stateList.map((s) => ({ value: s, text: s === 'All' ? 'All states' : s })),
+      stateVal
+    );
+    syncFilterStateShift();
+  }
+
+  /** Keep Metric↔legend fixed: when State appears, cancel the rightward half of centered growth. */
+  function syncFilterStateShift() {
+    const filters = document.querySelector('.ety-filters');
+    const stateField = document.getElementById('stateField');
+    if (!filters || !stateField) return;
+    const visible = !stateField.classList.contains('is-hidden');
+    if (!visible) {
+      filters.style.transform = '';
+      return;
+    }
+    requestAnimationFrame(() => {
+      if (stateField.classList.contains('is-hidden')) {
+        filters.style.transform = '';
+        return;
+      }
+      const gapX = parseFloat(getComputedStyle(filters).columnGap) || 18;
+      const w = stateField.getBoundingClientRect().width;
+      if (!w) {
+        filters.style.transform = '';
+        return;
+      }
+      filters.style.transform = `translateX(-${(w + gapX) / 2}px)`;
+    });
+  }
+
+  function syncYearOptions() {
+    const d = state.data;
+    const years = [];
+    for (let y = d.year_floor; y <= d.year_max; y += 1) years.push(y);
+    state.yearFrom = d.year_floor;
+    state.yearTo = d.year_max;
+    fillSelect(document.getElementById('yearFromSelect'), years, state.yearFrom);
+    fillSelect(document.getElementById('yearToSelect'), years, state.yearTo);
+  }
+
+  function buildDivisionColumns() {
+    return allDivisions().map((div) => ({
+      type: 'div',
+      div,
+      key: `div|${div}`,
+      label: div,
+    }));
+  }
+
+  function buildTierColumns(rows, div) {
+    const cols = [];
+    ['Leader', 'Follower'].forEach((role) => {
+      const tiers = tiersPresentInRange(rows, div, role);
+      tiers.forEach((tier) => {
+        cols.push({
+          type: 'tier',
+          div,
+          role,
+          tier,
+          key: `tier|${div}|${role}|${tier}`,
+          label: `Tier ${tier}`,
+        });
+      });
+    });
+    return cols;
+  }
+
+  function computeMatrix(rows, cols, totalDiv) {
+    const byYear = groupByYear(rows);
+    const years = [];
+    const cells = {};
+    const yearTotals = {};
+
+    byYear.forEach(([year, list]) => {
+      years.push(year);
+      const nAll = list.length;
+      // Overview: all filtered events that year. Tiers: only events that ran this division.
+      const totalEvents = totalDiv
+        ? list.filter((e) => divisionPresent(e, totalDiv))
+        : list;
+      yearTotals[year] = {
+        count: totalEvents.length,
+        share: null,
+        den: totalEvents.length,
+        events: totalEvents,
+      };
+      cols.forEach((col) => {
+        let matched;
+        let den;
+        if (col.type === 'div') {
+          matched = list.filter((e) => divisionPresent(e, col.div));
+          den = nAll;
+        } else {
+          matched = list.filter((e) => tierValue(e, col.div, col.role) === col.tier);
+          den = list.filter((e) => tierValue(e, col.div, col.role) != null).length;
+        }
+        const count = matched.length;
+        const share = fmtShare(count, den);
+        cells[`${year}|${col.key}`] = {
+          count,
+          share,
+          den,
+          events: matched,
+        };
+      });
+    });
+
+    // Color scale within each year (row): which cells stand out that year.
+    const rowMax = {};
+    years.forEach((year) => {
+      let max = 0;
+      cols.forEach((col) => {
+        const cell = cells[`${year}|${col.key}`];
+        const v = state.metric === 'share' ? cell.share : cell.count;
+        if (v != null && v > max) max = v;
+      });
+      rowMax[year] = max;
+    });
+
+    return { years, cols, cells, rowMax, yearTotals };
+  }
+
+  function renderTotalEventsCell(year, total, div) {
+    const count = total ? total.count : 0;
+    const label = div ? `${div} · # Events` : '# Events';
+    const aria = div ? `${div} events ${year}` : `Events ${year}`;
+    return `<td class="hm-total">` +
+      `<button type="button" class="hm-total__btn"` +
+      ` data-year="${year}" data-key="total"` +
+      ` data-count="${count}" data-share="" data-den="${count}"` +
+      ` data-label="${esc(label)}" data-share-of="events that year"` +
+      ` aria-label="${esc(aria)}">${count}</button></td>`;
+  }
+
+  function indexCellsWithTotals(cells, yearTotals) {
+    const out = Object.assign({}, cells);
+    Object.keys(yearTotals || {}).forEach((year) => {
+      out[`${year}|total`] = yearTotals[year];
+    });
+    return out;
+  }
+
+  function renderCellButton(year, col, cell, rowMax) {
+    const packed = fmtCell(state.metric, cell.count, cell.share);
+    const family = colorFamilyForCol(col);
+    const bg = colorFor(packed.colorVal, rowMax[year], packed.kind === 'dash', family);
+    const dark = isDarkBg(bg);
+    const titleBits = col.type === 'div'
+      ? `${col.div}`
+      : `${col.div} · ${col.role} · Tier ${col.tier}`;
+    const shareOf = col.type === 'div'
+      ? 'events that year'
+      : `events with ${col.div} ${col.role}s`;
+    return `<td>` +
+      `<button type="button" class="hm-cell ${packed.kind === 'empty' ? 'is-empty' : ''} ${packed.kind === 'dash' ? 'is-dash' : ''} ${dark ? 'is-dark' : ''}"` +
+      ` style="background:${bg.css}"` +
+      ` data-year="${year}" data-key="${esc(col.key)}"` +
+      ` data-count="${cell.count}" data-share="${cell.share == null ? '' : cell.share}" data-den="${cell.den}"` +
+      ` data-label="${esc(titleBits)}" data-share-of="${esc(shareOf)}"` +
+      ` aria-label="${esc(titleBits)} ${year}">` +
+      `<span class="hm-cell__val">${esc(packed.text)}</span>` +
+      `</button></td>`;
+  }
+
+  function renderDivisionsTable(years, cols, cells, rowMax, yearTotals) {
+    let head = '<thead><tr><th class="hm-year">Year</th>';
+    head += '<th class="hm-total"># Events</th>';
+    cols.forEach((col) => {
+      head += `<th class="hm-div" data-col="${esc(col.key)}">` +
+        `<button type="button" class="hm-expand" data-open-div="${esc(col.div)}" aria-label="Open ${esc(col.div)} tiers">▸</button>` +
+        `<button type="button" class="hm-div-link" data-open-div="${esc(col.div)}">${esc(col.label)}</button>` +
+        `</th>`;
+    });
+    head += '</tr></thead>';
+
+    let body = '<tbody>';
+    years.forEach((year) => {
+      body += `<tr><td class="hm-year">${year}</td>`;
+      body += renderTotalEventsCell(year, yearTotals && yearTotals[year], null);
+      cols.forEach((col) => {
+        body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
+      });
+      body += '</tr>';
+    });
+    body += '</tbody>';
+    return `<table class="hm" id="hmTable" aria-label="Event divisions by year">${head}${body}</table>`;
+  }
+
+  function renderTiersTable(years, cols, cells, rowMax, yearTotals, div) {
+    const leaderCols = cols.filter((c) => c.role === 'Leader');
+    const followerCols = cols.filter((c) => c.role === 'Follower');
+    let head = '<thead>';
+    head += '<tr><th class="hm-year" rowspan="2">Year</th>';
+    head += '<th class="hm-total" rowspan="2"># Events</th>';
+    if (leaderCols.length) {
+      head += `<th class="hm-role-leader" colspan="${leaderCols.length}">Leader</th>`;
+    }
+    if (followerCols.length) {
+      head += `<th class="hm-role-follower" colspan="${followerCols.length}">Follower</th>`;
+    }
+    head += '</tr><tr>';
+    leaderCols.forEach((col) => {
+      head += `<th class="hm-tier-leader" data-col="${esc(col.key)}">${esc(col.label)}</th>`;
+    });
+    followerCols.forEach((col) => {
+      head += `<th class="hm-tier-follower" data-col="${esc(col.key)}">${esc(col.label)}</th>`;
+    });
+    head += '</tr></thead>';
+
+    const ordered = leaderCols.concat(followerCols);
+    let body = '<tbody>';
+    years.forEach((year) => {
+      body += `<tr><td class="hm-year">${year}</td>`;
+      body += renderTotalEventsCell(year, yearTotals && yearTotals[year], div);
+      ordered.forEach((col) => {
+        body += renderCellButton(year, col, cells[`${year}|${col.key}`], rowMax);
+      });
+      body += '</tr>';
+    });
+    body += '</tbody>';
+    return `<table class="hm" id="hmTable" aria-label="${esc(div)} tiers by year">${head}${body}</table>`;
+  }
+
+  function syncToolbar() {
+    const back = document.getElementById('backToDivisionsBtn');
+    const title = document.getElementById('hmToolbarTitle');
+    const divField = document.getElementById('hmToolbarDivField');
+    const divSelect = document.getElementById('focusDivSelect');
+    const note = document.getElementById('hmToolbarNote');
+    const swatches = document.getElementById('roleSwatches');
+    const scale = document.getElementById('legendScale');
+    const legendTip = document.getElementById('legendTip');
+    if (state.view === 'tiers' && state.focusDiv) {
+      back.hidden = false;
+      title.hidden = true;
+      divField.hidden = false;
+      const divs = allDivisions();
+      const prev = Array.from(divSelect.options).map((o) => o.value);
+      const needRebuild = prev.length !== divs.length || divs.some((d, i) => prev[i] !== d);
+      if (needRebuild) {
+        divSelect.innerHTML = divs.map((d) =>
+          `<option value="${esc(d)}">${esc(d)}</option>`
+        ).join('');
+      }
+      divSelect.value = state.focusDiv;
+      if (window.WsdcSelect) WsdcSelect.refresh(divSelect);
+      note.hidden = true;
+      note.textContent = '';
+      if (scale) scale.hidden = true;
+      if (swatches) swatches.hidden = false;
+      if (legendTip) {
+        legendTip.setAttribute('data-tip', legendTip.getAttribute('data-tip-tiers') || '');
+      }
+    } else {
+      back.hidden = true;
+      title.hidden = false;
+      title.textContent = 'Divisions';
+      divField.hidden = true;
+      note.hidden = false;
+      note.textContent = 'Click a division to see its tiers for Leaders and Followers';
+      if (scale) scale.hidden = false;
+      if (swatches) swatches.hidden = true;
+      if (legendTip) {
+        legendTip.setAttribute('data-tip', legendTip.getAttribute('data-tip-divisions') || '');
+      }
+    }
+  }
+
+  function openDivision(div) {
+    state.view = 'tiers';
+    state.focusDiv = div;
+    renderHeatmap();
+  }
+
+  function backToDivisions() {
+    state.view = 'divisions';
+    state.focusDiv = null;
+    renderHeatmap();
+  }
+
+  function renderHeatmap() {
+    const rows = filteredEditions();
+    const tableHost = document.getElementById('hmWrap');
+    const empty = document.getElementById('hmEmpty');
+    syncToolbar();
+
+    if (!rows.length) {
+      tableHost.innerHTML = '<table class="hm" id="hmTable" aria-label="Event tiers heatmap"></table>';
+      empty.classList.add('show');
+      state.cellIndex = {};
+      return;
+    }
+    empty.classList.remove('show');
+
+    if (state.view === 'tiers' && state.focusDiv) {
+      const cols = buildTierColumns(rows, state.focusDiv);
+      if (!cols.length) {
+        tableHost.innerHTML = `<p class="modal-empty" style="padding:24px">No ${esc(state.focusDiv)} events match these filters.</p>`;
+        state.cellIndex = {};
+        return;
+      }
+      const mat = computeMatrix(rows, cols, state.focusDiv);
+      tableHost.innerHTML = renderTiersTable(
+        mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals, state.focusDiv
+      );
+      state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
+      return;
+    }
+
+    const cols = buildDivisionColumns();
+    const mat = computeMatrix(rows, cols);
+    tableHost.innerHTML = renderDivisionsTable(
+      mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals
+    );
+    state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
+  }
+
+  function showCellTip(btn, clientX, clientY) {
+    const tip = document.getElementById('cellTip');
+    const count = Number(btn.getAttribute('data-count'));
+    const shareRaw = btn.getAttribute('data-share');
+    const den = Number(btn.getAttribute('data-den'));
+    const label = btn.getAttribute('data-label');
+    const year = btn.getAttribute('data-year');
+    const share = shareRaw === '' ? null : Number(shareRaw);
+    const shareOf = btn.getAttribute('data-share-of') || 'events';
+    const isTotal = btn.getAttribute('data-key') === 'total';
+    let html = `<strong>${esc(label)} · ${esc(year)}</strong>`;
+    html += `<div>Events: <b>${count}</b></div>`;
+    if (!isTotal) {
+      if (share == null) html += `<div class="muted">Share: — no ${esc(shareOf)}</div>`;
+      else html += `<div>Share: <b>${share}%</b> <span class="muted">of ${den} ${esc(shareOf)}</span></div>`;
+    }
+    html += `<div class="muted" style="margin-top:4px">Click to see the events</div>`;
+    tip.innerHTML = html;
+    tip.classList.add('is-open');
+    const pad = 12;
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    let left = clientX + 14;
+    let top = clientY + 14;
+    if (left + tw > window.innerWidth - pad) left = clientX - tw - 10;
+    if (top + th > window.innerHeight - pad) top = clientY - th - 10;
+    tip.style.left = `${Math.max(pad, left)}px`;
+    tip.style.top = `${Math.max(pad, top)}px`;
+  }
+
+  function hideCellTip() {
+    document.getElementById('cellTip').classList.remove('is-open');
+  }
+
+  function parseCellKey(key) {
+    const parts = String(key || '').split('|');
+    if (parts[0] === 'total') {
+      return { type: 'total' };
+    }
+    if (parts[0] === 'tier' && parts.length >= 4) {
+      return { type: 'tier', div: parts[1], role: parts[2], tier: Number(parts[3]) };
+    }
+    if (parts[0] === 'div' && parts.length >= 2) {
+      return { type: 'div', div: parts[1] };
+    }
+    return null;
+  }
+
+  function competitorPills(ed, ctx) {
+    const counts = ed && ed.counts;
+    if (!counts || !ctx) return [];
+    if (ctx.type === 'tier' && ctx.div && ctx.role) {
+      const n = counts[ctx.div] && counts[ctx.div][ctx.role];
+      if (n == null) return [];
+      const abbr = ctx.role === 'Leader' ? 'L' : 'F';
+      const tone = ctx.role === 'Leader' ? 'leader' : 'follower';
+      return [{ text: `${n}${abbr}`, tone, label: `${n} ${ctx.role}${n === 1 ? '' : 's'}` }];
+    }
+    if (ctx.type === 'div' && ctx.div) {
+      const c = counts[ctx.div];
+      if (!c) return [];
+      const out = [];
+      if (c.Leader != null) {
+        out.push({ text: `${c.Leader}L`, tone: 'leader', label: `${c.Leader} Leaders` });
+      }
+      if (c.Follower != null) {
+        out.push({ text: `${c.Follower}F`, tone: 'follower', label: `${c.Follower} Followers` });
+      }
+      return out;
+    }
+    return [];
+  }
+
+  function openEventModal(year, key, label, returnFocus) {
+    state.modalReturnFocus = returnFocus || document.activeElement;
+    const cell = state.cellIndex && state.cellIndex[`${year}|${key}`];
+    const ctx = parseCellKey(key);
+    const events = (cell && cell.events ? cell.events.slice() : []).sort((a, b) => {
+      const as = a.start || `${a.year}-${String(a.month || 0).padStart(2, '0')}`;
+      const bs = b.start || `${b.year}-${String(b.month || 0).padStart(2, '0')}`;
+      return as.localeCompare(bs) || a.name.localeCompare(b.name);
+    });
+    const modal = document.getElementById('eventModal');
+    document.getElementById('eventModalTitle').textContent = `${label} · ${year}`;
+    const n = cell ? cell.count : events.length;
+    const shareOf = ctx && ctx.type === 'tier'
+      ? `events with ${ctx.div} ${ctx.role}s`
+      : 'events that year';
+    const metricNote = `${n} event${n === 1 ? '' : 's'}` +
+      (state.metric === 'share' && ctx && ctx.type !== 'total' && cell && cell.share != null
+        ? ` · ${cell.share}% of ${cell.den} ${shareOf}`
+        : '');
+    document.getElementById('eventModalSub').textContent = metricNote;
+    const body = document.getElementById('eventModalBody');
+    if (!events.length) {
+      body.innerHTML = '<p class="modal-empty">No events in this cell.</p>';
+    } else {
+      body.innerHTML = '<div class="event-grid">' + events.map((e) => {
+        const pills = competitorPills(e, ctx);
+        const pillsHtml = pills.length
+          ? `<div class="event-card__pills">` +
+            pills.map((p) =>
+              `<span class="event-card__pill event-card__pill--${p.tone}" title="${esc(p.label)}">${esc(p.text)}</span>`
+            ).join('') +
+            `</div>`
+          : '';
+        return (
+          `<article class="event-card">` +
+            pillsHtml +
+            `<div class="event-card__name">${esc(e.name)}</div>` +
+            `<div class="event-card__meta">${esc(placeLabel(e))}</div>` +
+            `<div class="event-card__meta">${esc(dateLabel(e))}</div>` +
+          `</article>`
+        );
+      }).join('') + '</div>';
+    }
+    modal.hidden = false;
+    modal.classList.add('is-open');
+    document.getElementById('eventModalClose').focus();
+  }
+
+  function closeEventModal() {
+    const modal = document.getElementById('eventModal');
+    modal.classList.remove('is-open');
+    modal.hidden = true;
+    const back = state.modalReturnFocus;
+    state.modalReturnFocus = null;
+    if (back && typeof back.focus === 'function') {
+      try { back.focus(); } catch (_) { /* ignore */ }
+    }
+  }
+
+  function dismissInfoPops() {
+    document.querySelectorAll('.ety-pop').forEach((p) => p.remove());
+  }
+
+  function openMethod() {
+    const layer = document.getElementById('methodLayer');
+    const island = document.getElementById('methodIsland');
+    const btn = document.getElementById('methodInfoBtn');
+    layer.hidden = false;
+    layer.classList.add('is-open');
+    layer.setAttribute('aria-hidden', 'false');
+    btn.setAttribute('aria-expanded', 'true');
+    island.style.left = '24px';
+    island.style.top = '72px';
+    document.getElementById('methodIslandClose').focus();
+  }
+
+  function closeMethod() {
+    const layer = document.getElementById('methodLayer');
+    const btn = document.getElementById('methodInfoBtn');
+    layer.classList.remove('is-open');
+    layer.hidden = true;
+    layer.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.focus();
+  }
+
+  function setMetric(metric) {
+    state.metric = metric;
+    document.getElementById('metricCountBtn').classList.toggle('is-active', metric === 'count');
+    document.getElementById('metricShareBtn').classList.toggle('is-active', metric === 'share');
+    document.getElementById('metricCountBtn').setAttribute('aria-pressed', String(metric === 'count'));
+    document.getElementById('metricShareBtn').setAttribute('aria-pressed', String(metric === 'share'));
+    renderHeatmap();
+  }
+
+  function wire() {
+    document.getElementById('yearFromSelect').addEventListener('change', (e) => {
+      state.yearFrom = Number(e.target.value);
+      if (state.yearFrom > state.yearTo) {
+        state.yearTo = state.yearFrom;
+        document.getElementById('yearToSelect').value = String(state.yearTo);
+        if (window.WsdcSelect) WsdcSelect.refresh(document.getElementById('yearToSelect'));
+      }
+      syncGeoOptions(true);
+      renderHeatmap();
+    });
+    document.getElementById('yearToSelect').addEventListener('change', (e) => {
+      state.yearTo = Number(e.target.value);
+      if (state.yearTo < state.yearFrom) {
+        state.yearFrom = state.yearTo;
+        document.getElementById('yearFromSelect').value = String(state.yearFrom);
+        if (window.WsdcSelect) WsdcSelect.refresh(document.getElementById('yearFromSelect'));
+      }
+      syncGeoOptions(true);
+      renderHeatmap();
+    });
+    document.getElementById('continentSelect').addEventListener('change', (e) => {
+      state.continent = e.target.value;
+      state.country = 'All';
+      state.state = 'All';
+      syncGeoOptions(false);
+      renderHeatmap();
+    });
+    document.getElementById('countrySelect').addEventListener('change', (e) => {
+      state.country = e.target.value;
+      state.state = 'All';
+      syncGeoOptions(true);
+      renderHeatmap();
+    });
+    document.getElementById('stateSelect').addEventListener('change', (e) => {
+      state.state = e.target.value;
+      renderHeatmap();
+    });
+    document.getElementById('metricCountBtn').addEventListener('click', () => setMetric('count'));
+    document.getElementById('metricShareBtn').addEventListener('click', () => setMetric('share'));
+    document.getElementById('backToDivisionsBtn').addEventListener('click', backToDivisions);
+    document.getElementById('focusDivSelect').addEventListener('change', (e) => {
+      const div = e.target.value;
+      if (div && div !== state.focusDiv) openDivision(div);
+    });
+
+    const stack = document.getElementById('hmStack');
+    stack.addEventListener('click', (e) => {
+      const openDiv = e.target.closest('[data-open-div]');
+      if (openDiv) {
+        openDivision(openDiv.getAttribute('data-open-div'));
+        return;
+      }
+      const cell = e.target.closest('.hm-cell, .hm-total__btn');
+      if (!cell) return;
+      openEventModal(
+        cell.getAttribute('data-year'),
+        cell.getAttribute('data-key'),
+        cell.getAttribute('data-label'),
+        cell
+      );
+    });
+    stack.addEventListener('mousemove', (e) => {
+      const cell = e.target.closest('.hm-cell');
+      if (!cell) { hideCellTip(); return; }
+      showCellTip(cell, e.clientX, e.clientY);
+    });
+    stack.addEventListener('mouseleave', hideCellTip);
+
+    document.getElementById('eventModalClose').addEventListener('click', closeEventModal);
+    document.getElementById('eventModalBackdrop').addEventListener('click', closeEventModal);
+    document.getElementById('methodInfoBtn').addEventListener('click', () => {
+      const layer = document.getElementById('methodLayer');
+      if (layer.classList.contains('is-open')) closeMethod();
+      else openMethod();
+    });
+    document.getElementById('methodIslandClose').addEventListener('click', closeMethod);
+    document.getElementById('methodLayerBackdrop').addEventListener('click', closeMethod);
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (document.querySelector('.ety-pop')) {
+        dismissInfoPops();
+        return;
+      }
+      if (document.getElementById('eventModal').classList.contains('is-open')) closeEventModal();
+      else if (document.getElementById('methodLayer').classList.contains('is-open')) closeMethod();
+    });
+
+    // info tips
+    document.querySelectorAll('.info-tip').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dismissInfoPops();
+        const pop = document.createElement('div');
+        pop.className = 'ety-pop is-open';
+        pop.textContent = btn.getAttribute('data-tip') || '';
+        document.body.appendChild(pop);
+        const r = btn.getBoundingClientRect();
+        pop.style.left = `${Math.min(window.innerWidth - 280, r.left)}px`;
+        pop.style.top = `${r.bottom + 8}px`;
+        const dismiss = () => {
+          pop.remove();
+          document.removeEventListener('click', dismiss);
+        };
+        setTimeout(() => document.addEventListener('click', dismiss), 0);
+      });
+    });
+  }
+
+  async function init() {
+    if (location.protocol === 'file:') {
+      throw new Error('open via local server (python3 -m http.server), not file://');
+    }
+    const res = await fetch("static/data/event_tiers_by_year.json?v=20261001-sync");
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    state.data = await res.json();
+    document.getElementById('dataUpdated').textContent =
+      `Updated ${state.data.generated_at || '—'}`;
+    syncYearOptions();
+    syncGeoOptions(false);
+    if (window.WsdcSelect) {
+      WsdcSelect.enhanceAll(document.querySelector('.ety-filters'));
+      WsdcSelect.enhanceAll(document.getElementById('hmToolbarDivField'));
+    }
+    wire();
+    renderHeatmap();
+  }
+
+  init().catch((err) => {
+    const msg = err && err.message ? String(err.message) : 'unknown error';
+    document.getElementById('hmEmpty').textContent = `Failed to load data (${msg})`;
+    document.getElementById('hmEmpty').classList.add('show');
+    console.error(err);
+  });
+})();
+  </script>
+</body>
+</html>

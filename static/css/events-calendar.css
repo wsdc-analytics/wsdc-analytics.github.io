@@ -1719,8 +1719,34 @@ h1 {
   fill: #e8ebf0;
 }
 
+.l2-spark__hit {
+  fill: transparent;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.l2-spark__hit:focus {
+  outline: none;
+}
+
+.l2-spark__hit:focus-visible {
+  stroke: #4f46e5;
+  stroke-width: 2;
+  stroke-opacity: 0.55;
+}
+
 .l2-spark__dot {
   fill: #4f46e5;
+  pointer-events: none;
+}
+
+.l2-spark__dot.is-active {
+  fill: #312e81;
+}
+
+.l2-spark__point.is-active .l2-spark__hit {
+  stroke: rgba(79, 70, 229, 0.28);
+  stroke-width: 2;
 }
 
 .l2-spark__axis {
@@ -2432,4 +2458,19 @@ h1 {
   .tooltip.is-visible {
     transform: none;
   }
+}
+
+
+.cal-stats__value.is-skeleton {
+  color: transparent;
+  background: linear-gradient(90deg, #e8edf2 25%, #f5f7fa 50%, #e8edf2 75%);
+  background-size: 200% 100%;
+  animation: cal-skel 1.2s ease-in-out infinite;
+  border-radius: 4px;
+  min-width: 1.5rem;
+  display: inline-block;
+}
+@keyframes cal-skel {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }

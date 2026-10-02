@@ -175,6 +175,33 @@ def validate_events_year_calendar() -> None:
             fail(f"events_year_calendar.events[{idx}] start_date must be YYYY-MM-DD")
         if not date_re.match(str(event.get("weekend_key") or "")):
             fail(f"events_year_calendar.events[{idx}] weekend_key must be YYYY-MM-DD")
+        end_date = event.get("end_date")
+        if end_date is not None and str(end_date).strip():
+            if not date_re.match(str(end_date)):
+                fail(
+                    f"events_year_calendar.events[{idx}] end_date must be YYYY-MM-DD, "
+                    f"got {end_date!r}"
+                )
+            if str(end_date) < str(event.get("start_date")):
+                fail(
+                    f"events_year_calendar.events[{idx}] end_date {end_date!r} "
+                    f"precedes start_date {event.get('start_date')!r}"
+                )
+    # Duplicate edition keys in the published calendar payload.
+    seen_keys: dict[tuple, int] = {}
+    for idx, event in enumerate(data["events"]):
+        key = (
+            event.get("event_id") or event.get("id"),
+            event.get("year"),
+            event.get("start_date"),
+        )
+        if key in seen_keys:
+            fail(
+                f"events_year_calendar duplicate event "
+                f"(event_id/year/start_date)={key!r} at indexes "
+                f"{seen_keys[key]} and {idx}"
+            )
+        seen_keys[key] = idx
     print("[OK] events_year_calendar.json")
 
 
@@ -245,6 +272,107 @@ def validate_homepage_kpis() -> None:
     print("[OK] homepage_kpis.json")
 
 
+def validate_event_tiers_by_year() -> None:
+    path = DATA_DIR / "event_tiers_by_year.json"
+    if not path.exists():
+        print("[SKIP] event_tiers_by_year.json (optional until first sync)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("event_tiers_by_year.json must be an object")
+    for field in (
+        "generated_at",
+        "data_through",
+        "year_floor",
+        "year_max",
+        "n_editions",
+        "editions",
+        "divisions_default",
+        "roles",
+    ):
+        if field not in data:
+            fail(f"event_tiers_by_year.json missing field: {field}")
+    editions = data["editions"]
+    if not isinstance(editions, list) or not editions:
+        fail("event_tiers_by_year.json.editions must be a non-empty list")
+    if data["n_editions"] != len(editions):
+        fail("event_tiers_by_year.json.n_editions must equal len(editions)")
+    sample = editions[0]
+    if not isinstance(sample, dict):
+        fail("event_tiers_by_year.json.editions[0] must be an object")
+    for field in ("event_id", "name", "year", "tiers"):
+        if field not in sample:
+            fail(f"event_tiers_by_year.json.editions[0] missing: {field}")
+    if not isinstance(sample["tiers"], dict) or not sample["tiers"]:
+        fail("event_tiers_by_year.json.editions[0].tiers must be a non-empty object")
+    print(
+        f"[OK] event_tiers_by_year.json ({len(editions)} editions, "
+        f"years {data.get('year_floor')}–{data.get('year_max')}, "
+        f"generated_at={data.get('generated_at')})"
+    )
+
+
+def validate_time_in_division_spells() -> None:
+    shard_index = DATA_DIR / "time_in_division" / "index.json"
+    if shard_index.exists():
+        index = load_json(shard_index)
+        if not isinstance(index, dict):
+            fail("time_in_division/index.json must be an object")
+        shards = index.get("shards")
+        if not isinstance(shards, list) or not shards:
+            fail("time_in_division/index.json.shards must be a non-empty list")
+        for div in shards:
+            safe = str(div).lower().replace(" ", "_").replace("/", "_")
+            shard_path = DATA_DIR / "time_in_division" / f"{safe}.json"
+            shard = load_json(shard_path)
+            if not isinstance(shard, dict) or "spells" not in shard:
+                fail(f"{shard_path.name} must contain spells")
+        print(f"[OK] time_in_division shards ({len(shards)} divisions)")
+        return
+
+    path = DATA_DIR / "time_in_division_spells.json"
+    if not path.exists():
+        print("[SKIP] time_in_division_spells.json (optional until first sync)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("time_in_division_spells.json must be an object")
+    for field in ("data_as_of", "generated_at", "data_through", "spells", "n_spells", "divisions", "transitions", "qualify"):
+        if field not in data:
+            fail(f"time_in_division_spells.json missing field: {field}")
+    spells = data["spells"]
+    if not isinstance(spells, list) or not spells:
+        fail("time_in_division_spells.json.spells must be a non-empty list")
+    n = data["n_spells"]
+    if not isinstance(n, int) or n != len(spells):
+        fail("time_in_division_spells.json.n_spells must equal len(spells)")
+    transitions = data["transitions"]
+    if not isinstance(transitions, list):
+        fail("time_in_division_spells.json.transitions must be a list")
+    if data.get("n_transitions") is not None and data["n_transitions"] != len(transitions):
+        fail("time_in_division_spells.json.n_transitions must equal len(transitions)")
+    qualify = data["qualify"]
+    if not isinstance(qualify, dict) or "advanced_allowed" not in qualify or "first_all_stars" not in qualify:
+        fail("time_in_division_spells.json.qualify needs advanced_allowed and first_all_stars")
+    sample = spells[0]
+    if not isinstance(sample, dict):
+        fail("time_in_division_spells.json.spells[0] must be an object")
+    for field in ("id", "name", "role", "division", "first_ym"):
+        if field not in sample:
+            fail(f"time_in_division_spells.json.spells[0] missing: {field}")
+    thr_keys = [k for k in ("allowed", "required") if k in sample]
+    if not thr_keys:
+        fail("time_in_division_spells.json.spells[0] needs allowed and/or required")
+    for key in thr_keys:
+        hit = sample[key]
+        if not isinstance(hit, dict) or "events" not in hit or "months" not in hit:
+            fail(f"time_in_division_spells.json.spells[0].{key} must include months and events")
+    print(
+        f"[OK] time_in_division_spells.json ({n} spells, {len(transitions)} transitions, "
+        f"generated_at={data.get('generated_at')}, data_through={data.get('data_through')})"
+    )
+
+
 def main() -> None:
     validate_articles()
     validate_points_summaries()
@@ -252,6 +380,8 @@ def main() -> None:
     validate_homepage_kpis()
     validate_events_year_calendar()
     validate_event_l2_cards()
+    validate_event_tiers_by_year()
+    validate_time_in_division_spells()
     print("[OK] Data validation passed.")
 
 if __name__ == "__main__":

@@ -7,7 +7,8 @@
  *   data-lang            ru | en | es
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
- *   data-home-href       brand logo link (default index.html) — return home
+ *   data-home-href       text-brand / back-link home (default index.html)
+ *                        Logo brand always links to https://www.worldsdc.com/
  *   data-path-prefix     prefix for dashboard / points / champions / calendar / qa hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
@@ -22,6 +23,8 @@
     { href: "rankings.html", label: "Dancer's Ranking" },
     { href: "dancer-profile.html", label: "Dancer Profile" },
     { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points" },
+    { href: "time_in_division_dashboard_en.html", label: "Time In Division" },
+    { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year" },
     { href: "city-clouds.html", label: "Cities Cloud" },
   ];
 
@@ -31,6 +34,8 @@
     if (/^(https?:|mailto:|\/)/i.test(href)) return href;
     return prefix + href;
   }
+
+  var WSDC_SITE_URL = "https://www.worldsdc.com/";
 
   var LABELS = {
     dashboards: { ru: "Дашборды", en: "Dashboards", es: "Paneles" },
@@ -42,6 +47,11 @@
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
     facebook: { ru: "Написать в Facebook", en: "Message on Facebook", es: "Escribir en Facebook" },
     home: { ru: "На главную", en: "Back to home", es: "Volver al inicio" },
+    wsdcSite: {
+      ru: "Сайт World Swing Dance Council",
+      en: "World Swing Dance Council website",
+      es: "Sitio del World Swing Dance Council",
+    },
     dashTip: {
       ru: "Информационные дашборды WSDC",
       en: "WSDC informational dashboards",
@@ -218,7 +228,6 @@
     var brandMode = root.getAttribute("data-brand") || "logo";
     var homeHref = root.getAttribute("data-home-href") || "index.html";
     var currentDash = root.getAttribute("data-current-dash") || currentPageName();
-    var onHome = active === "home" && (currentPageName() === "" || currentPageName() === "index.html");
 
     var wrapClass = "wsdc-chrome-wrap" + (fixed ? " is-fixed" : "");
     var dashActive = active === "dashboards" ? " is-active" : "";
@@ -226,6 +235,7 @@
     var championsActive = active === "champions" ? " is-active" : "";
     var calendarActive = active === "calendar" ? " is-active" : "";
     var homeLabel = LABELS.home[lang] || LABELS.home.en;
+    var wsdcLabel = LABELS.wsdcSite[lang] || LABELS.wsdcSite.en;
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
     var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
@@ -243,14 +253,12 @@
         '">WSDC</a>';
     } else {
       brandHtml =
-        '<a class="wsdc-chrome__brand' +
-        (onHome ? " is-current-home" : "") +
-        '" href="' +
-        esc(homeHref) +
-        '" id="logoLink" data-chrome-home aria-label="' +
-        esc(homeLabel) +
+        '<a class="wsdc-chrome__brand" href="' +
+        esc(WSDC_SITE_URL) +
+        '" id="logoLink" data-chrome-wsdc target="_blank" rel="noopener noreferrer" aria-label="' +
+        esc(wsdcLabel) +
         '" title="' +
-        esc(homeLabel) +
+        esc(wsdcLabel) +
         '"><span class="wsdc-chrome__brand-logo"><img src="https://www.worldsdc.com/wp-content/uploads/2019/10/WSDC_WHITE.gif" alt="WSDC" height="22" loading="eager"></span></a>';
     }
 
@@ -451,6 +459,12 @@
       el.setAttribute("aria-label", homeLabel);
       el.setAttribute("title", homeLabel);
     });
+    var wsdcLabel = LABELS.wsdcSite[lang] || LABELS.wsdcSite.en;
+    root.querySelectorAll("[data-chrome-wsdc]").forEach(function (el) {
+      el.setAttribute("href", WSDC_SITE_URL);
+      el.setAttribute("aria-label", wsdcLabel);
+      el.setAttribute("title", wsdcLabel);
+    });
 
     syncBackLinks(lang, root.getAttribute("data-home-href") || "index.html");
 
@@ -622,9 +636,55 @@
     onLangChange: existingOnLangChange,
   };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountAll);
-  } else {
+  function tableauPublicUrl(embed) {
+    var nameParam = embed.querySelector("param[name='name']");
+    if (nameParam && nameParam.value) {
+      return "https://public.tableau.com/views/" + nameParam.value.replace(/&#47;/g, "/");
+    }
+    var iframe = embed.querySelector("iframe") || embed;
+    return iframe.src || "https://public.tableau.com/";
+  }
+
+  function enhanceTableauShells() {
+    var embeds = document.querySelectorAll(
+      '.tableauPlaceholder, iframe[src*="public.tableau.com"]'
+    );
+    embeds.forEach(function (embed) {
+      if (embed.tagName === "IFRAME" && embed.closest(".tableauPlaceholder")) return;
+      var shell =
+        embed.closest(".wsdc-tableau-shell") ||
+        embed.closest(".viz-viewport") ||
+        (embed.tagName === "IFRAME" ? embed.parentElement : embed);
+      if (!shell || shell.querySelector(".wsdc-tableau-mobile-fallback")) return;
+      shell.classList.add("wsdc-tableau-shell");
+      var note = document.createElement("div");
+      note.className = "wsdc-tableau-mobile-fallback";
+      note.innerHTML =
+        "<strong>Best on a larger screen</strong>" +
+        '<p style="margin:.4rem 0 .75rem">This Tableau dashboard is hard to use on a phone. ' +
+        "Open it on desktop, or launch Tableau Public directly.</p>";
+      var linkP = document.createElement("p");
+      linkP.style.margin = "0";
+      var link = document.createElement("a");
+      link.href = tableauPublicUrl(embed);
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "Open in Tableau Public";
+      linkP.appendChild(link);
+      note.appendChild(linkP);
+      shell.style.position = shell.style.position || "relative";
+      shell.appendChild(note);
+    });
+  }
+
+  function onReady() {
     mountAll();
+    enhanceTableauShells();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", onReady);
+  } else {
+    onReady();
   }
 })();

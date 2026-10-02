@@ -1,6 +1,6 @@
 # Event portrait metrics summary
 
-Generated: 2026-08-15
+Generated: 2026-10-02
 
 Skill JJ = West Coast Swing + Newcomer/Novice/Intermediate/Advanced/All-Star/Champion, points > 0.
 Debut = first Skill JJ points by `event_year_and_month` at this event.
@@ -8,21 +8,21 @@ Debut = first Skill JJ points by `event_year_and_month` at this event.
 ## Best of the Best WCS (event_id=167, 003)
 
 - Location: Sydney, Australia (Australia)
-- Years: 2011–2025 (13 editions)
+- Years: 2011–2026 (14 editions)
 - year_gaps: [2020, 2021]
 
 ### KPIs (Skill JJ)
-- Unique dancers: **335**
-- Total points: **2032**
-- Wins: **102**
-- New dancers (first points here): **122** (36.4%)
+- Unique dancers: **366**
+- Total points: **2231**
+- Wins: **112**
+- New dancers (first points here): **129** (35.2%)
 - Peak dancers: 60 (2017)
 - Peak points: 200 (2017)
 
 ### Global ranks (all Skill JJ events)
-- Unique dancers: **#122** / 344
-- First points: **#83**
-- Total points: **#111**
+- Unique dancers: **#116** / 351
+- First points: **#78**
+- Total points: **#104**
 
 ### Regional ranks (oceania, n=18)
 - Unique dancers: **#2**
@@ -30,28 +30,28 @@ Debut = first Skill JJ points by `event_year_and_month` at this event.
 - Total points: **#2**
 
 ### Top5 by points
-- John-Paul Masson: 34 pts, 9 eds, 3 wins
+- John-Paul Masson: 35 pts, 10 eds, 3 wins
 - Bianca Davis: 33 pts, 4 eds, 3 wins
+- Craig Schubert: 33 pts, 12 eds, 2 wins
+- Emma Collyer: 32 pts, 10 eds, 4 wins
 - Zachary Skinner: 31 pts, 8 eds, 9 wins
-- Craig Schubert: 30 pts, 11 eds, 1 wins
-- Emma Collyer: 29 pts, 9 eds, 3 wins
 
 ### Top5 by wins
 - Zachary Skinner: 9 wins, 31 pts, 8 eds
+- Emma Collyer: 4 wins, 32 pts, 10 eds
 - Maddy Skinner: 4 wins, 21 pts, 7 eds
-- John-Paul Masson: 3 wins, 34 pts, 9 eds
+- John-Paul Masson: 3 wins, 35 pts, 10 eds
 - Bianca Davis: 3 wins, 33 pts, 4 eds
-- Emma Collyer: 3 wins, 29 pts, 9 eds
 
-### Launchpad: 122 starters → AS+ 7 (5.7%), Champ 0 (0.0%)
+### Launchpad: 129 starters → AS+ 7 (5.4%), Champ 0 (0.0%)
 Notable All-Star starters:
-- Larissa Thayane (debut 2014): 101 AS pts since 2009
+- Larissa Thayane (debut 2014): 113 AS pts since 2009
 - Ani Fuller (debut 2011): 46 AS pts since 2009
+- Craig Schubert (debut 2011): 10 AS pts since 2009
 - Elysia King (debut 2013): 9 AS pts since 2009
 - Kylie Davey (debut 2011): 7 AS pts since 2009
-- Craig Schubert (debut 2011): 7 AS pts since 2009
 
-### Retention: 1-edition 62.4%; 3+ editions 19.4%
+### Retention: 1-edition 63.4%; 3+ editions 19.9%
 - YoY return range: 17.9–47.5%
 - After gap (2019→2022): 7 of 35 (20.0%) — after multi-year gap 2020-2021; consecutive YoY N/A
 
@@ -69,10 +69,13 @@ Notable All-Star starters:
 - 2023: dancers=39, points=119, new=4
 - 2024: dancers=55, points=196, new=9
 - 2025: dancers=52, points=190, new=6
+- 2026: dancers=58, points=199, new=7
 
 ---
 
-## Asia West Coast Swing Open (event_id=218, 004)
+---
+
+## Asia West Coast Swing Open (event_id=218, 003)
 
 - Location: Singapore, Singapore (Singapore)
 - Years: 2013–2026 (11 editions)

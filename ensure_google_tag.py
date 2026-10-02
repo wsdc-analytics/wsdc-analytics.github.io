@@ -8,24 +8,18 @@ import os
 import re
 from pathlib import Path
 
-GOOGLE_TAG_CODE = '''<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
-<script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LMLCY5PE8Z');
-    </script>'''
+GOOGLE_TAG_CODE = '<script src="static/js/analytics.js" defer></script>'
 
 GOOGLE_TAG_ID = 'G-LMLCY5PE8Z'
+ANALYTICS_JS_MARKERS = ('static/js/analytics.js', '/static/js/analytics.js')
 
 def check_and_add_google_tag(file_path):
-    """Проверяет наличие Google Tag в файле и добавляет его, если отсутствует"""
+    """Проверяет наличие shared analytics.js и добавляет его, если отсутствует"""
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Проверяем наличие Google Tag
-    if GOOGLE_TAG_ID in content:
+    # Already wired via Consent Mode loader (or legacy inline ID)
+    if any(m in content for m in ANALYTICS_JS_MARKERS) or GOOGLE_TAG_ID in content:
         return False, "Уже есть Google Tag"
     
     # Проверяем, что это HTML файл со статьей (не index.html, который уже обработан)

@@ -14,6 +14,7 @@ Unlisted materials for the analytics committee: how to classify and track Board 
 |------|---------|
 | [CONCEPT.md](CONCEPT.md) | Taxonomy, workflow, migration, link to Gaps A–D |
 | [MATRIX.md](MATRIX.md) | Board source numbering + **quotes** + Depth (full/partial) + concrete C2 enabling |
+| [TIME_IN_DIVISION_C1_AUDIT.md](TIME_IN_DIVISION_C1_AUDIT.md) | Product match: live Time in Division vs C1 full (what’s closed, JT-2 sheet, blocked JT-1) |
 | [slides_en.html](slides_en.html) | Short board-facing deck (EN) |
 | [slides_ru.html](slides_ru.html) | Short board-facing deck (RU) |
 | [appendix_en.html](appendix_en.html) | Appendix by C1–C5: Board quote + comment/enabling (EN); C1 full→partial |

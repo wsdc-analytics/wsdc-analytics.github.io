@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Dashboard for secondary-role points distribution by year and country." />
-  <title>Secondary-Role Points Distribution | WSDC Analytics</title>
+  <meta name="description" content="Secondary Role Points: where secondary-role points concentrate by country, year, role and division." />
+  <title>Secondary Role Points | WSDC Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,11 +12,17 @@
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4" crossorigin="anonymous"></script>
+  <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="Secondary Role Points | WSDC Analytics">
+  <meta property="og:description" content="Where secondary-role points concentrate by country — and how strong that practice is in each slice.">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/secondary_role_distribution_dashboard_en.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
   <style>
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
+    html, body { height: 100%; overflow: hidden; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     .content {
       flex: 1;
@@ -26,62 +32,440 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      padding: var(--wsdc-space-3, 12px) var(--wsdc-space-4, 16px);
-      gap: var(--wsdc-space-2, 8px);
+      padding: var(--wsdc-space-3, 12px) var(--wsdc-space-4, 16px) 16px;
+      gap: 6px;
       overflow: hidden;
     }
-    .meta-row {
+    .page-head {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .page-head__title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      width: 100%;
+    }
+    .page-head h1 {
+      margin: 0;
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      letter-spacing: -0.02em;
+    }
+    .page-head__updated {
+      margin: 0 0 0 auto;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+    .page-head .subtitle {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      max-width: 62rem;
+    }
+    .page-head .subtitle-i { font-size: 0.85em; }
+    .srp-filter-stack {
+      display: grid;
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+      column-gap: 12px;
+      align-items: start;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 40;
+    }
+    .srp-filter-stack > .viz-filters-row__gutter {
+      grid-column: 1;
+      width: 9.5rem;
+    }
+    .viz-filters-row__gutter {
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
+    }
+    .srp-filter-main {
+      grid-column: 2;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-width: 0;
+    }
+    .srp-filters {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: var(--wsdc-space-2, 8px);
+      gap: 8px 10px;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      min-width: 0;
     }
-    .data-note {
+    .srp-filters .filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      align-items: stretch;
+    }
+    .srp-filters .filter-label {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.2;
+      padding: 0 2px;
+    }
+    .srp-filters .wsdc-select-host,
+    .srp-filters .wsdc-dd {
+      width: var(--wsdc-dd-width, 7.5rem);
+      min-width: 0;
+    }
+    .srp-filters .filter-field:has(#yearSel) { --wsdc-dd-width: 5rem; }
+    .srp-filters .filter-field:has(#groupSel) { --wsdc-dd-width: 7.25rem; }
+    .srp-filters .filter-field:has(#divisionSel) { --wsdc-dd-width: 9rem; }
+    .srp-filters .wsdc-dd--field { width: var(--wsdc-dd-width, 7.5rem); }
+    .srp-filters .wsdc-dd--field .wsdc-dd__btn {
+      height: 28px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: var(--wsdc-radius-pill, 999px);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: var(--wsdc-font-size-xs, 12px);
+      font-weight: var(--wsdc-font-weight-medium, 500);
+      justify-content: space-between;
+    }
+    .srp-filters .wsdc-dd--field .wsdc-dd__btn:hover,
+    .srp-filters .wsdc-dd--field.is-open .wsdc-dd__btn {
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-color: var(--wsdc-color-border, #d1d5db);
+    }
+    .filter-field--toggle {
+      justify-content: flex-end;
+      padding-bottom: 4px;
+    }
+    .filter-field--toggle .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .filter-field--toggle .toggle input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--wsdc-color-brand-accent, #2563eb);
+    }
+    .legend-row {
+      position: absolute;
+      right: 0;
+      bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 12px;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      pointer-events: none;
+      white-space: nowrap;
+      padding: 0;
+      min-height: 0;
+    }
+    .legend-row .legend-note {
+      font-size: 12px;
       color: var(--wsdc-color-text-muted, #4b5563);
     }
-    .viz-card {
-      border: 1px solid var(--wsdc-color-border, #d1d5db);
-      border-radius: var(--wsdc-radius-lg, 10px);
-      background: var(--wsdc-color-surface, #fff);
-      overflow: hidden;
+    .viz-stage {
       flex: 1;
       min-height: 0;
       display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: stretch;
+      border: 0;
+      background: transparent;
+      overflow: visible;
+      border-radius: 0;
+      position: relative;
     }
-    .viz-frame {
+    .kpis {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      flex: 0 0 9.5rem;
+      width: 9.5rem;
+      align-self: flex-start;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    .kpi {
+      position: relative;
       display: block;
       width: 100%;
-      height: 100%;
-      border: none;
-      background: var(--wsdc-color-surface, #fff);
-      align-items: stretch;
-      justify-content: stretch;
+      padding: 9px 10px 10px 12px;
+      border: 0;
+      border-top: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 0;
+      background: transparent;
+      text-align: left;
+      font: inherit;
+      color: inherit;
     }
-    @media (max-width: 900px) {
-      html, body {
-        height: auto;
-        min-height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-      }
-      .page {
-        height: auto;
-        min-height: 100dvh;
-        overflow: visible;
-      }
-      .content {
-        padding: 10px 10px 12px;
-        min-height: auto;
-        overflow: visible;
-        gap: 10px;
-      }
-      .viz-card {
-        flex: 0 0 auto;
-        min-height: clamp(540px, 72dvh, 760px);
-      }
-      .viz-frame {
-        min-height: clamp(540px, 72dvh, 760px);
-      }
+    .kpi:first-child { border-top: 0; }
+    .kpi__head {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 16px;
+    }
+    .kpi .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      line-height: 1.2;
+    }
+    .kpi .val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      margin-top: 1px;
+      line-height: 1.15;
+    }
+    .chart-box {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .chart-box canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .wsdc-info-btn, .info-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font: italic 600 11px/1 'DM Sans', var(--wsdc-font-sans), serif;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+    .info-tip { width: 14px; height: 14px; font-size: 9px; cursor: help; }
+    .wsdc-info-btn:hover, .info-tip:hover,
+    .wsdc-info-btn:focus-visible, .info-tip:focus-visible {
+      border-color: var(--wsdc-color-text-muted, #4b5563);
+      color: var(--wsdc-color-text-strong, #0b1221);
+      outline: none;
+    }
+    .chartjs-ext-tooltip {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      background: #fff;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+      padding: 8px 10px;
+      min-width: 180px;
+      /* Above .srp-filter-stack (z-index: 40) so USA title is never under filter pills. */
+      z-index: 50;
+      font-size: 12px;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .chartjs-ext-tooltip.is-pinned { pointer-events: auto; }
+    .chartjs-ext-tooltip .tt-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .chartjs-ext-tooltip .tt-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 0;
+    }
+    .chartjs-ext-tooltip .tt-label { color: var(--wsdc-color-text-muted, #4b5563); }
+    .chartjs-ext-tooltip .tt-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .chartjs-ext-tooltip .tt-action-row { margin-top: 8px; }
+    .chartjs-ext-tooltip .tt-action {
+      width: 100%;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-radius: 6px;
+      padding: 5px 8px;
+      font: 600 11px/1.2 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      cursor: pointer;
+    }
+    .dancer-drawer {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: min(320px, calc(100% - 20px));
+      max-height: calc(100% - 20px);
+      background: #fff;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+      /* Above pinned chart tooltip (z-index: 50). */
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .dancer-drawer[hidden] { display: none !important; }
+    .dancer-drawer__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+    }
+    .dancer-drawer__title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .dancer-drawer__close {
+      border: 0;
+      background: transparent;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .dancer-drawer__body {
+      overflow: auto;
+      padding: 8px 10px 10px;
+      font-size: 12px;
+    }
+    .dancer-table { width: 100%; border-collapse: collapse; }
+    .dancer-table th, .dancer-table td {
+      text-align: left;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+    }
+    .dancer-table th:last-child, .dancer-table td:last-child { text-align: right; }
+    .drawer-muted { color: var(--wsdc-color-text-muted, #4b5563); margin: 0; }
+    .method-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      pointer-events: none;
+    }
+    .method-layer.is-open {
+      display: block;
+      pointer-events: auto;
+    }
+    .method-layer__backdrop {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+    }
+    .method-island {
+      position: fixed;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      color: var(--wsdc-color-text, #1f2937);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+    .method-island.is-settled { opacity: 1; }
+    .method-island__head {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px 6px;
+      border-bottom: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+    }
+    .method-island__head h2 {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .method-island__close {
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--wsdc-color-text, #1f2937);
+    }
+    .method-island__body {
+      padding: 8px 14px 14px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .method-sec { border-bottom: 1px solid var(--wsdc-color-border, #d1d5db); }
+    .method-sec:last-child { border-bottom: 0; }
+    .method-sec summary {
+      cursor: pointer;
+      font-weight: 700;
+      padding: 8px 0;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .method-sec__body { padding: 0 0 10px; color: var(--wsdc-color-text, #1f2937); }
+    .method-sec__body p { margin: 0 0 8px; }
+    .srp-pop {
+      position: fixed;
+      z-index: 80;
+      max-width: 260px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--wsdc-color-text, #1f2937);
     }
   </style>
 </head>
@@ -93,21 +477,151 @@
     </div>
 
     <section class="content">
-      <div class="meta-row">
-        <p class="wsdc-pill data-note">Data coverage: fixed snapshots for 2023-2025, plus a live 2026 partial slice (as of 2026-09-15).</p>
-        <p class="wsdc-pill is-accent size-note">Size: dancers in selected slice</p>
+      <header class="page-head">
+        <div class="page-head__title-row">
+          <h1>Secondary Role Points</h1>
+          <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
+            <span aria-hidden="true">i</span>
+          </button>
+          <p class="page-head__updated" id="dataUpdated">Updated —</p>
+        </div>
+        <p class="subtitle">Where do secondary-role points concentrate — and how strong is that practice by country? This tool maps each country’s secondary-role points against their share of all points in the selected year, role and division. Use the filters to compare slices; the <span class="subtitle-i">ⓘ</span> tips and Methodology explain the numbers.</p>
+      </header>
+
+      <div class="srp-filter-stack">
+        <div class="viz-filters-row__gutter" aria-hidden="true"></div>
+        <div class="srp-filter-main">
+          <div class="srp-filters" role="group" aria-label="Filters">
+            <div class="filter-field">
+              <label class="filter-label" for="yearSel">Year</label>
+              <select id="yearSel" class="wsdc-select" aria-label="Filter by year">
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="groupSel">Role</label>
+              <select id="groupSel" class="wsdc-select" aria-label="Filter by role">
+                <option value="Total" selected>Total</option>
+                <option value="Leader">Leader</option>
+                <option value="Follower">Follower</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="divisionSel">Division</label>
+              <select id="divisionSel" class="wsdc-select" aria-label="Filter by division">
+                <option value="Total" selected>Total</option>
+                <option value="Newcomer">Newcomer</option>
+                <option value="Novice">Novice</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="All-Stars">All-Stars</option>
+              </select>
+            </div>
+            <div class="filter-field filter-field--toggle">
+              <span class="filter-label" aria-hidden="true">&nbsp;</span>
+              <label class="toggle"><input type="checkbox" id="hideUsa" /> Hide USA</label>
+            </div>
+          </div>
+          <div class="legend-row" aria-label="Legend">
+            <span class="legend-note">Bubble size = # of dancers</span>
+          </div>
+        </div>
       </div>
 
-      <section class="viz-card" aria-label="Secondary-role country distribution dashboard">
-        <iframe
-          class="viz-frame"
-          src="interactive_secondary_country_bubble.html?v=20260915-sync"
-          title="Secondary-role points distribution by year and country"
-          loading="lazy">
-        </iframe>
-      </section>
+      <div class="viz-stage" aria-label="Secondary role points by country">
+        <div class="kpis" id="kpiRow" aria-live="polite">
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Total points</span>
+              <button type="button" class="info-tip" aria-label="What is Total points?"
+                data-tip="All Skill Level points earned in the selected year, role and division across the countries shown (after Hide USA).">i</button>
+            </div>
+            <div class="val" id="kpiTotal">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Secondary points</span>
+              <button type="button" class="info-tip" aria-label="What is Secondary points?"
+                data-tip="Points earned in the selected role by dancers whose primary (dominant) role is the other role.">i</button>
+            </div>
+            <div class="val" id="kpiSecondary">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Secondary share</span>
+              <button type="button" class="info-tip" aria-label="What is Secondary share?"
+                data-tip="Secondary-role points divided by total points in the current slice, across the countries shown.">i</button>
+            </div>
+            <div class="val" id="kpiShare">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Average share</span>
+              <button type="button" class="info-tip" aria-label="What is Average share?"
+                data-tip="Mean of each country’s secondary-role share (equal weight per country on the chart). The dashed vertical line on the chart marks this value.">i</button>
+            </div>
+            <div class="val" id="kpiMeanShare">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__head">
+              <span class="lbl">Average points</span>
+              <button type="button" class="info-tip" aria-label="What is Average points?"
+                data-tip="Mean of each country’s secondary-role points (equal weight per country on the chart). The dashed horizontal line on the chart marks this value.">i</button>
+            </div>
+            <div class="val" id="kpiMeanPoints">—</div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="geoBubble"></canvas>
+          <div id="dancerDrawer" class="dancer-drawer" hidden>
+            <div class="dancer-drawer__head">
+              <p id="dancerDrawerTitle" class="dancer-drawer__title">Dancers</p>
+              <button id="dancerDrawerClose" class="dancer-drawer__close" aria-label="Close">×</button>
+            </div>
+            <div id="dancerDrawerBody" class="dancer-drawer__body"></div>
+          </div>
+        </div>
+      </div>
     </section>
+
+    <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+      <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+      <div class="method-island" id="methodIsland" role="dialog" aria-modal="true" aria-labelledby="methodIslandTitle">
+        <div class="method-island__head" id="methodIslandHead">
+          <h2 id="methodIslandTitle">Methodology</h2>
+          <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+        </div>
+        <div class="method-island__body">
+          <details class="method-sec" open>
+            <summary>Definitions</summary>
+            <div class="method-sec__body">
+              <p><strong>Primary role</strong> is the role in which a dancer holds more points in a higher Skill Level division. <strong>Secondary role</strong> is the other role.</p>
+              <p><strong>Secondary-role points</strong> are points earned in the selected role by dancers whose primary role is different. <strong>Secondary share</strong> is those points divided by all points in the same year / role / division slice.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>How to read the chart</summary>
+            <div class="method-sec__body">
+              <p>Each bubble is a <strong>country</strong>. The horizontal axis is secondary-role <em>share</em> (%). The vertical axis is secondary-role <em>points</em>. Bubble size is the number of dancers who scored in a secondary role in that slice.</p>
+              <p>Dashed lines mark the average share and average points across the countries currently plotted. Click a bubble, then <em>View dancers</em>, to open the list behind it. <em>Hide USA</em> removes the United States so other countries are easier to compare.</p>
+            </div>
+          </details>
+          <details class="method-sec">
+            <summary>Data coverage</summary>
+            <div class="method-sec__body">
+              <p>Snapshots cover <strong>2023–2026</strong> Skill Level points from the WSDC Points Registry. The <em>Updated</em> date next to the title is the data cut-off for the latest refresh (including a partial current year when that year is selected).</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
   </main>
+
   <script src="static/js/site-chrome.js" defer></script>
+  <script src="static/js/wsdc-select.js"></script>
+  <script src="static/js/secondary-role-points.js?v=20261001h"></script>
 </body>
 </html>

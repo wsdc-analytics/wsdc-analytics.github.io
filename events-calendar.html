@@ -33,15 +33,16 @@
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829u">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="preload" href="static/data/events_year_calendar.json?v=20260915-sync" as="fetch" crossorigin>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LMLCY5PE8Z');
-    </script>
+    <link rel="preload" href="static/data/events_year_calendar.json?v=20261001-sync" as="fetch" crossorigin>
     <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913d">
+    <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="WSDC Events Calendar | WSDC Analytics">
+  <meta property="og:description" content="Year calendar of confirmed, expected, and hiatus WSDC events">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/events-calendar.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -145,21 +146,21 @@
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statConfirmed">Confirmed</span>
                     <span class="cal-stats__nums" data-stat="confirmed">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statExpected">Expected</span>
                     <span class="cal-stats__nums" data-stat="expected">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statPaused">Hiatus</span>
                     <span class="cal-stats__nums" data-stat="paused">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
@@ -168,7 +169,7 @@
                 <div class="cal-stats__item">
                     <span class="cal-stats__label" data-i18n="statRegistry">Registry</span>
                     <span class="cal-stats__nums" data-stat="registry">
-                        <span class="cal-stats__value">0</span>
+                        <span class="cal-stats__value is-skeleton">—</span>
                         <span class="cal-stats__of" hidden></span>
                     </span>
                 </div>
@@ -237,7 +238,7 @@
             </div>
         </div>
     </div>
-    <script src="static/js/site-chrome.js?v=20260829u"></script>
+    <script src="static/js/site-chrome.js?v=20261001a"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
 (function () {
@@ -304,11 +305,12 @@
       metricNew: "New",
       sparkAria: "Edition trend",
       sparkSeries: "Trend metric",
+      sparkPickAria: "Show metrics for {year}",
       noLastEdition: "No scored edition stats yet",
       noThisEdition: "No scored stats for this edition",
       trialNoStats: "No scored edition stats yet (trial)",
       metricTipAria: "About metrics",
-      metricTip: "Dancers: sum of the midpoints of each Tier in Skill-Level nominations. Not an exact event participant count and is indicative only!\nPoints: sum of all points awarded in Skill-Level nominations.\nNew: dancers who earned their first WSDC points at this event.",
+      metricTip: "Dancers: sum of Leaders + Followers from Skill-Level entry counts. ~ = Tier-midpoint estimate. * = unique dancers who scored points. Entry sums are not unique people — switch roles can be counted twice.\nPoints: sum of all points awarded in Skill-Level nominations.\nNew: dancers who earned their first WSDC points at this event.",
       websiteAria: "Event website",
       tierPrefix: "TIER",
       colLeader: "L",
@@ -374,11 +376,12 @@
       metricNew: "Новые",
       sparkAria: "Динамика editions",
       sparkSeries: "Метрика тренда",
+      sparkPickAria: "Показать метрики за {year}",
       noLastEdition: "Пока нет статистики scored edition",
       noThisEdition: "Нет scored-статистики для этого edition",
       trialNoStats: "Пока нет статистики scored edition (trial)",
       metricTipAria: "О метриках",
-      metricTip: "Dancers: сумма средних значений каждого Tier в Skill-Level номинациях. Не является точным количеством участников ивента и носит ориентировочный характер!\nPoints: сумма всех поинтов, начисленных в Skill-Level номинациях.\nNew: количество танцоров, получивших свои первые поинты WSDC на этом ивенте.",
+      metricTip: "Dancers: сумма Leaders + Followers из заявок Skill-Level. ~ = оценка по серединам Tier. * = уникальные танцоры с поинтами. Сумма заявок — не уникальные люди: switch-роли могут считаться дважды.\nPoints: сумма всех поинтов, начисленных в Skill-Level номинациях.\nNew: количество танцоров, получивших свои первые поинты WSDC на этом ивенте.",
       websiteAria: "Сайт ивента",
       tierPrefix: "ТИР",
       colLeader: "L",
@@ -445,11 +448,12 @@
       metricNew: "Nuevos",
       sparkAria: "Tendencia de ediciones",
       sparkSeries: "Métrica de tendencia",
+      sparkPickAria: "Mostrar métricas de {year}",
       noLastEdition: "Aún no hay estadísticas de edición",
       noThisEdition: "No hay estadísticas para esta edición",
       trialNoStats: "Aún no hay estadísticas de edición (trial)",
       metricTipAria: "Sobre métricas",
-      metricTip: "Dancers: suma de los valores medios de cada Tier en nominaciones Skill-Level. No es el número exacto de participantes del evento y tiene carácter orientativo!\nPoints: suma de todos los puntos otorgados en nominaciones Skill-Level.\nNew: bailarines que obtuvieron sus primeros puntos WSDC en este evento.",
+      metricTip: "Dancers: suma de Leaders + Followers de inscripciones Skill-Level. ~ = estimación por punto medio de Tier. * = bailarines únicos con puntos. Las sumas de inscripción no son personas únicas — quienes cambian de rol pueden contarse dos veces.\nPoints: suma de todos los puntos otorgados en nominaciones Skill-Level.\nNew: bailarines que obtuvieron sus primeros puntos WSDC en este evento.",
       websiteAria: "Sitio del evento",
       tierPrefix: "TIER",
       colLeader: "L",
@@ -487,6 +491,7 @@
     markerById: {},
     eventCards: null,
     l2SparkMetric: "unique_dancers",
+    l2SparkEditionKey: null,
     l2TipIgnoreDocCloseUntil: 0
   };
 
@@ -2138,6 +2143,7 @@
     state.hoverEventId = null;
     state.skipDayTip = false;
     state.l2SparkMetric = "unique_dancers";
+    state.l2SparkEditionKey = null;
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
     var mapCol = document.getElementById("dayMapCol");
@@ -2306,6 +2312,34 @@
     return "unique_dancers";
   }
 
+  function sparkEditionKey(year, month) {
+    var y = Number(year);
+    var m = Number(month);
+    if (!Number.isFinite(y)) return "";
+    if (!Number.isFinite(m) || m < 1) m = 1;
+    return String(y) + "-" + String(m);
+  }
+
+  function findHistoryEditionByKey(card, key) {
+    if (!card || !key) return null;
+    var pool = Array.isArray(card.editions) && card.editions.length
+      ? card.editions
+      : (card.history || []);
+    for (var i = 0; i < pool.length; i++) {
+      var row = pool[i];
+      if (sparkEditionKey(row.year, row.month) === key) return row;
+    }
+    var last = card.last_edition;
+    if (last && sparkEditionKey(last.year, last.month) === key) return last;
+    return null;
+  }
+
+  function resolveFocusEdition(card, e) {
+    var picked = findHistoryEditionByKey(card, state.l2SparkEditionKey);
+    if (picked) return { edition: picked, mode: "edition" };
+    return resolveRightEdition(card, e);
+  }
+
   function buildSparklineHtml(history) {
     var rows = Array.isArray(history) ? history : [];
     if (!rows.length) {
@@ -2361,12 +2395,15 @@
     var points = values.map(function (v, i) {
       var x = xAt(xVals[i]);
       var y = h - padB - ((v - min) / span) * plotH;
+      var ym = sparkEditionKey(rows[i].year, rows[i].month);
       return {
         x: x,
         y: y,
         v: v,
         label: String(rows[i].year),
-        year: Number(rows[i].year)
+        year: Number(rows[i].year),
+        ym: ym,
+        active: !!ym && state.l2SparkEditionKey === ym
       };
     });
 
@@ -2394,8 +2431,18 @@
     });
 
     var dots = points.map(function (p) {
-      return '<circle class="l2-spark__dot" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-        '" r="2.4"><title>' + esc(p.label + ": " + String(p.v)) + "</title></circle>";
+      var aria = String(t("sparkPickAria") || "").replace("{year}", p.label);
+      var tip = p.label + ": " + String(p.v);
+      var cls = "l2-spark__dot" + (p.active ? " is-active" : "");
+      var r = p.active ? "3.4" : "2.4";
+      return '<g class="l2-spark__point' + (p.active ? " is-active" : "") + '">' +
+        '<circle class="l2-spark__hit" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="9" data-spark-ym="' + esc(p.ym) + '" role="button" tabindex="0" aria-label="' +
+        esc(aria) + '" aria-pressed="' + (p.active ? "true" : "false") + '">' +
+        "<title>" + esc(tip) + "</title></circle>" +
+        '<circle class="' + cls + '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="' + r + '" aria-hidden="true"></circle>' +
+        "</g>";
     }).join("");
     var axis =
       '<line class="l2-spark__axis" x1="' + padL + '" y1="' + padT + '" x2="' + padL +
@@ -2421,7 +2468,7 @@
       return String(Math.round(n));
     }
 
-    return '<div class="l2-chart" role="img" aria-label="' + esc(t("sparkAria")) + '">' +
+    return '<div class="l2-chart" role="group" aria-label="' + esc(t("sparkAria")) + '">' +
       '<div class="l2-chart__y" aria-hidden="true">' +
       "<span>" + esc(axisLabel(max)) + "</span>" +
       "<span>" + esc(axisLabel(min)) + "</span>" +
@@ -2460,10 +2507,12 @@
     return '<div class="l2-chart-panel">' + buildSparklineHtml(rows) + "</div>";
   }
 
-  function formatMetricValue(value, approx) {
+  function formatMetricValue(value, approx, uniqueMark) {
     if (value == null || value === "") return "—";
     var text = String(value);
-    return approx ? "~" + text : text;
+    if (approx) return "~" + text;
+    if (uniqueMark) return "*" + text;
+    return text;
   }
 
   function buildMetricLabelsHtml() {
@@ -2476,15 +2525,16 @@
 
   function buildLastMetricsHtml(last) {
     var dancersApprox = !!(last && last.dancers_approx);
-    function valueCell(value, approx) {
+    var dancersUnique = !!(last && last.dancers_unique);
+    function valueCell(value, approx, uniqueMark) {
       return '<div class="l2-metric">' +
-        '<span class="l2-metric__value">' + esc(formatMetricValue(value, approx)) + "</span>" +
+        '<span class="l2-metric__value">' + esc(formatMetricValue(value, approx, uniqueMark)) + "</span>" +
         "</div>";
     }
     return '<div class="l2-event-card__metrics">' +
-      valueCell(last.unique_dancers, dancersApprox) +
-      valueCell(last.points, false) +
-      valueCell(last.new_dancers, false) +
+      valueCell(last.unique_dancers, dancersApprox, dancersUnique) +
+      valueCell(last.points, false, false) +
+      valueCell(last.new_dancers, false, false) +
       "</div>";
   }
 
@@ -2536,7 +2586,7 @@
     seriesHead += "</div>";
 
     var hasHistory = !!(card && card.series && (card.history || []).length);
-    var right = resolveRightEdition(card, e);
+    var right = resolveFocusEdition(card, e);
     var focusEdition = right.edition;
     var hasFocus = !!focusEdition;
 
@@ -2723,6 +2773,7 @@
 
   function clearEventSelection() {
     state.selectedEventId = null;
+    state.l2SparkEditionKey = null;
     paintRowHighlights();
     paintMarkerStyles();
     hideEventCard();
@@ -2752,6 +2803,7 @@
     var e = findEventById(id);
     if (!e) return;
     state.selectedEventId = id;
+    state.l2SparkEditionKey = null;
     paintRowHighlights();
     paintMarkerStyles();
     showEventCard(e);
@@ -2924,6 +2976,21 @@
   });
 
   document.getElementById("eventDetail").addEventListener("click", function (e) {
+    var editionHit = e.target.closest("[data-spark-ym]");
+    if (editionHit) {
+      e.stopPropagation();
+      e.preventDefault();
+      var ym = editionHit.getAttribute("data-spark-ym");
+      if (!ym) return;
+      // Second click on the active point clears back to the default edition.
+      if (state.l2SparkEditionKey === ym) {
+        state.l2SparkEditionKey = null;
+      } else {
+        state.l2SparkEditionKey = ym;
+      }
+      refreshOpenEventCard();
+      return;
+    }
     var sparkBtn = e.target.closest("[data-spark]");
     if (sparkBtn) {
       e.stopPropagation();
@@ -2935,10 +3002,38 @@
       ) {
         return;
       }
-      if (state.l2SparkMetric === nextSpark) return;
+      var metricChanged = state.l2SparkMetric !== nextSpark;
+      var hadEdition = !!state.l2SparkEditionKey;
+      state.l2SparkEditionKey = null;
+      if (!metricChanged && !hadEdition) return;
       state.l2SparkMetric = nextSpark;
       refreshOpenEventCard();
+      return;
     }
+    // Don't rebuild the card under interactive children (site link / tips) —
+    // that would destroy the target mid-click and cancel navigation.
+    if (e.target.closest("a, .l2-event-card__web, .l2-info-tip")) return;
+    // Any other click in the L2 card resets spark year to the default edition.
+    if (state.l2SparkEditionKey) {
+      state.l2SparkEditionKey = null;
+      refreshOpenEventCard();
+    }
+  });
+
+  document.getElementById("eventDetail").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var editionHit = e.target.closest("[data-spark-ym]");
+    if (!editionHit) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var ym = editionHit.getAttribute("data-spark-ym");
+    if (!ym) return;
+    if (state.l2SparkEditionKey === ym) {
+      state.l2SparkEditionKey = null;
+    } else {
+      state.l2SparkEditionKey = ym;
+    }
+    refreshOpenEventCard();
   });
 
   document.querySelectorAll(".wsdc-dd").forEach(function (dd) {
@@ -3118,20 +3213,26 @@
   if (params.get("lang") && I18N[params.get("lang")]) state.lang = params.get("lang");
   applyStaticI18n();
 
-  fetch("static/data/events_year_calendar.json?v=20260915-sync")
+  fetch("static/data/events_year_calendar.json?v=20261001-sync")
     .then(function (r) {
       if (!r.ok) throw new Error("Failed to load calendar data");
       return r.json();
     })
     .then(function (calendar) {
-      return fetch("static/data/event_l2_cards.json?v=20260915-sync")
+      // Boot calendar immediately; L2 cards (~3MB) load in the background.
+      bootAll(calendar, null);
+      document.querySelectorAll(".cal-stats__value").forEach(function (el) {
+        el.classList.remove("is-skeleton");
+      });
+      return fetch("static/data/event_l2_cards.json?v=20261001-sync")
         .then(function (r) {
           if (!r.ok) return null;
           return r.json();
         })
         .catch(function () { return null; })
         .then(function (cards) {
-          bootAll(calendar, cards);
+          state.eventCards = cards || null;
+          if (state.selectedDay) openDay(state.selectedDay);
         });
     })
     .catch(function (err) {

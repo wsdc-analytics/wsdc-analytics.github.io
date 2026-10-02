@@ -40,14 +40,8 @@
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829u">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/champion_news.json" as="fetch" crossorigin>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMLCY5PE8Z"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LMLCY5PE8Z');
-    </script>
+    <script src="static/js/analytics.js" defer></script>
+
     <style>
         :root {
             --color-primary: var(--wsdc-color-brand, #111827);
@@ -699,7 +693,7 @@
         <main id="catalog" aria-live="polite"><div class="loading">Loading...</div></main>
     </div>
 
-    <script src="static/js/site-chrome.js?v=20260829u" defer></script>
+    <script src="static/js/site-chrome.js?v=20260927a" defer></script>
     <script>
     (function () {
       const catalog = document.getElementById('catalog');
