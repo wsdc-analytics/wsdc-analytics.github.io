@@ -16,7 +16,7 @@ Drafts under `events/` are **not** linked from the homepage or `static/data/arti
 
 **On site, not on homepage yet:**
 - [`002-uk-wcs-championships/`](002-uk-wcs-championships/) (RU/EN/ES)
-- [`003-asia-wcs-open/`](003-asia-wcs-open/) — RU `article_ru.html` (sitemap; not on homepage; EN/ES next)
+- [`003-asia-wcs-open/`](003-asia-wcs-open/) — RU/EN/ES articles (sitemap; not on homepage yet)
 - [`004-best-of-the-best-wcs/`](004-best-of-the-best-wcs/) — RU `draft_ru.html` (source draft; no homepage)
 - [`005-saint-petersburg-wcs-nights/`](005-saint-petersburg-wcs-nights/) — RU `draft_ru.html` (source draft; no homepage)
 
