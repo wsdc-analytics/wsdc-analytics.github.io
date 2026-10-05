@@ -12,11 +12,12 @@ Series editorial guide (conclusion-first sections, charts after insight, Summary
 
 Drafts under `events/` are **not** linked from the homepage or `static/data/articles.json` until ready to publish.
 
-**Published:** [`001-arizona-4th-of-july/`](001-arizona-4th-of-july/) (RU/EN/ES) — on homepage and in `articles.json` since 2026-07-22.
+**Published (homepage + `articles.json`):**
+- [`003-asia-wcs-open/`](003-asia-wcs-open/) (RU/EN/ES) — featured / Latest since 2026-10-05
+- [`002-uk-wcs-championships/`](002-uk-wcs-championships/) (RU/EN/ES) — since 2026-07-27
+- [`001-arizona-4th-of-july/`](001-arizona-4th-of-july/) (RU/EN/ES) — since 2026-07-22
 
 **On site, not on homepage yet:**
-- [`002-uk-wcs-championships/`](002-uk-wcs-championships/) (RU/EN/ES)
-- [`003-asia-wcs-open/`](003-asia-wcs-open/) — RU/EN/ES articles (sitemap; not on homepage yet)
 - [`004-best-of-the-best-wcs/`](004-best-of-the-best-wcs/) — RU `draft_ru.html` (source draft; no homepage)
 - [`005-saint-petersburg-wcs-nights/`](005-saint-petersburg-wcs-nights/) — RU `draft_ru.html` (source draft; no homepage)
 
