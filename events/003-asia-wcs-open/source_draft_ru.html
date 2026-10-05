@@ -353,9 +353,10 @@
     .traj-toolbar .metric-toggles { margin: 0; }
     .traj-toolbar .traj-metric-info { margin: 0; }
     .traj-toolbar .info-tooltip {
-      left: auto;
-      right: 0;
+      left: 0;
+      right: auto;
       transform: none;
+      max-width: min(22rem, 78vw);
     }
 
     .metric-toggles {
@@ -728,17 +729,17 @@
 
 
       <div class="traj-toolbar">
+        <span class="snapshot-info traj-metric-info">
+          <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение метрик траектории">
+            <span aria-hidden="true">i</span>
+            <span class="info-tooltip">«Танцоры» — сумма участников Skill Level (лидеры + фолловеры по дивизионам). «Поинты» — сумма Skill Level поинтов за издание. «Новые танцоры» — первые Skill Level поинты WSDC на этом ивенте.</span>
+          </span>
+        </span>
         <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Метрика траектории">
           <button type="button" role="tab" data-metric="skill_competitors" class="is-active" aria-selected="true">Танцоры</button>
           <button type="button" role="tab" data-metric="total_points" aria-selected="false">Поинты</button>
           <button type="button" role="tab" data-metric="new_dancers" aria-selected="false">Новые танцоры</button>
         </div>
-        <span class="snapshot-info traj-metric-info">
-          <span class="info-icon" tabindex="0" role="img" aria-label="Пояснение метрики «Танцоры»: участники Skill Level номинаций">
-            <span aria-hidden="true">i</span>
-            <span class="info-tooltip">Метрика «Танцоры»: сумма участников во всех Skill Level номинациях Jack&amp;Jill (лидеры + фолловеры по дивизионам). Один танцор в нескольких дивизионах или в двух ролях учитывается несколько раз.</span>
-          </span>
-        </span>
       </div>
       <div class="figure figure-chart chart-wrap">
         <div class="line-tip" id="trajTip" aria-hidden="true"></div>
