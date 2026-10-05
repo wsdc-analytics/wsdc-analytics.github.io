@@ -397,7 +397,18 @@
       left: 0;
       right: auto;
       transform: none;
-      max-width: min(22rem, 78vw);
+      top: calc(100% + 8px);
+      max-width: min(20rem, 82vw);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-align: left;
+    }
+    .traj-toolbar .traj-tip-row {
+      display: block;
+    }
+    .traj-toolbar .traj-tip-row strong {
+      font-weight: 700;
     }
 
     .metric-toggles {
@@ -927,7 +938,11 @@
         <span class="snapshot-info traj-metric-info">
           <span class="info-icon" tabindex="0" role="img" aria-label="Explicación de las métricas de trayectoria">
             <span aria-hidden="true">i</span>
-            <span class="info-tooltip">Bailarines — participantes Skill Level (líderes + followers por división). Puntos — puntos Skill Level de la edición. Nuevos bailarines — primeros puntos Skill Level WSDC en este evento.</span>
+            <span class="info-tooltip">
+              <span class="traj-tip-row"><strong>Bailarines</strong> — participantes Skill Level (líderes + followers por división)</span>
+              <span class="traj-tip-row"><strong>Puntos</strong> — puntos Skill Level de la edición</span>
+              <span class="traj-tip-row"><strong>Nuevos bailarines</strong> — primeros puntos Skill Level WSDC en este evento</span>
+            </span>
           </span>
         </span>
         <div class="metric-toggles" id="trajToggles" role="tablist" aria-label="Métrica de la trayectoria">
