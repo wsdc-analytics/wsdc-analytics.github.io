@@ -1764,7 +1764,7 @@
     if (location.protocol === 'file:') {
       throw new Error('open via local server (python3 -m http.server), not file://');
     }
-    const res = await fetch("static/data/event_tiers_by_year.json?v=20261001-sync");
+    const res = await fetch("static/data/event_tiers_by_year.json?v=20261006-sync");
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     document.getElementById('dataUpdated').textContent =
