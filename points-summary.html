@@ -1237,7 +1237,13 @@
                     }
                     if (p.place !== 'F' && p.followers && p.followers.length) {
                         const lbl = placeLabel(p) + ':';
-                        placesHtml += placeRow('', lbl, formatDancerWithPills(p.followers.join(', ')));
+                        // Follower-only podiums (no leader pair / leaders list) still get the place trophy.
+                        const leaderSideShown = !!(p.leader && p.follower) || !!(p.leaders && p.leaders.length);
+                        placesHtml += placeRow(
+                            leaderSideShown ? '' : placeMedal(p.place),
+                            lbl,
+                            formatDancerWithPills(p.followers.join(', '))
+                        );
                     }
                 });
                 divs += `<div class="division-block ${divClass(d.division)}"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
