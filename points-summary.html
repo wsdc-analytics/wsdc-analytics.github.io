@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="static/css/tokens.css">
     <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20260829u">
+    <link rel="stylesheet" href="static/css/points-summary-filters.css?v=20261007g">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
     <script src="static/js/analytics.js" defer></script>
@@ -101,16 +102,7 @@
             clip: auto;
             white-space: normal;
         }
-        .page-search {
-            margin: 14px 0 8px;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            max-width: 420px;
-        }
-        .page-search .search-box { flex: 1; min-width: 0; }
+        .page-toolbar .search-help { margin-top: 8px; }
         .search-help {
             display: inline-flex;
             align-items: center;
@@ -445,8 +437,7 @@
                 max-width: 100%;
                 overscroll-behavior-x: none;
             }
-            .page-search { max-width: none; }
-            .search-help { margin-top: 10px; }
+            .page-toolbar .search-help { margin-top: 10px; }
             .search-help .info-tooltip {
                 left: 0;
                 right: auto;
@@ -486,7 +477,7 @@
         .header .search-input {
             max-width: none;
         }
-        .page-search .search-input {
+        .page-toolbar .search-input {
             max-width: none;
             border: none;
             border-radius: 0;
@@ -495,7 +486,7 @@
             padding-top: 6px;
             padding-bottom: 6px;
         }
-        .page-search .search-input:focus {
+        .page-toolbar .search-input:focus {
             border-color: transparent;
             box-shadow: none;
         }
@@ -593,16 +584,64 @@
         <h1 class="wsdc-page-title">Summary Points</h1>
         <p class="wsdc-page-subtitle subtitle">Weekly points awarded by event, organized by publication date.</p>
         </header>
-        <div class="page-search wsdc-filter-bar">
-            <div class="search-help">
-                <span class="info-icon wsdc-info-btn" aria-label="Brief search instructions (hover or focus to read)" role="img">
-                    <span aria-hidden="true">i</span>
-                    <span class="info-tooltip"><span class="info-tooltip-main">Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</span><span class="info-tooltip-note"><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</span></span>
-                </span>
+        <div class="page-toolbar wsdc-filter-bar">
+            <div class="page-toolbar__search">
+                <div class="search-help">
+                    <span class="info-icon wsdc-info-btn" aria-label="Brief search instructions (hover or focus to read)" role="img">
+                        <span aria-hidden="true">i</span>
+                        <span class="info-tooltip"><span class="info-tooltip-main">Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</span><span class="info-tooltip-note"><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</span></span>
+                    </span>
+                </div>
+                <div class="search-box">
+                    <input type="search" class="search-input wsdc-field" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
+                    <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
+                </div>
             </div>
-            <div class="search-box">
-                <input type="search" class="search-input wsdc-field" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
-                <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
+            <div class="page-toolbar__filters filters" role="toolbar" aria-label="Location filters">
+                <div class="filter-field" data-pts-dd>
+                    <span class="filter-label" id="ptsContinentFilterLabel">Continent</span>
+                    <div class="wsdc-dd cal-dd" id="ptsContinentFilterDd">
+                        <button type="button" class="wsdc-dd__btn cal-dd__btn" id="ptsContinentFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="ptsContinentFilterMenu" aria-labelledby="ptsContinentFilterLabel ptsContinentFilterValue">
+                            <span class="wsdc-dd__value cal-dd__value" id="ptsContinentFilterValue"></span>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <ul class="wsdc-dd__menu cal-dd__menu" id="ptsContinentFilterMenu" role="listbox" aria-labelledby="ptsContinentFilterLabel" aria-hidden="true"></ul>
+                    </div>
+                </div>
+                <div class="filter-field" data-pts-dd>
+                    <span class="filter-label" id="ptsCountryFilterLabel">Country</span>
+                    <div class="wsdc-dd cal-dd" id="ptsCountryFilterDd">
+                        <button type="button" class="wsdc-dd__btn cal-dd__btn" id="ptsCountryFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="ptsCountryFilterMenu" aria-labelledby="ptsCountryFilterLabel ptsCountryFilterValue">
+                            <span class="wsdc-dd__value cal-dd__value" id="ptsCountryFilterValue"></span>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <ul class="wsdc-dd__menu cal-dd__menu" id="ptsCountryFilterMenu" role="listbox" aria-labelledby="ptsCountryFilterLabel" aria-hidden="true"></ul>
+                    </div>
+                </div>
+                <div class="filter-field" data-pts-dd data-state-filter hidden>
+                    <span class="filter-label" id="ptsStateFilterLabel">State</span>
+                    <div class="wsdc-dd cal-dd" id="ptsStateFilterDd">
+                        <button type="button" class="wsdc-dd__btn cal-dd__btn" id="ptsStateFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="ptsStateFilterMenu" aria-labelledby="ptsStateFilterLabel ptsStateFilterValue">
+                            <span class="wsdc-dd__value cal-dd__value" id="ptsStateFilterValue"></span>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <ul class="wsdc-dd__menu cal-dd__menu" id="ptsStateFilterMenu" role="listbox" aria-labelledby="ptsStateFilterLabel" aria-hidden="true"></ul>
+                    </div>
+                </div>
+                <div class="filter-field" data-pts-dd>
+                    <span class="filter-label" id="ptsCityFilterLabel">City</span>
+                    <div class="wsdc-dd cal-dd" id="ptsCityFilterDd">
+                        <button type="button" class="wsdc-dd__btn cal-dd__btn" id="ptsCityFilterBtn" aria-expanded="false" aria-haspopup="listbox" aria-controls="ptsCityFilterMenu" aria-labelledby="ptsCityFilterLabel ptsCityFilterValue">
+                            <span class="wsdc-dd__value cal-dd__value" id="ptsCityFilterValue"></span>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <ul class="wsdc-dd__menu cal-dd__menu" id="ptsCityFilterMenu" role="listbox" aria-labelledby="ptsCityFilterLabel" aria-hidden="true"></ul>
+                    </div>
+                </div>
+                <div class="filter-field cal-reset-field">
+                    <span class="filter-label" aria-hidden="true">&nbsp;</span>
+                    <button type="button" class="cal-reset-btn wsdc-btn wsdc-btn--secondary" id="ptsClearGeoFiltersBtn">Clear</button>
+                </div>
             </div>
         </div>
         <div class="how-to-read" id="how-to-read">
@@ -627,6 +666,7 @@
     </div>
 
     <script src="static/js/site-chrome.js?v=20260927a" defer></script>
+    <script src="static/js/points-summary-geo.js?v=20261007a"></script>
     <script>
         const catalog = document.getElementById('catalog');
         let activeDancerNorm = '';
@@ -758,6 +798,8 @@
                 const dancerDirectory = buildDancerDirectory(summaries);
                 const placeDirectory = buildPlaceDirectory(summaries);
                 const eventDirectory = buildEventDirectory(summaries);
+                let cardPassesGeoFilter = () => true;
+                let geoFiltersActive = () => false;
 
                 function formatEventCount(n) {
                     const x = Math.max(0, Number(n) || 0);
@@ -844,14 +886,15 @@
                         sec.querySelectorAll('.event-card').forEach(card => {
                             const text = card.getAttribute('data-search-text') || '';
                             const dancers = card.getAttribute('data-dancers') || '';
-                            const match = activeDancerNorm
+                            const matchText = activeDancerNorm
                                 ? dancers.includes(`|${activeDancerNorm}|`)
                                 : (!q || text.includes(q));
+                            const match = matchText && cardPassesGeoFilter(card);
                             card.style.display = match ? '' : 'none';
                             if (match) { anyVisible = true; yearHasVisible = true; }
                         });
                         sec.style.display = yearHasVisible ? '' : 'none';
-                        if (yearHasVisible && (q || activeDancerNorm)) {
+                        if (yearHasVisible && (q || activeDancerNorm || geoFiltersActive())) {
                             sec.classList.add('expanded');
                             const yearBody = sec.querySelector('.year-body');
                             if (yearBody) yearBody.classList.remove('collapsed');
@@ -869,7 +912,7 @@
                             dateEl.style.display = hasVisible ? '' : 'none';
                         });
                     });
-                    if ((q || activeDancerNorm) && !anyVisible) noResults.classList.add('visible');
+                    if ((q || activeDancerNorm || geoFiltersActive()) && !anyVisible) noResults.classList.add('visible');
                     updateDancerHighlights();
                     updateDivisionVisibilityForDancerMode();
                 }
@@ -917,11 +960,15 @@
                 });
 
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.page-search')) {
+                    if (!e.target.closest('.page-toolbar__search')) {
                         suggestionsEl.classList.remove('visible');
                         searchInput.setAttribute('aria-expanded', 'false');
                     }
                 });
+
+                const geoApi = initPointsGeoFilters(summaries, applySearch);
+                cardPassesGeoFilter = geoApi.cardPassesGeoFilter;
+                geoFiltersActive = geoApi.geoFiltersActive;
 
                 initPlaceContentCache();
             })
@@ -1144,6 +1191,316 @@
             return Array.from(map.values());
         }
 
+        const ptsGeo = window.WsdcPointsGeo;
+        if (!ptsGeo || typeof ptsGeo.parsePointsEventGeo !== 'function') {
+            console.error('points-summary-geo.js failed to load');
+        }
+        const US_COUNTRY = (ptsGeo && ptsGeo.US_COUNTRY) || 'United States';
+        const parsePointsEventGeo = ptsGeo
+            ? ptsGeo.parsePointsEventGeo.bind(ptsGeo)
+            : function () { return { continent: 'Other', country: '', state: '', city: '' }; };
+
+        function forEachSummaryEvent(summaries, fn) {
+            summaries.forEach(summary => {
+                (summary.events || []).forEach(fn);
+            });
+        }
+
+        function buildEventGeoCache(summaries) {
+            const rows = [];
+            forEachSummaryEvent(summaries, ev => {
+                rows.push({ ev, geo: parsePointsEventGeo(ev) });
+            });
+            return rows;
+        }
+
+        function comparePtsFilterOpts(a, b) {
+            const ka = a.sortKey != null ? a.sortKey : 0;
+            const kb = b.sortKey != null ? b.sortKey : 0;
+            if (kb !== ka) return kb - ka;
+            return String(a.label || '').localeCompare(String(b.label || ''));
+        }
+
+        function ptsFilterCountHtml(n) {
+            const num = n | 0;
+            return (
+                ' <span class="pts-filter-count" title="Events">' +
+                '<span class="pts-filter-count__paren">(</span>' +
+                '<span class="pts-filter-count__n">' +
+                num +
+                '</span><span class="pts-filter-count__paren">)</span></span>'
+            );
+        }
+
+        function fillPtsDropdown(menuEl, valueEl, options, selected, allLabel) {
+            menuEl.innerHTML = '';
+            const items = allLabel != null ? [{ value: '', label: allLabel }] : [];
+            options.forEach(opt => items.push(opt));
+            let effective = selected;
+            if (effective && !items.some(o => o.value === effective)) effective = '';
+            let currentLabel = allLabel || '';
+            items.forEach(opt => {
+                const li = document.createElement('li');
+                li.setAttribute('role', 'none');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.setAttribute('role', 'option');
+                btn.setAttribute('data-value', opt.value);
+                if (opt.countHtml) {
+                    btn.innerHTML = escapeHtml(opt.label) + opt.countHtml;
+                    if (opt.countAria) {
+                        btn.setAttribute('aria-label', opt.label + ', ' + opt.countAria);
+                    }
+                } else {
+                    btn.textContent = opt.label;
+                }
+                if (opt.value === effective) {
+                    btn.classList.add('is-current');
+                    btn.setAttribute('aria-selected', 'true');
+                    currentLabel = opt.label;
+                } else {
+                    btn.setAttribute('aria-selected', 'false');
+                }
+                li.appendChild(btn);
+                menuEl.appendChild(li);
+            });
+            valueEl.textContent = currentLabel;
+        }
+
+        function initPointsGeoFilters(summaries, onFilterChange) {
+            const geoState = { continent: '', country: '', usState: '', city: '' };
+            const geoRows = buildEventGeoCache(summaries);
+            const clearBtn = document.getElementById('ptsClearGeoFiltersBtn');
+
+            function closeAllPtsDropdowns() {
+                document.querySelectorAll('.page-toolbar .wsdc-dd.is-open').forEach(dd => {
+                    dd.classList.remove('is-open');
+                    const btn = dd.querySelector('.wsdc-dd__btn');
+                    const menu = dd.querySelector('.wsdc-dd__menu');
+                    if (btn) btn.setAttribute('aria-expanded', 'false');
+                    if (menu) menu.setAttribute('aria-hidden', 'true');
+                });
+            }
+
+            function isUsCountrySelected() {
+                return geoState.country === US_COUNTRY;
+            }
+
+            function geoFiltersActive() {
+                return !!(geoState.continent || geoState.country || geoState.usState || geoState.city);
+            }
+
+            function updateClearButton() {
+                if (!clearBtn) return;
+                clearBtn.disabled = !geoFiltersActive();
+            }
+
+            function updateStateFilterVisibility() {
+                const field = document.querySelector('.page-toolbar [data-state-filter]');
+                if (!field) return;
+                const show = isUsCountrySelected();
+                field.hidden = !show;
+                if (!show) {
+                    geoState.usState = '';
+                    closeAllPtsDropdowns();
+                }
+            }
+
+            /** Options sorted by event count desc, then A→Z (Events Calendar pattern). */
+            function collectFieldOptions(predicate, getter) {
+                const counts = {};
+                geoRows.forEach(row => {
+                    if (!predicate(row.geo)) return;
+                    const val = getter(row.geo);
+                    if (!val) return;
+                    counts[val] = (counts[val] || 0) + 1;
+                });
+                return Object.keys(counts)
+                    .map(value => {
+                        const n = counts[value];
+                        return {
+                            value,
+                            label: value,
+                            sortKey: n,
+                            countHtml: ptsFilterCountHtml(n),
+                            countAria: String(n)
+                        };
+                    })
+                    .sort(comparePtsFilterOpts);
+            }
+
+            function refreshGeoFilterOptions() {
+                const continentOpts = collectFieldOptions(() => true, g => g.continent);
+                if (geoState.continent && !continentOpts.some(o => o.value === geoState.continent)) {
+                    geoState.continent = '';
+                }
+                fillPtsDropdown(
+                    document.getElementById('ptsContinentFilterMenu'),
+                    document.getElementById('ptsContinentFilterValue'),
+                    continentOpts,
+                    geoState.continent,
+                    'All continents'
+                );
+
+                const countryOpts = collectFieldOptions(
+                    g => !geoState.continent || g.continent === geoState.continent,
+                    g => g.country
+                );
+                if (geoState.country && !countryOpts.some(o => o.value === geoState.country)) {
+                    geoState.country = '';
+                    geoState.usState = '';
+                    geoState.city = '';
+                }
+                fillPtsDropdown(
+                    document.getElementById('ptsCountryFilterMenu'),
+                    document.getElementById('ptsCountryFilterValue'),
+                    countryOpts,
+                    geoState.country,
+                    'All countries'
+                );
+
+                updateStateFilterVisibility();
+
+                if (isUsCountrySelected()) {
+                    const stateOpts = collectFieldOptions(
+                        g => {
+                            if (geoState.continent && g.continent !== geoState.continent) return false;
+                            if (g.country !== geoState.country) return false;
+                            return true;
+                        },
+                        g => g.state
+                    );
+                    if (geoState.usState && !stateOpts.some(o => o.value === geoState.usState)) {
+                        geoState.usState = '';
+                    }
+                    fillPtsDropdown(
+                        document.getElementById('ptsStateFilterMenu'),
+                        document.getElementById('ptsStateFilterValue'),
+                        stateOpts,
+                        geoState.usState,
+                        'All states'
+                    );
+                }
+
+                const cityOpts = collectFieldOptions(
+                    g => {
+                        if (geoState.continent && g.continent !== geoState.continent) return false;
+                        if (geoState.country && g.country !== geoState.country) return false;
+                        if (isUsCountrySelected() && geoState.usState && g.state !== geoState.usState) return false;
+                        return true;
+                    },
+                    g => g.city
+                );
+                if (geoState.city && !cityOpts.some(o => o.value === geoState.city)) {
+                    geoState.city = '';
+                }
+                fillPtsDropdown(
+                    document.getElementById('ptsCityFilterMenu'),
+                    document.getElementById('ptsCityFilterValue'),
+                    cityOpts,
+                    geoState.city,
+                    'All cities'
+                );
+                updateClearButton();
+            }
+
+            function clearGeoFilters() {
+                geoState.continent = '';
+                geoState.country = '';
+                geoState.usState = '';
+                geoState.city = '';
+                closeAllPtsDropdowns();
+                refreshGeoFilterOptions();
+                onFilterChange();
+            }
+
+            function cardPassesGeoFilter(card) {
+                if (!geoFiltersActive()) return true;
+                if (geoState.continent && card.getAttribute('data-geo-continent') !== geoState.continent) return false;
+                if (geoState.country && card.getAttribute('data-geo-country') !== geoState.country) return false;
+                if (isUsCountrySelected() && geoState.usState && card.getAttribute('data-geo-state') !== geoState.usState) {
+                    return false;
+                }
+                if (geoState.city && card.getAttribute('data-geo-city') !== geoState.city) return false;
+                return true;
+            }
+
+            document.getElementById('ptsContinentFilterMenu').addEventListener('click', e => {
+                const btn = e.target.closest('button[data-value]');
+                if (!btn) return;
+                e.stopPropagation();
+                closeAllPtsDropdowns();
+                geoState.continent = btn.getAttribute('data-value') || '';
+                geoState.country = '';
+                geoState.usState = '';
+                geoState.city = '';
+                refreshGeoFilterOptions();
+                onFilterChange();
+            });
+            document.getElementById('ptsCountryFilterMenu').addEventListener('click', e => {
+                const btn = e.target.closest('button[data-value]');
+                if (!btn) return;
+                e.stopPropagation();
+                closeAllPtsDropdowns();
+                geoState.country = btn.getAttribute('data-value') || '';
+                geoState.usState = '';
+                geoState.city = '';
+                refreshGeoFilterOptions();
+                onFilterChange();
+            });
+            document.getElementById('ptsStateFilterMenu').addEventListener('click', e => {
+                const btn = e.target.closest('button[data-value]');
+                if (!btn) return;
+                e.stopPropagation();
+                closeAllPtsDropdowns();
+                geoState.usState = btn.getAttribute('data-value') || '';
+                geoState.city = '';
+                refreshGeoFilterOptions();
+                onFilterChange();
+            });
+            document.getElementById('ptsCityFilterMenu').addEventListener('click', e => {
+                const btn = e.target.closest('button[data-value]');
+                if (!btn) return;
+                e.stopPropagation();
+                closeAllPtsDropdowns();
+                geoState.city = btn.getAttribute('data-value') || '';
+                refreshGeoFilterOptions();
+                onFilterChange();
+            });
+            if (clearBtn) {
+                clearBtn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    clearGeoFilters();
+                });
+            }
+
+            document.querySelectorAll('.page-toolbar .wsdc-dd').forEach(dd => {
+                const toggle = dd.querySelector('.wsdc-dd__btn');
+                const menu = dd.querySelector('.wsdc-dd__menu');
+                if (!toggle || !menu) return;
+                toggle.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const open = !dd.classList.contains('is-open');
+                    closeAllPtsDropdowns();
+                    if (open) {
+                        dd.classList.add('is-open');
+                        toggle.setAttribute('aria-expanded', 'true');
+                        menu.setAttribute('aria-hidden', 'false');
+                    }
+                });
+                dd.addEventListener('click', e => e.stopPropagation());
+            });
+
+            document.addEventListener('click', () => closeAllPtsDropdowns());
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') closeAllPtsDropdowns();
+            });
+
+            refreshGeoFilterOptions();
+
+            return { cardPassesGeoFilter, geoFiltersActive };
+        }
+
         /** Last comma-separated segment when it repeats the flag country (keep city/region only). */
         const FLAG_COUNTRY_LAST_PART = {
             '🇩🇪': ['germany', 'deutschland'],
@@ -1250,8 +1607,9 @@
             });
             const displayLocation = formatDisplayLocation(ev.location, ev.flag);
             const displayDates = simplifyEventDatesDisplay(ev.dates);
+            const geo = parsePointsEventGeo(ev);
             return `
-                <div class="event-card" id="event-${slug || ''}" data-search-text="${escapeAttr(searchText)}" data-dancers="${escapeAttr(dancerTokens)}">
+                <div class="event-card" id="event-${slug || ''}" data-search-text="${escapeAttr(searchText)}" data-dancers="${escapeAttr(dancerTokens)}" data-geo-continent="${escapeAttr(geo.continent)}" data-geo-country="${escapeAttr(geo.country)}" data-geo-state="${escapeAttr(geo.state)}" data-geo-city="${escapeAttr(geo.city)}">
                     <div class="event-header">
                         <div>
                             <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>

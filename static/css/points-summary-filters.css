@@ -1,0 +1,189 @@
+/* Points Summary — location filters (Events Calendar filter-field / wsdc-dd pattern) */
+.page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 8px 10px;
+  margin: 14px 0 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color, #d1d5db);
+  max-width: none;
+  overflow: visible;
+}
+
+.page-toolbar__search {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1 1 200px;
+  min-width: 0;
+  max-width: 420px;
+}
+
+.page-toolbar__search .search-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-toolbar__filters.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 4px 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: visible;
+}
+
+.page-toolbar .filter-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.page-toolbar .filter-field[hidden] {
+  display: none !important;
+}
+
+.page-toolbar .filter-label {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  line-height: 1.15;
+}
+
+.page-toolbar .cal-reset-field {
+  flex: 0 0 auto;
+  align-items: stretch;
+}
+
+.page-toolbar .cal-reset-btn {
+  height: 28px;
+  margin: 0;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-tertiary, #94a3b8);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.page-toolbar .cal-reset-btn:hover:not(:disabled),
+.page-toolbar .cal-reset-btn:focus-visible:not(:disabled) {
+  outline: none;
+  color: var(--color-primary-dark, #0b1221);
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.page-toolbar .cal-reset-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+#ptsContinentFilterDd { --wsdc-dd-width: 7.25rem; }
+#ptsCountryFilterDd { --wsdc-dd-width: 8rem; }
+#ptsStateFilterDd { --wsdc-dd-width: 6.5rem; }
+#ptsCityFilterDd { --wsdc-dd-width: 8.5rem; }
+
+/* Event counts in dropdown options (Events Calendar month-count style) */
+.page-toolbar .pts-filter-count {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.page-toolbar .pts-filter-count__paren {
+  color: var(--text-tertiary, #94a3b8);
+  font-weight: 400;
+}
+.page-toolbar .pts-filter-count__n {
+  color: var(--text-secondary, #64748b);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  /* Column layout from .wsdc-filter-bar: keep search flush left
+     (page-toolbar defaults to align-items: flex-end, which pushes it right). */
+  .page-toolbar.wsdc-filter-bar {
+    align-items: stretch;
+  }
+
+  .page-toolbar__search {
+    max-width: none;
+    width: 100%;
+    flex-basis: 100%;
+    align-self: stretch;
+    justify-content: flex-start;
+  }
+
+  .page-toolbar__search .search-box,
+  .page-toolbar .search-input {
+    width: 100%;
+    max-width: none;
+    text-align: left;
+  }
+
+  .page-toolbar__filters.filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: end;
+    justify-content: stretch;
+    gap: 8px 6px;
+    width: 100%;
+  }
+
+  .page-toolbar .filter-field {
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+  }
+
+  .page-toolbar .filter-field .wsdc-dd {
+    width: 100%;
+    --wsdc-dd-width: 100%;
+  }
+
+  /* No State: Clear alone on its row, centered. */
+  .page-toolbar .cal-reset-field {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: auto;
+    align-items: center;
+  }
+
+  .page-toolbar .cal-reset-btn {
+    width: auto;
+  }
+
+  /* State visible → row 2: City (center) + Clear (to its right). */
+  .page-toolbar__filters:has([data-state-filter]:not([hidden]))
+    .filter-field:has(#ptsCityFilterDd) {
+    grid-column: 2;
+  }
+
+  .page-toolbar__filters:has([data-state-filter]:not([hidden]))
+    .cal-reset-field {
+    grid-column: 3;
+    justify-self: stretch;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .page-toolbar__filters:has([data-state-filter]:not([hidden]))
+    .cal-reset-btn {
+    width: 100%;
+  }
+}
