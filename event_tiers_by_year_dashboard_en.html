@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="How many WSDC events held each division every year since 2018, and how big their Leader and Follower fields were — Tier 1 to Tier 6. Filter by years and location." />
-  <title>Event tiers by year | WSDC Analytics</title>
+  <title>Event Tiers By Year | WSDC Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
-  <meta property="og:title" content="Event tiers by year | WSDC Analytics">
+  <meta property="og:title" content="Event Tiers By Year | WSDC Analytics">
   <meta property="og:description" content="How many WSDC events held each division every year, and how big their Leader and Follower fields were.">
   <meta property="og:url" content="https://wsdc-analytics.github.io/event_tiers_by_year_dashboard_en.html">
   <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
@@ -758,7 +758,7 @@
     <section class="content">
       <header class="page-head">
         <div class="page-head__title-row">
-          <h1>Event tiers by year</h1>
+          <h1>Event Tiers By Year</h1>
           <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
             <span aria-hidden="true">i</span>
           </button>
@@ -1764,7 +1764,7 @@
     if (location.protocol === 'file:') {
       throw new Error('open via local server (python3 -m http.server), not file://');
     }
-    const res = await fetch("static/data/event_tiers_by_year.json?v=20261006-sync");
+    const res = await fetch("static/data/event_tiers_by_year.json?v=20261001-sync");
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     document.getElementById('dataUpdated').textContent =
