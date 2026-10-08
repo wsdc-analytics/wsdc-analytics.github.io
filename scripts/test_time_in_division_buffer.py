@@ -125,11 +125,11 @@ def test_advanced_drops_after_may_rights_lapse() -> None:
 
 
 def test_all_stars_ignores_champ_for_stay_and_must() -> None:
-    """Champ contests do not lengthen stay; Champ pts do not drive Must basket."""
+    """Champ contests below Must do not lengthen stay or drive Must basket."""
     events = [
         _ev("as0", "All-Stars", 2021, 3, 1, 150),  # May on AS path
         _ev("as1", "All-Stars", 2021, 6, 1, 10),  # post-May AS
-        _ev("ch1", "Champions", 2022, 1, 1, 20),  # petition Champ — ignored for stay
+        _ev("ch1", "Champions", 2022, 1, 1, 5),  # below Champ Must — ignored for stay
         _ev("as2", "All-Stars", 2022, 4, 1, 10),
     ]
     crossings = _crossing("2021-03", "2021-03-01", allowed_t=150.0)
@@ -140,8 +140,37 @@ def test_all_stars_ignores_champ_for_stay_and_must() -> None:
     assert stay["events"] == 2  # as1 + as2 only
     assert stay["basket"] != "must"  # 170 AS pts < 225
     assert stay["all_stars_points_at_end"] == 170.0
-    assert stay["champions_points_at_end"] == 20.0
+    assert stay["champions_points_at_end"] == 5.0
     assert stay["exit"] == "still"
+
+
+def test_required_champion_excluded_from_buffer() -> None:
+    """Career Champ Must (≥10) → not Buffer, even with later All-Stars points."""
+    events = [
+        _ev("ch0", "Champions", 2019, 5, 1, 10),
+        _ev("as0", "All-Stars", 2021, 3, 1, 150),
+        _ev("as1", "All-Stars", 2022, 1, 1, 20),
+    ]
+    crossings = _crossing("2021-03", "2021-03-01", allowed_t=150.0)
+    stay = tid.compute_stay_after_may(
+        events, "All-Stars", (2018, 1), crossings, RULES, OBS
+    )
+    assert stay is None
+
+
+def test_required_champion_before_first_as_still_excluded() -> None:
+    """Champ Must before first All-Stars point (before t0) still excludes."""
+    events = [
+        _ev("ch0", "Champions", 2015, 1, 1, 12),  # Must long before AS career
+        _ev("as0", "All-Stars", 2022, 4, 1, 150),
+        _ev("as1", "All-Stars", 2023, 2, 1, 20),
+    ]
+    crossings = _crossing("2022-04", "2022-04-01", allowed_t=150.0)
+    # t0 = first AS month — Champ events are earlier than t0.
+    stay = tid.compute_stay_after_may(
+        events, "All-Stars", (2022, 4), crossings, RULES, OBS
+    )
+    assert stay is None
 
 
 def test_all_stars_must_basket_while_still_buffering() -> None:
@@ -215,6 +244,8 @@ if __name__ == "__main__":
     test_novice_threshold_at_end_not_first_epoch()
     test_advanced_drops_after_may_rights_lapse()
     test_all_stars_ignores_champ_for_stay_and_must()
+    test_required_champion_excluded_from_buffer()
+    test_required_champion_before_first_as_still_excluded()
     test_all_stars_must_basket_while_still_buffering()
     test_all_stars_formal_era_clips_pre_2021_may()
     test_activity_years_for_division()
