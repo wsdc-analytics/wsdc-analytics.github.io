@@ -403,6 +403,16 @@
       line-height: 1.2;
     }
     .kpi .val-sub[hidden] { display: none; }
+    /* Inline muted count after a Buffer basket % (same size/color as .val-sub). */
+    .kpi .val-inline-muted {
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.01em;
+      color: var(--wsdc-color-text-muted, #6b7280);
+      margin-left: 0.35em;
+      white-space: nowrap;
+    }
 
     /* Small inline "i" that opens a short explanation. */
     .info-tip {
@@ -1055,7 +1065,6 @@
                 data-tip="Share of Buffer dancers who reached at least 25% of the May→Must point gap while staying in the lower division.">i</button>
             </div>
             <div class="val" id="kpiBufP25">—</div>
-            <div class="val-sub" id="kpiBufP25Sub" hidden></div>
           </div>
           <div class="kpi kpi-buffer" data-metric="buf_p50" id="kpiBtnBufP50" hidden>
             <div class="kpi__head">
@@ -1064,7 +1073,6 @@
                 data-tip="Share of Buffer dancers who reached at least 50% of the May→Must point gap while staying in the lower division.">i</button>
             </div>
             <div class="val" id="kpiBufP50">—</div>
-            <div class="val-sub" id="kpiBufP50Sub" hidden></div>
           </div>
           <div class="kpi kpi-buffer" data-metric="buf_p75" id="kpiBtnBufP75" hidden>
             <div class="kpi__head">
@@ -1073,7 +1081,6 @@
                 data-tip="Share of Buffer dancers who reached at least 75% of the May→Must point gap while staying in the lower division.">i</button>
             </div>
             <div class="val" id="kpiBufP75">—</div>
-            <div class="val-sub" id="kpiBufP75Sub" hidden></div>
           </div>
           <div class="kpi kpi-buffer" data-metric="buf_must" id="kpiBtnBufMust" hidden>
             <div class="kpi__head">
@@ -1082,7 +1089,6 @@
                 data-tip="Share of Buffer dancers whose May→Must basket is Must (career points in the lower division reached the Must threshold). They may still be competing in that division — same as the Must colour on the chart. For All-Stars this uses the All-Stars points path only (150→225), not Champions points.">i</button>
             </div>
             <div class="val" id="kpiBufMust">—</div>
-            <div class="val-sub" id="kpiBufMustSub" hidden></div>
           </div>
         </div>
 
@@ -1158,7 +1164,7 @@
             <div class="method-sec__body">
               <ul>
                 <li><strong>Division</strong> and <strong>Role</strong> pick the spells. <strong>Role status</strong> keeps Primary (spell role = dancer’s dominant role from the registry), Secondary (the other role), or All. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
-                <li>In <em>Buffer Dancers</em>, the Dancers card also shows what share the cohort is of all spells that <em>scored points</em> in the division in the selected years (same Role / Role status filters) — any contest with points in that division×role counts, not only May / Must / stay milestones. Basket and Share Must cards lead with the percentage; the absolute count sits underneath in muted type.</li>
+                <li>In <em>Buffer Dancers</em>, the Dancers card also shows what share the cohort is of all spells that <em>scored points</em> in the division in the selected years (same Role / Role status filters) — any contest with points in that division×role counts, not only May / Must / stay milestones. Basket and Share Must cards show the percentage at full KPI size, then a muted <em>| count</em> on the same line.</li>
                 <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone. Hidden in <em>Buffer Dancers</em> (always post-May).</li>
                 <li><strong>From / To year</strong> limit the Table, Scatter, Density and Buffer Dancers to spells whose milestone year falls in range (threshold year for the first three; end-of-stay year for Buffer Dancers). Dynamics always shows the full span. In <em>Timeline</em> (Scatter / Density) the year range is replaced by the month scrubber — see Timeline below.</li>
               </ul>
@@ -2007,14 +2013,20 @@
       const countPred = (pred) => rows.filter((s) => pred(stayOf(s))).length;
       const pctOf = (c) => (n ? (100 * c) / n : null);
       const fmtPct = (v) => (v == null ? '—' : `${Math.round(v * 10) / 10}%`);
-      const setBuf = (valId, subId, count) => {
-        document.getElementById(valId).textContent = fmtPct(pctOf(count));
-        setKpiSub(subId, n ? String(count) : '');
+      const setBuf = (valId, count) => {
+        const el = document.getElementById(valId);
+        if (!n) {
+          el.textContent = '—';
+          return;
+        }
+        el.innerHTML =
+          `${fmtPct(pctOf(count))}` +
+          `<span class="val-inline-muted"> |  ${count}</span>`;
       };
-      setBuf('kpiBufP25', 'kpiBufP25Sub', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 1));
-      setBuf('kpiBufP50', 'kpiBufP50Sub', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 2));
-      setBuf('kpiBufP75', 'kpiBufP75Sub', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 3));
-      setBuf('kpiBufMust', 'kpiBufMustSub', countPred((st) => st && st.basket === 'must'));
+      setBuf('kpiBufP25', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 1));
+      setBuf('kpiBufP50', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 2));
+      setBuf('kpiBufP75', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 3));
+      setBuf('kpiBufMust', countPred((st) => st && st.basket === 'must'));
 
       const scorers = divisionScorersInPeriod();
       const denom = scorers.length;
@@ -2040,10 +2052,6 @@
       if (eventsTip) eventsTip.dataset.tipLive = '';
     } else {
       setKpiSub('kpiNSub', '');
-      setKpiSub('kpiBufP25Sub', '');
-      setKpiSub('kpiBufP50Sub', '');
-      setKpiSub('kpiBufP75Sub', '');
-      setKpiSub('kpiBufMustSub', '');
       const nTip = document.querySelector('#kpiBtnN .info-tip');
       if (nTip) nTip.dataset.tipLive = '';
       const st = nextStats(rows);
