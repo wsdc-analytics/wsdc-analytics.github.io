@@ -525,7 +525,7 @@
     .legend-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
       font-size: 12px;
       color: var(--wsdc-color-text-muted, #4b5563);
@@ -540,6 +540,39 @@
       border-radius: 50%;
       margin-right: 5px;
       vertical-align: -1px;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      margin: 0;
+      padding: 2px 6px 2px 4px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .legend-item:hover {
+      background: rgba(15, 23, 42, 0.04);
+    }
+    .legend-item:focus-visible {
+      outline: var(--wsdc-focus-ring, 2px solid #2563eb);
+      outline-offset: 2px;
+    }
+    .legend-item.is-active {
+      border-color: rgba(15, 23, 42, 0.18);
+      background: rgba(15, 23, 42, 0.06);
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-weight: 600;
+    }
+    .legend-row.has-highlight .legend-item:not(.is-active) {
+      opacity: 0.38;
+    }
+    .legend-row.has-highlight .legend-item:not(.is-active):hover {
+      opacity: 0.7;
     }
     .viz-stage {
       flex: 1;
@@ -1323,6 +1356,8 @@
     metric: 'n',
     yearFrom: null,
     yearTo: null,
+    /** Buffer legend: basket key to highlight, or null for all equal. */
+    bufferBasketHighlight: null,
     chart: null,
     binM: 6,
     binE: 2,
@@ -2129,9 +2164,31 @@
     if (thrField) thrField.classList.toggle('is-hidden', isBufferMode());
   }
 
+  function setBufferBasketHighlight(key) {
+    if (!isBufferMode()) return;
+    if (!BUFFER_BASKET_ORDER.includes(key)) return;
+    state.bufferBasketHighlight =
+      state.bufferBasketHighlight === key ? null : key;
+    updateLegend();
+    if (state.chart) {
+      // Rebuild so highlighted basket paints above dimmed points.
+      state.chart.data.datasets = scatterDatasets(filteredRows(), state.threshold);
+      state.chart.update('none');
+    }
+  }
+
+  function bufferPointAlpha(basket) {
+    const hi = state.bufferBasketHighlight;
+    if (!hi) return 1;
+    return basket === hi ? 1 : 0.16;
+  }
+
   function updateLegend() {
     const row = document.getElementById('legendRow');
     row.replaceChildren();
+    row.classList.remove('has-highlight');
+    row.removeAttribute('role');
+    row.removeAttribute('aria-label');
     if (state.mode === 'table' || state.mode === 'density') return;
     if (state.mode === 'dynamics') {
       if (state.role !== 'Both') return;
@@ -2146,13 +2203,31 @@
       return;
     }
     if (isBufferMode()) {
+      const hi = state.bufferBasketHighlight;
+      if (hi) row.classList.add('has-highlight');
+      row.setAttribute('role', 'group');
+      row.setAttribute('aria-label', 'Highlight a May→Must basket');
       BUFFER_BASKET_ORDER.forEach((key) => {
-        const span = document.createElement('span');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'legend-item' + (hi === key ? ' is-active' : '');
+        btn.setAttribute('aria-pressed', hi === key ? 'true' : 'false');
+        btn.title = hi === key
+          ? `Clear highlight for ${BUFFER_BASKET_LABEL[key]}`
+          : `Highlight ${BUFFER_BASKET_LABEL[key]} basket`;
+        btn.setAttribute(
+          'aria-label',
+          hi === key
+            ? `Clear highlight for ${BUFFER_BASKET_LABEL[key]}`
+            : `Highlight ${BUFFER_BASKET_LABEL[key]}`
+        );
         const sw = document.createElement('span');
         sw.className = 'swatch';
         sw.style.background = BUFFER_BASKET_COLOR[key];
-        span.append(sw, document.createTextNode(BUFFER_BASKET_LABEL[key]));
-        row.appendChild(span);
+        sw.setAttribute('aria-hidden', 'true');
+        btn.append(sw, document.createTextNode(BUFFER_BASKET_LABEL[key]));
+        btn.addEventListener('click', () => setBufferBasketHighlight(key));
+        row.appendChild(btn);
       });
       return;
     }
@@ -2218,19 +2293,50 @@
     const laid = radialLayout(rows, thr);
     if (isBufferMode()) {
       const allPts = [...(laid.Leader || []), ...(laid.Follower || [])];
+      const hi = state.bufferBasketHighlight;
+      // Draw dimmed baskets first so the highlighted basket paints on top.
+      const ordered = !hi
+        ? allPts
+        : [
+            ...allPts.filter((p) => (stayOf(p.raw) || {}).basket !== hi),
+            ...allPts.filter((p) => (stayOf(p.raw) || {}).basket === hi),
+          ];
       return [{
         label: 'Buffer Dancers',
-        data: allPts,
+        data: ordered,
         backgroundColor: 'rgba(255, 255, 255, 0)',
         borderColor: (ctx) => {
           const s = ctx.raw && ctx.raw.raw;
-          const basket = stayOf(s) && stayOf(s).basket;
-          return BUFFER_BASKET_COLOR[basket] || BUFFER_BASKET_COLOR.lt25;
+          const basket = (stayOf(s) && stayOf(s).basket) || 'lt25';
+          return colorAlpha(
+            BUFFER_BASKET_COLOR[basket] || BUFFER_BASKET_COLOR.lt25,
+            bufferPointAlpha(basket)
+          );
         },
-        borderWidth: 1.6,
-        pointRadius: 3.2,
-        pointHoverRadius: 5,
-        pointHitRadius: 7,
+        borderWidth: (ctx) => {
+          const s = ctx.raw && ctx.raw.raw;
+          const basket = stayOf(s) && stayOf(s).basket;
+          if (hi && basket === hi) return 2.2;
+          return 1.6;
+        },
+        pointRadius: (ctx) => {
+          const s = ctx.raw && ctx.raw.raw;
+          const basket = stayOf(s) && stayOf(s).basket;
+          if (!hi) return 3.2;
+          return basket === hi ? 4.2 : 2.4;
+        },
+        pointHoverRadius: (ctx) => {
+          const s = ctx.raw && ctx.raw.raw;
+          const basket = stayOf(s) && stayOf(s).basket;
+          if (!hi) return 5;
+          return basket === hi ? 6.5 : 3.5;
+        },
+        pointHitRadius: (ctx) => {
+          const s = ctx.raw && ctx.raw.raw;
+          const basket = stayOf(s) && stayOf(s).basket;
+          if (!hi) return 7;
+          return basket === hi ? 9 : 3;
+        },
         pointStyle: 'circle',
         clip: false,
       }];
@@ -3432,6 +3538,7 @@
           state.metric = 'n';
         }
         if (value === 'table') state.tablePage = 0;
+        if (value !== 'buffer') state.bufferBasketHighlight = null;
         destroyChart();
         // Timeline only for Scatter/Density; leaving chart modes resets to Static floor.
         if (value !== 'scatter' && value !== 'density') {
