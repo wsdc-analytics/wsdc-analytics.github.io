@@ -279,8 +279,9 @@
     .tid-filters .filter-field:has(#divisionSelect) { --wsdc-dd-width: 9rem; }
     .tid-filters .filter-field:has(#thresholdSelect),
     .tid-filters .filter-field:has(#roleSelect) { --wsdc-dd-width: 7.25rem; }
+    .tid-filters .filter-field:has(#roleStatusSelect) { --wsdc-dd-width: 7.5rem; }
     .tid-filters.is-dynamics-role .filter-field:has(#roleSelect) { --wsdc-dd-width: 11.5rem; }
-    .tid-filters .filter-field:has(#modeSelect) { --wsdc-dd-width: 8.25rem; }
+    .tid-filters .filter-field:has(#modeSelect) { --wsdc-dd-width: 10.75rem; }
     .tid-filters .filter-field:has(#yearFromSelect),
     .tid-filters .filter-field:has(#yearToSelect) { --wsdc-dd-width: 4.5rem; }
     .tid-filters .wsdc-dd--field { width: var(--wsdc-dd-width, 7.5rem); }
@@ -391,6 +392,17 @@
       margin-top: 1px;
       line-height: 1.15;
     }
+    .kpi .val-sub {
+      margin-top: 2px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.01em;
+      color: var(--wsdc-color-text-muted, #6b7280);
+      line-height: 1.2;
+    }
+    .kpi .val-sub[hidden] { display: none; }
 
     /* Small inline "i" that opens a short explanation. */
     .info-tip {
@@ -902,7 +914,7 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. Switch between Table, Scatter, Density and Dynamics; on Scatter and Density you can also run a <em>Timeline</em> month by month. The <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
+        <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. <em>Buffer Dancers</em> focuses on dancers who stayed and kept scoring in the lower division after May. Switch between Table, Scatter, Density, Dynamics and Buffer Dancers; on Scatter and Density you can also run a <em>Timeline</em> month by month. The <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
       </header>
 
       <div class="tid-filter-stack">
@@ -917,7 +929,7 @@
               <option value="All-Stars">All-Stars</option>
             </select>
           </div>
-          <div class="filter-field">
+          <div class="filter-field" id="thresholdField">
             <label class="filter-label" for="thresholdSelect" id="thresholdLabel">Threshold</label>
             <select id="thresholdSelect" class="wsdc-select" aria-labelledby="thresholdLabel">
               <option value="allowed" selected>May</option>
@@ -932,6 +944,14 @@
               <option value="Follower">Follower</option>
             </select>
           </div>
+          <div class="filter-field" id="roleStatusField">
+            <label class="filter-label" for="roleStatusSelect" id="roleStatusLabel">Role status</label>
+            <select id="roleStatusSelect" class="wsdc-select" aria-labelledby="roleStatusLabel">
+              <option value="All" selected>All</option>
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+            </select>
+          </div>
           <div class="filter-field">
             <label class="filter-label" for="modeSelect" id="modeLabel">Chart</label>
             <select id="modeSelect" class="wsdc-select" aria-labelledby="modeLabel">
@@ -939,6 +959,7 @@
               <option value="scatter">Scatter</option>
               <option value="density">Density</option>
               <option value="dynamics">Dynamics</option>
+              <option value="buffer">Buffer Dancers</option>
             </select>
           </div>
           <div class="filter-field" id="yearFromField">
@@ -987,15 +1008,18 @@
             <div class="kpi__head">
               <span class="lbl">Dancers</span>
               <button type="button" class="info-tip" aria-label="What is Dancers?"
-                data-tip="How many dancer × role spells match the current filters. A dancer who competes as both Leader and Follower counts twice.">i</button>
+                data-tip="How many dancer × role spells match the current filters. A dancer who competes as both Leader and Follower counts twice."
+                data-tip-buffer="Buffer cohort: spells that reached May and scored again in the same division and role afterwards, with the stay ending in the selected years. A dancer who competes in both roles counts twice. The line below compares the cohort with all spells that scored points in this division in those years (same Role / Role status).">i</button>
             </div>
             <div class="val" id="kpiN">—</div>
+            <div class="val-sub" id="kpiNSub" hidden></div>
           </div>
           <div class="kpi" data-metric="months" id="kpiBtnMonths">
             <div class="kpi__head">
               <span class="lbl">Median months</span>
               <button type="button" class="info-tip" aria-label="What is Median months?"
-                data-tip="Typical time from a dancer's first point in this division to the May / Must threshold. Half of the dancers were faster, half slower.">i</button>
+                data-tip="Typical time from a dancer's first point in this division to the May / Must threshold. Half of the dancers were faster, half slower."
+                data-tip-buffer="Typical time from May to the last lower-division point in the stay window. The window ends at Must, the first next-division point, or the data cut-off (All-Stars: see Methodology → Buffer Dancers).">i</button>
             </div>
             <div class="val" id="kpiMonths">—</div>
           </div>
@@ -1003,7 +1027,8 @@
             <div class="kpi__head">
               <span class="lbl">Median events</span>
               <button type="button" class="info-tip" aria-label="What is Median events?"
-                data-tip="Typical number of events a dancer scored at in this division before reaching the threshold — counting the first point and the event that crossed it.">i</button>
+                data-tip="Typical number of events a dancer scored at in this division before reaching the threshold — counting the first point and the event that crossed it."
+                data-tip-buffer="Typical number of scored events in this division and role strictly after May, inside the stay window. Advanced counts only contests where the dancer still held May; All-Stars counts only All-Stars contests.">i</button>
             </div>
             <div class="val" id="kpiEvents">—</div>
           </div>
@@ -1022,6 +1047,42 @@
                 data-tip="Typical wait between reaching the threshold and the first point in the next division, among those who have moved up. In Dynamics the year is the year they entered the next division.">i</button>
             </div>
             <div class="val" id="kpiNextPause">—</div>
+          </div>
+          <div class="kpi kpi-buffer" data-metric="buf_p25" id="kpiBtnBufP25" hidden>
+            <div class="kpi__head">
+              <span class="lbl">≥25%</span>
+              <button type="button" class="info-tip" aria-label="What is ≥25%?"
+                data-tip="Share of Buffer dancers who reached at least 25% of the May→Must point gap while staying in the lower division.">i</button>
+            </div>
+            <div class="val" id="kpiBufP25">—</div>
+            <div class="val-sub" id="kpiBufP25Sub" hidden></div>
+          </div>
+          <div class="kpi kpi-buffer" data-metric="buf_p50" id="kpiBtnBufP50" hidden>
+            <div class="kpi__head">
+              <span class="lbl">≥50%</span>
+              <button type="button" class="info-tip" aria-label="What is ≥50%?"
+                data-tip="Share of Buffer dancers who reached at least 50% of the May→Must point gap while staying in the lower division.">i</button>
+            </div>
+            <div class="val" id="kpiBufP50">—</div>
+            <div class="val-sub" id="kpiBufP50Sub" hidden></div>
+          </div>
+          <div class="kpi kpi-buffer" data-metric="buf_p75" id="kpiBtnBufP75" hidden>
+            <div class="kpi__head">
+              <span class="lbl">≥75%</span>
+              <button type="button" class="info-tip" aria-label="What is ≥75%?"
+                data-tip="Share of Buffer dancers who reached at least 75% of the May→Must point gap while staying in the lower division.">i</button>
+            </div>
+            <div class="val" id="kpiBufP75">—</div>
+            <div class="val-sub" id="kpiBufP75Sub" hidden></div>
+          </div>
+          <div class="kpi kpi-buffer" data-metric="buf_must" id="kpiBtnBufMust" hidden>
+            <div class="kpi__head">
+              <span class="lbl">Share Must</span>
+              <button type="button" class="info-tip" aria-label="What is Share Must?"
+                data-tip="Share of Buffer dancers whose May→Must basket is Must (career points in the lower division reached the Must threshold). They may still be competing in that division — same as the Must colour on the chart. For All-Stars this uses the All-Stars points path only (150→225), not Champions points.">i</button>
+            </div>
+            <div class="val" id="kpiBufMust">—</div>
+            <div class="val-sub" id="kpiBufMustSub" hidden></div>
           </div>
         </div>
 
@@ -1096,19 +1157,32 @@
             <summary>Filters &amp; KPIs</summary>
             <div class="method-sec__body">
               <ul>
-                <li><strong>Division</strong> and <strong>Role</strong> pick the spells. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
-                <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone.</li>
-                <li><strong>From / To year</strong> limit the Table, Scatter and Density to spells whose threshold was reached in those years. Dynamics always shows the full span. In <em>Timeline</em> (Scatter / Density) the year range is replaced by the month scrubber — see Timeline below.</li>
+                <li><strong>Division</strong> and <strong>Role</strong> pick the spells. <strong>Role status</strong> keeps Primary (spell role = dancer’s dominant role from the registry), Secondary (the other role), or All. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
+                <li>In <em>Buffer Dancers</em>, the Dancers card also shows what share the cohort is of all spells that <em>scored points</em> in the division in the selected years (same Role / Role status filters) — any contest with points in that division×role counts, not only May / Must / stay milestones. Basket and Share Must cards lead with the percentage; the absolute count sits underneath in muted type.</li>
+                <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone. Hidden in <em>Buffer Dancers</em> (always post-May).</li>
+                <li><strong>From / To year</strong> limit the Table, Scatter, Density and Buffer Dancers to spells whose milestone year falls in range (threshold year for the first three; end-of-stay year for Buffer Dancers). Dynamics always shows the full span. In <em>Timeline</em> (Scatter / Density) the year range is replaced by the month scrubber — see Timeline below.</li>
               </ul>
               <p>The cards on the left summarise whatever is currently filtered:</p>
               <ul>
                 <li><strong>Dancers</strong> — how many spells match.</li>
-                <li><strong>Median months</strong> / <strong>Median events</strong> — the typical time and number of events from the first point to the threshold. Half of the dancers were faster, half slower; medians are not pulled up by a few very long spells.</li>
+                <li><strong>Median months</strong> / <strong>Median events</strong> — typical time and events to the threshold (or, in Buffer Dancers, months and events after May in the stay window).</li>
                 <li><strong>Share next</strong> — of those who reached the threshold, how many already have a point in the next division.</li>
                 <li><strong>Median pause</strong> — among those who moved up, the typical wait between the threshold and their first next-level point.</li>
+                <li><strong>Buffer cards</strong> (≥25% / ≥50% / ≥75% / Share Must) — share of Buffer Dancers who reached each May→Must basket while staying in the lower division. Share Must matches the Must basket / chart colour (threshold reached), not necessarily an exit out of the division.</li>
               </ul>
               <p>In Timeline the same cards update for the month under the scrubber. Share next and Median pause only count dancers who had already entered the next division <em>by that month</em> — not anyone who moved up later in the data.</p>
               <p class="method-example"><strong>Reading the cards.</strong> Suppose Novice · Follower · May shows <em>Dancers 412 · Median months 8.1 · Median events 5 · Share next 63% · Median pause 6.4</em>. A typical Novice Follower in that selection needed about eight months and five events to be allowed up, roughly two in three have since scored in Intermediate, and those who did usually waited about half a year.</p>
+            </div>
+          </details>
+
+          <details class="method-sec">
+            <summary>Buffer Dancers</summary>
+            <div class="method-sec__body">
+              <p><strong>Buffer Dancers</strong> looks at dancers who reached <em>May</em> and then still scored at least once in the <strong>same division and role</strong>. We do not try to infer “attempted the next division but missed finals” — only registry points in the lower division count. Dancers who already had a next-division point <em>before</em> their first post-May lower point are excluded (mixed / dual contests). For All-Stars, Champions points are not an exclusion (see below).</p>
+              <p>Each point is one spell. <strong>X</strong> = months from May to the end of the stay window; <strong>Y</strong> = scored events in the lower division <em>strictly after</em> May. Colour = highest May→Must basket reached: &lt;25%, ≥25%, ≥50%, ≥75%, or Must. Baskets use the point thresholds in force at the end of the stay. The window ends at the earliest of Must, first next-division point, or the data cut-off — measured to the last lower-division point in that window.</p>
+              <p><strong>All-Stars:</strong> Buffer Dancers only counts the formal All-Stars→Champions ladder era (<strong>2021+</strong>). If registry May was earlier, effective May is the first <em>All-Stars</em> event in 2021+. Months and events count <strong>All-Stars performances only</strong> — Champions contests are not buffer stays (including petition). Until a petition flag exists in the registry, Buffer Dancers <strong>Must and colour use the All-Stars points scale only</strong> (career pts vs 150 → 225). Champions points appear in the tooltip as context; neither Champions points nor a first Champions contest end the buffer. If a dancer already had 225 All-Stars points by their (effective) May event, they are Must from the start and the window runs to the data cut-off.</p>
+              <p>Year filters use the <strong>end of the stay</strong>, not the May date. Floors match the rest of the tool except <strong>Advanced from 2023</strong> (after the 36-month Advanced window was removed). For Advanced, only contests where the dancer <em>still</em> meets that year’s May threshold count — if the bar rises (e.g. 45→60) or a rolling window expires their points, later Advanced results are not Buffer Dancers. Threshold May/Must is hidden here — Buffer Dancers is always post-May. Timeline is not available in Buffer Dancers.</p>
+              <p class="method-example"><strong>Reading it.</strong> A dense run of green Must points with few events means many dancers who stayed after May quickly filled the remaining gap. Long grey &lt;25% tails are people who kept competing below without moving far toward Must.</p>
             </div>
           </details>
 
@@ -1171,7 +1245,7 @@
               <p><strong>Months</strong> are the number of days between the start dates of two events, divided by the average month length (30.44 days) and rounded to one decimal. Two points at the same event count as 0.1 month, not zero. When an event has no known dates, we fall back to counting calendar months inclusively (March to July = 5).</p>
               <p><strong>Events</strong> are distinct competitions where the dancer scored in this division and role — the first-point event and the threshold event both count.</p>
               <p><strong>Pause</strong> runs from the threshold event to the first event in the next division. Some dancers move up before they reach the threshold, for example All-Stars who enter Champions by petition; for them we count from their <em>last</em> point in the division instead, so the pause is never negative.</p>
-              <p><strong>All-Stars</strong> before 2021 had no formal Champions rules, so only Champions points counted; from 2021 either Champions or All-Stars points can satisfy the threshold. <strong>Advanced</strong> points expire on a rolling 36-month window — that window is still checked in calendar months, exactly as the WSDC does.</p>
+              <p><strong>All-Stars</strong> before 2021 had no formal Champions rules, so only Champions points counted; from 2021 either Champions or All-Stars points can satisfy the threshold. <strong>Advanced</strong> points counted on a rolling 36-month window through 2022 (checked in calendar months, as the WSDC did); from 2023 Advanced points are cumulative and the bar moved from 45 / 60 to 60 / 90.</p>
               <p class="method-example"><strong>Example.</strong> First Novice point at an event starting 15 March 2019, May threshold at an event starting 9 October 2020: 574 days ÷ 30.44 = <strong>18.9 months</strong>. Between them Anna scored at seven more events, so <strong>Events = 9</strong>.</p>
             </div>
           </details>
@@ -1185,6 +1259,23 @@
   <script>
 (function () {
   const COLOR = { Leader: '#6366F1', Follower: '#F43F5E', All: '#6B7280' };
+  /** Buffer chart: max May→Must basket reached (point color). */
+  const BUFFER_BASKET_COLOR = {
+    lt25: '#94A3B8',
+    p25: '#38BDF8',
+    p50: '#818CF8',
+    p75: '#F59E0B',
+    must: '#10B981',
+  };
+  const BUFFER_BASKET_ORDER = ['lt25', 'p25', 'p50', 'p75', 'must'];
+  const BUFFER_BASKET_LABEL = {
+    lt25: '<25%',
+    p25: '≥25%',
+    p50: '≥50%',
+    p75: '≥75%',
+    must: 'Must',
+  };
+  const BUFFER_BASKET_RANK = { lt25: 0, p25: 1, p50: 2, p75: 3, must: 4 };
   const PAGE_SIZE = 50;
   const MIN_N_LINE = 10;
   /** Timeline: ms per month at ×1 (= former ×0.5; ≈30–45s Novice run). */
@@ -1198,6 +1289,13 @@
     Advanced: 2018,
     'All-Stars': 2021,
   };
+  /** Buffer mode: Advanced only after 36-month Advanced window removed (2023). */
+  const BUFFER_YEAR_FLOOR = {
+    Novice: 2018,
+    Intermediate: 2018,
+    Advanced: 2023,
+    'All-Stars': 2021,
+  };
   const DEFAULT_YEAR = 2026;
   const METRIC_LABEL = {
     n: 'Dancers',
@@ -1206,12 +1304,14 @@
     next_share: 'Share next',
     next_pause: 'Median pause',
   };
+  const DATA_CACHE = '20261008-activity-years';
 
   const state = {
     data: null,
     division: 'Novice',
     threshold: 'allowed',
     role: 'All',
+    roleStatus: 'All',
     mode: 'table',
     viewMode: 'static',
     metric: 'n',
@@ -1251,7 +1351,7 @@
   const medianGuidesPlugin = {
     id: 'medianGuides',
     afterDatasetsDraw(chart) {
-      if (state.mode !== 'scatter' && state.mode !== 'density') return;
+      if (state.mode !== 'scatter' && state.mode !== 'density' && state.mode !== 'buffer') return;
       const mx = state.medianMonths;
       const my = state.medianEvents;
       if (mx == null || my == null) return;
@@ -1406,7 +1506,23 @@
   }
 
   function yearFloorForDivision(division) {
+    if (state.mode === 'buffer') return BUFFER_YEAR_FLOOR[division] ?? 2018;
     return YEAR_FLOOR[division] ?? 2018;
+  }
+
+  function isBufferMode() {
+    return state.mode === 'buffer';
+  }
+
+  function stayOf(s) {
+    return s && s.stay_after_may ? s.stay_after_may : null;
+  }
+
+  function stayEndYear(s) {
+    const stay = stayOf(s);
+    if (!stay || !stay.end_ym) return null;
+    const y = Number(String(stay.end_ym).slice(0, 4));
+    return Number.isFinite(y) ? y : null;
   }
 
   function isTimelineActive() {
@@ -1548,15 +1664,21 @@
     if (fadesActive()) ensureFadeLoop();
   }
 
+  function matchesRoleStatus(s) {
+    if (state.roleStatus === 'All') return true;
+    return (s.role_status || 'unknown') === state.roleStatus;
+  }
+
   function timelineSortedRows() {
     const thr = state.threshold;
     const floor = yearFloorForDivision(state.division);
     const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
-    const key = `${state.division}|${thr}|${state.role}|${floor}`;
+    const key = `${state.division}|${thr}|${state.role}|${state.roleStatus}|${floor}`;
     if (state.tl.sortedCacheKey === key && state.tl.sortedRows) return state.tl.sortedRows;
     const rows = (state.data?.spells || []).filter((s) => {
       if (s.division !== state.division) return false;
       if (roleFilter && s.role !== roleFilter) return false;
+      if (!matchesRoleStatus(s)) return false;
       const hit = s[thr];
       if (!hit || !hit.done_ym) return false;
       const y = doneYear(hit);
@@ -1779,9 +1901,20 @@
     const y1 = state.yearTo;
     const floor = yearFloorForDivision(state.division);
     const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
+    const buffer = isBufferMode();
     return d.spells.filter((s) => {
       if (s.division !== state.division) return false;
       if (roleFilter && s.role !== roleFilter) return false;
+      if (!matchesRoleStatus(s)) return false;
+      if (buffer) {
+        const stay = stayOf(s);
+        if (!stay) return false;
+        const y = stayEndYear(s);
+        if (y == null || y < floor) return false;
+        if (ignoreYears) return true;
+        if (y0 == null || y1 == null) return false;
+        return y >= y0 && y <= y1;
+      }
       const hit = s[thr];
       if (!hit) return false;
       const y = doneYear(hit);
@@ -1796,9 +1929,70 @@
     return filteredRows({ ignoreYears: state.mode === 'dynamics' });
   }
 
+  /** Calendar years the spell scored in this division (prefer pipeline activity_years). */
+  function spellActivityYears(s) {
+    if (Array.isArray(s.activity_years) && s.activity_years.length) {
+      return s.activity_years
+        .map((y) => Number(y))
+        .filter((y) => Number.isFinite(y));
+    }
+    // Fallback for older shards without activity_years.
+    const years = [];
+    if (s.first_ym) {
+      const y = Number(String(s.first_ym).slice(0, 4));
+      if (Number.isFinite(y)) years.push(y);
+    }
+    ['allowed', 'required'].forEach((k) => {
+      const y = doneYear(s[k]);
+      if (y != null) years.push(y);
+    });
+    const stay = stayOf(s);
+    if (stay) {
+      ['may_ym', 'end_ym'].forEach((k) => {
+        if (!stay[k]) return;
+        const y = Number(String(stay[k]).slice(0, 4));
+        if (Number.isFinite(y)) years.push(y);
+      });
+    }
+    return years;
+  }
+
+  /** Spells in current division×role×status that scored points in From–To years. */
+  function divisionScorersInPeriod() {
+    const d = state.data;
+    if (!d) return [];
+    const y0 = state.yearFrom;
+    const y1 = state.yearTo;
+    if (y0 == null || y1 == null) return [];
+    const roleFilter = state.role === 'All' || state.role === 'Both' ? null : state.role;
+    return (d.spells || []).filter((s) => {
+      if (s.division !== state.division) return false;
+      if (roleFilter && s.role !== roleFilter) return false;
+      if (!matchesRoleStatus(s)) return false;
+      return spellActivityYears(s).some((y) => y >= y0 && y <= y1);
+    });
+  }
+
+  function setKpiSub(id, text) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!text) {
+      el.hidden = true;
+      el.textContent = '';
+      return;
+    }
+    el.hidden = false;
+    el.textContent = text;
+  }
+
   function updateKpis(rows, thr) {
-    const months = rows.map((s) => s[thr].months);
-    const events = rows.map((s) => spellEvents(s, thr));
+    const buffer = isBufferMode();
+    const months = buffer
+      ? rows.map((s) => stayOf(s).months)
+      : rows.map((s) => s[thr].months);
+    const events = buffer
+      ? rows.map((s) => stayOf(s).events)
+      : rows.map((s) => spellEvents(s, thr));
     const thin = isTimelineActive() && rows.length < MIN_N_LINE;
     state.medianMonths = thin ? null : median(months);
     state.medianEvents = thin ? null : median(events);
@@ -1808,28 +2002,76 @@
     document.getElementById('kpiEvents').textContent =
       state.medianEvents == null ? '—' : String(Math.round(state.medianEvents * 10) / 10);
 
-    const st = nextStats(rows);
-    const shareEl = document.getElementById('kpiNextShare');
-    const pauseEl = document.getElementById('kpiNextPause');
-    shareEl.textContent =
-      thin || st.share == null ? '—' : `${Math.round(st.share * 10) / 10}%`;
-    pauseEl.textContent =
-      thin || st.medianPause == null || (isTimelineActive() && st.pauseN < MIN_N_LINE)
-        ? '—'
-        : String(Math.round(st.medianPause * 10) / 10);
-    // Live detail appended to the ⓘ explanations (counts behind the two "next" cards).
-    const shareTip = document.querySelector('#kpiBtnNextShare .info-tip');
-    const pauseTip = document.querySelector('#kpiBtnNextPause .info-tip');
-    const asOfNote = isTimelineActive() ? ` as of ${formatYm(timelineAsOfYm())}` : '';
-    if (shareTip) {
-      shareTip.dataset.tipLive = rows.length
-        ? `Now: ${st.withNext} of ${rows.length} dancers${asOfNote}.`
-        : '';
-    }
-    if (pauseTip) {
-      pauseTip.dataset.tipLive = st.pauseN
-        ? `Now: median of ${st.pauseN} pauses${asOfNote}.`
-        : '';
+    if (buffer) {
+      const n = rows.length;
+      const countPred = (pred) => rows.filter((s) => pred(stayOf(s))).length;
+      const pctOf = (c) => (n ? (100 * c) / n : null);
+      const fmtPct = (v) => (v == null ? '—' : `${Math.round(v * 10) / 10}%`);
+      const setBuf = (valId, subId, count) => {
+        document.getElementById(valId).textContent = fmtPct(pctOf(count));
+        setKpiSub(subId, n ? String(count) : '');
+      };
+      setBuf('kpiBufP25', 'kpiBufP25Sub', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 1));
+      setBuf('kpiBufP50', 'kpiBufP50Sub', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 2));
+      setBuf('kpiBufP75', 'kpiBufP75Sub', countPred((st) => st && (BUFFER_BASKET_RANK[st.basket] || 0) >= 3));
+      setBuf('kpiBufMust', 'kpiBufMustSub', countPred((st) => st && st.basket === 'must'));
+
+      const scorers = divisionScorersInPeriod();
+      const denom = scorers.length;
+      if (n && denom) {
+        const share = (100 * n) / denom;
+        setKpiSub('kpiNSub', `${Math.round(share * 10) / 10}% of ${denom} scored`);
+      } else {
+        setKpiSub('kpiNSub', '');
+      }
+
+      const nTip = document.querySelector('#kpiBtnN .info-tip');
+      if (nTip) {
+        const yrs = state.yearFrom === state.yearTo
+          ? String(state.yearFrom)
+          : `${state.yearFrom}–${state.yearTo}`;
+        nTip.dataset.tipLive = n && denom
+          ? `Now: ${n} of ${denom} ${state.division} spells that scored points in ${yrs} (same Role / Role status).`
+          : '';
+      }
+      const monthsTip = document.querySelector('#kpiBtnMonths .info-tip');
+      const eventsTip = document.querySelector('#kpiBtnEvents .info-tip');
+      if (monthsTip) monthsTip.dataset.tipLive = '';
+      if (eventsTip) eventsTip.dataset.tipLive = '';
+    } else {
+      setKpiSub('kpiNSub', '');
+      setKpiSub('kpiBufP25Sub', '');
+      setKpiSub('kpiBufP50Sub', '');
+      setKpiSub('kpiBufP75Sub', '');
+      setKpiSub('kpiBufMustSub', '');
+      const nTip = document.querySelector('#kpiBtnN .info-tip');
+      if (nTip) nTip.dataset.tipLive = '';
+      const st = nextStats(rows);
+      const shareEl = document.getElementById('kpiNextShare');
+      const pauseEl = document.getElementById('kpiNextPause');
+      shareEl.textContent =
+        thin || st.share == null ? '—' : `${Math.round(st.share * 10) / 10}%`;
+      pauseEl.textContent =
+        thin || st.medianPause == null || (isTimelineActive() && st.pauseN < MIN_N_LINE)
+          ? '—'
+          : String(Math.round(st.medianPause * 10) / 10);
+      const shareTip = document.querySelector('#kpiBtnNextShare .info-tip');
+      const pauseTip = document.querySelector('#kpiBtnNextPause .info-tip');
+      const asOfNote = isTimelineActive() ? ` as of ${formatYm(timelineAsOfYm())}` : '';
+      if (shareTip) {
+        shareTip.dataset.tipLive = rows.length
+          ? `Now: ${st.withNext} of ${rows.length} dancers${asOfNote}.`
+          : '';
+      }
+      if (pauseTip) {
+        pauseTip.dataset.tipLive = st.pauseN
+          ? `Now: median of ${st.pauseN} pauses${asOfNote}.`
+          : '';
+      }
+      const monthsTip = document.querySelector('#kpiBtnMonths .info-tip');
+      const eventsTip = document.querySelector('#kpiBtnEvents .info-tip');
+      if (monthsTip) monthsTip.dataset.tipLive = '';
+      if (eventsTip) eventsTip.dataset.tipLive = '';
     }
     const thDone = document.getElementById('thDone');
     if (thDone) thDone.textContent = thr === 'allowed' ? 'May reached' : 'Must reached';
@@ -1838,11 +2080,15 @@
   function syncKpiChrome() {
     const row = document.getElementById('kpiRow');
     const tableOrDyn = state.mode === 'table' || state.mode === 'dynamics';
+    const buffer = isBufferMode();
     const selectable = state.mode === 'dynamics';
     row.classList.toggle('is-selectable', selectable);
     document.getElementById('kpiHint').hidden = !selectable;
     row.querySelectorAll('.kpi-table-dyn').forEach((btn) => {
       btn.hidden = !tableOrDyn;
+    });
+    row.querySelectorAll('.kpi-buffer').forEach((btn) => {
+      btn.hidden = !buffer;
     });
     if (!tableOrDyn && (state.metric === 'next_share' || state.metric === 'next_pause')) {
       state.metric = 'n';
@@ -1871,6 +2117,8 @@
     const hide = state.mode === 'dynamics' || isTimelineActive();
     document.getElementById('yearFromField').classList.toggle('is-hidden', hide);
     document.getElementById('yearToField').classList.toggle('is-hidden', hide);
+    const thrField = document.getElementById('thresholdField');
+    if (thrField) thrField.classList.toggle('is-hidden', isBufferMode());
   }
 
   function updateLegend() {
@@ -1889,6 +2137,17 @@
       });
       return;
     }
+    if (isBufferMode()) {
+      BUFFER_BASKET_ORDER.forEach((key) => {
+        const span = document.createElement('span');
+        const sw = document.createElement('span');
+        sw.className = 'swatch';
+        sw.style.background = BUFFER_BASKET_COLOR[key];
+        span.append(sw, document.createTextNode(BUFFER_BASKET_LABEL[key]));
+        row.appendChild(span);
+      });
+      return;
+    }
     const roles = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
     roles.forEach((role) => {
       const span = document.createElement('span');
@@ -1901,10 +2160,11 @@
   }
 
   function radialLayout(rows, thr) {
+    const buffer = isBufferMode();
     const groups = new Map();
     rows.forEach((s) => {
-      const mx = s[thr].months;
-      const ey = spellEvents(s, thr);
+      const mx = buffer ? stayOf(s).months : s[thr].months;
+      const ey = buffer ? stayOf(s).events : spellEvents(s, thr);
       const key = mx + '|' + ey;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(s);
@@ -1914,8 +2174,12 @@
     groups.forEach((list, key) => {
       const [mx, ey] = key.split('|').map(Number);
       list.sort((a, b) => {
-        if (stable) {
+        if (stable && !buffer) {
           const ya = String(a[thr].done_ym).localeCompare(String(b[thr].done_ym));
+          if (ya) return ya;
+        }
+        if (buffer) {
+          const ya = String(stayOf(a).end_ym || '').localeCompare(String(stayOf(b).end_ym || ''));
           if (ya) return ya;
         }
         const id = String(a.id).localeCompare(String(b.id), undefined, { numeric: true });
@@ -1944,6 +2208,25 @@
 
   function scatterDatasets(rows, thr) {
     const laid = radialLayout(rows, thr);
+    if (isBufferMode()) {
+      const allPts = [...(laid.Leader || []), ...(laid.Follower || [])];
+      return [{
+        label: 'Buffer Dancers',
+        data: allPts,
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        borderColor: (ctx) => {
+          const s = ctx.raw && ctx.raw.raw;
+          const basket = stayOf(s) && stayOf(s).basket;
+          return BUFFER_BASKET_COLOR[basket] || BUFFER_BASKET_COLOR.lt25;
+        },
+        borderWidth: 1.6,
+        pointRadius: 3.2,
+        pointHoverRadius: 5,
+        pointHitRadius: 7,
+        pointStyle: 'circle',
+        clip: false,
+      }];
+    }
     const groups = state.role === 'All' ? ['Leader', 'Follower'] : [state.role];
     return groups.map((role) => ({
       label: role,
@@ -2047,6 +2330,7 @@
     return d.spells.filter((s) => {
       if (s.division !== state.division) return false;
       if (roleFilter && s.role !== roleFilter) return false;
+      if (!matchesRoleStatus(s)) return false;
       const hit = s[thr];
       if (!hit) return false;
       const y = doneYear(hit);
@@ -2150,9 +2434,15 @@
     const yScale = chart.options.scales.y;
     xScale.type = 'linear';
     yScale.type = 'linear';
-    const thrWord = thr === 'allowed' ? 'May' : 'Must';
-    xScale.title.text = `Months to ${thrWord}`;
-    yScale.title.text = `Events to ${thrWord}`;
+    const buffer = isBufferMode();
+    if (buffer) {
+      xScale.title.text = 'Months after May';
+      yScale.title.text = 'Events after May';
+    } else {
+      const thrWord = thr === 'allowed' ? 'May' : 'Must';
+      xScale.title.text = `Months to ${thrWord}`;
+      yScale.title.text = `Events to ${thrWord}`;
+    }
     xScale.beginAtZero = true;
     yScale.beginAtZero = true;
     // Timeline: fix domain to full cumulative so axes/medians do not jump frame-to-frame.
@@ -2165,8 +2455,15 @@
     let xMax = isTimelineActive() ? 0 : (state.medianMonths ?? 0);
     let yMax = isTimelineActive() ? 0 : (state.medianEvents ?? 0);
     scaleRows.forEach((s) => {
-      xMax = Math.max(xMax, s[thr].months);
-      yMax = Math.max(yMax, spellEvents(s, thr));
+      if (buffer) {
+        const stay = stayOf(s);
+        if (!stay) return;
+        xMax = Math.max(xMax, stay.months);
+        yMax = Math.max(yMax, stay.events);
+      } else {
+        xMax = Math.max(xMax, s[thr].months);
+        yMax = Math.max(yMax, spellEvents(s, thr));
+      }
     });
     xScale.min = 0;
     yScale.min = 0;
@@ -2231,7 +2528,68 @@
     return `<div class="tt-row"><span class="tt-label">${swatch}${label}</span><span class="${cls}">${value}</span></div>`;
   }
 
+  function bufferTooltipHtml(s) {
+    const stay = stayOf(s);
+    if (!stay) return '';
+    const exitLabel = stay.exit === 'must'
+      ? 'Reached Must'
+      : stay.exit === 'next'
+        ? 'Entered next'
+        : 'Still in buffer';
+    const basket = BUFFER_BASKET_LABEL[stay.basket] || stay.basket;
+    let html = `<div class="tt-title">${escapeHtml(s.name)}</div>`;
+    const statusBit = s.role_status && s.role_status !== 'unknown'
+      ? ` · ${s.role_status === 'primary' ? 'Primary' : 'Secondary'}`
+      : '';
+    html += `<div class="tt-sub">${s.role}${statusBit} · ${s.division} · #${s.id}</div>`;
+    const mayLabel = stay.may_clipped ? 'Buffer from' : 'May reached';
+    html += ttRow(mayLabel, eventDateLabel(stay.may_date, stay.may_ym) || '—');
+    if (stay.may_clipped && (stay.registry_may_ym || stay.registry_may_date)) {
+      html += ttRow(
+        'Registry May',
+        eventDateLabel(stay.registry_may_date, stay.registry_may_ym) || '—',
+        { muted: true }
+      );
+    }
+    html += ttRow('Stay ended', eventDateLabel(stay.end_date, stay.end_ym) || '—');
+    html += ttRow('Months after May', fmt1(stay.months));
+    html += ttRow('Events after May', String(stay.events));
+    html += '<div class="tt-sep"></div>';
+    html += ttRow(
+      'Basket',
+      basket,
+      { color: BUFFER_BASKET_COLOR[stay.basket] || BUFFER_BASKET_COLOR.lt25 }
+    );
+    html += ttRow('Exit', exitLabel);
+    if (s.division === 'All-Stars' &&
+        (stay.champions_points_at_end != null || stay.all_stars_points_at_end != null)) {
+      const aPts = stay.all_stars_points_at_end != null ? String(stay.all_stars_points_at_end) : '—';
+      const aMust = stay.must_threshold_all_stars != null ? String(stay.must_threshold_all_stars) : '—';
+      html += ttRow('All-Stars pts / Must', `${aPts} / ${aMust}`);
+      if (stay.all_stars_points_in_buffer != null) {
+        html += ttRow(
+          'AS pts in buffer window',
+          `+${stay.all_stars_points_in_buffer}`,
+          { muted: true }
+        );
+      }
+      if (stay.champions_points_at_end != null && stay.champions_points_at_end > 0) {
+        html += ttRow(
+          'Champions pts',
+          `${stay.champions_points_at_end} (petition possible)`,
+          { muted: true }
+        );
+      }
+    } else {
+      const pts = stay.points_at_end != null ? String(stay.points_at_end) : '—';
+      const mustT = stay.must_threshold != null ? String(stay.must_threshold) : '—';
+      html += ttRow('Points at end / Must', `${pts} / ${mustT}`);
+    }
+    return html;
+  }
+
   function scatterTooltipHtml(s) {
+    if (isBufferMode()) return bufferTooltipHtml(s);
     const thr = state.threshold;
     const thrWord = thr === 'allowed' ? 'May' : 'Must';
     const hit = s[thr];
@@ -2382,7 +2740,7 @@
 
   function showInfoPop(btn) {
     const pop = getInfoPop();
-    const text = btn.dataset.tip || '';
+    const text = (isBufferMode() && btn.dataset.tipBuffer) || btn.dataset.tip || '';
     const live = btn.dataset.tipLive || '';
     const title = btn.closest('.kpi')?.querySelector('.lbl')?.textContent
       || btn.closest('th')?.querySelector('.th-inner')?.firstChild?.textContent
@@ -2736,9 +3094,12 @@
       state.tl.visibleKeys = new Set(rows.map(spellKey));
     }
     const chart = ensureChart('scatter');
-    chart.data.datasets = state.mode === 'scatter'
-      ? scatterDatasets(rows, thr)
-      : densityDatasets(rows, thr);
+    if (state.mode === 'density') {
+      chart.data.datasets = densityDatasets(rows, thr);
+    } else {
+      // scatter + buffer
+      chart.data.datasets = scatterDatasets(rows, thr);
+    }
     applyScatterScaleLimits(chart, rows, thr);
     chart.options.interaction.axis = 'xy';
     chart.options.interaction.intersect = true;
@@ -2807,6 +3168,11 @@
     const set = new Set();
     (data.spells || []).forEach((s) => {
       if (s.division !== division) return;
+      if (isBufferMode()) {
+        const y = stayEndYear(s);
+        if (y != null && y >= floor) set.add(y);
+        return;
+      }
       ['allowed', 'required'].forEach((k) => {
         const y = doneYear(s[k]);
         if (y != null && y >= floor) set.add(y);
@@ -3016,7 +3382,7 @@
 
   async function loadDivisionShard(division) {
     const safe = String(division || 'Novice').toLowerCase().replace(/\s+/g, '_').replace(/\//g, '_');
-    const shardUrl = `static/data/time_in_division/${safe}.json?v=20261006-sync`;
+    const shardUrl = `static/data/time_in_division/${safe}.json?v=${DATA_CACHE}`;
     const res = await fetch(shardUrl);
     if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + shardUrl);
     return res.json();
@@ -3026,7 +3392,7 @@
     // Prefer per-division shards (~0.3–6 MB) over the 9.4 MB monolith.
     if (!state._tidMeta) {
       try {
-        const idxRes = await fetch('static/data/time_in_division/index.json?v=20261006-sync');
+        const idxRes = await fetch(`static/data/time_in_division/index.json?v=${DATA_CACHE}`);
         if (idxRes.ok) {
           state._tidMeta = await idxRes.json();
         }
@@ -3044,7 +3410,7 @@
       return;
     }
     // Fallback: legacy monolith
-    const res = await fetch('static/data/time_in_division_spells.json?v=20261006-sync');
+    const res = await fetch(`static/data/time_in_division_spells.json?v=${DATA_CACHE}`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     state.nextIndex = buildNextIndex(state.data);
@@ -3057,7 +3423,7 @@
       state[key] = value;
       if (key === 'mode') {
         if (value === 'dynamics' && prevMode !== 'dynamics') state.metric = 'n';
-        if ((value === 'scatter' || value === 'density') &&
+        if ((value === 'scatter' || value === 'density' || value === 'buffer') &&
             (state.metric === 'next_share' || state.metric === 'next_pause')) {
           state.metric = 'n';
         }
@@ -3073,8 +3439,12 @@
         } else if (state.viewMode === 'timeline') {
           resetTimelineToFloor();
         }
+        // Buffer uses end-of-stay year floor (Advanced ≥2023).
+        if (value === 'buffer' || prevMode === 'buffer') {
+          applyYearOptionsForDivision(true);
+        }
       }
-      if (key === 'division' || key === 'threshold' || key === 'role') {
+      if (key === 'division' || key === 'threshold' || key === 'role' || key === 'roleStatus') {
         state.tablePage = 0;
         if (isTimelineActive() || state.viewMode === 'timeline') {
           // Pause + Reset on filter change while Timeline is selected.
@@ -3096,10 +3466,13 @@
       }
     };
 
-    ['divisionSelect', 'thresholdSelect', 'roleSelect', 'modeSelect'].forEach((id) => {
+    ['divisionSelect', 'thresholdSelect', 'roleSelect', 'roleStatusSelect', 'modeSelect'].forEach((id) => {
       const el = document.getElementById(id);
       const key = id.replace('Select', '');
-      el.addEventListener('change', () => onFilterChange(key === 'mode' ? 'mode' : key, el.value));
+      el.addEventListener('change', () => {
+        const stateKey = key === 'mode' ? 'mode' : key;
+        onFilterChange(stateKey, el.value);
+      });
     });
 
     document.getElementById('yearFromSelect').addEventListener('change', () => {

@@ -341,8 +341,61 @@ def rolling_sum(events: list[dict], div: str, at_ym: tuple[int, int], window: in
     return sum(e["pts"] for e in events if e["div"] == div and lo <= ym_ord(*e["ym"]) <= at)
 
 
+def activity_years_for_division(events: list[dict], division: str) -> list[int]:
+    """Sorted unique calendar years with a scored point in this division.
+
+    All-Stars spells count All-Stars contests only (Champions is next division).
+    """
+    years = {
+        int(e["year"])
+        for e in events
+        if e.get("div") == division and float(e.get("pts") or 0) > 0
+    }
+    return sorted(years)
+
+
 BUFFER_FRACS = (("p25", 0.25), ("p50", 0.50), ("p75", 0.75))
 LADDER = ["Novice", "Intermediate", "Advanced", "All-Stars", "Champions"]
+NEXT_DIVISION = {
+    "Novice": "Intermediate",
+    "Intermediate": "Advanced",
+    "Advanced": "All-Stars",
+    "All-Stars": "Champions",
+}
+
+
+def _ym_from_str(ym: str | None) -> tuple[int, int] | None:
+    if not ym:
+        return None
+    try:
+        y, m = str(ym).strip().split("-")[:2]
+        return (int(y), int(m))
+    except (ValueError, IndexError):
+        return None
+
+
+def _parse_iso_day(value: str | None) -> date | None:
+    if not value:
+        return None
+    try:
+        return date.fromisoformat(str(value)[:10])
+    except ValueError:
+        return None
+
+
+def _event_ord(e: dict) -> tuple[int, date]:
+    day = e.get("day")
+    return (ym_ord(*e["ym"]), day if isinstance(day, date) else date.min)
+
+
+def _hit_ord(hit: dict | None) -> tuple[int, date] | None:
+    if not hit:
+        return None
+    ym = _ym_from_str(hit.get("done_ym"))
+    if not ym:
+        return None
+    day = _parse_iso_day(hit.get("done_date"))
+    return (ym_ord(*ym), day if day is not None else date.max)
 
 
 def buffer_done(
@@ -404,6 +457,346 @@ def record_buffer_marks(
                 score_target=round(target, 2),
                 buffer_frac=frac,
             )
+
+
+def _basket_from_progress(
+    score: float,
+    allowed_t: float | None,
+    required_t: float | None,
+    reached_must: bool,
+) -> str:
+    if reached_must:
+        return "must"
+    if allowed_t is None or required_t is None:
+        return "lt25"
+    span = float(required_t) - float(allowed_t)
+    # May == Must (no gap): Buffer cohort already cleared May, so basket is Must.
+    if span <= 0:
+        return "must"
+    progress = (float(score) - float(allowed_t)) / span
+    if progress >= 0.75:
+        return "p75"
+    if progress >= 0.50:
+        return "p50"
+    if progress >= 0.25:
+        return "p25"
+    return "lt25"
+
+
+def _all_stars_path_thresholds(rules: dict, year: int) -> dict[str, float | None]:
+    """May/Must targets for both All-Stars Buffer paths (Champ pts and AS pts)."""
+    specs = all_stars_eval_specs(rules, year)
+    out: dict[str, float | None] = {
+        "champ_allowed": None,
+        "champ_required": None,
+        "as_allowed": None,
+        "as_required": None,
+    }
+    a = specs.get("champions_allowed")
+    r = specs.get("champions_required")
+    if isinstance(a, dict):
+        if a.get("champions_points"):
+            out["champ_allowed"] = float(a["champions_points"])
+        if a.get("or_all_star_points"):
+            out["as_allowed"] = float(a["or_all_star_points"])
+    if isinstance(r, dict):
+        if r.get("champions_points"):
+            out["champ_required"] = float(r["champions_points"])
+        if r.get("or_all_star_points"):
+            out["as_required"] = float(r["or_all_star_points"])
+    return out
+
+
+_BASKET_RANK = {"lt25": 0, "p25": 1, "p50": 2, "p75": 3, "must": 4}
+
+
+def _filter_advanced_still_may_eligible(
+    events: list[dict],
+    div_events: list[dict],
+    post_may: list[dict],
+    rules: dict,
+    t0: tuple[int, int],
+) -> list[dict]:
+    """Keep only post-May Advanced events where score still meets that year's May.
+
+    Threshold rises (45→60) and rolling windows can remove May rights; later
+    Advanced contests without current All-Stars eligibility are not Buffer.
+    """
+    if not post_may:
+        return []
+    post_eids = {e["eid"] for e in post_may}
+    eligible: list[dict] = []
+    cum = 0.0
+    for e in div_events:
+        if e["div"] != "Advanced" or e["ym"] < t0:
+            continue
+        cum += e["pts"]
+        if e["eid"] not in post_eids:
+            continue
+        th = threshold_for_year(rules, e["year"], "Advanced")
+        allowed = th.get("allowed") if th else None
+        if allowed is None:
+            continue
+        counting = (th or {}).get("counting", "cumulative")
+        if counting == "rolling_36mo":
+            score = rolling_sum(events, "Advanced", e["ym"], 36)
+        else:
+            score = cum
+        if score >= float(allowed):
+            eligible.append(e)
+    return eligible
+
+
+def compute_stay_after_may(
+    events: list[dict],
+    division: str,
+    t0: tuple[int, int],
+    crossings: dict[str, dict],
+    rules: dict,
+    observation_end: tuple[int, int],
+) -> dict | None:
+    """Post-May stay in the lower division (Buffer chart cohort).
+
+    Cohort: reached May AND ≥1 scored event in the same division×role strictly
+    after May, excluding dancers who already had a next-division point before
+    that first post-May lower point.
+    Window: May → last lower point at or before earliest of Must / first next /
+    data cut-off.
+
+    All-Stars: Buffer only counts the formal All-Stars→Champions era (rules year
+    onward). Pre-era Champion points do not start the window; effective May is
+    the first All-Stars event in the formal era when registry May was earlier.
+    Months and events count All-Stars (buffer) performances only — Champions
+    contests are ignored for stay length. Without a petition flag, Champions
+    points are unreliable for Buffer Must (petition dancers may have Champ pts
+    while still buffering in All-Stars). Buffer basket / Must exit use the
+    All-Stars points path only (career AS pts vs 150→225); Champ pts are stored
+    for display context.
+    """
+    allowed = crossings.get("allowed")
+    if not allowed:
+        return None
+    may_ord = _hit_ord(allowed)
+    if may_ord is None:
+        return None
+
+    next_div = NEXT_DIVISION.get(division)
+    if not next_div:
+        return None
+
+    # All-Stars: track AS + Champions for point paths; stay metrics use AS only.
+    if division == "All-Stars":
+        track_divs = {"All-Stars", "Champions"}
+    else:
+        track_divs = {division}
+
+    div_events = sorted(
+        [e for e in events if e["div"] in track_divs and e["ym"] >= t0],
+        key=_event_ord,
+    )
+
+    may_clipped = False
+    may_ym = _ym_from_str(allowed.get("done_ym"))
+    may_day = _parse_iso_day(allowed.get("done_date"))
+    may_ym_out = allowed.get("done_ym")
+    may_date_out = allowed.get("done_date")
+    effective_may_ord = may_ord
+
+    if division == "All-Stars":
+        formal_from = first_all_stars_rules_year(rules) or 2021
+        formal_ord = (ym_ord(formal_from, 1), date.min)
+        formal_events = [e for e in div_events if e["year"] >= formal_from]
+        formal_as_events = [e for e in formal_events if e["div"] == "All-Stars"]
+        if may_ord < formal_ord:
+            # Registry May from pre-ladder Champ points: Buffer starts at first
+            # formal-era All-Stars event (buffer performance, not a Champions contest).
+            if not formal_as_events:
+                return None
+            eff = formal_as_events[0]
+            effective_may_ord = _event_ord(eff)
+            may_ym = eff["ym"]
+            may_day = eff.get("day")
+            may_ym_out = ym_str(eff["ym"])
+            may_date_out = may_day.isoformat() if may_day is not None else None
+            may_clipped = True
+        # Stay cohort: All-Stars events only (ignore Champions appearances).
+        post_may = [
+            e for e in formal_as_events if _event_ord(e) > effective_may_ord
+        ]
+    else:
+        formal_from = None
+        post_may = [e for e in div_events if _event_ord(e) > effective_may_ord]
+        if division == "Advanced":
+            # Drop contests after May rights lapsed (higher threshold / expired window).
+            post_may = _filter_advanced_still_may_eligible(
+                events, div_events, post_may, rules, t0
+            )
+
+    if not post_may:
+        return None
+
+    first_post = post_may[0]
+    first_post_ord = _event_ord(first_post)
+
+    next_ord: tuple[int, date] | None = None
+    if division != "All-Stars":
+        next_events = [e for e in events if e["div"] == next_div]
+        next_first = min(next_events, key=_event_ord) if next_events else None
+        next_ord = _event_ord(next_first) if next_first else None
+        # Exclusion A: next-division point before first post-May lower point.
+        if next_ord is not None and next_ord < first_post_ord:
+            return None
+
+    must = crossings.get("required")
+    must_ord = _hit_ord(must)
+
+    # Thresholds for basket colour (single-path divisions) or AS Buffer path.
+    allowed_t = allowed.get("threshold")
+    required_t = must.get("threshold") if must else None
+    champ_allowed_t: float | None = None
+    champ_required_t: float | None = None
+    as_allowed_t: float | None = None
+    as_required_t: float | None = None
+    if division == "All-Stars":
+        # Petition heuristic: Champ-point May/Must must not end Buffer or drive
+        # baskets — dancers may hold Champ pts while still buffering in All-Stars.
+        must_ord = None
+        eval_year = formal_from or (may_ym[0] if may_ym else 2021)
+        paths = _all_stars_path_thresholds(rules, int(eval_year))
+        champ_allowed_t = paths["champ_allowed"]
+        champ_required_t = paths["champ_required"]
+        as_allowed_t = paths["as_allowed"]
+        as_required_t = paths["as_required"]
+        # Buffer Must = career All-Stars points path only.
+        as_run = 0.0
+        for e in div_events:
+            if e["div"] != "All-Stars":
+                continue
+            as_run += e["pts"]
+            if (
+                must_ord is None
+                and as_required_t is not None
+                and as_run >= float(as_required_t)
+            ):
+                must_ord = _event_ord(e)
+
+    obs_ord = (ym_ord(*observation_end), date.max)
+    candidates: list[tuple[str, tuple[int, date]]] = [("still", obs_ord)]
+    if must_ord is not None:
+        # All-Stars: Must on the effective-May event does not end the window.
+        if division != "All-Stars" or must_ord > effective_may_ord:
+            candidates.append(("must", must_ord))
+    if next_ord is not None:
+        candidates.append(("next", next_ord))
+    exit_reason, window_ord = min(candidates, key=lambda c: (c[1][0], c[1][1], c[0]))
+
+    stay_events = [e for e in post_may if _event_ord(e) <= window_ord]
+    if not stay_events:
+        return None
+    last = stay_events[-1]
+
+    if may_ym is None:
+        return None
+    months, basis = duration_months(may_ym, last["ym"], may_day, last.get("day"))
+
+    # Score at end of stay (replay division scoring through last stay event).
+    score = 0.0
+    cum = 0.0
+    champ_pts = 0.0
+    as_pts = 0.0
+    as_pts_in_buffer = 0.0
+
+    # All-Stars: career totals through last buffer AS event (rules are cumulative).
+    score_events = div_events
+
+    for e in score_events:
+        if _event_ord(e) > _event_ord(last):
+            break
+        if division == "Advanced":
+            if e["div"] != "Advanced":
+                continue
+            cum += e["pts"]
+            th = threshold_for_year(rules, e["year"], "Advanced")
+            counting = (th or {}).get("counting", "cumulative")
+            if counting == "rolling_36mo":
+                score = rolling_sum(events, "Advanced", e["ym"], 36)
+            else:
+                score = cum
+            # Basket thresholds follow rules at end of stay (not the original May era).
+            if th and th.get("required") is not None:
+                required_t = float(th["required"])
+            if th and th.get("allowed") is not None:
+                allowed_t = float(th["allowed"])
+        elif division == "All-Stars":
+            if e["div"] == "Champions":
+                champ_pts += e["pts"]
+            elif e["div"] == "All-Stars":
+                as_pts += e["pts"]
+                if _event_ord(e) > effective_may_ord:
+                    as_pts_in_buffer += e["pts"]
+        else:
+            if e["div"] != division:
+                continue
+            cum += e["pts"]
+            score = cum
+            th = threshold_for_year(rules, e["year"], division)
+            # Use thresholds at end of stay (last event wins), not the first
+            # historical epoch hit while replaying — else Must can stick at
+            # pre-2018 single-threshold values (e.g. Novice 15).
+            if th and th.get("required") is not None:
+                required_t = float(th["required"])
+            if th and th.get("allowed") is not None:
+                allowed_t = float(th["allowed"])
+
+    reached_must = must_ord is not None and must_ord <= window_ord
+    if division == "All-Stars":
+        basket = _basket_from_progress(
+            as_pts, as_allowed_t, as_required_t, reached_must
+        )
+        score = as_pts
+    else:
+        basket = _basket_from_progress(score, allowed_t, required_t, reached_must)
+
+    out: dict = {
+        "months": months,
+        "events": len({e["eid"] for e in stay_events}),
+        "months_basis": basis,
+        "may_ym": may_ym_out,
+        "end_ym": ym_str(last["ym"]),
+        "exit": exit_reason,
+        "basket": basket,
+        "points_at_end": round(float(score), 2),
+    }
+    if may_date_out:
+        out["may_date"] = may_date_out
+    if may_clipped:
+        out["may_clipped"] = True
+        if allowed.get("done_ym"):
+            out["registry_may_ym"] = allowed.get("done_ym")
+        if allowed.get("done_date"):
+            out["registry_may_date"] = allowed.get("done_date")
+    if last.get("day") is not None:
+        out["end_date"] = last["day"].isoformat()
+    if division == "All-Stars":
+        out["champions_points_at_end"] = round(float(champ_pts), 2)
+        out["all_stars_points_at_end"] = round(float(as_pts), 2)
+        out["all_stars_points_in_buffer"] = round(float(as_pts_in_buffer), 2)
+        if champ_allowed_t is not None:
+            out["may_threshold_champions"] = float(champ_allowed_t)
+        if champ_required_t is not None:
+            out["must_threshold_champions"] = float(champ_required_t)
+        if as_allowed_t is not None:
+            out["may_threshold_all_stars"] = float(as_allowed_t)
+            out["may_threshold"] = float(as_allowed_t)
+        if as_required_t is not None:
+            out["must_threshold_all_stars"] = float(as_required_t)
+            out["must_threshold"] = float(as_required_t)
+    else:
+        if allowed_t is not None:
+            out["may_threshold"] = float(allowed_t)
+        if required_t is not None:
+            out["must_threshold"] = float(required_t)
+    return out
 
 
 def find_nov_int_crossings(
@@ -764,11 +1157,16 @@ def main() -> None:
     edition_exact, edition_by_ym = load_edition_day_index(source)
 
     name_by_id: dict[str, str] = {}
+    dominate_role_by_id: dict[str, str] = {}
     with (source / "dancer_role_info.csv").open("r", encoding="utf-8-sig", newline="") as f:
         for row in csv.DictReader(f):
             did = (row.get("dancer_id") or "").strip()
-            if did:
-                name_by_id[did] = (row.get("dancer_name") or "").strip()
+            if not did:
+                continue
+            name_by_id[did] = (row.get("dancer_name") or "").strip()
+            dom = (row.get("dominate_role") or "").strip().title()
+            if dom in ROLES:
+                dominate_role_by_id[did] = dom
 
     # events keyed by (dancer_id, role)
     events_by_spell_role: dict[tuple[str, str], list[dict]] = defaultdict(list)
@@ -867,12 +1265,21 @@ def main() -> None:
         if not crossings:
             continue
 
+        dominate = dominate_role_by_id.get(did)
+        if dominate is None:
+            role_status = "unknown"
+        elif dominate == role:
+            role_status = "primary"
+        else:
+            role_status = "secondary"
         row = {
             "id": did,
             "name": name_by_id.get(did) or did,
             "role": role,
+            "role_status": role_status,
             "division": div,
             "first_ym": ym_str(t0),
+            "activity_years": activity_years_for_division(evs, div),
         }
         start_div = "All-Stars" if div == "All-Stars" else div
         start_ev = first_event_in_div(evs, start_div, t0)
@@ -884,6 +1291,11 @@ def main() -> None:
             row["required"] = crossings["required"]
         if "buffer" in crossings:
             row["buffer"] = crossings["buffer"]
+        stay = compute_stay_after_may(
+            evs, div, t0, crossings, rules, observation_end
+        )
+        if stay:
+            row["stay_after_may"] = stay
         spells.append(row)
 
     spells.sort(key=lambda r: (r["division"], r["role"], r["id"]))
@@ -929,7 +1341,10 @@ def main() -> None:
         "n_transitions": len(transitions),
         "excluded_counts": excluded,
         "methodology": {
-            "spell": "dancer × division × event_role",
+            "spell": (
+                "dancer × division × event_role; role_status primary|secondary|unknown from "
+                "dancer_role_info.dominate_role vs spell role"
+            ),
             "months": (
                 "prefer edition start_date (else end_date) from event_editions.csv: "
                 "days/30.44 rounded to 0.1 (min 1 day → at least 0.1 mo when both dates valid and end≥start); "
@@ -938,6 +1353,21 @@ def main() -> None:
             ),
             "events": "unique event editions (name + year-month) in that division×role up to and including the crossing event for the selected threshold; history before the dashboard year floor still counts",
             "buffer": "p25/p50/p75 = first reach of allowed + frac×(required−allowed) points; share among spells that reached May; duration uses same day/YM rule as dwell",
+            "stay_after_may": (
+                "Buffer chart cohort: May reached AND ≥1 scored event in the same division×role "
+                "strictly after May; exclude if next-division point precedes that first post-May "
+                "lower point (All-Stars: Champions is threshold path, not exclusion). "
+                "Window May→last lower point at/before earliest of Must / first next / data_through. "
+                "months/events measured post-May only; basket = lt25|p25|p50|p75|must from score vs "
+                "May→Must gap; exit = must|next|still. "
+                "All-Stars Buffer: formal All-Stars→Champions era only (rules year, 2021+); "
+                "if registry May is earlier, effective May = first All-Stars event in that era; "
+                "months/events count All-Stars buffer performances only (Champions contests excluded, "
+                "incl. petition). No petition flag yet: Buffer Must/basket use career All-Stars pts "
+                "vs 150→225 only; Champions pts stored for tooltip context and do not end Buffer. "
+                "Advanced: post-May events count only while score still meets that year's May "
+                "(so threshold rises / rolling expiry remove Buffer rights)."
+            ),
             "pause": (
                 "JT-2 months from May/Must done (points path in D) to first point in D+1 "
                 "(same role), day-based when both edition dates exist. All-Stars points path = "
@@ -945,6 +1375,10 @@ def main() -> None:
                 "No overlap flag."
             ),
             "qualify": "JN-1b yearly n and cumulative: Advanced allowed (eligible) vs first All-Stars point (entered)",
+            "activity_years": (
+                "sorted unique calendar years with ≥1 scored point in this division×role "
+                "(All-Stars: All-Stars contests only). Used by Buffer Dancers card denominator."
+            ),
             "window_filter": "display only: done_ym inside From–To and division year floor (Nov/Int/Adv ≥2018, All-Stars ≥2021); calculation uses full spell history from first_ym; pause/qualify sheets do not use the may/must year floor",
             "data_stamp": "generated_at = calendar date this JSON was rebuilt; data_through = latest event year-month in the source export",
             "table_dates": (
