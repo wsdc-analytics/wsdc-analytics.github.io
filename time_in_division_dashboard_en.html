@@ -1186,7 +1186,7 @@
             <div class="method-sec__body">
               <p><strong>Buffer Dancers</strong> looks at dancers who reached <em>May</em> and then still scored at least once in the <strong>same division and role</strong>. We do not try to infer “attempted the next division but missed finals” — only registry points in the lower division count. Dancers who already had a next-division point <em>before</em> their first post-May lower point are excluded (mixed / dual contests). For All-Stars, Champions points are not an exclusion (see below).</p>
               <p>Each point is one spell. <strong>X</strong> = months from May to the end of the stay window; <strong>Y</strong> = scored events in the lower division <em>strictly after</em> May. Colour = highest May→Must basket reached: &lt;25%, ≥25%, ≥50%, ≥75%, or Must. Baskets use the point thresholds in force at the end of the stay. The window ends at the earliest of Must, first next-division point, or the data cut-off — measured to the last lower-division point in that window.</p>
-              <p><strong>All-Stars:</strong> Buffer Dancers only counts the formal All-Stars→Champions ladder era (<strong>2021+</strong>). If registry May was earlier, effective May is the first <em>All-Stars</em> event in 2021+. Months and events count <strong>All-Stars performances only</strong> — Champions contests are not buffer stays (including petition). Until a petition flag exists in the registry, Buffer Dancers <strong>Must and colour use the All-Stars points scale only</strong> (career pts vs 150 → 225). Champions points appear in the tooltip as context; neither Champions points nor a first Champions contest end the buffer. If a dancer already had 225 All-Stars points by their (effective) May event, they are Must from the start and the window runs to the data cut-off.</p>
+              <p><strong>All-Stars:</strong> Buffer Dancers only counts the formal All-Stars→Champions ladder era (<strong>2021+</strong>). If registry May was earlier, effective May is the first <em>All-Stars</em> event in 2021+. Months and events count <strong>All-Stars performances only</strong> — Champions contests are not buffer stays. <strong>Required Champions</strong> (career Champions points reached Must, typically ≥10) are never Buffer Dancers, even if they later scored All-Stars. For everyone else, Must and colour use the <strong>All-Stars points scale only</strong> (career pts vs 150 → 225). Champions points below Must may appear in the tooltip as context and do not end the buffer by themselves. If a dancer already had 225 All-Stars points by their (effective) May event, they are Must from the start and the window runs to the data cut-off.</p>
               <p>Year filters use the <strong>end of the stay</strong>, not the May date. Floors match the rest of the tool except <strong>Advanced from 2023</strong> (after the 36-month Advanced window was removed). For Advanced, only contests where the dancer <em>still</em> meets that year’s May threshold count — if the bar rises (e.g. 45→60) or a rolling window expires their points, later Advanced results are not Buffer Dancers. Threshold May/Must is hidden here — Buffer Dancers is always post-May. Timeline is not available in Buffer Dancers.</p>
               <p class="method-example"><strong>Reading it.</strong> A dense run of green Must points with few events means many dancers who stayed after May quickly filled the remaining gap. Long grey &lt;25% tails are people who kept competing below without moving far toward Must.</p>
             </div>
@@ -1310,7 +1310,7 @@
     next_share: 'Share next',
     next_pause: 'Median pause',
   };
-  const DATA_CACHE = '20261008-activity-years';
+  const DATA_CACHE = '20261008-req-champ-out';
 
   const state = {
     data: null,
@@ -2582,11 +2582,7 @@
         );
       }
       if (stay.champions_points_at_end != null && stay.champions_points_at_end > 0) {
-        html += ttRow(
-          'Champions pts',
-          `${stay.champions_points_at_end} (petition possible)`,
-          { muted: true }
-        );
+        html += ttRow('Champions pts', String(stay.champions_points_at_end), { muted: true });
       }
     } else {
       const pts = stay.points_at_end != null ? String(stay.points_at_end) : '—';

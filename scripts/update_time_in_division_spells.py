@@ -567,11 +567,11 @@ def compute_stay_after_may(
     onward). Pre-era Champion points do not start the window; effective May is
     the first All-Stars event in the formal era when registry May was earlier.
     Months and events count All-Stars (buffer) performances only — Champions
-    contests are ignored for stay length. Without a petition flag, Champions
-    points are unreliable for Buffer Must (petition dancers may have Champ pts
-    while still buffering in All-Stars). Buffer basket / Must exit use the
-    All-Stars points path only (career AS pts vs 150→225); Champ pts are stored
-    for display context.
+    contests are ignored for stay length. Required Champions (career Champions
+    points reached Must, typically ≥10) are never Buffer Dancers — even if they
+    later scored All-Stars points. Buffer basket / Must exit use the All-Stars
+    points path only (career AS pts vs 150→225); Champ pts below Must may still
+    appear in the tooltip as context.
     """
     allowed = crossings.get("allowed")
     if not allowed:
@@ -658,8 +658,6 @@ def compute_stay_after_may(
     as_allowed_t: float | None = None
     as_required_t: float | None = None
     if division == "All-Stars":
-        # Petition heuristic: Champ-point May/Must must not end Buffer or drive
-        # baskets — dancers may hold Champ pts while still buffering in All-Stars.
         must_ord = None
         eval_year = formal_from or (may_ym[0] if may_ym else 2021)
         paths = _all_stars_path_thresholds(rules, int(eval_year))
@@ -667,6 +665,16 @@ def compute_stay_after_may(
         champ_required_t = paths["champ_required"]
         as_allowed_t = paths["as_allowed"]
         as_required_t = paths["as_required"]
+        # Required Champions cannot be Buffer Dancers (sacrifice petition-like
+        # cases who still score All-Stars after Champ Must). Use full role
+        # history — Champ Must may predate the first All-Stars point (t0).
+        champ_run = 0.0
+        for e in events:
+            if e.get("div") != "Champions":
+                continue
+            champ_run += float(e.get("pts") or 0)
+            if champ_required_t is not None and champ_run >= float(champ_required_t):
+                return None
         # Buffer Must = career All-Stars points path only.
         as_run = 0.0
         for e in div_events:
@@ -1362,9 +1370,10 @@ def main() -> None:
                 "May→Must gap; exit = must|next|still. "
                 "All-Stars Buffer: formal All-Stars→Champions era only (rules year, 2021+); "
                 "if registry May is earlier, effective May = first All-Stars event in that era; "
-                "months/events count All-Stars buffer performances only (Champions contests excluded, "
-                "incl. petition). No petition flag yet: Buffer Must/basket use career All-Stars pts "
-                "vs 150→225 only; Champions pts stored for tooltip context and do not end Buffer. "
+                "months/events count All-Stars buffer performances only (Champions contests excluded). "
+                "Required Champions (Champ pts ≥ Must, typically 10) are excluded from Buffer even if "
+                "they later score All-Stars. Else Buffer Must/basket use career All-Stars pts "
+                "vs 150→225 only; Champ pts below Must may appear in tooltips and do not end Buffer. "
                 "Advanced: post-May events count only while score still meets that year's May "
                 "(so threshold rises / rolling expiry remove Buffer rights)."
             ),
