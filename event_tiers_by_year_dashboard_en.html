@@ -573,17 +573,31 @@
       z-index: 1;
       width: min(920px, 100%);
       max-height: min(80vh, 720px);
-      overflow: auto;
+      overflow: visible;
       background: #fff;
       border-radius: 14px;
       box-shadow: 0 20px 50px rgba(15,23,42,0.22);
       padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .modal__head {
       display: flex;
       align-items: flex-start;
       gap: 12px;
       margin-bottom: 12px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+    .modal__head-main {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      min-width: 0;
+      flex: 1;
     }
     .modal__head h2 {
       font-family: 'DM Sans', system-ui, sans-serif;
@@ -591,10 +605,31 @@
       font-weight: 700;
       color: #0b1221;
     }
+    .modal__year {
+      --wsdc-dd-width: 5.5rem;
+      margin: 0;
+    }
+    .modal__year .wsdc-dd--field .wsdc-dd__btn {
+      height: 30px;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-size: 13px;
+      font-weight: 700;
+      justify-content: space-between;
+    }
+    .modal__year .wsdc-dd--field .wsdc-dd__btn:hover,
+    .modal__year .wsdc-dd--field.is-open .wsdc-dd__btn {
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+    }
     .modal__sub {
       font-size: 12px;
       color: #64748b;
       margin-top: 2px;
+      flex-basis: 100%;
     }
     .modal__close {
       margin-left: auto;
@@ -605,6 +640,12 @@
       padding: 0 12px;
       font: 600 12px Inter, system-ui, sans-serif;
       cursor: pointer;
+      flex-shrink: 0;
+    }
+    #eventModalBody {
+      overflow: auto;
+      min-height: 0;
+      max-height: min(calc(80vh - 96px), 640px);
     }
     .event-grid {
       display: grid;
@@ -841,8 +882,12 @@
       <div class="modal-backdrop" id="eventModalBackdrop"></div>
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
         <div class="modal__head">
-          <div>
+          <div class="modal__head-main">
             <h2 id="eventModalTitle">Events</h2>
+            <div class="filter-field modal__year" id="eventModalYearField">
+              <label class="filter-label" for="eventModalYearSelect" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Year</label>
+              <select id="eventModalYearSelect" class="wsdc-select" aria-label="Switch year"></select>
+            </div>
             <p class="modal__sub" id="eventModalSub"></p>
           </div>
           <button type="button" class="modal__close" id="eventModalClose">Close</button>
@@ -910,7 +955,7 @@
           <details class="method-sec">
             <summary>Event lists</summary>
             <div class="method-sec__body">
-              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. In the Divisions overview <strong># Events</strong> list those counts are summed across all divisions at the event; in a single division or tier they cover that division (and role) only. For a few events the exact numbers are not available, and the tags are left out.</p>
+              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The year drop-down in that list switches to the same column for another year without closing the panel — the same idea as switching division in the tiers toolbar. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. In the Divisions overview <strong># Events</strong> list those counts are summed across all divisions at the event; in a single division or tier they cover that division (and role) only. For a few events the exact numbers are not available, and the tags are left out.</p>
               <p>An empty cell means there were no such events that year. A dash in Share means there was nothing to compare with: no event that year held this division for this role.</p>
             </div>
           </details>
@@ -939,6 +984,9 @@
     tipEl: null,
     tipPinned: false,
     modalReturnFocus: null,
+    modalKey: null,
+    modalLabel: null,
+    modalYear: null,
     cellIndex: {},
   };
 
@@ -1603,8 +1651,51 @@
     return [];
   }
 
-  function openEventModal(year, key, label, returnFocus) {
-    state.modalReturnFocus = returnFocus || document.activeElement;
+  function yearsForModalKey(key) {
+    const out = [];
+    Object.keys(state.cellIndex || {}).forEach((packed) => {
+      const bar = packed.indexOf('|');
+      if (bar < 0) return;
+      const y = Number(packed.slice(0, bar));
+      const rest = packed.slice(bar + 1);
+      if (rest === key && Number.isFinite(y)) out.push(y);
+    });
+    out.sort((a, b) => a - b);
+    return out;
+  }
+
+  function syncModalYearSelect(years, year) {
+    const sel = document.getElementById('eventModalYearSelect');
+    if (!sel) return;
+    const yNum = Number(year);
+    let list = (years && years.length) ? years.slice() : [];
+    if (!list.length && Number.isFinite(yNum)) list = [yNum];
+    if (!list.length) {
+      sel.innerHTML = '';
+      if (window.WsdcSelect) WsdcSelect.refresh(sel);
+      return;
+    }
+    const prev = Array.from(sel.options).map((o) => o.value);
+    const next = list.map(String);
+    const needRebuild = prev.length !== next.length || next.some((y, i) => prev[i] !== y);
+    if (needRebuild) {
+      sel.innerHTML = list.map((y) =>
+        `<option value="${y}">${y}</option>`
+      ).join('');
+    }
+    const want = String(yNum);
+    sel.value = next.includes(want) ? want : next[0];
+    if (window.WsdcSelect) WsdcSelect.refresh(sel);
+  }
+
+  function openEventModal(year, key, label, returnFocus, opts) {
+    const keepYearFocus = opts && opts.keepYearFocus;
+    if (returnFocus) state.modalReturnFocus = returnFocus;
+    else if (!state.modalReturnFocus) state.modalReturnFocus = document.activeElement;
+    state.modalKey = key;
+    state.modalLabel = label;
+    state.modalYear = Number(year);
+
     const cell = state.cellIndex && state.cellIndex[`${year}|${key}`];
     const ctx = parseCellKey(key);
     const events = (cell && cell.events ? cell.events.slice() : []).sort((a, b) => {
@@ -1613,7 +1704,8 @@
       return as.localeCompare(bs) || a.name.localeCompare(b.name);
     });
     const modal = document.getElementById('eventModal');
-    document.getElementById('eventModalTitle').textContent = `${label} · ${year}`;
+    document.getElementById('eventModalTitle').textContent = label || 'Events';
+    syncModalYearSelect(yearsForModalKey(key), state.modalYear);
     const n = cell ? cell.count : events.length;
     const shareOf = ctx && ctx.type === 'tier'
       ? `events with ${ctx.div} ${ctx.role}s`
@@ -1648,13 +1740,16 @@
     }
     modal.hidden = false;
     modal.classList.add('is-open');
-    document.getElementById('eventModalClose').focus();
+    if (!keepYearFocus) document.getElementById('eventModalClose').focus();
   }
 
   function closeEventModal() {
     const modal = document.getElementById('eventModal');
     modal.classList.remove('is-open');
     modal.hidden = true;
+    state.modalKey = null;
+    state.modalLabel = null;
+    state.modalYear = null;
     const back = state.modalReturnFocus;
     state.modalReturnFocus = null;
     if (back && typeof back.focus === 'function') {
@@ -1767,6 +1862,11 @@
     });
     stack.addEventListener('mouseleave', hideCellTip);
 
+    document.getElementById('eventModalYearSelect').addEventListener('change', (e) => {
+      const y = Number(e.target.value);
+      if (!Number.isFinite(y) || y === state.modalYear || !state.modalKey) return;
+      openEventModal(y, state.modalKey, state.modalLabel, null, { keepYearFocus: true });
+    });
     document.getElementById('eventModalClose').addEventListener('click', closeEventModal);
     document.getElementById('eventModalBackdrop').addEventListener('click', closeEventModal);
     document.getElementById('methodInfoBtn').addEventListener('click', () => {
@@ -1782,6 +1882,8 @@
         dismissInfoPops();
         return;
       }
+      // Let WsdcSelect close an open year menu without dismissing the L2 panel.
+      if (document.querySelector('#eventModal .wsdc-dd.is-open')) return;
       if (document.getElementById('eventModal').classList.contains('is-open')) closeEventModal();
       else if (document.getElementById('methodLayer').classList.contains('is-open')) closeMethod();
     });
@@ -1821,6 +1923,7 @@
     if (window.WsdcSelect) {
       WsdcSelect.enhanceAll(document.querySelector('.ety-filters'));
       WsdcSelect.enhanceAll(document.getElementById('hmToolbarDivField'));
+      WsdcSelect.enhanceAll(document.getElementById('eventModalYearField'));
     }
     wire();
     renderHeatmap();
