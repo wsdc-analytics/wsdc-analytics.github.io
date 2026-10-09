@@ -1288,22 +1288,28 @@
     return { years, cols, cells, rowMax, yearTotals };
   }
 
+  function totalCellKey(div) {
+    return div ? `total|${div}` : 'total';
+  }
+
   function renderTotalEventsCell(year, total, div) {
     const count = total ? total.count : 0;
     const label = div ? `${div} · # Events` : '# Events';
     const aria = div ? `${div} events ${year}` : `Events ${year}`;
+    const key = totalCellKey(div);
     return `<td class="hm-total">` +
       `<button type="button" class="hm-total__btn"` +
-      ` data-year="${year}" data-key="total"` +
+      ` data-year="${year}" data-key="${esc(key)}"` +
       ` data-count="${count}" data-share="" data-den="${count}"` +
       ` data-label="${esc(label)}" data-share-of="events that year"` +
       ` aria-label="${esc(aria)}">${count}</button></td>`;
   }
 
-  function indexCellsWithTotals(cells, yearTotals) {
+  function indexCellsWithTotals(cells, yearTotals, div) {
     const out = Object.assign({}, cells);
+    const key = totalCellKey(div);
     Object.keys(yearTotals || {}).forEach((year) => {
-      out[`${year}|total`] = yearTotals[year];
+      out[`${year}|${key}`] = yearTotals[year];
     });
     return out;
   }
@@ -1471,7 +1477,7 @@
       tableHost.innerHTML = renderTiersTable(
         mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals, state.focusDiv
       );
-      state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
+      state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals, state.focusDiv);
       return;
     }
 
@@ -1480,7 +1486,7 @@
     tableHost.innerHTML = renderDivisionsTable(
       mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals
     );
-    state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
+    state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals, null);
   }
 
   function showCellTip(btn, clientX, clientY) {
@@ -1492,7 +1498,8 @@
     const year = btn.getAttribute('data-year');
     const share = shareRaw === '' ? null : Number(shareRaw);
     const shareOf = btn.getAttribute('data-share-of') || 'events';
-    const isTotal = btn.getAttribute('data-key') === 'total';
+    const cellKey = String(btn.getAttribute('data-key') || '');
+    const isTotal = cellKey === 'total' || cellKey.startsWith('total|');
     let html = `<strong>${esc(label)} · ${esc(year)}</strong>`;
     html += `<div>Events: <b>${count}</b></div>`;
     if (!isTotal) {
@@ -1520,7 +1527,7 @@
   function parseCellKey(key) {
     const parts = String(key || '').split('|');
     if (parts[0] === 'total') {
-      return { type: 'total' };
+      return { type: 'total', div: parts[1] || null };
     }
     if (parts[0] === 'tier' && parts.length >= 4) {
       return { type: 'tier', div: parts[1], role: parts[2], tier: Number(parts[3]) };
@@ -1541,7 +1548,8 @@
       const tone = ctx.role === 'Leader' ? 'leader' : 'follower';
       return [{ text: `${n}${abbr}`, tone, label: `${n} ${ctx.role}${n === 1 ? '' : 's'}` }];
     }
-    if (ctx.type === 'div' && ctx.div) {
+    // Division column or # Events while focused on one division → both roles.
+    if ((ctx.type === 'div' || ctx.type === 'total') && ctx.div) {
       const c = counts[ctx.div];
       if (!c) return [];
       const out = [];
