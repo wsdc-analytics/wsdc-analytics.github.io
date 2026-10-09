@@ -910,7 +910,7 @@
           <details class="method-sec">
             <summary>Event lists</summary>
             <div class="method-sec__body">
-              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. For a few events the exact numbers are not available, and the tags are left out.</p>
+              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. In the Divisions overview <strong># Events</strong> list those counts are summed across all divisions at the event; in a single division or tier they cover that division (and role) only. For a few events the exact numbers are not available, and the tags are left out.</p>
               <p>An empty cell means there were no such events that year. A dash in Share means there was nothing to compare with: no event that year held this division for this role.</p>
             </div>
           </details>
@@ -1538,6 +1538,50 @@
     return null;
   }
 
+  function sumRoleCounts(counts) {
+    let leaders = 0;
+    let followers = 0;
+    let hasLeader = false;
+    let hasFollower = false;
+    Object.keys(counts || {}).forEach((div) => {
+      const c = counts[div];
+      if (!c || typeof c !== 'object') return;
+      if (c.Leader != null) {
+        leaders += Number(c.Leader) || 0;
+        hasLeader = true;
+      }
+      if (c.Follower != null) {
+        followers += Number(c.Follower) || 0;
+        hasFollower = true;
+      }
+    });
+    return {
+      Leader: hasLeader ? leaders : null,
+      Follower: hasFollower ? followers : null,
+    };
+  }
+
+  function rolePillsFromPair(c, labelSuffix) {
+    if (!c) return [];
+    const suffix = labelSuffix ? ` ${labelSuffix}` : '';
+    const out = [];
+    if (c.Leader != null) {
+      out.push({
+        text: `${c.Leader}L`,
+        tone: 'leader',
+        label: `${c.Leader} Leader${c.Leader === 1 ? '' : 's'}${suffix}`,
+      });
+    }
+    if (c.Follower != null) {
+      out.push({
+        text: `${c.Follower}F`,
+        tone: 'follower',
+        label: `${c.Follower} Follower${c.Follower === 1 ? '' : 's'}${suffix}`,
+      });
+    }
+    return out;
+  }
+
   function competitorPills(ed, ctx) {
     const counts = ed && ed.counts;
     if (!counts || !ctx) return [];
@@ -1550,16 +1594,11 @@
     }
     // Division column or # Events while focused on one division → both roles.
     if ((ctx.type === 'div' || ctx.type === 'total') && ctx.div) {
-      const c = counts[ctx.div];
-      if (!c) return [];
-      const out = [];
-      if (c.Leader != null) {
-        out.push({ text: `${c.Leader}L`, tone: 'leader', label: `${c.Leader} Leaders` });
-      }
-      if (c.Follower != null) {
-        out.push({ text: `${c.Follower}F`, tone: 'follower', label: `${c.Follower} Followers` });
-      }
-      return out;
+      return rolePillsFromPair(counts[ctx.div]);
+    }
+    // Divisions overview # Events → L/F summed across all nominations at the event.
+    if (ctx.type === 'total' && !ctx.div) {
+      return rolePillsFromPair(sumRoleCounts(counts), 'across all divisions');
     }
     return [];
   }
