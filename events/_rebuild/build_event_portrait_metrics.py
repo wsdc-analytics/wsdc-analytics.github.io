@@ -19,6 +19,8 @@ PIPELINE_DATA = Path(
     "/Users/ania/.cursor/projects/python/wsdc-data-pipeline/data"
 )
 OUT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = OUT_DIR.parent.parent
+L2_CARDS_PATH = REPO_ROOT / "static" / "data" / "event_l2_cards.json"
 
 SKILL_DIVISIONS = {
     "Newcomer",
@@ -490,7 +492,38 @@ def build_timeseries(
                 "new_dancers": int(new_dancers),
             }
         )
-    return out
+    return enrich_timeseries_skill_competitors(event_id, out)
+
+
+def enrich_timeseries_skill_competitors(
+    event_id: int, rows: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Attach calendar L2 Skill Level headcounts (Σ L+F by division).
+
+    Same source as events-calendar / event_l2_cards.json. Not unique dancers:
+    multi-division and dual-role entries are double-counted.
+    """
+    if not L2_CARDS_PATH.exists() or not rows:
+        return rows
+    try:
+        payload = json.loads(L2_CARDS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return rows
+    card = (payload.get("cards") or {}).get(str(event_id))
+    if not card:
+        return rows
+    by_year = {
+        int(ed["year"]): ed
+        for ed in card.get("editions") or []
+        if ed.get("year") is not None and ed.get("unique_dancers") is not None
+    }
+    for row in rows:
+        ed = by_year.get(int(row["event_year"]))
+        if not ed:
+            continue
+        row["skill_competitors"] = int(ed["unique_dancers"])
+        row["skill_competitors_approx"] = int(ed.get("dancers_approx") or 0)
+    return rows
 
 
 def retention_block(ev: pd.DataFrame, gaps: list[int]) -> dict[str, Any]:
@@ -1108,6 +1141,11 @@ def build_one(
             "division_era_mix": "Share of Skill JJ points by division, by era (gaps excluded)",
             "retention": (
                 "Return = points in Y and Y+1; editions = distinct years with points here"
+            ),
+            "skill_competitors": (
+                "Sum of Leader+Follower counts across Skill Level JJ divisions "
+                "at this edition (from event competitions dump / calendar L2). "
+                "Switch roles and multi-division entries are double-counted."
             ),
             f"peer_{target['region_key']}": (
                 f"Among {target['region_label']} Skill JJ events "

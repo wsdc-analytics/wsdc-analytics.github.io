@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-01",
-  "as_of": "2026-10-01",
-  "data_through": "2026-09-30",
+  "generated_at": "2026-10-06",
+  "as_of": "2026-10-06",
+  "data_through": "2026-10-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
     "events_total": "count of occurred WSDC editions in event_editions.csv (result_rows > 0 or event_occurred); one row per event year/month that awarded points",
@@ -17,54 +17,54 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2680,
-    "points": 728135.0,
-    "dancers": 27661
+    "events": 2684,
+    "points": 730080.0,
+    "dancers": 27741
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-09-21",
-        "end": "2026-09-27",
-        "since_previous_ended": "2026-08-31",
-        "iso_week": "2026-W39",
+        "start": "2026-09-28",
+        "end": "2026-10-04",
+        "since_previous_ended": "2026-09-30",
+        "iso_week": "2026-W40",
         "bucket": "edition_start_date",
-        "event_names": "Best of the Best WCS, Calgary Town Open, Meet Me In St Louis, Midland Swing Open, Mooseland Swing, Philly Swing Classic, The Aloha Open"
+        "event_names": "Atlanta Swing Classic, Norwegian Open WCS, River Swing Nights, Westie Harbor"
       },
       "increment": {
-        "events": 7,
-        "points": 1847.0,
-        "dancers": 74
+        "events": 4,
+        "points": 1945.0,
+        "dancers": 80
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-10-01",
-        "end": "2026-10-01",
+        "end": "2026-10-06",
         "since_previous_ended": "2026-09-30",
         "bucket": "edition_start_date",
-        "event_names": ""
+        "event_names": "Atlanta Swing Classic, Norwegian Open WCS, River Swing Nights, Westie Harbor"
       },
       "increment": {
-        "events": 0,
-        "points": 0.0,
-        "dancers": 0
+        "events": 4,
+        "points": 1945.0,
+        "dancers": 80
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-10-01",
+        "end": "2026-10-06",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 141,
-        "points": 58220.0,
-        "dancers": 1887
+        "events": 145,
+        "points": 60165.0,
+        "dancers": 1967
       }
     }
   }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="How many WSDC events held each division every year since 2018, and how big their Leader and Follower fields were — Tier 1 to Tier 6. Filter by years and location." />
-  <title>Event tiers by year | WSDC Analytics</title>
+  <title>Event Tiers By Year | WSDC Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
-  <meta property="og:title" content="Event tiers by year | WSDC Analytics">
+  <meta property="og:title" content="Event Tiers By Year | WSDC Analytics">
   <meta property="og:description" content="How many WSDC events held each division every year, and how big their Leader and Follower fields were.">
   <meta property="og:url" content="https://wsdc-analytics.github.io/event_tiers_by_year_dashboard_en.html">
   <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
@@ -24,9 +24,11 @@
     html, body { height: 100%; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Inter, var(--wsdc-font-sans), system-ui, sans-serif;
+      font-family: 'DM Sans', var(--wsdc-font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--wsdc-color-text, #1f2937);
       background: var(--wsdc-color-bg, #fff);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
     }
     .page {
       min-height: 100%;
@@ -59,18 +61,21 @@
     .page-head__title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .page-head h1 {
       font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
-      font-size: 1.35rem;
+      font-size: 1.5rem;
       font-weight: 700;
+      line-height: 1.25;
       color: var(--wsdc-color-text-strong, #0b1221);
       letter-spacing: -0.02em;
     }
     .page-head__updated {
       margin-left: auto;
       font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
       color: var(--wsdc-color-text-muted, #4b5563);
     }
     .subtitle {
-      font-size: 0.88rem;
+      font-size: 14px;
       line-height: 1.45;
       color: var(--wsdc-color-text-muted, #4b5563);
       max-width: none;
@@ -150,19 +155,45 @@
       width: 100%;
       max-width: 100%;
       min-width: 0;
-      height: 32px;
-      min-height: 32px;
+      height: 28px;
+      min-height: 28px;
       padding: 0 10px;
       border-radius: 999px;
       border: 1px solid transparent;
       background: transparent;
       color: var(--wsdc-color-text-muted, #4b5563);
+      font-family: inherit;
       font-size: 12px;
       font-weight: 500;
       justify-content: space-between;
       gap: 4px;
       overflow: hidden;
       box-sizing: border-box;
+    }
+    .ety-filters .cal-reset-field {
+      flex: 0 0 auto;
+      align-items: stretch;
+    }
+    .ety-filters .cal-reset-btn {
+      height: 28px;
+      margin: 0;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #94a3b8);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .ety-filters .cal-reset-btn:hover,
+    .ety-filters .cal-reset-btn:focus-visible {
+      outline: none;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: rgba(37, 99, 235, 0.06);
     }
     .ety-filters .wsdc-dd--field .wsdc-dd__value {
       min-width: 0;
@@ -215,7 +246,7 @@
       border-radius: 999px;
       padding: 0 10px;
       height: 28px;
-      font: 600 11px/1 Inter, system-ui, sans-serif;
+      font: 600 11px/1 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
       color: var(--wsdc-color-text-muted, #4b5563);
     }
@@ -573,17 +604,31 @@
       z-index: 1;
       width: min(920px, 100%);
       max-height: min(80vh, 720px);
-      overflow: auto;
+      overflow: visible;
       background: #fff;
       border-radius: 14px;
       box-shadow: 0 20px 50px rgba(15,23,42,0.22);
       padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .modal__head {
       display: flex;
       align-items: flex-start;
       gap: 12px;
       margin-bottom: 12px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+    .modal__head-main {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      min-width: 0;
+      flex: 1;
     }
     .modal__head h2 {
       font-family: 'DM Sans', system-ui, sans-serif;
@@ -591,10 +636,31 @@
       font-weight: 700;
       color: #0b1221;
     }
+    .modal__year {
+      --wsdc-dd-width: 5.5rem;
+      margin: 0;
+    }
+    .modal__year .wsdc-dd--field .wsdc-dd__btn {
+      height: 30px;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      background: #fff;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      font-size: 13px;
+      font-weight: 700;
+      justify-content: space-between;
+    }
+    .modal__year .wsdc-dd--field .wsdc-dd__btn:hover,
+    .modal__year .wsdc-dd--field.is-open .wsdc-dd__btn {
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+    }
     .modal__sub {
       font-size: 12px;
       color: #64748b;
       margin-top: 2px;
+      flex-basis: 100%;
     }
     .modal__close {
       margin-left: auto;
@@ -603,8 +669,14 @@
       border-radius: 8px;
       height: 32px;
       padding: 0 12px;
-      font: 600 12px Inter, system-ui, sans-serif;
+      font: 600 12px 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
+      flex-shrink: 0;
+    }
+    #eventModalBody {
+      overflow: auto;
+      min-height: 0;
+      max-height: min(calc(80vh - 96px), 640px);
     }
     .event-grid {
       display: grid;
@@ -710,7 +782,7 @@
       margin-left: auto;
       border: 0;
       background: transparent;
-      font: 600 12px Inter, system-ui, sans-serif;
+      font: 600 12px 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
       color: #64748b;
     }
@@ -744,6 +816,8 @@
 
     @media (max-width: 900px) {
       .event-grid { grid-template-columns: 1fr; }
+      .page-head h1 { font-size: 1.25rem; }
+      .subtitle { font-size: 13px; }
       .page-head__updated { margin-left: 0; }
     }
   </style>
@@ -758,7 +832,7 @@
     <section class="content">
       <header class="page-head">
         <div class="page-head__title-row">
-          <h1>Event tiers by year</h1>
+          <h1>Event Tiers By Year</h1>
           <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
             <span aria-hidden="true">i</span>
           </button>
@@ -787,6 +861,10 @@
             <div class="filter-field is-hidden" id="stateField">
               <label class="filter-label" for="stateSelect">State</label>
               <select id="stateSelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field cal-reset-field">
+              <span class="filter-label" aria-hidden="true">&nbsp;</span>
+              <button type="button" class="cal-reset-btn" id="clearFiltersBtn">Clear</button>
             </div>
             <div class="filter-field">
               <span class="filter-label">Metric</span>
@@ -841,8 +919,12 @@
       <div class="modal-backdrop" id="eventModalBackdrop"></div>
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
         <div class="modal__head">
-          <div>
+          <div class="modal__head-main">
             <h2 id="eventModalTitle">Events</h2>
+            <div class="filter-field modal__year" id="eventModalYearField">
+              <label class="filter-label" for="eventModalYearSelect" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Year</label>
+              <select id="eventModalYearSelect" class="wsdc-select" aria-label="Switch year"></select>
+            </div>
             <p class="modal__sub" id="eventModalSub"></p>
           </div>
           <button type="button" class="modal__close" id="eventModalClose">Close</button>
@@ -910,7 +992,7 @@
           <details class="method-sec">
             <summary>Event lists</summary>
             <div class="method-sec__body">
-              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. For a few events the exact numbers are not available, and the tags are left out.</p>
+              <p>Hover a cell to see its count and share. <strong>Click a cell</strong> to open the list of events behind it, with city, country and dates. The year drop-down in that list switches to the same column for another year without closing the panel — the same idea as switching division in the tiers toolbar. The small tags in the corner of each card show how many dancers competed: <strong>42L</strong> means 42 Leaders, <strong>67F</strong> means 67 Followers. In the Divisions overview <strong># Events</strong> list those counts are summed across all divisions at the event; in a single division or tier they cover that division (and role) only. For a few events the exact numbers are not available, and the tags are left out.</p>
               <p>An empty cell means there were no such events that year. A dash in Share means there was nothing to compare with: no event that year held this division for this role.</p>
             </div>
           </details>
@@ -939,6 +1021,9 @@
     tipEl: null,
     tipPinned: false,
     modalReturnFocus: null,
+    modalKey: null,
+    modalLabel: null,
+    modalYear: null,
     cellIndex: {},
   };
 
@@ -1288,22 +1373,28 @@
     return { years, cols, cells, rowMax, yearTotals };
   }
 
+  function totalCellKey(div) {
+    return div ? `total|${div}` : 'total';
+  }
+
   function renderTotalEventsCell(year, total, div) {
     const count = total ? total.count : 0;
     const label = div ? `${div} · # Events` : '# Events';
     const aria = div ? `${div} events ${year}` : `Events ${year}`;
+    const key = totalCellKey(div);
     return `<td class="hm-total">` +
       `<button type="button" class="hm-total__btn"` +
-      ` data-year="${year}" data-key="total"` +
+      ` data-year="${year}" data-key="${esc(key)}"` +
       ` data-count="${count}" data-share="" data-den="${count}"` +
       ` data-label="${esc(label)}" data-share-of="events that year"` +
       ` aria-label="${esc(aria)}">${count}</button></td>`;
   }
 
-  function indexCellsWithTotals(cells, yearTotals) {
+  function indexCellsWithTotals(cells, yearTotals, div) {
     const out = Object.assign({}, cells);
+    const key = totalCellKey(div);
     Object.keys(yearTotals || {}).forEach((year) => {
-      out[`${year}|total`] = yearTotals[year];
+      out[`${year}|${key}`] = yearTotals[year];
     });
     return out;
   }
@@ -1471,7 +1562,7 @@
       tableHost.innerHTML = renderTiersTable(
         mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals, state.focusDiv
       );
-      state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
+      state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals, state.focusDiv);
       return;
     }
 
@@ -1480,7 +1571,7 @@
     tableHost.innerHTML = renderDivisionsTable(
       mat.years, mat.cols, mat.cells, mat.rowMax, mat.yearTotals
     );
-    state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals);
+    state.cellIndex = indexCellsWithTotals(mat.cells, mat.yearTotals, null);
   }
 
   function showCellTip(btn, clientX, clientY) {
@@ -1492,7 +1583,8 @@
     const year = btn.getAttribute('data-year');
     const share = shareRaw === '' ? null : Number(shareRaw);
     const shareOf = btn.getAttribute('data-share-of') || 'events';
-    const isTotal = btn.getAttribute('data-key') === 'total';
+    const cellKey = String(btn.getAttribute('data-key') || '');
+    const isTotal = cellKey === 'total' || cellKey.startsWith('total|');
     let html = `<strong>${esc(label)} · ${esc(year)}</strong>`;
     html += `<div>Events: <b>${count}</b></div>`;
     if (!isTotal) {
@@ -1520,7 +1612,7 @@
   function parseCellKey(key) {
     const parts = String(key || '').split('|');
     if (parts[0] === 'total') {
-      return { type: 'total' };
+      return { type: 'total', div: parts[1] || null };
     }
     if (parts[0] === 'tier' && parts.length >= 4) {
       return { type: 'tier', div: parts[1], role: parts[2], tier: Number(parts[3]) };
@@ -1529,6 +1621,50 @@
       return { type: 'div', div: parts[1] };
     }
     return null;
+  }
+
+  function sumRoleCounts(counts) {
+    let leaders = 0;
+    let followers = 0;
+    let hasLeader = false;
+    let hasFollower = false;
+    Object.keys(counts || {}).forEach((div) => {
+      const c = counts[div];
+      if (!c || typeof c !== 'object') return;
+      if (c.Leader != null) {
+        leaders += Number(c.Leader) || 0;
+        hasLeader = true;
+      }
+      if (c.Follower != null) {
+        followers += Number(c.Follower) || 0;
+        hasFollower = true;
+      }
+    });
+    return {
+      Leader: hasLeader ? leaders : null,
+      Follower: hasFollower ? followers : null,
+    };
+  }
+
+  function rolePillsFromPair(c, labelSuffix) {
+    if (!c) return [];
+    const suffix = labelSuffix ? ` ${labelSuffix}` : '';
+    const out = [];
+    if (c.Leader != null) {
+      out.push({
+        text: `${c.Leader}L`,
+        tone: 'leader',
+        label: `${c.Leader} Leader${c.Leader === 1 ? '' : 's'}${suffix}`,
+      });
+    }
+    if (c.Follower != null) {
+      out.push({
+        text: `${c.Follower}F`,
+        tone: 'follower',
+        label: `${c.Follower} Follower${c.Follower === 1 ? '' : 's'}${suffix}`,
+      });
+    }
+    return out;
   }
 
   function competitorPills(ed, ctx) {
@@ -1541,23 +1677,62 @@
       const tone = ctx.role === 'Leader' ? 'leader' : 'follower';
       return [{ text: `${n}${abbr}`, tone, label: `${n} ${ctx.role}${n === 1 ? '' : 's'}` }];
     }
-    if (ctx.type === 'div' && ctx.div) {
-      const c = counts[ctx.div];
-      if (!c) return [];
-      const out = [];
-      if (c.Leader != null) {
-        out.push({ text: `${c.Leader}L`, tone: 'leader', label: `${c.Leader} Leaders` });
-      }
-      if (c.Follower != null) {
-        out.push({ text: `${c.Follower}F`, tone: 'follower', label: `${c.Follower} Followers` });
-      }
-      return out;
+    // Division column or # Events while focused on one division → both roles.
+    if ((ctx.type === 'div' || ctx.type === 'total') && ctx.div) {
+      return rolePillsFromPair(counts[ctx.div]);
+    }
+    // Divisions overview # Events → L/F summed across all nominations at the event.
+    if (ctx.type === 'total' && !ctx.div) {
+      return rolePillsFromPair(sumRoleCounts(counts), 'across all divisions');
     }
     return [];
   }
 
-  function openEventModal(year, key, label, returnFocus) {
-    state.modalReturnFocus = returnFocus || document.activeElement;
+  function yearsForModalKey(key) {
+    const out = [];
+    Object.keys(state.cellIndex || {}).forEach((packed) => {
+      const bar = packed.indexOf('|');
+      if (bar < 0) return;
+      const y = Number(packed.slice(0, bar));
+      const rest = packed.slice(bar + 1);
+      if (rest === key && Number.isFinite(y)) out.push(y);
+    });
+    out.sort((a, b) => a - b);
+    return out;
+  }
+
+  function syncModalYearSelect(years, year) {
+    const sel = document.getElementById('eventModalYearSelect');
+    if (!sel) return;
+    const yNum = Number(year);
+    let list = (years && years.length) ? years.slice() : [];
+    if (!list.length && Number.isFinite(yNum)) list = [yNum];
+    if (!list.length) {
+      sel.innerHTML = '';
+      if (window.WsdcSelect) WsdcSelect.refresh(sel);
+      return;
+    }
+    const prev = Array.from(sel.options).map((o) => o.value);
+    const next = list.map(String);
+    const needRebuild = prev.length !== next.length || next.some((y, i) => prev[i] !== y);
+    if (needRebuild) {
+      sel.innerHTML = list.map((y) =>
+        `<option value="${y}">${y}</option>`
+      ).join('');
+    }
+    const want = String(yNum);
+    sel.value = next.includes(want) ? want : next[0];
+    if (window.WsdcSelect) WsdcSelect.refresh(sel);
+  }
+
+  function openEventModal(year, key, label, returnFocus, opts) {
+    const keepYearFocus = opts && opts.keepYearFocus;
+    if (returnFocus) state.modalReturnFocus = returnFocus;
+    else if (!state.modalReturnFocus) state.modalReturnFocus = document.activeElement;
+    state.modalKey = key;
+    state.modalLabel = label;
+    state.modalYear = Number(year);
+
     const cell = state.cellIndex && state.cellIndex[`${year}|${key}`];
     const ctx = parseCellKey(key);
     const events = (cell && cell.events ? cell.events.slice() : []).sort((a, b) => {
@@ -1566,7 +1741,8 @@
       return as.localeCompare(bs) || a.name.localeCompare(b.name);
     });
     const modal = document.getElementById('eventModal');
-    document.getElementById('eventModalTitle').textContent = `${label} · ${year}`;
+    document.getElementById('eventModalTitle').textContent = label || 'Events';
+    syncModalYearSelect(yearsForModalKey(key), state.modalYear);
     const n = cell ? cell.count : events.length;
     const shareOf = ctx && ctx.type === 'tier'
       ? `events with ${ctx.div} ${ctx.role}s`
@@ -1601,13 +1777,16 @@
     }
     modal.hidden = false;
     modal.classList.add('is-open');
-    document.getElementById('eventModalClose').focus();
+    if (!keepYearFocus) document.getElementById('eventModalClose').focus();
   }
 
   function closeEventModal() {
     const modal = document.getElementById('eventModal');
     modal.classList.remove('is-open');
     modal.hidden = true;
+    state.modalKey = null;
+    state.modalLabel = null;
+    state.modalYear = null;
     const back = state.modalReturnFocus;
     state.modalReturnFocus = null;
     if (back && typeof back.focus === 'function') {
@@ -1651,6 +1830,19 @@
     renderHeatmap();
   }
 
+  function clearFilters() {
+    if (!state.data) return;
+    closeEventModal();
+    state.continent = 'All';
+    state.country = 'All';
+    state.state = 'All';
+    state.view = 'divisions';
+    state.focusDiv = null;
+    syncYearOptions();
+    syncGeoOptions(false);
+    setMetric('count');
+  }
+
   function wire() {
     document.getElementById('yearFromSelect').addEventListener('change', (e) => {
       state.yearFrom = Number(e.target.value);
@@ -1691,6 +1883,7 @@
     });
     document.getElementById('metricCountBtn').addEventListener('click', () => setMetric('count'));
     document.getElementById('metricShareBtn').addEventListener('click', () => setMetric('share'));
+    document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
     document.getElementById('backToDivisionsBtn').addEventListener('click', backToDivisions);
     document.getElementById('focusDivSelect').addEventListener('change', (e) => {
       const div = e.target.value;
@@ -1720,6 +1913,11 @@
     });
     stack.addEventListener('mouseleave', hideCellTip);
 
+    document.getElementById('eventModalYearSelect').addEventListener('change', (e) => {
+      const y = Number(e.target.value);
+      if (!Number.isFinite(y) || y === state.modalYear || !state.modalKey) return;
+      openEventModal(y, state.modalKey, state.modalLabel, null, { keepYearFocus: true });
+    });
     document.getElementById('eventModalClose').addEventListener('click', closeEventModal);
     document.getElementById('eventModalBackdrop').addEventListener('click', closeEventModal);
     document.getElementById('methodInfoBtn').addEventListener('click', () => {
@@ -1735,6 +1933,8 @@
         dismissInfoPops();
         return;
       }
+      // Let WsdcSelect close an open year menu without dismissing the L2 panel.
+      if (document.querySelector('#eventModal .wsdc-dd.is-open')) return;
       if (document.getElementById('eventModal').classList.contains('is-open')) closeEventModal();
       else if (document.getElementById('methodLayer').classList.contains('is-open')) closeMethod();
     });
@@ -1774,6 +1974,7 @@
     if (window.WsdcSelect) {
       WsdcSelect.enhanceAll(document.querySelector('.ety-filters'));
       WsdcSelect.enhanceAll(document.getElementById('hmToolbarDivField'));
+      WsdcSelect.enhanceAll(document.getElementById('eventModalYearField'));
     }
     wire();
     renderHeatmap();
