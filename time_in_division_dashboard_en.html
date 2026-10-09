@@ -16,6 +16,11 @@
   <style>
     html, body { height: 100%; overflow: hidden; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', var(--wsdc-font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
     .content {
       flex: 1;
       min-height: 0;
@@ -36,13 +41,14 @@
     }
     .page-head h1 {
       font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
-      font-size: 1.35rem;
+      font-size: 1.5rem;
       font-weight: 700;
+      line-height: 1.25;
       color: var(--wsdc-color-text-strong, #0b1221);
       letter-spacing: -0.02em;
     }
     .page-head .subtitle {
-      font-size: 0.88rem;
+      font-size: 14px;
       line-height: 1.45;
       color: var(--wsdc-color-text-muted, #4b5563);
       max-width: 62rem;
@@ -262,15 +268,40 @@
       display: block;
       width: 100%;
       text-align: center;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      color: var(--wsdc-color-text-muted, #4b5563);
-      line-height: 1.2;
+      color: var(--wsdc-color-text-muted, #6b7280);
+      line-height: 1.15;
       padding: 0 2px;
     }
-    .tid-filters .filter-field { gap: 4px; }
+    .tid-filters .filter-field { gap: 2px; }
+    .tid-filters .cal-reset-field {
+      flex: 0 0 auto;
+      align-items: stretch;
+    }
+    .tid-filters .cal-reset-btn {
+      height: 28px;
+      margin: 0;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #94a3b8);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .tid-filters .cal-reset-btn:hover,
+    .tid-filters .cal-reset-btn:focus-visible {
+      outline: none;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: rgba(37, 99, 235, 0.06);
+    }
     .tid-filters .wsdc-select-host,
     .tid-filters .wsdc-dd {
       width: var(--wsdc-dd-width, 7.5rem);
@@ -293,8 +324,9 @@
       border: 1px solid transparent;
       background: transparent;
       color: var(--wsdc-color-text-muted, #4b5563);
-      font-size: var(--wsdc-font-size-xs, 12px);
-      font-weight: var(--wsdc-font-weight-medium, 500);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
       justify-content: space-between;
     }
     .tid-filters .wsdc-dd--field .wsdc-dd__btn:hover,
@@ -630,7 +662,7 @@
       border-radius: 8px;
       padding: 0 12px;
       height: 32px;
-      font: 600 12px Inter, system-ui, sans-serif;
+      font: 600 12px 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
       color: var(--wsdc-color-text, #1f2937);
     }
@@ -894,6 +926,8 @@
     @media (max-width: 900px) {
       html, body { height: auto; overflow: auto; }
       .page { height: auto; min-height: 100dvh; overflow: visible; }
+      .page-head h1 { font-size: 1.25rem; }
+      .page-head .subtitle { font-size: 13px; }
       .content { overflow: visible; }
       .tid-filter-stack {
         grid-template-columns: 1fr;
@@ -1012,6 +1046,10 @@
           <div class="filter-field" id="yearToField">
             <label class="filter-label" for="yearToSelect" id="yearToLabel">To year</label>
             <select id="yearToSelect" class="wsdc-select" aria-labelledby="yearToLabel"></select>
+          </div>
+          <div class="filter-field cal-reset-field">
+            <span class="filter-label" aria-hidden="true">&nbsp;</span>
+            <button type="button" class="cal-reset-btn" id="clearFiltersBtn">Clear</button>
           </div>
         </div>
         <div class="tid-view-toggle" id="viewToggleWrap" aria-label="Static or Timeline">
@@ -3312,6 +3350,43 @@
     fillYearSelects(yearOpts, from, to);
   }
 
+  async function clearFilters() {
+    const prevDivision = state.division;
+    const prevMode = state.mode;
+    state.division = 'Novice';
+    state.threshold = 'allowed';
+    state.role = 'All';
+    state.roleStatus = 'All';
+    state.mode = 'table';
+    state.viewMode = 'static';
+    state.metric = 'n';
+    state.tablePage = 0;
+    state.bufferBasketHighlight = null;
+
+    document.getElementById('divisionSelect').value = 'Novice';
+    document.getElementById('thresholdSelect').value = 'allowed';
+    document.getElementById('roleStatusSelect').value = 'All';
+    document.getElementById('modeSelect').value = 'table';
+
+    if (prevMode !== 'table') destroyChart();
+    if (prevDivision !== 'Novice') {
+      try {
+        await ensureDataForDivision('Novice');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    syncRoleControl();
+    applyYearOptionsForDivision(false);
+    resetTimelineToFloor();
+    if (window.WsdcSelect) {
+      ['divisionSelect', 'thresholdSelect', 'roleSelect', 'roleStatusSelect', 'modeSelect'].forEach((id) => {
+        WsdcSelect.refresh(document.getElementById(id));
+      });
+    }
+    render();
+  }
+
   function methodIslandFinalRect() {
     const pad = 10;
     const stage = document.querySelector('.viz-stage');
@@ -3595,6 +3670,9 @@
       syncYearRange('to');
       state.tablePage = 0;
       render();
+    });
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+      clearFilters().catch((err) => console.error(err));
     });
 
     const setViewMode = (mode) => {
