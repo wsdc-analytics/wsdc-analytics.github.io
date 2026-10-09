@@ -24,9 +24,11 @@
     html, body { height: 100%; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Inter, var(--wsdc-font-sans), system-ui, sans-serif;
+      font-family: 'DM Sans', var(--wsdc-font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--wsdc-color-text, #1f2937);
       background: var(--wsdc-color-bg, #fff);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
     }
     .page {
       min-height: 100%;
@@ -59,18 +61,21 @@
     .page-head__title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .page-head h1 {
       font-family: 'DM Sans', var(--wsdc-font-sans), sans-serif;
-      font-size: 1.35rem;
+      font-size: 1.5rem;
       font-weight: 700;
+      line-height: 1.25;
       color: var(--wsdc-color-text-strong, #0b1221);
       letter-spacing: -0.02em;
     }
     .page-head__updated {
       margin-left: auto;
       font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
       color: var(--wsdc-color-text-muted, #4b5563);
     }
     .subtitle {
-      font-size: 0.88rem;
+      font-size: 14px;
       line-height: 1.45;
       color: var(--wsdc-color-text-muted, #4b5563);
       max-width: none;
@@ -150,19 +155,45 @@
       width: 100%;
       max-width: 100%;
       min-width: 0;
-      height: 32px;
-      min-height: 32px;
+      height: 28px;
+      min-height: 28px;
       padding: 0 10px;
       border-radius: 999px;
       border: 1px solid transparent;
       background: transparent;
       color: var(--wsdc-color-text-muted, #4b5563);
+      font-family: inherit;
       font-size: 12px;
       font-weight: 500;
       justify-content: space-between;
       gap: 4px;
       overflow: hidden;
       box-sizing: border-box;
+    }
+    .ety-filters .cal-reset-field {
+      flex: 0 0 auto;
+      align-items: stretch;
+    }
+    .ety-filters .cal-reset-btn {
+      height: 28px;
+      margin: 0;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #94a3b8);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .ety-filters .cal-reset-btn:hover,
+    .ety-filters .cal-reset-btn:focus-visible {
+      outline: none;
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: rgba(37, 99, 235, 0.06);
     }
     .ety-filters .wsdc-dd--field .wsdc-dd__value {
       min-width: 0;
@@ -215,7 +246,7 @@
       border-radius: 999px;
       padding: 0 10px;
       height: 28px;
-      font: 600 11px/1 Inter, system-ui, sans-serif;
+      font: 600 11px/1 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
       color: var(--wsdc-color-text-muted, #4b5563);
     }
@@ -638,7 +669,7 @@
       border-radius: 8px;
       height: 32px;
       padding: 0 12px;
-      font: 600 12px Inter, system-ui, sans-serif;
+      font: 600 12px 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
       flex-shrink: 0;
     }
@@ -751,7 +782,7 @@
       margin-left: auto;
       border: 0;
       background: transparent;
-      font: 600 12px Inter, system-ui, sans-serif;
+      font: 600 12px 'DM Sans', system-ui, sans-serif;
       cursor: pointer;
       color: #64748b;
     }
@@ -785,6 +816,8 @@
 
     @media (max-width: 900px) {
       .event-grid { grid-template-columns: 1fr; }
+      .page-head h1 { font-size: 1.25rem; }
+      .subtitle { font-size: 13px; }
       .page-head__updated { margin-left: 0; }
     }
   </style>
@@ -828,6 +861,10 @@
             <div class="filter-field is-hidden" id="stateField">
               <label class="filter-label" for="stateSelect">State</label>
               <select id="stateSelect" class="wsdc-select"></select>
+            </div>
+            <div class="filter-field cal-reset-field">
+              <span class="filter-label" aria-hidden="true">&nbsp;</span>
+              <button type="button" class="cal-reset-btn" id="clearFiltersBtn">Clear</button>
             </div>
             <div class="filter-field">
               <span class="filter-label">Metric</span>
@@ -1793,6 +1830,19 @@
     renderHeatmap();
   }
 
+  function clearFilters() {
+    if (!state.data) return;
+    closeEventModal();
+    state.continent = 'All';
+    state.country = 'All';
+    state.state = 'All';
+    state.view = 'divisions';
+    state.focusDiv = null;
+    syncYearOptions();
+    syncGeoOptions(false);
+    setMetric('count');
+  }
+
   function wire() {
     document.getElementById('yearFromSelect').addEventListener('change', (e) => {
       state.yearFrom = Number(e.target.value);
@@ -1833,6 +1883,7 @@
     });
     document.getElementById('metricCountBtn').addEventListener('click', () => setMetric('count'));
     document.getElementById('metricShareBtn').addEventListener('click', () => setMetric('share'));
+    document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
     document.getElementById('backToDivisionsBtn').addEventListener('click', backToDivisions);
     document.getElementById('focusDivSelect').addEventListener('change', (e) => {
       const div = e.target.value;
