@@ -29,18 +29,6 @@
     { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year", kind: "html" },
   ];
 
-  /** Classic round Tableau badge (orange disc + bar-chart T mark). */
-  var TABLEAU_BADGE_HTML =
-    '<span class="wsdc-chrome__tableau-badge" title="Tableau" aria-hidden="true">' +
-    '<svg viewBox="0 0 16 16" width="14" height="14" focusable="false">' +
-    '<circle cx="8" cy="8" r="8" fill="#E97627"/>' +
-    '<rect x="3.4" y="5.2" width="1.7" height="5.6" rx="0.45" fill="#fff"/>' +
-    '<rect x="5.9" y="3.2" width="1.7" height="9.6" rx="0.45" fill="#fff"/>' +
-    '<rect x="8.4" y="4.4" width="1.7" height="7.2" rx="0.45" fill="#fff"/>' +
-    '<rect x="10.9" y="6" width="1.7" height="4" rx="0.45" fill="#fff"/>' +
-    "</svg>" +
-    "</span>";
-
   function withPathPrefix(root, href) {
     var prefix = root.getAttribute("data-path-prefix") || "";
     if (!prefix || !href) return href;
@@ -141,6 +129,17 @@
         el.setAttribute("aria-label", label);
       }
     });
+  }
+
+  function tableauBadgeHtml(root) {
+    var src = withPathPrefix(root, "static/img/tableau-icon.png");
+    return (
+      '<span class="wsdc-chrome__tableau-badge" title="Tableau" aria-hidden="true">' +
+      '<img src="' +
+      esc(src) +
+      '" alt="" width="16" height="16" decoding="async">' +
+      "</span>"
+    );
   }
 
   function tipHtml(tipText, tipAttr) {
@@ -285,9 +284,8 @@
         var cur = d.href === currentDash ? " is-current" : "";
         var href = withPathPrefix(root, d.href);
         var isTableau = d.kind === "tableau";
-        var badge = isTableau ? TABLEAU_BADGE_HTML : "";
-        var aria =
-          esc(d.label) + (isTableau ? " (Tableau)" : "");
+        var badge = isTableau ? tableauBadgeHtml(root) : "";
+        var aria = esc(d.label) + (isTableau ? " (Tableau)" : "");
         return (
           '<li role="none"><a href="' +
           esc(href) +

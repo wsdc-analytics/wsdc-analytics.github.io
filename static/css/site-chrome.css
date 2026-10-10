@@ -338,7 +338,7 @@
   min-width: 0;
 }
 
-/* Classic round Tableau badge in the dashboards dropdown. */
+/* Tableau brand mark to the left of Tableau dashboard names. */
 .wsdc-chrome__tableau-badge {
   display: inline-flex;
   align-items: center;
@@ -346,15 +346,14 @@
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
-  border-radius: 50%;
-  overflow: hidden;
   line-height: 0;
 }
 
-.wsdc-chrome__tableau-badge svg {
+.wsdc-chrome__tableau-badge img {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
 }
 
 .wsdc-chrome__qa {
