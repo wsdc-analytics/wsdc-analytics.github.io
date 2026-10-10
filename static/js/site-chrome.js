@@ -298,10 +298,11 @@
           '" aria-label="' +
           aria +
           '">' +
-          badge +
           '<span class="wsdc-chrome__menu-label">' +
           esc(d.label) +
-          "</span></a></li>"
+          "</span>" +
+          badge +
+          "</a></li>"
         );
       })
       .join("");
