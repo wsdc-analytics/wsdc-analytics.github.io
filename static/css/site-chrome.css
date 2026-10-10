@@ -288,7 +288,7 @@
   top: calc(100% + 6px);
   left: 0;
   z-index: 6;
-  min-width: 200px;
+  min-width: 220px;
   margin: 0;
   padding: 6px;
   list-style: none;
@@ -311,21 +311,50 @@
   transition-duration: var(--wsdc-chrome-enter);
 }
 
-.wsdc-chrome__menu a {
-  display: block;
+.wsdc-chrome__menu a,
+.wsdc-chrome__menu-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 10px;
   border-radius: 8px;
   color: var(--wsdc-color-text, #1f2937);
   text-decoration: none;
   font-size: 13px;
+  line-height: 1.25;
 }
 
-.wsdc-chrome__menu a:hover {
+.wsdc-chrome__menu a:hover,
+.wsdc-chrome__menu-link:hover {
   background: var(--wsdc-color-surface-soft, #f8fafc);
 }
 
-.wsdc-chrome__menu a.is-current {
+.wsdc-chrome__menu a.is-current,
+.wsdc-chrome__menu-link.is-current {
   font-weight: 600;
+}
+
+.wsdc-chrome__menu-label {
+  min-width: 0;
+}
+
+/* Classic round Tableau badge in the dashboards dropdown. */
+.wsdc-chrome__tableau-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border-radius: 50%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wsdc-chrome__tableau-badge svg {
+  display: block;
+  width: 14px;
+  height: 14px;
 }
 
 .wsdc-chrome__qa {
