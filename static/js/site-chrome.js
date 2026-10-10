@@ -25,7 +25,7 @@
     { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points" },
     { href: "time_in_division_dashboard_en.html", label: "Time In Division" },
     { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year" },
-    { href: "city-clouds.html", label: "Cities Cloud" },
+    { href: "city-clouds.html", label: "Top 10 Countries" },
   ];
 
   function withPathPrefix(root, href) {
