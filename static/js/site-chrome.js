@@ -17,16 +17,29 @@
 (function () {
   "use strict";
 
+  // Tableau embeds first, then native HTML dashboards.
   var DASHBOARDS = [
-    { href: "dashboard.html", label: "Metrics" },
-    { href: "navigator.html", label: "Events Navigator" },
-    { href: "rankings.html", label: "Dancer's Ranking" },
-    { href: "dancer-profile.html", label: "Dancer Profile" },
-    { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points" },
-    { href: "time_in_division_dashboard_en.html", label: "Time In Division" },
-    { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year" },
-    { href: "city-clouds.html", label: "Top 10 Countries" },
+    { href: "dashboard.html", label: "Metrics", kind: "tableau" },
+    { href: "navigator.html", label: "Events Navigator", kind: "tableau" },
+    { href: "rankings.html", label: "Dancer's Ranking", kind: "tableau" },
+    { href: "dancer-profile.html", label: "Dancer Profile", kind: "tableau" },
+    { href: "city-clouds.html", label: "Top 10 Countries", kind: "tableau" },
+    { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points", kind: "html" },
+    { href: "time_in_division_dashboard_en.html", label: "Time In Division", kind: "html" },
+    { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year", kind: "html" },
   ];
+
+  /** Classic round Tableau badge (orange disc + bar-chart T mark). */
+  var TABLEAU_BADGE_HTML =
+    '<span class="wsdc-chrome__tableau-badge" title="Tableau" aria-hidden="true">' +
+    '<svg viewBox="0 0 16 16" width="14" height="14" focusable="false">' +
+    '<circle cx="8" cy="8" r="8" fill="#E97627"/>' +
+    '<rect x="3.4" y="5.2" width="1.7" height="5.6" rx="0.45" fill="#fff"/>' +
+    '<rect x="5.9" y="3.2" width="1.7" height="9.6" rx="0.45" fill="#fff"/>' +
+    '<rect x="8.4" y="4.4" width="1.7" height="7.2" rx="0.45" fill="#fff"/>' +
+    '<rect x="10.9" y="6" width="1.7" height="4" rx="0.45" fill="#fff"/>' +
+    "</svg>" +
+    "</span>";
 
   function withPathPrefix(root, href) {
     var prefix = root.getAttribute("data-path-prefix") || "";
@@ -262,21 +275,38 @@
         '"><span class="wsdc-chrome__brand-logo"><img src="https://www.worldsdc.com/wp-content/uploads/2019/10/WSDC_WHITE.gif" alt="WSDC" height="22" loading="eager"></span></a>';
     }
 
-    var dashItems = DASHBOARDS.map(function (d) {
-      var cur = d.href === currentDash ? " is-current" : "";
-      var href = withPathPrefix(root, d.href);
-      return (
-        '<li role="none"><a href="' +
-        esc(href) +
-        '" role="menuitem" data-dash-href="' +
-        esc(d.href) +
-        '" class="' +
-        cur.trim() +
-        '">' +
-        esc(d.label) +
-        "</a></li>"
-      );
-    }).join("");
+    var dashItems = DASHBOARDS.slice()
+      .sort(function (a, b) {
+        var aTab = a.kind === "tableau" ? 0 : 1;
+        var bTab = b.kind === "tableau" ? 0 : 1;
+        return aTab - bTab;
+      })
+      .map(function (d) {
+        var cur = d.href === currentDash ? " is-current" : "";
+        var href = withPathPrefix(root, d.href);
+        var isTableau = d.kind === "tableau";
+        var badge = isTableau ? TABLEAU_BADGE_HTML : "";
+        var aria =
+          esc(d.label) + (isTableau ? " (Tableau)" : "");
+        return (
+          '<li role="none"><a href="' +
+          esc(href) +
+          '" role="menuitem" data-dash-href="' +
+          esc(d.href) +
+          '" data-dash-kind="' +
+          esc(d.kind || "html") +
+          '" class="wsdc-chrome__menu-link' +
+          cur +
+          '" aria-label="' +
+          aria +
+          '">' +
+          badge +
+          '<span class="wsdc-chrome__menu-label">' +
+          esc(d.label) +
+          "</span></a></li>"
+        );
+      })
+      .join("");
 
     var langs = ["ru", "en", "es"]
       .map(function (code) {
