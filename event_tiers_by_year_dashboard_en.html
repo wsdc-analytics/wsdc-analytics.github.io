@@ -1836,11 +1836,9 @@
     state.continent = 'All';
     state.country = 'All';
     state.state = 'All';
-    state.view = 'divisions';
-    state.focusDiv = null;
     syncYearOptions();
     syncGeoOptions(false);
-    setMetric('count');
+    renderHeatmap();
   }
 
   function wire() {
