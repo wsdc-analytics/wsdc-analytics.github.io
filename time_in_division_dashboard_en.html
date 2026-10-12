@@ -970,7 +970,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
   <meta property="og:title" content="Time In Division | WSDC Analytics">
-  <meta property="og:description" content="How long dancers stay in each WSDC division">
+  <meta property="og:description" content="How long competitors stay in each WSDC division">
   <meta property="og:url" content="https://wsdc-analytics.github.io/time_in_division_dashboard_en.html">
   <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -991,7 +991,7 @@
           </button>
           <p class="page-head__updated" id="dataUpdated">Updated —</p>
         </div>
-        <p class="subtitle">How long does it take a dancer to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. <em>Buffer Dancers</em> focuses on dancers who stayed and kept scoring in the lower division after May. Switch between Table, Scatter, Density, Dynamics and Buffer Dancers; on Scatter and Density you can also run a <em>Timeline</em> month by month. The <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
+        <p class="subtitle">How long does it take a competitor to earn the right to move up — and how long do they wait before they actually do? This tool answers that for every WSDC division: months and events from the first point to the <em>May</em> or <em>Must</em> threshold, the share who have already scored in the next division, and the pause before that first next-level point. <em>Buffer Competitors</em> focuses on competitors who stayed and kept scoring in the lower division after May. Switch between Table, Scatter, Density, Dynamics and Buffer Competitors; on Scatter and Density you can also run a <em>Timeline</em> month by month. The <span class="subtitle-i">ⓘ</span> buttons and Methodology explain each number.</p>
       </header>
 
       <div class="tid-filter-stack">
@@ -1036,7 +1036,7 @@
               <option value="scatter">Scatter</option>
               <option value="density">Density</option>
               <option value="dynamics">Dynamics</option>
-              <option value="buffer">Buffer Dancers</option>
+              <option value="buffer">Buffer Competitors</option>
             </select>
           </div>
           <div class="filter-field" id="yearFromField">
@@ -1087,10 +1087,10 @@
           <p class="kpi-hint" id="kpiHint" hidden>Click a card to plot it</p>
           <div class="kpi" data-metric="n" id="kpiBtnN">
             <div class="kpi__head">
-              <span class="lbl">Dancers</span>
-              <button type="button" class="info-tip" aria-label="What is Dancers?"
-                data-tip="How many dancer × role spells match the current filters. A dancer who competes as both Leader and Follower counts twice."
-                data-tip-buffer="Buffer cohort: spells that reached May and scored again in the same division and role afterwards, with the stay ending in the selected years. A dancer who competes in both roles counts twice. The line below compares the cohort with all spells that scored points in this division in those years (same Role / Role status).">i</button>
+              <span class="lbl">Competitors</span>
+              <button type="button" class="info-tip" aria-label="What is Competitors?"
+                data-tip="How many competitor × role spells match the current filters. Someone entered as both Leader and Follower counts twice."
+                data-tip-buffer="Buffer cohort: spells that reached May and scored again in the same division and role afterwards, with the stay ending in the selected years. Someone entered in both roles counts twice. The line below compares the cohort with all spells that scored points in this division in those years (same Role / Role status).">i</button>
             </div>
             <div class="val" id="kpiN">—</div>
             <div class="val-sub" id="kpiNSub" hidden></div>
@@ -1099,8 +1099,8 @@
             <div class="kpi__head">
               <span class="lbl">Median months</span>
               <button type="button" class="info-tip" aria-label="What is Median months?"
-                data-tip="Typical time from a dancer's first point in this division to the May / Must threshold. Half of the dancers were faster, half slower."
-                data-tip-buffer="Typical time from May to the last lower-division point in the stay window. The window ends at Must, the first next-division point, or the data cut-off (All-Stars: see Methodology → Buffer Dancers).">i</button>
+                data-tip="Typical time from a competitor's first point in this division to the May / Must threshold. Half of the competitors were faster, half slower."
+                data-tip-buffer="Typical time from May to the last lower-division point in the stay window. The window ends at Must, the first next-division point, or the data cut-off (All-Stars: see Methodology → Buffer Competitors).">i</button>
             </div>
             <div class="val" id="kpiMonths">—</div>
           </div>
@@ -1108,8 +1108,8 @@
             <div class="kpi__head">
               <span class="lbl">Median events</span>
               <button type="button" class="info-tip" aria-label="What is Median events?"
-                data-tip="Typical number of events a dancer scored at in this division before reaching the threshold — counting the first point and the event that crossed it."
-                data-tip-buffer="Typical number of scored events in this division and role strictly after May, inside the stay window. Advanced counts only contests where the dancer still held May; All-Stars counts only All-Stars contests.">i</button>
+                data-tip="Typical number of events a competitor scored at in this division before reaching the threshold — counting the first point and the event that crossed it."
+                data-tip-buffer="Typical number of scored events in this division and role strictly after May, inside the stay window. Advanced counts only contests where the competitor still held May; All-Stars counts only All-Stars contests.">i</button>
             </div>
             <div class="val" id="kpiEvents">—</div>
           </div>
@@ -1117,7 +1117,7 @@
             <div class="kpi__head">
               <span class="lbl">Share next</span>
               <button type="button" class="info-tip" aria-label="What is Share next?"
-                data-tip="Of the dancers who reached the threshold, the share who have already scored at least one point in the next division (as of the latest data refresh).">i</button>
+                data-tip="Of the competitors who reached the threshold, the share who have already scored at least one point in the next division (as of the latest data refresh).">i</button>
             </div>
             <div class="val" id="kpiNextShare">—</div>
           </div>
@@ -1133,7 +1133,7 @@
             <div class="kpi__head">
               <span class="lbl">≥25%</span>
               <button type="button" class="info-tip" aria-label="What is ≥25%?"
-                data-tip="Share of Buffer dancers who reached at least 25% of the May→Must point gap while staying in the lower division.">i</button>
+                data-tip="Share of Buffer competitors who reached at least 25% of the May→Must point gap while staying in the lower division.">i</button>
             </div>
             <div class="val" id="kpiBufP25">—</div>
           </div>
@@ -1141,7 +1141,7 @@
             <div class="kpi__head">
               <span class="lbl">≥50%</span>
               <button type="button" class="info-tip" aria-label="What is ≥50%?"
-                data-tip="Share of Buffer dancers who reached at least 50% of the May→Must point gap while staying in the lower division.">i</button>
+                data-tip="Share of Buffer competitors who reached at least 50% of the May→Must point gap while staying in the lower division.">i</button>
             </div>
             <div class="val" id="kpiBufP50">—</div>
           </div>
@@ -1149,7 +1149,7 @@
             <div class="kpi__head">
               <span class="lbl">≥75%</span>
               <button type="button" class="info-tip" aria-label="What is ≥75%?"
-                data-tip="Share of Buffer dancers who reached at least 75% of the May→Must point gap while staying in the lower division.">i</button>
+                data-tip="Share of Buffer competitors who reached at least 75% of the May→Must point gap while staying in the lower division.">i</button>
             </div>
             <div class="val" id="kpiBufP75">—</div>
           </div>
@@ -1157,7 +1157,7 @@
             <div class="kpi__head">
               <span class="lbl">Share Must</span>
               <button type="button" class="info-tip" aria-label="What is Share Must?"
-                data-tip="Share of Buffer dancers whose May→Must basket is Must (career points in the lower division reached the Must threshold). They may still be competing in that division — same as the Must colour on the chart. For All-Stars this uses the All-Stars points path only (150→225), not Champions points.">i</button>
+                data-tip="Share of Buffer competitors whose May→Must basket is Must (career points in the lower division reached the Must threshold). They may still be competing in that division — same as the Must colour on the chart. For All-Stars this uses the All-Stars points path only (150→225), not Champions points.">i</button>
             </div>
             <div class="val" id="kpiBufMust">—</div>
           </div>
@@ -1185,17 +1185,17 @@
                     <th>Role</th>
                     <th>Division</th>
                     <th><span class="th-inner">First point<button type="button" class="info-tip" aria-label="About First point"
-                      data-tip="Start date of the event where this dancer earned their first point in this division and role.">i</button></span></th>
+                      data-tip="Start date of the event where this competitor earned their first point in this division and role.">i</button></span></th>
                     <th><span class="th-inner"><span id="thDone">May reached</span><button type="button" class="info-tip" aria-label="About the threshold date"
-                      data-tip="Start date of the event where the dancer crossed the selected threshold (May = allowed to move up, Must = required to move up).">i</button></span></th>
+                      data-tip="Start date of the event where the competitor crossed the selected threshold (May = allowed to move up, Must = required to move up).">i</button></span></th>
                     <th><span class="th-inner">Months<button type="button" class="info-tip" aria-label="About Months"
                       data-tip="Months between the first point and the threshold event, measured in days between event start dates and shown to one decimal.">i</button></span></th>
                     <th><span class="th-inner">Events<button type="button" class="info-tip" aria-label="About Events"
-                      data-tip="Number of different events where the dancer scored in this division and role, from the first point up to and including the threshold event.">i</button></span></th>
+                      data-tip="Number of different events where the competitor scored in this division and role, from the first point up to and including the threshold event.">i</button></span></th>
                     <th><span class="th-inner">Entered next<button type="button" class="info-tip" aria-label="About Entered next"
-                      data-tip="Start date of the event where the dancer earned their first point in the next division, same role. Blank if they have not scored there yet.">i</button></span></th>
+                      data-tip="Start date of the event where the competitor earned their first point in the next division, same role. Blank if they have not scored there yet.">i</button></span></th>
                     <th><span class="th-inner">Pause, mo<button type="button" class="info-tip" aria-label="About Pause"
-                      data-tip="Months between reaching the threshold and the first point in the next division. For dancers who moved up by petition (no threshold reached) we count from their last point in this division.">i</button></span></th>
+                      data-tip="Months between reaching the threshold and the first point in the next division. For competitors who moved up by petition (no threshold reached) we count from their last point in this division.">i</button></span></th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -1224,7 +1224,7 @@
           <details class="method-sec" open>
             <summary>What this shows</summary>
             <div class="method-sec__body">
-              <p>Every row in this tool is one <strong>dancer in one division and one role</strong> — Leader and Follower are tracked separately, so a dancer who competes in both roles appears twice. We follow each of them from their <strong>first point</strong> in the division to the moment the WSDC rules say they <strong>may</strong> move up (the lower threshold) or <strong>must</strong> move up (the upper one), and then on to their <strong>first point in the next division</strong>.</p>
+              <p>Every row in this tool is one <strong>competitor in one division and one role</strong> — Leader and Follower are tracked separately, so someone entered in both roles appears twice. We follow each of them from their <strong>first point</strong> in the division to the moment the WSDC rules say they <strong>may</strong> move up (the lower threshold) or <strong>must</strong> move up (the upper one), and then on to their <strong>first point in the next division</strong>.</p>
               <p class="method-example"><strong>Example.</strong> Anna scored her first Novice point as a Follower in March 2019. By October 2020 she had enough points to be allowed into Intermediate (May). She kept dancing Novice, reached the Must threshold in April 2021, and scored her first Intermediate point in September 2021. Her Novice spell: 18.9 months and 9 events to May; pause after May 11.5 months.</p>
               <p>We only show spells whose threshold was reached in the years when both thresholds existed in the rules: <strong>Novice, Intermediate and Advanced from 2018</strong>, <strong>All-Stars from 2021</strong>. Earlier points still count toward months and events — the year floor only decides which spells are displayed. Data cut-off: <span id="asOfNote">—</span>.</p>
             </div>
@@ -1234,50 +1234,50 @@
             <summary>Filters &amp; KPIs</summary>
             <div class="method-sec__body">
               <ul>
-                <li><strong>Division</strong> and <strong>Role</strong> pick the spells. <strong>Role status</strong> keeps Primary (spell role = dancer’s dominant role from the registry), Secondary (the other role), or All. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
-                <li>In <em>Buffer Dancers</em>, the Dancers card also shows what share the cohort is of all spells that <em>scored points</em> in the division in the selected years (same Role / Role status filters) — any contest with points in that division×role counts, not only May / Must / stay milestones. Basket and Share Must cards show the percentage at full KPI size, then a muted <em>| count</em> on the same line.</li>
-                <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone. Hidden in <em>Buffer Dancers</em> (always post-May).</li>
-                <li><strong>From / To year</strong> limit the Table, Scatter, Density and Buffer Dancers to spells whose milestone year falls in range (threshold year for the first three; end-of-stay year for Buffer Dancers). Dynamics always shows the full span. In <em>Timeline</em> (Scatter / Density) the year range is replaced by the month scrubber — see Timeline below.</li>
+                <li><strong>Division</strong> and <strong>Role</strong> pick the spells. <strong>Role status</strong> keeps Primary (spell role = competitor’s dominant role from the registry), Secondary (the other role), or All. In Dynamics, Role becomes a <em>View</em>: <em>Overall</em> draws one combined line, <em>Leaders &amp; Followers</em> draws two lines so you can compare roles.</li>
+                <li>In <em>Buffer Competitors</em>, the Competitors card also shows what share the cohort is of all spells that <em>scored points</em> in the division in the selected years (same Role / Role status filters) — any contest with points in that division×role counts, not only May / Must / stay milestones. Basket and Share Must cards show the percentage at full KPI size, then a muted <em>| count</em> on the same line.</li>
+                <li><strong>Threshold</strong> switches every number between the <em>May</em> and <em>Must</em> milestone. Hidden in <em>Buffer Competitors</em> (always post-May).</li>
+                <li><strong>From / To year</strong> limit the Table, Scatter, Density and Buffer Competitors to spells whose milestone year falls in range (threshold year for the first three; end-of-stay year for Buffer Competitors). Dynamics always shows the full span. In <em>Timeline</em> (Scatter / Density) the year range is replaced by the month scrubber — see Timeline below.</li>
               </ul>
               <p>The cards on the left summarise whatever is currently filtered:</p>
               <ul>
-                <li><strong>Dancers</strong> — how many spells match.</li>
-                <li><strong>Median months</strong> / <strong>Median events</strong> — typical time and events to the threshold (or, in Buffer Dancers, months and events after May in the stay window).</li>
+                <li><strong>Competitors</strong> — how many spells match.</li>
+                <li><strong>Median months</strong> / <strong>Median events</strong> — typical time and events to the threshold (or, in Buffer Competitors, months and events after May in the stay window).</li>
                 <li><strong>Share next</strong> — of those who reached the threshold, how many already have a point in the next division.</li>
                 <li><strong>Median pause</strong> — among those who moved up, the typical wait between the threshold and their first next-level point.</li>
-                <li><strong>Buffer cards</strong> (≥25% / ≥50% / ≥75% / Share Must) — share of Buffer Dancers who reached each May→Must basket while staying in the lower division. Share Must matches the Must basket / chart colour (threshold reached), not necessarily an exit out of the division.</li>
+                <li><strong>Buffer cards</strong> (≥25% / ≥50% / ≥75% / Share Must) — share of Buffer Competitors who reached each May→Must basket while staying in the lower division. Share Must matches the Must basket / chart colour (threshold reached), not necessarily an exit out of the division.</li>
               </ul>
-              <p>In Timeline the same cards update for the month under the scrubber. Share next and Median pause only count dancers who had already entered the next division <em>by that month</em> — not anyone who moved up later in the data.</p>
-              <p class="method-example"><strong>Reading the cards.</strong> Suppose Novice · Follower · May shows <em>Dancers 412 · Median months 8.1 · Median events 5 · Share next 63% · Median pause 6.4</em>. A typical Novice Follower in that selection needed about eight months and five events to be allowed up, roughly two in three have since scored in Intermediate, and those who did usually waited about half a year.</p>
+              <p>In Timeline the same cards update for the month under the scrubber. Share next and Median pause only count competitors who had already entered the next division <em>by that month</em> — not anyone who moved up later in the data.</p>
+              <p class="method-example"><strong>Reading the cards.</strong> Suppose Novice · Follower · May shows <em>Competitors 412 · Median months 8.1 · Median events 5 · Share next 63% · Median pause 6.4</em>. A typical Novice Follower in that selection needed about eight months and five events to be allowed up, roughly two in three have since scored in Intermediate, and those who did usually waited about half a year.</p>
             </div>
           </details>
 
           <details class="method-sec">
-            <summary>Buffer Dancers</summary>
+            <summary>Buffer Competitors</summary>
             <div class="method-sec__body">
-              <p><strong>Buffer Dancers</strong> looks at dancers who reached <em>May</em> and then still scored at least once in the <strong>same division and role</strong>. We do not try to infer “attempted the next division but missed finals” — only registry points in the lower division count. Dancers who already had a next-division point <em>before</em> their first post-May lower point are excluded (mixed / dual contests). For All-Stars, Champions points are not an exclusion (see below).</p>
+              <p><strong>Buffer Competitors</strong> looks at competitors who reached <em>May</em> and then still scored at least once in the <strong>same division and role</strong>. We do not try to infer “attempted the next division but missed finals” — only registry points in the lower division count. Competitors who already had a next-division point <em>before</em> their first post-May lower point are excluded (mixed / dual contests). For All-Stars, Champions points are not an exclusion (see below).</p>
               <p>Each point is one spell. <strong>X</strong> = months from May to the end of the stay window; <strong>Y</strong> = scored events in the lower division <em>strictly after</em> May. Colour = highest May→Must basket reached: &lt;25%, ≥25%, ≥50%, ≥75%, or Must. Baskets use the point thresholds in force at the end of the stay. The window ends at the earliest of Must, first next-division point, or the data cut-off — measured to the last lower-division point in that window.</p>
-              <p><strong>All-Stars:</strong> Buffer Dancers only counts the formal All-Stars→Champions ladder era (<strong>2021+</strong>). If registry May was earlier, effective May is the first <em>All-Stars</em> event in 2021+. Months and events count <strong>All-Stars performances only</strong> — Champions contests are not buffer stays. <strong>Required Champions</strong> (career Champions points reached Must, typically ≥10) are never Buffer Dancers, even if they later scored All-Stars. For everyone else, Must and colour use the <strong>All-Stars points scale only</strong> (career pts vs 150 → 225). Champions points below Must may appear in the tooltip as context and do not end the buffer by themselves. If a dancer already had 225 All-Stars points by their (effective) May event, they are Must from the start and the window runs to the data cut-off.</p>
-              <p>Year filters use the <strong>end of the stay</strong>, not the May date. Floors match the rest of the tool except <strong>Advanced from 2023</strong> (after the 36-month Advanced window was removed). For Advanced, only contests where the dancer <em>still</em> meets that year’s May threshold count — if the bar rises (e.g. 45→60) or a rolling window expires their points, later Advanced results are not Buffer Dancers. Threshold May/Must is hidden here — Buffer Dancers is always post-May. Timeline is not available in Buffer Dancers.</p>
-              <p class="method-example"><strong>Reading it.</strong> A dense run of green Must points with few events means many dancers who stayed after May quickly filled the remaining gap. Long grey &lt;25% tails are people who kept competing below without moving far toward Must.</p>
+              <p><strong>All-Stars:</strong> Buffer Competitors only counts the formal All-Stars→Champions ladder era (<strong>2021+</strong>). If registry May was earlier, effective May is the first <em>All-Stars</em> event in 2021+. Months and events count <strong>All-Stars performances only</strong> — Champions contests are not buffer stays. <strong>Required Champions</strong> (career Champions points reached Must, typically ≥10) are never Buffer Competitors, even if they later scored All-Stars. For everyone else, Must and colour use the <strong>All-Stars points scale only</strong> (career pts vs 150 → 225). Champions points below Must may appear in the tooltip as context and do not end the buffer by themselves. If a competitor already had 225 All-Stars points by their (effective) May event, they are Must from the start and the window runs to the data cut-off.</p>
+              <p>Year filters use the <strong>end of the stay</strong>, not the May date. Floors match the rest of the tool except <strong>Advanced from 2023</strong> (after the 36-month Advanced window was removed). For Advanced, only contests where the competitor <em>still</em> meets that year’s May threshold count — if the bar rises (e.g. 45→60) or a rolling window expires their points, later Advanced results are not Buffer Competitors. Threshold May/Must is hidden here — Buffer Competitors is always post-May. Timeline is not available in Buffer Competitors.</p>
+              <p class="method-example"><strong>Reading it.</strong> A dense run of green Must points with few events means many competitors who stayed after May quickly filled the remaining gap. Long grey &lt;25% tails are people who kept competing below without moving far toward Must.</p>
             </div>
           </details>
 
           <details class="method-sec">
             <summary>Scatter</summary>
             <div class="method-sec__body">
-              <p>One dot per dancer. Left to right: <strong>months</strong> from the first point to the threshold. Bottom to top: <strong>events</strong> it took. When several dancers land on exactly the same spot, the dots are arranged in a small ring so each one stays visible. Dashed lines mark the <strong>median</strong> months and events for the current filter.</p>
+              <p>One dot per competitor. Left to right: <strong>months</strong> from the first point to the threshold. Bottom to top: <strong>events</strong> it took. When several competitors land on exactly the same spot, the dots are arranged in a small ring so each one stays visible. Dashed lines mark the <strong>median</strong> months and events for the current filter.</p>
               <p>Hover a dot to see who it is, the dates of their first point and threshold, and — if they have already moved up — when they entered the next division and how long the pause was.</p>
-              <p class="method-example"><strong>Reading it.</strong> A dot far to the right but low on the chart is a dancer who took years but only a handful of events — someone who competes rarely. A dot high and to the left is a dancer who crossed quickly by attending many events in a short time.</p>
+              <p class="method-example"><strong>Reading it.</strong> A dot far to the right but low on the chart is a competitor who took years but only a handful of events — someone who competes rarely. A dot high and to the left is a competitor who crossed quickly by attending many events in a short time.</p>
             </div>
           </details>
 
           <details class="method-sec">
             <summary>Density</summary>
             <div class="method-sec__body">
-              <p>The same picture as Scatter, but dancers are grouped into <strong>bins of 6 months × 2 events</strong>. The darker and larger the bubble, the more dancers fall into that bin. Use it when the Scatter is too crowded to read.</p>
-              <p>Hover a bubble to see the bin range in plain words, how many dancers are in it, and what share of the current selection that is.</p>
-              <p class="method-example"><strong>Example.</strong> A bubble labelled <em>6–12 months · 4–6 events · Dancers 84 · 21% of selection</em> means 84 dancers — about one in five — reached the threshold between six months and a year after their first point, scoring at four or five events along the way.</p>
+              <p>The same picture as Scatter, but competitors are grouped into <strong>bins of 6 months × 2 events</strong>. The darker and larger the bubble, the more competitors fall into that bin. Use it when the Scatter is too crowded to read.</p>
+              <p>Hover a bubble to see the bin range in plain words, how many competitors are in it, and what share of the current selection that is.</p>
+              <p class="method-example"><strong>Example.</strong> A bubble labelled <em>6–12 months · 4–6 events · Competitors 84 · 21% of selection</em> means 84 competitors — about one in five — reached the threshold between six months and a year after their first point, scoring at four or five events along the way.</p>
             </div>
           </details>
 
@@ -1286,17 +1286,17 @@
             <div class="method-sec__body">
               <p>On Scatter and Density, switch from <strong>Static</strong> to <strong>Timeline</strong> to watch the same picture build month by month. Instead of From / To year, a scrubber runs from the division’s year floor (<strong>January 2018</strong> for Novice, Intermediate and Advanced; <strong>January 2021</strong> for All-Stars) through the latest month in the data. Each frame shows every spell whose threshold was reached <strong>on or before</strong> that month — a running cumulative, not a single-month slice.</p>
               <p>The chart axes stay fixed to the full cumulative range so the field does not jump when a late outlier appears; dashed median lines and the KPI cards move with the scrubber. Play steps one month at a time (×1 is the default pace; ×0.25 is slower, ×2 faster). Pause keeps your place; Reset returns to the floor. Changing a filter, or leaving Timeline and coming back, also resets to the start.</p>
-              <p>While fewer than <strong>10 dancers</strong> are on screen, medians and pause are shown as a dash — the same stability rule as in Dynamics. Hover still works during Play: if the point under the cursor disappears on the next frame, the tooltip closes.</p>
-              <p class="method-example"><strong>Reading it.</strong> Novice · May · Timeline at <em>As of Jan 2019</em> with <em>Dancers 615</em> means 615 Novice spells had already crossed May by that month. Drag forward and watch the cloud fill in; Share next rises only when those dancers later score in Intermediate <em>no later than the month you are on</em>.</p>
+              <p>While fewer than <strong>10 competitors</strong> are on screen, medians and pause are shown as a dash — the same stability rule as in Dynamics. Hover still works during Play: if the point under the cursor disappears on the next frame, the tooltip closes.</p>
+              <p class="method-example"><strong>Reading it.</strong> Novice · May · Timeline at <em>As of Jan 2019</em> with <em>Competitors 615</em> means 615 Novice spells had already crossed May by that month. Drag forward and watch the cloud fill in; Share next rises only when those competitors later score in Intermediate <em>no later than the month you are on</em>.</p>
             </div>
           </details>
 
           <details class="method-sec">
             <summary>Dynamics</summary>
             <div class="method-sec__body">
-              <p>One KPI as a line over calendar years. <strong>Click a card on the left</strong> to choose which one. For Dancers, Median months, Median events and Share next the year is when the dancer <strong>reached the threshold</strong>. For Median pause the year is when they <strong>entered the next division</strong>, and the pause is measured back to the threshold.</p>
-              <p>A gap in a line does not mean there is no data — it means fewer than <strong>10 dancers</strong> that year, too few for a stable median or share. Dancers itself is drawn for every year with at least one spell.</p>
-              <p class="method-example"><strong>Example.</strong> Median pause for Novice Followers reads <em>2023 → 7.5</em>: dancers who scored their first Intermediate point in 2023 had typically waited seven and a half months since reaching May. If 2019 shows no point, fewer than ten Followers entered Intermediate that year.</p>
+              <p>One KPI as a line over calendar years. <strong>Click a card on the left</strong> to choose which one. For Competitors, Median months, Median events and Share next the year is when the competitor <strong>reached the threshold</strong>. For Median pause the year is when they <strong>entered the next division</strong>, and the pause is measured back to the threshold.</p>
+              <p>A gap in a line does not mean there is no data — it means fewer than <strong>10 competitors</strong> that year, too few for a stable median or share. Competitors itself is drawn for every year with at least one spell.</p>
+              <p class="method-example"><strong>Example.</strong> Median pause for Novice Followers reads <em>2023 → 7.5</em>: competitors who scored their first Intermediate point in 2023 had typically waited seven and a half months since reaching May. If 2019 shows no point, fewer than ten Followers entered Intermediate that year.</p>
             </div>
           </details>
 
@@ -1305,7 +1305,7 @@
             <div class="method-sec__body">
               <p>Every filtered spell as a row, sorted by months, then First point, then Entered next. Rows are tinted by role. The columns:</p>
               <ul>
-                <li><strong>First point</strong> — date of the event where the dancer scored their first point in this division and role.</li>
+                <li><strong>First point</strong> — date of the event where the competitor scored their first point in this division and role.</li>
                 <li><strong>May reached</strong> / <strong>Must reached</strong> — date of the event where they crossed the selected threshold.</li>
                 <li><strong>Months</strong>, <strong>Events</strong> — the distance between those two events.</li>
                 <li><strong>Entered next</strong> — date of their first point in the next division, same role; blank if it has not happened yet.</li>
@@ -1320,8 +1320,8 @@
             <summary>How we count months and events</summary>
             <div class="method-sec__body">
               <p><strong>Months</strong> are the number of days between the start dates of two events, divided by the average month length (30.44 days) and rounded to one decimal. Two points at the same event count as 0.1 month, not zero. When an event has no known dates, we fall back to counting calendar months inclusively (March to July = 5).</p>
-              <p><strong>Events</strong> are distinct competitions where the dancer scored in this division and role — the first-point event and the threshold event both count.</p>
-              <p><strong>Pause</strong> runs from the threshold event to the first event in the next division. Some dancers move up before they reach the threshold, for example All-Stars who enter Champions by petition; for them we count from their <em>last</em> point in the division instead, so the pause is never negative.</p>
+              <p><strong>Events</strong> are distinct competitions where the competitor scored in this division and role — the first-point event and the threshold event both count.</p>
+              <p><strong>Pause</strong> runs from the threshold event to the first event in the next division. Some competitors move up before they reach the threshold, for example All-Stars who enter Champions by petition; for them we count from their <em>last</em> point in the division instead, so the pause is never negative.</p>
               <p><strong>All-Stars</strong> before 2021 had no formal Champions rules, so only Champions points counted; from 2021 either Champions or All-Stars points can satisfy the threshold. <strong>Advanced</strong> points counted on a rolling 36-month window through 2022 (checked in calendar months, as the WSDC did); from 2023 Advanced points are cumulative and the bar moved from 45 / 60 to 60 / 90.</p>
               <p class="method-example"><strong>Example.</strong> First Novice point at an event starting 15 March 2019, May threshold at an event starting 9 October 2020: 574 days ÷ 30.44 = <strong>18.9 months</strong>. Between them Anna scored at seven more events, so <strong>Events = 9</strong>.</p>
             </div>
@@ -1375,7 +1375,7 @@
   };
   const DEFAULT_YEAR = 2026;
   const METRIC_LABEL = {
-    n: 'Dancers',
+    n: 'Competitors',
     months: 'Median months',
     events: 'Median events',
     next_share: 'Share next',
@@ -2141,7 +2141,7 @@
       const asOfNote = isTimelineActive() ? ` as of ${formatYm(timelineAsOfYm())}` : '';
       if (shareTip) {
         shareTip.dataset.tipLive = rows.length
-          ? `Now: ${st.withNext} of ${rows.length} dancers${asOfNote}.`
+          ? `Now: ${st.withNext} of ${rows.length} competitors${asOfNote}.`
           : '';
       }
       if (pauseTip) {
@@ -2340,7 +2340,7 @@
             ...allPts.filter((p) => (stayOf(p.raw) || {}).basket === hi),
           ];
       return [{
-        label: 'Buffer Dancers',
+        label: 'Buffer Competitors',
         data: ordered,
         backgroundColor: 'rgba(255, 255, 255, 0)',
         borderColor: (ctx) => {
@@ -2516,7 +2516,7 @@
         continue;
       }
       const val = metricForGroup(group, thr, state.metric);
-      // For entry cohorts, n on the point = dancers with a pause (same as pauseN).
+      // For entry cohorts, n on the point = competitors with a pause (same as pauseN).
       const pointN = byEntry
         ? group.filter((s) => pauseMonths(nextTransitionForSpell(s), thr) != null).length
         : n;
@@ -2775,7 +2775,7 @@
     const total = raw.total || 0;
     const share = total ? Math.round((raw.n / total) * 1000) / 10 : null;
     let html = `<div class="tt-title">${title}</div>`;
-    html += ttRow('Dancers', String(raw.n));
+    html += ttRow('Competitors', String(raw.n));
     if (share != null) html += ttRow('Share of selection', `${share}%`);
     return html;
   }
@@ -2794,16 +2794,16 @@
       if (dual && idx > 0) html += '<div class="tt-sep"></div>';
       if (dual) html += `<div class="tt-row"><span class="tt-label"><span class="tt-swatch" style="background:${color}"></span>${roleLabel}</span></div>`;
       if (raw.y == null) {
-        html += ttRow(state.metric === 'n' ? 'Dancers' : metricLabel, 'too few dancers', { muted: true });
+        html += ttRow(state.metric === 'n' ? 'Competitors' : metricLabel, 'too few competitors', { muted: true });
         return;
       }
       if (state.metric === 'n') {
-        html += ttRow('Dancers', String(raw.n));
+        html += ttRow('Competitors', String(raw.n));
         return;
       }
       const val = state.metric === 'next_share' ? `${fmt1(raw.y)}%` : fmt1(raw.y);
       html += ttRow(metricLabel, val);
-      html += ttRow('Dancers', String(raw.n));
+      html += ttRow('Competitors', String(raw.n));
     });
     return html;
   }
