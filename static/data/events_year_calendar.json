@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-10-12",
-  "generated_at": "2026-10-12T10:29:29Z",
+  "as_of": "2026-10-13",
+  "generated_at": "2026-10-13T08:05:08Z",
   "years": [
     2024,
     2025,
@@ -24,8 +24,8 @@
   "counts_by_year": {
     "2024": 138,
     "2025": 177,
-    "2026": 189,
-    "2027": 194,
+    "2026": 188,
+    "2027": 193,
     "2028": 121
   },
   "disclaimer": {
@@ -3132,7 +3132,7 @@
       "continent": "Europe",
       "lat": 48.1664268,
       "lon": 14.0388714,
-      "url": "http://www.swingvester.com",
+      "url": "https://www.swingvester.com/",
       "year": 2025,
       "source": "edition_calendar_dates",
       "has_results": true
@@ -6801,9 +6801,9 @@
       "continent": "America",
       "lat": 34.0549076,
       "lon": -118.242643,
-      "url": "http://www.theopenswing.com",
+      "url": "http://www.theopenswing.com/",
       "year": 2025,
-      "source": "edition_calendar_dates",
+      "source": "event_editions",
       "has_results": true
     },
     {
@@ -10216,7 +10216,7 @@
       "event_id": 395,
       "name": "River Swing Nights",
       "start_date": "2026-10-01",
-      "end_date": "2026-10-05",
+      "end_date": "2026-10-01",
       "weekend_start": "2026-10-01",
       "weekend_end": "2026-10-04",
       "weekend_key": "2026-10-01",
@@ -10228,9 +10228,10 @@
       "continent": "Europe",
       "lat": 51.0504088,
       "lon": 13.7372621,
-      "url": "http://www.riverswingnights.com/",
+      "url": null,
       "year": 2026,
-      "source": "events_calendar_retention",
+      "source": "event_editions_month_only",
+      "stats_only": true,
       "has_results": true
     },
     {
@@ -10254,28 +10255,6 @@
       "year": 2026,
       "source": "edition_calendar_dates",
       "has_results": true
-    },
-    {
-      "id": "confirmed:t-autumn-beat-riga-latvia:2026-10-02",
-      "event_id": null,
-      "name": "Autumn Beat",
-      "start_date": "2026-10-02",
-      "end_date": "2026-10-05",
-      "weekend_start": "2026-10-01",
-      "weekend_end": "2026-10-04",
-      "weekend_key": "2026-10-01",
-      "status": "confirmed",
-      "kind": "trial",
-      "city": "Riga",
-      "country": "Latvia",
-      "state": null,
-      "continent": "Europe",
-      "lat": 56.9676941,
-      "lon": 24.1056221,
-      "url": "https://autumnbeat.lv/",
-      "year": 2026,
-      "source": "events_calendar_retention",
-      "provisional_unlinked": true
     },
     {
       "id": "confirmed:8:2026-10-08",
@@ -10341,7 +10320,8 @@
       "lon": -73.56739189999999,
       "url": "http://montrealwestiefest.com/",
       "year": 2026,
-      "source": "scheduled_events"
+      "source": "scheduled_events",
+      "has_results": true
     },
     {
       "id": "confirmed:322:2026-10-15",
@@ -14471,30 +14451,6 @@
       "has_results": true
     },
     {
-      "id": "expected:395:2027-09-30",
-      "event_id": 395,
-      "name": "River Swing Nights",
-      "start_date": "2027-09-30",
-      "end_date": "2027-10-04",
-      "weekend_start": "2027-09-30",
-      "weekend_end": "2027-10-03",
-      "weekend_key": "2027-09-30",
-      "status": "expected",
-      "kind": "registry",
-      "city": "Dresden",
-      "country": "Germany",
-      "state": null,
-      "continent": "Europe",
-      "lat": 51.0504088,
-      "lon": 13.7372621,
-      "url": "http://www.riverswingnights.com/",
-      "year": 2027,
-      "source": "expected_yoy",
-      "projected_from_year": 2026,
-      "projected_from_start": "2026-10-01",
-      "has_results": true
-    },
-    {
       "id": "expected:392:2027-09-30",
       "event_id": 392,
       "name": "Westie Harbor",
@@ -14583,7 +14539,8 @@
       "year": 2027,
       "source": "expected_yoy",
       "projected_from_year": 2026,
-      "projected_from_start": "2026-10-09"
+      "projected_from_start": "2026-10-09",
+      "has_results": true
     },
     {
       "id": "expected:179:2027-10-14",

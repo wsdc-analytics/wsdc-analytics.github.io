@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-06",
-  "as_of": "2026-10-06",
+  "generated_at": "2026-10-13",
+  "as_of": "2026-10-13",
   "data_through": "2026-10-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,54 +17,54 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2684,
-    "points": 730080.0,
-    "dancers": 27741
+    "events": 2685,
+    "points": 730536.0,
+    "dancers": 27756
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-09-28",
-        "end": "2026-10-04",
+        "start": "2026-10-05",
+        "end": "2026-10-11",
         "since_previous_ended": "2026-09-30",
-        "iso_week": "2026-W40",
+        "iso_week": "2026-W41",
         "bucket": "edition_start_date",
-        "event_names": "Atlanta Swing Classic, Norwegian Open WCS, River Swing Nights, Westie Harbor"
+        "event_names": "Montreal Westie Fest"
       },
       "increment": {
-        "events": 4,
-        "points": 1945.0,
-        "dancers": 80
+        "events": 1,
+        "points": 456.0,
+        "dancers": 39
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-10-01",
-        "end": "2026-10-06",
+        "end": "2026-10-13",
         "since_previous_ended": "2026-09-30",
         "bucket": "edition_start_date",
-        "event_names": "Atlanta Swing Classic, Norwegian Open WCS, River Swing Nights, Westie Harbor"
+        "event_names": "Atlanta Swing Classic, Montreal Westie Fest, Norwegian Open WCS, River Swing Nights, Westie Harbor"
       },
       "increment": {
-        "events": 4,
-        "points": 1945.0,
-        "dancers": 80
+        "events": 5,
+        "points": 2401.0,
+        "dancers": 95
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-10-06",
+        "end": "2026-10-13",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 145,
-        "points": 60165.0,
-        "dancers": 1967
+        "events": 146,
+        "points": 60621.0,
+        "dancers": 1982
       }
     }
   }
