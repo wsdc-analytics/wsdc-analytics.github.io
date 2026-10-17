@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-15",
-  "as_of": "2026-10-15",
+  "generated_at": "2026-10-17",
+  "as_of": "2026-10-17",
   "data_through": "2026-10-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,7 +17,7 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2686,
+    "events": 2687,
     "points": 731191.0,
     "dancers": 27779
   },
@@ -30,10 +30,10 @@
         "since_previous_ended": "2026-09-30",
         "iso_week": "2026-W41",
         "bucket": "edition_start_date",
-        "event_names": "Boogie By The Bay, Montreal Westie Fest"
+        "event_names": "Boogie By The Bay, Go West SwingFest, Montreal Westie Fest"
       },
       "increment": {
-        "events": 2,
+        "events": 3,
         "points": 1111.0,
         "dancers": 60
       }
@@ -42,13 +42,13 @@
       "label": "Month",
       "period": {
         "start": "2026-10-01",
-        "end": "2026-10-15",
+        "end": "2026-10-17",
         "since_previous_ended": "2026-09-30",
         "bucket": "edition_start_date",
-        "event_names": "Atlanta Swing Classic, Boogie By The Bay, Montreal Westie Fest, Norwegian Open WCS, River Swing Nights, Westie Harbor"
+        "event_names": "Atlanta Swing Classic, Boogie By The Bay, Go West SwingFest, Montreal Westie Fest, Norwegian Open WCS, River Swing Nights, Westie Harbor"
       },
       "increment": {
-        "events": 6,
+        "events": 7,
         "points": 3056.0,
         "dancers": 118
       }
@@ -57,7 +57,7 @@
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-10-15",
+        "end": "2026-10-17",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
