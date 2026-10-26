@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-21",
-  "as_of": "2026-10-21",
+  "generated_at": "2026-10-26",
+  "as_of": "2026-10-26",
   "data_through": "2026-10-31",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,54 +17,54 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2692,
-    "points": 733218.0,
-    "dancers": 27849
+    "events": 2694,
+    "points": 734101.0,
+    "dancers": 27874
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-10-12",
-        "end": "2026-10-18",
+        "start": "2026-10-19",
+        "end": "2026-10-25",
         "since_previous_ended": "2026-09-30",
-        "iso_week": "2026-W42",
+        "iso_week": "2026-W43",
         "bucket": "edition_start_date",
-        "event_names": "Milan Modern Swing, New Zealand Open Swing Dance Championships, Paradise Dance Festival, Swustlicious, WCS Festival"
+        "event_names": "Augsburg Westie Station, Halloween SwingThing"
       },
       "increment": {
-        "events": 5,
-        "points": 1880.0,
-        "dancers": 81
+        "events": 2,
+        "points": 883.0,
+        "dancers": 27
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-10-01",
-        "end": "2026-10-21",
+        "end": "2026-10-26",
         "since_previous_ended": "2026-09-30",
         "bucket": "edition_start_date",
-        "event_names": "Atlanta Swing Classic, Boogie By The Bay, Go West SwingFest, Milan Modern Swing, Montreal Westie Fest, New Zealand Open Swing Dance Championships, Norwegian Open WCS, Paradise Dance Festival, River Swing Nights, Swustlicious, WCS Festival, Westie Harbor"
+        "event_names": "Atlanta Swing Classic, Augsburg Westie Station, Boogie By The Bay, Go West SwingFest, Halloween SwingThing, Milan Modern Swing, Montreal Westie Fest, New Zealand Open Swing Dance Championships, Norwegian Open WCS, Paradise Dance Festival, River Swing Nights, Swustlicious, WCS Festival, Westie Harbor"
       },
       "increment": {
-        "events": 12,
-        "points": 5082.0,
-        "dancers": 188
+        "events": 14,
+        "points": 5965.0,
+        "dancers": 213
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-10-21",
+        "end": "2026-10-26",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 153,
-        "points": 63303.0,
-        "dancers": 2075
+        "events": 155,
+        "points": 64186.0,
+        "dancers": 2100
       }
     }
   }
