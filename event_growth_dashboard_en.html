@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="static/vendor/leaflet/leaflet.css">
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
@@ -173,9 +173,10 @@
     }
     .eg-back[hidden] { display: none !important; }
     .panel__body { padding: 0; flex: 1; min-height: 0; }
-    #growthMap {
+    #growthMap,
+    #growthMap.leaflet-container {
       height: 360px; min-height: 360px; width: 100%;
-      background: var(--wsdc-color-surface-soft);
+      background: #e8eef5;
     }
     .region-list, .event-list {
       min-height: 200px; max-height: 420px; overflow: auto;
@@ -373,7 +374,7 @@
     </main>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="static/vendor/leaflet/leaflet.js"></script>
   <script src="static/js/site-chrome.js"></script>
   <script>
 (function () {
@@ -731,12 +732,28 @@
 
   function ensureMap() {
     if (state.map) return;
-    state.map = L.map("growthMap", { scrollWheelZoom: false, worldCopyJump: true });
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      attribution: "&copy; OpenStreetMap &copy; CARTO",
+    if (typeof L === "undefined") {
+      throw new Error("Leaflet failed to load");
+    }
+    var el = document.getElementById("growthMap");
+    if (!el) throw new Error("Map container missing");
+    state.map = L.map(el, {
+      scrollWheelZoom: false,
+      worldCopyJump: true,
+      zoomControl: true,
+      attributionControl: true
+    });
+    // Same tile source as Events Calendar (CartoCDN often blocked by adblockers).
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap",
       maxZoom: 18
     }).addTo(state.map);
     state.map.setView([20, 0], 2);
+  }
+
+  function refreshMapSize() {
+    if (!state.map) return;
+    state.map.invalidateSize({ animate: false });
   }
 
   function bubbleRadius(n, maxN) {
@@ -791,7 +808,10 @@
     } else {
       state.map.setView([20, 0], 2);
     }
-    setTimeout(function () { state.map.invalidateSize(); }, 50);
+    refreshMapSize();
+    requestAnimationFrame(refreshMapSize);
+    setTimeout(refreshMapSize, 100);
+    setTimeout(refreshMapSize, 400);
   }
 
   function renderRegions(regions) {
