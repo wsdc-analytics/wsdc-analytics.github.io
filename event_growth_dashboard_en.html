@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Which WSDC events grew or declined in competitors this year — map drill-down from world to city, with exact and estimated headcounts." />
+  <title>Event Growth Monitor | WSDC Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+  <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="Event Growth Monitor | WSDC Analytics">
+  <meta property="og:description" content="Growing and declining WSDC events by competitors — year overview with map drill-down.">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    html, body { height: 100%; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', var(--wsdc-font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--wsdc-color-text, #1f2937);
+      background: var(--wsdc-color-bg, #fff);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { min-height: 100%; display: flex; flex-direction: column; }
+    .content {
+      flex: 1; min-height: 0; max-width: var(--wsdc-width-chrome, 1200px);
+      margin: 0 auto; width: 100%; display: flex; flex-direction: column;
+      padding: 12px 16px 28px; gap: 12px;
+    }
+    .page-head {
+      flex-shrink: 0; display: flex; flex-direction: column; gap: 6px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--wsdc-color-border, #e5e7eb);
+    }
+    .page-head__title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .page-head h1 {
+      font-size: 1.5rem; font-weight: 700; line-height: 1.25;
+      color: var(--wsdc-color-text-strong, #0b1221); letter-spacing: -0.02em;
+    }
+    .page-head__updated { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--wsdc-color-text-muted, #4b5563); }
+    .subtitle { font-size: 14px; color: var(--wsdc-color-text-muted, #4b5563); }
+
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end;
+    }
+    .filter-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .filter-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--wsdc-color-text-muted, #6b7280); }
+    .filter-field select {
+      appearance: none; min-width: 110px; height: 34px; padding: 0 28px 0 10px;
+      border: 1px solid var(--wsdc-color-border, #d1d5db); border-radius: 8px;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+      font: 500 13px/1 'DM Sans', sans-serif; color: #111827;
+    }
+    .breadcrumb {
+      display: flex; flex-wrap: wrap; gap: 4px 2px; align-items: center;
+      font-size: 13px; font-weight: 500;
+    }
+    .breadcrumb button {
+      border: 0; background: none; color: var(--wsdc-color-accent, #2563eb);
+      cursor: pointer; font: inherit; padding: 2px 4px; border-radius: 4px;
+    }
+    .breadcrumb button:hover { background: #eff6ff; }
+    .breadcrumb button[disabled] { color: #111827; cursor: default; font-weight: 700; background: none; }
+    .breadcrumb .sep { color: #9ca3af; padding: 0 2px; }
+
+    .kpis {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+    .kpi {
+      border: 1px solid var(--wsdc-color-border, #e5e7eb); border-radius: 10px;
+      padding: 10px 12px; background: #fff; min-width: 0;
+    }
+    .kpi .lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #6b7280; }
+    .kpi .val { font-size: 1.35rem; font-weight: 700; margin-top: 2px; letter-spacing: -0.02em; }
+    .kpi .val-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .kpi .val.up { color: #047857; }
+    .kpi .val.down { color: #b91c1c; }
+
+    .layout {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; min-height: 0;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      border: 1px solid var(--wsdc-color-border, #e5e7eb); border-radius: 12px;
+      background: #fff; min-width: 0; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .panel__head {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 10px 12px; border-bottom: 1px solid #f3f4f6; font-size: 13px; font-weight: 600;
+    }
+    .eg-back {
+      border: 1px solid #d1d5db; background: #fff; border-radius: 8px;
+      padding: 4px 10px; font: 600 12px/1 'DM Sans', sans-serif; color: #374151; cursor: pointer;
+    }
+    .eg-back:hover { background: #f3f4f6; }
+    .eg-back[hidden] { display: none !important; }
+    .panel__body { padding: 0; flex: 1; min-height: 0; }
+    #growthMap { height: 360px; width: 100%; background: #f8fafc; }
+    .region-list, .event-list { max-height: 360px; overflow: auto; }
+    table.eg { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.eg th, table.eg td {
+      text-align: left; padding: 8px 10px; border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    table.eg th {
+      position: sticky; top: 0; background: #fafafa; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; z-index: 1;
+      pointer-events: none;
+    }
+    table.eg tr { cursor: pointer; }
+    table.eg tr:hover td { background: #f8fafc; }
+    table.eg .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    table.eg a { color: inherit; text-decoration: none; font-weight: 600; }
+    table.eg a:hover { color: #2563eb; text-decoration: underline; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      white-space: nowrap;
+    }
+    .chip-growing { background: #d1fae5; color: #065f46; }
+    .chip-declining { background: #fee2e2; color: #991b1b; }
+    .chip-stable { background: #f3f4f6; color: #4b5563; }
+    .chip-new { background: #dbeafe; color: #1e40af; }
+    .chip-restarted { background: #fef3c7; color: #92400e; }
+    .chip-flag { background: #fff7ed; color: #9a3412; margin-left: 4px; }
+    .muted { color: #6b7280; font-weight: 500; }
+    .approx { color: #9a3412; }
+
+    .tabs { display: flex; gap: 4px; padding: 8px 10px 0; }
+    .tabs button {
+      border: 1px solid transparent; background: transparent; border-radius: 8px;
+      padding: 6px 10px; font: 600 13px/1 'DM Sans', sans-serif; color: #6b7280; cursor: pointer;
+    }
+    .tabs button.is-active { background: #111827; color: #fff; }
+    .tabs button:hover:not(.is-active) { background: #f3f4f6; color: #111827; }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: #4b5563;
+      padding: 0 2px;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    .method {
+      border: 1px solid var(--wsdc-color-border, #e5e7eb); border-radius: 12px;
+      padding: 12px 14px; font-size: 13px; color: #374151; background: #fafafa;
+    }
+    .method h2 { font-size: 14px; margin-bottom: 6px; }
+    .method ul { margin: 6px 0 0 18px; }
+    .method li { margin: 3px 0; }
+    .empty { padding: 24px; text-align: center; color: #6b7280; font-size: 13px; }
+
+    .leaflet-container { font: inherit; }
+    .eg-marker {
+      background: transparent; border: 0;
+    }
+    .eg-bubble {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 10px; font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="event_growth_dashboard_en.html"></div>
+    <main class="content">
+      <header class="page-head">
+        <div class="page-head__title-row">
+          <h1>Event Growth Monitor</h1>
+          <span class="page-head__updated" id="updatedStamp">—</span>
+        </div>
+        <p class="subtitle">Growing and declining events by competitors for the selected year. Drill the map like Events Navigator: world → continent → country → state → city.</p>
+      </header>
+
+      <div class="filters">
+        <div class="filter-field">
+          <label class="filter-label" for="yearSelect">Year</label>
+          <select id="yearSelect"></select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="statusSelect">Status</label>
+          <select id="statusSelect">
+            <option value="all">All</option>
+            <option value="growing">Growing</option>
+            <option value="declining">Declining</option>
+            <option value="stable">Stable</option>
+            <option value="new">New</option>
+            <option value="restarted">Restarted</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="sourceSelect">Data</label>
+          <select id="sourceSelect">
+            <option value="all">All</option>
+            <option value="exact">Exact</option>
+            <option value="estimated">Estimated</option>
+          </select>
+        </div>
+      </div>
+
+      <nav class="breadcrumb" id="breadcrumb" aria-label="Geography"></nav>
+
+      <div class="legend" aria-label="Status legend">
+        <span><i class="swatch" style="background:#047857"></i> Growing</span>
+        <span><i class="swatch" style="background:#b91c1c"></i> Declining</span>
+        <span><i class="swatch" style="background:#6b7280"></i> Stable</span>
+        <span><i class="swatch" style="background:#2563eb"></i> New</span>
+        <span><i class="swatch" style="background:#d97706"></i> Restarted</span>
+        <span class="muted">~ = estimated competitors</span>
+      </div>
+
+      <div class="kpis" id="kpiRow" aria-live="polite">
+        <div class="kpi">
+          <div class="lbl">Competitors (comparable)</div>
+          <div class="val" id="kpiComp">—</div>
+          <div class="val-sub" id="kpiCompSub"></div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Change</div>
+          <div class="val" id="kpiDelta">—</div>
+          <div class="val-sub" id="kpiDeltaSub"></div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Growing</div>
+          <div class="val up" id="kpiGrow">—</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Declining</div>
+          <div class="val down" id="kpiDecl">—</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Stable / New / Restarted</div>
+          <div class="val" id="kpiOther">—</div>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section class="panel">
+          <div class="panel__head">
+            <span id="mapTitle">Map</span>
+            <button type="button" id="backBtn" class="eg-back" hidden>Back</button>
+          </div>
+          <div class="panel__body"><div id="growthMap"></div></div>
+        </section>
+        <section class="panel">
+          <div class="panel__head"><span id="regionTitle">Regions</span></div>
+          <div class="panel__body region-list" id="regionList"></div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="tabs" role="tablist" aria-label="Event lists">
+          <button type="button" class="is-active" data-tab="growing" role="tab" aria-selected="true">Growing</button>
+          <button type="button" data-tab="declining" role="tab" aria-selected="false">Declining</button>
+          <button type="button" data-tab="all" role="tab" aria-selected="false">All events</button>
+        </div>
+        <div class="panel__body event-list" id="eventList"></div>
+      </section>
+
+      <section class="method" id="methodBlock">
+        <h2>Methodology</h2>
+        <ul>
+          <li><strong>Metric.</strong> Competitors = Leader + Follower headcounts summed over Newcomer, Novice, Intermediate, Advanced, All-Star and Champion. Exact counts come from the competitions dump when enough skill divisions are complete; otherwise a Chart-5 tier midpoint estimate (~). Partial dumps are never shown as exact.</li>
+          <li><strong>Comparison.</strong> Each edition in the selected year vs that event’s previous scored edition. One calendar year skipped → compare and mark “after 1-year break”. Two or more years skipped → Restarted (no %). No previous edition → New.</li>
+          <li><strong>Status.</strong> Growing / Declining when |%| ≥ <span id="thrPct">10%</span> and |Δ| ≥ <span id="thrAbs">10</span>; otherwise Stable (when comparable).</li>
+          <li><strong>Regions.</strong> Sum of comparable competitors (previous → current). A region that grows overall but contains declining events shows a “declining inside” flag.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="static/js/site-chrome.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var STATUS_COLOR = {
+    growing: "#047857",
+    declining: "#b91c1c",
+    stable: "#6b7280",
+    new: "#2563eb",
+    restarted: "#d97706"
+  };
+
+  var state = {
+    data: null,
+    year: null,
+    status: "all",
+    source: "all",
+    tab: "growing",
+    level: "world", // world|continent|country|state|city
+    continent: null,
+    country: null,
+    regionState: null,
+    city: null,
+    map: null,
+    layer: null
+  };
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function fmtN(n) {
+    if (n == null || !isFinite(n)) return "—";
+    return Math.round(n).toLocaleString("en-US");
+  }
+
+  function fmtPct(p) {
+    if (p == null || !isFinite(p)) return "—";
+    var v = Math.round(p * 1000) / 10;
+    return (v > 0 ? "+" : "") + v + "%";
+  }
+
+  function fmtComp(n, approx) {
+    if (n == null) return "—";
+    return (approx ? "~" : "") + fmtN(n);
+  }
+
+  function chip(status) {
+    var label = status ? status.charAt(0).toUpperCase() + status.slice(1) : "";
+    return '<span class="chip chip-' + esc(status) + '">' + esc(label) + "</span>";
+  }
+
+  function readUrl() {
+    var q = new URLSearchParams(location.search);
+    if (q.get("year")) state.year = Number(q.get("year"));
+    if (q.get("status")) state.status = q.get("status");
+    if (q.get("source")) state.source = q.get("source");
+    if (q.get("tab")) state.tab = q.get("tab");
+    state.continent = q.get("continent") || null;
+    state.country = q.get("country") || null;
+    state.regionState = q.get("state") || null;
+    state.city = q.get("city") || null;
+    if (state.city) state.level = "city";
+    else if (state.regionState) state.level = "state";
+    else if (state.country) state.level = "country";
+    else if (state.continent) state.level = "continent";
+    else state.level = "world";
+  }
+
+  function writeUrl() {
+    var q = new URLSearchParams();
+    if (state.year) q.set("year", String(state.year));
+    if (state.status && state.status !== "all") q.set("status", state.status);
+    if (state.source && state.source !== "all") q.set("source", state.source);
+    if (state.tab && state.tab !== "growing") q.set("tab", state.tab);
+    if (state.continent) q.set("continent", state.continent);
+    if (state.country) q.set("country", state.country);
+    if (state.regionState) q.set("state", state.regionState);
+    if (state.city) q.set("city", state.city);
+    var next = q.toString();
+    history.replaceState(null, "", next ? ("?" + next) : location.pathname);
+  }
+
+  function yearEditions() {
+    var rows = (state.data && state.data.editions) || [];
+    return rows.filter(function (e) {
+      if (e.year !== state.year) return false;
+      if (state.status !== "all" && e.status !== state.status) return false;
+      if (state.source === "exact" && e.approx) return false;
+      if (state.source === "estimated" && !e.approx) return false;
+      return true;
+    });
+  }
+
+  function scopedEditions() {
+    return yearEditions().filter(function (e) {
+      if (state.continent && e.continent !== state.continent) return false;
+      if (state.country && e.country !== state.country) return false;
+      if (state.regionState && e.state !== state.regionState) return false;
+      if (state.city && e.city !== state.city) return false;
+      return true;
+    });
+  }
+
+  function childKey(e) {
+    if (state.level === "world") return e.continent || "Unknown";
+    if (state.level === "continent") return e.country || "Unknown";
+    if (state.level === "country") {
+      if (e.country === "United States") return e.state || "Unknown";
+      return e.city || "Unknown";
+    }
+    if (state.level === "state") return e.city || "Unknown";
+    return e.name || ("Event " + e.event_id);
+  }
+
+  function nextLevel() {
+    if (state.level === "world") return "continent";
+    if (state.level === "continent") return "country";
+    if (state.level === "country") {
+      return state.country === "United States" ? "state" : "city";
+    }
+    if (state.level === "state") return "city";
+    return "city";
+  }
+
+  function buildRegions(rows) {
+    var map = {};
+    rows.forEach(function (e) {
+      var key = childKey(e);
+      if (!map[key]) {
+        map[key] = {
+          key: key,
+          currentAll: 0,
+          currentComp: 0,
+          previous: 0,
+          comparable: 0,
+          n: 0,
+          growing: 0,
+          declining: 0,
+          stable: 0,
+          neu: 0,
+          restarted: 0,
+          latSum: 0,
+          lonSum: 0,
+          geoN: 0,
+          sample: e
+        };
+      }
+      var g = map[key];
+      g.n += 1;
+      g.currentAll += e.competitors || 0;
+      if (e.status === "growing") g.growing += 1;
+      else if (e.status === "declining") g.declining += 1;
+      else if (e.status === "stable") g.stable += 1;
+      else if (e.status === "new") g.neu += 1;
+      else if (e.status === "restarted") g.restarted += 1;
+      if (e.prev && e.prev.competitors != null && e.delta != null) {
+        g.comparable += 1;
+        g.previous += e.prev.competitors;
+        g.currentComp += e.competitors || 0;
+      }
+      if (e.lat != null && e.lon != null) {
+        g.latSum += e.lat;
+        g.lonSum += e.lon;
+        g.geoN += 1;
+      }
+    });
+    return Object.keys(map).map(function (k) {
+      var g = map[k];
+      var delta = g.comparable ? (g.currentComp - g.previous) : null;
+      var pct = g.comparable && g.previous ? delta / g.previous : null;
+      var status = "stable";
+      if (g.comparable) {
+        if (delta > 0) status = "growing";
+        else if (delta < 0) status = "declining";
+      } else if (g.neu === g.n) status = "new";
+      else if (g.restarted === g.n) status = "restarted";
+      return {
+        key: g.key,
+        n: g.n,
+        current: g.currentAll,
+        previous: g.comparable ? g.previous : null,
+        delta: delta,
+        pct: pct,
+        status: status,
+        growing: g.growing,
+        declining: g.declining,
+        stable: g.stable,
+        neu: g.neu,
+        restarted: g.restarted,
+        decliningInside: g.declining > 0 && status === "growing",
+        lat: g.geoN ? g.latSum / g.geoN : null,
+        lon: g.geoN ? g.lonSum / g.geoN : null,
+        sample: g.sample
+      };
+    }).sort(function (a, b) {
+      return (b.current || 0) - (a.current || 0);
+    });
+  }
+
+  function regionStatusColor(r) {
+    if (r.decliningInside) return STATUS_COLOR.declining;
+    return STATUS_COLOR[r.status] || STATUS_COLOR.stable;
+  }
+
+  function drillInto(key) {
+    if (state.level === "world") {
+      state.continent = key === "Unknown" ? null : key;
+      state.level = "continent";
+    } else if (state.level === "continent") {
+      state.country = key === "Unknown" ? null : key;
+      state.level = "country";
+    } else if (state.level === "country") {
+      if (state.country === "United States") {
+        state.regionState = key === "Unknown" ? null : key;
+        state.level = "state";
+      } else {
+        state.city = key === "Unknown" ? null : key;
+        state.level = "city";
+      }
+    } else if (state.level === "state") {
+      state.city = key === "Unknown" ? null : key;
+      state.level = "city";
+    }
+    writeUrl();
+    render();
+  }
+
+  function goBack() {
+    if (state.level === "city") {
+      state.city = null;
+      state.level = state.regionState ? "state" : "country";
+    } else if (state.level === "state") {
+      state.regionState = null;
+      state.level = "country";
+    } else if (state.level === "country") {
+      state.country = null;
+      state.level = "continent";
+    } else if (state.level === "continent") {
+      state.continent = null;
+      state.level = "world";
+    }
+    writeUrl();
+    render();
+  }
+
+  function jumpTo(level) {
+    if (level === "world") {
+      state.continent = state.country = state.regionState = state.city = null;
+      state.level = "world";
+    } else if (level === "continent") {
+      state.country = state.regionState = state.city = null;
+      state.level = "continent";
+    } else if (level === "country") {
+      state.regionState = state.city = null;
+      state.level = "country";
+    } else if (level === "state") {
+      state.city = null;
+      state.level = "state";
+    }
+    writeUrl();
+    render();
+  }
+
+  function renderBreadcrumb() {
+    var el = document.getElementById("breadcrumb");
+    var parts = [];
+    function crumb(label, level, enabled) {
+      if (enabled) {
+        parts.push('<button type="button" data-jump="' + esc(level) + '">' + esc(label) + "</button>");
+      } else {
+        parts.push('<button type="button" disabled>' + esc(label) + "</button>");
+      }
+    }
+    crumb("World", "world", state.level !== "world");
+    if (state.continent) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.continent, "continent", state.level !== "continent");
+    }
+    if (state.country) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.country, "country", state.level !== "country");
+    }
+    if (state.regionState) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.regionState, "state", state.level !== "state");
+    }
+    if (state.city) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.city, "city", false);
+    }
+    el.innerHTML = parts.join("");
+    el.querySelectorAll("[data-jump]").forEach(function (btn) {
+      btn.addEventListener("click", function () { jumpTo(btn.getAttribute("data-jump")); });
+    });
+    var back = document.getElementById("backBtn");
+    back.hidden = state.level === "world";
+  }
+
+  function renderKpis(rows) {
+    var cur = 0, prev = 0, compN = 0;
+    var g = 0, d = 0, s = 0, n = 0, r = 0;
+    rows.forEach(function (e) {
+      if (e.status === "growing") g += 1;
+      else if (e.status === "declining") d += 1;
+      else if (e.status === "stable") s += 1;
+      else if (e.status === "new") n += 1;
+      else if (e.status === "restarted") r += 1;
+      if (e.prev && e.prev.competitors != null && e.delta != null) {
+        compN += 1;
+        cur += e.competitors || 0;
+        prev += e.prev.competitors;
+      }
+    });
+    var delta = compN ? cur - prev : null;
+    var pct = compN && prev ? delta / prev : null;
+    document.getElementById("kpiComp").textContent = compN ? fmtN(cur) : "—";
+    document.getElementById("kpiCompSub").textContent = compN
+      ? ("was " + fmtN(prev) + " · " + compN + " comparable events")
+      : (rows.length + " events (none comparable)");
+    var deltaEl = document.getElementById("kpiDelta");
+    deltaEl.textContent = delta == null ? "—" : ((delta > 0 ? "+" : "") + fmtN(delta));
+    deltaEl.className = "val" + (delta > 0 ? " up" : delta < 0 ? " down" : "");
+    document.getElementById("kpiDeltaSub").textContent = fmtPct(pct);
+    document.getElementById("kpiGrow").textContent = fmtN(g);
+    document.getElementById("kpiDecl").textContent = fmtN(d);
+    document.getElementById("kpiOther").textContent = s + " / " + n + " / " + r;
+  }
+
+  function ensureMap() {
+    if (state.map) return;
+    state.map = L.map("growthMap", { scrollWheelZoom: false, worldCopyJump: true });
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OpenStreetMap &copy; CARTO",
+      maxZoom: 18
+    }).addTo(state.map);
+    state.map.setView([20, 0], 2);
+  }
+
+  function bubbleRadius(n, maxN) {
+    var minR = 14, maxR = 42;
+    if (!maxN) return minR;
+    return minR + (maxR - minR) * Math.sqrt(Math.max(n, 0) / maxN);
+  }
+
+  function renderMap(regions) {
+    ensureMap();
+    if (state.layer) {
+      state.map.removeLayer(state.layer);
+      state.layer = null;
+    }
+    var withGeo = regions.filter(function (r) { return r.lat != null && r.lon != null; });
+    var maxN = withGeo.reduce(function (m, r) { return Math.max(m, r.current || 0); }, 0);
+    var group = L.layerGroup();
+    withGeo.forEach(function (r) {
+      var rad = bubbleRadius(r.current || 0, maxN);
+      var color = regionStatusColor(r);
+      var icon = L.divIcon({
+        className: "eg-marker",
+        iconSize: [rad, rad],
+        iconAnchor: [rad / 2, rad / 2],
+        html: '<div class="eg-bubble" style="background:' + color + '">' +
+          (r.n > 1 ? r.n : "") + "</div>"
+      });
+      var marker = L.marker([r.lat, r.lon], { icon: icon, keyboard: true });
+      marker.bindTooltip(
+        "<strong>" + esc(r.key) + "</strong><br>" +
+        fmtN(r.current) + " competitors · " + r.n + " events<br>" +
+        (r.delta == null
+          ? "no YoY"
+          : (fmtN(r.previous) + " → " + fmtN(r.previous + r.delta) + " (" + fmtPct(r.pct) + ")")) +
+        (r.decliningInside ? "<br>declining events inside" : ""),
+        { direction: "top", opacity: 0.95 }
+      );
+      marker.on("click", function () {
+        if (state.level === "city") {
+          // open first event? stay
+          return;
+        }
+        drillInto(r.key);
+      });
+      group.addLayer(marker);
+    });
+    state.layer = group;
+    group.addTo(state.map);
+    if (withGeo.length) {
+      var bounds = L.latLngBounds(withGeo.map(function (r) { return [r.lat, r.lon]; }));
+      state.map.fitBounds(bounds.pad(0.35));
+    } else {
+      state.map.setView([20, 0], 2);
+    }
+    setTimeout(function () { state.map.invalidateSize(); }, 50);
+  }
+
+  function renderRegions(regions) {
+    var title = {
+      world: "Continents",
+      continent: "Countries",
+      country: state.country === "United States" ? "States" : "Cities",
+      state: "Cities",
+      city: "This city"
+    }[state.level] || "Regions";
+    document.getElementById("regionTitle").textContent = title;
+    document.getElementById("mapTitle").textContent = title + " map";
+
+    if (!regions.length) {
+      document.getElementById("regionList").innerHTML = '<div class="empty">No regions in this filter</div>';
+      return;
+    }
+    var html = '<table class="eg"><thead><tr>' +
+      "<th>" + esc(title.slice(0, -1) || "Region") + "</th>" +
+      '<th class="num">Now</th><th class="num">Δ</th><th>Status</th></tr></thead><tbody>';
+    regions.forEach(function (r) {
+      var deltaTxt = r.delta == null ? "—" : ((r.delta > 0 ? "+" : "") + fmtN(r.delta) + " · " + fmtPct(r.pct));
+      html += "<tr data-key=\"" + esc(r.key) + "\">" +
+        "<td><strong>" + esc(r.key) + "</strong> <span class=\"muted\">(" + r.n + ")</span>" +
+        (r.decliningInside ? ' <span class="chip chip-flag">declining inside</span>' : "") +
+        "</td>" +
+        '<td class="num">' + fmtN(r.current) + "</td>" +
+        '<td class="num">' + esc(deltaTxt) + "</td>" +
+        "<td>" + chip(r.status) + "</td></tr>";
+    });
+    html += "</tbody></table>";
+    var el = document.getElementById("regionList");
+    el.innerHTML = html;
+    el.querySelectorAll("tr[data-key]").forEach(function (tr) {
+      tr.addEventListener("click", function () {
+        if (state.level !== "city") drillInto(tr.getAttribute("data-key"));
+      });
+    });
+  }
+
+  function renderEvents(rows) {
+    var list = rows.slice();
+    if (state.tab === "growing") list = list.filter(function (e) { return e.status === "growing"; });
+    if (state.tab === "declining") list = list.filter(function (e) { return e.status === "declining"; });
+    list.sort(function (a, b) {
+      if (state.tab === "declining") return (a.delta || 0) - (b.delta || 0);
+      if (state.tab === "growing") return (b.delta || 0) - (a.delta || 0);
+      return (b.competitors || 0) - (a.competitors || 0);
+    });
+    if (!list.length) {
+      document.getElementById("eventList").innerHTML = '<div class="empty">No events in this list</div>';
+      return;
+    }
+    var html = '<table class="eg"><thead><tr>' +
+      "<th>Event</th><th>Place</th><th class=\"num\">Prev → Now</th><th class=\"num\">Δ</th><th>Status</th>" +
+      "</tr></thead><tbody>";
+    list.forEach(function (e) {
+      var place = [e.city, e.state, e.country].filter(Boolean).join(", ");
+      var prev = e.prev ? fmtComp(e.prev.competitors, e.prev.approx) : "—";
+      var now = fmtComp(e.competitors, e.approx);
+      var deltaTxt = e.delta == null ? "—" : ((e.delta > 0 ? "+" : "") + fmtN(e.delta) + " · " + fmtPct(e.pct));
+      var gap = e.gap_flag === "after_1yr_break"
+        ? ' <span class="chip chip-flag">after 1yr break</span>'
+        : (e.gap_flag === "restarted" ? ' <span class="chip chip-restarted">restarted</span>' : "");
+      html += "<tr>" +
+        '<td><a href="event.html?id=' + encodeURIComponent(e.event_id) + '">' + esc(e.name) + "</a>" + gap + "</td>" +
+        "<td class=\"muted\">" + esc(place) + "</td>" +
+        '<td class="num">' + prev + " → " + now + "</td>" +
+        '<td class="num">' + esc(deltaTxt) + "</td>" +
+        "<td>" + chip(e.status) + "</td></tr>";
+    });
+    html += "</tbody></table>";
+    document.getElementById("eventList").innerHTML = html;
+  }
+
+  function render() {
+    var rows = scopedEditions();
+    var regions = buildRegions(rows);
+    renderBreadcrumb();
+    renderKpis(rows);
+    renderMap(regions);
+    renderRegions(regions);
+    renderEvents(rows);
+    document.querySelectorAll(".tabs button").forEach(function (btn) {
+      var on = btn.getAttribute("data-tab") === state.tab;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+    });
+  }
+
+  function initControls() {
+    var years = (state.data.years || []).slice().reverse();
+    var sel = document.getElementById("yearSelect");
+    sel.innerHTML = years.map(function (y) {
+      return '<option value="' + y + '">' + y + "</option>";
+    }).join("");
+    if (!state.year || years.indexOf(state.year) < 0) {
+      state.year = years[0] || null;
+    }
+    sel.value = String(state.year);
+    sel.addEventListener("change", function () {
+      state.year = Number(sel.value);
+      writeUrl();
+      render();
+    });
+    document.getElementById("statusSelect").value = state.status;
+    document.getElementById("statusSelect").addEventListener("change", function (e) {
+      state.status = e.target.value;
+      writeUrl();
+      render();
+    });
+    document.getElementById("sourceSelect").value = state.source;
+    document.getElementById("sourceSelect").addEventListener("change", function (e) {
+      state.source = e.target.value;
+      writeUrl();
+      render();
+    });
+    document.getElementById("backBtn").addEventListener("click", goBack);
+    document.querySelectorAll(".tabs button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.tab = btn.getAttribute("data-tab");
+        writeUrl();
+        render();
+      });
+    });
+    var thr = (state.data.thresholds) || {};
+    if (thr.pct != null) document.getElementById("thrPct").textContent = Math.round(thr.pct * 100) + "%";
+    if (thr.abs != null) document.getElementById("thrAbs").textContent = String(thr.abs);
+    var stamp = state.data.data_through || state.data.as_of || "—";
+    document.getElementById("updatedStamp").textContent = "Updated " + stamp;
+  }
+
+  fetch("static/data/event_growth.json")
+    .then(function (r) {
+      if (!r.ok) throw new Error("Failed to load event_growth.json");
+      return r.json();
+    })
+    .then(function (data) {
+      state.data = data;
+      readUrl();
+      initControls();
+      writeUrl();
+      render();
+    })
+    .catch(function (err) {
+      document.getElementById("eventList").innerHTML =
+        '<div class="empty">Could not load data: ' + esc(err.message) + "</div>";
+    });
+})();
+  </script>
+</body>
+</html>

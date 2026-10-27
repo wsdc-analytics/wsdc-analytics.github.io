@@ -27,6 +27,7 @@
     { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points", kind: "html" },
     { href: "time_in_division_dashboard_en.html", label: "Time In Division", kind: "html" },
     { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year", kind: "html" },
+    { href: "event_growth_dashboard_en.html", label: "Event Growth Monitor", kind: "html" },
   ];
 
   function withPathPrefix(root, href) {
