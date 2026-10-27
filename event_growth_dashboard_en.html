@@ -278,7 +278,7 @@
           <li><strong>Metric.</strong> Competitors = Leader + Follower headcounts summed over Newcomer, Novice, Intermediate, Advanced, All-Star and Champion. Exact counts come from the competitions dump when enough skill divisions are complete; otherwise a Chart-5 tier midpoint estimate (~). Partial dumps are never shown as exact.</li>
           <li><strong>Comparison.</strong> Each edition in the selected year vs that event’s previous scored edition. One calendar year skipped → compare and mark “after 1-year break”. Two or more years skipped → Restarted (no %). No previous edition → New.</li>
           <li><strong>Status.</strong> Growing / Declining when |%| ≥ <span id="thrPct">10%</span> and |Δ| ≥ <span id="thrAbs">10</span>; otherwise Stable (when comparable).</li>
-          <li><strong>Regions.</strong> Sum of comparable competitors (previous → current). A region that grows overall but contains declining events shows a “declining inside” flag.</li>
+          <li><strong>Regions.</strong> Sum of comparable competitors (previous → current). Region Growing/Declining uses the same % and absolute thresholds as events. A region that is not itself Declining but contains declining events shows a “declining inside” flag (redistribution).</li>
         </ul>
       </section>
     </main>
@@ -371,46 +371,66 @@
     history.replaceState(null, "", next ? ("?" + next) : location.pathname);
   }
 
+  var UNKNOWN = "Unknown";
+
   function yearEditions() {
     var rows = (state.data && state.data.editions) || [];
     return rows.filter(function (e) {
       if (e.year !== state.year) return false;
       if (state.status !== "all" && e.status !== state.status) return false;
-      if (state.source === "exact" && e.approx) return false;
-      if (state.source === "estimated" && !e.approx) return false;
+      // Exact = competitions dump only; Estimated = tier midpoint (~).
+      if (state.source === "exact" && e.source !== "exact") return false;
+      if (state.source === "estimated" && e.source !== "estimated") return false;
       return true;
     });
   }
 
+  function geoMatch(value, filter) {
+    if (!filter) return true;
+    if (filter === UNKNOWN) return !value;
+    return value === filter;
+  }
+
   function scopedEditions() {
     return yearEditions().filter(function (e) {
-      if (state.continent && e.continent !== state.continent) return false;
-      if (state.country && e.country !== state.country) return false;
-      if (state.regionState && e.state !== state.regionState) return false;
-      if (state.city && e.city !== state.city) return false;
+      if (!geoMatch(e.continent, state.continent)) return false;
+      if (!geoMatch(e.country, state.country)) return false;
+      if (!geoMatch(e.state, state.regionState)) return false;
+      if (!geoMatch(e.city, state.city)) return false;
       return true;
     });
   }
 
   function childKey(e) {
-    if (state.level === "world") return e.continent || "Unknown";
-    if (state.level === "continent") return e.country || "Unknown";
+    if (state.level === "world") return e.continent || UNKNOWN;
+    if (state.level === "continent") return e.country || UNKNOWN;
     if (state.level === "country") {
-      if (e.country === "United States") return e.state || "Unknown";
-      return e.city || "Unknown";
+      if (e.country === "United States") return e.state || UNKNOWN;
+      return e.city || UNKNOWN;
     }
-    if (state.level === "state") return e.city || "Unknown";
+    if (state.level === "state") return e.city || UNKNOWN;
     return e.name || ("Event " + e.event_id);
   }
 
-  function nextLevel() {
-    if (state.level === "world") return "continent";
-    if (state.level === "continent") return "country";
-    if (state.level === "country") {
-      return state.country === "United States" ? "state" : "city";
+  function thresholds() {
+    var thr = (state.data && state.data.thresholds) || {};
+    return {
+      pct: thr.pct != null ? Number(thr.pct) : 0.10,
+      abs: thr.abs != null ? Number(thr.abs) : 10
+    };
+  }
+
+  function classifyRegionStatus(delta, pct, thr) {
+    if (delta == null) return "stable";
+    if (pct == null) {
+      if (delta > 0) return "growing";
+      if (delta < 0) return "declining";
+      return "stable";
     }
-    if (state.level === "state") return "city";
-    return "city";
+    if (Math.abs(pct) >= thr.pct && Math.abs(delta) >= thr.abs) {
+      return delta > 0 ? "growing" : "declining";
+    }
+    return "stable";
   }
 
   function buildRegions(rows) {
@@ -455,14 +475,14 @@
         g.geoN += 1;
       }
     });
+    var thr = thresholds();
     return Object.keys(map).map(function (k) {
       var g = map[k];
       var delta = g.comparable ? (g.currentComp - g.previous) : null;
       var pct = g.comparable && g.previous ? delta / g.previous : null;
       var status = "stable";
       if (g.comparable) {
-        if (delta > 0) status = "growing";
-        else if (delta < 0) status = "declining";
+        status = classifyRegionStatus(delta, pct, thr);
       } else if (g.neu === g.n) status = "new";
       else if (g.restarted === g.n) status = "restarted";
       return {
@@ -478,7 +498,9 @@
         stable: g.stable,
         neu: g.neu,
         restarted: g.restarted,
-        decliningInside: g.declining > 0 && status === "growing",
+        // Flag when net is not declining but some events inside are —
+        // catches redistribution that a net-stable/growing region would hide.
+        decliningInside: g.declining > 0 && status !== "declining",
         lat: g.geoN ? g.latSum / g.geoN : null,
         lon: g.geoN ? g.lonSum / g.geoN : null,
         sample: g.sample
@@ -494,22 +516,23 @@
   }
 
   function drillInto(key) {
+    // Keep Unknown as an explicit filter (missing geo), do not clear the field.
     if (state.level === "world") {
-      state.continent = key === "Unknown" ? null : key;
+      state.continent = key;
       state.level = "continent";
     } else if (state.level === "continent") {
-      state.country = key === "Unknown" ? null : key;
+      state.country = key;
       state.level = "country";
     } else if (state.level === "country") {
       if (state.country === "United States") {
-        state.regionState = key === "Unknown" ? null : key;
+        state.regionState = key;
         state.level = "state";
       } else {
-        state.city = key === "Unknown" ? null : key;
+        state.city = key;
         state.level = "city";
       }
     } else if (state.level === "state") {
-      state.city = key === "Unknown" ? null : key;
+      state.city = key;
       state.level = "city";
     }
     writeUrl();
