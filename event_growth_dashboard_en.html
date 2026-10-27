@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Which WSDC events grew or declined in competitors this year — map drill-down from world to city, with exact and estimated headcounts." />
+  <meta name="description" content="Which WSDC events grew or declined in competitors this year. Map drill-down from world to city, with exact and estimated headcounts." />
   <title>Event Growth Monitor | WSDC Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
   <meta property="og:title" content="Event Growth Monitor | WSDC Analytics">
-  <meta property="og:description" content="Growing and declining WSDC events by competitors — year overview with map drill-down.">
+  <meta property="og:description" content="Growing and declining WSDC events by competitors. Year overview with map drill-down.">
   <meta property="og:url" content="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
   <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -25,151 +25,244 @@
     html, body { height: 100%; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'DM Sans', var(--wsdc-font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--wsdc-color-text, #1f2937);
-      background: var(--wsdc-color-bg, #fff);
-      line-height: 1.4;
+      font-family: var(--wsdc-font-sans);
+      color: var(--wsdc-color-text);
+      background: var(--wsdc-color-surface);
+      line-height: 1.45;
       -webkit-font-smoothing: antialiased;
     }
     .page { min-height: 100%; display: flex; flex-direction: column; }
     .content {
-      flex: 1; min-height: 0; max-width: var(--wsdc-width-chrome, 1200px);
+      flex: 1; min-height: 0; max-width: var(--wsdc-width-chrome);
       margin: 0 auto; width: 100%; display: flex; flex-direction: column;
-      padding: 12px 16px 28px; gap: 12px;
+      padding: var(--wsdc-space-3) var(--wsdc-space-4) var(--wsdc-space-8);
+      gap: var(--wsdc-space-3);
     }
     .page-head {
       flex-shrink: 0; display: flex; flex-direction: column; gap: 6px;
-      padding-bottom: 8px; border-bottom: 1px solid var(--wsdc-color-border, #e5e7eb);
+      padding-bottom: var(--wsdc-space-2);
+      border-bottom: 1px solid var(--wsdc-color-border);
     }
-    .page-head__title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .page-head__title-row { display: flex; align-items: center; gap: var(--wsdc-space-2); flex-wrap: wrap; }
     .page-head h1 {
-      font-size: 1.5rem; font-weight: 700; line-height: 1.25;
-      color: var(--wsdc-color-text-strong, #0b1221); letter-spacing: -0.02em;
+      font-size: 1.5rem; font-weight: var(--wsdc-font-weight-bold); line-height: 1.25;
+      color: var(--wsdc-color-text-strong); letter-spacing: -0.02em;
     }
-    .page-head__updated { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--wsdc-color-text-muted, #4b5563); }
-    .subtitle { font-size: 14px; color: var(--wsdc-color-text-muted, #4b5563); }
+    .page-head__updated {
+      margin-left: auto; font-size: var(--wsdc-font-size-xs);
+      font-weight: var(--wsdc-font-weight-medium); color: var(--wsdc-color-text-muted);
+    }
+    .subtitle { font-size: 14px; color: var(--wsdc-color-text-muted); max-width: 72ch; }
 
     .filters {
       display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end;
     }
     .filter-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-    .filter-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--wsdc-color-text-muted, #6b7280); }
+    .filter-label {
+      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.04em; text-transform: uppercase; color: var(--wsdc-color-text-muted);
+    }
     .filter-field select {
-      appearance: none; min-width: 110px; height: 34px; padding: 0 28px 0 10px;
-      border: 1px solid var(--wsdc-color-border, #d1d5db); border-radius: 8px;
-      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
-      font: 500 13px/1 'DM Sans', sans-serif; color: #111827;
+      appearance: none; min-width: 110px; height: var(--wsdc-control-height-sm);
+      padding: 0 28px 0 10px;
+      border: 1px solid var(--wsdc-color-border);
+      border-radius: var(--wsdc-radius-md);
+      background: var(--wsdc-color-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+      font: 500 13px/1 var(--wsdc-font-sans);
+      color: var(--wsdc-color-brand);
+      transition: border-color var(--transition-base), background-color var(--transition-base);
+    }
+    .filter-field select:hover,
+    .filter-field select:focus {
+      border-color: var(--wsdc-color-border);
+      background-color: var(--wsdc-color-surface-soft);
+      outline: none;
+    }
+    .filter-field select:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
     }
     .breadcrumb {
       display: flex; flex-wrap: wrap; gap: 4px 2px; align-items: center;
-      font-size: 13px; font-weight: 500;
+      font-size: var(--wsdc-font-size-sm); font-weight: var(--wsdc-font-weight-medium);
     }
     .breadcrumb button {
-      border: 0; background: none; color: var(--wsdc-color-accent, #2563eb);
-      cursor: pointer; font: inherit; padding: 2px 4px; border-radius: 4px;
+      border: 0; background: none; color: var(--wsdc-color-brand-accent);
+      cursor: pointer; font: inherit; padding: 2px 4px;
+      border-radius: var(--wsdc-radius-sm);
+      transition: background-color var(--transition-base), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .breadcrumb button:hover { background: #eff6ff; }
-    .breadcrumb button[disabled] { color: #111827; cursor: default; font-weight: 700; background: none; }
+    .breadcrumb button:hover { background: var(--wsdc-color-surface-soft); }
+    .breadcrumb button:active { transform: scale(0.97); }
+    .breadcrumb button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .breadcrumb button[disabled] {
+      color: var(--wsdc-color-text-strong); cursor: default; font-weight: 700; background: none;
+      transform: none;
+    }
     .breadcrumb .sep { color: #9ca3af; padding: 0 2px; }
 
     .kpis {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 8px;
+      gap: var(--wsdc-space-2);
     }
     .kpi {
-      border: 1px solid var(--wsdc-color-border, #e5e7eb); border-radius: 10px;
-      padding: 10px 12px; background: #fff; min-width: 0;
+      border: 1px solid var(--wsdc-color-border);
+      border-radius: var(--wsdc-radius-lg);
+      padding: 10px 12px; background: var(--wsdc-color-surface); min-width: 0;
     }
-    .kpi .lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #6b7280; }
-    .kpi .val { font-size: 1.35rem; font-weight: 700; margin-top: 2px; letter-spacing: -0.02em; }
-    .kpi .val-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
-    .kpi .val.up { color: #047857; }
-    .kpi .val.down { color: #b91c1c; }
+    .kpi .lbl {
+      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.03em; text-transform: uppercase; color: var(--wsdc-color-text-muted);
+    }
+    .kpi .val {
+      font-size: 1.35rem; font-weight: var(--wsdc-font-weight-bold);
+      margin-top: 2px; letter-spacing: -0.02em; color: var(--wsdc-color-text-strong);
+    }
+    .kpi .val-sub { font-size: var(--wsdc-font-size-xs); color: var(--wsdc-color-text-muted); margin-top: 2px; }
+    .kpi .val.up { color: var(--wsdc-color-success); }
+    .kpi .val.down { color: var(--wsdc-color-danger); }
 
     .layout {
-      display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; min-height: 0;
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--wsdc-space-3); min-height: 0;
     }
     @media (max-width: 900px) {
       .layout { grid-template-columns: 1fr; }
     }
     .panel {
-      border: 1px solid var(--wsdc-color-border, #e5e7eb); border-radius: 12px;
-      background: #fff; min-width: 0; display: flex; flex-direction: column; overflow: hidden;
+      border: 1px solid var(--wsdc-color-border);
+      border-radius: var(--wsdc-radius-lg);
+      background: var(--wsdc-color-surface);
+      min-width: 0; display: flex; flex-direction: column; overflow: hidden;
     }
     .panel__head {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 10px 12px; border-bottom: 1px solid #f3f4f6; font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; justify-content: space-between; gap: var(--wsdc-space-2);
+      padding: 10px 12px; border-bottom: 1px solid var(--wsdc-color-surface-soft);
+      font-size: var(--wsdc-font-size-sm); font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-strong);
     }
     .eg-back {
-      border: 1px solid #d1d5db; background: #fff; border-radius: 8px;
-      padding: 4px 10px; font: 600 12px/1 'DM Sans', sans-serif; color: #374151; cursor: pointer;
+      border: 1px solid transparent; background: transparent;
+      border-radius: var(--wsdc-radius-pill);
+      padding: 0 10px; height: 28px;
+      font: 600 11px/1 var(--wsdc-font-sans);
+      color: var(--wsdc-color-text-muted); cursor: pointer;
+      transition: border-color var(--transition-base), background-color var(--transition-base),
+        color var(--transition-base), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .eg-back:hover { background: #f3f4f6; }
+    .eg-back:hover {
+      border-color: var(--wsdc-color-border);
+      background: var(--wsdc-color-surface-soft);
+      color: var(--wsdc-color-text-strong);
+    }
+    .eg-back:active { transform: scale(0.97); }
+    .eg-back:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
     .eg-back[hidden] { display: none !important; }
     .panel__body { padding: 0; flex: 1; min-height: 0; }
-    #growthMap { height: 360px; width: 100%; background: #f8fafc; }
+    #growthMap { height: 360px; width: 100%; background: var(--wsdc-color-surface-soft); }
     .region-list, .event-list { max-height: 360px; overflow: auto; }
-    table.eg { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.eg { width: 100%; border-collapse: collapse; font-size: var(--wsdc-font-size-sm); }
     table.eg th, table.eg td {
-      text-align: left; padding: 8px 10px; border-bottom: 1px solid #f3f4f6;
+      text-align: left; padding: 8px 10px;
+      border-bottom: 1px solid var(--wsdc-color-surface-soft);
       vertical-align: top;
     }
     table.eg th {
-      position: sticky; top: 0; background: #fafafa; font-size: 11px;
-      text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; z-index: 1;
-      pointer-events: none;
+      position: sticky; top: 0; background: var(--wsdc-color-surface-soft);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--wsdc-color-text-muted); z-index: 1; pointer-events: none;
     }
-    table.eg tr { cursor: pointer; }
-    table.eg tr:hover td { background: #f8fafc; }
+    table.eg tbody tr { cursor: pointer; }
+    table.eg tbody tr { transition: background-color var(--transition-base); }
+    @media (hover: hover) and (pointer: fine) {
+      table.eg tbody tr:hover td { background: var(--wsdc-color-surface-soft); }
+    }
     table.eg .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    table.eg a { color: inherit; text-decoration: none; font-weight: 600; }
-    table.eg a:hover { color: #2563eb; text-decoration: underline; }
+    table.eg a {
+      color: inherit; text-decoration: none; font-weight: var(--wsdc-font-weight-semibold);
+    }
+    table.eg a:hover { color: var(--wsdc-color-brand-accent); text-decoration: underline; }
+    table.eg a:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
     .chip {
       display: inline-flex; align-items: center; gap: 4px;
-      padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      padding: 1px 7px; border-radius: var(--wsdc-radius-pill);
+      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
       white-space: nowrap;
     }
-    .chip-growing { background: #d1fae5; color: #065f46; }
-    .chip-declining { background: #fee2e2; color: #991b1b; }
-    .chip-stable { background: #f3f4f6; color: #4b5563; }
+    .chip-growing { background: #dcfce7; color: var(--wsdc-color-success); }
+    .chip-declining { background: #fee2e2; color: var(--wsdc-color-danger); }
+    .chip-stable { background: var(--wsdc-color-surface-soft); color: var(--wsdc-color-text-muted); }
     .chip-new { background: #dbeafe; color: #1e40af; }
     .chip-restarted { background: #fef3c7; color: #92400e; }
     .chip-flag { background: #fff7ed; color: #9a3412; margin-left: 4px; }
-    .muted { color: #6b7280; font-weight: 500; }
+    .muted { color: var(--wsdc-color-text-muted); font-weight: var(--wsdc-font-weight-medium); }
     .approx { color: #9a3412; }
 
-    .tabs { display: flex; gap: 4px; padding: 8px 10px 0; }
-    .tabs button {
-      border: 1px solid transparent; background: transparent; border-radius: 8px;
-      padding: 6px 10px; font: 600 13px/1 'DM Sans', sans-serif; color: #6b7280; cursor: pointer;
+    .tabs {
+      display: inline-flex; align-items: center; gap: 0;
+      margin: 8px 10px 0; padding: 1px;
+      border: 1px solid transparent; border-radius: var(--wsdc-radius-pill);
+      background: transparent; height: 32px; box-sizing: border-box;
     }
-    .tabs button.is-active { background: #111827; color: #fff; }
-    .tabs button:hover:not(.is-active) { background: #f3f4f6; color: #111827; }
+    .tabs:hover, .tabs:focus-within {
+      border-color: var(--wsdc-color-border);
+      background: var(--wsdc-color-surface-soft);
+    }
+    .tabs button {
+      border: 0; background: transparent; border-radius: var(--wsdc-radius-pill);
+      padding: 0 12px; height: 28px;
+      font: 600 11px/1 var(--wsdc-font-sans);
+      color: var(--wsdc-color-text-muted); cursor: pointer;
+      transition: background-color var(--transition-base), color var(--transition-base),
+        box-shadow var(--transition-base), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .tabs button.is-active {
+      background: var(--wsdc-color-surface);
+      color: var(--wsdc-color-text-strong);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+    .tabs button:active { transform: scale(0.97); }
+    .tabs button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
 
     .legend {
-      display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: #4b5563;
+      display: flex; flex-wrap: wrap; gap: 8px 14px;
+      font-size: var(--wsdc-font-size-xs); color: var(--wsdc-color-text-muted);
       padding: 0 2px;
     }
     .legend span { display: inline-flex; align-items: center; gap: 5px; }
     .swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
     .method {
-      border: 1px solid var(--wsdc-color-border, #e5e7eb); border-radius: 12px;
-      padding: 12px 14px; font-size: 13px; color: #374151; background: #fafafa;
+      border: 1px solid var(--wsdc-color-border);
+      border-radius: var(--wsdc-radius-lg);
+      padding: 12px 14px; font-size: var(--wsdc-font-size-sm);
+      color: var(--wsdc-color-text); background: var(--wsdc-color-surface-soft);
     }
-    .method h2 { font-size: 14px; margin-bottom: 6px; }
+    .method h2 { font-size: 14px; margin-bottom: 6px; color: var(--wsdc-color-text-strong); }
     .method ul { margin: 6px 0 0 18px; }
-    .method li { margin: 3px 0; }
-    .empty { padding: 24px; text-align: center; color: #6b7280; font-size: 13px; }
+    .method li { margin: 4px 0; }
+    .empty {
+      padding: 24px; text-align: center;
+      color: var(--wsdc-color-text-muted); font-size: var(--wsdc-font-size-sm);
+    }
 
     .leaflet-container { font: inherit; }
-    .eg-marker {
-      background: transparent; border: 0;
-    }
+    .eg-marker { background: transparent; border: 0; }
     .eg-bubble {
       width: 100%; height: 100%; border-radius: 50%;
       border: 2px solid rgba(255,255,255,0.9);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      box-shadow: var(--wsdc-shadow-card);
       display: flex; align-items: center; justify-content: center;
       color: #fff; font-size: 10px; font-weight: 700;
     }
@@ -184,7 +277,7 @@
           <h1>Event Growth Monitor</h1>
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
-        <p class="subtitle">Growing and declining events by competitors for the selected year. Drill the map like Events Navigator: world → continent → country → state → city.</p>
+        <p class="subtitle">Which events grew or declined in competitors this year. Drill the map the same way as Events Navigator: world, continent, country, state, city.</p>
       </header>
 
       <div class="filters">
@@ -216,12 +309,12 @@
       <nav class="breadcrumb" id="breadcrumb" aria-label="Geography"></nav>
 
       <div class="legend" aria-label="Status legend">
-        <span><i class="swatch" style="background:#047857"></i> Growing</span>
+        <span><i class="swatch" style="background:#15803d"></i> Growing</span>
         <span><i class="swatch" style="background:#b91c1c"></i> Declining</span>
         <span><i class="swatch" style="background:#6b7280"></i> Stable</span>
         <span><i class="swatch" style="background:#2563eb"></i> New</span>
         <span><i class="swatch" style="background:#d97706"></i> Restarted</span>
-        <span class="muted">~ = estimated competitors</span>
+        <span class="muted">~ means estimated competitors</span>
       </div>
 
       <div class="kpis" id="kpiRow" aria-live="polite">
@@ -275,10 +368,10 @@
       <section class="method" id="methodBlock">
         <h2>Methodology</h2>
         <ul>
-          <li><strong>Metric.</strong> Competitors = Leader + Follower headcounts summed over Newcomer, Novice, Intermediate, Advanced, All-Star and Champion. Exact counts come from the competitions dump when enough skill divisions are complete; otherwise a Chart-5 tier midpoint estimate (~). Partial dumps are never shown as exact.</li>
-          <li><strong>Comparison.</strong> Each edition in the selected year vs that event’s previous scored edition. One calendar year skipped → compare and mark “after 1-year break”. Two or more years skipped → Restarted (no %). No previous edition → New.</li>
-          <li><strong>Status.</strong> Growing / Declining when |%| ≥ <span id="thrPct">10%</span> and |Δ| ≥ <span id="thrAbs">10</span>; otherwise Stable (when comparable).</li>
-          <li><strong>Regions.</strong> Sum of comparable competitors (previous → current). Region Growing/Declining uses the same % and absolute thresholds as events. A region that is not itself Declining but contains declining events shows a “declining inside” flag (redistribution).</li>
+          <li><strong>Metric.</strong> Competitors are Leader + Follower headcounts summed across Newcomer, Novice, Intermediate, Advanced, All-Star, and Champion. We use the competitions dump when enough skill divisions have complete counts. If not, we use a Chart-5 tier midpoint (~). A partial dump is never shown as exact.</li>
+          <li><strong>Comparison.</strong> Each edition in the selected year is compared with that event's previous scored edition. If exactly one calendar year was skipped, we still compare and mark "after 1-year break". If two or more years were skipped, the status is Restarted (no %). No previous edition means New.</li>
+          <li><strong>Status.</strong> Growing or Declining only when |%| is at least <span id="thrPct">10%</span> and |Δ| is at least <span id="thrAbs">10</span>. Smaller moves stay Stable.</li>
+          <li><strong>Regions.</strong> Comparable competitors are summed (previous to current). Region Growing/Declining uses the same thresholds as events. If a region is not Declining overall but still has declining events inside, it shows a "declining inside" flag so redistribution does not hide them.</li>
         </ul>
       </section>
     </main>
@@ -291,7 +384,7 @@
   "use strict";
 
   var STATUS_COLOR = {
-    growing: "#047857",
+    growing: "#15803d",
     declining: "#b91c1c",
     stable: "#6b7280",
     new: "#2563eb",
