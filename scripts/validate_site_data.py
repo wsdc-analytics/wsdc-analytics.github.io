@@ -272,6 +272,37 @@ def validate_homepage_kpis() -> None:
     print("[OK] homepage_kpis.json")
 
 
+def validate_event_growth() -> None:
+    path = DATA_DIR / "event_growth.json"
+    if not path.exists():
+        print("[SKIP] event_growth.json (optional until first sync)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("event_growth.json must be an object")
+    for field in ("as_of", "thresholds", "years", "editions", "n_editions"):
+        if field not in data:
+            fail(f"event_growth.json missing field: {field}")
+    editions = data["editions"]
+    if not isinstance(editions, list) or not editions:
+        fail("event_growth.json.editions must be a non-empty list")
+    if data["n_editions"] != len(editions):
+        fail("event_growth.json.n_editions must equal len(editions)")
+    sample = editions[0]
+    if not isinstance(sample, dict):
+        fail("event_growth.json.editions[0] must be an object")
+    for field in ("event_id", "name", "year", "competitors", "status", "approx"):
+        if field not in sample:
+            fail(f"event_growth.json.editions[0] missing: {field}")
+    thr = data["thresholds"]
+    if not isinstance(thr, dict) or "pct" not in thr or "abs" not in thr:
+        fail("event_growth.json.thresholds must include pct and abs")
+    print(
+        f"[OK] event_growth.json ({len(editions)} editions, "
+        f"as_of={data.get('as_of')}, data_through={data.get('data_through')})"
+    )
+
+
 def validate_event_tiers_by_year() -> None:
     path = DATA_DIR / "event_tiers_by_year.json"
     if not path.exists():
@@ -381,6 +412,7 @@ def main() -> None:
     validate_events_year_calendar()
     validate_event_l2_cards()
     validate_event_tiers_by_year()
+    validate_event_growth()
     validate_time_in_division_spells()
     print("[OK] Data validation passed.")
 
