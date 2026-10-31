@@ -899,7 +899,7 @@
 (function () {
   "use strict";
 
-  var DATA_VER = "20261031-cto";
+  var DATA_VER = "20261031-ru-eu";
 
   var STATUS_COLOR = {
     growing: "#7db88a",
@@ -2895,23 +2895,6 @@
     };
   }
 
-  function mainlandFeatures(features) {
-    var frame = state.continent && CONTINENT_FIT_FRAME[state.continent];
-    var minLon = frame ? frame[0][0] : null;
-    var maxLon = frame ? frame[1][0] : null;
-    var out = [];
-    (features || []).forEach(function (f) {
-      var m = toMainlandFeature(f);
-      if (!m) return;
-      if (minLon != null && maxLon != null) {
-        m = clipFeatureToLonWindow(m, minLon - 2, maxLon + 2);
-        if (!m) return;
-      }
-      out.push(m);
-    });
-    return out;
-  }
-
   // MapLibre LngLatBoundsLike: [[west, south], [east, north]]
   // Prefer a frame that keeps continental choropleths readable in-panel.
   var CONTINENT_FIT_FRAME = {
@@ -2924,6 +2907,39 @@
     Africa: [[-20, -36], [52, 38]],
     Australia: [[110, -48], [180, 0]]
   };
+
+  // European Russia only (≈ Urals). World overview + Russia country outline —
+  // full RU spans the antimeridian and paints Siberia across Asia even though
+  // every WSDC city sits west of ~56°E. Europe continent drill already clips
+  // via CONTINENT_FIT_FRAME above.
+  function clipRussiaToEuropeanPart(feature) {
+    var europe = CONTINENT_FIT_FRAME.Europe;
+    if (!europe || !feature) return feature;
+    var name = (feature.properties && feature.properties.name) || "";
+    if (!/^Russia$/i.test(name)) return feature;
+    return clipFeatureToLonWindow(feature, europe[0][0] - 2, europe[1][0] + 2);
+  }
+
+  function mainlandFeatures(features) {
+    var frame = state.continent && CONTINENT_FIT_FRAME[state.continent];
+    var minLon = frame ? frame[0][0] : null;
+    var maxLon = frame ? frame[1][0] : null;
+    var out = [];
+    (features || []).forEach(function (f) {
+      var m = toMainlandFeature(f);
+      if (!m) return;
+      if (minLon != null && maxLon != null) {
+        m = clipFeatureToLonWindow(m, minLon - 2, maxLon + 2);
+        if (!m) return;
+      } else {
+        // World overview: no continent frame — still cut Russia at the Urals.
+        m = clipRussiaToEuropeanPart(m);
+        if (!m) return;
+      }
+      out.push(m);
+    });
+    return out;
+  }
 
   function boundsFromFeatures(features) {
     if (!features || !features.length) return null;
@@ -3295,7 +3311,7 @@
     });
     var outline = [];
     if (feature) {
-      var mainland = toMainlandFeature(feature);
+      var mainland = clipRussiaToEuropeanPart(toMainlandFeature(feature));
       if (mainland) {
         outline.push({
           type: "Feature",
@@ -3454,6 +3470,8 @@
           });
           if (!f) return;
           var m = toMainlandFeature(f);
+          if (!m) return;
+          m = clipRussiaToEuropeanPart(m);
           if (!m) return;
           polyOut.push(decoratePolyFeature(m, r, {
             id: "absent-w-" + ai + "-" + i + "-" + cname,
