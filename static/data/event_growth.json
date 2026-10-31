@@ -33652,16 +33652,23 @@
       "competitors": 147,
       "approx": 0,
       "source": "exact",
-      "delta": null,
-      "pct": null,
-      "status": "new",
+      "delta": -75,
+      "pct": -0.33783783783783783,
+      "status": "declining",
       "hotel": "Dearfoot Inn and Casino",
       "address": "1000, 11500 - 35th Street SE",
       "city_lat": 51.04473309999999,
       "city_lon": -114.0718831,
       "geo_source": "wsdc_venue",
       "venue_start": "2026-09-24",
-      "edition": 1
+      "edition": 4,
+      "prev": {
+        "year": 2025,
+        "month": 3,
+        "competitors": 222,
+        "approx": 0,
+        "source": "exact"
+      }
     },
     {
       "event_id": 254,
@@ -34761,7 +34768,7 @@
   },
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-10-31T16:43:42Z",
+    "enriched_at": "2026-10-31T22:33:26Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -34770,11 +34777,6 @@
       },
       {
         "event_id": 221,
-        "early_year_max": 2025,
-        "late_year_min": 2026
-      },
-      {
-        "event_id": 324,
         "early_year_max": 2025,
         "late_year_min": 2026
       },
@@ -34794,8 +34796,9 @@
       "with_history": 1037,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
-      "split_buckets_used": 29,
-      "cross_brand_prev_cleared": 4
+      "split_buckets_used": 25,
+      "cross_brand_prev_cleared": 0,
+      "prev_restored": 1
     }
   }
 }
