@@ -1877,8 +1877,9 @@
         var cluster = venueClusterFromFeature(f);
         if (cluster && cluster.length) {
           tipState.sticky = true;
-          tipState.pinned = true;
+          tipState.pinned = false;
           showVenueClusterTooltip(e, cluster);
+          tipState.pinned = true;
         }
         return;
       }
@@ -2539,6 +2540,8 @@
       clearTimeout(tipState.hideTimer);
       tipState.hideTimer = null;
     }
+    // A different tip (e.g. list chip hover) releases the pin.
+    if (tipState.pinned && tipState.key !== key) tipState.pinned = false;
     if (tipState.key !== key) {
       tipState.key = key;
       tip.innerHTML = html;
@@ -3736,11 +3739,12 @@
   function closeMethod() {
     var layer = document.getElementById("methodLayer");
     var btn = document.getElementById("methodInfoBtn");
+    var wasOpen = layer.classList.contains("is-open");
     layer.classList.remove("is-open");
     layer.hidden = true;
     layer.setAttribute("aria-hidden", "true");
     btn.setAttribute("aria-expanded", "false");
-    if (btn) btn.focus();
+    if (wasOpen && btn) btn.focus();
   }
 
   function closeTipPops() {
