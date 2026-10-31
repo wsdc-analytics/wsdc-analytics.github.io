@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="How many WSDC events held each division every year since 2018, and how big their Leader and Follower fields were — Tier 1 to Tier 6. Filter by years and location." />
   <title>Event Tiers By Year | WSDC Analytics</title>
+  <link rel="canonical" href="https://wsdc-analytics.github.io/event_tiers_by_year_dashboard_en.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1962,7 +1963,7 @@
     if (location.protocol === 'file:') {
       throw new Error('open via local server (python3 -m http.server), not file://');
     }
-    const res = await fetch("static/data/event_tiers_by_year.json?v=20261028-sync");
+    const res = await fetch("static/data/event_tiers_by_year.json?v=20261031-psc");
     if (!res.ok) throw new Error('HTTP ' + res.status);
     state.data = await res.json();
     document.getElementById('dataUpdated').textContent =

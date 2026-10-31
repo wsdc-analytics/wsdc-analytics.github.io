@@ -1,0 +1,3916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Are WSDC events growing or shrinking — and where? Compare competitor counts by event and roll them up from world to city, with exact and estimated headcounts." />
+  <title>Event Growth Monitor | WSDC Analytics</title>
+  <link rel="canonical" href="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/tokens.css">
+  <link rel="stylesheet" href="static/css/ui-primitives.css">
+  <link rel="stylesheet" href="static/css/site-chrome.css">
+  <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <link rel="stylesheet" href="static/vendor/maplibre/maplibre-gl.css">
+  <script src="static/js/analytics.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WSDC Analytics">
+  <meta property="og:title" content="Event Growth Monitor | WSDC Analytics">
+  <meta property="og:description" content="See where WSDC events are growing or shrinking — map drill-down, this year vs last.">
+  <meta property="og:url" content="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
+  <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Event Growth Monitor | WSDC Analytics">
+  <meta name="twitter:description" content="See where WSDC events are growing or shrinking — map drill-down, this year vs last.">
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--wsdc-font-sans);
+      color: var(--wsdc-color-text);
+      background: var(--wsdc-color-surface);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Fill viewport — no page scroll; map uses remaining height. */
+    .page {
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      max-width: var(--wsdc-width-chrome);
+      margin: 0 auto; width: 100%; display: flex; flex-direction: column;
+      padding: var(--wsdc-space-2) var(--wsdc-space-4) var(--wsdc-space-3);
+      gap: var(--wsdc-space-2);
+    }
+    .page-head {
+      flex-shrink: 0; display: flex; flex-direction: column; gap: 2px;
+      padding-bottom: var(--wsdc-space-1);
+      border-bottom: 1px solid var(--wsdc-color-border);
+    }
+    .page-head__title-row { display: flex; align-items: center; gap: var(--wsdc-space-2); flex-wrap: wrap; }
+    .page-head h1 {
+      font-size: 1.5rem; font-weight: var(--wsdc-font-weight-bold); line-height: 1.25;
+      color: var(--wsdc-color-text-strong); letter-spacing: -0.02em;
+    }
+    .page-head__updated {
+      margin-left: auto; font-size: var(--wsdc-font-size-xs);
+      font-weight: var(--wsdc-font-weight-medium); color: var(--wsdc-color-text-muted);
+    }
+    .subtitle {
+      font-size: 13px; color: var(--wsdc-color-text-muted);
+      max-width: none; width: 100%;
+    }
+    .subtitle-i { font-size: 0.85em; }
+    .subtitle em { font-style: italic; color: var(--wsdc-color-text-strong); }
+
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+      flex-shrink: 0; justify-content: space-between;
+    }
+    .filter-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .filter-field--trend {
+      display: flex; flex-direction: row; flex-wrap: wrap;
+      align-items: center; gap: 8px 10px;
+      flex: 1 1 auto; min-width: 0; justify-content: flex-end;
+    }
+    .filter-label {
+      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.04em; text-transform: uppercase; color: var(--wsdc-color-text-muted);
+    }
+    .filter-field--trend .filter-label {
+      margin: 0;
+    }
+    .filter-field--trend .wsdc-info-btn {
+      width: 18px; height: 18px; font-size: 10px;
+    }
+    .filters .wsdc-select-host,
+    .filters .wsdc-dd {
+      width: var(--wsdc-dd-width, 5rem);
+      max-width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+    .filters .wsdc-dd.wsdc-dd--auto,
+    .filters .wsdc-dd--field {
+      width: var(--wsdc-dd-width, 5rem);
+      min-width: 0;
+      max-width: 100%;
+    }
+    .filters .filter-field:has(#yearSelect) { --wsdc-dd-width: 5rem; }
+    .filters .wsdc-dd--field .wsdc-dd__btn {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      height: 28px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      justify-content: space-between;
+      gap: 4px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .filters .wsdc-dd--field .wsdc-dd__value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+    }
+    .filters .wsdc-dd--field .wsdc-dd__btn:hover,
+    .filters .wsdc-dd--field.is-open .wsdc-dd__btn {
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: var(--wsdc-color-surface-soft, #f8fafc);
+      border-color: var(--wsdc-color-border, #d1d5db);
+    }
+    .filters .kpis { flex-wrap: wrap; justify-content: flex-end; }
+    .breadcrumb {
+      display: flex; flex-wrap: wrap; gap: 4px 2px; align-items: center;
+      font-size: var(--wsdc-font-size-sm); font-weight: var(--wsdc-font-weight-medium);
+    }
+    .breadcrumb button {
+      border: 0; background: none; color: var(--wsdc-color-brand-accent);
+      cursor: pointer; font: inherit; padding: 2px 4px;
+      border-radius: var(--wsdc-radius-sm);
+      transition: background-color var(--transition-base), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .breadcrumb button:hover { background: var(--wsdc-color-surface-soft); }
+    .breadcrumb button:active { transform: scale(0.97); }
+    .breadcrumb button:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .breadcrumb button[disabled] {
+      color: var(--wsdc-color-text-strong); cursor: default; font-weight: 700; background: none;
+      transform: none;
+    }
+    .breadcrumb .sep { color: #9ca3af; padding: 0 2px; }
+
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--wsdc-space-2);
+      min-width: 0;
+      min-height: 0;
+    }
+    .side-kpi-panel {
+      flex: 0 0 auto;
+    }
+    .side-detail-panel {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .side-summary {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .side-kpi__period-row {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .side-kpi__period {
+      font-size: 11px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-muted);
+      line-height: 1.35;
+    }
+    .side-kpi__period-row .wsdc-info-btn {
+      width: 18px; height: 18px; font-size: 10px;
+    }
+    .side-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+    .side-kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .side-kpi__lbl {
+      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.03em; text-transform: uppercase;
+      color: var(--wsdc-color-text-muted);
+    }
+    .side-kpi__val {
+      font-size: 1.35rem; font-weight: var(--wsdc-font-weight-bold);
+      letter-spacing: -0.02em; color: var(--wsdc-color-text-strong);
+      font-variant-numeric: tabular-nums; line-height: 1.15;
+    }
+    .side-kpi__sub {
+      min-height: 1.2em;
+      font-size: var(--wsdc-font-size-xs); color: var(--wsdc-color-text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .side-kpi__sub .up { color: #3f6f4f; }
+    .side-kpi__sub .down { color: #8a5a54; }
+
+    .kpis {
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    }
+    button.kpi-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 28px; padding: 0 10px;
+      border: 1px solid transparent;
+      border-radius: var(--wsdc-radius-pill);
+      background: var(--wsdc-color-surface-soft);
+      font: 600 11px/1 var(--wsdc-font-sans);
+      letter-spacing: 0.02em; text-transform: uppercase;
+      color: var(--wsdc-color-text-muted);
+      cursor: pointer;
+      transition: background-color var(--transition-base), color var(--transition-base),
+        box-shadow var(--transition-base), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    button.kpi-pill .val {
+      font-variant-numeric: tabular-nums;
+      font-weight: var(--wsdc-font-weight-bold);
+    }
+    button.kpi-pill:hover { transform: translateY(-1px); }
+    button.kpi-pill:active { transform: scale(0.97); }
+    button.kpi-pill:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    button.kpi-pill.is-all { background: var(--wsdc-color-surface-soft); color: var(--wsdc-color-text-muted); }
+    button.kpi-pill.is-growing { background: #e5f4e9; color: #2f6b3c; }
+    button.kpi-pill.is-declining { background: #f8e8e6; color: #a14d47; }
+    button.kpi-pill.is-stable { background: #e8eef2; color: #4f5d6a; }
+    button.kpi-pill.is-new { background: #f7efd4; color: #8a6f28; }
+    button.kpi-pill.is-active {
+      box-shadow: inset 0 0 0 2px currentColor;
+    }
+    button.kpi-pill.is-all.is-active {
+      color: var(--wsdc-color-text-strong);
+      box-shadow: inset 0 0 0 2px var(--wsdc-color-border);
+    }
+
+    /* Above site chrome (--wsdc-chrome-z: 2000) so Methodology / tips are usable. */
+    .method-layer {
+      position: fixed; inset: 0; z-index: 2100; display: none;
+    }
+    .method-layer.is-open { display: block; }
+    .method-layer__backdrop {
+      position: absolute; inset: 0; background: rgba(15, 23, 42, 0.28);
+    }
+    .method-island {
+      position: absolute;
+      width: min(420px, calc(100vw - 24px));
+      max-height: min(70vh, 560px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.18);
+      border: 1px solid #e5e7eb;
+    }
+    .method-island__head {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px; border-bottom: 1px solid #eef2f7;
+    }
+    .method-island__head h2 {
+      font-size: 1rem; font-weight: 700; color: var(--wsdc-color-text-strong);
+    }
+    .method-island__close {
+      margin-left: auto; border: 0; background: transparent;
+      font: 600 12px var(--wsdc-font-sans); cursor: pointer; color: #64748b;
+    }
+    .method-island__body { padding: 8px 14px 14px; }
+    .method-sec { border-bottom: 1px solid #eef2f7; }
+    .method-sec:last-of-type { border-bottom: 0; }
+    .method-sec > summary {
+      list-style: none; cursor: pointer; padding: 10px 0;
+      font-weight: 700; font-size: 13px; color: #0b1221;
+    }
+    .method-sec > summary::-webkit-details-marker { display: none; }
+    .method-sec__body {
+      padding: 0 0 10px; font-size: 12.5px; line-height: 1.45; color: #4b5563;
+    }
+    .method-sec__body p + p { margin-top: 8px; }
+    .method-sec__body ul { margin: 8px 0 0 1.1em; }
+    .method-sec__body li + li { margin-top: 4px; }
+
+    .eg-tip-pop {
+      position: fixed; z-index: 2110;
+      max-width: min(320px, calc(100vw - 24px));
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--wsdc-color-border);
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(15,23,42,0.14);
+      font-size: 12.5px; line-height: 1.45;
+      color: var(--wsdc-color-text);
+      display: none;
+    }
+    .eg-tip-pop.is-open { display: block; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 252px;
+      gap: var(--wsdc-space-2);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; flex: none; }
+      html, body, .page { height: auto; overflow: auto; }
+      .content { overflow: visible; flex: none; min-height: 0; }
+      /* After the desktop min-height:0 rule — keep a real map height. */
+      .panel--map { min-height: 320px !important; }
+      .panel--map .panel__body { min-height: 280px; }
+      .side-detail-panel { min-height: 220px; }
+    }
+    @media (max-width: 480px) {
+      .subtitle { font-size: 12.5px; }
+      .page-head h1 { font-size: 1.25rem; }
+      .filters .kpis { gap: 4px; }
+      button.kpi-pill { padding: 0 8px; height: 26px; font-size: 10px; }
+    }
+    .panel {
+      border: 1px solid var(--wsdc-color-border);
+      border-radius: var(--wsdc-radius-lg);
+      background: var(--wsdc-color-surface);
+      min-width: 0; display: flex; flex-direction: column; overflow: hidden;
+      min-height: 0;
+    }
+    /* Keep MapLibre canvas/controls under site chrome / Dashboards menu. */
+    .panel--map {
+      position: relative;
+      z-index: 1;
+      isolation: isolate;
+    }
+    .panel__head {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--wsdc-space-2);
+      padding: 8px 12px; border-bottom: 1px solid var(--wsdc-color-surface-soft);
+      font-size: var(--wsdc-font-size-sm); font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-strong);
+      min-height: 40px;
+    }
+    .panel--map .panel__head .breadcrumb {
+      flex: 1;
+      min-width: 0;
+      font-weight: var(--wsdc-font-weight-medium);
+    }
+    .eg-back {
+      border: 1px solid transparent; background: transparent;
+      border-radius: var(--wsdc-radius-pill);
+      padding: 0 10px; height: 28px;
+      font: 600 11px/1 var(--wsdc-font-sans);
+      color: var(--wsdc-color-text-muted); cursor: pointer;
+      transition: border-color var(--transition-base), background-color var(--transition-base),
+        color var(--transition-base), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .eg-back:hover {
+      border-color: var(--wsdc-color-border);
+      background: var(--wsdc-color-surface-soft);
+      color: var(--wsdc-color-text-strong);
+    }
+    .eg-back:active { transform: scale(0.97); }
+    .eg-back:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+    }
+    .eg-back[hidden] { display: none !important; }
+    .panel__body { padding: 0; flex: 1; min-height: 0; }
+    .panel--map {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel--map .panel__body {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 var(--wsdc-radius-lg) var(--wsdc-radius-lg);
+    }
+    #growthMap,
+    #growthMap.maplibregl-map {
+      position: absolute;
+      inset: 0;
+      height: 100% !important;
+      width: 100% !important;
+      min-height: 0;
+      background: #edf1f5;
+      overflow: hidden;
+    }
+    #growthMap .maplibregl-ctrl-top-right {
+      top: 8px;
+      right: 8px;
+    }
+    #growthMap .maplibregl-ctrl-group {
+      border-radius: var(--wsdc-radius-md);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+    }
+    #growthMap .maplibregl-ctrl-attrib {
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .panel--side.side-stack {
+      min-height: 0;
+      height: 100%;
+    }
+    .side-detail-panel {
+      display: flex;
+      flex-direction: column;
+    }
+    .side-detail-panel .region-list {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+    table.eg.eg--compact th, table.eg.eg--compact td {
+      padding: 7px 10px;
+    }
+    table.eg.eg--compact th:last-child,
+    table.eg.eg--compact td:last-child {
+      text-align: right;
+      width: 1%;
+      white-space: nowrap;
+    }
+    .chip.has-tip { cursor: help; }
+    table.eg { width: 100%; border-collapse: collapse; font-size: var(--wsdc-font-size-sm); }
+    table.eg th, table.eg td {
+      text-align: left; padding: 8px 10px;
+      border-bottom: 1px solid var(--wsdc-color-surface-soft);
+      vertical-align: top;
+    }
+    table.eg th {
+      position: sticky; top: 0; background: var(--wsdc-color-surface-soft);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--wsdc-color-text-muted); z-index: 1; pointer-events: none;
+    }
+    table.eg tbody tr[data-key] { cursor: pointer; }
+    table.eg tbody tr { transition: background-color var(--transition-base); }
+    table.eg tbody tr.is-selected td {
+      background: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 10%, transparent);
+    }
+    button.eg-drill {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    button.eg-drill:focus-visible {
+      outline: var(--wsdc-focus-ring);
+      outline-offset: var(--wsdc-focus-offset);
+      border-radius: 4px;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      table.eg tbody tr[data-key]:hover td { background: var(--wsdc-color-surface-soft); }
+      table.eg tbody tr.is-selected:hover td {
+        background: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 16%, transparent);
+      }
+    }
+    table.eg .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 1px 7px; border-radius: var(--wsdc-radius-pill);
+      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
+      white-space: nowrap;
+    }
+    .chip-growing { background: #e5f4e9; color: #2f6b3c; }
+    .chip-declining { background: #f8e8e6; color: #a14d47; }
+    .chip-stable { background: #e8eef2; color: #4f5d6a; }
+    .chip-new { background: #f7efd4; color: #8a6f28; }
+    .chip-absent { background: #eef0f4; color: #5b6472; border: 1px dashed #c5cad3; }
+    tr.is-absent td { opacity: 0.92; }
+    /* Prior-year pin while viewing another year — do not read as current. */
+    .tooltip .tt-last-ed__tag {
+      display: inline-block;
+      margin: 0 0 8px;
+      padding: 2px 8px;
+      border-radius: var(--wsdc-radius-pill);
+      font-size: 10px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #5b6472;
+      background: #f1f3f6;
+      border: 1px dashed #c5cad3;
+    }
+    tr.is-absent td strong { font-weight: var(--wsdc-font-weight-medium); color: var(--wsdc-color-text-muted); }
+    /* Region tooltip mirrors the side KPI card. Fixed to viewport so map
+       overflow:hidden never clips it. */
+    .tooltip {
+      position: fixed;
+      z-index: 4000;
+      min-width: 228px;
+      max-width: min(300px, calc(100vw - 16px));
+      max-height: min(72vh, calc(100vh - 24px));
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #fff;
+      color: var(--wsdc-color-text, #1f2937);
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+      font-size: 12px;
+      line-height: 1.35;
+      padding: 10px 12px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(2px) scale(0.98);
+      transform-origin: top left;
+      transition: opacity 125ms ease-out, transform 125ms ease-out;
+    }
+    .tooltip.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      /* Allow Map links; hover keeps tip open. */
+      pointer-events: auto;
+    }
+    .tooltip.is-stack {
+      max-width: min(320px, calc(100vw - 16px));
+    }
+    .tooltip .tt-stack__card + .tt-stack__card {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--wsdc-color-border, #e5e7eb);
+    }
+    .tooltip .tt-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--wsdc-color-text-strong, #0b1221);
+    }
+    .tooltip .tt-title__name { min-width: 0; }
+    .tooltip .tt-title__main {
+      min-width: 0;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 0.35em;
+    }
+    .tooltip .tt-edition {
+      font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-muted);
+      white-space: nowrap;
+    }
+    .tooltip .tt-period {
+      font-size: 11px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-muted);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .tooltip .tt-venue-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 2px;
+      font-size: 11px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-muted);
+      margin: 0 0 6px;
+      line-height: 1.35;
+    }
+    .tooltip .tt-venue-lbl {
+      color: var(--wsdc-color-text-muted);
+      font-weight: var(--wsdc-font-weight-semibold);
+    }
+    .tooltip .tt-venue-name {
+      color: var(--wsdc-color-text-strong, #0b1221);
+      max-width: 14rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tooltip .tt-venue-map {
+      color: var(--wsdc-color-link, #1d4f91);
+      font-weight: var(--wsdc-font-weight-semibold);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .tooltip .tt-venue-map:hover { text-decoration: underline; }
+    .tooltip .tt-venue-sep { color: var(--wsdc-color-text-muted); }
+    .tooltip .tt-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+    .tooltip .tt-kpi__lbl {
+      font-size: 11px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted);
+    }
+    .tooltip .tt-kpi__val {
+      font-size: 1.2rem;
+      font-weight: var(--wsdc-font-weight-bold);
+      letter-spacing: -0.02em;
+      color: var(--wsdc-color-text-strong);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+    }
+    .tooltip .tt-kpi__prior {
+      margin-left: 0.4em;
+      font-size: var(--wsdc-font-size-xs);
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--wsdc-color-text-muted, #6b7280);
+      font-variant-numeric: tabular-nums;
+      vertical-align: baseline;
+    }
+    .tooltip .tt-kpi__sub {
+      min-height: 1.2em;
+      font-size: var(--wsdc-font-size-xs);
+      color: var(--wsdc-color-text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .tooltip .tt-kpi__sub .up { color: #3f6f4f; }
+    .tooltip .tt-kpi__sub .down { color: #8a5a54; }
+    .tooltip .tt-kpi-grid--solo {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tooltip .tt-trend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--wsdc-color-border, #e5e7eb);
+    }
+    .tooltip .tt-trend__lbl {
+      font-size: 11px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted);
+      flex-shrink: 0;
+      margin: 0;
+    }
+    .tooltip .tt-mix {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 4px;
+      min-width: 0;
+    }
+    .tooltip .tt-kpi__est {
+      font-size: 0.7em;
+      font-weight: var(--wsdc-font-weight-semibold);
+      color: #9a3412;
+      letter-spacing: 0.02em;
+      vertical-align: super;
+    }
+    .tooltip .tt-mix__n {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.55em;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .tooltip .tt-mix__n.is-growing { background: #e5f4e9; color: #2f6b3c; }
+    .tooltip .tt-mix__n.is-declining { background: #f8e8e6; color: #a14d47; }
+    .tooltip .tt-mix__n.is-stable { background: #e8eef2; color: #4f5d6a; }
+    .tooltip .tt-mix__n.is-new { background: #f7efd4; color: #8a6f28; }
+    .inside-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-left: 5px;
+      border-radius: 50%;
+      vertical-align: middle;
+      background: rgba(224, 146, 140, 0.75);
+      box-shadow: 0 0 0 2px rgba(224, 146, 140, 0.22);
+      flex-shrink: 0;
+    }
+    .muted { color: var(--wsdc-color-text-muted); font-weight: var(--wsdc-font-weight-medium); }
+
+    .empty {
+      padding: 24px; text-align: center;
+      color: var(--wsdc-color-text-muted); font-size: var(--wsdc-font-size-sm);
+    }
+
+    .maplibregl-map { font: inherit; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="event_growth_dashboard_en.html"></div>
+    <main class="content">
+      <header class="page-head">
+        <div class="page-head__title-row">
+          <h1>Event Growth Monitor</h1>
+          <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
+            <span aria-hidden="true">i</span>
+          </button>
+          <span class="page-head__updated" id="updatedStamp">—</span>
+        </div>
+        <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date against the same months last year; finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
+      </header>
+
+      <div class="filters">
+        <div class="filter-field">
+          <select id="yearSelect" class="wsdc-select" aria-label="Year"></select>
+        </div>
+        <div class="filter-field filter-field--trend">
+          <span class="filter-label" id="trendFilterLabel">Event trend</span>
+          <button type="button" class="wsdc-info-btn" id="trendInfoBtn" aria-label="About event trend" aria-expanded="false" aria-controls="trendTipPop" title="About event trend">
+            <span aria-hidden="true">i</span>
+          </button>
+          <div class="kpis" id="kpiRow" role="toolbar" aria-labelledby="trendFilterLabel">
+            <button type="button" class="kpi-pill is-all" data-status="all" aria-pressed="true">
+              <span class="lbl">All</span><span class="val" id="kpiAll">—</span>
+            </button>
+            <button type="button" class="kpi-pill is-growing" data-status="growing" aria-pressed="false">
+              <span class="lbl">Growing</span><span class="val" id="kpiGrow">—</span>
+            </button>
+            <button type="button" class="kpi-pill is-declining" data-status="declining" aria-pressed="false">
+              <span class="lbl">Declining</span><span class="val" id="kpiDecl">—</span>
+            </button>
+            <button type="button" class="kpi-pill is-stable" data-status="stable" aria-pressed="false">
+              <span class="lbl">Stable</span><span class="val" id="kpiStable">—</span>
+            </button>
+            <button type="button" class="kpi-pill is-new" data-status="new" aria-pressed="false">
+              <span class="lbl">New</span><span class="val" id="kpiNew">—</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section class="panel panel--map">
+          <div class="panel__head">
+            <nav class="breadcrumb" id="breadcrumb" aria-label="Geography"></nav>
+            <button type="button" id="backBtn" class="eg-back" hidden>Back</button>
+          </div>
+          <div class="panel__body"><div id="growthMap"></div></div>
+        </section>
+        <aside class="side-stack panel--side">
+          <section class="panel side-kpi-panel">
+            <div class="side-summary">
+              <div class="side-kpi__period-row">
+                <div class="side-kpi__period" id="kpiFoot">—</div>
+                <button type="button" class="wsdc-info-btn" id="kpiInfoBtn" aria-label="About these metrics" aria-expanded="false" aria-controls="kpiTipPop" title="About these metrics">
+                  <span aria-hidden="true">i</span>
+                </button>
+              </div>
+              <div class="side-kpi-grid" aria-live="polite">
+                <div class="side-kpi">
+                  <div class="side-kpi__lbl" id="kpiCompLbl">Competitors</div>
+                  <div class="side-kpi__val" id="kpiComp">—</div>
+                  <div class="side-kpi__sub">
+                    <span id="kpiDeltaWrap"><strong id="kpiDelta">—</strong> <span id="kpiDeltaSub"></span></span>
+                  </div>
+                </div>
+                <div class="side-kpi" id="kpiEventsBlock">
+                  <div class="side-kpi__lbl">Events</div>
+                  <div class="side-kpi__val" id="kpiEvents">—</div>
+                  <div class="side-kpi__sub">
+                    <span id="kpiEventsDeltaWrap"><strong id="kpiEventsDelta">—</strong> <span id="kpiEventsDeltaSub"></span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="panel side-detail-panel">
+            <div class="panel__body region-list" id="regionList"></div>
+          </section>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Outside .page like Events Calendar — avoids clipping / stacking under panels. -->
+  <div class="tooltip" id="egTooltip" role="tooltip"></div>
+  <div class="eg-tip-pop" id="trendTipPop" role="tooltip" hidden>
+    Events in the selected area by change in competitors vs their previous edition.
+    Growing / Declining = at least ±10% and ±10 competitors; Stable = smaller change;
+    New = first edition, a return after a gap, or a renamed event.
+    Click a pill to show only those events; All shows the whole area.
+  </div>
+  <div class="eg-tip-pop" id="kpiTipPop" role="tooltip" hidden>
+    All: area totals, this year vs last year (same months if the year is still open).
+    With a trend pill: Competitors compare the selected events to their own previous editions;
+    Events = how many of the area’s events have that trend.
+  </div>
+
+  <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+    <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+    <div class="method-island" id="methodIsland" role="dialog" aria-modal="true" aria-labelledby="methodIslandTitle">
+      <div class="method-island__head">
+        <h2 id="methodIslandTitle">Methodology</h2>
+        <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+      </div>
+      <div class="method-island__body">
+        <details class="method-sec" open>
+          <summary>What this shows</summary>
+          <div class="method-sec__body">
+            <p>Each row in the data is one <strong>event edition</strong> in one year: how many competitors entered, and whether that headcount grew or shrank versus the previous edition of the same event.</p>
+            <p>Competitor counts come from official WSDC registry results. Edition numbers (<strong>#N</strong>) use the full WSDC history from 1991. Map pins and venue lines use hotel and geo enrichment when available.</p>
+            <p>The map and list roll those editions up by geography — world → continent → country → state (US) → city — so you can see where the scene is expanding or contracting.</p>
+          </div>
+        </details>
+        <details class="method-sec">
+          <summary>YTD vs YoY</summary>
+          <div class="method-sec__body">
+            <p>When the selected year is still open (it matches <em>data through</em> and the month is before December), both years are cut to the same months — <strong>year-to-date</strong> (January through the latest month with data).</p>
+            <p>Finished years compare full calendar years — <strong>YoY</strong>. The side panel always says which mode is active.</p>
+            <p>An open year can look Declining until its autumn events are in — later months are still missing from the data.</p>
+          </div>
+        </details>
+        <details class="method-sec">
+          <summary>Event trend</summary>
+          <div class="method-sec__body">
+            <p>Every edition gets a status from its own previous edition:</p>
+            <ul>
+              <li><strong>Growing / Declining</strong> — change of at least 10% <em>and</em> at least 10 competitors</li>
+              <li><strong>Stable</strong> — smaller change</li>
+              <li><strong>New</strong> — first edition, a return after a gap, or a renamed event (all shown as New)</li>
+            </ul>
+            <p>Event tips show <strong>#N</strong> after the event name — the edition ordinal across the full WSDC history (from 1991), not only the years loaded in this dashboard. This distinguishes a debut (<em>#1</em>) from a long-running event or a comeback after a gap, even when the growth series is truncated at the data window.</p>
+            <p>A renamed event starts again at <strong>#1</strong> under its new name (e.g. US Open → The Open in 2024; Paris Westie Fest → Paris Swing Classic in 2023), so its first year shows as New rather than as a continuation.</p>
+            <p>The pills count those editions in the selected area. Click one to keep only that group; <strong>All</strong> shows the whole area.</p>
+          </div>
+        </details>
+        <details class="method-sec">
+          <summary>Area colors vs event trends</summary>
+          <div class="method-sec__body">
+            <p>With <strong>All</strong>, a region’s color is the <em>area</em> trend: total competitors this period vs the same geography last period (YTD or YoY).</p>
+            <p>With a status pill active, the map instead shows where those events are: darker where more of the selected events took place.</p>
+          </div>
+        </details>
+        <details class="method-sec">
+          <summary>Pink dot next to a region</summary>
+          <div class="method-sec__body">
+            <p>In the side list, a pink dot <span class="inside-dot" role="img" aria-label="Declining events inside"></span> after the competitor count means the <em>region as a whole</em> is not Declining, but at least one event inside it is.</p>
+            <p>Example: Germany can show <strong>Stable</strong> (or Growing) on the area chip while the pink dot flags shrinking events underneath. Hover the dot for a short reminder; open an event tip or drill into the region to see which editions are Declining.</p>
+            <p>The marker only appears when the <strong>All</strong> trend filter is on. It is not drawn on the map fill — only in the list.</p>
+          </div>
+        </details>
+        <details class="method-sec">
+          <summary>Absent &amp; Last edition</summary>
+          <div class="method-sec__body">
+            <p><strong>Absent</strong> (dashed grey chip / grey dashed pin) — the event or region had an edition in the comparison period, but none in the selected window (skip, cancel, move, or ended). On absent rows the chip reads Absent; the <strong>Last edition · YYYY</strong> tag on the tip gives the year it was last held.</p>
+            <p><strong>Last edition · YYYY</strong> on a map tip means you are looking at that prior held edition, not a current-year result. The Growing / Declining / Stable chip on that tip is the status of that last held edition.</p>
+          </div>
+        </details>
+        <details class="method-sec">
+          <summary>Exact vs estimated competitors</summary>
+          <div class="method-sec__body">
+            <p>Most headcounts come from official WSDC event results. When a count is missing, the dashboard uses the midpoint of the WSDC points-tier range for that edition and marks it <strong>est.</strong> in tooltips and the city event list.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/vendor/maplibre/maplibre-gl.js"></script>
+  <script src="static/js/site-chrome.js"></script>
+  <script src="static/js/wsdc-select.js"></script>
+  <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var DATA_VER = "20261031-eg2";
+
+  var STATUS_COLOR = {
+    growing: "#7db88a",
+    declining: "#e0928c",
+    stable: "#9aa7b5",
+    new: "#e2c978"
+  };
+
+  // Restarted editions fold into New in the UI (no separate restart markup).
+  function displayStatus(status) {
+    if (status === "restarted") return "new";
+    if (status === "absent" || status === "hiatus") return "absent";
+    return status || "stable";
+  }
+
+  var ALLOWED_STATUS = {
+    all: true,
+    growing: true,
+    declining: true,
+    stable: true,
+    new: true
+  };
+
+  var state = {
+    data: null,
+    year: null,
+    status: "all",
+    level: "world", // world|continent|country|state
+    continent: null,
+    country: null,
+    regionState: null,
+    city: null,
+    map: null,
+    mapBoot: null,
+    mapLoaded: false,
+    mapHoverId: null,
+    mapRenderSeq: 0,
+    fitTimers: [],
+    regionByKey: {},
+    venueClustersByKey: {},
+    mapCityEditions: null,
+    mapMaxMatch: 0,
+    geo: {
+      countries: null,
+      states: null,
+      loading: null
+    }
+  };
+
+  var EMPTY_FC = { type: "FeatureCollection", features: [] };
+  var MAP_POLY_SRC = "eg-poly";
+  var MAP_PTS_SRC = "eg-pts";
+  var MAP_FILL = "eg-fill";
+  var MAP_LINE = "eg-line";
+  var MAP_CIRCLES = "eg-circles";
+  var MAP_ABSENT_DASH = "eg-absent-dash";
+  var MAP_ABSENT_BORDER = "eg-absent-border";
+  var MAP_ABSENT_BORDER_IMG = "eg-absent-border-img";
+  var MAP_BASE = "basemap";
+  var ABSENT_PIN_COLOR = "#b0b8c2";
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function fmtN(n) {
+    if (n == null || !isFinite(n)) return "—";
+    return Math.round(n).toLocaleString("en-US");
+  }
+
+  function fmtPct(p) {
+    if (p == null || !isFinite(p)) return "—";
+    var v = Math.round(p * 1000) / 10;
+    return (v > 0 ? "+" : "") + v + "%";
+  }
+
+  function chip(status, opts) {
+    opts = opts || {};
+    var s = displayStatus(status);
+    var label = s === "absent" ? "Absent"
+      : (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
+    var cls = "chip chip-" + esc(s) + (opts.tip ? " has-tip" : "");
+    var title = s === "absent"
+      ? "In the prior period; no edition in the selected window (skip, cancel, move, or ended)"
+      : "";
+    return '<span class="' + cls + '"' +
+      (opts.tip ? ' data-region-key="' + esc(opts.tip) + '"' : "") +
+      (title ? ' title="' + esc(title) + '"' : "") +
+      ">" + esc(label) + "</span>";
+  }
+
+  // Pin still shows the prior year while the filter year has no edition.
+  function isLastEditionTip(e) {
+    return !!(e && state.year != null && e.year != null &&
+      Number(e.year) !== Number(state.year));
+  }
+
+  function lastEditionTagHtml(e) {
+    var yr = e && e.year != null ? String(e.year) : "";
+    var label = yr ? ("Last edition · " + yr) : "Last edition";
+    return '<div class="tt-last-ed__tag">' + esc(label) + "</div>";
+  }
+
+  function editionPinCoords(e) {
+    if (!e) return null;
+    // Prefer venue lat/lon from the prior edition (hotel pin), else city centroid.
+    if (e.lat != null && e.lon != null && isFinite(Number(e.lat)) && isFinite(Number(e.lon))) {
+      return { lat: Number(e.lat), lon: Number(e.lon) };
+    }
+    if (e.city_lat != null && e.city_lon != null &&
+        isFinite(Number(e.city_lat)) && isFinite(Number(e.city_lon))) {
+      return { lat: Number(e.city_lat), lon: Number(e.city_lon) };
+    }
+    return null;
+  }
+
+  // Prior-year editions in the current geo scope with no matching event_id now.
+  function absentPriorInCurrentScope() {
+    if (statusFilterActive()) return [];
+    var mode = comparisonMode();
+    if (!mode || mode.priorYear == null) return [];
+    var cur = rowsInComparisonWindow(geoScopedEditions(), mode);
+    var curIds = {};
+    cur.forEach(function (e) {
+      if (e && e.event_id != null) curIds[e.event_id] = true;
+    });
+    var out = [];
+    var seen = {};
+    priorRowsForBuild(false).forEach(function (e) {
+      if (!e || e.event_id == null) return;
+      if (curIds[e.event_id] || seen[e.event_id]) return;
+      if (state.city && !geoMatch(e.city, state.city)) return;
+      seen[e.event_id] = true;
+      out.push(e);
+    });
+    return out.sort(function (a, b) {
+      return (b.competitors || 0) - (a.competitors || 0);
+    });
+  }
+
+  // Child regions (city / country / continent) that had editions last period
+  // but none in the selected window — pandemic gaps, cancellations, etc.
+  function absentChildRegions() {
+    if (statusFilterActive()) return [];
+    var mode = comparisonMode();
+    if (!mode || mode.priorYear == null) return [];
+    var keyFn = childKey;
+    var curKeys = {};
+    rowsInComparisonWindow(geoScopedEditions(), mode).forEach(function (e) {
+      curKeys[keyFn(e)] = true;
+    });
+    var map = {};
+    priorRowsForBuild(false).forEach(function (e) {
+      if (!e) return;
+      var k = keyFn(e);
+      if (k == null || k === "" || curKeys[k]) return;
+      if (!map[k]) {
+        map[k] = {
+          key: k,
+          n: 0,
+          current: 0,
+          previous: null,
+          delta: null,
+          pct: null,
+          status: "absent",
+          absent: true,
+          growing: 0,
+          declining: 0,
+          stable: 0,
+          neu: 0,
+          restarted: 0,
+          decliningInside: false,
+          latSum: 0,
+          lonSum: 0,
+          geoN: 0,
+          sample: e,
+          absentEvents: []
+        };
+      }
+      var g = map[k];
+      g.n += 1;
+      g.current += e.competitors || 0;
+      g.absentEvents.push(e);
+      var pin = editionPinCoords(e);
+      if (pin) {
+        g.latSum += pin.lat;
+        g.lonSum += pin.lon;
+        g.geoN += 1;
+      }
+    });
+    return Object.keys(map).map(function (k) {
+      var g = map[k];
+      return {
+        key: g.key,
+        n: g.n,
+        nPrev: g.n,
+        nDelta: -g.n,
+        nPct: -1,
+        current: g.current,
+        previous: g.current,
+        delta: null,
+        pct: null,
+        status: "absent",
+        absent: true,
+        growing: 0,
+        declining: 0,
+        stable: 0,
+        neu: 0,
+        restarted: 0,
+        decliningInside: false,
+        absentEvents: g.absentEvents.slice(),
+        lat: g.geoN ? g.latSum / g.geoN : null,
+        lon: g.geoN ? g.lonSum / g.geoN : null,
+        sample: g.sample
+      };
+    }).sort(function (a, b) {
+      return (b.current || 0) - (a.current || 0);
+    });
+  }
+
+  function insideDotHtml() {
+    return '<span class="inside-dot" role="img"' +
+      ' title="At least one event here is declining, even if the region overall is stable or growing. See Methodology → Pink dot."' +
+      ' aria-label="Declining events inside this region"></span>';
+  }
+
+  function readUrl() {
+    var q = new URLSearchParams(location.search);
+    if (q.get("year")) state.year = Number(q.get("year"));
+    if (q.get("status")) {
+      var st = q.get("status") === "restarted" ? "new" : q.get("status");
+      state.status = ALLOWED_STATUS[st] ? st : "all";
+    }
+    state.continent = q.get("continent") || null;
+    state.country = q.get("country") || null;
+    state.regionState = q.get("state") || null;
+    state.city = q.get("city") || null;
+    // City is a selection on country/state map — never its own map level.
+    if (state.regionState) state.level = "state";
+    else if (state.country) state.level = "country";
+    else if (state.continent) state.level = "continent";
+    else state.level = "world";
+    if (state.city && state.level !== "country" && state.level !== "state") {
+      state.city = null;
+    }
+  }
+
+  // Fill / correct parents from data (orphan country, mismatched continent).
+  function normalizeGeoFromData() {
+    var rows = (state.data && state.data.editions) || [];
+    function findRow(pred) {
+      for (var i = 0; i < rows.length; i++) {
+        if (pred(rows[i])) return rows[i];
+      }
+      return null;
+    }
+    function continentForCountry(country) {
+      var hit = findRow(function (e) {
+        return e && e.country === country && e.continent;
+      });
+      return hit ? hit.continent : null;
+    }
+    if (state.country) {
+      var expected = continentForCountry(state.country);
+      if (!expected) {
+        state.country = null;
+        state.regionState = null;
+        state.city = null;
+      } else if (!state.continent || state.continent !== expected) {
+        // Missing or wrong continent → correct from country.
+        state.continent = expected;
+      }
+    }
+    if (state.regionState && state.country === "United States" && !state.continent) {
+      state.continent = "North America";
+    }
+    if (state.city && state.country && !state.continent) {
+      var cityHit = findRow(function (e) {
+        return e && e.city === state.city && e.country === state.country && e.continent;
+      });
+      if (cityHit) state.continent = cityHit.continent;
+    }
+    if (state.regionState) state.level = "state";
+    else if (state.country) state.level = "country";
+    else if (state.continent) state.level = "continent";
+    else state.level = "world";
+  }
+
+  function writeUrl() {
+    var q = new URLSearchParams();
+    if (state.year) q.set("year", String(state.year));
+    if (state.status && state.status !== "all") q.set("status", state.status);
+    if (state.continent) q.set("continent", state.continent);
+    if (state.country) q.set("country", state.country);
+    if (state.regionState) q.set("state", state.regionState);
+    if (state.city) q.set("city", state.city);
+    var next = q.toString();
+    history.replaceState(null, "", next ? ("?" + next) : location.pathname);
+  }
+
+  var UNKNOWN = "Unknown";
+
+  function yearEditions() {
+    return editionsForYear(state.year);
+  }
+
+  function editionsForYear(year) {
+    var rows = (state.data && state.data.editions) || [];
+    return rows.filter(function (e) { return e.year === year; });
+  }
+
+  function geoMatch(value, filter) {
+    if (!filter) return true;
+    if (filter === UNKNOWN) return !value;
+    return value === filter;
+  }
+
+  // Parent geography only (continent/country/state) — ignores selected city so
+  // the map can keep all city pins while the side list filters to one city.
+  function parentScopedEditionsForYear(year) {
+    return editionsForYear(year).filter(function (e) {
+      if (!geoMatch(e.continent, state.continent)) return false;
+      if (!geoMatch(e.country, state.country)) return false;
+      if (!geoMatch(e.state, state.regionState)) return false;
+      return true;
+    });
+  }
+
+  function geoScopedEditionsForYear(year) {
+    return parentScopedEditionsForYear(year).filter(function (e) {
+      return geoMatch(e.city, state.city);
+    });
+  }
+
+  function geoScopedEditions() {
+    return geoScopedEditionsForYear(state.year);
+  }
+
+  function parentScopedEditions() {
+    return parentScopedEditionsForYear(state.year);
+  }
+
+  function citySelectionActive() {
+    return !!state.city && (state.level === "country" || state.level === "state");
+  }
+
+  function editionMonth(e) {
+    if (e && e.month != null && isFinite(Number(e.month))) return Number(e.month);
+    if (e && e.start) {
+      var m = Number(String(e.start).slice(5, 7));
+      return isFinite(m) ? m : null;
+    }
+    return null;
+  }
+
+  // Incomplete selected year (matches data_through YYYY-MM) → YTD vs same months prior.
+  // Finished years → full-year YoY. Both sides use the same month window.
+  // First year in the dataset has no prior baseline → priorYear null.
+  function comparisonMode() {
+    var year = state.year;
+    var years = (state.data && state.data.years) || [];
+    var candidatePrior = year != null ? year - 1 : null;
+    var priorYear = (candidatePrior != null && years.indexOf(candidatePrior) !== -1)
+      ? candidatePrior
+      : null;
+    var through = state.data && state.data.data_through;
+    var parts = through ? String(through).split("-") : [];
+    var throughYear = parts.length ? Number(parts[0]) : null;
+    var throughMonth = parts.length > 1 ? Number(parts[1]) : null;
+    if (!isFinite(throughMonth) || throughMonth < 1 || throughMonth > 12) throughMonth = null;
+
+    var mode = "yoy";
+    if (year != null && throughYear != null && year === throughYear &&
+        throughMonth != null && throughMonth < 12) {
+      mode = "ytd";
+    }
+    return {
+      mode: mode,
+      year: year,
+      priorYear: priorYear,
+      throughMonth: mode === "ytd" ? throughMonth : null
+    };
+  }
+
+  function inComparisonWindow(e, mode) {
+    if (!mode || mode.mode !== "ytd" || mode.throughMonth == null) return true;
+    var m = editionMonth(e);
+    if (m == null) return true;
+    return m <= mode.throughMonth;
+  }
+
+  function rowsInComparisonWindow(rows, mode) {
+    return (rows || []).filter(function (e) {
+      return inComparisonWindow(e, mode);
+    });
+  }
+
+  function priorComparisonRows(mode) {
+    if (!mode || mode.priorYear == null) return [];
+    return rowsInComparisonWindow(geoScopedEditionsForYear(mode.priorYear), mode);
+  }
+
+  // Prior-year rows for region rollups — same calendar YTD/YoY window as KPIs.
+  function priorRowsForBuild(parentScope) {
+    var mode = comparisonMode();
+    if (!mode || mode.priorYear == null) return [];
+    var base = parentScope
+      ? parentScopedEditionsForYear(mode.priorYear)
+      : geoScopedEditionsForYear(mode.priorYear);
+    return rowsInComparisonWindow(base, mode);
+  }
+
+  function sumCompetitors(rows) {
+    var n = 0;
+    (rows || []).forEach(function (e) { n += e.competitors || 0; });
+    return n;
+  }
+
+  function scopedEditions() {
+    return geoScopedEditions().filter(function (e) {
+      if (state.status === "all") return true;
+      return displayStatus(e.status) === state.status;
+    });
+  }
+
+  function childKey(e) {
+    if (state.level === "world") return e.continent || UNKNOWN;
+    if (state.level === "continent") return e.country || UNKNOWN;
+    if (state.level === "country") {
+      if (e.country === "United States") return e.state || UNKNOWN;
+      return e.city || UNKNOWN;
+    }
+    if (state.level === "state") return e.city || UNKNOWN;
+    return e.name || ("Event " + e.event_id);
+  }
+
+  function thresholds() {
+    var thr = (state.data && state.data.thresholds) || {};
+    return {
+      pct: thr.pct != null ? Number(thr.pct) : 0.10,
+      abs: thr.abs != null ? Number(thr.abs) : 10
+    };
+  }
+
+  function classifyRegionStatus(delta, pct, thr) {
+    if (delta == null) return "stable";
+    // No prior baseline (pct null because previous == 0) is "new", not growing
+    // from zero — callers should prefer the explicit new/restarted path first.
+    if (pct == null) {
+      if (delta > 0) return "new";
+      if (delta < 0) return "declining";
+      return "stable";
+    }
+    if (Math.abs(pct) >= thr.pct && Math.abs(delta) >= thr.abs) {
+      return delta > 0 ? "growing" : "declining";
+    }
+    return "stable";
+  }
+
+  function statusFilterActive() {
+    return !!(state.status && state.status !== "all");
+  }
+
+  function buildRegions(rows, keyFn, opts) {
+    keyFn = keyFn || childKey;
+    opts = opts || {};
+    var mode = comparisonMode();
+    var statusFilter = statusFilterActive();
+    // Calendar YTD/YoY only in All mode. Status pills use per-event pairs for
+    // deltas and paint the map by matching-event count instead.
+    var useCalendar = !statusFilter && mode.priorYear != null;
+    var priorByKey = {};
+    var priorNByKey = {};
+    if (useCalendar) {
+      (opts.priorRows || priorRowsForBuild(!!opts.parentScope)).forEach(function (e) {
+        var pk = keyFn(e);
+        priorByKey[pk] = (priorByKey[pk] || 0) + (e.competitors || 0);
+        priorNByKey[pk] = (priorNByKey[pk] || 0) + 1;
+      });
+    }
+
+    var map = {};
+    rowsInComparisonWindow(rows, mode).forEach(function (e) {
+      var key = keyFn(e);
+      if (!map[key]) {
+        map[key] = {
+          key: key,
+          currentAll: 0,
+          pairCur: 0,
+          pairPrev: 0,
+          pairN: 0,
+          n: 0,
+          growing: 0,
+          declining: 0,
+          stable: 0,
+          neu: 0,
+          restarted: 0,
+          latSum: 0,
+          lonSum: 0,
+          geoN: 0,
+          sample: e
+        };
+      }
+      var g = map[key];
+      g.n += 1;
+      g.currentAll += e.competitors || 0;
+      if (e.status === "growing") g.growing += 1;
+      else if (e.status === "declining") g.declining += 1;
+      else if (e.status === "stable") g.stable += 1;
+      else if (e.status === "new") g.neu += 1;
+      else if (e.status === "restarted") g.restarted += 1;
+      if (e.prev && e.prev.competitors != null && e.delta != null) {
+        g.pairN += 1;
+        g.pairCur += e.competitors || 0;
+        g.pairPrev += e.prev.competitors;
+      }
+      // Country/state city pins stay on the city centroid; venue lat/lon are
+      // for city-drill pins only (Peterhof must not drag St. Petersburg west).
+      var pinLat = e.city_lat != null ? e.city_lat : e.lat;
+      var pinLon = e.city_lon != null ? e.city_lon : e.lon;
+      if (pinLat != null && pinLon != null) {
+        g.latSum += pinLat;
+        g.lonSum += pinLon;
+        g.geoN += 1;
+      }
+    });
+    var thr = thresholds();
+    var regions = Object.keys(map).map(function (k) {
+      var g = map[k];
+      var previous = null;
+      var delta = null;
+      var pct = null;
+      var status = "stable";
+      if (statusFilter) {
+        previous = g.pairN ? g.pairPrev : null;
+        delta = g.pairN ? (g.pairCur - g.pairPrev) : null;
+        pct = g.pairN && g.pairPrev ? delta / g.pairPrev : null;
+        status = state.status;
+      } else if (useCalendar) {
+        previous = priorByKey[k] || 0;
+        delta = g.currentAll - previous;
+        pct = previous ? delta / previous : null;
+        // All new/restarted → New geography (not Growing from zero).
+        if (g.n > 0 && g.neu + g.restarted === g.n) status = "new";
+        else if (previous === 0 && g.currentAll > 0) status = "new";
+        else if (delta != null) status = classifyRegionStatus(delta, pct, thr);
+      } else if (g.n > 0 && g.neu + g.restarted === g.n) {
+        status = "new";
+      }
+      var nPrev = useCalendar ? (priorNByKey[k] || 0) : null;
+      var nDelta = useCalendar ? (g.n - nPrev) : null;
+      var nPct = useCalendar && nPrev ? nDelta / nPrev : null;
+      return {
+        key: g.key,
+        n: g.n,
+        nPrev: nPrev,
+        nDelta: nDelta,
+        nPct: nPct,
+        current: g.currentAll,
+        previous: previous,
+        delta: delta,
+        pct: pct,
+        status: displayStatus(status),
+        growing: g.growing,
+        declining: g.declining,
+        stable: g.stable,
+        neu: g.neu,
+        restarted: g.restarted,
+        decliningInside: !statusFilter && g.declining > 0 && status !== "declining",
+        lat: g.geoN ? g.latSum / g.geoN : null,
+        lon: g.geoN ? g.lonSum / g.geoN : null,
+        sample: g.sample
+      };
+    }).sort(function (a, b) {
+      return (b.current || 0) - (a.current || 0);
+    });
+    return regions;
+  }
+
+  function setMapMaxMatch(regions) {
+    state.mapMaxMatch = (regions || []).reduce(function (m, r) {
+      return Math.max(m, r.n || 0);
+    }, 0);
+  }
+
+  function regionFillOpacity(r) {
+    if (r && r.absent) return 0.28;
+    // World / continent: slightly more transparent so basemap shows through.
+    if (!statusFilterActive()) {
+      if (state.level === "world" || state.level === "continent") return 0.72;
+      return 0.9;
+    }
+    var maxN = state.mapMaxMatch || 1;
+    var t = maxN ? (r.n || 0) / maxN : 0;
+    return 0.22 + 0.68 * Math.max(0, Math.min(1, t));
+  }
+
+  function regionStatusColor(r) {
+    if (r && r.absent) return ABSENT_PIN_COLOR;
+    if (statusFilterActive()) {
+      return STATUS_COLOR[state.status] || STATUS_COLOR.stable;
+    }
+    // Area calendar YTD/YoY status. Soft list-only declining-inside dots
+    // must not recolor a net-stable/growing region.
+    return STATUS_COLOR[displayStatus(r.status)] || STATUS_COLOR.stable;
+  }
+
+  function selectCity(key) {
+    hideMapTooltip();
+    state.city = state.city === key ? null : key;
+    writeUrl();
+    render();
+  }
+
+  function drillInto(key) {
+    tipState.pinned = false;
+    hideMapTooltip();
+    // Keep Unknown as an explicit filter (missing geo), do not clear the field.
+    if (state.level === "world") {
+      state.continent = key;
+      state.level = "continent";
+      state.city = null;
+    } else if (state.level === "continent") {
+      state.country = key;
+      state.level = "country";
+      state.city = null;
+    } else if (state.level === "country") {
+      if (state.country === "United States") {
+        state.regionState = key;
+        state.level = "state";
+        state.city = null;
+      } else {
+        selectCity(key);
+        return;
+      }
+    } else if (state.level === "state") {
+      selectCity(key);
+      return;
+    }
+    writeUrl();
+    render();
+  }
+
+  function goBack() {
+    hideMapTooltip();
+    if (state.city) {
+      state.city = null;
+    } else if (state.level === "state") {
+      state.regionState = null;
+      state.level = "country";
+    } else if (state.level === "country") {
+      state.country = null;
+      state.level = "continent";
+    } else if (state.level === "continent") {
+      state.continent = null;
+      state.level = "world";
+    }
+    writeUrl();
+    render();
+  }
+
+  function jumpTo(level) {
+    if (level === "world") {
+      state.continent = state.country = state.regionState = state.city = null;
+      state.level = "world";
+    } else if (level === "continent") {
+      state.country = state.regionState = state.city = null;
+      state.level = "continent";
+    } else if (level === "country") {
+      state.regionState = state.city = null;
+      state.level = "country";
+    } else if (level === "state") {
+      state.city = null;
+      state.level = "state";
+    }
+    writeUrl();
+    render();
+  }
+
+  function renderBreadcrumb() {
+    var el = document.getElementById("breadcrumb");
+    var parts = [];
+    // City is a selection on country/state — not its own map level. When a city
+    // is selected it is the current crumb; parents stay clickable to clear it
+    // and show all cities of that country/state again.
+    var cityOn = !!state.city;
+    function crumb(label, level, enabled) {
+      if (enabled) {
+        parts.push('<button type="button" data-jump="' + esc(level) + '">' + esc(label) + "</button>");
+      } else {
+        parts.push('<button type="button" disabled aria-current="location">' + esc(label) + "</button>");
+      }
+    }
+    crumb("World", "world", state.level !== "world" || cityOn);
+    if (state.continent) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.continent, "continent", state.level !== "continent" || cityOn);
+    }
+    if (state.country) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.country, "country", state.level !== "country" || cityOn);
+    }
+    if (state.regionState) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.regionState, "state", state.level !== "state" || cityOn);
+    }
+    if (cityOn) {
+      parts.push('<span class="sep">/</span>');
+      crumb(state.city, "city", false);
+    }
+    el.innerHTML = parts.join("");
+    el.querySelectorAll("[data-jump]").forEach(function (btn) {
+      btn.addEventListener("click", function () { jumpTo(btn.getAttribute("data-jump")); });
+    });
+    var back = document.getElementById("backBtn");
+    back.hidden = state.level === "world" && !cityOn;
+  }
+
+  function setDeltaLine(wrapId, valId, subId, delta, pct, has) {
+    var wrap = document.getElementById(wrapId);
+    var valEl = document.getElementById(valId);
+    var subEl = document.getElementById(subId);
+    if (!has || delta == null) {
+      wrap.hidden = true;
+      valEl.textContent = "";
+      valEl.className = "";
+      subEl.textContent = "";
+      return;
+    }
+    wrap.hidden = false;
+    valEl.textContent = (delta > 0 ? "+" : "") + fmtN(delta);
+    valEl.className = delta > 0 ? "up" : delta < 0 ? "down" : "";
+    subEl.textContent = pct == null ? "" : fmtPct(pct);
+  }
+
+  function setEventsSub(text) {
+    var wrap = document.getElementById("kpiEventsDeltaWrap");
+    var valEl = document.getElementById("kpiEventsDelta");
+    var subEl = document.getElementById("kpiEventsDeltaSub");
+    if (!text) {
+      wrap.hidden = true;
+      valEl.textContent = "";
+      valEl.className = "";
+      subEl.textContent = "";
+      return;
+    }
+    wrap.hidden = false;
+    valEl.textContent = "";
+    valEl.className = "";
+    subEl.textContent = text;
+  }
+
+  function renderKpis(allRows, filteredRows) {
+    // Pill counts: full geo-scope (per-event YoY statuses from pipeline).
+    // All: calendar YTD/YoY on both years.
+    // Status pill: Competitors = selected events vs their own previous editions;
+    // Events = N of M in the area (no calendar prior-status mix-up).
+    var g = 0, d = 0, s = 0, n = 0;
+    allRows.forEach(function (e) {
+      var st = displayStatus(e.status);
+      if (st === "growing") g += 1;
+      else if (st === "declining") d += 1;
+      else if (st === "stable") s += 1;
+      else if (st === "new") n += 1;
+    });
+    var allCount = g + d + s + n;
+
+    var mode = comparisonMode();
+    var statusFilter = statusFilterActive();
+    var areaRows = rowsInComparisonWindow(allRows, mode);
+    var currentRows = rowsInComparisonWindow(filteredRows, mode);
+
+    var total = sumCompetitors(currentRows);
+    var delta = null;
+    var pct = null;
+    var hasCompDelta = false;
+    var eventsNow = currentRows.length;
+    var eventsArea = areaRows.length;
+
+    if (!statusFilter) {
+      var priorRows = priorComparisonRows(mode);
+      var compPrev = sumCompetitors(priorRows);
+      if (mode.priorYear != null) {
+        delta = total - compPrev;
+        pct = compPrev ? delta / compPrev : null;
+        hasCompDelta = true;
+      }
+      var eventsPrev = priorRows.length;
+      var eventsDelta = mode.priorYear != null ? eventsNow - eventsPrev : null;
+      var eventsPct = mode.priorYear != null && eventsPrev
+        ? eventsDelta / eventsPrev
+        : null;
+      document.getElementById("kpiEvents").textContent = fmtN(eventsNow);
+      setDeltaLine(
+        "kpiEventsDeltaWrap",
+        "kpiEventsDelta",
+        "kpiEventsDeltaSub",
+        eventsDelta,
+        eventsPct,
+        mode.priorYear != null
+      );
+    } else if (state.status === "new") {
+      hasCompDelta = false;
+      document.getElementById("kpiEvents").textContent = fmtN(eventsNow);
+      setEventsSub(eventsArea ? ("of " + fmtN(eventsArea) + " in area") : "");
+    } else {
+      // Headline + delta both from comparable pairs only (same previous edition).
+      var cur = 0;
+      var prev = 0;
+      var pairs = 0;
+      currentRows.forEach(function (e) {
+        if (e.prev && e.prev.competitors != null && e.delta != null) {
+          pairs += 1;
+          cur += e.competitors || 0;
+          prev += e.prev.competitors;
+        }
+      });
+      total = cur;
+      if (pairs) {
+        delta = cur - prev;
+        pct = prev ? delta / prev : null;
+        hasCompDelta = true;
+      }
+      document.getElementById("kpiEvents").textContent = fmtN(eventsNow);
+      setEventsSub(eventsArea ? ("of " + fmtN(eventsArea) + " in area") : "");
+    }
+
+    // Always "Competitors" — New pill means competitors *at new events*, not
+    // newly registered dancers.
+    document.getElementById("kpiCompLbl").textContent = "Competitors";
+    document.getElementById("kpiComp").textContent =
+      (statusFilter && state.status !== "new"
+        ? (hasCompDelta ? fmtN(total) : "—")
+        : (currentRows.length ? fmtN(total) : "—"));
+    setDeltaLine("kpiDeltaWrap", "kpiDelta", "kpiDeltaSub", delta, pct, hasCompDelta);
+
+    var foot = document.getElementById("kpiFoot");
+    var statusLabel = state.status === "all" ? null :
+      (state.status.charAt(0).toUpperCase() + state.status.slice(1));
+    if (!allRows.length) {
+      foot.textContent = "No events in this view";
+    } else if (statusFilter && !currentRows.length) {
+      foot.textContent = "No matching " + statusLabel.toLowerCase() + " events";
+    } else if (statusFilter) {
+      foot.textContent = statusLabel + " events vs their previous edition";
+    } else if (mode.priorYear == null) {
+      foot.textContent = (mode.year != null ? mode.year + " · " : "") +
+        "No prior year in data";
+    } else if (mode.mode === "ytd") {
+      foot.textContent = mode.year + " YTD vs " + mode.priorYear + " YTD";
+    } else {
+      foot.textContent = mode.year + " vs " + mode.priorYear + " · YoY";
+    }
+
+    document.getElementById("kpiAll").textContent = fmtN(allCount);
+    document.getElementById("kpiGrow").textContent = fmtN(g);
+    document.getElementById("kpiDecl").textContent = fmtN(d);
+    document.getElementById("kpiStable").textContent = fmtN(s);
+    document.getElementById("kpiNew").textContent = fmtN(n);
+    document.querySelectorAll("#kpiRow .kpi-pill").forEach(function (btn) {
+      var st = btn.getAttribute("data-status");
+      var on = state.status === st;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function clearFitTimers() {
+    (state.fitTimers || []).forEach(function (id) { clearTimeout(id); });
+    state.fitTimers = [];
+  }
+
+  function scheduleMapTask(fn, ms, seq) {
+    var id = setTimeout(function () {
+      if (seq !== state.mapRenderSeq) return;
+      fn();
+    }, ms);
+    state.fitTimers.push(id);
+  }
+
+  function destroyMap(message) {
+    clearFitTimers();
+    clearMapHover();
+    if (state.map) {
+      try { state.map.remove(); } catch (e) { /* ignore */ }
+    }
+    state.map = null;
+    state.mapBoot = null;
+    state.mapLoaded = false;
+    state.mapHoverId = null;
+    var mapEl = document.getElementById("growthMap");
+    if (mapEl) {
+      mapEl.className = "";
+      mapEl.innerHTML = message
+        ? '<div class="empty">' + esc(message) + "</div>"
+        : "";
+    }
+  }
+
+  function clearMapHover() {
+    if (!state.map || !state.mapLoaded || state.mapHoverId == null) return;
+    try {
+      state.map.setFeatureState(
+        { source: MAP_POLY_SRC, id: state.mapHoverId },
+        { hover: false }
+      );
+    } catch (e) { /* ignore */ }
+    state.mapHoverId = null;
+  }
+
+  function bindMapPointerHandlers() {
+    var map = state.map;
+    var interactive = [MAP_FILL, MAP_CIRCLES];
+
+    function featureUnder(e) {
+      return map.queryRenderedFeatures(e.point, { layers: interactive })[0] || null;
+    }
+
+    function regionFromFeature(f) {
+      if (!f || !f.properties) return null;
+      return state.regionByKey[f.properties.regionKey] || null;
+    }
+
+    function venueClusterFromFeature(f) {
+      if (!f || !f.properties || f.properties.kind !== "event") return null;
+      var vk = f.properties.venueKey;
+      if (vk && state.venueClustersByKey[vk]) return state.venueClustersByKey[vk];
+      return null;
+    }
+
+    map.on("mousemove", function (e) {
+      if (tipState.pinned) {
+        map.getCanvas().style.cursor = "pointer";
+        return;
+      }
+      var f = featureUnder(e);
+      var cluster = venueClusterFromFeature(f);
+      if (cluster && cluster.length) {
+        clearMapHover();
+        map.getCanvas().style.cursor = "pointer";
+        // Multi-venue: soft-sticky so cursor can bridge to Map link.
+        tipState.sticky = cluster.length > 1;
+        showVenueClusterTooltip(e, cluster);
+        return;
+      }
+      tipState.sticky = false;
+      var region = regionFromFeature(f);
+      if (!region) {
+        clearMapHover();
+        hideMapTooltipSoon();
+        map.getCanvas().style.cursor = "";
+        return;
+      }
+      map.getCanvas().style.cursor = "pointer";
+      // Continent/world: no per-country hover paint — crossing Canada→US (or
+      // EU borders) otherwise flashes fill/stroke and feels like a click.
+      var paintHover = state.level === "country" || state.level === "state";
+      var id = f.id != null ? f.id : f.properties.id;
+      if (paintHover && f.source === MAP_POLY_SRC && id != null && id !== state.mapHoverId) {
+        clearMapHover();
+        state.mapHoverId = id;
+        try {
+          map.setFeatureState({ source: MAP_POLY_SRC, id: id }, { hover: true });
+        } catch (err) { /* ignore */ }
+      } else if (!paintHover) {
+        clearMapHover();
+      }
+      showMapTooltip(e, region);
+    });
+
+    function clearPointer() {
+      if (tipState.pinned) return;
+      clearMapHover();
+      hideMapTooltipSoon();
+      map.getCanvas().style.cursor = "";
+    }
+    map.on("mouseleave", MAP_FILL, clearPointer);
+    map.on("mouseleave", MAP_CIRCLES, clearPointer);
+    map.getCanvas().addEventListener("mouseleave", clearPointer);
+
+    map.on("click", function (e) {
+      var f = featureUnder(e);
+      if (!f || !f.properties) {
+        tipState.sticky = false;
+        tipState.pinned = false;
+        hideMapTooltip();
+        return;
+      }
+      if (f.properties.kind === "event") {
+        // Pin the tip on click so tall stacked tips stay scrollable.
+        var cluster = venueClusterFromFeature(f);
+        if (cluster && cluster.length) {
+          tipState.sticky = true;
+          tipState.pinned = false;
+          showVenueClusterTooltip(e, cluster);
+          tipState.pinned = true;
+        }
+        return;
+      }
+      tipState.sticky = false;
+      tipState.pinned = false;
+      hideMapTooltip();
+      if (f.properties.kind === "city-fallback") return;
+      var key = f.properties.drillKey || f.properties.regionKey;
+      if (!key) return;
+      drillInto(key);
+    });
+  }
+
+  // Canvas dashed ring used as the absent pin border (same size as the circle).
+  // Nominal diameter at icon-size 1 = 40px → icon-size = circleRadius / 20.
+  function addAbsentPinBorderImage(map) {
+    if (!map || map.hasImage(MAP_ABSENT_BORDER_IMG)) return;
+    var size = 40;
+    var canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    var stroke = 2.25;
+    ctx.clearRect(0, 0, size, size);
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - stroke / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = "#5b6472";
+    ctx.lineWidth = stroke;
+    ctx.lineCap = "round";
+    ctx.setLineDash([4.5, 3.25]);
+    ctx.stroke();
+    map.addImage(MAP_ABSENT_BORDER_IMG, ctx.getImageData(0, 0, size, size));
+  }
+
+  function ensureMap() {
+    if (state.map && state.mapLoaded) return Promise.resolve(state.map);
+    if (state.mapBoot) return state.mapBoot;
+    if (typeof maplibregl === "undefined") {
+      return Promise.reject(new Error("MapLibre failed to load"));
+    }
+    var el = document.getElementById("growthMap");
+    if (!el) return Promise.reject(new Error("Map container missing"));
+
+    state.mapBoot = new Promise(function (resolve, reject) {
+      try {
+        state.map = new maplibregl.Map({
+          container: el,
+          cooperativeGestures: (window.innerWidth || 0) <= 900,
+          style: {
+            version: 8,
+            sources: {
+              // Direct OSM raster: fine for local/dev. For heavy production
+              // traffic prefer a policy-friendly tile host or self-hosted tiles.
+              osm: {
+                type: "raster",
+                tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+                tileSize: 256,
+                attribution: "&copy; OpenStreetMap",
+                maxzoom: 19
+              },
+              "eg-poly": { type: "geojson", data: EMPTY_FC, promoteId: "id" },
+              "eg-pts": { type: "geojson", data: EMPTY_FC, promoteId: "id" }
+            },
+            layers: [
+              {
+                id: MAP_BASE,
+                type: "raster",
+                source: "osm",
+                paint: { "raster-opacity": 0.62 }
+              },
+              {
+                id: MAP_FILL,
+                type: "fill",
+                source: MAP_POLY_SRC,
+                paint: {
+                  "fill-color": ["coalesce", ["get", "fillColor"], "#9aa7b5"],
+                  "fill-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    1,
+                    ["coalesce", ["get", "fillOpacity"], 0.9]
+                  ],
+                  "fill-outline-color": "rgba(0,0,0,0)"
+                }
+              },
+              {
+                id: MAP_LINE,
+                type: "line",
+                source: MAP_POLY_SRC,
+                filter: [
+                  "all",
+                  ["!=", ["get", "silhouette"], true],
+                  ["!=", ["get", "absent"], true]
+                ],
+                paint: {
+                  "line-color": "#ffffff",
+                  "line-width": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    1.6,
+                    0.85
+                  ]
+                }
+              },
+              {
+                // Dashed border of absent country/state polygons (not a halo).
+                id: MAP_ABSENT_DASH,
+                type: "line",
+                source: MAP_POLY_SRC,
+                filter: ["==", ["get", "absent"], true],
+                paint: {
+                  "line-color": "#5b6472",
+                  "line-width": 1.35,
+                  "line-opacity": 0.9,
+                  "line-dasharray": [1.6, 1.2]
+                }
+              },
+              {
+                id: MAP_CIRCLES,
+                type: "circle",
+                source: MAP_PTS_SRC,
+                paint: {
+                  "circle-radius": ["coalesce", ["get", "radius"], 9],
+                  "circle-color": ["coalesce", ["get", "fillColor"], "#9aa7b5"],
+                  "circle-opacity": ["coalesce", ["get", "opacity"], 0.92],
+                  // Absent pins use MAP_ABSENT_BORDER symbol as the stroke.
+                  "circle-stroke-width": [
+                    "case",
+                    ["==", ["get", "absent"], true],
+                    0,
+                    [">", ["coalesce", ["get", "eventCount"], 1], 1],
+                    1.5,
+                    ["==", ["get", "selected"], 1],
+                    1.25,
+                    0.75
+                  ],
+                  "circle-stroke-color": "#ffffff"
+                }
+              },
+              {
+                // Dashed circle border hugging the absent pin (MapLibre circles
+                // cannot dash their own stroke).
+                id: MAP_ABSENT_BORDER,
+                type: "symbol",
+                source: MAP_PTS_SRC,
+                filter: ["==", ["get", "absent"], true],
+                layout: {
+                  "icon-image": MAP_ABSENT_BORDER_IMG,
+                  "icon-size": [
+                    "/",
+                    ["coalesce", ["get", "radius"], 9],
+                    20
+                  ],
+                  "icon-allow-overlap": true,
+                  "icon-ignore-placement": true
+                }
+              }
+            ]
+          },
+          center: [10, 18],
+          zoom: 1.15,
+          minZoom: 0.6,
+          // City venue drill-in needs street/neighbourhood detail; higher
+          // levels still cap zoom via fitToData maxZoom.
+          maxZoom: 14,
+          attributionControl: true,
+          scrollZoom: false,
+          dragRotate: false,
+          pitchWithRotate: false,
+          fadeDuration: 0
+        });
+        state.map.addControl(new maplibregl.NavigationControl({
+          showCompass: false,
+          visualizePitch: false
+        }), "top-right");
+        state.map.on("load", function () {
+          addAbsentPinBorderImage(state.map);
+          state.mapLoaded = true;
+          bindMapPointerHandlers();
+          resolve(state.map);
+        });
+        state.map.on("error", function (err) {
+          console.error("MapLibre error", err && err.error ? err.error : err);
+        });
+      } catch (err) {
+        state.mapBoot = null;
+        reject(err);
+      }
+    });
+    return state.mapBoot;
+  }
+
+  function refreshMapSize() {
+    if (!state.map || !state.mapLoaded) return;
+    state.map.resize();
+  }
+
+  function setMapData(polyFc, ptsFc) {
+    if (!state.map || !state.mapLoaded) return;
+    var poly = state.map.getSource(MAP_POLY_SRC);
+    var pts = state.map.getSource(MAP_PTS_SRC);
+    if (poly) poly.setData(polyFc || EMPTY_FC);
+    if (pts) pts.setData(ptsFc || EMPTY_FC);
+  }
+
+  function setBasemapOpacity(opacity) {
+    if (!state.map || !state.mapLoaded || !state.map.getLayer(MAP_BASE)) return;
+    state.map.setPaintProperty(MAP_BASE, "raster-opacity", opacity);
+  }
+
+  function loadGeo() {
+    if (state.geo.countries && state.geo.states) {
+      return Promise.resolve();
+    }
+    if (state.geo.loading) return state.geo.loading;
+    var bust = "?v=" + DATA_VER;
+    state.geo.loading = Promise.all([
+      fetch("static/data/geo/countries.geojson" + bust).then(function (r) {
+        if (!r.ok) throw new Error("countries.geojson");
+        return r.json();
+      }),
+      fetch("static/data/geo/us_states.geojson" + bust).then(function (r) {
+        if (!r.ok) throw new Error("us_states.geojson");
+        return r.json();
+      })
+    ]).then(function (parts) {
+      state.geo.countries = parts[0];
+      state.geo.states = parts[1];
+      state.geo.loading = null;
+    }).catch(function (err) {
+      state.geo.loading = null;
+      throw err;
+    });
+    return state.geo.loading;
+  }
+
+  function countriesInScope() {
+    var out = {};
+    scopedEditions().forEach(function (e) {
+      if (!e.country) return;
+      if (!out[e.country]) {
+        out[e.country] = { continent: e.continent || UNKNOWN, latSum: 0, lonSum: 0, n: 0 };
+      }
+      var pinLat = e.city_lat != null ? e.city_lat : e.lat;
+      var pinLon = e.city_lon != null ? e.city_lon : e.lon;
+      if (pinLat != null && pinLon != null) {
+        out[e.country].latSum += pinLat;
+        out[e.country].lonSum += pinLon;
+        out[e.country].n += 1;
+      }
+    });
+    return out;
+  }
+
+  function usesPolygons() {
+    if (state.level === "world") return true;
+    if (state.level === "continent") return true;
+    if (state.level === "country" && state.country === "United States") return true;
+    return false;
+  }
+
+  // Non-US country view: country outline + city pins (clear enter-country framing).
+  function usesCountryCityMap() {
+    return state.level === "country" && state.country && state.country !== "United States";
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "—";
+    var p = String(iso).slice(0, 10).split("-");
+    if (p.length !== 3) return String(iso);
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var m = months[Number(p[1]) - 1] || p[1];
+    return Number(p[2]) + " " + m + " " + p[0];
+  }
+
+  function eventDateRange(e) {
+    if (!e || !e.start) return null;
+    var a = fmtDate(e.start);
+    var b = e.end ? fmtDate(e.end) : null;
+    return b && b !== a ? (a + " – " + b) : a;
+  }
+
+  function comparisonPeriodText() {
+    var mode = comparisonMode();
+    if (statusFilterActive()) {
+      var st = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+      return st + " events · vs previous edition";
+    }
+    if (mode.priorYear == null) return String(mode.year || "—");
+    if (mode.mode === "ytd") return mode.year + " YTD vs " + mode.priorYear + " YTD";
+    return mode.year + " vs " + mode.priorYear + " · YoY";
+  }
+
+  function ttDeltaSubHtml(delta, pct) {
+    if (delta == null) return '<div class="tt-kpi__sub"></div>';
+    var cls = delta > 0 ? "up" : delta < 0 ? "down" : "";
+    var abs = (delta > 0 ? "+" : "") + fmtN(delta);
+    var pctTxt = pct == null ? "" : (" " + fmtPct(pct));
+    return '<div class="tt-kpi__sub"><strong class="' + cls + '">' + esc(abs) +
+      "</strong>" + (pctTxt ? (" <span>" + esc(pctTxt.trim()) + "</span>") : "") +
+      "</div>";
+  }
+
+  // Compact colored counts matching Event trend pills (skip zeros).
+  function regionCompositionHtml(r) {
+    var parts = [
+      { key: "growing", n: r.growing || 0, label: "Growing" },
+      { key: "declining", n: r.declining || 0, label: "Declining" },
+      { key: "stable", n: r.stable || 0, label: "Stable" },
+      { key: "new", n: (r.neu || 0) + (r.restarted || 0), label: "New" }
+    ];
+    var chips = parts.filter(function (p) { return p.n > 0; }).map(function (p) {
+      return '<span class="tt-mix__n is-' + p.key + '" title="' + esc(p.label) + '">' +
+        fmtN(p.n) + "</span>";
+    }).join("");
+    if (!chips) return "";
+    return '<div class="tt-mix" role="group" aria-label="Event trend mix">' + chips + "</div>";
+  }
+
+  // Same information architecture as the side KPI card.
+  function regionTooltipHtml(r) {
+    var label = r.key == null || r.key === "" ? UNKNOWN : String(r.key);
+    if (r && r.absent) {
+      var events = (r.absentEvents || []).slice(0, 4);
+      var more = (r.absentEvents || []).length > 4
+        ? ('<div class="tt-period">+' + ((r.absentEvents || []).length - 4) + " more</div>")
+        : "";
+      var rows = events.map(function (e) {
+        return absentEventRowHtml(e, { compact: true, regionKey: r.key });
+      }).join("");
+      return '<div class="tt-title">' +
+        '<span class="tt-title__name">' + esc(label) + "</span>" +
+        chip("absent") +
+        "</div>" +
+        '<div class="tt-period">' + esc(comparisonPeriodText()) +
+          " · prior period only</div>" +
+        '<div class="tt-kpi-grid">' +
+          '<div class="tt-kpi">' +
+            '<div class="tt-kpi__lbl">Competitors (prior period)</div>' +
+            '<div class="tt-kpi__val">' + fmtN(r.current) + "</div>" +
+            '<div class="tt-kpi__sub"></div>' +
+          "</div>" +
+          '<div class="tt-kpi">' +
+            '<div class="tt-kpi__lbl">Events (prior period)</div>' +
+            '<div class="tt-kpi__val">' + fmtN(r.n) + "</div>" +
+            '<div class="tt-kpi__sub"></div>' +
+          "</div>" +
+        "</div>" +
+        (rows ? ('<div class="tt-trend" style="display:block">' + rows + more + "</div>") : "");
+    }
+    var st = statusFilterActive() ? state.status : r.status;
+    var hasCompDelta = r.delta != null;
+    var hasEventsDelta = !statusFilterActive() && r.nDelta != null;
+    var mix = statusFilterActive() ? "" : regionCompositionHtml(r);
+    var trend = mix
+      ? ('<div class="tt-trend"><div class="tt-trend__lbl">Event trend</div>' + mix + "</div>")
+      : "";
+    return '<div class="tt-title">' +
+      '<span class="tt-title__name">' + esc(label) + "</span>" +
+      chip(st) +
+      "</div>" +
+      '<div class="tt-period">' + esc(comparisonPeriodText()) + "</div>" +
+      '<div class="tt-kpi-grid">' +
+        '<div class="tt-kpi">' +
+          '<div class="tt-kpi__lbl">Competitors</div>' +
+          '<div class="tt-kpi__val">' + (hasCompDelta || r.n ? fmtN(r.current) : "—") + "</div>" +
+          ttDeltaSubHtml(hasCompDelta ? r.delta : null, hasCompDelta ? r.pct : null) +
+        "</div>" +
+        '<div class="tt-kpi">' +
+          '<div class="tt-kpi__lbl">Events</div>' +
+          '<div class="tt-kpi__val">' + fmtN(r.n) + "</div>" +
+          ttDeltaSubHtml(hasEventsDelta ? r.nDelta : null, hasEventsDelta ? r.nPct : null) +
+        "</div>" +
+      "</div>" +
+      trend;
+  }
+
+  // Geo label under an absent event name — one step below the current drill,
+  // omitted when that place is already fixed by the selection / tip region.
+  function absentPlaceLabel(e, regionKey) {
+    if (!e || state.city) return "";
+    var place = "";
+    var usCityState = e.country === "United States" && e.city && e.state
+      ? (e.city + ", " + e.state)
+      : "";
+    if (state.level === "world") {
+      place = e.country || "";
+    } else if (state.level === "continent") {
+      place = usCityState || e.city || "";
+    } else if (state.level === "country") {
+      // US states view: city is enough under a state tip; under broader US tips
+      // disambiguate with state.
+      place = (!state.regionState && usCityState) ? usCityState : (e.city || "");
+    } else if (state.level === "state") {
+      place = e.city || "";
+    } else {
+      place = e.city || e.country || "";
+    }
+    if (regionKey && (geoMatch(place, regionKey) || geoMatch(e.city, regionKey))) return "";
+    return place;
+  }
+
+  function absentEventRowHtml(e, opts) {
+    opts = opts || {};
+    var place = absentPlaceLabel(e, opts.regionKey);
+    var placeLine = place
+      ? ('<div class="tt-period">' + esc(place) + "</div>")
+      : "";
+    // Absent tips: name only (no #edition — looks odd on prior-only rows).
+    if (opts.compact) {
+      var yrBit = e && e.year != null
+        ? (' <span class="tt-edition">' + esc(String(e.year)) + "</span>")
+        : "";
+      return '<div class="tt-absent-row">' +
+        '<div class="tt-title">' +
+          eventNameWithEditionHtml(e, { showEdition: false }) +
+          yrBit +
+          chip(e.status) +
+        "</div>" +
+        placeLine +
+        "</div>";
+    }
+    var comp = e && e.competitors != null ? fmtN(e.competitors) : "—";
+    var periodHead = place || ("Not in " + String(state.year || "this period"));
+    return '<div class="tt-last-ed">' +
+      lastEditionTagHtml(e) +
+      '<div class="tt-last-ed__body">' +
+        venueLineHtml(e) +
+        '<div class="tt-title">' +
+          eventNameWithEditionHtml(e, { showEdition: false }) +
+          chip(e.status) +
+        "</div>" +
+        '<div class="tt-period">' + esc(periodHead) + "</div>" +
+        '<div class="tt-kpi-grid tt-kpi-grid--solo">' +
+          '<div class="tt-kpi">' +
+            '<div class="tt-kpi__lbl">Competitors (last edition)</div>' +
+            '<div class="tt-kpi__val">' + esc(comp) + "</div>" +
+            '<div class="tt-kpi__sub">Prior period only</div>' +
+          "</div>" +
+        "</div>" +
+      "</div></div>";
+  }
+
+  function shortHotelName(raw) {
+    return (typeof EGVenue !== "undefined" && EGVenue.shortHotelName)
+      ? EGVenue.shortHotelName(raw)
+      : (raw ? String(raw) : null);
+  }
+
+  function venueMapsUrl(e) {
+    if (!e) return null;
+    if (e.lat != null && e.lon != null && isFinite(Number(e.lat)) && isFinite(Number(e.lon))) {
+      return "https://www.google.com/maps/search/?api=1&query=" +
+        encodeURIComponent(Number(e.lat) + "," + Number(e.lon));
+    }
+    var q = [e.hotel, e.address, e.city, e.state, e.country].filter(Boolean).join(", ");
+    if (!q) return null;
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+  }
+
+  function venueLineHtml(e) {
+    if (!e) return "";
+    var short = shortHotelName(e.hotel);
+    var url = venueMapsUrl(e);
+    if (!short && !url) return "";
+    // City-map event tip top line: Venue: <Name> · Map
+    var bits = [];
+    if (short) {
+      bits.push(
+        '<span class="tt-venue-lbl">Venue:</span> ' +
+        '<span class="tt-venue-name" title="' + esc(e.hotel || short) + '">' +
+          esc(short) + "</span>"
+      );
+    }
+    if (url) {
+      bits.push(
+        '<a class="tt-venue-map" href="' + esc(url) +
+          '" target="_blank" rel="noopener noreferrer">Map</a>'
+      );
+    }
+    return '<div class="tt-venue-top">' +
+      bits.join('<span class="tt-venue-sep"> · </span>') +
+      "</div>";
+  }
+
+  function eventNameWithEditionHtml(e, opts) {
+    opts = opts || {};
+    var title = (e && e.name) || ("Event " + ((e && e.event_id) || ""));
+    var showEdition = opts.showEdition !== false;
+    var ordinal = showEdition ? editionOrdinal(e) : null;
+    var nameInner = '<span class="tt-title__name">' + esc(title) + "</span>";
+    if (ordinal) {
+      nameInner +=
+        ' <span class="tt-edition" title="' +
+        esc("Edition number across full WSDC history (from 1991)") +
+        '">#' + ordinal + "</span>";
+    }
+    return '<span class="tt-title__main">' + nameInner + "</span>";
+  }
+
+  function eventTooltipHtml(e, opts) {
+    opts = opts || {};
+    var lastEd = opts.lastEdition != null ? !!opts.lastEdition : isLastEditionTip(e);
+    var dates = eventDateRange(e) || "—";
+    var hasPrev = !!(e.prev && e.prev.competitors != null);
+    var compVal = e.competitors == null ? "—" : fmtN(e.competitors);
+    var est = e.approx && e.competitors != null
+      ? ' <span class="tt-kpi__est">est.</span>'
+      : "";
+    // Current · prior-year count (half-size muted) in one metric line.
+    var prior = "";
+    if (hasPrev) {
+      var priorTip = e.prev.year != null
+        ? ("Competitors in " + e.prev.year)
+        : "Previous edition";
+      prior = ' <span class="tt-kpi__prior" title="' + esc(priorTip) + '">' +
+        fmtN(e.prev.competitors) + "</span>";
+    }
+    // Delta when comparable; New/restarted no longer claim "First edition"
+    // (#N after the name shows debut vs comeback / long-running event).
+    var compSub = (hasPrev && e.delta != null)
+      ? ttDeltaSubHtml(e.delta, e.pct)
+      : (lastEd
+        ? '<div class="tt-kpi__sub">Not in ' + esc(String(state.year || "this period")) + "</div>"
+        : '<div class="tt-kpi__sub"></div>');
+    // Venue · Map once per tip (skipped when the cluster tip already showed it).
+    var venue = opts.skipVenue ? "" : venueLineHtml(e);
+    var period = lastEd
+      ? (dates + " · last held")
+      : dates;
+    var body = venue +
+      '<div class="tt-title">' +
+      eventNameWithEditionHtml(e) +
+      chip(e.status) +
+      "</div>" +
+      '<div class="tt-period">' + esc(period) + "</div>" +
+      '<div class="tt-kpi-grid tt-kpi-grid--solo">' +
+        '<div class="tt-kpi">' +
+          '<div class="tt-kpi__lbl">' +
+            (lastEd ? "Competitors (last edition)" : "Competitors") +
+          "</div>" +
+          '<div class="tt-kpi__val">' + compVal + est + prior + "</div>" +
+          compSub +
+        "</div>" +
+      "</div>";
+    if (!lastEd) return body;
+    return '<div class="tt-last-ed">' +
+      lastEditionTagHtml(e) +
+      '<div class="tt-last-ed__body">' + body + "</div></div>";
+  }
+
+  function clusterPinStatus(editions) {
+    var statuses = (editions || []).map(function (e) {
+      return displayStatus(e.status);
+    });
+    if (typeof EGVenue !== "undefined" && EGVenue.clusterPinStatus) {
+      return EGVenue.clusterPinStatus(statuses);
+    }
+    return statuses[0] || "stable";
+  }
+
+  function editionForVenueLine(editions) {
+    var list = editions || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i] && shortHotelName(list[i].hotel)) return list[i];
+    }
+    for (i = 0; i < list.length; i++) {
+      if (list[i] && venueMapsUrl(list[i])) return list[i];
+    }
+    return list[0] || null;
+  }
+
+  function venueClusterTooltipHtml(editions) {
+    var list = (editions || []).slice().sort(function (a, b) {
+      return (b.competitors || 0) - (a.competitors || 0);
+    });
+    if (!list.length) return "";
+    if (list.length === 1) return eventTooltipHtml(list[0]);
+    // Shared venue · Map once for the pin; stacked cards skip the venue line.
+    var sharedVenue = venueLineHtml(editionForVenueLine(list));
+    var cards = list.map(function (e) {
+      return '<div class="tt-stack__card">' +
+        eventTooltipHtml(e, { skipVenue: true }) +
+        "</div>";
+    }).join("");
+    return sharedVenue + '<div class="tt-stack">' + cards + "</div>";
+  }
+
+  function showVenueClusterTooltip(ev, editions) {
+    if (!editions || !editions.length) return;
+    var key = "v:" + editions.map(editionKey).join("|");
+    showTip(ev, key, venueClusterTooltipHtml(editions), {
+      stack: editions.length > 1
+    });
+  }
+
+  function attachEditionEnds(growth, tiers) {
+    var byKey = {};
+    ((tiers && tiers.editions) || []).forEach(function (t) {
+      if (t.event_id == null || t.year == null || !t.end) return;
+      byKey[String(t.event_id) + ":" + t.year] = t.end;
+    });
+    ((growth && growth.editions) || []).forEach(function (e) {
+      if (e.end) return;
+      var end = byKey[String(e.event_id) + ":" + e.year];
+      if (end) e.end = end;
+    });
+  }
+
+  var tipState = { key: null, hideTimer: null, sticky: false, pinned: false };
+
+  function tipEl() {
+    var tip = document.getElementById("egTooltip");
+    if (!tip) return null;
+    if (tip.parentElement !== document.body) {
+      document.body.appendChild(tip);
+    }
+    if (!tip._egTipBound) {
+      tip._egTipBound = true;
+      tip.addEventListener("mouseenter", function () {
+        if (tipState.hideTimer) {
+          clearTimeout(tipState.hideTimer);
+          tipState.hideTimer = null;
+        }
+      });
+      tip.addEventListener("mouseleave", function () {
+        if (tipState.pinned) return;
+        tipState.sticky = false;
+        hideMapTooltipSoon();
+      });
+    }
+    return tip;
+  }
+
+  function eventClientPoint(ev) {
+    var oe = ev && (ev.originalEvent || ev.sourceEvent || ev);
+    if (!oe) return { x: 0, y: 0 };
+    if (oe.touches && oe.touches[0]) {
+      return { x: oe.touches[0].clientX, y: oe.touches[0].clientY };
+    }
+    if (oe.changedTouches && oe.changedTouches[0]) {
+      return { x: oe.changedTouches[0].clientX, y: oe.changedTouches[0].clientY };
+    }
+    return {
+      x: oe.clientX != null ? oe.clientX : 0,
+      y: oe.clientY != null ? oe.clientY : 0
+    };
+  }
+
+  function showTip(ev, key, html, opts) {
+    opts = opts || {};
+    var tip = tipEl();
+    if (!tip || key == null || html == null) return;
+    if (tipState.hideTimer) {
+      clearTimeout(tipState.hideTimer);
+      tipState.hideTimer = null;
+    }
+    // A different tip (e.g. list chip hover) releases the pin.
+    if (tipState.pinned && tipState.key !== key) tipState.pinned = false;
+    if (tipState.key !== key) {
+      tipState.key = key;
+      tip.innerHTML = html;
+    }
+    tip.classList.toggle("is-stack", !!opts.stack);
+    tip.classList.add("is-visible");
+    // Pinned tips keep position so the cursor can scroll tall content.
+    if (!tipState.pinned) moveMapTooltip(ev);
+  }
+
+  function showMapTooltip(ev, region) {
+    if (!region) return;
+    showTip(ev, "r:" + region.key, regionTooltipHtml(region));
+  }
+
+  function showEventTooltip(ev, edition) {
+    if (!edition) return;
+    showTip(ev, "e:" + editionKey(edition), eventTooltipHtml(edition));
+  }
+
+  function moveMapTooltip(ev) {
+    var tip = tipEl();
+    if (!tip || !tip.classList.contains("is-visible")) return;
+    var pad = 12;
+    var gap = 14;
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var pt = eventClientPoint(ev);
+    var cx = pt.x;
+    var cy = pt.y;
+    // Measure off-screen first so max-height / scroll height are accurate.
+    tip.style.left = "-9999px";
+    tip.style.top = "0px";
+    var w = tip.offsetWidth;
+    var h = tip.offsetHeight;
+    var x = cx + gap;
+    var y = cy + gap;
+    if (x + w > vw - pad) x = cx - w - gap;
+    if (x < pad) x = pad;
+    if (x + w > vw - pad) x = Math.max(pad, vw - pad - w);
+    // Prefer below cursor; if it would clip the viewport, flip above.
+    if (y + h > vh - pad) y = cy - h - gap;
+    if (y < pad) y = pad;
+    if (y + h > vh - pad) y = Math.max(pad, vh - pad - h);
+    tip.style.left = Math.round(x) + "px";
+    tip.style.top = Math.round(y) + "px";
+    tip.style.transformOrigin = (y < cy ? "bottom left" : "top left");
+  }
+
+  function hideMapTooltip() {
+    if (tipState.hideTimer) {
+      clearTimeout(tipState.hideTimer);
+      tipState.hideTimer = null;
+    }
+    tipState.key = null;
+    tipState.sticky = false;
+    tipState.pinned = false;
+    var tip = tipEl();
+    if (tip) {
+      tip.classList.remove("is-visible");
+      tip.classList.remove("is-stack");
+    }
+  }
+
+  function hideMapTooltipSoon() {
+    // Pinned tips stay until empty-map click, Escape, or drill.
+    if (tipState.pinned) return;
+    // Soft-sticky multi plaques get a longer bridge so the cursor can reach Map.
+    if (tipState.hideTimer) clearTimeout(tipState.hideTimer);
+    var delay = tipState.sticky ? 320 : 160;
+    tipState.hideTimer = setTimeout(function () {
+      tipState.hideTimer = null;
+      hideMapTooltip();
+    }, delay);
+  }
+
+  function fitPointsFromRegions(regions) {
+    return (regions || []).filter(function (r) {
+      return r && r.lat != null && r.lon != null;
+    }).map(function (r) { return [r.lon, r.lat]; });
+  }
+
+  function boundsAreSane(b) {
+    // MapLibre LngLatBoundsLike: [[west, south], [east, north]]
+    if (!b || !b[0] || !b[1]) return false;
+    var west = b[0][0];
+    var south = b[0][1];
+    var east = b[1][0];
+    var north = b[1][1];
+    if (![west, south, east, north].every(function (n) { return isFinite(n); })) return false;
+    var lngSpan = Math.abs(east - west);
+    var latSpan = Math.abs(north - south);
+    if (lngSpan <= 0 || latSpan <= 0) return false;
+    // Alaska/Hawaii (antimeridian) can make layer bounds span the globe and
+    // leave US+Canada as a tiny island in an empty / cropped panel.
+    if (lngSpan > 100 || latSpan > 75) return false;
+    return true;
+  }
+
+  // One city / tiny cluster → expand to a minimum box so fitBounds can zoom in
+  // instead of rejecting zero-span bounds and falling back to the continent frame.
+  // Default 2.5° ≈ country/state framing; city-venue mode passes a tighter span.
+  function expandDegenerateBounds(b, minSpanDeg) {
+    if (!b || !b[0] || !b[1]) return b;
+    var minSpan = minSpanDeg == null ? 2.5 : minSpanDeg;
+    var west = b[0][0];
+    var south = b[0][1];
+    var east = b[1][0];
+    var north = b[1][1];
+    var lngSpan = east - west;
+    var latSpan = north - south;
+    if (lngSpan < minSpan) {
+      var cx = (west + east) / 2;
+      west = cx - minSpan / 2;
+      east = cx + minSpan / 2;
+    }
+    if (latSpan < minSpan) {
+      var cy = (south + north) / 2;
+      south = cy - minSpan / 2;
+      north = cy + minSpan / 2;
+    }
+    return [[west, south], [east, north]];
+  }
+
+  function padLngLatBounds(b, frac) {
+    var west = b[0][0];
+    var south = b[0][1];
+    var east = b[1][0];
+    var north = b[1][1];
+    var dx = (east - west) * frac;
+    var dy = (north - south) * frac;
+    return [[west - dx, south - dy], [east + dx, north + dy]];
+  }
+
+  function boundsFromLngLatPoints(points) {
+    if (!points || !points.length) return null;
+    var west = Infinity;
+    var south = Infinity;
+    var east = -Infinity;
+    var north = -Infinity;
+    points.forEach(function (p) {
+      if (p[0] < west) west = p[0];
+      if (p[1] < south) south = p[1];
+      if (p[0] > east) east = p[0];
+      if (p[1] > north) north = p[1];
+    });
+    if (!isFinite(west)) return null;
+    // Raw span — expandDegenerateBounds runs in fitToData.apply (opts.minSpanDeg).
+    return [[west, south], [east, north]];
+  }
+
+  function ringAreaDeg(ring) {
+    var a = 0;
+    for (var i = 0; i < ring.length - 1; i++) {
+      a += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1];
+    }
+    return Math.abs(a) / 2;
+  }
+
+  // Keep the mainland plus significant nearby islands (Tasmania, NZ South,
+  // UK NI, …). United States stays CONUS-only here — Alaska would stretch
+  // America framing across the antimeridian; HI/AK are state features below.
+  // Named Alaska/Hawaii country features are omitted entirely.
+  function toMainlandFeature(feature) {
+    if (!feature || !feature.geometry) return feature;
+    var name = (feature.properties && feature.properties.name) || "";
+    if (/^(Alaska|Hawaii)$/i.test(name)) return null;
+    var geom = feature.geometry;
+    var polys;
+    if (geom.type === "Polygon") return feature;
+    if (geom.type !== "MultiPolygon") return feature;
+    polys = geom.coordinates;
+    var best = 0;
+    var bestArea = -1;
+    var areas = [];
+    for (var i = 0; i < polys.length; i++) {
+      var area = ringAreaDeg(polys[i][0] || []);
+      areas.push(area);
+      if (area > bestArea) {
+        bestArea = area;
+        best = i;
+      }
+    }
+    if (bestArea < 0) return feature;
+    // Largest polygon only — drop far islands / overseas that wreck fit/hover
+    // or paint the wrong continent (France → French Guiana in South America,
+    // US Alaska, Canadian Arctic, Norwegian Svalbard + Jan Mayen).
+    if (/^(United States|Canada|Norway|France)$/i.test(name)) {
+      return {
+        type: "Feature",
+        properties: feature.properties,
+        geometry: { type: "Polygon", coordinates: polys[best] }
+      };
+    }
+    // Tasmania ≈ 1% of Australia mainland; NZ South ≈ 74% of North.
+    // Also drop far overseas scraps even when area clears the size floor.
+    var mainRing = polys[best][0] || [];
+    var mainLon = 0;
+    var mainLat = 0;
+    var mainN = 0;
+    for (var mi = 0; mi < mainRing.length; mi++) {
+      mainLon += mainRing[mi][0];
+      mainLat += mainRing[mi][1];
+      mainN += 1;
+    }
+    if (mainN) {
+      mainLon /= mainN;
+      mainLat /= mainN;
+    }
+    var minKeep = Math.max(bestArea * 0.008, 1.5);
+    var kept = [];
+    for (var j = 0; j < polys.length; j++) {
+      if (j !== best && areas[j] < minKeep) continue;
+      if (j !== best && mainN) {
+        var ring = polys[j][0] || [];
+        var slon = 0;
+        var slat = 0;
+        var sn = 0;
+        for (var si = 0; si < ring.length; si++) {
+          slon += ring[si][0];
+          slat += ring[si][1];
+          sn += 1;
+        }
+        if (sn) {
+          slon /= sn;
+          slat /= sn;
+          // ~15° ≈ drop French Guiana / Réunion-class overseas; keep nearby
+          // islands (Tasmania, NZ South, Corsica-scale neighbours).
+          if (Math.abs(slon - mainLon) > 15 || Math.abs(slat - mainLat) > 15) {
+            continue;
+          }
+        }
+      }
+      kept.push(polys[j]);
+    }
+    if (kept.length === 1) {
+      return {
+        type: "Feature",
+        properties: feature.properties,
+        geometry: { type: "Polygon", coordinates: kept[0] }
+      };
+    }
+    return {
+      type: "Feature",
+      properties: feature.properties,
+      geometry: { type: "MultiPolygon", coordinates: kept }
+    };
+  }
+
+  function mergeLngLatBounds(a, b) {
+    if (!a) return b || null;
+    if (!b) return a;
+    return [
+      [Math.min(a[0][0], b[0][0]), Math.min(a[0][1], b[0][1])],
+      [Math.max(a[1][0], b[1][0]), Math.max(a[1][1], b[1][1])]
+    ];
+  }
+
+  // Clip a ring against one vertical meridian (Sutherland–Hodgman).
+  // keepEast: keep lon >= edge; else keep lon <= edge.
+  function clipRingAgainstMeridian(ring, edge, keepEast) {
+    if (!ring || ring.length < 2) return null;
+    function inside(p) {
+      return keepEast ? p[0] >= edge : p[0] <= edge;
+    }
+    function intersect(a, b) {
+      var dx = b[0] - a[0];
+      if (Math.abs(dx) < 1e-12) return [edge, a[1]];
+      var t = (edge - a[0]) / dx;
+      return [edge, a[1] + t * (b[1] - a[1])];
+    }
+    var out = [];
+    var prev = ring[ring.length - 1];
+    // Skip duplicate close-point if ring is closed
+    if (ring.length > 1 &&
+        ring[0][0] === ring[ring.length - 1][0] &&
+        ring[0][1] === ring[ring.length - 1][1]) {
+      prev = ring[ring.length - 2];
+    }
+    for (var i = 0; i < ring.length; i++) {
+      var cur = ring[i];
+      if (i === ring.length - 1 &&
+          ring[0][0] === cur[0] && ring[0][1] === cur[1]) break;
+      var prevIn = inside(prev);
+      var curIn = inside(cur);
+      if (curIn) {
+        if (!prevIn) out.push(intersect(prev, cur));
+        out.push([cur[0], cur[1]]);
+      } else if (prevIn) {
+        out.push(intersect(prev, cur));
+      }
+      prev = cur;
+    }
+    if (out.length < 3) return null;
+    var first = out[0];
+    var last = out[out.length - 1];
+    if (first[0] !== last[0] || first[1] !== last[1]) out.push([first[0], first[1]]);
+    return out;
+  }
+
+  // Proper lon-window clip (inserts edge intersections) — avoids the jagged
+  // “knife cut” from merely dropping out-of-window vertices (Russia/Europe).
+  function clipRingToLonWindow(ring, minLon, maxLon) {
+    var a = clipRingAgainstMeridian(ring, minLon, true);
+    if (!a) return null;
+    return clipRingAgainstMeridian(a, maxLon, false);
+  }
+
+  function clipFeatureToLonWindow(feature, minLon, maxLon) {
+    if (!feature || !feature.geometry) return feature;
+    var geom = feature.geometry;
+    var polys = geom.type === "Polygon" ? [geom.coordinates]
+      : (geom.type === "MultiPolygon" ? geom.coordinates : null);
+    if (!polys) return feature;
+    var kept = [];
+    for (var i = 0; i < polys.length; i++) {
+      var outer = clipRingToLonWindow(polys[i][0] || [], minLon, maxLon);
+      if (!outer) continue;
+      kept.push([outer]);
+    }
+    if (!kept.length) return null;
+    if (kept.length === 1) {
+      return {
+        type: "Feature",
+        properties: feature.properties,
+        geometry: { type: "Polygon", coordinates: kept[0] }
+      };
+    }
+    return {
+      type: "Feature",
+      properties: feature.properties,
+      geometry: { type: "MultiPolygon", coordinates: kept }
+    };
+  }
+
+  function mainlandFeatures(features) {
+    var frame = state.continent && CONTINENT_FIT_FRAME[state.continent];
+    var minLon = frame ? frame[0][0] : null;
+    var maxLon = frame ? frame[1][0] : null;
+    var out = [];
+    (features || []).forEach(function (f) {
+      var m = toMainlandFeature(f);
+      if (!m) return;
+      if (minLon != null && maxLon != null) {
+        m = clipFeatureToLonWindow(m, minLon - 2, maxLon + 2);
+        if (!m) return;
+      }
+      out.push(m);
+    });
+    return out;
+  }
+
+  // MapLibre LngLatBoundsLike: [[west, south], [east, north]]
+  // Prefer a frame that keeps continental choropleths readable in-panel.
+  var CONTINENT_FIT_FRAME = {
+    // East ~60°E ≈ Urals: covers RU event cities (Moscow…Ufa ~56°E) without
+    // dragging Siberia into the Europe panel. Clip uses this window too.
+    Europe: [[-24, 34], [60, 71]],
+    Asia: [[40, 0], [145, 55]],
+    // US CONUS + Canada. Keep lng span ≤100 so boundsAreSane accepts it.
+    America: [[-145, 23], [-52, 60]],
+    Africa: [[-20, -36], [52, 38]],
+    Australia: [[110, -48], [180, 0]]
+  };
+
+  function boundsFromFeatures(features) {
+    if (!features || !features.length) return null;
+    var south = Infinity;
+    var north = -Infinity;
+    var west = Infinity;
+    var east = -Infinity;
+    var found = false;
+
+    function absorbRing(ring) {
+      for (var i = 0; i < ring.length; i++) {
+        var lon = ring[i][0];
+        var lat = ring[i][1];
+        if (lat < south) south = lat;
+        if (lat > north) north = lat;
+        if (lon < west) west = lon;
+        if (lon > east) east = lon;
+        found = true;
+      }
+    }
+
+    function walkCoords(coords) {
+      if (!coords || !coords.length) return;
+      if (typeof coords[0][0] === "number") {
+        absorbRing(coords);
+        return;
+      }
+      for (var i = 0; i < coords.length; i++) walkCoords(coords[i]);
+    }
+
+    features.forEach(function (f) {
+      if (f && f.geometry && f.geometry.coordinates) {
+        walkCoords(f.geometry.coordinates);
+      }
+    });
+
+    if (!found) return null;
+    var frame = state.continent && CONTINENT_FIT_FRAME[state.continent];
+    var raw = [[west, south], [east, north]];
+    // Continent frame is only for continent choropleths — never when framing a country.
+    if (state.level !== "continent") {
+      return boundsAreSane(raw) ? raw : null;
+    }
+    // America / Europe: prefer fixed frames. Europe otherwise inherits a
+    // knife-edge at the clip meridian when raw RU bounds fight the panel.
+    if ((state.continent === "America" || state.continent === "Europe") &&
+        frame && boundsAreSane(frame)) {
+      return frame;
+    }
+    // Prefer real feature bounds when sane. Fall back to CONTINENT_FIT_FRAME.
+    if (boundsAreSane(raw)) return raw;
+    if (frame && boundsAreSane(frame)) return frame;
+    return frame || null;
+  }
+
+  // Keep Americas → Australia inside the panel with air on all sides.
+  var WORLD_FIT_BOUNDS = [[-150, -52], [175, 74]];
+
+  function fitWorldView() {
+    if (!state.map || !state.mapLoaded) return;
+    refreshMapSize();
+    try {
+      state.map.fitBounds(WORLD_FIT_BOUNDS, {
+        padding: { top: 36, bottom: 44, left: 40, right: 40 },
+        duration: 0,
+        maxZoom: 2.2
+      });
+    } catch (e) {
+      state.map.jumpTo({ center: [10, 18], zoom: 1.05 });
+    }
+  }
+
+  function fitToData(fallbackPoints, features, seq, opts) {
+    if (!state.map || !state.mapLoaded) return;
+    seq = seq == null ? state.mapRenderSeq : seq;
+    if (seq !== state.mapRenderSeq) return;
+    opts = opts || {};
+
+    if (state.level === "world" && !opts.cityVenue) {
+      fitWorldView();
+      scheduleMapTask(fitWorldView, 50, seq);
+      scheduleMapTask(fitWorldView, 180, seq);
+      return;
+    }
+
+    var maxZoom = opts.maxZoom;
+    if (maxZoom == null) {
+      maxZoom = 5;
+      if (state.level === "continent") maxZoom = 7;
+      else if (state.level === "country") maxZoom = usesCountryCityMap() ? 9 : 7;
+      else if (state.level === "state") maxZoom = 8;
+    }
+    var defaultPad = opts.padFrac != null ? opts.padFrac : 0.01;
+    var minSpanDeg = opts.minSpanDeg;
+
+    function apply(bounds, padFrac) {
+      if (!bounds) return false;
+      var expanded = expandDegenerateBounds(bounds, minSpanDeg);
+      if (!boundsAreSane(expanded)) return false;
+      var b = padLngLatBounds(expanded, padFrac == null ? defaultPad : padFrac);
+      try {
+        state.map.fitBounds(b, {
+          padding: opts.padding != null ? opts.padding : 8,
+          maxZoom: maxZoom,
+          duration: 0
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function run() {
+      if (seq !== state.mapRenderSeq || !state.map || !state.mapLoaded) return false;
+      refreshMapSize();
+      // America continent: ignore city-point merge — northern Canada / AK pins
+      // defeat the fixed CONUS+Canada frame via mercator stretch.
+      if (state.level === "continent" && state.continent === "America") {
+        var amFrame = CONTINENT_FIT_FRAME.America;
+        if (amFrame && apply(amFrame, 0.01)) return true;
+      }
+      var fromFeatures = boundsFromFeatures(features);
+      var fromPts = boundsFromLngLatPoints(fallbackPoints);
+      // Always include event/city points so island cities (Hobart, Christchurch)
+      // are not clipped when the choropleth is mainland-heavy.
+      var merged = mergeLngLatBounds(fromFeatures, fromPts);
+      if (merged && apply(merged, defaultPad)) return true;
+      if (fromFeatures && apply(fromFeatures, defaultPad)) return true;
+      if (fromPts && apply(fromPts, Math.max(defaultPad, 0.2))) return true;
+      // Do not fall back to the whole continent when drilling into a country —
+      // that looks like "same Europe map with one city pin".
+      if (state.level === "continent") {
+        var frame = state.continent && CONTINENT_FIT_FRAME[state.continent];
+        if (frame && apply(frame, 0.01)) return true;
+      }
+      if (state.level === "world") {
+        fitWorldView();
+        return false;
+      }
+      return false;
+    }
+
+    run();
+    scheduleMapTask(run, 50, seq);
+    scheduleMapTask(run, 180, seq);
+  }
+
+  function indexRegions(regions) {
+    var byKey = {};
+    (regions || []).forEach(function (r) { byKey[r.key] = r; });
+    state.regionByKey = byKey;
+    return byKey;
+  }
+
+  function decoratePolyFeature(feature, region, opts) {
+    opts = opts || {};
+    var r = region || { status: "stable", key: "" };
+    var props = {};
+    var src = feature.properties || {};
+    Object.keys(src).forEach(function (k) { props[k] = src[k]; });
+    var id = String(opts.id || props.name || r.key || Math.random());
+    props.id = id;
+    props.regionKey = r.key;
+    props.drillKey = opts.drillKey != null ? opts.drillKey : r.key;
+    props.fillColor = regionStatusColor(r);
+    props.fillOpacity = opts.silhouette ? 0.7 : regionFillOpacity(r);
+    props.silhouette = !!opts.silhouette;
+    if (r.absent) props.absent = true;
+    return {
+      type: "Feature",
+      id: id,
+      properties: props,
+      geometry: feature.geometry
+    };
+  }
+
+  function pointFeature(id, lon, lat, region, radius, drillKey, selected, extra) {
+    var isSelected = !!selected;
+    var isAbsent = !!(region && region.absent);
+    var baseOp = isAbsent
+      ? 0.55
+      : (statusFilterActive() ? regionFillOpacity(region) : 0.92);
+    var props = {
+      id: id,
+      kind: "city",
+      regionKey: region.key,
+      drillKey: drillKey != null ? drillKey : region.key,
+      fillColor: regionStatusColor(region),
+      radius: radius,
+      selected: isSelected ? 1 : 0,
+      opacity: state.city && !isSelected && !isAbsent ? Math.min(0.38, baseOp) : baseOp,
+      absent: isAbsent
+    };
+    if (extra) {
+      Object.keys(extra).forEach(function (k) { props[k] = extra[k]; });
+    }
+    return {
+      type: "Feature",
+      id: id,
+      properties: props,
+      geometry: { type: "Point", coordinates: [lon, lat] }
+    };
+  }
+
+  // Unique within a year filter: same event_id can appear twice (NYE Jan+Dec).
+  function editionKey(e) {
+    if (!e || e.event_id == null) return "";
+    if (e.start) return String(e.event_id) + ":" + String(e.start).slice(0, 10);
+    return String(e.event_id) + ":" + String(e.year || "") + "-" + String(e.month || "");
+  }
+
+  // Full-history ordinal baked by enrich_event_growth_edition_numbers.py
+  // (event_editions.csv from 1991). No in-window fallback — that under-counts.
+  function editionOrdinal(e) {
+    if (!e || e.edition == null) return null;
+    var n = Number(e.edition);
+    if (!isFinite(n) || n <= 0) return null;
+    return Math.round(n);
+  }
+
+  function eventPointFeatures(editions) {
+    var clustered = (typeof EGVenue !== "undefined" && EGVenue.clusterEditionsByVenue)
+      ? EGVenue.clusterEditionsByVenue(editions || [])
+      : [];
+    if (!clustered.length && editions && editions.length) {
+      // Fallback if helpers failed to load: one pin per edition.
+      clustered = (editions || []).filter(function (e) {
+        return e && e.lat != null && e.lon != null;
+      }).map(function (e, i) {
+        return { key: "solo-" + i, editions: [e], lat: e.lat, lon: e.lon };
+      });
+    }
+    var groups = {};
+    clustered.forEach(function (c) { groups[c.key] = c.editions; });
+    state.venueClustersByKey = groups;
+    return clustered.map(function (c, i) {
+      var list = c.editions.slice().sort(function (a, b) {
+        return (b.competitors || 0) - (a.competitors || 0);
+      });
+      var primary = list[0];
+      var year = state.year;
+      var allAbsent = list.every(function (e) {
+        return e && year != null && e.year !== year;
+      });
+      var activeList = allAbsent ? list : list.filter(function (e) {
+        return !e || year == null || e.year === year;
+      });
+      var st = allAbsent ? "absent" : clusterPinStatus(activeList.length ? activeList : list);
+      var n = list.length;
+      var fakeRegion = {
+        key: c.key,
+        status: st,
+        absent: allAbsent,
+        n: n,
+        current: list.reduce(function (s, e) { return s + (e.competitors || 0); }, 0)
+      };
+      var radius = n > 1 ? Math.min(20, 15 + n) : 14;
+      return pointFeature(
+        "ev-" + i + "-" + c.key,
+        c.lon,
+        c.lat,
+        fakeRegion,
+        radius,
+        "",
+        true,
+        {
+          kind: "event",
+          venueKey: c.key,
+          eventCount: n,
+          eventId: primary.event_id,
+          editionKey: editionKey(primary),
+          regionKey: "",
+          fillColor: allAbsent
+            ? ABSENT_PIN_COLOR
+            : (STATUS_COLOR[st] || STATUS_COLOR.stable),
+          opacity: allAbsent ? 0.55 : 0.96,
+          absent: allAbsent
+        }
+      );
+    });
+  }
+
+  function cityPointFeatures(regions) {
+    var withGeo = regions.filter(function (r) { return r.lat != null && r.lon != null; });
+    return withGeo.map(function (r, i) {
+      var selected = !!(state.city && r.key === state.city);
+      var radius = r.absent ? (selected ? 14 : 8) : (selected ? 16 : 9);
+      return pointFeature("pt-" + i + "-" + r.key, r.lon, r.lat, r, radius, r.key, selected);
+    });
+  }
+
+  function setCityMapInteraction(on) {
+    if (!state.map || !state.mapLoaded) return;
+    try {
+      if (on) state.map.scrollZoom.enable();
+      else state.map.scrollZoom.disable();
+    } catch (e) { /* ignore */ }
+  }
+
+  // Compact city map: OSM streets + venue pins only (no country/state fill).
+  function renderCityVenueMap(editions) {
+    var list = editions || [];
+    var pts = eventPointFeatures(list);
+    // Never leave a blank panel: fall back to city centroid if no venue coords.
+    if (!pts.length) {
+      var lat = null;
+      var lon = null;
+      var n = 0;
+      list.forEach(function (e) {
+        var la = e.city_lat != null ? e.city_lat : e.lat;
+        var lo = e.city_lon != null ? e.city_lon : e.lon;
+        if (la == null || lo == null) return;
+        lat = (lat == null ? 0 : lat) + la;
+        lon = (lon == null ? 0 : lon) + lo;
+        n += 1;
+      });
+      if (n) {
+        var fake = {
+          key: state.city || "city",
+          status: "stable",
+          n: list.length,
+          current: 0
+        };
+        pts = [pointFeature(
+          "city-fallback",
+          lon / n,
+          lat / n,
+          fake,
+          12,
+          state.city || "",
+          true,
+          { kind: "city-fallback", opacity: 0.7 }
+        )];
+      }
+    }
+    clearMapHover();
+    setMapData(EMPTY_FC, { type: "FeatureCollection", features: pts });
+    setCityMapInteraction(true);
+    if (!pts.length) return;
+    var coords = pts.map(function (f) { return f.geometry.coordinates; });
+    // ~0.12° ≈ 10–13 km floor so a single hotel still shows neighbourhood
+    // streets; multi-venue cities use their natural span + modest padding.
+    fitToData(coords, null, state.mapRenderSeq, {
+      cityVenue: true,
+      minSpanDeg: 0.12,
+      padFrac: 0.22,
+      maxZoom: 13,
+      padding: 36
+    });
+  }
+
+  function renderPointLayer(regions) {
+    indexRegions(regions);
+    setCityMapInteraction(false);
+    var pts = cityPointFeatures(regions);
+    clearMapHover();
+    setMapData(EMPTY_FC, { type: "FeatureCollection", features: pts });
+    fitToData(pts.map(function (f) {
+      return f.geometry.coordinates;
+    }), null, state.mapRenderSeq);
+  }
+
+  function renderCountryCityLayer(regions) {
+    indexRegions(regions);
+    setCityMapInteraction(false);
+    var countryName = state.country;
+    var feature = (state.geo.countries && state.geo.countries.features || []).find(function (f) {
+      return f.properties && f.properties.name === countryName;
+    });
+    var outline = [];
+    if (feature) {
+      var mainland = toMainlandFeature(feature);
+      if (mainland) {
+        outline.push({
+          type: "Feature",
+          id: "country-outline",
+          properties: {
+            id: "country-outline",
+            regionKey: "",
+            drillKey: "",
+            fillColor: "#9aa7b5",
+            fillOpacity: 0.38,
+            silhouette: false
+          },
+          geometry: mainland.geometry
+        });
+      }
+    }
+    var pts = cityPointFeatures(regions);
+    clearMapHover();
+    setMapData(
+      { type: "FeatureCollection", features: outline },
+      { type: "FeatureCollection", features: pts }
+    );
+    var fitPts = pts.map(function (f) { return f.geometry.coordinates; });
+    // Prefer country polygon framing; fall back to city points (with min span).
+    fitToData(fitPts, outline, state.mapRenderSeq, { padFrac: 0.04, maxZoom: 10 });
+  }
+
+  function renderPolygonLayer(regions) {
+    var byKey = indexRegions(regions);
+    var features;
+    var resolveRegion;
+    var drillKey;
+    var missing = [];
+
+    if (state.level === "world") {
+      // World = continent metrics, but paint ONLY countries present in the sample.
+      var inScopeWorld = countriesInScope();
+      features = (state.geo.countries.features || []).filter(function (f) {
+        return !!inScopeWorld[f.properties.name];
+      });
+      resolveRegion = function (feature) {
+        var meta = inScopeWorld[feature.properties.name];
+        var cont = meta ? meta.continent : feature.properties.continent;
+        return byKey[cont] || null;
+      };
+      drillKey = function (feature, r) { return r.key; };
+      var coveredWorld = {};
+      features.forEach(function (f) { coveredWorld[f.properties.name] = true; });
+      Object.keys(inScopeWorld).forEach(function (name) {
+        if (coveredWorld[name]) return;
+        var g = inScopeWorld[name];
+        var r = byKey[g.continent];
+        if (!r || !g.n) return;
+        missing.push({
+          key: g.continent,
+          lat: g.latSum / g.n,
+          lon: g.lonSum / g.n,
+          region: r,
+          label: name
+        });
+      });
+    } else if (state.level === "continent") {
+      var inScope = countriesInScope();
+      features = (state.geo.countries.features || []).filter(function (f) {
+        var name = f.properties.name;
+        if (!inScope[name]) return false;
+        return (f.properties.continent === state.continent) ||
+          (inScope[name].continent === state.continent);
+      });
+      resolveRegion = function (feature) { return byKey[feature.properties.name] || null; };
+      drillKey = function (feature) { return feature.properties.name; };
+      var covered = {};
+      features.forEach(function (f) { covered[f.properties.name] = true; });
+      Object.keys(inScope).forEach(function (name) {
+        if (covered[name]) return;
+        if (inScope[name].continent !== state.continent) return;
+        var g = inScope[name];
+        var r = byKey[name];
+        if (!r || !g.n) return;
+        missing.push({ key: name, lat: g.latSum / g.n, lon: g.lonSum / g.n, region: r, label: name });
+      });
+    } else {
+      features = (state.geo.states.features || []).filter(function (f) {
+        return !!byKey[f.properties.name];
+      });
+      resolveRegion = function (feature) { return byKey[feature.properties.name] || null; };
+      drillKey = function (feature) { return feature.properties.name; };
+      var coveredStates = {};
+      features.forEach(function (f) { coveredStates[f.properties.name] = true; });
+      regions.forEach(function (r) {
+        if (!coveredStates[r.key] && r.lat != null && r.lon != null) {
+          missing.push({ key: r.key, lat: r.lat, lon: r.lon, region: r, label: r.key });
+        }
+      });
+    }
+
+    var paintFeatures = (state.level === "continent" || state.level === "world")
+      ? mainlandFeatures(features)
+      : features.filter(function (f) {
+          var n = (f.properties && f.properties.name) || "";
+          // Alaska spans the antimeridian and wrecks US fit; Hawaii stays.
+          return !/^Alaska$/i.test(n);
+        });
+
+    var silhouette = state.level === "world";
+    var polyOut = [];
+    paintFeatures.forEach(function (f, i) {
+      var r = resolveRegion(f);
+      if (!r) return;
+      polyOut.push(decoratePolyFeature(f, r, {
+        id: "poly-" + i + "-" + (f.properties && f.properties.name || r.key),
+        drillKey: drillKey(f, r),
+        silhouette: silhouette
+      }));
+    });
+
+    var ptsOut = missing.map(function (m, i) {
+      return pointFeature(
+        "miss-" + i + "-" + m.key,
+        m.lon,
+        m.lat,
+        m.region,
+        8,
+        m.key
+      );
+    });
+
+    // Prior-only countries / continents (pandemic gaps, cancellations).
+    var absentRegs = (regions || []).filter(function (r) { return r && r.absent; });
+    if (state.level === "continent") {
+      absentRegs.forEach(function (r, i) {
+        var f = (state.geo.countries.features || []).find(function (ff) {
+          return ff.properties && ff.properties.name === r.key;
+        });
+        if (!f) return;
+        var m = toMainlandFeature(f);
+        if (!m) return;
+        var frame = state.continent && CONTINENT_FIT_FRAME[state.continent];
+        if (frame) {
+          m = clipFeatureToLonWindow(m, frame[0][0] - 2, frame[1][0] + 2) || m;
+        }
+        polyOut.push(decoratePolyFeature(m, r, {
+          id: "absent-c-" + i + "-" + r.key,
+          drillKey: r.key
+        }));
+      });
+    } else if (state.level === "world") {
+      absentRegs.forEach(function (r, ai) {
+        var names = {};
+        (r.absentEvents || []).forEach(function (e) {
+          if (e && e.country) names[e.country] = true;
+        });
+        Object.keys(names).forEach(function (cname, i) {
+          var f = (state.geo.countries.features || []).find(function (ff) {
+            return ff.properties && ff.properties.name === cname;
+          });
+          if (!f) return;
+          var m = toMainlandFeature(f);
+          if (!m) return;
+          polyOut.push(decoratePolyFeature(m, r, {
+            id: "absent-w-" + ai + "-" + i + "-" + cname,
+            drillKey: r.key,
+            silhouette: true
+          }));
+        });
+      });
+    }
+
+    clearMapHover();
+    setMapData(
+      { type: "FeatureCollection", features: polyOut },
+      { type: "FeatureCollection", features: ptsOut }
+    );
+
+    var fitPts = fitPointsFromRegions(regions);
+    missing.forEach(function (m) {
+      if (m.lat != null && m.lon != null) fitPts.push([m.lon, m.lat]);
+    });
+    fitToData(fitPts, polyOut, state.mapRenderSeq);
+  }
+
+  function renderMap(regions) {
+    var seq = ++state.mapRenderSeq;
+    clearFitTimers();
+    hideMapTooltip();
+    ensureMap().then(function () {
+      if (seq !== state.mapRenderSeq) return;
+      var cityVenues = citySelectionActive() &&
+        state.mapCityEditions && state.mapCityEditions.length;
+      // City drill-in: readable street basemap. Else mute so choropleth leads.
+      setBasemapOpacity(cityVenues ? 0.92 : (state.level === "world" ? 0.32 : 0.58));
+      function afterPaint() {
+        refreshMapSize();
+        requestAnimationFrame(function () {
+          if (seq === state.mapRenderSeq) refreshMapSize();
+        });
+        scheduleMapTask(refreshMapSize, 120, seq);
+      }
+      if (cityVenues) {
+        renderCityVenueMap(state.mapCityEditions);
+        afterPaint();
+        return;
+      }
+      if (usesPolygons() || usesCountryCityMap()) {
+        return loadGeo().then(function () {
+          if (seq !== state.mapRenderSeq) return;
+          if (usesPolygons()) renderPolygonLayer(regions);
+          else renderCountryCityLayer(regions);
+          afterPaint();
+        }).catch(function (err) {
+          if (seq !== state.mapRenderSeq) return;
+          console.error("GeoJSON load failed, falling back to points", err);
+          renderPointLayer(regions);
+          afterPaint();
+        });
+      }
+      renderPointLayer(regions);
+      afterPaint();
+    }).catch(function (err) {
+      if (seq !== state.mapRenderSeq) return;
+      console.error("Event Growth map failed", err);
+      destroyMap("Map unavailable");
+    });
+  }
+
+  function absentListRowHtml(e, tipKey) {
+    var place = absentPlaceLabel(e);
+    return '<tr class="is-absent" data-absent-key="' + esc(tipKey) + '">' +
+      "<td>" + esc(e.name || ("Event " + e.event_id)) +
+      (place ? (' <span class="muted">· ' + esc(place) + "</span>") : "") +
+      "</td>" +
+      "<td>" + chip("absent", { tip: tipKey }) + "</td></tr>";
+  }
+
+  function bindAbsentChipTips(el, byAbsentKey) {
+    el.querySelectorAll("tr.is-absent .chip.has-tip").forEach(function (chipEl) {
+      var edition = byAbsentKey[chipEl.getAttribute("data-region-key")];
+      if (!edition) return;
+      chipEl.addEventListener("mouseenter", function (ev) {
+        showTip(ev, "a:" + chipEl.getAttribute("data-region-key"),
+          absentEventRowHtml(edition), { stack: false });
+      });
+      chipEl.addEventListener("mousemove", function (ev) {
+        moveMapTooltip(ev);
+      });
+      chipEl.addEventListener("mouseleave", function () {
+        hideMapTooltipSoon();
+      });
+      chipEl.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+      });
+    });
+  }
+
+  function renderCityEventList(rows) {
+    var list = rows.slice().sort(function (a, b) {
+      return (b.competitors || 0) - (a.competitors || 0);
+    });
+    var absent = absentPriorInCurrentScope();
+    if (!list.length && !absent.length) {
+      document.getElementById("regionList").innerHTML =
+        '<div class="empty">No events in ' + esc(state.city || "this city") + "</div>";
+      return;
+    }
+    var byKey = {};
+    var byAbsent = {};
+    var html = '<table class="eg eg--compact"><thead><tr>' +
+      "<th>Event</th><th>Status</th></tr></thead><tbody>";
+    list.forEach(function (e) {
+      var ek = editionKey(e);
+      byKey[ek] = e;
+      var comp = e.competitors == null ? "" : (" " + fmtN(e.competitors));
+      if (e.approx && e.competitors != null) comp += " est.";
+      html += '<tr data-event-id="' + esc(e.event_id) + '" data-edition-key="' + esc(ek) + '">' +
+        "<td>" + esc(e.name) +
+        (comp ? '<span class="muted">' + esc(comp) + "</span>" : "") +
+        "</td>" +
+        "<td>" + chip(e.status, { tip: ek }) + "</td></tr>";
+    });
+    absent.forEach(function (e) {
+      var ak = "absent:" + editionKey(e);
+      byAbsent[ak] = e;
+      html += absentListRowHtml(e, ak);
+    });
+    html += "</tbody></table>";
+    var el = document.getElementById("regionList");
+    el.innerHTML = html;
+    el.querySelectorAll("tr:not(.is-absent) .chip.has-tip").forEach(function (chipEl) {
+      var edition = byKey[chipEl.getAttribute("data-region-key")];
+      if (!edition) return;
+      chipEl.addEventListener("mouseenter", function (ev) {
+        showEventTooltip(ev, edition);
+      });
+      chipEl.addEventListener("mousemove", function (ev) {
+        moveMapTooltip(ev);
+      });
+      chipEl.addEventListener("mouseleave", function () {
+        hideMapTooltipSoon();
+      });
+      chipEl.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+      });
+    });
+    bindAbsentChipTips(el, byAbsent);
+  }
+
+  function renderRegions(regions) {
+    var colTitle = {
+      world: "Continent",
+      continent: "Country",
+      country: state.country === "United States" ? "State" : "City",
+      state: "City"
+    }[state.level] || "Region";
+    var statusFilter = statusFilterActive();
+    var rightTitle = statusFilter
+      ? (state.status.charAt(0).toUpperCase() + state.status.slice(1))
+      : "Status";
+
+    if (!regions.length) {
+      document.getElementById("regionList").innerHTML = '<div class="empty">No regions in this filter</div>';
+      return;
+    }
+    var byKey = {};
+    regions.forEach(function (r) { byKey[r.key] = r; });
+    var html = '<table class="eg eg--compact"><thead><tr>' +
+      "<th>" + esc(colTitle) + "</th>" +
+      "<th>" + esc(rightTitle) + "</th></tr></thead><tbody>";
+    regions.forEach(function (r) {
+      var label = r.key == null || r.key === "" ? UNKNOWN : String(r.key);
+      var selected = state.city && r.key === state.city;
+      var rowClass = (selected ? "is-selected" : "") + (r.absent ? " is-absent" : "");
+      // Column header already names the pill (New / Growing / …) — rows keep
+      // the count only so we do not repeat "New" on every line.
+      var rightCell = statusFilter
+        ? ('<span class="muted">' + fmtN(r.n) + "</span>")
+        : chip(r.absent ? "absent" : r.status, { tip: r.key });
+      html += "<tr data-key=\"" + esc(r.key) + "\"" +
+        (rowClass ? ' class="' + esc(rowClass.trim()) + '"' : "") + ">" +
+        "<td><button type=\"button\" class=\"eg-drill\" data-key=\"" +
+          esc(r.key) + "\" aria-label=\"Open " + esc(label) + "\">" +
+          "<strong>" + esc(label) + "</strong> " +
+          "<span class=\"muted\">" + fmtN(r.current) +
+          (r.absent ? " prior" : "") + "</span>" +
+          (r.decliningInside ? insideDotHtml() : "") +
+        "</button></td>" +
+        "<td>" + rightCell + "</td></tr>";
+    });
+    html += "</tbody></table>";
+    var el = document.getElementById("regionList");
+    el.innerHTML = html;
+    el.querySelectorAll("button.eg-drill").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        drillInto(btn.getAttribute("data-key"));
+      });
+    });
+    // Whole row click (except chips) still drills — mouse convenience.
+    el.querySelectorAll("tr[data-key]").forEach(function (tr) {
+      tr.addEventListener("click", function (ev) {
+        if (ev.target && ev.target.closest && ev.target.closest(".chip")) return;
+        if (ev.target && ev.target.closest && ev.target.closest("button.eg-drill")) return;
+        drillInto(tr.getAttribute("data-key"));
+      });
+      if (statusFilter) {
+        var key = tr.getAttribute("data-key");
+        var region = byKey[key];
+        if (!region) return;
+        tr.addEventListener("mouseenter", function (ev) {
+          showMapTooltip(ev, region);
+        });
+        tr.addEventListener("mousemove", function (ev) {
+          moveMapTooltip(ev);
+        });
+        tr.addEventListener("mouseleave", function () {
+          hideMapTooltipSoon();
+        });
+      }
+    });
+    el.querySelectorAll(".chip.has-tip").forEach(function (chipEl) {
+      var key = chipEl.getAttribute("data-region-key");
+      var region = byKey[key];
+      if (!region) return;
+      chipEl.addEventListener("mouseenter", function (ev) {
+        showMapTooltip(ev, region);
+      });
+      chipEl.addEventListener("mousemove", function (ev) {
+        moveMapTooltip(ev);
+      });
+      chipEl.addEventListener("mouseleave", function () {
+        hideMapTooltipSoon();
+      });
+      chipEl.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+      });
+    });
+  }
+
+  function render() {
+    var mode = comparisonMode();
+    // Keep list, map, KPIs and absent checks on the same YTD/YoY window.
+    var geoRows = rowsInComparisonWindow(geoScopedEditions(), mode);
+    var rows = rowsInComparisonWindow(scopedEditions(), mode);
+    var listRegions = buildRegions(rows);
+    var absentRegs = absentChildRegions();
+    var listWithAbsent = listRegions.concat(absentRegs);
+
+    // City selected → exclusive city-venue map (OSM + event pins).
+    // Otherwise map stays on parent geography (all cities / polygons).
+    var citySel = citySelectionActive();
+    var mapRows = citySel
+      ? rowsInComparisonWindow(parentScopedEditions(), mode).filter(function (e) {
+          if (state.status === "all") return true;
+          return displayStatus(e.status) === state.status;
+        })
+      : rows;
+    var mapRegions = buildRegions(mapRows, null, { parentScope: citySel });
+    // When a city is selected, include prior-only editions so venue pins remain.
+    var cityAbsent = citySel ? absentPriorInCurrentScope() : [];
+    state.mapCityEditions = citySel ? rows.concat(cityAbsent) : null;
+    var mapWithAbsent = citySel ? mapRegions : mapRegions.concat(absentRegs);
+    // Intensity scale from active (non-absent) map regions only.
+    setMapMaxMatch(mapRegions);
+
+    renderBreadcrumb();
+    renderKpis(geoRows, rows);
+    hideMapTooltip();
+    try {
+      renderMap(mapWithAbsent);
+    } catch (err) {
+      console.error("Event Growth map failed", err);
+      destroyMap("Map unavailable");
+    }
+    // Layer add can fire a synthetic mouseover under the cursor — clear it.
+    var tipSeq = state.mapRenderSeq;
+    scheduleMapTask(hideMapTooltip, 0, tipSeq);
+    scheduleMapTask(hideMapTooltip, 120, tipSeq);
+    if (citySelectionActive()) {
+      renderCityEventList(rows);
+    } else {
+      renderRegions(listWithAbsent);
+    }
+  }
+
+  function openMethod() {
+    var layer = document.getElementById("methodLayer");
+    var island = document.getElementById("methodIsland");
+    var btn = document.getElementById("methodInfoBtn");
+    closeTipPops();
+    layer.hidden = false;
+    layer.classList.add("is-open");
+    layer.setAttribute("aria-hidden", "false");
+    btn.setAttribute("aria-expanded", "true");
+    island.style.left = "24px";
+    island.style.top = "72px";
+    document.getElementById("methodIslandClose").focus();
+  }
+
+  function closeMethod() {
+    var layer = document.getElementById("methodLayer");
+    var btn = document.getElementById("methodInfoBtn");
+    var wasOpen = layer.classList.contains("is-open");
+    layer.classList.remove("is-open");
+    layer.hidden = true;
+    layer.setAttribute("aria-hidden", "true");
+    btn.setAttribute("aria-expanded", "false");
+    if (wasOpen && btn) btn.focus();
+  }
+
+  function closeTipPops() {
+    ["trendTipPop", "kpiTipPop"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove("is-open");
+      el.hidden = true;
+    });
+    ["trendInfoBtn", "kpiInfoBtn"].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function toggleTipPop(btnId, popId) {
+    var btn = document.getElementById(btnId);
+    var pop = document.getElementById(popId);
+    if (!btn || !pop) return;
+    var open = pop.classList.contains("is-open");
+    closeTipPops();
+    closeMethod();
+    if (open) return;
+    pop.hidden = false;
+    pop.classList.add("is-open");
+    btn.setAttribute("aria-expanded", "true");
+    var rect = btn.getBoundingClientRect();
+    var left = Math.min(rect.left, window.innerWidth - 336);
+    pop.style.left = Math.max(12, left) + "px";
+    pop.style.top = (rect.bottom + 8) + "px";
+  }
+
+  function initControls() {
+    var years = (state.data.years || []).slice().reverse();
+    var sel = document.getElementById("yearSelect");
+    sel.innerHTML = years.map(function (y) {
+      return '<option value="' + esc(String(y)) + '">' + esc(String(y)) + "</option>";
+    }).join("");
+    if (!state.year || years.indexOf(state.year) < 0) {
+      state.year = years[0] || null;
+    }
+    sel.value = String(state.year);
+    if (window.WsdcSelect) WsdcSelect.refresh(sel);
+    sel.addEventListener("change", function () {
+      state.year = Number(sel.value);
+      writeUrl();
+      render();
+    });
+    document.querySelectorAll("#kpiRow .kpi-pill").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var st = btn.getAttribute("data-status");
+        if (st === "all") state.status = "all";
+        else state.status = state.status === st ? "all" : st;
+        writeUrl();
+        render();
+      });
+    });
+    document.getElementById("backBtn").addEventListener("click", goBack);
+    document.getElementById("methodInfoBtn").addEventListener("click", function () {
+      var layer = document.getElementById("methodLayer");
+      if (layer.classList.contains("is-open")) closeMethod();
+      else openMethod();
+    });
+    document.getElementById("methodIslandClose").addEventListener("click", closeMethod);
+    document.getElementById("methodLayerBackdrop").addEventListener("click", closeMethod);
+    document.getElementById("trendInfoBtn").addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      toggleTipPop("trendInfoBtn", "trendTipPop");
+    });
+    document.getElementById("kpiInfoBtn").addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      toggleTipPop("kpiInfoBtn", "kpiTipPop");
+    });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Escape") return;
+      if (document.getElementById("methodLayer").classList.contains("is-open")) closeMethod();
+      else if (tipState.pinned) hideMapTooltip();
+      else closeTipPops();
+    });
+    // Simple focus cycle inside the methodology dialog.
+    document.getElementById("methodIsland").addEventListener("keydown", function (ev) {
+      if (ev.key !== "Tab") return;
+      var island = document.getElementById("methodIsland");
+      if (!document.getElementById("methodLayer").classList.contains("is-open")) return;
+      var nodes = island.querySelectorAll(
+        'button, [href], summary, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!nodes.length) return;
+      var first = nodes[0];
+      var last = nodes[nodes.length - 1];
+      if (ev.shiftKey && document.activeElement === first) {
+        ev.preventDefault();
+        last.focus();
+      } else if (!ev.shiftKey && document.activeElement === last) {
+        ev.preventDefault();
+        first.focus();
+      }
+    });
+    document.addEventListener("click", function (ev) {
+      var t = ev.target;
+      if (t && (t.closest && (t.closest("#trendTipPop") || t.closest("#kpiTipPop") ||
+          t.closest("#trendInfoBtn") || t.closest("#kpiInfoBtn")))) return;
+      closeTipPops();
+    });
+    var stamp = state.data.as_of ||
+      (state.data.generated_at ? String(state.data.generated_at).slice(0, 10) : null) ||
+      "—";
+    var throughRaw = state.data.data_through;
+    var throughLabel = null;
+    if (throughRaw) {
+      var tp = String(throughRaw).split("-");
+      var tm = tp.length > 1 ? Number(tp[1]) : null;
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      throughLabel = (tm >= 1 && tm <= 12)
+        ? (months[tm - 1] + " " + tp[0])
+        : String(throughRaw);
+    }
+    document.getElementById("updatedStamp").textContent = throughLabel
+      ? ("Updated " + stamp + " · data through " + throughLabel)
+      : ("Updated " + stamp);
+  }
+
+  Promise.all([
+    fetch("static/data/event_growth.json?v=" + DATA_VER).then(function (r) {
+      if (!r.ok) throw new Error("Failed to load event_growth.json");
+      return r.json();
+    }),
+    fetch("static/data/event_tiers_by_year.json?v=" + DATA_VER).then(function (r) {
+      return r.ok ? r.json() : null;
+    }).catch(function () { return null; })
+  ])
+    .then(function (pair) {
+      var data = pair[0];
+      attachEditionEnds(data, pair[1]);
+      state.data = data;
+      readUrl();
+      normalizeGeoFromData();
+      initControls();
+      writeUrl();
+      render();
+    })
+    .catch(function (err) {
+      var list = document.getElementById("regionList");
+      if (list) {
+        list.innerHTML =
+          '<div class="empty">Could not load data: ' + esc(err.message) + "</div>";
+      }
+    });
+})();
+  </script>
+</body>
+</html>

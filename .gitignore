@@ -21,3 +21,6 @@ __pycache__/
 # Local environment/config
 .env
 .env.*
+
+# Optional WSDC venue extract cache (regenerate via enrich_event_growth_venues.py)
+static/data/wsdc_venue_lookup.json
