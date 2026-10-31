@@ -1,0 +1,358 @@
+#!/usr/bin/env python3
+"""Regression tests for Event Growth Monitor calendar YTD/YoY rollups.
+
+Mirrors comparisonMode + region/KPI math in event_growth_dashboard_en.html:
+open year (data_through month < 12) → both sides filtered to month <= through.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[1]
+DATA = REPO / "static" / "data" / "event_growth.json"
+MAPLIBRE_JS = REPO / "static" / "vendor" / "maplibre" / "maplibre-gl.js"
+GEO_COUNTRIES = REPO / "static" / "data" / "geo" / "countries.geojson"
+GEO_STATES = REPO / "static" / "data" / "geo" / "us_states.geojson"
+
+
+def edition_month(e: dict) -> int | None:
+    if e.get("month") is not None:
+        try:
+            return int(e["month"])
+        except (TypeError, ValueError):
+            pass
+    start = e.get("start")
+    if start and len(str(start)) >= 7:
+        try:
+            return int(str(start)[5:7])
+        except ValueError:
+            return None
+    return None
+
+
+def comparison_mode(year: int, data_through: str) -> dict:
+    parts = str(data_through).split("-")
+    through_year = int(parts[0]) if parts and parts[0].isdigit() else None
+    through_month = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else None
+    mode = "yoy"
+    if (
+        through_year is not None
+        and year == through_year
+        and through_month is not None
+        and through_month < 12
+    ):
+        mode = "ytd"
+    return {
+        "mode": mode,
+        "year": year,
+        "prior_year": year - 1,
+        "through_month": through_month if mode == "ytd" else None,
+    }
+
+
+def in_window(e: dict, mode: dict) -> bool:
+    if mode["mode"] != "ytd" or mode["through_month"] is None:
+        return True
+    m = edition_month(e)
+    if m is None:
+        return True
+    return m <= mode["through_month"]
+
+
+def rollup(editions: list[dict], year: int, country: str, data_through: str) -> dict:
+    mode = comparison_mode(year, data_through)
+    cur = [
+        e
+        for e in editions
+        if e.get("year") == year and e.get("country") == country and in_window(e, mode)
+    ]
+    prior = [
+        e
+        for e in editions
+        if e.get("year") == mode["prior_year"]
+        and e.get("country") == country
+        and in_window(e, mode)
+    ]
+    current = sum(int(e.get("competitors") or 0) for e in cur)
+    previous = sum(int(e.get("competitors") or 0) for e in prior)
+    delta = current - previous
+    pct = (delta / previous) if previous else None
+    return {
+        "mode": mode["mode"],
+        "events": len(cur),
+        "events_prior": len(prior),
+        "current": current,
+        "previous": previous,
+        "delta": delta,
+        "pct": pct,
+    }
+
+
+def test_assets_present() -> None:
+    assert MAPLIBRE_JS.is_file(), f"missing MapLibre vendor: {MAPLIBRE_JS}"
+    assert GEO_COUNTRIES.is_file(), f"missing {GEO_COUNTRIES}"
+    assert GEO_STATES.is_file(), f"missing {GEO_STATES}"
+
+
+def test_open_year_is_ytd() -> None:
+    payload = json.loads(DATA.read_text())
+    mode = comparison_mode(2026, payload["data_through"])
+    assert mode["mode"] == "ytd"
+    assert mode["through_month"] == int(str(payload["data_through"]).split("-")[1])
+
+
+def test_finished_year_is_yoy() -> None:
+    payload = json.loads(DATA.read_text())
+    mode = comparison_mode(2025, payload["data_through"])
+    assert mode["mode"] == "yoy"
+    assert mode["through_month"] is None
+
+
+def test_us_2026_kpi_matches_region_rollup() -> None:
+    """Tooltip/region Change for United States must equal US KPI delta."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    through = payload["data_through"]
+    us = rollup(editions, 2026, "United States", through)
+    assert us["mode"] == "ytd"
+    assert us["events"] == 67
+    assert us["events_prior"] == 69
+    assert us["current"] == 22779
+    assert us["previous"] == 22302
+    assert us["delta"] == 477
+    assert us["pct"] is not None
+    assert round(us["pct"] * 1000) == 21  # +2.1%
+
+
+def region_status_from_editions(
+    current: list[dict], previous_competitors: int, thr_pct: float = 0.10, thr_abs: int = 10
+) -> str:
+    """Mirrors buildRegions status rules for a single city/region key."""
+    n = len(current)
+    neu = sum(1 for e in current if e.get("status") == "new")
+    restarted = sum(1 for e in current if e.get("status") == "restarted")
+    current_all = sum(int(e.get("competitors") or 0) for e in current)
+    previous = previous_competitors
+    delta = current_all - previous
+    pct = (delta / previous) if previous else None
+    if n > 0 and neu + restarted == n:
+        return "new"
+    if previous == 0 and current_all > 0:
+        return "new"
+    if pct is None:
+        if delta > 0:
+            return "new"
+        if delta < 0:
+            return "declining"
+        return "stable"
+    if abs(pct) >= thr_pct and abs(delta) >= thr_abs:
+        return "growing" if delta > 0 else "declining"
+    return "stable"
+
+
+def test_new_cities_not_marked_growing() -> None:
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    for city in ("Ottawa", "Waterloo"):
+        cur = [
+            e
+            for e in editions
+            if e.get("year") == 2026
+            and e.get("country") == "Canada"
+            and e.get("city") == city
+        ]
+        assert cur, f"missing 2026 editions for {city}"
+        assert all(e.get("status") == "new" for e in cur)
+        prior = sum(
+            int(e.get("competitors") or 0)
+            for e in editions
+            if e.get("year") == 2025
+            and e.get("country") == "Canada"
+            and e.get("city") == city
+        )
+        assert prior == 0
+        assert region_status_from_editions(cur, prior) == "new"
+
+
+def status_pill_pair_rollup(editions: list[dict], year: int, country: str, status: str) -> dict:
+    """Mirrors status-pill KPI: selected events vs their own previous editions."""
+    cur = [
+        e
+        for e in editions
+        if e.get("year") == year
+        and e.get("country") == country
+        and (e.get("status") == status or (status == "new" and e.get("status") == "restarted"))
+    ]
+    total = sum(int(e.get("competitors") or 0) for e in cur)
+    pair_cur = 0
+    pair_prev = 0
+    pairs = 0
+    for e in cur:
+        prev = e.get("prev") or {}
+        if prev.get("competitors") is not None and e.get("delta") is not None:
+            pairs += 1
+            pair_cur += int(e.get("competitors") or 0)
+            pair_prev += int(prev["competitors"])
+    delta = (pair_cur - pair_prev) if pairs else None
+    pct = (delta / pair_prev) if pairs and pair_prev else None
+    return {
+        "events": len(cur),
+        "total": total,
+        "pairs": pairs,
+        "delta": delta,
+        "pct": pct,
+    }
+
+
+def test_growing_pill_uses_event_pairs_not_prior_status() -> None:
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    us = status_pill_pair_rollup(editions, 2026, "United States", "growing")
+    assert us["events"] > 0
+    assert us["pairs"] == us["events"]  # growing editions always have a prior
+    assert us["delta"] is not None
+    assert us["pct"] is not None
+    # Delta must equal sum(current) - sum(e.prev) for the selected growing set —
+    # not a calendar total of whatever was "growing" in the prior year.
+    growing = [
+        e
+        for e in editions
+        if e.get("year") == 2026
+        and e.get("country") == "United States"
+        and e.get("status") == "growing"
+    ]
+    pair_cur = sum(int(e.get("competitors") or 0) for e in growing)
+    pair_prev = sum(int(e["prev"]["competitors"]) for e in growing)
+    assert us["total"] == pair_cur
+    assert us["delta"] == pair_cur - pair_prev
+    prior_year_growing_total = sum(
+        int(e.get("competitors") or 0)
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("country") == "United States"
+        and e.get("status") == "growing"
+    )
+    assert pair_prev != prior_year_growing_total
+
+
+def test_new_pill_has_no_pct() -> None:
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    us = status_pill_pair_rollup(editions, 2026, "United States", "new")
+    assert us["events"] >= 1
+    assert us["pairs"] == 0
+    assert us["delta"] is None
+    assert us["pct"] is None
+    assert us["total"] > 0
+
+
+def test_symmetric_window_excludes_late_prior_only() -> None:
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    mode = comparison_mode(2026, payload["data_through"])
+    assert mode["through_month"] == 10
+    late_2025 = [
+        e
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("country") == "United States"
+        and not in_window(e, mode)
+    ]
+    assert late_2025, "expected some US 2025 editions after data_through month"
+    # Current 2026 US editions are all inside the window with this snapshot.
+    late_2026 = [
+        e
+        for e in editions
+        if e.get("year") == 2026
+        and e.get("country") == "United States"
+        and not in_window(e, mode)
+    ]
+    assert late_2026 == []
+
+
+def test_edition_field_asia_open_full_history() -> None:
+    """edition is baked from event_editions.csv (1991+), not year_floor window."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    asia_2023 = next(
+        e
+        for e in editions
+        if e.get("event_id") == 218 and e.get("year") == 2023
+    )
+    assert asia_2023.get("status") == "restarted"
+    assert asia_2023.get("edition") == 8
+    asia_2018 = next(
+        e
+        for e in editions
+        if e.get("event_id") == 218 and e.get("year") == 2018
+    )
+    assert asia_2018.get("edition") == 6
+    assert asia_2018.get("status") != "new"
+
+
+def test_edition_field_paris_resets_on_swing_classic_era() -> None:
+    """Paris Swing Classic (≥2023) does not continue Westie Fest #N."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    pwf_2020 = next(
+        e for e in editions if e.get("event_id") == 272 and e.get("year") == 2020
+    )
+    psc_2023 = next(
+        e for e in editions if e.get("event_id") == 272 and e.get("year") == 2023
+    )
+    psc_2026 = next(
+        e for e in editions if e.get("event_id") == 272 and e.get("year") == 2026
+    )
+    assert pwf_2020.get("name") == "Paris Westie Fest"
+    assert psc_2023.get("name") == "Paris Swing Classic"
+    assert pwf_2020.get("edition") == 4  # 2017–2020
+    assert psc_2023.get("edition") == 1
+    assert psc_2026.get("edition") == 4  # 2023–2026
+    # First PSC edition is a debut — not a restart vs Westie Fest 2020.
+    assert psc_2023.get("status") == "new"
+    assert psc_2023.get("prev") is None
+    assert psc_2023.get("delta") is None
+
+
+def test_edition_field_present_and_positive() -> None:
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    missing = [e for e in editions if not e.get("edition")]
+    assert not missing, f"{len(missing)} editions missing edition ordinal"
+    assert all(int(e["edition"]) >= 1 for e in editions)
+    # year_floor rows are not all debuts once full history is applied
+    floor = payload.get("year_floor", 2018)
+    at_floor = [e for e in editions if e.get("year") == floor]
+    assert any(int(e["edition"]) > 1 for e in at_floor)
+
+
+def test_edition_enrichment_meta() -> None:
+    payload = json.loads(DATA.read_text())
+    meta = payload.get("edition_enrichment") or {}
+    assert meta.get("source") == "event_editions.csv"
+    stats = meta.get("stats") or {}
+    assert stats.get("with_history", 0) == payload.get("n_editions")
+    splits = meta.get("series_splits") or []
+    split_ids = {int(s["event_id"]) for s in splits if s.get("event_id") is not None}
+    assert 272 in split_ids
+    # Loaded from pipeline reset_edition_ordinal flags (not GGP 342).
+    assert 221 in split_ids
+    assert 342 not in split_ids
+
+
+if __name__ == "__main__":
+    test_assets_present()
+    test_open_year_is_ytd()
+    test_finished_year_is_yoy()
+    test_us_2026_kpi_matches_region_rollup()
+    test_new_cities_not_marked_growing()
+    test_growing_pill_uses_event_pairs_not_prior_status()
+    test_new_pill_has_no_pct()
+    test_symmetric_window_excludes_late_prior_only()
+    test_edition_field_asia_open_full_history()
+    test_edition_field_paris_resets_on_swing_classic_era()
+    test_edition_field_present_and_positive()
+    test_edition_enrichment_meta()
+    print("OK")

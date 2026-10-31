@@ -297,9 +297,67 @@ def validate_event_growth() -> None:
     thr = data["thresholds"]
     if not isinstance(thr, dict) or "pct" not in thr or "abs" not in thr:
         fail("event_growth.json.thresholds must include pct and abs")
+    # MapLibre + GeoJSON are required for the Growth Monitor map.
+    root = DATA_DIR.parent.parent
+    for rel in (
+        "static/vendor/maplibre/maplibre-gl.js",
+        "static/vendor/maplibre/maplibre-gl.css",
+        "static/js/eg_venue_helpers.js",
+        "static/data/geo/countries.geojson",
+        "static/data/geo/us_states.geojson",
+    ):
+        if not (root / rel).is_file():
+            fail(f"event growth map asset missing: {rel}")
+    # Venue enrichment integrity (optional until first enrich run).
+    venue_applied = 0
+    hotel_without_venue = 0
+    missing_edition = 0
+    for ed in editions:
+        if not isinstance(ed, dict):
+            continue
+        src = ed.get("geo_source")
+        if src is not None and src not in ("city", "wsdc_venue"):
+            fail(f"event_growth.json geo_source invalid: {src!r}")
+        if src == "wsdc_venue":
+            venue_applied += 1
+            if ed.get("lat") is None or ed.get("lon") is None:
+                fail("wsdc_venue edition missing lat/lon")
+        # Hotel without wsdc_venue is allowed when SQL has a name but no usable
+        # GPS (geo_source stays city). Drift-rejected venues must not keep hotel.
+        if ed.get("hotel") and src not in ("city", "wsdc_venue", None):
+            hotel_without_venue += 1
+        try:
+            edn = int(ed.get("edition"))
+        except (TypeError, ValueError):
+            edn = 0
+        if edn < 1:
+            missing_edition += 1
+    if hotel_without_venue:
+        fail(
+            f"event_growth.json: {hotel_without_venue} editions have hotel "
+            "with unexpected geo_source"
+        )
+    if missing_edition:
+        fail(
+            f"event_growth.json: {missing_edition} editions missing positive "
+            "`edition` (run scripts/enrich_event_growth_edition_numbers.py)"
+        )
+    edition_meta = data.get("edition_enrichment")
+    if not isinstance(edition_meta, dict) or edition_meta.get("source") != "event_editions.csv":
+        fail(
+            "event_growth.json missing edition_enrichment "
+            "(run scripts/enrich_event_growth_edition_numbers.py)"
+        )
+    meta = data.get("venue_enrichment")
+    venue_note = ""
+    if isinstance(meta, dict) and isinstance(meta.get("stats"), dict):
+        venue_note = f", venue_applied={meta['stats'].get('venue_applied', venue_applied)}"
+    elif venue_applied:
+        venue_note = f", venue_applied={venue_applied}"
     print(
         f"[OK] event_growth.json ({len(editions)} editions, "
-        f"as_of={data.get('as_of')}, data_through={data.get('data_through')})"
+        f"as_of={data.get('as_of')}, data_through={data.get('data_through')}"
+        f"{venue_note}, edition_enriched)"
     )
 
 
