@@ -214,6 +214,102 @@ def clear_cross_brand_prev(ed: Dict[str, Any]) -> None:
     ed["pct"] = None
 
 
+def classify_growth(
+    current: Optional[int],
+    previous: Optional[int],
+    year_gap: Optional[int],
+    thr_pct: float = 0.10,
+    thr_abs: int = 10,
+) -> tuple[str, Optional[int], Optional[float], Optional[str]]:
+    """Mirror pipeline event_growth.classify_growth for in-file prev restore."""
+    if previous is None or current is None:
+        return "new", None, None, None
+    if year_gap is None or year_gap < 0:
+        return "new", None, None, None
+    if year_gap >= 3:
+        return "restarted", None, None, "restarted"
+    gap_flag = "after_1yr_break" if year_gap == 2 else None
+    delta = int(current) - int(previous)
+    if previous == 0:
+        pct = None
+        if abs(delta) >= thr_abs:
+            status = "growing" if delta > 0 else "declining"
+        else:
+            status = "stable"
+        return status, delta, pct, gap_flag
+    pct = delta / float(previous)
+    if abs(pct) >= thr_pct and abs(delta) >= thr_abs:
+        status = "growing" if delta > 0 else "declining"
+    else:
+        status = "stable"
+    return status, delta, pct, gap_flag
+
+
+def restore_missing_prev_within_buckets(
+    editions: List[Dict[str, Any]],
+    splits: List[Dict[str, int]],
+    thr_pct: float = 0.10,
+    thr_abs: int = 10,
+) -> int:
+    """Relink prev when a continuous series lost it (e.g. after undoing a reset).
+
+    Only fills empty prev when an earlier edition of the same series_bucket
+    exists in the growth file. True debuts (first in bucket) stay untouched.
+    """
+    buckets: DefaultDict[str, List[Dict[str, Any]]] = defaultdict(list)
+    for ed in editions:
+        try:
+            eid = int(ed["event_id"])
+            year = int(ed["year"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        buckets[series_bucket(eid, year, splits)].append(ed)
+
+    restored = 0
+    for rows in buckets.values():
+        rows.sort(
+            key=lambda e: (
+                int(e.get("year") or 0),
+                int(e.get("month") or 0),
+                str(e.get("name") or ""),
+            )
+        )
+        for i, ed in enumerate(rows):
+            if i == 0 or ed.get("prev") is not None:
+                continue
+            prev = rows[i - 1]
+            if prev.get("competitors") is None or ed.get("competitors") is None:
+                continue
+            try:
+                year_gap = int(ed["year"]) - int(prev["year"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            status, delta, pct, gap_flag = classify_growth(
+                int(ed["competitors"]),
+                int(prev["competitors"]),
+                year_gap,
+                thr_pct=thr_pct,
+                thr_abs=thr_abs,
+            )
+            ed["prev"] = {
+                "year": int(prev["year"]),
+                "month": prev.get("month"),
+                "competitors": int(prev["competitors"]),
+                "approx": prev.get("approx") or 0,
+                "source": prev.get("source") or ("approx" if prev.get("approx") else "exact"),
+            }
+            ed["status"] = status
+            ed["delta"] = delta
+            ed["pct"] = pct
+            if gap_flag:
+                ed["gap_flag"] = gap_flag
+            elif "gap_flag" in ed:
+                del ed["gap_flag"]
+            restored += 1
+    return restored
+
+
+
 def load_history(
     path: Path,
     splits: Optional[List[Dict[str, int]]] = None,
@@ -256,9 +352,13 @@ def enrich(
         "edition_gt_1_at_floor": 0,
         "split_buckets_used": 0,
         "cross_brand_prev_cleared": 0,
+        "prev_restored": 0,
     }
     floor = growth.get("year_floor")
     split_rules = splits if splits is not None else EDITION_SERIES_SPLITS
+    thr = growth.get("thresholds") or {}
+    thr_pct = float(thr.get("pct", 0.10))
+    thr_abs = int(thr.get("abs", 10))
     for ed in growth.get("editions") or []:
         stats["editions"] += 1
         try:
@@ -295,6 +395,14 @@ def enrich(
         ):
             clear_cross_brand_prev(ed)
             stats["cross_brand_prev_cleared"] += 1
+    # After clears: restore prev inside continuous buckets when it was wiped
+    # (e.g. BTO → Calgary Town Open after turning reset_edition_ordinal off).
+    stats["prev_restored"] = restore_missing_prev_within_buckets(
+        list(growth.get("editions") or []),
+        split_rules,
+        thr_pct=thr_pct,
+        thr_abs=thr_abs,
+    )
     growth["edition_enrichment"] = {
         "source": "event_editions.csv",
         "enriched_at": datetime.now(timezone.utc)
