@@ -32,7 +32,12 @@ def edition_month(e: dict) -> int | None:
     return None
 
 
-def comparison_mode(year: int, data_through: str) -> dict:
+def comparison_mode(
+    year: int,
+    data_through: str,
+    years: list[int] | None = None,
+) -> dict:
+    """Mirrors dashboard comparisonMode: first year in `years` has no prior."""
     parts = str(data_through).split("-")
     through_year = int(parts[0]) if parts and parts[0].isdigit() else None
     through_month = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else None
@@ -44,10 +49,15 @@ def comparison_mode(year: int, data_through: str) -> dict:
         and through_month < 12
     ):
         mode = "ytd"
+    candidate_prior = year - 1
+    if years is not None and candidate_prior not in years:
+        prior_year = None
+    else:
+        prior_year = candidate_prior
     return {
         "mode": mode,
         "year": year,
-        "prior_year": year - 1,
+        "prior_year": prior_year,
         "through_month": through_month if mode == "ytd" else None,
     }
 
@@ -61,24 +71,37 @@ def in_window(e: dict, mode: dict) -> bool:
     return m <= mode["through_month"]
 
 
-def rollup(editions: list[dict], year: int, country: str, data_through: str) -> dict:
-    mode = comparison_mode(year, data_through)
+def rollup(
+    editions: list[dict],
+    year: int,
+    country: str,
+    data_through: str,
+    years: list[int] | None = None,
+) -> dict:
+    mode = comparison_mode(year, data_through, years=years)
     cur = [
         e
         for e in editions
         if e.get("year") == year and e.get("country") == country and in_window(e, mode)
     ]
-    prior = [
-        e
-        for e in editions
-        if e.get("year") == mode["prior_year"]
-        and e.get("country") == country
-        and in_window(e, mode)
-    ]
+    if mode["prior_year"] is None:
+        prior: list[dict] = []
+    else:
+        prior = [
+            e
+            for e in editions
+            if e.get("year") == mode["prior_year"]
+            and e.get("country") == country
+            and in_window(e, mode)
+        ]
     current = sum(int(e.get("competitors") or 0) for e in cur)
     previous = sum(int(e.get("competitors") or 0) for e in prior)
-    delta = current - previous
-    pct = (delta / previous) if previous else None
+    if mode["prior_year"] is None:
+        delta = None
+        pct = None
+    else:
+        delta = current - previous
+        pct = (delta / previous) if previous else None
     return {
         "mode": mode["mode"],
         "events": len(cur),
@@ -87,6 +110,7 @@ def rollup(editions: list[dict], year: int, country: str, data_through: str) -> 
         "previous": previous,
         "delta": delta,
         "pct": pct,
+        "prior_year": mode["prior_year"],
     }
 
 
@@ -98,16 +122,74 @@ def test_assets_present() -> None:
 
 def test_open_year_is_ytd() -> None:
     payload = json.loads(DATA.read_text())
-    mode = comparison_mode(2026, payload["data_through"])
+    years = [int(y) for y in payload["years"]]
+    mode = comparison_mode(2026, payload["data_through"], years=years)
     assert mode["mode"] == "ytd"
+    assert mode["prior_year"] == 2025
     assert mode["through_month"] == int(str(payload["data_through"]).split("-")[1])
 
 
 def test_finished_year_is_yoy() -> None:
     payload = json.loads(DATA.read_text())
-    mode = comparison_mode(2025, payload["data_through"])
+    years = [int(y) for y in payload["years"]]
+    mode = comparison_mode(2025, payload["data_through"], years=years)
     assert mode["mode"] == "yoy"
+    assert mode["prior_year"] == 2024
     assert mode["through_month"] is None
+
+
+def test_first_year_has_no_prior_baseline() -> None:
+    """Dashboard must not invent year-1 when it is outside the dataset."""
+    payload = json.loads(DATA.read_text())
+    years = [int(y) for y in payload["years"]]
+    floor = int(payload.get("year_floor") or min(years))
+    assert floor in years
+    mode = comparison_mode(floor, payload["data_through"], years=years)
+    assert mode["prior_year"] is None
+    us = rollup(payload["editions"], floor, "United States", payload["data_through"], years=years)
+    assert us["prior_year"] is None
+    assert us["events_prior"] == 0
+    assert us["delta"] is None
+    assert us["pct"] is None
+    assert us["events"] > 0
+
+
+def continent_for_country(editions: list[dict], country: str) -> str | None:
+    for e in editions:
+        if e.get("country") == country and e.get("continent"):
+            return str(e["continent"])
+    return None
+
+
+def normalize_geo(
+    editions: list[dict], *, continent: str | None, country: str | None
+) -> tuple[str | None, str | None]:
+    """Mirrors dashboard normalizeGeoFromData for country/continent only."""
+    if not country:
+        return continent, country
+    expected = continent_for_country(editions, country)
+    if not expected:
+        return continent, None
+    if not continent or continent != expected:
+        return expected, country
+    return continent, country
+
+
+def test_mismatched_continent_corrected_from_data() -> None:
+    """normalizeGeoFromData: country wins over a wrong continent in the URL."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    assert continent_for_country(editions, "Germany") == "Europe"
+    # Bad URL: continent=Asia&country=Germany → correct to Europe.
+    cont, ctry = normalize_geo(editions, continent="Asia", country="Germany")
+    assert ctry == "Germany"
+    assert cont == "Europe"
+    # Orphan country fills missing continent.
+    cont2, ctry2 = normalize_geo(editions, continent=None, country="Germany")
+    assert (cont2, ctry2) == ("Europe", "Germany")
+    # Unknown country drops the country filter.
+    cont3, ctry3 = normalize_geo(editions, continent="Europe", country="Narnia")
+    assert ctry3 is None
 
 
 def test_us_2026_kpi_matches_region_rollup() -> None:
@@ -115,7 +197,8 @@ def test_us_2026_kpi_matches_region_rollup() -> None:
     payload = json.loads(DATA.read_text())
     editions = payload["editions"]
     through = payload["data_through"]
-    us = rollup(editions, 2026, "United States", through)
+    years = [int(y) for y in payload["years"]]
+    us = rollup(editions, 2026, "United States", through, years=years)
     assert us["mode"] == "ytd"
     assert us["events"] == 67
     assert us["events_prior"] == 69
@@ -346,6 +429,8 @@ if __name__ == "__main__":
     test_assets_present()
     test_open_year_is_ytd()
     test_finished_year_is_yoy()
+    test_first_year_has_no_prior_baseline()
+    test_mismatched_continent_corrected_from_data()
     test_us_2026_kpi_matches_region_rollup()
     test_new_cities_not_marked_growing()
     test_growing_pill_uses_event_pairs_not_prior_status()

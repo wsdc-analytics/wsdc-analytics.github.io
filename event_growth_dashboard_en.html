@@ -460,9 +460,22 @@
     table.eg tbody tr.is-selected td {
       background: color-mix(in srgb, var(--wsdc-color-brand-accent, #2563eb) 10%, transparent);
     }
-    table.eg tbody tr[data-key]:focus-visible {
+    button.eg-drill {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    button.eg-drill:focus-visible {
       outline: var(--wsdc-focus-ring);
       outline-offset: var(--wsdc-focus-offset);
+      border-radius: 4px;
     }
     @media (hover: hover) and (pointer: fine) {
       table.eg tbody tr[data-key]:hover td { background: var(--wsdc-color-surface-soft); }
@@ -886,7 +899,7 @@
 (function () {
   "use strict";
 
-  var DATA_VER = "20261031-eg";
+  var DATA_VER = "20261031-eg2";
 
   var STATUS_COLOR = {
     growing: "#7db88a",
@@ -1136,7 +1149,7 @@
     }
   }
 
-  // Fill missing parents from data (e.g. ?country=Germany without continent).
+  // Fill / correct parents from data (orphan country, mismatched continent).
   function normalizeGeoFromData() {
     var rows = (state.data && state.data.editions) || [];
     function findRow(pred) {
@@ -1145,16 +1158,21 @@
       }
       return null;
     }
-    if (state.country && !state.continent) {
-      var cHit = findRow(function (e) {
-        return e && e.country === state.country && e.continent;
+    function continentForCountry(country) {
+      var hit = findRow(function (e) {
+        return e && e.country === country && e.continent;
       });
-      if (cHit) state.continent = cHit.continent;
-      else {
+      return hit ? hit.continent : null;
+    }
+    if (state.country) {
+      var expected = continentForCountry(state.country);
+      if (!expected) {
         state.country = null;
         state.regionState = null;
         state.city = null;
-        state.level = "world";
+      } else if (!state.continent || state.continent !== expected) {
+        // Missing or wrong continent → correct from country.
+        state.continent = expected;
       }
     }
     if (state.regionState && state.country === "United States" && !state.continent) {
@@ -3615,29 +3633,30 @@
         ? ('<span class="muted">' + fmtN(r.n) + "</span>")
         : chip(r.absent ? "absent" : r.status, { tip: r.key });
       html += "<tr data-key=\"" + esc(r.key) + "\"" +
-        ' tabindex="0" role="button"' +
-        ' aria-label="Open ' + esc(label) + '"' +
         (rowClass ? ' class="' + esc(rowClass.trim()) + '"' : "") + ">" +
-        "<td><strong>" + esc(label) + "</strong> " +
-        "<span class=\"muted\">" + fmtN(r.current) +
-        (r.absent ? " prior" : "") + "</span>" +
-        (r.decliningInside ? insideDotHtml() : "") +
-        "</td>" +
+        "<td><button type=\"button\" class=\"eg-drill\" data-key=\"" +
+          esc(r.key) + "\" aria-label=\"Open " + esc(label) + "\">" +
+          "<strong>" + esc(label) + "</strong> " +
+          "<span class=\"muted\">" + fmtN(r.current) +
+          (r.absent ? " prior" : "") + "</span>" +
+          (r.decliningInside ? insideDotHtml() : "") +
+        "</button></td>" +
         "<td>" + rightCell + "</td></tr>";
     });
     html += "</tbody></table>";
     var el = document.getElementById("regionList");
     el.innerHTML = html;
+    el.querySelectorAll("button.eg-drill").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        drillInto(btn.getAttribute("data-key"));
+      });
+    });
+    // Whole row click (except chips) still drills — mouse convenience.
     el.querySelectorAll("tr[data-key]").forEach(function (tr) {
-      function activate() {
+      tr.addEventListener("click", function (ev) {
+        if (ev.target && ev.target.closest && ev.target.closest(".chip")) return;
+        if (ev.target && ev.target.closest && ev.target.closest("button.eg-drill")) return;
         drillInto(tr.getAttribute("data-key"));
-      }
-      tr.addEventListener("click", activate);
-      tr.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          activate();
-        }
       });
       if (statusFilter) {
         var key = tr.getAttribute("data-key");
@@ -3667,16 +3686,13 @@
       chipEl.addEventListener("mouseleave", function () {
         hideMapTooltipSoon();
       });
-      // Chip tap still drills the row (do not swallow the click).
+      chipEl.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+      });
     });
   }
 
   function render() {
-    // Legacy URLs with city-as-level: keep city selection on country/state map.
-    if (state.level === "city") {
-      state.level = state.regionState ? "state" : "country";
-    }
-
     var mode = comparisonMode();
     // Keep list, map, KPIs and absent checks on the same YTD/YoY window.
     var geoRows = rowsInComparisonWindow(geoScopedEditions(), mode);
