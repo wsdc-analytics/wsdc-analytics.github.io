@@ -70,6 +70,8 @@
     }
     .subtitle-i { font-size: 0.85em; }
     .subtitle em { font-style: italic; color: var(--wsdc-color-text-strong); }
+    .subtitle-def { color: var(--wsdc-color-text); }
+    .subtitle-def strong { color: var(--wsdc-color-text-strong); font-weight: var(--wsdc-font-weight-bold); }
 
     .filters {
       display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
@@ -732,6 +734,7 @@
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
         <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date against the same months last year; finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
+        <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s WSDC skill-level Jack &amp; Jill divisions (Newcomer through Champion). Age-group, Strictly and other divisions are not counted. When exact entries are missing, the count is estimated from the WSDC points tier and marked <em>est.</em></p>
       </header>
 
       <div class="filters">
@@ -833,7 +836,7 @@
           <summary>What this shows</summary>
           <div class="method-sec__body">
             <p>Each row in the data is one <strong>event edition</strong> in one year: how many competitors entered, and whether that headcount grew or shrank versus the previous edition of the same event.</p>
-            <p>Competitor counts come from official WSDC registry results. Edition numbers (<strong>#N</strong>) use the full WSDC history from 1991. Map pins and venue lines use hotel and geo enrichment when available.</p>
+            <p>Competitor counts are leader + follower entries in skill-level Jack &amp; Jill divisions (Newcomer through Champion), taken from official WSDC results. Edition numbers (<strong>#N</strong>) use the full WSDC history from 1991. Map pins and venue lines use hotel and geo enrichment when available.</p>
             <p>The map and list roll those editions up by geography — world → continent → country → state (US) → city — so you can see where the scene is expanding or contracting.</p>
           </div>
         </details>
