@@ -220,10 +220,25 @@ def region_status_from_editions(
     previous = previous_competitors
     delta = current_all - previous
     pct = (delta / previous) if previous else None
+    pair_cur = 0
+    pair_prev = 0
+    pair_n = 0
+    for e in current:
+        prev = e.get("prev") or {}
+        if prev.get("competitors") is not None and e.get("delta") is not None:
+            pair_n += 1
+            pair_cur += int(e.get("competitors") or 0)
+            pair_prev += int(prev["competitors"])
     if n > 0 and neu + restarted == n:
         return "new"
     if previous == 0 and current_all > 0:
-        return "new"
+        # Gap year for the geography: use event-pair totals when available.
+        if pair_n > 0:
+            previous = pair_prev
+            delta = pair_cur - pair_prev
+            pct = (delta / previous) if previous else None
+        else:
+            return "new"
     if pct is None:
         if delta > 0:
             return "new"
@@ -257,6 +272,77 @@ def test_new_cities_not_marked_growing() -> None:
         )
         assert prior == 0
         assert region_status_from_editions(cur, prior) == "new"
+
+
+def _geo_key(e: dict) -> tuple[str, str]:
+    if e.get("country") == "United States":
+        return ("US", str(e.get("state") or "?"))
+    return (str(e.get("country") or "?"), str(e.get("city") or e.get("name") or "?"))
+
+
+def test_indiana_2025_gap_year_not_new_when_event_declined() -> None:
+    """No Indiana events in 2024, but Indy Dance Explosion declined vs 2023."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    cur = [
+        e
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("country") == "United States"
+        and e.get("state") == "Indiana"
+    ]
+    assert len(cur) == 1
+    assert cur[0].get("name") == "Indy Dance Explosion"
+    assert cur[0].get("status") == "declining"
+    prior = sum(
+        int(e.get("competitors") or 0)
+        for e in editions
+        if e.get("year") == 2024
+        and e.get("country") == "United States"
+        and e.get("state") == "Indiana"
+    )
+    assert prior == 0
+    assert region_status_from_editions(cur, prior) == "declining"
+
+
+def test_gap_year_regions_not_new_when_events_have_pairs() -> None:
+    """Calendar-empty prior year must not paint New if editions carry a prev pair.
+
+    Catches Indiana 2025, Connecticut 2024, Sea Sun and Swing 2026, etc.
+    True debuts (all new, no pairs) stay New.
+    """
+    from collections import defaultdict
+
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    years = sorted({int(e["year"]) for e in editions})
+    false_new: list[str] = []
+    for year in years:
+        if year - 1 not in years:
+            continue
+        cur_by: dict[tuple[str, str], list[dict]] = defaultdict(list)
+        prior_by: dict[tuple[str, str], int] = defaultdict(int)
+        for e in editions:
+            key = _geo_key(e)
+            if int(e["year"]) == year:
+                cur_by[key].append(e)
+            elif int(e["year"]) == year - 1:
+                prior_by[key] += int(e.get("competitors") or 0)
+        for key, cur in cur_by.items():
+            prior = prior_by.get(key, 0)
+            if prior != 0:
+                continue
+            status = region_status_from_editions(cur, prior)
+            has_pair = any(
+                (e.get("prev") or {}).get("competitors") is not None
+                and e.get("delta") is not None
+                for e in cur
+            )
+            if has_pair and status == "new":
+                false_new.append(f"{year} {key[0]}/{key[1]}")
+            if not has_pair and all(e.get("status") in ("new", "restarted") for e in cur):
+                assert status == "new", f"{year} {key} should stay New"
+    assert false_new == [], f"gap-year regions still New despite pairs: {false_new}"
 
 
 def status_pill_pair_rollup(editions: list[dict], year: int, country: str, status: str) -> dict:
@@ -433,6 +519,8 @@ if __name__ == "__main__":
     test_mismatched_continent_corrected_from_data()
     test_us_2026_kpi_matches_region_rollup()
     test_new_cities_not_marked_growing()
+    test_indiana_2025_gap_year_not_new_when_event_declined()
+    test_gap_year_regions_not_new_when_events_have_pairs()
     test_growing_pill_uses_event_pairs_not_prior_status()
     test_new_pill_has_no_pct()
     test_symmetric_window_excludes_late_prior_only()
