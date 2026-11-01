@@ -734,7 +734,7 @@
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
         <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date against the same months last year; finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
-        <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s WSDC skill-level Jack &amp; Jill divisions (Newcomer through Champion). Age-group, Strictly and other divisions are not counted. When exact entries are missing, the count is estimated from the WSDC points tier and marked <em>est.</em></p>
+        <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion). For a continent, country, state or city, it is the total across all events held there in the selected period. Details in Methodology.</p>
       </header>
 
       <div class="filters">
@@ -836,8 +836,13 @@
           <summary>What this shows</summary>
           <div class="method-sec__body">
             <p>Each row in the data is one <strong>event edition</strong> in one year: how many competitors entered, and whether that headcount grew or shrank versus the previous edition of the same event.</p>
-            <p>Competitor counts are leader + follower entries in skill-level Jack &amp; Jill divisions (Newcomer through Champion), taken from official WSDC results. Edition numbers (<strong>#N</strong>) use the full WSDC history from 1991. Map pins and venue lines use hotel and geo enrichment when available.</p>
-            <p>The map and list roll those editions up by geography — world → continent → country → state (US) → city — so you can see where the scene is expanding or contracting.</p>
+            <p><strong>Competitors</strong> for one event edition = leader + follower entries in its skill-level Jack &amp; Jill divisions (Newcomer through Champion), taken from official WSDC results. Age-group, Strictly and other divisions are not counted. Edition numbers (<strong>#N</strong>) use the full WSDC history from 1991. Map pins and venue lines use hotel and geo enrichment when available.</p>
+            <p>The map and list roll those editions up by geography — world → continent → country → state (US) → city — so you can see where the scene is expanding or contracting. A region’s Competitors is the <strong>sum</strong> over every event held there in the selected period:</p>
+            <ul>
+              <li>the full selected year, or year-to-date for a year that is still open (see <em>YTD vs YoY</em>);</li>
+              <li>with an <em>Event trend</em> pill on, only the events with that status;</li>
+              <li>it adds up entries, not unique people — a dancer who competes at three events in the region counts three times.</li>
+            </ul>
           </div>
         </details>
         <details class="method-sec">
