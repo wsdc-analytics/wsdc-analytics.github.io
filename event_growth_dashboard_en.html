@@ -871,6 +871,7 @@
           <summary>Area colors vs event trends</summary>
           <div class="method-sec__body">
             <p>With <strong>All</strong>, a region’s color is the <em>area</em> trend: total competitors this period vs the same geography last period (YTD or YoY).</p>
+            <p>If the area had no events in the prior period but returning editions still have a previous edition of their own (gap year for the geography), the area uses that event-pair change — so it is not labeled <strong>New</strong> merely because last year’s calendar total was zero.</p>
             <p>With a status pill active, the map instead shows where those events are: darker where more of the selected events took place.</p>
           </div>
         </details>
@@ -1453,9 +1454,24 @@
         delta = g.currentAll - previous;
         pct = previous ? delta / previous : null;
         // All new/restarted → New geography (not Growing from zero).
-        if (g.n > 0 && g.neu + g.restarted === g.n) status = "new";
-        else if (previous === 0 && g.currentAll > 0) status = "new";
-        else if (delta != null) status = classifyRegionStatus(delta, pct, thr);
+        if (g.n > 0 && g.neu + g.restarted === g.n) {
+          status = "new";
+        } else if (previous === 0 && g.currentAll > 0) {
+          // Geography empty in the prior calendar window. Only treat as New
+          // when events themselves have no prior edition. If they do (gap year
+          // for the area, e.g. Indiana 2025 after no 2024 events), use those
+          // event-pair totals so a Declining return is not painted New.
+          if (g.pairN > 0) {
+            previous = g.pairPrev;
+            delta = g.pairCur - g.pairPrev;
+            pct = g.pairPrev ? delta / g.pairPrev : null;
+            status = classifyRegionStatus(delta, pct, thr);
+          } else {
+            status = "new";
+          }
+        } else if (delta != null) {
+          status = classifyRegionStatus(delta, pct, thr);
+        }
       } else if (g.n > 0 && g.neu + g.restarted === g.n) {
         status = "new";
       }
