@@ -24,6 +24,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Event Growth Monitor | WSDC Analytics">
   <meta name="twitter:description" content="See where WSDC events are growing or shrinking — map drill-down, this year vs last.">
+  <meta name="twitter:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
   <style>
     html, body { height: 100%; overflow: hidden; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -908,7 +909,8 @@
 (function () {
   "use strict";
 
-  var DATA_VER = "20261031-ru-eu";
+  // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
+  var DATA_VER = "20261102-sync";
 
   var STATUS_COLOR = {
     growing: "#7db88a",
