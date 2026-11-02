@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from enrich_event_growth_venues import (  # noqa: E402
     VenueRow,
     build_lookup_by_event,
+    carry_forward_venue_fields,
     enrich_editions,
     fold_merged_venue_lookups,
     haversine_km,
@@ -362,6 +363,51 @@ def test_enrich_inherits_coords_when_sql_missing_gps() -> None:
     assert abs(editions[0]["lon"] - 29.86839) < 0.001
 
 
+def test_carry_forward_venue_fields_from_prior_growth() -> None:
+    """Rebuild (city-only) must regain hotel/venue lat from the prior JSON."""
+    prior = [
+        {
+            "event_id": 255,
+            "year": 2025,
+            "month": 6,
+            "lat": 41.08,
+            "lon": -85.14,
+            "city_lat": 41.07,
+            "city_lon": -85.13,
+            "hotel": "Grand Wayne",
+            "address": "120 W Jefferson",
+            "geo_source": "wsdc_venue",
+            "venue_start": "2025-06-12",
+        }
+    ]
+    rebuilt = [
+        {
+            "event_id": 255,
+            "year": 2025,
+            "month": 6,
+            "lat": 41.07,
+            "lon": -85.13,
+            "geo_source": "city",
+        },
+        {
+            "event_id": 1,
+            "year": 2025,
+            "month": 1,
+            "lat": 10.0,
+            "lon": 20.0,
+            "geo_source": "city",
+        },
+    ]
+    stats = carry_forward_venue_fields(rebuilt, prior)
+    assert stats["carried"] == 1
+    assert stats["missing_prior"] == 1
+    assert rebuilt[0]["geo_source"] == "wsdc_venue"
+    assert rebuilt[0]["hotel"] == "Grand Wayne"
+    assert rebuilt[0]["lat"] == 41.08
+    assert rebuilt[0]["city_lat"] == 41.07
+    assert rebuilt[1]["geo_source"] == "city"
+
+
 if __name__ == "__main__":
     test_split_mysql_values_quotes_and_null()
     test_haversine_lon_sign_flip()
@@ -373,4 +419,5 @@ if __name__ == "__main__":
     test_usable_lat_lon_rejects_null_island()
     test_enrich_hotel_only_when_sql_missing_gps()
     test_enrich_inherits_coords_when_sql_missing_gps()
+    test_carry_forward_venue_fields_from_prior_growth()
     print("OK")
