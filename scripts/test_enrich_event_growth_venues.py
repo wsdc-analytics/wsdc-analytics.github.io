@@ -378,6 +378,8 @@ def test_carry_forward_venue_fields_from_prior_growth() -> None:
             "address": "120 W Jefferson",
             "geo_source": "wsdc_venue",
             "venue_start": "2025-06-12",
+            "geo_fix": "google_audit",
+            "google_place_id": "pid-1",
         }
     ]
     rebuilt = [
@@ -405,7 +407,49 @@ def test_carry_forward_venue_fields_from_prior_growth() -> None:
     assert rebuilt[0]["hotel"] == "Grand Wayne"
     assert rebuilt[0]["lat"] == 41.08
     assert rebuilt[0]["city_lat"] == 41.07
+    assert rebuilt[0]["geo_fix"] == "google_audit"
+    assert rebuilt[0]["google_place_id"] == "pid-1"
     assert rebuilt[1]["geo_source"] == "city"
+
+
+def test_enrich_preserves_google_audit_coords() -> None:
+    by = build_lookup_by_event(
+        [
+            VenueRow(
+                280,
+                date(2023, 6, 1),
+                59.95,
+                30.32,
+                "Jenavi club",
+                "old",
+                "St. Petersburg",
+                1,
+            ),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 280,
+            "year": 2023,
+            "month": 6,
+            "start": "2023-06-01",
+            "lat": 59.897772,
+            "lon": 30.414479,
+            "city_lat": 59.95,
+            "city_lon": 30.32,
+            "city": "St. Petersburg",
+            "hotel": "Jenavi club",
+            "geo_source": "wsdc_venue",
+            "geo_fix": "google_audit",
+            "google_place_id": "abc",
+        }
+    ]
+    stats = enrich_editions(editions, by, 200.0, 45)
+    assert stats["google_audit_preserved"] == 1
+    assert editions[0]["lat"] == 59.897772
+    assert editions[0]["lon"] == 30.414479
+    assert editions[0]["geo_fix"] == "google_audit"
+    assert editions[0]["google_place_id"] == "abc"
 
 
 if __name__ == "__main__":
@@ -420,4 +464,5 @@ if __name__ == "__main__":
     test_enrich_hotel_only_when_sql_missing_gps()
     test_enrich_inherits_coords_when_sql_missing_gps()
     test_carry_forward_venue_fields_from_prior_growth()
+    test_enrich_preserves_google_audit_coords()
     print("OK")
