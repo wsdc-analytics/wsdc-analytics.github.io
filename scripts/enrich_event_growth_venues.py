@@ -110,6 +110,7 @@ PLACEHOLDER_HOTEL_KEYS = frozenset(
         "na",
         "-",
         "still in negotiation",
+        "hiatus",
     }
 )
 # Max |edition start − sibling start| when reusing another edition's GPS.
@@ -447,7 +448,15 @@ def inherit_venue_coords(
 
 
 def clear_venue_fields(ed: Dict[str, Any]) -> None:
-    for key in ("hotel", "address", "geo_fix", "venue_rejected_km", "venue_start"):
+    for key in (
+        "hotel",
+        "address",
+        "geo_fix",
+        "venue_rejected_km",
+        "venue_start",
+        "google_venue_name",
+        "google_place_id",
+    ):
         if key in ed:
             del ed[key]
 
@@ -462,6 +471,8 @@ _VENUE_CARRY_KEYS = (
     "geo_fix",
     "venue_start",
     "venue_rejected_km",
+    "google_venue_name",
+    "google_place_id",
 )
 
 
@@ -542,6 +553,7 @@ def enrich_editions(
         "no_sql_geo": 0,
         "hotel_only": 0,
         "date_drift_skipped": 0,
+        "google_audit_preserved": 0,
     }
     for ed in editions:
         eid = ed.get("event_id")
@@ -671,9 +683,6 @@ def enrich_editions(
                     continue
 
         # Accept venue — only then attach hotel/address.
-        ed["lat"] = round(vlat_f, 6)
-        ed["lon"] = round(vlon_f, 6)
-        ed["geo_source"] = "wsdc_venue"
         venue_start_row = inherit_from if inherited and inherit_from else row
         ed["venue_start"] = venue_start_row.start.isoformat()
         hotel = usable_hotel_name(row.hotel) or (
@@ -682,6 +691,31 @@ def enrich_editions(
         address = (row.address or "").strip() or (
             (inherit_from.address if inherit_from else "") or ""
         )
+        # Keep Google audit pins across re-enrich when the hotel still matches.
+        keep_google = (
+            ed.get("geo_fix") == "google_audit"
+            and usable_lat_lon(ed.get("lat"), ed.get("lon"))
+            and hotel is not None
+            and usable_hotel_name(ed.get("hotel")) is not None
+            and hotel_match_key(hotel) == hotel_match_key(ed.get("hotel") or "")
+        )
+        if keep_google:
+            ed["geo_fix"] = "google_audit"
+            stats["google_audit_preserved"] += 1
+        else:
+            ed["lat"] = round(vlat_f, 6)
+            ed["lon"] = round(vlon_f, 6)
+            for gk in ("google_venue_name", "google_place_id"):
+                if gk in ed:
+                    del ed[gk]
+            if inherited:
+                ed["geo_fix"] = "inherited"
+                stats["venue_inherited"] += 1
+            elif lon_flipped:
+                ed["geo_fix"] = "lon_sign"
+            elif "geo_fix" in ed:
+                del ed["geo_fix"]
+        ed["geo_source"] = "wsdc_venue"
         if hotel:
             ed["hotel"] = hotel
         elif "hotel" in ed:
@@ -690,13 +724,6 @@ def enrich_editions(
             ed["address"] = address
         elif "address" in ed:
             del ed["address"]
-        if inherited:
-            ed["geo_fix"] = "inherited"
-            stats["venue_inherited"] += 1
-        elif lon_flipped:
-            ed["geo_fix"] = "lon_sign"
-        elif "geo_fix" in ed:
-            del ed["geo_fix"]
         if "venue_rejected_km" in ed:
             del ed["venue_rejected_km"]
         stats["venue_applied"] += 1
@@ -849,7 +876,10 @@ def main() -> int:
         "max_date_drift_days": args.max_date_drift_days,
         "stats": stats,
     }
+    prev_google = (growth.get("venue_enrichment") or {}).get("google_audit")
     growth["venue_enrichment"] = meta
+    if prev_google:
+        growth["venue_enrichment"]["google_audit"] = prev_google
 
     if args.dry_run:
         print("Dry-run: not writing files.")
