@@ -272,6 +272,95 @@ def validate_homepage_kpis() -> None:
     print("[OK] homepage_kpis.json")
 
 
+def validate_event_growth() -> None:
+    path = DATA_DIR / "event_growth.json"
+    if not path.exists():
+        print("[SKIP] event_growth.json (optional until first sync)")
+        return
+    data = load_json(path)
+    if not isinstance(data, dict):
+        fail("event_growth.json must be an object")
+    for field in ("as_of", "thresholds", "years", "editions", "n_editions"):
+        if field not in data:
+            fail(f"event_growth.json missing field: {field}")
+    editions = data["editions"]
+    if not isinstance(editions, list) or not editions:
+        fail("event_growth.json.editions must be a non-empty list")
+    if data["n_editions"] != len(editions):
+        fail("event_growth.json.n_editions must equal len(editions)")
+    sample = editions[0]
+    if not isinstance(sample, dict):
+        fail("event_growth.json.editions[0] must be an object")
+    for field in ("event_id", "name", "year", "competitors", "status", "approx"):
+        if field not in sample:
+            fail(f"event_growth.json.editions[0] missing: {field}")
+    thr = data["thresholds"]
+    if not isinstance(thr, dict) or "pct" not in thr or "abs" not in thr:
+        fail("event_growth.json.thresholds must include pct and abs")
+    # MapLibre + GeoJSON are required for the Growth Monitor map.
+    root = DATA_DIR.parent.parent
+    for rel in (
+        "static/vendor/maplibre/maplibre-gl.js",
+        "static/vendor/maplibre/maplibre-gl.css",
+        "static/js/eg_venue_helpers.js",
+        "static/data/geo/countries.geojson",
+        "static/data/geo/us_states.geojson",
+    ):
+        if not (root / rel).is_file():
+            fail(f"event growth map asset missing: {rel}")
+    # Venue enrichment integrity (optional until first enrich run).
+    venue_applied = 0
+    hotel_without_venue = 0
+    missing_edition = 0
+    for ed in editions:
+        if not isinstance(ed, dict):
+            continue
+        src = ed.get("geo_source")
+        if src is not None and src not in ("city", "wsdc_venue"):
+            fail(f"event_growth.json geo_source invalid: {src!r}")
+        if src == "wsdc_venue":
+            venue_applied += 1
+            if ed.get("lat") is None or ed.get("lon") is None:
+                fail("wsdc_venue edition missing lat/lon")
+        # Hotel without wsdc_venue is allowed when SQL has a name but no usable
+        # GPS (geo_source stays city). Drift-rejected venues must not keep hotel.
+        if ed.get("hotel") and src not in ("city", "wsdc_venue", None):
+            hotel_without_venue += 1
+        try:
+            edn = int(ed.get("edition"))
+        except (TypeError, ValueError):
+            edn = 0
+        if edn < 1:
+            missing_edition += 1
+    if hotel_without_venue:
+        fail(
+            f"event_growth.json: {hotel_without_venue} editions have hotel "
+            "with unexpected geo_source"
+        )
+    if missing_edition:
+        fail(
+            f"event_growth.json: {missing_edition} editions missing positive "
+            "`edition` (run scripts/enrich_event_growth_edition_numbers.py)"
+        )
+    edition_meta = data.get("edition_enrichment")
+    if not isinstance(edition_meta, dict) or edition_meta.get("source") != "event_editions.csv":
+        fail(
+            "event_growth.json missing edition_enrichment "
+            "(run scripts/enrich_event_growth_edition_numbers.py)"
+        )
+    meta = data.get("venue_enrichment")
+    venue_note = ""
+    if isinstance(meta, dict) and isinstance(meta.get("stats"), dict):
+        venue_note = f", venue_applied={meta['stats'].get('venue_applied', venue_applied)}"
+    elif venue_applied:
+        venue_note = f", venue_applied={venue_applied}"
+    print(
+        f"[OK] event_growth.json ({len(editions)} editions, "
+        f"as_of={data.get('as_of')}, data_through={data.get('data_through')}"
+        f"{venue_note}, edition_enriched)"
+    )
+
+
 def validate_event_tiers_by_year() -> None:
     path = DATA_DIR / "event_tiers_by_year.json"
     if not path.exists():
@@ -381,6 +470,7 @@ def main() -> None:
     validate_events_year_calendar()
     validate_event_l2_cards()
     validate_event_tiers_by_year()
+    validate_event_growth()
     validate_time_in_division_spells()
     print("[OK] Data validation passed.")
 
