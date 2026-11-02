@@ -15,6 +15,12 @@ Usage:
 
   python3 scripts/enrich_event_growth_venues.py --sql ... --dry-run
   python3 scripts/enrich_event_growth_venues.py --sql ... --lookup-out static/data/wsdc_venue_lookup.json
+
+  # After a rebuild wiped venue fields — restore from the previous growth JSON
+  # (used by sync_analytics_site.sh when no mysqldump is available in CI):
+  python3 scripts/enrich_event_growth_venues.py \\
+    --growth static/data/event_growth.json \\
+    --prior-growth /tmp/prior_event_growth.json
 """
 
 from __future__ import annotations
@@ -446,6 +452,79 @@ def clear_venue_fields(ed: Dict[str, Any]) -> None:
             del ed[key]
 
 
+# Fields copied from a prior growth JSON when the rebuild only has city geo.
+_VENUE_CARRY_KEYS = (
+    "lat",
+    "lon",
+    "hotel",
+    "address",
+    "geo_source",
+    "geo_fix",
+    "venue_start",
+    "venue_rejected_km",
+)
+
+
+def edition_venue_key(ed: Dict[str, Any]) -> Optional[Tuple[int, int, int]]:
+    try:
+        return (int(ed["event_id"]), int(ed["year"]), int(ed["month"]))
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def carry_forward_venue_fields(
+    editions: List[Dict[str, Any]],
+    prior_editions: List[Dict[str, Any]],
+) -> Dict[str, int]:
+    """Restore wsdc_venue pins/hotels from a prior growth file onto a rebuild.
+
+    Builder output only has city centroids. Without a mysqldump in CI we must
+    not wipe hotel/venue lat from the previously enriched site JSON.
+    """
+    prior_by_key: Dict[Tuple[int, int, int], Dict[str, Any]] = {}
+    for ped in prior_editions:
+        if not isinstance(ped, dict):
+            continue
+        if ped.get("geo_source") != "wsdc_venue":
+            continue
+        key = edition_venue_key(ped)
+        if key is None:
+            continue
+        prior_by_key[key] = ped
+
+    stats = {
+        "editions": len(editions),
+        "prior_venue": len(prior_by_key),
+        "carried": 0,
+        "skipped_already_venue": 0,
+        "missing_prior": 0,
+    }
+    for ed in editions:
+        if not isinstance(ed, dict):
+            continue
+        if ed.get("geo_source") == "wsdc_venue":
+            stats["skipped_already_venue"] += 1
+            continue
+        key = edition_venue_key(ed)
+        if key is None:
+            stats["missing_prior"] += 1
+            continue
+        prior = prior_by_key.get(key)
+        if prior is None:
+            stats["missing_prior"] += 1
+            continue
+        # Keep builder city centroids for drift checks / re-enrich.
+        if ed.get("city_lat") is None and ed.get("lat") is not None:
+            ed["city_lat"] = ed["lat"]
+        if ed.get("city_lon") is None and ed.get("lon") is not None:
+            ed["city_lon"] = ed["lon"]
+        for field in _VENUE_CARRY_KEYS:
+            if field in prior:
+                ed[field] = prior[field]
+        stats["carried"] += 1
+    return stats
+
+
 def enrich_editions(
     editions: List[Dict[str, Any]],
     by_event: Dict[int, List[VenueRow]],
@@ -643,10 +722,16 @@ def main() -> int:
     ap.add_argument(
         "--sql",
         type=Path,
-        required=True,
+        default=None,
         help="Path to WSDC mysqldump containing competitionevents",
     )
     ap.add_argument("--growth", type=Path, default=DEFAULT_GROWTH)
+    ap.add_argument(
+        "--prior-growth",
+        type=Path,
+        default=None,
+        help="Previous event_growth.json — carry wsdc_venue fields when --sql is omitted",
+    )
     ap.add_argument(
         "--lookup-out",
         type=Path,
@@ -658,25 +743,18 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    if not args.sql.is_file():
-        print(f"SQL dump not found: {args.sql}", file=sys.stderr)
-        return 1
     if not args.growth.is_file():
         print(f"event_growth.json not found: {args.growth}", file=sys.stderr)
         return 1
-
-    print(f"Parsing competitionevents from {args.sql} …", flush=True)
-    by_event = fold_merged_venue_lookups(
-        build_lookup_by_event(iter_competitionevents(args.sql))
-    )
-    n_rows = sum(len(v) for v in by_event.values())
-    with_geo = sum(
-        1 for rows in by_event.values() for r in rows if usable_lat_lon(r.lat, r.lon)
-    )
-    print(
-        f"  events: {len(by_event)}  rows: {n_rows}  with lat/lon: {with_geo}",
-        flush=True,
-    )
+    if args.sql is None and args.prior_growth is None:
+        print("Provide --sql and/or --prior-growth", file=sys.stderr)
+        return 1
+    if args.sql is not None and not args.sql.is_file():
+        print(f"SQL dump not found: {args.sql}", file=sys.stderr)
+        return 1
+    if args.prior_growth is not None and not args.prior_growth.is_file():
+        print(f"prior growth not found: {args.prior_growth}", file=sys.stderr)
+        return 1
 
     growth = json.loads(args.growth.read_text(encoding="utf-8"))
     editions = growth.get("editions") or []
@@ -684,16 +762,58 @@ def main() -> int:
         print("event_growth.json.editions must be a list", file=sys.stderr)
         return 1
 
-    stats = enrich_editions(
-        editions, by_event, args.max_drift_km, args.max_date_drift_days
-    )
+    by_event: Dict[int, List[VenueRow]] = {}
+    stats: Dict[str, int]
+    meta_source: str
+
+    if args.sql is not None:
+        print(f"Parsing competitionevents from {args.sql} …", flush=True)
+        by_event = fold_merged_venue_lookups(
+            build_lookup_by_event(iter_competitionevents(args.sql))
+        )
+        n_rows = sum(len(v) for v in by_event.values())
+        with_geo = sum(
+            1
+            for rows in by_event.values()
+            for r in rows
+            if usable_lat_lon(r.lat, r.lon)
+        )
+        print(
+            f"  events: {len(by_event)}  rows: {n_rows}  with lat/lon: {with_geo}",
+            flush=True,
+        )
+        stats = enrich_editions(
+            editions, by_event, args.max_drift_km, args.max_date_drift_days
+        )
+        meta_source = str(args.sql.name)
+    else:
+        prior = json.loads(args.prior_growth.read_text(encoding="utf-8"))
+        prior_eds = prior.get("editions") or []
+        if not isinstance(prior_eds, list):
+            print("prior growth editions must be a list", file=sys.stderr)
+            return 1
+        print(
+            f"Carrying venue fields from {args.prior_growth} "
+            f"({len(prior_eds)} prior editions) …",
+            flush=True,
+        )
+        stats = carry_forward_venue_fields(editions, prior_eds)
+        meta_source = f"carry_forward:{args.prior_growth.name}"
+        # Keep prior meta breadcrumbs when present.
+        prior_meta = prior.get("venue_enrichment")
+        if isinstance(prior_meta, dict):
+            growth["venue_enrichment_prior"] = {
+                "source": prior_meta.get("source"),
+                "enriched_at": prior_meta.get("enriched_at"),
+            }
+
     print("Enrichment stats:")
     for k, v in stats.items():
         print(f"  {k}: {v}")
 
     years = growth.get("years") or []
     focus_year = max(years) if years else None
-    if focus_year:
+    if focus_year and args.sql is not None:
         by_city: Dict[Tuple[Any, ...], List[Tuple[float, float]]] = defaultdict(list)
         for ed in editions:
             if ed.get("year") != focus_year:
@@ -723,7 +843,7 @@ def main() -> int:
         print(f"  WARN: hotel without wsdc_venue: {bad_hotel}", file=sys.stderr)
 
     meta = {
-        "source": str(args.sql.name),
+        "source": meta_source,
         "enriched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "max_drift_km": args.max_drift_km,
         "max_date_drift_days": args.max_date_drift_days,
@@ -736,6 +856,9 @@ def main() -> int:
         return 0
 
     if args.lookup_out is not None:
+        if args.sql is None:
+            print("--lookup-out requires --sql", file=sys.stderr)
+            return 1
         args.lookup_out.parent.mkdir(parents=True, exist_ok=True)
         flat = [
             venue_row_to_dict(r)
