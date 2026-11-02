@@ -196,33 +196,104 @@
     }
     .side-kpi-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
       align-items: stretch;
     }
     .side-kpi {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
       min-width: 0;
+      padding: 0 8px;
+    }
+    .side-kpi:first-child { padding-left: 2px; }
+    .side-kpi:last-child { padding-right: 2px; }
+    .side-kpi + .side-kpi {
+      border-left: 1px solid var(--wsdc-color-border, #e5e7eb);
     }
     .side-kpi__lbl {
-      font-size: 11px; font-weight: var(--wsdc-font-weight-semibold);
-      letter-spacing: 0.03em; text-transform: uppercase;
+      font-size: 10px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: var(--wsdc-color-text-muted);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .side-kpi__val {
-      font-size: 1.35rem; font-weight: var(--wsdc-font-weight-bold);
-      letter-spacing: -0.02em; color: var(--wsdc-color-text-strong);
-      font-variant-numeric: tabular-nums; line-height: 1.15;
+      font-size: 1.35rem;
+      font-weight: var(--wsdc-font-weight-bold);
+      letter-spacing: -0.03em;
+      color: var(--wsdc-color-text-strong);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      white-space: nowrap;
     }
     .side-kpi__sub {
-      min-height: 1.2em;
-      font-size: var(--wsdc-font-size-xs); color: var(--wsdc-color-text-muted);
+      min-height: 1.15em;
+      font-size: 11px;
+      color: var(--wsdc-color-text-muted);
       font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+      white-space: nowrap;
     }
     .side-kpi__sub .up { color: #3f6f4f; }
     .side-kpi__sub .down { color: #8a5a54; }
+    /* Two columns: name + mark + metric | status chip */
+    table.eg {
+      table-layout: fixed;
+    }
+    table.eg td.name-col {
+      width: auto;
+      vertical-align: middle;
+    }
+    table.eg td.status-col {
+      width: 7.25rem;
+      min-width: 7.25rem;
+      text-align: right;
+      white-space: nowrap;
+      vertical-align: middle;
+      padding-right: 12px !important;
+    }
+    .eg-row-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      width: 100%;
+    }
+    .eg-row-main .eg-drill,
+    .eg-row-main .eg-row-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1 1 auto;
+      min-width: 0;
+      width: auto;
+    }
+    .eg-row-main .eg-drill strong,
+    .eg-row-main .eg-row-label-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .eg-row-metric {
+      flex: 0 0 auto;
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+      font-size: var(--wsdc-font-size-sm);
+      font-weight: var(--wsdc-font-weight-semibold);
+      color: var(--wsdc-color-text-muted);
+      white-space: nowrap;
+    }
+    .eg-row-meta {
+      font-size: 11px;
+      white-space: nowrap;
+    }
 
     .kpis {
       display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
@@ -323,7 +394,8 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 252px;
+      /* Side rail: enough for 3 KPIs + status chips; avoid stealing map width. */
+      grid-template-columns: minmax(0, 1fr) 312px;
       gap: var(--wsdc-space-2);
       flex: 1;
       min-height: 0;
@@ -431,19 +503,134 @@
     .side-detail-panel {
       display: flex;
       flex-direction: column;
+      /* Allow metric dropdown to paint outside the scrollport. */
+      overflow: visible;
     }
     .side-detail-panel .region-list {
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
+      /* visible so the metric menu can open over the scrolling rows */
+      overflow: visible;
+    }
+    /* Header: geo title | metric (above values) | Status */
+    .region-list-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 7.25rem;
+      align-items: center;
+      gap: 0;
+      padding: 5px 0 5px 10px;
+      background: var(--wsdc-color-surface-soft);
+      border-bottom: 1px solid var(--wsdc-color-border, #e5e7eb);
+      flex: 0 0 auto;
+      font-size: 11px;
+      font-weight: var(--wsdc-font-weight-semibold);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--wsdc-color-text-muted);
+      position: relative;
+      z-index: 5;
+    }
+    .region-list-head__geo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      min-height: 22px;
+      padding-right: 10px;
+    }
+    .region-list-head__title {
+      flex: 0 1 auto;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .region-list-head__metric {
+      flex: 0 0 auto;
+      margin-left: auto;
+      text-align: right;
+    }
+    .region-list-head__status {
+      text-align: right;
+      padding-right: 12px;
+      white-space: nowrap;
+    }
+    .region-list-head .wsdc-select-host,
+    .region-list-head .wsdc-dd {
+      width: auto;
+      min-width: 0;
+      max-width: none;
+    }
+    /* Match State/Status header type — not a bordered pill. */
+    .region-list-head .wsdc-dd--field .wsdc-dd__btn {
+      width: auto;
+      height: auto;
+      min-height: 0;
+      padding: 0;
+      gap: 2px;
+      border-radius: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      letter-spacing: inherit;
+      text-transform: uppercase;
+      line-height: 1;
+      justify-content: flex-end;
+    }
+    .region-list-head .wsdc-dd--field .wsdc-dd__btn svg {
+      width: 9px;
+      height: 9px;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+    .region-list-head .wsdc-dd--field .wsdc-dd__btn:hover,
+    .region-list-head .wsdc-dd--field.is-open .wsdc-dd__btn {
+      color: var(--wsdc-color-text-strong, #0b1221);
+      background: transparent;
+      border: 0;
+    }
+    /* Compact metric menu; wide enough for full labels. */
+    .region-list-head .wsdc-dd__menu {
+      min-width: 0;
+      width: max-content;
+      max-width: 12rem;
+      padding: 3px;
+      top: calc(100% + 3px);
+      left: auto;
+      right: 0;
+      transform: scale(0.96);
+      transform-origin: top right;
+      text-transform: none;
+      letter-spacing: 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    }
+    .region-list-head .wsdc-dd.is-open .wsdc-dd__menu {
+      transform: scale(1);
+    }
+    .region-list-head .wsdc-dd__menu button {
+      padding: 4px 6px;
+      font-size: 11px;
+      border-radius: 5px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .side-detail-panel .region-list-scroll {
+      flex: 1;
+      min-height: 0;
       overflow: auto;
+    }
+    .region-list-scroll table.eg {
+      table-layout: fixed;
     }
     table.eg.eg--compact th, table.eg.eg--compact td {
       padding: 7px 10px;
     }
-    table.eg.eg--compact th:last-child,
     table.eg.eg--compact td:last-child {
       text-align: right;
-      width: 1%;
       white-space: nowrap;
     }
     .chip.has-tip { cursor: help; }
@@ -617,6 +804,25 @@
       gap: 10px;
       align-items: stretch;
     }
+    .tooltip .tt-kpi-grid--3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+    }
+    .tooltip .tt-kpi-grid--3 .tt-kpi {
+      padding: 0 8px;
+      min-width: 0;
+    }
+    .tooltip .tt-kpi-grid--3 .tt-kpi:first-child { padding-left: 0; }
+    .tooltip .tt-kpi-grid--3 .tt-kpi:last-child { padding-right: 0; }
+    .tooltip .tt-kpi-grid--3 .tt-kpi + .tt-kpi {
+      border-left: 1px solid var(--wsdc-color-border, #e5e7eb);
+    }
+    .tooltip .tt-kpi-grid--3 .tt-kpi__lbl {
+      font-size: 10px;
+      min-height: 2.4em;
+      line-height: 1.25;
+    }
+    .tooltip .tt-kpi-grid--3 .tt-kpi__val { font-size: 1.1rem; letter-spacing: -0.02em; }
     .tooltip .tt-kpi__lbl {
       font-size: 11px;
       font-weight: var(--wsdc-font-weight-semibold);
@@ -735,7 +941,7 @@
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
         <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date against the same months last year; finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
-        <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion). For a continent, country, state or city, it is the total across all events held there in the selected period. Details in Methodology.</p>
+        <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion). For a continent, country, state or city, it is the total across all events held there in the selected period. <strong>Avg / event</strong> = that total ÷ number of events (mean event size). Details in Methodology.</p>
       </header>
 
       <div class="filters">
@@ -799,6 +1005,13 @@
                     <span id="kpiEventsDeltaWrap"><strong id="kpiEventsDelta">—</strong> <span id="kpiEventsDeltaSub"></span></span>
                   </div>
                 </div>
+                <div class="side-kpi" id="kpiAvgBlock">
+                  <div class="side-kpi__lbl" title="Average competitors per event">Avg / event</div>
+                  <div class="side-kpi__val" id="kpiAvg">—</div>
+                  <div class="side-kpi__sub">
+                    <span id="kpiAvgDeltaWrap"><strong id="kpiAvgDelta">—</strong> <span id="kpiAvgDeltaSub"></span></span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -821,7 +1034,8 @@
   </div>
   <div class="eg-tip-pop" id="kpiTipPop" role="tooltip" hidden>
     All: area totals, this year vs last year (same months if the year is still open).
-    With a trend pill: Competitors compare the selected events to their own previous editions;
+    Avg / event = competitors ÷ events (mean event size); its change compares those averages.
+    With a trend pill: Competitors and Avg / event compare the selected events to their own previous editions;
     Events = how many of the area’s events have that trend.
   </div>
 
@@ -838,12 +1052,13 @@
           <div class="method-sec__body">
             <p>Each row in the data is one <strong>event edition</strong> in one year: how many competitors entered, and whether that headcount grew or shrank versus the previous edition of the same event.</p>
             <p><strong>Competitors</strong> for one event edition = leader + follower entries in its skill-level Jack &amp; Jill divisions (Newcomer through Champion), taken from official WSDC results. Age-group, Strictly and other divisions are not counted. Edition numbers (<strong>#N</strong>) use the full WSDC history from 1991. Map pins and venue lines use hotel and geo enrichment when available.</p>
-            <p>The map and list roll those editions up by geography — world → continent → country → state (US) → city — so you can see where the scene is expanding or contracting. A region’s Competitors is the <strong>sum</strong> over every event held there in the selected period:</p>
+            <p>The map and list roll those editions up by geography — world → continent → country → state (US) → city — so you can see where the scene is expanding or contracting. A region’s Competitors is the <strong>sum</strong> over every event held there in the selected period; <strong>Avg / event</strong> is that sum divided by the number of events (one-event places match that event’s headcount):</p>
             <ul>
               <li>the full selected year, or year-to-date for a year that is still open (see <em>YTD vs YoY</em>);</li>
               <li>with an <em>Event trend</em> pill on, only the events with that status;</li>
               <li>it adds up entries, not unique people — a dancer who competes at three events in the region counts three times.</li>
             </ul>
+            <p>In the side list, each row shows the selected metric beside the place name. Use the Competitors / Events / Avg / event control in the list header to change which number is shown and how rows are ordered.</p>
           </div>
         </details>
         <details class="method-sec">
@@ -879,7 +1094,7 @@
         <details class="method-sec">
           <summary>Pink dot next to a region</summary>
           <div class="method-sec__body">
-            <p>In the side list, a pink dot <span class="inside-dot" role="img" aria-label="Declining events inside"></span> after the competitor count means the <em>region as a whole</em> is not Declining, but at least one event inside it is.</p>
+            <p>In the side list, a pink dot <span class="inside-dot" role="img" aria-label="Declining events inside"></span> next to the region name means the <em>region as a whole</em> is not Declining, but at least one event inside it is.</p>
             <p>Example: Germany can show <strong>Stable</strong> (or Growing) on the area chip while the pink dot flags shrinking events underneath. Hover the dot for a short reminder; open an event tip or drill into the region to see which editions are Declining.</p>
             <p>The marker only appears when the <strong>All</strong> trend filter is on. It is not drawn on the map fill — only in the list.</p>
           </div>
@@ -910,7 +1125,8 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261102-venue-audit";
+  var DATA_VER = "20261102-avg-metric-ui8";
+  var LIST_METRICS = { competitors: true, events: true, avg: true };
 
   var STATUS_COLOR = {
     growing: "#7db88a",
@@ -938,6 +1154,7 @@
     data: null,
     year: null,
     status: "all",
+    listMetric: "competitors", // competitors|events|avg — list value + sort (not in URL)
     level: "world", // world|continent|country|state
     continent: null,
     country: null,
@@ -1103,7 +1320,7 @@
         g.geoN += 1;
       }
     });
-    return Object.keys(map).map(function (k) {
+    return sortByListMetric(Object.keys(map).map(function (k) {
       var g = map[k];
       return {
         key: g.key,
@@ -1128,9 +1345,7 @@
         lon: g.geoN ? g.lonSum / g.geoN : null,
         sample: g.sample
       };
-    }).sort(function (a, b) {
-      return (b.current || 0) - (a.current || 0);
-    });
+    }));
   }
 
   function insideDotHtml() {
@@ -1211,6 +1426,102 @@
     if (state.city) q.set("city", state.city);
     var next = q.toString();
     history.replaceState(null, "", next ? ("?" + next) : location.pathname);
+  }
+
+  function avgCompetitors(total, n) {
+    if (!n) return null;
+    return total / n;
+  }
+
+  function fmtAvg(v) {
+    if (v == null || !isFinite(v)) return "—";
+    return fmtN(Math.round(v));
+  }
+
+  function regionMetricValue(r) {
+    if (!r) return 0;
+    if (state.listMetric === "events") return r.n || 0;
+    if (state.listMetric === "avg") return r.n ? (r.current || 0) / r.n : 0;
+    return r.current || 0;
+  }
+
+  function formatRegionMetric(r) {
+    if (!r) return "—";
+    if (state.listMetric === "events") return fmtN(r.n || 0);
+    if (state.listMetric === "avg") {
+      return r.n ? fmtAvg((r.current || 0) / r.n) : "—";
+    }
+    return fmtN(r.current || 0) + (r.absent ? " prior" : "");
+  }
+
+  function sortByListMetric(rows) {
+    return (rows || []).slice().sort(function (a, b) {
+      var aAbs = a && a.absent ? 1 : 0;
+      var bAbs = b && b.absent ? 1 : 0;
+      if (aAbs !== bAbs) return aAbs - bAbs;
+      return regionMetricValue(b) - regionMetricValue(a);
+    });
+  }
+
+  function metricSelectHtml(opts) {
+    opts = opts || {};
+    var showEvents = opts.showEvents !== false;
+    var html = '<select class="wsdc-select eg-metric-select" aria-label="Metric">' +
+      '<option value="competitors"' +
+      (state.listMetric === "competitors" ? " selected" : "") +
+      ">Competitors</option>";
+    if (showEvents) {
+      html += '<option value="events"' +
+        (state.listMetric === "events" ? " selected" : "") +
+        ">Events</option>";
+    }
+    html += '<option value="avg"' +
+      (state.listMetric === "avg" ? " selected" : "") +
+      ">Avg / event</option></select>";
+    return html;
+  }
+
+  function listShellHtml(geoTitle, statusTitle, tbodyHtml, opts) {
+    return '<div class="region-list-head">' +
+      '<div class="region-list-head__geo">' +
+      '<div class="region-list-head__title">' + esc(geoTitle) + "</div>" +
+      '<div class="region-list-head__metric">' + metricSelectHtml(opts) + "</div>" +
+      "</div>" +
+      '<div class="region-list-head__status">' + esc(statusTitle) + "</div>" +
+      "</div>" +
+      '<div class="region-list-scroll"><table class="eg eg--compact"><tbody>' +
+      tbodyHtml +
+      "</tbody></table></div>";
+  }
+
+  function metricSpanHtml(text) {
+    return '<span class="eg-row-metric">' + esc(text) + "</span>";
+  }
+
+  function nameCellHtml(innerHtml) {
+    return '<td class="name-col"><div class="eg-row-main">' + innerHtml + "</div></td>";
+  }
+
+  function statusCellHtml(html) {
+    return '<td class="status-col">' + html + "</td>";
+  }
+
+  function bindSortByControls(root) {
+    if (!root) return;
+    var sel = root.querySelector("select.eg-metric-select");
+    if (!sel) return;
+    if (window.WsdcSelect) WsdcSelect.enhanceAll(root);
+    sel.addEventListener("change", function (ev) {
+      ev.stopPropagation();
+      var m = sel.value;
+      if (!LIST_METRICS[m] || m === state.listMetric) return;
+      if (m === "events" && state.city) return;
+      state.listMetric = m;
+      render();
+    });
+    root.querySelectorAll(".region-list-head .wsdc-dd, .region-list-head .wsdc-select-host").forEach(function (node) {
+      node.addEventListener("click", function (ev) { ev.stopPropagation(); });
+    });
   }
 
   var UNKNOWN = "Unknown";
@@ -1501,10 +1812,8 @@
         lon: g.geoN ? g.lonSum / g.geoN : null,
         sample: g.sample
       };
-    }).sort(function (a, b) {
-      return (b.current || 0) - (a.current || 0);
     });
-    return regions;
+    return sortByListMetric(regions);
   }
 
   function setMapMaxMatch(regions) {
@@ -1729,10 +2038,29 @@
         eventsPct,
         mode.priorYear != null
       );
+      var avgNow = avgCompetitors(total, eventsNow);
+      var avgPrev = avgCompetitors(compPrev, eventsPrev);
+      var avgDelta = null;
+      var avgPct = null;
+      var hasAvgDelta = false;
+      if (mode.priorYear != null && avgNow != null && avgPrev != null) {
+        avgDelta = avgNow - avgPrev;
+        avgPct = avgPrev ? avgDelta / avgPrev : null;
+        hasAvgDelta = true;
+      }
+      document.getElementById("kpiAvg").textContent =
+        currentRows.length ? fmtAvg(avgNow) : "—";
+      setDeltaLine(
+        "kpiAvgDeltaWrap", "kpiAvgDelta", "kpiAvgDeltaSub",
+        avgDelta, avgPct, hasAvgDelta
+      );
     } else if (state.status === "new") {
       hasCompDelta = false;
       document.getElementById("kpiEvents").textContent = fmtN(eventsNow);
       setEventsSub(eventsArea ? ("of " + fmtN(eventsArea) + " in area") : "");
+      document.getElementById("kpiAvg").textContent =
+        currentRows.length ? fmtAvg(avgCompetitors(total, eventsNow)) : "—";
+      setDeltaLine("kpiAvgDeltaWrap", "kpiAvgDelta", "kpiAvgDeltaSub", null, null, false);
     } else {
       // Headline + delta both from comparable pairs only (same previous edition).
       var cur = 0;
@@ -1753,6 +2081,20 @@
       }
       document.getElementById("kpiEvents").textContent = fmtN(eventsNow);
       setEventsSub(eventsArea ? ("of " + fmtN(eventsArea) + " in area") : "");
+      // Avg: mean size of the same paired editions now vs their previous editions.
+      var avgNowPill = avgCompetitors(cur, pairs);
+      var avgPrevPill = avgCompetitors(prev, pairs);
+      document.getElementById("kpiAvg").textContent =
+        pairs ? fmtAvg(avgNowPill) : "—";
+      if (pairs && avgNowPill != null && avgPrevPill != null) {
+        var avgD = avgNowPill - avgPrevPill;
+        setDeltaLine(
+          "kpiAvgDeltaWrap", "kpiAvgDelta", "kpiAvgDeltaSub",
+          avgD, avgPrevPill ? avgD / avgPrevPill : null, true
+        );
+      } else {
+        setDeltaLine("kpiAvgDeltaWrap", "kpiAvgDelta", "kpiAvgDeltaSub", null, null, false);
+      }
     }
 
     // Always "Competitors" — New pill means competitors *at new events*, not
@@ -2262,15 +2604,20 @@
         "</div>" +
         '<div class="tt-period">' + esc(comparisonPeriodText()) +
           " · prior period only</div>" +
-        '<div class="tt-kpi-grid">' +
+        '<div class="tt-kpi-grid tt-kpi-grid--3">' +
           '<div class="tt-kpi">' +
-            '<div class="tt-kpi__lbl">Competitors (prior period)</div>' +
+            '<div class="tt-kpi__lbl">Competitors (prior)</div>' +
             '<div class="tt-kpi__val">' + fmtN(r.current) + "</div>" +
             '<div class="tt-kpi__sub"></div>' +
           "</div>" +
           '<div class="tt-kpi">' +
-            '<div class="tt-kpi__lbl">Events (prior period)</div>' +
+            '<div class="tt-kpi__lbl">Events (prior)</div>' +
             '<div class="tt-kpi__val">' + fmtN(r.n) + "</div>" +
+            '<div class="tt-kpi__sub"></div>' +
+          "</div>" +
+          '<div class="tt-kpi">' +
+            '<div class="tt-kpi__lbl">Avg / event</div>' +
+            '<div class="tt-kpi__val">' + fmtAvg(avgCompetitors(r.current, r.n)) + "</div>" +
             '<div class="tt-kpi__sub"></div>' +
           "</div>" +
         "</div>" +
@@ -2279,6 +2626,12 @@
     var st = statusFilterActive() ? state.status : r.status;
     var hasCompDelta = r.delta != null;
     var hasEventsDelta = !statusFilterActive() && r.nDelta != null;
+    var avgNowTt = avgCompetitors(r.current, r.n);
+    var avgPrevTt = (!statusFilterActive() && r.nPrev)
+      ? avgCompetitors(r.previous || 0, r.nPrev)
+      : null;
+    var avgDeltaTt = (avgNowTt != null && avgPrevTt != null) ? (avgNowTt - avgPrevTt) : null;
+    var avgPctTt = (avgDeltaTt != null && avgPrevTt) ? (avgDeltaTt / avgPrevTt) : null;
     var mix = statusFilterActive() ? "" : regionCompositionHtml(r);
     var trend = mix
       ? ('<div class="tt-trend"><div class="tt-trend__lbl">Event trend</div>' + mix + "</div>")
@@ -2288,7 +2641,7 @@
       chip(st) +
       "</div>" +
       '<div class="tt-period">' + esc(comparisonPeriodText()) + "</div>" +
-      '<div class="tt-kpi-grid">' +
+      '<div class="tt-kpi-grid tt-kpi-grid--3">' +
         '<div class="tt-kpi">' +
           '<div class="tt-kpi__lbl">Competitors</div>' +
           '<div class="tt-kpi__val">' + (hasCompDelta || r.n ? fmtN(r.current) : "—") + "</div>" +
@@ -2298,6 +2651,11 @@
           '<div class="tt-kpi__lbl">Events</div>' +
           '<div class="tt-kpi__val">' + fmtN(r.n) + "</div>" +
           ttDeltaSubHtml(hasEventsDelta ? r.nDelta : null, hasEventsDelta ? r.nPct : null) +
+        "</div>" +
+        '<div class="tt-kpi">' +
+          '<div class="tt-kpi__lbl">Avg / event</div>' +
+          '<div class="tt-kpi__val">' + (r.n ? fmtAvg(avgNowTt) : "—") + "</div>" +
+          ttDeltaSubHtml(avgDeltaTt, avgPctTt) +
         "</div>" +
       "</div>" +
       trend;
@@ -3565,13 +3923,17 @@
     });
   }
 
-  function absentListRowHtml(e, tipKey) {
+  function absentListRowHtml(e, tipKey, metricCell) {
     var place = absentPlaceLabel(e);
-    return '<tr class="is-absent" data-absent-key="' + esc(tipKey) + '">' +
-      "<td>" + esc(e.name || ("Event " + e.event_id)) +
+    var label = '<span class="eg-row-label">' +
+      '<span class="eg-row-label-text">' + esc(e.name || ("Event " + e.event_id)) +
       (place ? (' <span class="muted">· ' + esc(place) + "</span>") : "") +
-      "</td>" +
-      "<td>" + chip("absent", { tip: tipKey }) + "</td></tr>";
+      "</span>" +
+      metricSpanHtml(metricCell == null ? "—" : metricCell) +
+      "</span>";
+    return '<tr class="is-absent" data-absent-key="' + esc(tipKey) + '">' +
+      nameCellHtml(label) +
+      statusCellHtml(chip("absent", { tip: tipKey })) + "</tr>";
   }
 
   function bindAbsentChipTips(el, byAbsentKey) {
@@ -3595,6 +3957,8 @@
   }
 
   function renderCityEventList(rows) {
+    // City list: Comp / Avg only (Event is always 1).
+    if (state.listMetric === "events") state.listMetric = "competitors";
     var list = rows.slice().sort(function (a, b) {
       return (b.competitors || 0) - (a.competitors || 0);
     });
@@ -3606,27 +3970,30 @@
     }
     var byKey = {};
     var byAbsent = {};
-    var html = '<table class="eg eg--compact"><thead><tr>' +
-      "<th>Event</th><th>Status</th></tr></thead><tbody>";
+    var body = "";
     list.forEach(function (e) {
       var ek = editionKey(e);
       byKey[ek] = e;
-      var comp = e.competitors == null ? "" : (" " + fmtN(e.competitors));
-      if (e.approx && e.competitors != null) comp += " est.";
-      html += '<tr data-event-id="' + esc(e.event_id) + '" data-edition-key="' + esc(ek) + '">' +
-        "<td>" + esc(e.name) +
-        (comp ? '<span class="muted">' + esc(comp) + "</span>" : "") +
-        "</td>" +
-        "<td>" + chip(e.status, { tip: ek }) + "</td></tr>";
+      var metric = e.competitors == null ? "—" : fmtN(e.competitors);
+      if (e.approx && e.competitors != null) metric += " est.";
+      body += '<tr data-event-id="' + esc(e.event_id) + '" data-edition-key="' + esc(ek) + '">' +
+        nameCellHtml(
+          '<span class="eg-row-label">' +
+            '<span class="eg-row-label-text">' + esc(e.name) + "</span>" +
+            metricSpanHtml(metric) +
+          "</span>"
+        ) +
+        statusCellHtml(chip(e.status, { tip: ek })) + "</tr>";
     });
     absent.forEach(function (e) {
       var ak = "absent:" + editionKey(e);
       byAbsent[ak] = e;
-      html += absentListRowHtml(e, ak);
+      var m = e.competitors == null ? "—" : (fmtN(e.competitors) + " prior");
+      body += absentListRowHtml(e, ak, m);
     });
-    html += "</tbody></table>";
     var el = document.getElementById("regionList");
-    el.innerHTML = html;
+    el.innerHTML = listShellHtml("Event", "Status", body, { showEvents: false });
+    bindSortByControls(el);
     el.querySelectorAll("tr:not(.is-absent) .chip.has-tip").forEach(function (chipEl) {
       var edition = byKey[chipEl.getAttribute("data-region-key")];
       if (!edition) return;
@@ -3654,9 +4021,10 @@
       state: "City"
     }[state.level] || "Region";
     var statusFilter = statusFilterActive();
-    var rightTitle = statusFilter
+    var statusTitle = statusFilter
       ? (state.status.charAt(0).toUpperCase() + state.status.slice(1))
       : "Status";
+    regions = sortByListMetric(regions);
 
     if (!regions.length) {
       document.getElementById("regionList").innerHTML = '<div class="empty">No regions in this filter</div>';
@@ -3664,38 +4032,35 @@
     }
     var byKey = {};
     regions.forEach(function (r) { byKey[r.key] = r; });
-    var html = '<table class="eg eg--compact"><thead><tr>' +
-      "<th>" + esc(colTitle) + "</th>" +
-      "<th>" + esc(rightTitle) + "</th></tr></thead><tbody>";
+    var body = "";
     regions.forEach(function (r) {
       var label = r.key == null || r.key === "" ? UNKNOWN : String(r.key);
       var selected = state.city && r.key === state.city;
       var rowClass = (selected ? "is-selected" : "") + (r.absent ? " is-absent" : "");
-      // Column header already names the pill (New / Growing / …) — rows keep
-      // the count only so we do not repeat "New" on every line.
-      var rightCell = statusFilter
-        ? ('<span class="muted">' + fmtN(r.n) + "</span>")
+      // Filtered trend: count instead of a redundant status chip.
+      var statusHtml = statusFilter
+        ? ('<span class="muted eg-row-meta">' + fmtN(r.n) + "</span>")
         : chip(r.absent ? "absent" : r.status, { tip: r.key });
-      html += "<tr data-key=\"" + esc(r.key) + "\"" +
+      var drill = "<button type=\"button\" class=\"eg-drill\" data-key=\"" +
+        esc(r.key) + "\" aria-label=\"Open " + esc(label) + "\">" +
+        "<strong>" + esc(label) + "</strong>" +
+        (r.decliningInside ? insideDotHtml() : "") +
+        metricSpanHtml(formatRegionMetric(r)) +
+        "</button>";
+      body += "<tr data-key=\"" + esc(r.key) + "\"" +
         (rowClass ? ' class="' + esc(rowClass.trim()) + '"' : "") + ">" +
-        "<td><button type=\"button\" class=\"eg-drill\" data-key=\"" +
-          esc(r.key) + "\" aria-label=\"Open " + esc(label) + "\">" +
-          "<strong>" + esc(label) + "</strong> " +
-          "<span class=\"muted\">" + fmtN(r.current) +
-          (r.absent ? " prior" : "") + "</span>" +
-          (r.decliningInside ? insideDotHtml() : "") +
-        "</button></td>" +
-        "<td>" + rightCell + "</td></tr>";
+        nameCellHtml(drill) +
+        statusCellHtml(statusHtml) + "</tr>";
     });
-    html += "</tbody></table>";
     var el = document.getElementById("regionList");
-    el.innerHTML = html;
+    el.innerHTML = listShellHtml(colTitle, statusTitle, body, { showEvents: true });
+    bindSortByControls(el);
     el.querySelectorAll("button.eg-drill").forEach(function (btn) {
       btn.addEventListener("click", function () {
         drillInto(btn.getAttribute("data-key"));
       });
     });
-    // Whole row click (except chips) still drills — mouse convenience.
+    // Whole row click (except chips) still drills.
     el.querySelectorAll("tr[data-key]").forEach(function (tr) {
       tr.addEventListener("click", function (ev) {
         if (ev.target && ev.target.closest && ev.target.closest(".chip")) return;

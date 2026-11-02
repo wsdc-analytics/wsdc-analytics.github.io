@@ -102,6 +102,14 @@ def rollup(
     else:
         delta = current - previous
         pct = (delta / previous) if previous else None
+    avg = (current / len(cur)) if cur else None
+    avg_prior = (previous / len(prior)) if prior else None
+    if mode["prior_year"] is None or avg is None or avg_prior is None:
+        avg_delta = None
+        avg_pct = None
+    else:
+        avg_delta = avg - avg_prior
+        avg_pct = (avg_delta / avg_prior) if avg_prior else None
     return {
         "mode": mode["mode"],
         "events": len(cur),
@@ -110,6 +118,10 @@ def rollup(
         "previous": previous,
         "delta": delta,
         "pct": pct,
+        "avg": avg,
+        "avg_prior": avg_prior,
+        "avg_delta": avg_delta,
+        "avg_pct": avg_pct,
         "prior_year": mode["prior_year"],
     }
 
@@ -497,6 +509,22 @@ def test_edition_field_present_and_positive() -> None:
     assert any(int(e["edition"]) > 1 for e in at_floor)
 
 
+def test_avg_per_event_is_sum_over_count() -> None:
+    """Mirrors dashboard Avg / event = Σ competitors ÷ N events."""
+    payload = json.loads(DATA.read_text())
+    years = [int(y) for y in payload["years"]]
+    us = rollup(
+        payload["editions"], 2025, "United States", payload["data_through"], years=years
+    )
+    assert us["events"] > 0
+    assert us["avg"] is not None
+    assert abs(us["avg"] - (us["current"] / us["events"])) < 1e-9
+    if us["events_prior"]:
+        assert us["avg_prior"] is not None
+        assert us["avg_delta"] is not None
+        assert abs(us["avg_delta"] - (us["avg"] - us["avg_prior"])) < 1e-9
+
+
 def test_edition_enrichment_meta() -> None:
     payload = json.loads(DATA.read_text())
     meta = payload.get("edition_enrichment") or {}
@@ -525,6 +553,7 @@ if __name__ == "__main__":
     test_new_pill_has_no_pct()
     test_symmetric_window_excludes_late_prior_only()
     test_edition_field_asia_open_full_history()
+    test_avg_per_event_is_sum_over_count()
     test_edition_field_paris_resets_on_swing_classic_era()
     test_edition_field_present_and_positive()
     test_edition_enrichment_meta()
