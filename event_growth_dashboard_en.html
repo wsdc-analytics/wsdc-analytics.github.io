@@ -1137,7 +1137,7 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261103-list-map-highlight";
+  var DATA_VER = "20261103-list-map-highlight-r1";
   var LIST_METRICS = { competitors: true, events: true, avg: true };
 
   var STATUS_COLOR = {
@@ -3092,15 +3092,53 @@
     }
   }
 
+  function geometryClientAnchor(feature) {
+    if (!feature || !feature.geometry) return null;
+    var c = feature.geometry.coordinates;
+    while (c && typeof c[0] !== "number") c = c[0];
+    if (!c || typeof c[0] !== "number" || typeof c[1] !== "number") return null;
+    return mapProjectClientPoint(c[0], c[1]);
+  }
+
+  function hoverKeyAnchorClientPoint(hoverKey) {
+    if (!state.map || !state.mapLoaded || hoverKey == null || hoverKey === "") return null;
+    var key = String(hoverKey);
+    try {
+      var feats = state.map.querySourceFeatures(MAP_POLY_SRC).concat(
+        state.map.querySourceFeatures(MAP_PTS_SRC)
+      );
+      var i;
+      for (i = 0; i < feats.length; i++) {
+        var f = feats[i];
+        var p = (f && f.properties) || {};
+        if (String(p.regionKey || "") !== key &&
+            String(p.venueKey || "") !== key &&
+            String(p.editionKey || "") !== key) {
+          continue;
+        }
+        var pt = geometryClientAnchor(f);
+        if (pt) return pt;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
   function regionAnchorClientPoint(region) {
     if (!region) return null;
-    return mapProjectClientPoint(region.lon, region.lat);
+    return mapProjectClientPoint(region.lon, region.lat) ||
+      hoverKeyAnchorClientPoint(region.key);
+  }
+
+  function editionHoverKey(edition) {
+    var ek = editionKey(edition);
+    return (state.editionToVenueKey && state.editionToVenueKey[ek]) || ek;
   }
 
   function editionAnchorClientPoint(edition) {
     var c = editionPinCoords(edition);
-    if (!c) return null;
-    return mapProjectClientPoint(c.lon, c.lat);
+    var fromCoords = c ? mapProjectClientPoint(c.lon, c.lat) : null;
+    if (fromCoords) return fromCoords;
+    return hoverKeyAnchorClientPoint(editionHoverKey(edition));
   }
 
   function clientPointEvent(pt, fallbackEv) {
@@ -3120,10 +3158,24 @@
     if (!edition) return;
     opts = opts || {};
     var ek = editionKey(edition);
-    var hoverKey = (state.editionToVenueKey && state.editionToVenueKey[ek]) || ek;
+    var hoverKey = editionHoverKey(edition);
     if (opts.anchorAtRegion || opts.highlight) setMapHoverByKey(hoverKey);
     var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(edition) : null;
     showTip(clientPointEvent(anchor, ev), "e:" + ek, eventTooltipHtml(edition));
+  }
+
+  function showAbsentListTooltip(ev, tipKey, edition, opts) {
+    if (!edition) return;
+    opts = opts || {};
+    var hoverKey = editionHoverKey(edition);
+    if (opts.anchorAtRegion || opts.highlight) setMapHoverByKey(hoverKey);
+    var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(edition) : null;
+    showTip(
+      clientPointEvent(anchor, ev),
+      "a:" + tipKey,
+      absentEventRowHtml(edition),
+      { stack: false }
+    );
   }
 
   function mapTipFrameRect() {
@@ -4138,14 +4190,18 @@
 
   function bindAbsentChipTips(el, byAbsentKey) {
     el.querySelectorAll("tr.is-absent .chip.has-tip").forEach(function (chipEl) {
-      var edition = byAbsentKey[chipEl.getAttribute("data-region-key")];
+      var tipKey = chipEl.getAttribute("data-region-key");
+      var edition = byAbsentKey[tipKey];
       if (!edition) return;
       chipEl.addEventListener("mouseenter", function (ev) {
-        showTip(ev, "a:" + chipEl.getAttribute("data-region-key"),
-          absentEventRowHtml(edition), { stack: false });
+        showAbsentListTooltip(ev, tipKey, edition, {
+          anchorAtRegion: true,
+          highlight: true
+        });
       });
-      chipEl.addEventListener("mousemove", function (ev) {
-        moveMapTooltip(ev);
+      chipEl.addEventListener("mousemove", function () {
+        var pt = editionAnchorClientPoint(edition);
+        if (pt) moveMapTooltip(clientPointEvent(pt));
       });
       chipEl.addEventListener("mouseleave", function () {
         hideMapTooltipSoon();
