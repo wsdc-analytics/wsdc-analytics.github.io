@@ -10,11 +10,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from enrich_event_growth_edition_numbers import (  # noqa: E402
     DEFAULT_ALIASES,
+    annotate_status_stories,
     classify_growth,
     clear_cross_brand_prev,
     edition_splits_from_year_split_rules,
     is_late_era_bucket,
     load_edition_series_splits_from_aliases,
+    load_rename_labels_from_aliases,
     restore_missing_prev_within_buckets,
     series_bucket,
 )
@@ -151,6 +153,103 @@ def test_classify_growth_basic() -> None:
     assert gap2 == "restarted"
 
 
+def test_annotate_status_stories_kinds_and_moves() -> None:
+    splits = [{"event_id": 272, "early_year_max": 2022, "late_year_min": 2023}]
+    labels = {
+        272: {
+            "early_name": "Paris Westie Fest",
+            "late_name": "Paris Swing Classic",
+            "late_year_min": 2023,
+        }
+    }
+    editions = [
+        {
+            "event_id": 1,
+            "year": 2024,
+            "month": 1,
+            "name": "Debut Fest",
+            "city": "Berlin",
+            "status": "new",
+            "edition": 1,
+        },
+        {
+            "event_id": 2,
+            "year": 2024,
+            "month": 1,
+            "name": "Comeback",
+            "city": "Rome",
+            "status": "restarted",
+            "gap_flag": "restarted",
+            "edition": 5,
+            "prev": {"year": 2021, "competitors": 100},
+        },
+        {
+            "event_id": 272,
+            "year": 2023,
+            "month": 11,
+            "name": "Paris Swing Classic",
+            "city": "Paris",
+            "status": "new",
+            "edition": 1,
+        },
+        {
+            "event_id": 342,
+            "year": 2025,
+            "month": 5,
+            "name": "GGP",
+            "city": "Toulouse",
+            "status": "stable",
+            "edition": 3,
+            "prev": {"year": 2024, "competitors": 200},
+        },
+        {
+            "event_id": 342,
+            "year": 2026,
+            "month": 5,
+            "name": "GGP",
+            "city": "Paris",
+            "status": "stable",
+            "edition": 4,
+            "prev": {"year": 2025, "competitors": 210},
+            "gap_flag": None,
+        },
+        {
+            "event_id": 9,
+            "year": 2025,
+            "month": 6,
+            "name": "One Year Gap",
+            "city": "Madrid",
+            "status": "growing",
+            "gap_flag": "after_1yr_break",
+            "edition": 4,
+            "prev": {"year": 2023, "competitors": 80},
+        },
+    ]
+    stats = annotate_status_stories(editions, splits, labels)
+    assert editions[0]["new_kind"] == "debut"
+    assert "status_notes" not in editions[0]
+    assert editions[1]["new_kind"] == "returning"
+    assert editions[1]["status_notes"][0].startswith("Returned after a break")
+    assert editions[2]["new_kind"] == "renamed"
+    assert editions[2]["status_notes"][0] == "Paris Westie Fest → Paris Swing Classic"
+    assert "new_kind" not in editions[4]
+    assert editions[4]["status_notes"][0].startswith("Held in Toulouse through 2025")
+    assert editions[5]["status_notes"][0].startswith("Returned after a one-year break")
+    assert stats["new_debut"] == 1
+    assert stats["new_returning"] == 1
+    assert stats["new_renamed"] == 1
+    assert stats["notes_move"] == 1
+    assert stats["notes_gap1"] == 1
+
+
+def test_load_rename_labels_from_pipeline_aliases() -> None:
+    assert DEFAULT_ALIASES.is_file()
+    labels = load_rename_labels_from_aliases(DEFAULT_ALIASES)
+    assert 272 in labels
+    assert labels[272]["early_name"] == "Paris Westie Fest"
+    assert 342 not in labels  # GGP does not reset ordinal
+
+
 if __name__ == "__main__":
     test_series_bucket_paris_eras()
     test_is_late_era_bucket()
@@ -159,4 +258,6 @@ if __name__ == "__main__":
     test_clear_cross_brand_prev()
     test_restore_missing_prev_bto_to_calgary()
     test_classify_growth_basic()
+    test_annotate_status_stories_kinds_and_moves()
+    test_load_rename_labels_from_pipeline_aliases()
     print("OK")

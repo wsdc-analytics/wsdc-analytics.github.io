@@ -701,8 +701,7 @@
       border: 1px dashed #c5cad3;
     }
     tr.is-absent td strong { font-weight: var(--wsdc-font-weight-medium); color: var(--wsdc-color-text-muted); }
-    /* Region tooltip mirrors the side KPI card. Fixed to viewport so map
-       overflow:hidden never clips it. */
+    /* Fixed tip; JS clamps to #growthMap and may shrink max-height to fit. */
     .tooltip {
       position: fixed;
       z-index: 4000;
@@ -724,6 +723,18 @@
       transform: translateY(2px) scale(0.98);
       transform-origin: top left;
       transition: opacity 125ms ease-out, transform 125ms ease-out;
+      box-sizing: border-box;
+    }
+    .tooltip .tt-status-notes {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--wsdc-color-border, #e5e7eb);
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--wsdc-color-text-muted, #4b5563);
+    }
+    .tooltip .tt-status-notes__line + .tt-status-notes__line {
+      margin-top: 4px;
     }
     .tooltip.is-visible {
       opacity: 1;
@@ -1030,6 +1041,7 @@
     Events in the selected area by change in competitors vs their previous edition.
     Growing / Declining = at least ±10% and ±10 competitors; Stable = smaller change;
     New = first edition, a return after a gap, or a renamed event.
+    Event chips may say Debut / Returning / Renamed; tips add a short note when useful.
     Click a pill to show only those events; All shows the whole area.
   </div>
   <div class="eg-tip-pop" id="kpiTipPop" role="tooltip" hidden>
@@ -1076,10 +1088,10 @@
             <ul>
               <li><strong>Growing / Declining</strong> — change of at least 10% <em>and</em> at least 10 competitors</li>
               <li><strong>Stable</strong> — smaller change</li>
-              <li><strong>New</strong> — first edition, a return after a gap, or a renamed event (all shown as New)</li>
+              <li><strong>New</strong> — filter groups debuts, returns after a multi-year gap, and renamed series. Event chips say <em>Debut</em>, <em>Returning</em> or <em>Renamed</em> (same yellow)</li>
             </ul>
             <p>Event tips show <strong>#N</strong> after the event name — the edition ordinal across the full WSDC history (from 1991), not only the years loaded in this dashboard. This distinguishes a debut (<em>#1</em>) from a long-running event or a comeback after a gap, even when the growth series is truncated at the data window.</p>
-            <p>A renamed event starts again at <strong>#1</strong> under its new name (e.g. US Open → The Open in 2024; Paris Westie Fest → Paris Swing Classic in 2023), so its first year shows as New rather than as a continuation.</p>
+            <p>A renamed event starts again at <strong>#1</strong> under its new name (e.g. US Open → The Open in 2024; Paris Westie Fest → Paris Swing Classic in 2023), so its first year shows as New rather than as a continuation. Tips may add a short note (gap years, old→new name, or a city move). A one-year calendar gap that still compares YoY can also get a tip note without changing the Growing/Stable/Declining chip.</p>
             <p>The pills count those editions in the selected area. Click one to keep only that group; <strong>All</strong> shows the whole area.</p>
           </div>
         </details>
@@ -1125,7 +1137,7 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261102-avg-metric-ui8";
+  var DATA_VER = "20261103-tip-new-kinds-r1";
   var LIST_METRICS = { competitors: true, events: true, avg: true };
 
   var STATUS_COLOR = {
@@ -1219,6 +1231,39 @@
       (opts.tip ? ' data-region-key="' + esc(opts.tip) + '"' : "") +
       (title ? ' title="' + esc(title) + '"' : "") +
       ">" + esc(label) + "</span>";
+  }
+
+  function eventNewKind(e) {
+    if (!e) return null;
+    if (e.new_kind === "debut" || e.new_kind === "returning" || e.new_kind === "renamed") {
+      return e.new_kind;
+    }
+    if (e.status === "restarted") return "returning";
+    if (displayStatus(e.status) === "new") return "debut";
+    return null;
+  }
+
+  function eventStatusChip(e, opts) {
+    opts = opts || {};
+    var kind = eventNewKind(e);
+    if (kind) {
+      var labels = { debut: "Debut", returning: "Returning", renamed: "Renamed" };
+      var label = labels[kind] || "New";
+      var cls = "chip chip-new" + (opts.tip ? " has-tip" : "");
+      return '<span class="' + cls + '"' +
+        (opts.tip ? ' data-region-key="' + esc(opts.tip) + '"' : "") +
+        ">" + esc(label) + "</span>";
+    }
+    return chip(e && e.status, opts);
+  }
+
+  function statusNotesHtml(e) {
+    var notes = (e && e.status_notes) || [];
+    if (!notes.length) return "";
+    var lines = notes.map(function (n) {
+      return '<div class="tt-status-notes__line">' + esc(String(n)) + "</div>";
+    }).join("");
+    return '<div class="tt-status-notes">' + lines + "</div>";
   }
 
   // Pin still shows the prior year while the filter year has no edition.
@@ -2701,7 +2746,7 @@
         '<div class="tt-title">' +
           eventNameWithEditionHtml(e, { showEdition: false }) +
           yrBit +
-          chip(e.status) +
+          eventStatusChip(e) +
         "</div>" +
         placeLine +
         "</div>";
@@ -2714,7 +2759,7 @@
         venueLineHtml(e) +
         '<div class="tt-title">' +
           eventNameWithEditionHtml(e, { showEdition: false }) +
-          chip(e.status) +
+          eventStatusChip(e) +
         "</div>" +
         '<div class="tt-period">' + esc(periodHead) + "</div>" +
         '<div class="tt-kpi-grid tt-kpi-grid--solo">' +
@@ -2724,6 +2769,7 @@
             '<div class="tt-kpi__sub">Prior period only</div>' +
           "</div>" +
         "</div>" +
+        statusNotesHtml(e) +
       "</div></div>";
   }
 
@@ -2817,7 +2863,7 @@
     var body = venue +
       '<div class="tt-title">' +
       eventNameWithEditionHtml(e) +
-      chip(e.status) +
+      eventStatusChip(e) +
       "</div>" +
       '<div class="tt-period">' + esc(period) + "</div>" +
       '<div class="tt-kpi-grid tt-kpi-grid--solo">' +
@@ -2828,7 +2874,8 @@
           '<div class="tt-kpi__val">' + compVal + est + prior + "</div>" +
           compSub +
         "</div>" +
-      "</div>";
+      "</div>" +
+      statusNotesHtml(e);
     if (!lastEd) return body;
     return '<div class="tt-last-ed">' +
       lastEditionTagHtml(e) +
@@ -2964,33 +3011,62 @@
     showTip(ev, "e:" + editionKey(edition), eventTooltipHtml(edition));
   }
 
+  function mapTipFrameRect() {
+    var el = document.getElementById("growthMap");
+    if (el) {
+      var r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) return r;
+    }
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    return { left: 0, top: 0, right: vw, bottom: vh, width: vw, height: vh };
+  }
+
   function moveMapTooltip(ev) {
     var tip = tipEl();
     if (!tip || !tip.classList.contains("is-visible")) return;
-    var pad = 12;
+    var pad = 8;
     var gap = 14;
-    var vw = window.innerWidth || document.documentElement.clientWidth;
-    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var frame = mapTipFrameRect();
     var pt = eventClientPoint(ev);
     var cx = pt.x;
     var cy = pt.y;
-    // Measure off-screen first so max-height / scroll height are accurate.
-    tip.style.left = "-9999px";
-    tip.style.top = "0px";
+    var frameW = Math.max(0, frame.width - 2 * pad);
+    var frameH = Math.max(0, frame.height - 2 * pad);
+    // Cap both min and max so a narrow map frame cannot overflow horizontally.
+    var maxW = Math.max(120, frameW);
+    var maxH = Math.max(80, frameH);
+    var wantMax = tip.classList.contains("is-stack") ? 320 : 300;
+    tip.style.maxWidth = Math.round(Math.min(wantMax, maxW)) + "px";
+    tip.style.minWidth = Math.round(Math.min(228, maxW)) + "px";
+    tip.style.maxHeight = Math.round(maxH) + "px";
+    // Measure in place (no -9999 jump) under the new size caps.
     var w = tip.offsetWidth;
     var h = tip.offsetHeight;
-    var x = cx + gap;
-    var y = cy + gap;
-    if (x + w > vw - pad) x = cx - w - gap;
-    if (x < pad) x = pad;
-    if (x + w > vw - pad) x = Math.max(pad, vw - pad - w);
-    // Prefer below cursor; if it would clip the viewport, flip above.
-    if (y + h > vh - pad) y = cy - h - gap;
-    if (y < pad) y = pad;
-    if (y + h > vh - pad) y = Math.max(pad, vh - pad - h);
+    var left = frame.left + pad;
+    var top = frame.top + pad;
+    var right = frame.right - pad;
+    var bottom = frame.bottom - pad;
+    function space(v) { return v > 0 ? v : 0; }
+    var spaceRight = space(right - (cx + gap));
+    var spaceLeft = space((cx - gap) - left);
+    var spaceBelow = space(bottom - (cy + gap));
+    var spaceAbove = space((cy - gap) - top);
+    var corners = [
+      { x: cx + gap, y: cy + gap, score: spaceRight * spaceBelow, origin: "top left" },
+      { x: cx - w - gap, y: cy + gap, score: spaceLeft * spaceBelow, origin: "top right" },
+      { x: cx + gap, y: cy - h - gap, score: spaceRight * spaceAbove, origin: "bottom left" },
+      { x: cx - w - gap, y: cy - h - gap, score: spaceLeft * spaceAbove, origin: "bottom right" }
+    ];
+    corners.sort(function (a, b) { return b.score - a.score; });
+    var best = corners[0];
+    var maxX = Math.max(left, right - w);
+    var maxY = Math.max(top, bottom - h);
+    var x = Math.min(Math.max(best.x, left), maxX);
+    var y = Math.min(Math.max(best.y, top), maxY);
     tip.style.left = Math.round(x) + "px";
     tip.style.top = Math.round(y) + "px";
-    tip.style.transformOrigin = (y < cy ? "bottom left" : "top left");
+    tip.style.transformOrigin = best.origin;
   }
 
   function hideMapTooltip() {
@@ -3983,7 +4059,7 @@
             metricSpanHtml(metric) +
           "</span>"
         ) +
-        statusCellHtml(chip(e.status, { tip: ek })) + "</tr>";
+        statusCellHtml(eventStatusChip(e, { tip: ek })) + "</tr>";
     });
     absent.forEach(function (e) {
       var ak = "absent:" + editionKey(e);
