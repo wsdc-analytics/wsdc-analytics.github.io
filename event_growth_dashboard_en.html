@@ -951,7 +951,7 @@
           </button>
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
-        <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date against the same months last year; finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
+        <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date (closed months in full; the open month matched to published events only); finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
         <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion). For a continent, country, state or city, it is the total across all events held there in the selected period. <strong>Avg / event</strong> = that total ÷ number of events (mean event size). Details in Methodology.</p>
       </header>
 
@@ -1045,7 +1045,7 @@
     Click a pill to show only those events; All shows the whole area.
   </div>
   <div class="eg-tip-pop" id="kpiTipPop" role="tooltip" hidden>
-    All: area totals, this year vs last year (same months if the year is still open).
+    All: area totals, this year vs last year (YTD if the year is still open: closed months full, open month matched events only).
     Avg / event = competitors ÷ events (mean event size); its change compares those averages.
     With a trend pill: Competitors and Avg / event compare the selected events to their own previous editions;
     Events = how many of the area’s events have that trend.
@@ -1076,9 +1076,9 @@
         <details class="method-sec">
           <summary>YTD vs YoY</summary>
           <div class="method-sec__body">
-            <p>When the selected year is still open (it matches <em>data through</em> and the month is before December), both years are cut to the same months — <strong>year-to-date</strong> (January through the latest month with data).</p>
-            <p>Finished years compare full calendar years — <strong>YoY</strong>. The side panel always says which mode is active.</p>
-            <p>An open year can look Declining until its autumn events are in — later months are still missing from the data.</p>
+            <p>When the selected year is still open (it matches <em>data through</em> and the month is before December), both years use <strong>year-to-date</strong>: closed months (January through the month before <em>data through</em>) are compared in full on both sides.</p>
+            <p>The <em>open</em> month (the <em>data through</em> month, while <em>as of</em> is still inside that month) is matched-pair only: current counts every published edition in that month; prior counts only the previous-year editions of those same events (<code>event_id</code>, allowing ±1 calendar month for WSDC date flex). Other prior-year events in that month are held out until the month closes.</p>
+            <p>Once <em>as of</em> moves past that month (or <em>data through</em> advances), the month is treated as closed — full prior sum — and missing series can show as Absent. Finished years compare full calendar years — <strong>YoY</strong>. The side panel always says which mode is active.</p>
           </div>
         </details>
         <details class="method-sec">
@@ -1628,8 +1628,10 @@
     return null;
   }
 
-  // Incomplete selected year (matches data_through YYYY-MM) → YTD vs same months prior.
-  // Finished years → full-year YoY. Both sides use the same month window.
+  // Incomplete selected year (matches data_through YYYY-MM) → YTD.
+  // Closed months: full sum both years. Open month (while as_of is still in
+  // data_through's month): prior side matched by event_id to published current
+  // open-month editions only (±1 month for WSDC date flex). Finished years → YoY.
   // First year in the dataset has no prior baseline → priorYear null.
   function comparisonMode() {
     var year = state.year;
@@ -1644,16 +1646,39 @@
     var throughMonth = parts.length > 1 ? Number(parts[1]) : null;
     if (!isFinite(throughMonth) || throughMonth < 1 || throughMonth > 12) throughMonth = null;
 
+    var asOfRaw = state.data && state.data.as_of;
+    var asOfParts = asOfRaw && /^\d{4}-\d{2}-\d{2}$/.test(String(asOfRaw))
+      ? String(asOfRaw).split("-")
+      : null;
+    var asOfYear = asOfParts ? Number(asOfParts[0]) : null;
+    var asOfMonth = asOfParts ? Number(asOfParts[1]) : null;
+
     var mode = "yoy";
     if (year != null && throughYear != null && year === throughYear &&
         throughMonth != null && throughMonth < 12) {
       mode = "ytd";
     }
+
+    // Open month stays partial while as_of is still inside data_through's month
+    // (or as_of is missing / earlier). Once as_of moves past that month, full prior.
+    var openMonthIsPartial = false;
+    if (mode === "ytd" && throughMonth != null && throughYear != null) {
+      if (asOfYear == null || asOfMonth == null) {
+        openMonthIsPartial = true;
+      } else if (asOfYear < throughYear ||
+          (asOfYear === throughYear && asOfMonth <= throughMonth)) {
+        openMonthIsPartial = true;
+      }
+    }
+
     return {
       mode: mode,
       year: year,
       priorYear: priorYear,
-      throughMonth: mode === "ytd" ? throughMonth : null
+      throughMonth: mode === "ytd" ? throughMonth : null,
+      throughYear: throughYear,
+      asOf: asOfRaw || null,
+      openMonthIsPartial: openMonthIsPartial
     };
   }
 
@@ -1664,25 +1689,78 @@
     return m <= mode.throughMonth;
   }
 
+  function openMonthEventIds(currentRows, mode) {
+    var ids = {};
+    if (!mode || mode.throughMonth == null) return ids;
+    (currentRows || []).forEach(function (e) {
+      if (editionMonth(e) === mode.throughMonth && e.event_id != null) {
+        ids[e.event_id] = true;
+      }
+    });
+    return ids;
+  }
+
+  // Prior YTD filter: closed months full; open month only matched event_ids
+  // (prior month in {M-1, M, M+1}; M-1 already covered by m < throughMonth).
+  function inPriorComparisonWindow(e, mode, openIds) {
+    if (!mode || mode.mode !== "ytd" || mode.throughMonth == null) return true;
+    var m = editionMonth(e);
+    if (m == null) return true;
+    var through = mode.throughMonth;
+    if (!mode.openMonthIsPartial) {
+      return m <= through;
+    }
+    if (m < through) return true;
+    if (m === through || m === through + 1) {
+      return !!(e.event_id != null && openIds && openIds[e.event_id]);
+    }
+    return false;
+  }
+
   function rowsInComparisonWindow(rows, mode) {
     return (rows || []).filter(function (e) {
       return inComparisonWindow(e, mode);
     });
   }
 
-  function priorComparisonRows(mode) {
-    if (!mode || mode.priorYear == null) return [];
-    return rowsInComparisonWindow(geoScopedEditionsForYear(mode.priorYear), mode);
+  function filterPriorComparisonRows(priorRows, currentRows, mode) {
+    var openIds = mode && mode.openMonthIsPartial
+      ? openMonthEventIds(currentRows, mode)
+      : null;
+    return (priorRows || []).filter(function (e) {
+      return inPriorComparisonWindow(e, mode, openIds);
+    });
   }
 
-  // Prior-year rows for region rollups — same calendar YTD/YoY window as KPIs.
+  function priorComparisonRows(mode) {
+    if (!mode || mode.priorYear == null) return [];
+    return filterPriorComparisonRows(
+      geoScopedEditionsForYear(mode.priorYear),
+      geoScopedEditionsForYear(mode.year),
+      mode
+    );
+  }
+
+  // Prior-year rows for region rollups — same matched YTD/YoY window as KPIs.
   function priorRowsForBuild(parentScope) {
     var mode = comparisonMode();
     if (!mode || mode.priorYear == null) return [];
     var base = parentScope
       ? parentScopedEditionsForYear(mode.priorYear)
       : geoScopedEditionsForYear(mode.priorYear);
-    return rowsInComparisonWindow(base, mode);
+    var currentBase = parentScope
+      ? parentScopedEditionsForYear(mode.year)
+      : geoScopedEditionsForYear(mode.year);
+    return filterPriorComparisonRows(base, currentBase, mode);
+  }
+
+  function ytdPeriodLabel(mode) {
+    if (!mode || mode.mode !== "ytd") return null;
+    var base = mode.year + " YTD vs " + mode.priorYear + " YTD";
+    if (mode.openMonthIsPartial) {
+      return base + " (open month: matched events only)";
+    }
+    return base;
   }
 
   function sumCompetitors(rows) {
@@ -2168,7 +2246,7 @@
       foot.textContent = (mode.year != null ? mode.year + " · " : "") +
         "No prior year in data";
     } else if (mode.mode === "ytd") {
-      foot.textContent = mode.year + " YTD vs " + mode.priorYear + " YTD";
+      foot.textContent = ytdPeriodLabel(mode);
     } else {
       foot.textContent = mode.year + " vs " + mode.priorYear + " · YoY";
     }
@@ -2676,7 +2754,7 @@
       return st + " events · vs previous edition";
     }
     if (mode.priorYear == null) return String(mode.year || "—");
-    if (mode.mode === "ytd") return mode.year + " YTD vs " + mode.priorYear + " YTD";
+    if (mode.mode === "ytd") return ytdPeriodLabel(mode);
     return mode.year + " vs " + mode.priorYear + " · YoY";
   }
 
