@@ -1137,7 +1137,7 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261103-tip-new-kinds";
+  var DATA_VER = "20261103-tip-new-kinds-r1";
   var LIST_METRICS = { competitors: true, events: true, avg: true };
 
   var STATUS_COLOR = {
@@ -3031,23 +3031,27 @@
     var pt = eventClientPoint(ev);
     var cx = pt.x;
     var cy = pt.y;
-    var maxW = Math.max(160, frame.width - 2 * pad);
-    var maxH = Math.max(80, frame.height - 2 * pad);
-    tip.style.maxWidth = Math.round(Math.min(tip.classList.contains("is-stack") ? 320 : 300, maxW)) + "px";
+    var frameW = Math.max(0, frame.width - 2 * pad);
+    var frameH = Math.max(0, frame.height - 2 * pad);
+    // Cap both min and max so a narrow map frame cannot overflow horizontally.
+    var maxW = Math.max(120, frameW);
+    var maxH = Math.max(80, frameH);
+    var wantMax = tip.classList.contains("is-stack") ? 320 : 300;
+    tip.style.maxWidth = Math.round(Math.min(wantMax, maxW)) + "px";
+    tip.style.minWidth = Math.round(Math.min(228, maxW)) + "px";
     tip.style.maxHeight = Math.round(maxH) + "px";
-    // Measure off-screen so scrollHeight reflects the capped box.
-    tip.style.left = "-9999px";
-    tip.style.top = "0px";
+    // Measure in place (no -9999 jump) under the new size caps.
     var w = tip.offsetWidth;
     var h = tip.offsetHeight;
     var left = frame.left + pad;
     var top = frame.top + pad;
     var right = frame.right - pad;
     var bottom = frame.bottom - pad;
-    var spaceRight = right - (cx + gap);
-    var spaceLeft = (cx - gap) - left;
-    var spaceBelow = bottom - (cy + gap);
-    var spaceAbove = (cy - gap) - top;
+    function space(v) { return v > 0 ? v : 0; }
+    var spaceRight = space(right - (cx + gap));
+    var spaceLeft = space((cx - gap) - left);
+    var spaceBelow = space(bottom - (cy + gap));
+    var spaceAbove = space((cy - gap) - top);
     var corners = [
       { x: cx + gap, y: cy + gap, score: spaceRight * spaceBelow, origin: "top left" },
       { x: cx - w - gap, y: cy + gap, score: spaceLeft * spaceBelow, origin: "top right" },
@@ -3056,8 +3060,10 @@
     ];
     corners.sort(function (a, b) { return b.score - a.score; });
     var best = corners[0];
-    var x = Math.min(Math.max(best.x, left), Math.max(left, right - w));
-    var y = Math.min(Math.max(best.y, top), Math.max(top, bottom - h));
+    var maxX = Math.max(left, right - w);
+    var maxY = Math.max(top, bottom - h);
+    var x = Math.min(Math.max(best.x, left), maxX);
+    var y = Math.min(Math.max(best.y, top), maxY);
     tip.style.left = Math.round(x) + "px";
     tip.style.top = Math.round(y) + "px";
     tip.style.transformOrigin = best.origin;
