@@ -98,9 +98,7 @@ def edition_splits_from_year_split_rules(
     return out
 
 
-def load_edition_series_splits_from_aliases(
-    path: Path,
-) -> List[Dict[str, int]]:
+def _parse_event_name_year_splits(path: Path) -> List[Dict[str, Any]]:
     """Parse EVENT_NAME_YEAR_SPLITS via AST (no pandas / package import)."""
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     for node in tree.body:
@@ -113,8 +111,35 @@ def load_edition_series_splits_from_aliases(
         rules = ast.literal_eval(node.value)
         if not isinstance(rules, list):
             break
-        return edition_splits_from_year_split_rules(rules)
+        return [r for r in rules if isinstance(r, dict)]
     raise ValueError(f"EVENT_NAME_YEAR_SPLITS not found in {path}")
+
+
+def load_edition_series_splits_from_aliases(
+    path: Path,
+) -> List[Dict[str, int]]:
+    """Reset-ordinal year-splits used for edition buckets."""
+    return edition_splits_from_year_split_rules(_parse_event_name_year_splits(path))
+
+
+def load_rename_labels_from_aliases(
+    path: Path,
+) -> Dict[int, Dict[str, Any]]:
+    """event_id → {early_name, late_name, late_year_min} for reset rebrands."""
+    out: Dict[int, Dict[str, Any]] = {}
+    for rule in _parse_event_name_year_splits(path):
+        if not rule.get("reset_edition_ordinal"):
+            continue
+        try:
+            eid = int(rule.get("late_event_id", rule.get("early_event_id")))
+            out[eid] = {
+                "early_name": str(rule["early_name"]),
+                "late_name": str(rule["late_name"]),
+                "late_year_min": int(rule["late_year_min"]),
+            }
+        except (KeyError, TypeError, ValueError):
+            continue
+    return out
 
 
 def resolve_edition_series_splits(
@@ -131,6 +156,28 @@ def resolve_edition_series_splits(
                 file=sys.stderr,
             )
     return list(_FALLBACK_EDITION_SERIES_SPLITS)
+
+
+def resolve_rename_labels(
+    aliases_path: Optional[Path] = None,
+) -> Dict[int, Dict[str, Any]]:
+    path = aliases_path if aliases_path is not None else DEFAULT_ALIASES
+    if path.is_file():
+        try:
+            return load_rename_labels_from_aliases(path)
+        except (SyntaxError, ValueError, TypeError) as exc:
+            print(
+                f"WARN: could not load rename labels from {path}: {exc}",
+                file=sys.stderr,
+            )
+    # Fallback: Paris only (matches _FALLBACK_EDITION_SERIES_SPLITS).
+    return {
+        272: {
+            "early_name": "Paris Westie Fest",
+            "late_name": "Paris Swing Classic",
+            "late_year_min": 2023,
+        }
+    }
 
 
 # Resolved at import for callers/tests that expect a module-level list; refresh
@@ -340,10 +387,123 @@ def edition_ordinal(history_keys: List[int], self_key: int) -> int:
     return sum(1 for k in history_keys if k <= self_key)
 
 
+def annotate_status_stories(
+    editions: List[Dict[str, Any]],
+    splits: Optional[List[Dict[str, int]]] = None,
+    rename_labels: Optional[Dict[int, Dict[str, Any]]] = None,
+) -> Dict[str, int]:
+    """Bake new_kind + status_notes for tips (debut/returning/renamed/moves/gaps)."""
+    split_rules = splits if splits is not None else EDITION_SERIES_SPLITS
+    labels = rename_labels if rename_labels is not None else {}
+    stats = {
+        "new_debut": 0,
+        "new_returning": 0,
+        "new_renamed": 0,
+        "notes_move": 0,
+        "notes_gap1": 0,
+    }
+
+    for ed in editions:
+        ed.pop("new_kind", None)
+        ed.pop("status_notes", None)
+
+    by_eid: DefaultDict[int, List[Dict[str, Any]]] = defaultdict(list)
+    for ed in editions:
+        try:
+            by_eid[int(ed["event_id"])].append(ed)
+        except (KeyError, TypeError, ValueError):
+            continue
+
+    for rows in by_eid.values():
+        rows.sort(
+            key=lambda e: (
+                int(e.get("year") or 0),
+                int(e.get("month") or 0),
+                str(e.get("name") or ""),
+            )
+        )
+        for prev, cur in zip(rows, rows[1:]):
+            ca = str(prev.get("city") or "").strip()
+            cb = str(cur.get("city") or "").strip()
+            if not ca or not cb or ca == cb:
+                continue
+            try:
+                y0 = int(prev["year"])
+                y1 = int(cur["year"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            note = f"Held in {ca} through {y0}; in {cb} from {y1}"
+            notes = list(cur.get("status_notes") or [])
+            notes.append(note)
+            cur["status_notes"] = notes
+            stats["notes_move"] += 1
+
+    for ed in editions:
+        notes = list(ed.get("status_notes") or [])
+        status = ed.get("status")
+        try:
+            eid = int(ed["event_id"])
+            year = int(ed["year"])
+        except (KeyError, TypeError, ValueError):
+            if notes:
+                ed["status_notes"] = notes
+            continue
+
+        bucket = series_bucket(eid, year, split_rules)
+        prev = ed.get("prev") if isinstance(ed.get("prev"), dict) else None
+        prev_year = prev.get("year") if prev else None
+
+        if status == "restarted":
+            ed["new_kind"] = "returning"
+            stats["new_returning"] += 1
+            if prev_year is not None:
+                notes.insert(0, f"Returned after a break · last held {prev_year}")
+        elif status == "new":
+            edition_n = ed.get("edition")
+            try:
+                edition_n = int(edition_n) if edition_n is not None else 0
+            except (TypeError, ValueError):
+                edition_n = 0
+            if is_late_era_bucket(bucket) and edition_n == 1:
+                ed["new_kind"] = "renamed"
+                stats["new_renamed"] += 1
+                meta = labels.get(eid) or {}
+                early = meta.get("early_name")
+                late = meta.get("late_name")
+                if early and late:
+                    notes.insert(0, f"{early} → {late}")
+                else:
+                    notes.insert(0, "Continued under a new name")
+            else:
+                ed["new_kind"] = "debut"
+                stats["new_debut"] += 1
+        elif ed.get("gap_flag") == "after_1yr_break" and prev_year is not None:
+            notes.append(
+                f"Returned after a one-year break · last held {prev_year}"
+            )
+            stats["notes_gap1"] += 1
+
+        if notes:
+            # De-dupe while preserving order.
+            seen = set()
+            uniq: List[str] = []
+            for n in notes:
+                if n in seen:
+                    continue
+                seen.add(n)
+                uniq.append(n)
+            ed["status_notes"] = uniq
+        else:
+            ed.pop("status_notes", None)
+
+    return stats
+
+
 def enrich(
     growth: Dict[str, Any],
     history: DefaultDict[str, List[int]],
     splits: Optional[List[Dict[str, int]]] = None,
+    rename_labels: Optional[Dict[int, Dict[str, Any]]] = None,
 ) -> Dict[str, int]:
     stats = {
         "editions": 0,
@@ -353,6 +513,11 @@ def enrich(
         "split_buckets_used": 0,
         "cross_brand_prev_cleared": 0,
         "prev_restored": 0,
+        "new_debut": 0,
+        "new_returning": 0,
+        "new_renamed": 0,
+        "notes_move": 0,
+        "notes_gap1": 0,
     }
     floor = growth.get("year_floor")
     split_rules = splits if splits is not None else EDITION_SERIES_SPLITS
@@ -403,6 +568,12 @@ def enrich(
         thr_pct=thr_pct,
         thr_abs=thr_abs,
     )
+    story = annotate_status_stories(
+        list(growth.get("editions") or []),
+        split_rules,
+        rename_labels if rename_labels is not None else resolve_rename_labels(),
+    )
+    stats.update(story)
     growth["edition_enrichment"] = {
         "source": "event_editions.csv",
         "enriched_at": datetime.now(timezone.utc)
@@ -436,6 +607,7 @@ def main() -> int:
         return 1
 
     splits = resolve_edition_series_splits(args.aliases)
+    rename_labels = resolve_rename_labels(args.aliases)
     print(
         f"edition series splits ({len(splits)}): "
         + ", ".join(
@@ -446,13 +618,16 @@ def main() -> int:
 
     growth = json.loads(args.growth.read_text(encoding="utf-8"))
     history = load_history(args.editions, splits)
-    stats = enrich(growth, history, splits)
+    stats = enrich(growth, history, splits, rename_labels=rename_labels)
     print(
         f"editions={stats['editions']} with_history={stats['with_history']} "
         f"missing={stats['missing_history']} "
         f"edition>1_at_floor={stats['edition_gt_1_at_floor']} "
         f"split_buckets={stats['split_buckets_used']} "
         f"cross_brand_cleared={stats['cross_brand_prev_cleared']} "
+        f"debut={stats.get('new_debut', 0)} returning={stats.get('new_returning', 0)} "
+        f"renamed={stats.get('new_renamed', 0)} moves={stats.get('notes_move', 0)} "
+        f"gap1={stats.get('notes_gap1', 0)} "
         f"history_buckets={len(history)}"
     )
     asia = [
