@@ -1137,7 +1137,7 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261103-tip-new-kinds-r1";
+  var DATA_VER = "20261103-list-map-highlight-r1";
   var LIST_METRICS = { competitors: true, events: true, avg: true };
 
   var STATUS_COLOR = {
@@ -1176,6 +1176,10 @@
     mapBoot: null,
     mapLoaded: false,
     mapHoverId: null,
+    mapHoverKey: null,
+    mapHoverIds: [],
+    mapFeatureIdsByKey: {},
+    editionToVenueKey: {},
     mapRenderSeq: 0,
     fitTimers: [],
     regionByKey: {},
@@ -2215,14 +2219,77 @@
   }
 
   function clearMapHover() {
-    if (!state.map || !state.mapLoaded || state.mapHoverId == null) return;
-    try {
-      state.map.setFeatureState(
-        { source: MAP_POLY_SRC, id: state.mapHoverId },
-        { hover: false }
-      );
-    } catch (e) { /* ignore */ }
+    if (!state.map || !state.mapLoaded) {
+      state.mapHoverId = null;
+      state.mapHoverKey = null;
+      state.mapHoverIds = [];
+      return;
+    }
+    var refs = state.mapHoverIds || [];
+    if (!refs.length && state.mapHoverId != null) {
+      refs = [{ source: MAP_POLY_SRC, id: state.mapHoverId }];
+    }
+    refs.forEach(function (ref) {
+      if (!ref || ref.id == null) return;
+      try {
+        state.map.setFeatureState(
+          { source: ref.source, id: ref.id },
+          { hover: false }
+        );
+      } catch (e) { /* ignore */ }
+    });
     state.mapHoverId = null;
+    state.mapHoverKey = null;
+    state.mapHoverIds = [];
+  }
+
+  function registerMapFeatureId(key, source, id) {
+    if (key == null || key === "" || id == null || id === "") return;
+    var k = String(key);
+    if (!state.mapFeatureIdsByKey[k]) state.mapFeatureIdsByKey[k] = [];
+    state.mapFeatureIdsByKey[k].push({ source: source, id: id });
+  }
+
+  function indexMapFeatures(polyFc, ptsFc) {
+    state.mapFeatureIdsByKey = {};
+    function walk(fc, source) {
+      ((fc && fc.features) || []).forEach(function (f) {
+        if (!f) return;
+        var p = f.properties || {};
+        var id = f.id != null ? f.id : p.id;
+        registerMapFeatureId(p.regionKey, source, id);
+        registerMapFeatureId(p.venueKey, source, id);
+        registerMapFeatureId(p.editionKey, source, id);
+      });
+    }
+    walk(polyFc, MAP_POLY_SRC);
+    walk(ptsFc, MAP_PTS_SRC);
+  }
+
+  function setMapHoverByKey(hoverKey) {
+    if (hoverKey == null || hoverKey === "") {
+      clearMapHover();
+      return;
+    }
+    var key = String(hoverKey);
+    if (state.mapHoverKey === key) return;
+    clearMapHover();
+    if (!state.map || !state.mapLoaded) return;
+    var list = state.mapFeatureIdsByKey[key] || [];
+    if (!list.length) return;
+    state.mapHoverKey = key;
+    state.mapHoverIds = [];
+    list.forEach(function (ref) {
+      if (!ref || ref.id == null) return;
+      try {
+        state.map.setFeatureState(
+          { source: ref.source, id: ref.id },
+          { hover: true }
+        );
+        state.mapHoverIds.push(ref);
+        state.mapHoverId = ref.id;
+      } catch (e) { /* ignore */ }
+    });
   }
 
   function bindMapPointerHandlers() {
@@ -2253,7 +2320,6 @@
       var f = featureUnder(e);
       var cluster = venueClusterFromFeature(f);
       if (cluster && cluster.length) {
-        clearMapHover();
         map.getCanvas().style.cursor = "pointer";
         // Multi-venue: soft-sticky so cursor can bridge to Map link.
         tipState.sticky = cluster.length > 1;
@@ -2269,27 +2335,19 @@
         return;
       }
       map.getCanvas().style.cursor = "pointer";
-      // Continent/world: no per-country hover paint — crossing Canada→US (or
-      // EU borders) otherwise flashes fill/stroke and feels like a click.
-      var paintHover = state.level === "country" || state.level === "state";
-      var id = f.id != null ? f.id : f.properties.id;
-      if (paintHover && f.source === MAP_POLY_SRC && id != null && id !== state.mapHoverId) {
-        clearMapHover();
-        state.mapHoverId = id;
-        try {
-          map.setFeatureState({ source: MAP_POLY_SRC, id: id }, { hover: true });
-        } catch (err) { /* ignore */ }
-      } else if (!paintHover) {
-        clearMapHover();
-      }
+      // Hover by regionKey so world/continent multi-country fills highlight
+      // together and border crossing does not flash feature-to-feature.
+      setMapHoverByKey(region.key);
       showMapTooltip(e, region);
     });
 
     function clearPointer() {
       if (tipState.pinned) return;
-      clearMapHover();
       hideMapTooltipSoon();
       map.getCanvas().style.cursor = "";
+      // Keep highlight while the tip is still up (incl. soft-sticky bridge).
+      var tip = tipEl();
+      if (!tip || !tip.classList.contains("is-visible")) clearMapHover();
     }
     map.on("mouseleave", MAP_FILL, clearPointer);
     map.on("mouseleave", MAP_CIRCLES, clearPointer);
@@ -2434,12 +2492,24 @@
                 type: "circle",
                 source: MAP_PTS_SRC,
                 paint: {
-                  "circle-radius": ["coalesce", ["get", "radius"], 9],
+                  "circle-radius": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    ["+", ["coalesce", ["get", "radius"], 9], 2.5],
+                    ["coalesce", ["get", "radius"], 9]
+                  ],
                   "circle-color": ["coalesce", ["get", "fillColor"], "#9aa7b5"],
-                  "circle-opacity": ["coalesce", ["get", "opacity"], 0.92],
+                  "circle-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    1,
+                    ["coalesce", ["get", "opacity"], 0.92]
+                  ],
                   // Absent pins use MAP_ABSENT_BORDER symbol as the stroke.
                   "circle-stroke-width": [
                     "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    2.25,
                     ["==", ["get", "absent"], true],
                     0,
                     [">", ["coalesce", ["get", "eventCount"], 1], 1],
@@ -2511,10 +2581,14 @@
 
   function setMapData(polyFc, ptsFc) {
     if (!state.map || !state.mapLoaded) return;
+    clearMapHover();
+    var polyData = polyFc || EMPTY_FC;
+    var ptsData = ptsFc || EMPTY_FC;
+    indexMapFeatures(polyData, ptsData);
     var poly = state.map.getSource(MAP_POLY_SRC);
     var pts = state.map.getSource(MAP_PTS_SRC);
-    if (poly) poly.setData(polyFc || EMPTY_FC);
-    if (pts) pts.setData(ptsFc || EMPTY_FC);
+    if (poly) poly.setData(polyData);
+    if (pts) pts.setData(ptsData);
   }
 
   function setBasemapOpacity(opacity) {
@@ -2920,10 +2994,15 @@
     return sharedVenue + '<div class="tt-stack">' + cards + "</div>";
   }
 
-  function showVenueClusterTooltip(ev, editions) {
+  function showVenueClusterTooltip(ev, editions, opts) {
     if (!editions || !editions.length) return;
+    opts = opts || {};
+    var ek0 = editionKey(editions[0]);
+    var venueKey = (state.editionToVenueKey && state.editionToVenueKey[ek0]) || null;
+    if (venueKey) setMapHoverByKey(venueKey);
+    var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(editions[0]) : null;
     var key = "v:" + editions.map(editionKey).join("|");
-    showTip(ev, key, venueClusterTooltipHtml(editions), {
+    showTip(clientPointEvent(anchor, ev), key, venueClusterTooltipHtml(editions), {
       stack: editions.length > 1
     });
   }
@@ -3001,14 +3080,102 @@
     if (!tipState.pinned) moveMapTooltip(ev);
   }
 
-  function showMapTooltip(ev, region) {
-    if (!region) return;
-    showTip(ev, "r:" + region.key, regionTooltipHtml(region));
+  function mapProjectClientPoint(lon, lat) {
+    if (!state.map || !state.mapLoaded || lon == null || lat == null) return null;
+    if (!isFinite(Number(lon)) || !isFinite(Number(lat))) return null;
+    try {
+      var p = state.map.project([Number(lon), Number(lat)]);
+      var rect = state.map.getCanvas().getBoundingClientRect();
+      return { x: rect.left + p.x, y: rect.top + p.y };
+    } catch (e) {
+      return null;
+    }
   }
 
-  function showEventTooltip(ev, edition) {
+  function geometryClientAnchor(feature) {
+    if (!feature || !feature.geometry) return null;
+    var c = feature.geometry.coordinates;
+    while (c && typeof c[0] !== "number") c = c[0];
+    if (!c || typeof c[0] !== "number" || typeof c[1] !== "number") return null;
+    return mapProjectClientPoint(c[0], c[1]);
+  }
+
+  function hoverKeyAnchorClientPoint(hoverKey) {
+    if (!state.map || !state.mapLoaded || hoverKey == null || hoverKey === "") return null;
+    var key = String(hoverKey);
+    try {
+      var feats = state.map.querySourceFeatures(MAP_POLY_SRC).concat(
+        state.map.querySourceFeatures(MAP_PTS_SRC)
+      );
+      var i;
+      for (i = 0; i < feats.length; i++) {
+        var f = feats[i];
+        var p = (f && f.properties) || {};
+        if (String(p.regionKey || "") !== key &&
+            String(p.venueKey || "") !== key &&
+            String(p.editionKey || "") !== key) {
+          continue;
+        }
+        var pt = geometryClientAnchor(f);
+        if (pt) return pt;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  function regionAnchorClientPoint(region) {
+    if (!region) return null;
+    return mapProjectClientPoint(region.lon, region.lat) ||
+      hoverKeyAnchorClientPoint(region.key);
+  }
+
+  function editionHoverKey(edition) {
+    var ek = editionKey(edition);
+    return (state.editionToVenueKey && state.editionToVenueKey[ek]) || ek;
+  }
+
+  function editionAnchorClientPoint(edition) {
+    var c = editionPinCoords(edition);
+    var fromCoords = c ? mapProjectClientPoint(c.lon, c.lat) : null;
+    if (fromCoords) return fromCoords;
+    return hoverKeyAnchorClientPoint(editionHoverKey(edition));
+  }
+
+  function clientPointEvent(pt, fallbackEv) {
+    if (pt) return { clientX: pt.x, clientY: pt.y };
+    return fallbackEv;
+  }
+
+  function showMapTooltip(ev, region, opts) {
+    if (!region) return;
+    opts = opts || {};
+    setMapHoverByKey(region.key);
+    var anchor = opts.anchorAtRegion ? regionAnchorClientPoint(region) : null;
+    showTip(clientPointEvent(anchor, ev), "r:" + region.key, regionTooltipHtml(region));
+  }
+
+  function showEventTooltip(ev, edition, opts) {
     if (!edition) return;
-    showTip(ev, "e:" + editionKey(edition), eventTooltipHtml(edition));
+    opts = opts || {};
+    var ek = editionKey(edition);
+    var hoverKey = editionHoverKey(edition);
+    if (opts.anchorAtRegion || opts.highlight) setMapHoverByKey(hoverKey);
+    var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(edition) : null;
+    showTip(clientPointEvent(anchor, ev), "e:" + ek, eventTooltipHtml(edition));
+  }
+
+  function showAbsentListTooltip(ev, tipKey, edition, opts) {
+    if (!edition) return;
+    opts = opts || {};
+    var hoverKey = editionHoverKey(edition);
+    if (opts.anchorAtRegion || opts.highlight) setMapHoverByKey(hoverKey);
+    var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(edition) : null;
+    showTip(
+      clientPointEvent(anchor, ev),
+      "a:" + tipKey,
+      absentEventRowHtml(edition),
+      { stack: false }
+    );
   }
 
   function mapTipFrameRect() {
@@ -3077,6 +3244,7 @@
     tipState.key = null;
     tipState.sticky = false;
     tipState.pinned = false;
+    clearMapHover();
     var tip = tipEl();
     if (tip) {
       tip.classList.remove("is-visible");
@@ -3633,8 +3801,16 @@
       });
     }
     var groups = {};
-    clustered.forEach(function (c) { groups[c.key] = c.editions; });
+    var editionVenue = {};
+    clustered.forEach(function (c) {
+      groups[c.key] = c.editions;
+      (c.editions || []).forEach(function (e) {
+        var ek = editionKey(e);
+        if (ek) editionVenue[ek] = c.key;
+      });
+    });
     state.venueClustersByKey = groups;
+    state.editionToVenueKey = editionVenue;
     return clustered.map(function (c, i) {
       var list = c.editions.slice().sort(function (a, b) {
         return (b.competitors || 0) - (a.competitors || 0);
@@ -4014,14 +4190,18 @@
 
   function bindAbsentChipTips(el, byAbsentKey) {
     el.querySelectorAll("tr.is-absent .chip.has-tip").forEach(function (chipEl) {
-      var edition = byAbsentKey[chipEl.getAttribute("data-region-key")];
+      var tipKey = chipEl.getAttribute("data-region-key");
+      var edition = byAbsentKey[tipKey];
       if (!edition) return;
       chipEl.addEventListener("mouseenter", function (ev) {
-        showTip(ev, "a:" + chipEl.getAttribute("data-region-key"),
-          absentEventRowHtml(edition), { stack: false });
+        showAbsentListTooltip(ev, tipKey, edition, {
+          anchorAtRegion: true,
+          highlight: true
+        });
       });
-      chipEl.addEventListener("mousemove", function (ev) {
-        moveMapTooltip(ev);
+      chipEl.addEventListener("mousemove", function () {
+        var pt = editionAnchorClientPoint(edition);
+        if (pt) moveMapTooltip(clientPointEvent(pt));
       });
       chipEl.addEventListener("mouseleave", function () {
         hideMapTooltipSoon();
@@ -4074,10 +4254,11 @@
       var edition = byKey[chipEl.getAttribute("data-region-key")];
       if (!edition) return;
       chipEl.addEventListener("mouseenter", function (ev) {
-        showEventTooltip(ev, edition);
+        showEventTooltip(ev, edition, { anchorAtRegion: true, highlight: true });
       });
-      chipEl.addEventListener("mousemove", function (ev) {
-        moveMapTooltip(ev);
+      chipEl.addEventListener("mousemove", function () {
+        var pt = editionAnchorClientPoint(edition);
+        if (pt) moveMapTooltip(clientPointEvent(pt));
       });
       chipEl.addEventListener("mouseleave", function () {
         hideMapTooltipSoon();
@@ -4148,10 +4329,11 @@
         var region = byKey[key];
         if (!region) return;
         tr.addEventListener("mouseenter", function (ev) {
-          showMapTooltip(ev, region);
+          showMapTooltip(ev, region, { anchorAtRegion: true });
         });
-        tr.addEventListener("mousemove", function (ev) {
-          moveMapTooltip(ev);
+        tr.addEventListener("mousemove", function () {
+          var pt = regionAnchorClientPoint(region);
+          if (pt) moveMapTooltip(clientPointEvent(pt));
         });
         tr.addEventListener("mouseleave", function () {
           hideMapTooltipSoon();
@@ -4163,10 +4345,11 @@
       var region = byKey[key];
       if (!region) return;
       chipEl.addEventListener("mouseenter", function (ev) {
-        showMapTooltip(ev, region);
+        showMapTooltip(ev, region, { anchorAtRegion: true });
       });
-      chipEl.addEventListener("mousemove", function (ev) {
-        moveMapTooltip(ev);
+      chipEl.addEventListener("mousemove", function () {
+        var pt = regionAnchorClientPoint(region);
+        if (pt) moveMapTooltip(clientPointEvent(pt));
       });
       chipEl.addEventListener("mouseleave", function () {
         hideMapTooltipSoon();
