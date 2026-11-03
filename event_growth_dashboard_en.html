@@ -1756,11 +1756,7 @@
 
   function ytdPeriodLabel(mode) {
     if (!mode || mode.mode !== "ytd") return null;
-    var base = mode.year + " YTD vs " + mode.priorYear + " YTD";
-    if (mode.openMonthIsPartial) {
-      return base + " (open month: matched events only)";
-    }
-    return base;
+    return mode.year + " YTD vs " + mode.priorYear + " YTD";
   }
 
   function sumCompetitors(rows) {
@@ -4611,23 +4607,12 @@
           t.closest("#trendInfoBtn") || t.closest("#kpiInfoBtn")))) return;
       closeTipPops();
     });
+    // as_of only — do not show data_through here. Matched open-month YTD is not a
+    // clean "through month M" cut, so that label would misread as year-to-month.
     var stamp = state.data.as_of ||
       (state.data.generated_at ? String(state.data.generated_at).slice(0, 10) : null) ||
       "—";
-    var throughRaw = state.data.data_through;
-    var throughLabel = null;
-    if (throughRaw) {
-      var tp = String(throughRaw).split("-");
-      var tm = tp.length > 1 ? Number(tp[1]) : null;
-      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      throughLabel = (tm >= 1 && tm <= 12)
-        ? (months[tm - 1] + " " + tp[0])
-        : String(throughRaw);
-    }
-    document.getElementById("updatedStamp").textContent = throughLabel
-      ? ("Updated " + stamp + " · data through " + throughLabel)
-      : ("Updated " + stamp);
+    document.getElementById("updatedStamp").textContent = "Updated " + stamp;
   }
 
   Promise.all([
