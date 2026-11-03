@@ -21,7 +21,7 @@
   "n_editions": 1039,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
-    "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
+    "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new. Dashboard YTD: closed months full both years; open data_through month (while as_of is still in that month) matches prior only by event_id to published current editions (±1 month).",
     "status": "Growing/Declining when |pct| ≥ 10% and |delta| ≥ 10; otherwise stable (when comparable)."
   },
   "editions": [

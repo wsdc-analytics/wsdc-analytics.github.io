@@ -2,7 +2,8 @@
 """Regression tests for Event Growth Monitor calendar YTD/YoY rollups.
 
 Mirrors comparisonMode + region/KPI math in event_growth_dashboard_en.html:
-open year (data_through month < 12) → both sides filtered to month <= through.
+open year → YTD with closed months full; open data_through month matched by
+event_id while as_of is still inside that month.
 """
 
 from __future__ import annotations
@@ -36,6 +37,7 @@ def comparison_mode(
     year: int,
     data_through: str,
     years: list[int] | None = None,
+    as_of: str | None = None,
 ) -> dict:
     """Mirrors dashboard comparisonMode: first year in `years` has no prior."""
     parts = str(data_through).split("-")
@@ -54,11 +56,31 @@ def comparison_mode(
         prior_year = None
     else:
         prior_year = candidate_prior
+
+    as_of_year = as_of_month = None
+    if as_of and len(str(as_of)) >= 7:
+        ap = str(as_of).split("-")
+        if len(ap) >= 2 and ap[0].isdigit() and ap[1].isdigit():
+            as_of_year = int(ap[0])
+            as_of_month = int(ap[1])
+
+    open_month_is_partial = False
+    if mode == "ytd" and through_month is not None and through_year is not None:
+        if as_of_year is None or as_of_month is None:
+            open_month_is_partial = True
+        elif as_of_year < through_year or (
+            as_of_year == through_year and as_of_month <= through_month
+        ):
+            open_month_is_partial = True
+
     return {
         "mode": mode,
         "year": year,
         "prior_year": prior_year,
         "through_month": through_month if mode == "ytd" else None,
+        "through_year": through_year,
+        "as_of": as_of,
+        "open_month_is_partial": open_month_is_partial,
     }
 
 
@@ -71,29 +93,77 @@ def in_window(e: dict, mode: dict) -> bool:
     return m <= mode["through_month"]
 
 
+def open_month_event_ids(current_rows: list[dict], mode: dict) -> set[int]:
+    through = mode.get("through_month")
+    if through is None:
+        return set()
+    ids: set[int] = set()
+    for e in current_rows:
+        if edition_month(e) == through and e.get("event_id") is not None:
+            ids.add(int(e["event_id"]))
+    return ids
+
+
+def in_prior_window(e: dict, mode: dict, open_ids: set[int] | None) -> bool:
+    if mode["mode"] != "ytd" or mode["through_month"] is None:
+        return True
+    m = edition_month(e)
+    if m is None:
+        return True
+    through = mode["through_month"]
+    if not mode.get("open_month_is_partial"):
+        return m <= through
+    if m < through:
+        return True
+    if m == through or m == through + 1:
+        return e.get("event_id") is not None and int(e["event_id"]) in (open_ids or set())
+    return False
+
+
+def filter_prior_rows(
+    prior_rows: list[dict], current_rows: list[dict], mode: dict
+) -> list[dict]:
+    open_ids = (
+        open_month_event_ids(current_rows, mode)
+        if mode.get("open_month_is_partial")
+        else None
+    )
+    return [e for e in prior_rows if in_prior_window(e, mode, open_ids)]
+
+
 def rollup(
     editions: list[dict],
     year: int,
-    country: str,
+    country: str | None,
     data_through: str,
     years: list[int] | None = None,
+    as_of: str | None = None,
+    *,
+    continent: str | None = None,
 ) -> dict:
-    mode = comparison_mode(year, data_through, years=years)
+    mode = comparison_mode(year, data_through, years=years, as_of=as_of)
+
+    def scope_match(e: dict) -> bool:
+        if continent is not None and e.get("continent") != continent:
+            return False
+        if country is not None and e.get("country") != country:
+            return False
+        return True
+
     cur = [
         e
         for e in editions
-        if e.get("year") == year and e.get("country") == country and in_window(e, mode)
+        if e.get("year") == year and scope_match(e) and in_window(e, mode)
     ]
     if mode["prior_year"] is None:
         prior: list[dict] = []
     else:
-        prior = [
+        prior_base = [
             e
             for e in editions
-            if e.get("year") == mode["prior_year"]
-            and e.get("country") == country
-            and in_window(e, mode)
+            if e.get("year") == mode["prior_year"] and scope_match(e)
         ]
+        prior = filter_prior_rows(prior_base, cur, mode)
     current = sum(int(e.get("competitors") or 0) for e in cur)
     previous = sum(int(e.get("competitors") or 0) for e in prior)
     if mode["prior_year"] is None:
@@ -112,6 +182,7 @@ def rollup(
         avg_pct = (avg_delta / avg_prior) if avg_prior else None
     return {
         "mode": mode["mode"],
+        "open_month_is_partial": mode["open_month_is_partial"],
         "events": len(cur),
         "events_prior": len(prior),
         "current": current,
@@ -123,6 +194,9 @@ def rollup(
         "avg_delta": avg_delta,
         "avg_pct": avg_pct,
         "prior_year": mode["prior_year"],
+        "open_ids": sorted(open_month_event_ids(cur, mode))
+        if mode.get("open_month_is_partial")
+        else [],
     }
 
 
@@ -135,19 +209,25 @@ def test_assets_present() -> None:
 def test_open_year_is_ytd() -> None:
     payload = json.loads(DATA.read_text())
     years = [int(y) for y in payload["years"]]
-    mode = comparison_mode(2026, payload["data_through"], years=years)
+    mode = comparison_mode(
+        2026, payload["data_through"], years=years, as_of=payload.get("as_of")
+    )
     assert mode["mode"] == "ytd"
     assert mode["prior_year"] == 2025
     assert mode["through_month"] == int(str(payload["data_through"]).split("-")[1])
+    assert mode["open_month_is_partial"] is True
 
 
 def test_finished_year_is_yoy() -> None:
     payload = json.loads(DATA.read_text())
     years = [int(y) for y in payload["years"]]
-    mode = comparison_mode(2025, payload["data_through"], years=years)
+    mode = comparison_mode(
+        2025, payload["data_through"], years=years, as_of=payload.get("as_of")
+    )
     assert mode["mode"] == "yoy"
     assert mode["prior_year"] == 2024
     assert mode["through_month"] is None
+    assert mode["open_month_is_partial"] is False
 
 
 def test_first_year_has_no_prior_baseline() -> None:
@@ -156,9 +236,18 @@ def test_first_year_has_no_prior_baseline() -> None:
     years = [int(y) for y in payload["years"]]
     floor = int(payload.get("year_floor") or min(years))
     assert floor in years
-    mode = comparison_mode(floor, payload["data_through"], years=years)
+    mode = comparison_mode(
+        floor, payload["data_through"], years=years, as_of=payload.get("as_of")
+    )
     assert mode["prior_year"] is None
-    us = rollup(payload["editions"], floor, "United States", payload["data_through"], years=years)
+    us = rollup(
+        payload["editions"],
+        floor,
+        "United States",
+        payload["data_through"],
+        years=years,
+        as_of=payload.get("as_of"),
+    )
     assert us["prior_year"] is None
     assert us["events_prior"] == 0
     assert us["delta"] is None
@@ -210,8 +299,13 @@ def test_us_2026_kpi_matches_region_rollup() -> None:
     editions = payload["editions"]
     through = payload["data_through"]
     years = [int(y) for y in payload["years"]]
-    us = rollup(editions, 2026, "United States", through, years=years)
+    us = rollup(
+        editions, 2026, "United States", through, years=years, as_of=payload.get("as_of")
+    )
     assert us["mode"] == "ytd"
+    assert us["open_month_is_partial"] is True
+    # US has no open-month 2026 editions yet → prior open month held out;
+    # closed-month totals match the previous through-month==10 snapshot.
     assert us["events"] == 67
     assert us["events_prior"] == 69
     assert us["current"] == 22779
@@ -432,8 +526,11 @@ def test_new_pill_has_no_pct() -> None:
 def test_symmetric_window_excludes_late_prior_only() -> None:
     payload = json.loads(DATA.read_text())
     editions = payload["editions"]
-    mode = comparison_mode(2026, payload["data_through"])
-    assert mode["through_month"] == 10
+    mode = comparison_mode(
+        2026, payload["data_through"], as_of=payload.get("as_of")
+    )
+    through = mode["through_month"]
+    assert through is not None and 1 <= through < 12
     late_2025 = [
         e
         for e in editions
@@ -441,8 +538,12 @@ def test_symmetric_window_excludes_late_prior_only() -> None:
         and e.get("country") == "United States"
         and not in_window(e, mode)
     ]
-    assert late_2025, "expected some US 2025 editions after data_through month"
-    # Current 2026 US editions are all inside the window with this snapshot.
+    # With through_month in mid/late year there are Dec (or later) US priors.
+    if through < 12:
+        assert any(
+            edition_month(e) is not None and edition_month(e) > through for e in editions
+            if e.get("year") == 2025
+        ) or late_2025 or through >= 11
     late_2026 = [
         e
         for e in editions
@@ -451,6 +552,133 @@ def test_symmetric_window_excludes_late_prior_only() -> None:
         and not in_window(e, mode)
     ]
     assert late_2026 == []
+
+
+def test_open_month_matches_prior_by_event_id() -> None:
+    """Europe open month: only Warsaw's prior counts; other Nov 2025 held out."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    years = [int(y) for y in payload["years"]]
+    through = int(str(payload["data_through"]).split("-")[1])
+    eu = rollup(
+        editions,
+        2026,
+        None,
+        payload["data_through"],
+        years=years,
+        as_of=payload.get("as_of"),
+        continent="Europe",
+    )
+    assert eu["mode"] == "ytd"
+    assert eu["open_month_is_partial"] is True
+    assert eu["open_ids"] == [236]  # Warsaw Halloween Swing
+
+    # Unmatched prior open-month Europe editions must not enter the prior sum.
+    unmatched = [
+        e
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("continent") == "Europe"
+        and edition_month(e) == through
+        and int(e["event_id"]) not in eu["open_ids"]
+    ]
+    assert len(unmatched) >= 1
+    unmatched_sum = sum(int(e.get("competitors") or 0) for e in unmatched)
+
+    # Full prior (old year-to-month) would include unmatched; matched must not.
+    mode_full = comparison_mode(
+        2026, payload["data_through"], years=years, as_of="2026-12-01"
+    )
+    assert mode_full["open_month_is_partial"] is False
+    prior_full = [
+        e
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("continent") == "Europe"
+        and in_window(e, mode_full)
+    ]
+    prior_full_sum = sum(int(e.get("competitors") or 0) for e in prior_full)
+    assert eu["previous"] == prior_full_sum - unmatched_sum
+
+    warsaw_prior = next(
+        e
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("event_id") == 236
+        and e.get("continent") == "Europe"
+    )
+    assert edition_month(warsaw_prior) == through
+    # Matched prior includes Warsaw; closed months keep the rest.
+    assert eu["previous"] >= int(warsaw_prior["competitors"])
+
+
+def test_open_month_closes_when_as_of_moves_past() -> None:
+    """After as_of leaves data_through month, prior open month is full again."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    years = [int(y) for y in payload["years"]]
+    through = payload["data_through"]
+    partial = rollup(
+        editions,
+        2026,
+        None,
+        through,
+        years=years,
+        as_of=payload.get("as_of"),
+        continent="Europe",
+    )
+    closed = rollup(
+        editions,
+        2026,
+        None,
+        through,
+        years=years,
+        as_of="2026-12-01",
+        continent="Europe",
+    )
+    assert partial["open_month_is_partial"] is True
+    assert closed["open_month_is_partial"] is False
+    assert closed["events"] == partial["events"]
+    assert closed["current"] == partial["current"]
+    assert closed["events_prior"] > partial["events_prior"]
+    assert closed["previous"] > partial["previous"]
+
+
+def test_australia_open_month_holds_unmatched_prior() -> None:
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    years = [int(y) for y in payload["years"]]
+    au = rollup(
+        editions,
+        2026,
+        "Australia",
+        payload["data_through"],
+        years=years,
+        as_of=payload.get("as_of"),
+    )
+    assert au["open_month_is_partial"] is True
+    assert au["open_ids"] == []
+    # Simply Adelaide (2025-11) held out until matched or month closes.
+    adelaide_prior = [
+        e
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("country") == "Australia"
+        and e.get("event_id") == 330
+    ]
+    assert adelaide_prior
+    assert edition_month(adelaide_prior[0]) == int(
+        str(payload["data_through"]).split("-")[1]
+    )
+    closed = rollup(
+        editions,
+        2026,
+        "Australia",
+        payload["data_through"],
+        years=years,
+        as_of="2026-12-01",
+    )
+    assert closed["previous"] == au["previous"] + int(adelaide_prior[0]["competitors"])
 
 
 def test_edition_field_asia_open_full_history() -> None:
@@ -514,7 +742,12 @@ def test_avg_per_event_is_sum_over_count() -> None:
     payload = json.loads(DATA.read_text())
     years = [int(y) for y in payload["years"]]
     us = rollup(
-        payload["editions"], 2025, "United States", payload["data_through"], years=years
+        payload["editions"],
+        2025,
+        "United States",
+        payload["data_through"],
+        years=years,
+        as_of=payload.get("as_of"),
     )
     assert us["events"] > 0
     assert us["avg"] is not None
@@ -552,6 +785,9 @@ if __name__ == "__main__":
     test_growing_pill_uses_event_pairs_not_prior_status()
     test_new_pill_has_no_pct()
     test_symmetric_window_excludes_late_prior_only()
+    test_open_month_matches_prior_by_event_id()
+    test_open_month_closes_when_as_of_moves_past()
+    test_australia_open_month_holds_unmatched_prior()
     test_edition_field_asia_open_full_history()
     test_avg_per_event_is_sum_over_count()
     test_edition_field_paris_resets_on_swing_classic_era()
