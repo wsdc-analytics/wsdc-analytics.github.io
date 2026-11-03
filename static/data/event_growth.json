@@ -1,7 +1,7 @@
 {
   "as_of": "2026-11-03",
-  "generated_at": "2026-11-03T16:54:12Z",
-  "data_through": "2026-10",
+  "generated_at": "2026-11-03T20:00:57Z",
+  "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
     "pct": 0.1,
@@ -18,7 +18,7 @@
     2025,
     2026
   ],
-  "n_editions": 1037,
+  "n_editions": 1039,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
     "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
@@ -35740,11 +35740,67 @@
       "address": "Vikingsgatan 7",
       "geo_source": "wsdc_venue",
       "venue_start": "2026-10-01"
+    },
+    {
+      "event_id": 340,
+      "name": "Spooky Westie Weekend",
+      "year": 2026,
+      "month": 11,
+      "start": "2026-10-29",
+      "continent": "Asia",
+      "country": "Singapore",
+      "state": null,
+      "city": "Singapore",
+      "lat": 1.352083,
+      "lon": 103.819836,
+      "competitors": 223,
+      "approx": 1,
+      "source": "estimated",
+      "prev": {
+        "year": 2025,
+        "month": 11,
+        "competitors": 177,
+        "approx": 0,
+        "source": "exact"
+      },
+      "delta": 46,
+      "pct": 0.259887,
+      "status": "growing",
+      "gap_flag": null,
+      "edition": 3
+    },
+    {
+      "event_id": 236,
+      "name": "Warsaw Halloween Swing",
+      "year": 2026,
+      "month": 11,
+      "start": "2026-10-29",
+      "continent": "Europe",
+      "country": "Poland",
+      "state": null,
+      "city": "Warsaw",
+      "lat": 52.2296756,
+      "lon": 21.0122287,
+      "competitors": 476,
+      "approx": 1,
+      "source": "estimated",
+      "prev": {
+        "year": 2025,
+        "month": 11,
+        "competitors": 488,
+        "approx": 0,
+        "source": "exact"
+      },
+      "delta": -12,
+      "pct": -0.02459,
+      "status": "stable",
+      "gap_flag": null,
+      "edition": 14
     }
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-03T16:54:15Z",
+    "enriched_at": "2026-11-03T20:01:00Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35768,8 +35824,8 @@
       }
     ],
     "stats": {
-      "editions": 1037,
-      "with_history": 1037,
+      "editions": 1039,
+      "with_history": 1039,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
       "split_buckets_used": 25,
@@ -35783,20 +35839,20 @@
     }
   },
   "venue_enrichment_prior": {
-    "source": "wsdc101526.sql",
-    "enriched_at": "2026-10-31T16:33:34Z"
+    "source": "carry_forward:.prior_event_growth.json",
+    "enriched_at": "2026-11-03T16:54:15Z"
   },
   "venue_enrichment": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-03T16:54:15Z",
+    "enriched_at": "2026-11-03T20:01:00Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
-      "editions": 1037,
+      "editions": 1039,
       "prior_venue": 998,
       "carried": 998,
       "skipped_already_venue": 0,
-      "missing_prior": 39
+      "missing_prior": 41
     }
   }
 }
