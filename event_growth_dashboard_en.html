@@ -1756,11 +1756,7 @@
 
   function ytdPeriodLabel(mode) {
     if (!mode || mode.mode !== "ytd") return null;
-    var base = mode.year + " YTD vs " + mode.priorYear + " YTD";
-    if (mode.openMonthIsPartial) {
-      return base + " (open month: matched events only)";
-    }
-    return base;
+    return mode.year + " YTD vs " + mode.priorYear + " YTD";
   }
 
   function sumCompetitors(rows) {
