@@ -175,6 +175,61 @@ def test_dashboard_exposes_grain_controls() -> None:
     assert "California, US" in html or "listGrainBareLabel" in html
 
 
+def map_hover_key_from_path(level: str, country_scope: str | None, path: dict) -> str | None:
+    """Mirror mapHoverKeyFromPath in event_growth_dashboard_en.html."""
+    if level == "world":
+        return path.get("continent")
+    if level == "continent":
+        return path.get("country")
+    if level == "country":
+        if country_scope == "United States":
+            return path.get("state")
+        return path.get("city")
+    if level == "state":
+        return path.get("city")
+    return None
+
+
+def test_map_hover_key_remaps_list_city_to_pin() -> None:
+    path = {
+        "continent": "Europe",
+        "country": "Germany",
+        "state": None,
+        "city": "Freiburg",
+    }
+    # List key is composite; map pin key is bare city.
+    assert region_key(
+        {"country": "Germany", "state": None, "city": "Freiburg"}, "city"
+    ) == "Germany||Freiburg"
+    assert map_hover_key_from_path("country", "Germany", path) == "Freiburg"
+    assert map_hover_key_from_path("world", None, path) == "Europe"
+    assert map_hover_key_from_path("continent", None, path) == "Germany"
+    us = {
+        "continent": "America",
+        "country": "United States",
+        "state": "California",
+        "city": "San Francisco",
+    }
+    assert map_hover_key_from_path("country", "United States", us) == "California"
+    assert map_hover_key_from_path("state", "United States", us) == "San Francisco"
+
+
+def test_dashboard_exposes_map_hover_remap_and_place() -> None:
+    html = (REPO / "event_growth_dashboard_en.html").read_text()
+    assert "mapHoverKeyFromPath" in html
+    assert "mapFeatureKeyForRegion" in html
+    assert "eventPlaceLineHtml" in html
+    assert "cityRegionPlaceLineHtml" in html
+    assert "countryFlagEmoji" in html
+    assert "tt-place" in html
+    assert "tt-flag" in html
+    assert "kpiCompInfoBtn" in html and "kpiCompTipPop" in html
+    # Event place line is unconditional (no city-venue early return).
+    start = html.index("function eventPlaceLineHtml")
+    end = html.index("function isCityRegionTip", start)
+    assert "citySelectionActive" not in html[start:end]
+
+
 if __name__ == "__main__":
     test_region_world_has_us_states_not_united_states_row()
     test_city_keys_disambiguate_same_name()
@@ -184,4 +239,6 @@ if __name__ == "__main__":
     test_absent_delta_sorts_last_like_new()
     test_avg_delta_requires_two_events()
     test_dashboard_exposes_grain_controls()
+    test_map_hover_key_remaps_list_city_to_pin()
+    test_dashboard_exposes_map_hover_remap_and_place()
     print("OK")
