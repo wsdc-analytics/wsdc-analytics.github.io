@@ -675,7 +675,7 @@
       /* visible so the metric menu can open over the scrolling rows */
       overflow: visible;
     }
-    /* Header: geo title | metric (above values) | Status */
+    /* Header: geo title | metric (above values) | Status — type matches .side-kpi__lbl */
     .region-list-head {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 8.5rem;
@@ -685,18 +685,19 @@
       background: var(--wsdc-color-surface-soft);
       border-bottom: 1px solid var(--wsdc-color-border, #e5e7eb);
       flex: 0 0 auto;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: var(--wsdc-font-weight-semibold);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--wsdc-color-text-muted);
+      line-height: 1.2;
       position: relative;
       z-index: 5;
     }
     .region-list-head__geo {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
       min-width: 0;
       min-height: 22px;
       padding-right: 6px;
