@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="Are WSDC events growing or shrinking — and where? Compare competitor counts by event and roll them up from world to city, with exact and estimated headcounts." />
   <title>Event Growth Monitor | WSDC Analytics</title>
   <link rel="canonical" href="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
@@ -416,8 +416,42 @@
       align-items: stretch;
     }
     @media (max-width: 900px) {
-      html, body, .page { height: auto; overflow: auto; }
-      .content { overflow: visible; flex: none; min-height: 0; }
+      /* Vertical scroll only — block sideways page drag from map/pills overflow. */
+      html, body {
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior-x: none;
+      }
+      .page {
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior-x: none;
+      }
+      .content {
+        overflow-x: hidden;
+        overflow-y: visible;
+        flex: none;
+        min-height: 0;
+        max-width: 100%;
+        width: 100%;
+      }
+      .layout,
+      .filters,
+      .page-head,
+      .panel--map,
+      .side-kpi-panel,
+      .side-detail-panel,
+      .region-list,
+      .side-summary {
+        max-width: 100%;
+        min-width: 0;
+      }
 
       /* Year, then Event trend left-aligned; pills share one full-width row. */
       .filters {
@@ -443,9 +477,13 @@
       .filters .kpis {
         flex: 1 1 100%;
         width: 100%;
+        max-width: 100%;
         justify-content: stretch;
         flex-wrap: nowrap;
         gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
       }
       button.kpi-pill {
         flex: 1 1 0;
@@ -456,6 +494,12 @@
         gap: 3px;
         font-size: 9px;
         letter-spacing: 0.01em;
+      }
+      button.kpi-pill .lbl,
+      button.kpi-pill .val {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       button.kpi-pill .val { font-size: 10px; }
 
@@ -567,9 +611,15 @@
       inset: 0;
       height: 100% !important;
       width: 100% !important;
+      max-width: 100%;
       min-height: 0;
-      background: #edf1f5;
       overflow: hidden;
+      background: #edf1f5;
+      touch-action: pan-x pan-y;
+    }
+    #growthMap .maplibregl-canvas-container,
+    #growthMap .maplibregl-canvas {
+      max-width: 100% !important;
     }
     #growthMap .maplibregl-ctrl-top-right {
       top: 8px;
