@@ -678,7 +678,7 @@
     /* Header: geo title | metric (above values) | Status */
     .region-list-head {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 7.25rem;
+      grid-template-columns: minmax(0, 1fr) 8.5rem;
       align-items: center;
       gap: 0;
       padding: 5px 0 5px 10px;
@@ -1395,16 +1395,22 @@
     events: true,
     avg: true,
     d_competitors: true,
+    d_competitors_pct: true,
     d_events: true,
-    d_avg: true
+    d_events_pct: true,
+    d_avg: true,
+    d_avg_pct: true
   };
   var LIST_METRIC_LABELS = {
     competitors: "Competitors",
     events: "Events",
     avg: "Avg / event",
     d_competitors: "Δ Competitors",
+    d_competitors_pct: "Δ Competitors %",
     d_events: "Δ Events",
-    d_avg: "Δ Avg / event"
+    d_events_pct: "Δ Events %",
+    d_avg: "Δ Avg / event",
+    d_avg_pct: "Δ Avg / event %"
   };
   var LIST_GRAIN_LABELS = {
     continent: "Continent",
@@ -1694,7 +1700,7 @@
         previous: hasPrev ? e.prev.competitors : null,
         delta: suppressDelta ? null : e.delta,
         avgDelta: null,
-        pct: e.pct,
+        pct: suppressDelta ? null : e.pct,
         status: st,
         suppressDelta: suppressDelta,
         absent: false,
@@ -1843,7 +1849,17 @@
   }
 
   function isDeltaListMetric(m) {
-    return m === "d_competitors" || m === "d_events" || m === "d_avg";
+    return m === "d_competitors" || m === "d_competitors_pct" ||
+      m === "d_events" || m === "d_events_pct" ||
+      m === "d_avg" || m === "d_avg_pct";
+  }
+
+  function regionAvgPct(r) {
+    if (!r || r.suppressDelta || r.absent || r.avgDelta == null) return null;
+    if (r.nPrev == null || !(r.nPrev > 0) || r.previous == null) return null;
+    var avgPrev = r.previous / r.nPrev;
+    if (!avgPrev) return null;
+    return r.avgDelta / avgPrev;
   }
 
   function naturalListGrain() {
@@ -1879,27 +1895,45 @@
     // New editions have no prior pair → every Δ cell is "—". Hide Δ entirely.
     var newSlice = status === "new";
     if (grain === "event" || state.city) {
-      return newSlice ? ["competitors"] : ["competitors", "d_competitors"];
+      return newSlice
+        ? ["competitors"]
+        : ["competitors", "d_competitors", "d_competitors_pct"];
     }
     if (status === "all") {
-      return ["competitors", "events", "avg", "d_competitors", "d_events", "d_avg"];
+      return [
+        "competitors", "events", "avg",
+        "d_competitors", "d_competitors_pct",
+        "d_events", "d_events_pct",
+        "d_avg", "d_avg_pct"
+      ];
     }
     if (newSlice) {
       return ["competitors", "events", "avg"];
     }
     // Growing / Declining / Stable: calendar YTD is off under a status pill, so
-    // Δ Events / Δ Avg stay null. Paired Δ Competitors still ranks the slice.
-    return ["competitors", "events", "avg", "d_competitors"];
+    // Δ Events / Δ Avg stay null. Paired Δ Competitors (+ %) still ranks the slice.
+    return ["competitors", "events", "avg", "d_competitors", "d_competitors_pct"];
   }
 
   function ensureListMetric() {
     var allowed = allowedListMetrics();
     if (allowed.indexOf(state.listMetric) !== -1) return;
-    if (isDeltaListMetric(state.listMetric) && allowed.indexOf("d_competitors") !== -1) {
-      state.listMetric = "d_competitors";
-    } else {
-      state.listMetric = "competitors";
+    var fallbacks = {
+      d_competitors_pct: ["d_competitors_pct", "d_competitors", "competitors"],
+      d_events_pct: ["d_events_pct", "d_events", "d_competitors", "competitors"],
+      d_avg_pct: ["d_avg_pct", "d_avg", "d_competitors", "competitors"],
+      d_competitors: ["d_competitors", "competitors"],
+      d_events: ["d_events", "d_competitors", "competitors"],
+      d_avg: ["d_avg", "d_competitors", "competitors"]
+    };
+    var chain = fallbacks[state.listMetric] || ["competitors"];
+    for (var i = 0; i < chain.length; i++) {
+      if (allowed.indexOf(chain[i]) !== -1) {
+        state.listMetric = chain[i];
+        return;
+      }
     }
+    state.listMetric = allowed[0] || "competitors";
   }
 
   function ensureListGrain() {
@@ -2029,13 +2063,24 @@
       if (r.suppressDelta || r.absent) return null;
       return r.delta;
     }
+    if (m === "d_competitors_pct") {
+      if (r.suppressDelta || r.absent) return null;
+      return r.pct;
+    }
     if (m === "d_events") {
       if (r.suppressDelta || r.absent) return null;
       return r.nDelta;
     }
+    if (m === "d_events_pct") {
+      if (r.suppressDelta || r.absent) return null;
+      return r.nPct;
+    }
     if (m === "d_avg") {
       if (r.suppressDelta || r.absent) return null;
       return r.avgDelta;
+    }
+    if (m === "d_avg_pct") {
+      return regionAvgPct(r);
     }
     return r.current || 0;
   }
@@ -2057,13 +2102,24 @@
       if (r.suppressDelta || r.absent) return "—";
       return formatSigned(r.delta);
     }
+    if (m === "d_competitors_pct") {
+      if (r.suppressDelta || r.absent) return "—";
+      return fmtPct(r.pct);
+    }
     if (m === "d_events") {
       if (r.suppressDelta || r.absent) return "—";
       return formatSigned(r.nDelta);
     }
+    if (m === "d_events_pct") {
+      if (r.suppressDelta || r.absent) return "—";
+      return fmtPct(r.nPct);
+    }
     if (m === "d_avg") {
       if (r.suppressDelta || r.absent) return "—";
       return formatSigned(r.avgDelta);
+    }
+    if (m === "d_avg_pct") {
+      return fmtPct(regionAvgPct(r));
     }
     if (r.absent) return fmtN(r.previous != null ? r.previous : r.current) + " prior";
     return fmtN(r.current || 0);
