@@ -267,24 +267,24 @@
       width: 100% !important;
       height: 100% !important;
     }
-    .wsdc-info-btn, .info-tip {
+    /* Title "i" uses shared .wsdc-info-btn (18px). Inline tips stay smaller. */
+    .info-tip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
+      width: 14px;
+      height: 14px;
       padding: 0;
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 50%;
       background: #fff;
       color: var(--wsdc-color-text-muted, #4b5563);
-      font: italic 600 11px/1 'DM Sans', var(--wsdc-font-sans), serif;
-      cursor: pointer;
+      font: italic 600 9px/1 'DM Sans', var(--wsdc-font-sans), serif;
+      cursor: help;
       flex: 0 0 auto;
     }
-    .info-tip { width: 14px; height: 14px; font-size: 9px; cursor: help; }
-    .wsdc-info-btn:hover, .info-tip:hover,
-    .wsdc-info-btn:focus-visible, .info-tip:focus-visible {
+    .info-tip:hover,
+    .info-tip:focus-visible {
       border-color: var(--wsdc-color-text-muted, #4b5563);
       color: var(--wsdc-color-text-strong, #0b1221);
       outline: none;
