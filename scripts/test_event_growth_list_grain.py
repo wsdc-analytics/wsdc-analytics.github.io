@@ -230,6 +230,15 @@ def test_dashboard_exposes_map_hover_remap_and_place() -> None:
     assert "citySelectionActive" not in html[start:end]
 
 
+def test_dashboard_mobile_world_can_zoom_out() -> None:
+    html = (REPO / "event_growth_dashboard_en.html").read_text()
+    assert "minZoom: 0" in html
+    assert "minZoom: 0.6" not in html
+    assert "isCompactMapLayout" in html
+    assert "display: contents" in html
+    assert "side-kpi-panel { order: 1; }" in html or "order: 1" in html
+
+
 if __name__ == "__main__":
     test_region_world_has_us_states_not_united_states_row()
     test_city_keys_disambiguate_same_name()
@@ -241,4 +250,5 @@ if __name__ == "__main__":
     test_dashboard_exposes_grain_controls()
     test_map_hover_key_remaps_list_city_to_pin()
     test_dashboard_exposes_map_hover_remap_and_place()
+    test_dashboard_mobile_world_can_zoom_out()
     print("OK")
