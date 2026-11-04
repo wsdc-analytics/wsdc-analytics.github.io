@@ -254,7 +254,7 @@
     }
     .eg-row-main {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
       min-width: 0;
       width: 100%;
@@ -262,7 +262,7 @@
     .eg-row-main .eg-drill,
     .eg-row-main .eg-row-label {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
       flex: 1 1 auto;
       min-width: 0;
@@ -272,12 +272,17 @@
     .eg-row-main .eg-row-label-text {
       min-width: 0;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      white-space: normal;
+      word-break: break-word;
     }
     .eg-row-metric {
       flex: 0 0 auto;
       margin-left: auto;
+      padding-top: 1px;
       font-variant-numeric: tabular-nums;
       font-size: var(--wsdc-font-size-sm);
       font-weight: var(--wsdc-font-weight-semibold);
@@ -529,19 +534,45 @@
     .region-list-head__geo {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
       min-height: 22px;
-      padding-right: 10px;
+      padding-right: 6px;
     }
     .region-list-head__title {
       flex: 0 1 auto;
       min-width: 0;
       white-space: nowrap;
     }
+    .region-list-head__grain {
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    .region-list-head__sort {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      margin: 0 2px 0 auto;
+      border: 1px solid var(--wsdc-color-border, #d1d5db);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--wsdc-color-text-muted, #4b5563);
+      font-size: 10px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .region-list-head__sort:hover,
+    .region-list-head__sort:focus-visible {
+      border-color: var(--wsdc-color-text-muted, #4b5563);
+      color: var(--wsdc-color-text-strong, #0b1221);
+      outline: none;
+    }
     .region-list-head__metric {
       flex: 0 0 auto;
-      margin-left: auto;
       text-align: right;
     }
     .region-list-head__status {
@@ -1067,7 +1098,7 @@
               <li>with an <em>Event trend</em> pill on, only the events with that status;</li>
               <li>it adds up entries, not unique people — a dancer who competes at three events in the region counts three times.</li>
             </ul>
-            <p>In the side list, each row shows the selected metric beside the place name. Use the Competitors / Events / Avg / event control in the list header to change which number is shown and how rows are ordered.</p>
+            <p>In the side list, each row shows the selected metric beside the place name. The list grain (Continent / Country / Region / City / Event) can be finer than the map level inside the current scope; Region treats US states as peers of other countries (<em>California, US</em>) and is available at World and America. Absolute metrics are Competitors, Events and Avg / event; Δ metrics use the same comparison window as the KPIs (matched open-month YTD). New entities show — in Δ so debuts do not top growth rankings; Event Δ is versus that event’s own previous edition. Use the round ↑/↓ control to flip sort direction.</p>
           </div>
         </details>
         <details class="method-sec">
@@ -1135,7 +1166,30 @@
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
   var DATA_VER = "20261103-sync";
-  var LIST_METRICS = { competitors: true, events: true, avg: true };
+  var LIST_METRICS = {
+    competitors: true,
+    events: true,
+    avg: true,
+    d_competitors: true,
+    d_events: true,
+    d_avg: true
+  };
+  var LIST_METRIC_LABELS = {
+    competitors: "Competitors",
+    events: "Events",
+    avg: "Avg / event",
+    d_competitors: "Δ Competitors",
+    d_events: "Δ Events",
+    d_avg: "Δ Avg / event"
+  };
+  var LIST_GRAIN_LABELS = {
+    continent: "Continent",
+    country: "Country",
+    region: "Region",
+    state: "State",
+    city: "City",
+    event: "Event"
+  };
 
   var STATUS_COLOR = {
     growing: "#7db88a",
@@ -1163,7 +1217,9 @@
     data: null,
     year: null,
     status: "all",
-    listMetric: "competitors", // competitors|events|avg — list value + sort (not in URL)
+    listMetric: "competitors", // abs + Δ metrics — list value + sort (not in URL)
+    listGrain: "continent", // continent|country|region|state|city|event
+    listSort: "desc", // desc|asc
     level: "world", // world|continent|country|state
     continent: null,
     country: null,
@@ -1318,11 +1374,14 @@
 
   // Child regions (city / country / continent) that had editions last period
   // but none in the selected window — pandemic gaps, cancellations, etc.
-  function absentChildRegions() {
+  function absentChildRegions(opts) {
+    opts = opts || {};
     if (statusFilterActive()) return [];
     var mode = comparisonMode();
     if (!mode || mode.priorYear == null) return [];
-    var keyFn = childKey;
+    var forList = !!opts.forList;
+    var keyFn = forList ? listGrainKey : childKey;
+    if (forList && state.listGrain === "event") return [];
     var curKeys = {};
     rowsInComparisonWindow(geoScopedEditions(), mode).forEach(function (e) {
       curKeys[keyFn(e)] = true;
@@ -1336,18 +1395,9 @@
         map[k] = {
           key: k,
           n: 0,
-          current: 0,
-          previous: null,
-          delta: null,
-          pct: null,
+          priorComp: 0,
           status: "absent",
           absent: true,
-          growing: 0,
-          declining: 0,
-          stable: 0,
-          neu: 0,
-          restarted: 0,
-          decliningInside: false,
           latSum: 0,
           lonSum: 0,
           geoN: 0,
@@ -1357,7 +1407,7 @@
       }
       var g = map[k];
       g.n += 1;
-      g.current += e.competitors || 0;
+      g.priorComp += e.competitors || 0;
       g.absentEvents.push(e);
       var pin = editionPinCoords(e);
       if (pin) {
@@ -1366,20 +1416,25 @@
         g.geoN += 1;
       }
     });
-    return sortByListMetric(Object.keys(map).map(function (k) {
+    var regions = Object.keys(map).map(function (k) {
       var g = map[k];
+      var bare = forList ? listGrainBareLabel(g.sample) : String(g.key);
+      var full = forList ? listGrainFullLabel(g.sample) : String(g.key);
+      var avgPrev = g.n ? g.priorComp / g.n : null;
       return {
         key: g.key,
-        n: g.n,
+        n: 0,
         nPrev: g.n,
         nDelta: -g.n,
         nPct: -1,
-        current: g.current,
-        previous: g.current,
-        delta: null,
+        current: 0,
+        previous: g.priorComp,
+        delta: -g.priorComp,
+        avgDelta: (avgPrev != null && g.n >= 2) ? (0 - avgPrev) : null,
         pct: null,
         status: "absent",
         absent: true,
+        suppressDelta: false,
         growing: 0,
         declining: 0,
         stable: 0,
@@ -1389,9 +1444,87 @@
         absentEvents: g.absentEvents.slice(),
         lat: g.geoN ? g.latSum / g.geoN : null,
         lon: g.geoN ? g.lonSum / g.geoN : null,
-        sample: g.sample
+        sample: g.sample,
+        path: editionPath(g.sample),
+        bareLabel: bare,
+        fullLabel: full,
+        label: bare
       };
-    }));
+    });
+    return sortByListMetric(forList ? disambiguateListLabels(regions) : regions);
+  }
+
+  function buildEventListRows(rows) {
+    var mode = comparisonMode();
+    var list = rowsInComparisonWindow(rows || [], mode).map(function (e) {
+      var st = displayStatus(e.status);
+      var hasPrev = !!(e.prev && e.prev.competitors != null && e.delta != null);
+      var suppressDelta = st === "new" || !hasPrev;
+      return {
+        key: String(e.event_id != null ? e.event_id : ("name:" + (e.name || ""))),
+        n: 1,
+        nPrev: hasPrev ? 1 : null,
+        nDelta: null,
+        current: e.competitors || 0,
+        previous: hasPrev ? e.prev.competitors : null,
+        delta: suppressDelta ? null : e.delta,
+        avgDelta: null,
+        pct: e.pct,
+        status: st,
+        suppressDelta: suppressDelta,
+        absent: false,
+        growing: st === "growing" ? 1 : 0,
+        declining: st === "declining" ? 1 : 0,
+        stable: st === "stable" ? 1 : 0,
+        neu: st === "new" ? 1 : 0,
+        restarted: 0,
+        decliningInside: false,
+        lat: (editionPinCoords(e) || {}).lat || null,
+        lon: (editionPinCoords(e) || {}).lon || null,
+        sample: e,
+        edition: e,
+        path: editionPath(e),
+        bareLabel: e.name || ("Event " + e.event_id),
+        fullLabel: e.name || ("Event " + e.event_id),
+        label: e.name || ("Event " + e.event_id)
+      };
+    });
+    var absent = [];
+    if (!statusFilterActive()) {
+      absentPriorInCurrentScope().forEach(function (e) {
+        var prior = e.competitors || 0;
+        absent.push({
+          key: "absent:" + editionKey(e),
+          n: 0,
+          nPrev: 1,
+          nDelta: -1,
+          current: 0,
+          previous: prior,
+          delta: -prior,
+          avgDelta: null,
+          pct: null,
+          status: "absent",
+          absent: true,
+          suppressDelta: false,
+          growing: 0,
+          declining: 0,
+          stable: 0,
+          neu: 0,
+          restarted: 0,
+          decliningInside: false,
+          lat: (editionPinCoords(e) || {}).lat || null,
+          lon: (editionPinCoords(e) || {}).lon || null,
+          sample: e,
+          edition: e,
+          path: editionPath(e),
+          bareLabel: e.name || ("Event " + e.event_id),
+          fullLabel: e.name || ("Event " + e.event_id),
+          label: e.name || ("Event " + e.event_id),
+          absentEvents: [e]
+        });
+      });
+    }
+    return sortByListMetric(disambiguateListLabels(list.concat(absent)));
   }
 
   function insideDotHtml() {
@@ -1484,54 +1617,259 @@
     return fmtN(Math.round(v));
   }
 
+  function isDeltaListMetric(m) {
+    return m === "d_competitors" || m === "d_events" || m === "d_avg";
+  }
+
+  function naturalListGrain() {
+    if (state.city) return "event";
+    if (state.level === "world") return "continent";
+    if (state.level === "continent") return "country";
+    if (state.level === "country" && state.country === "United States") return "state";
+    if (state.level === "country" || state.level === "state") return "city";
+    return "continent";
+  }
+
+  function allowedListGrains() {
+    if (state.city) return ["event"];
+    if (state.level === "world") return ["continent", "region", "city", "event"];
+    if (state.level === "continent") {
+      if (state.continent === "America") {
+        return ["country", "region", "city", "event"];
+      }
+      return ["country", "city", "event"];
+    }
+    if (state.level === "country" && state.country === "United States") {
+      return ["state", "city", "event"];
+    }
+    if (state.level === "country" || state.level === "state") {
+      return ["city", "event"];
+    }
+    return ["continent"];
+  }
+
+  function allowedListMetrics() {
+    var grain = state.listGrain || naturalListGrain();
+    if (grain === "event" || state.city) {
+      return ["competitors", "d_competitors"];
+    }
+    var out = ["competitors", "events", "avg", "d_competitors", "d_events", "d_avg"];
+    if (statusFilterActive()) {
+      out = out.filter(function (m) { return m !== "d_events"; });
+    }
+    return out;
+  }
+
+  function ensureListMetric() {
+    var allowed = allowedListMetrics();
+    if (allowed.indexOf(state.listMetric) !== -1) return;
+    if (isDeltaListMetric(state.listMetric) && allowed.indexOf("d_competitors") !== -1) {
+      state.listMetric = "d_competitors";
+    } else {
+      state.listMetric = "competitors";
+    }
+  }
+
+  function ensureListGrain() {
+    var allowed = allowedListGrains();
+    if (!state.listGrain || allowed.indexOf(state.listGrain) === -1) {
+      state.listGrain = naturalListGrain();
+    }
+    ensureListMetric();
+  }
+
+  function resetListGrainOnMapNav() {
+    state.listGrain = naturalListGrain();
+    ensureListMetric();
+  }
+
+  function listGrainMatchesMap() {
+    return !state.city && state.listGrain === naturalListGrain();
+  }
+
+  function editionPath(e) {
+    if (!e) return {};
+    return {
+      continent: e.continent || null,
+      country: e.country || null,
+      state: e.country === "United States" ? (e.state || null) : null,
+      city: e.city || null,
+      eventId: e.event_id != null ? e.event_id : null,
+      name: e.name || null
+    };
+  }
+
+  function listGrainKey(e) {
+    var g = state.listGrain;
+    if (g === "continent") return e.continent || UNKNOWN;
+    if (g === "country") return e.country || UNKNOWN;
+    if (g === "state") return e.state || UNKNOWN;
+    if (g === "region") {
+      if (e.country === "United States") return "US|" + (e.state || UNKNOWN);
+      return "C|" + (e.country || UNKNOWN);
+    }
+    if (g === "city") {
+      return String(e.country || "") + "|" + String(e.state || "") + "|" + String(e.city || UNKNOWN);
+    }
+    if (g === "event") {
+      return e.event_id != null ? String(e.event_id) : ("name:" + (e.name || UNKNOWN));
+    }
+    return childKey(e);
+  }
+
+  function listGrainBareLabel(e) {
+    var g = state.listGrain;
+    if (g === "continent") return e.continent || UNKNOWN;
+    if (g === "country") return e.country || UNKNOWN;
+    if (g === "state") return e.state || UNKNOWN;
+    if (g === "region") {
+      if (e.country === "United States") return String(e.state || UNKNOWN) + ", US";
+      return e.country || UNKNOWN;
+    }
+    if (g === "city") return e.city || UNKNOWN;
+    if (g === "event") return e.name || ("Event " + e.event_id);
+    return String(listGrainKey(e));
+  }
+
+  function listGrainFullLabel(e) {
+    var g = state.listGrain;
+    if (g === "city") {
+      if (e.country === "United States" && e.state) {
+        return String(e.city || UNKNOWN) + ", " + e.state + ", US";
+      }
+      if (e.country) return String(e.city || UNKNOWN) + ", " + e.country;
+      return e.city || UNKNOWN;
+    }
+    return listGrainBareLabel(e);
+  }
+
+  function disambiguateListLabels(regions) {
+    if ((state.listGrain !== "city" && state.listGrain !== "event") || !regions || !regions.length) {
+      return regions;
+    }
+    var counts = {};
+    regions.forEach(function (r) {
+      var bare = r.bareLabel || r.label || r.key;
+      counts[bare] = (counts[bare] || 0) + 1;
+    });
+    regions.forEach(function (r) {
+      var bare = r.bareLabel || r.label || r.key;
+      if (counts[bare] > 1 && r.fullLabel) r.label = r.fullLabel;
+      else r.label = bare;
+    });
+    return regions;
+  }
+
   function regionMetricValue(r) {
-    if (!r) return 0;
-    if (state.listMetric === "events") return r.n || 0;
-    if (state.listMetric === "avg") return r.n ? (r.current || 0) / r.n : 0;
+    if (!r) return null;
+    var m = state.listMetric;
+    if (m === "events") return r.n || 0;
+    if (m === "avg") return r.n ? (r.current || 0) / r.n : 0;
+    if (m === "d_competitors") {
+      if (r.suppressDelta) return null;
+      return r.delta;
+    }
+    if (m === "d_events") {
+      if (r.suppressDelta) return null;
+      return r.nDelta;
+    }
+    if (m === "d_avg") {
+      if (r.suppressDelta) return null;
+      return r.avgDelta;
+    }
     return r.current || 0;
+  }
+
+  function formatSigned(n) {
+    if (n == null || !isFinite(n)) return "—";
+    var rounded = Math.round(n);
+    return (rounded > 0 ? "+" : "") + rounded.toLocaleString("en-US");
   }
 
   function formatRegionMetric(r) {
     if (!r) return "—";
-    if (state.listMetric === "events") return fmtN(r.n || 0);
-    if (state.listMetric === "avg") {
+    var m = state.listMetric;
+    if (m === "events") return fmtN(r.n || 0);
+    if (m === "avg") {
       return r.n ? fmtAvg((r.current || 0) / r.n) : "—";
     }
-    return fmtN(r.current || 0) + (r.absent ? " prior" : "");
+    if (m === "d_competitors") {
+      if (r.suppressDelta) return "—";
+      return formatSigned(r.delta);
+    }
+    if (m === "d_events") {
+      if (r.suppressDelta) return "—";
+      return formatSigned(r.nDelta);
+    }
+    if (m === "d_avg") {
+      if (r.suppressDelta) return "—";
+      return formatSigned(r.avgDelta);
+    }
+    if (r.absent) return fmtN(r.previous != null ? r.previous : r.current) + " prior";
+    return fmtN(r.current || 0);
   }
 
   function sortByListMetric(rows) {
+    var asc = state.listSort === "asc";
+    var deltaMode = isDeltaListMetric(state.listMetric);
     return (rows || []).slice().sort(function (a, b) {
-      var aAbs = a && a.absent ? 1 : 0;
-      var bAbs = b && b.absent ? 1 : 0;
-      if (aAbs !== bAbs) return aAbs - bAbs;
-      return regionMetricValue(b) - regionMetricValue(a);
+      if (!deltaMode) {
+        var aAbs = a && a.absent ? 1 : 0;
+        var bAbs = b && b.absent ? 1 : 0;
+        if (aAbs !== bAbs) return aAbs - bAbs;
+      }
+      var av = regionMetricValue(a);
+      var bv = regionMetricValue(b);
+      var aNull = av == null || !isFinite(av);
+      var bNull = bv == null || !isFinite(bv);
+      if (aNull !== bNull) return aNull ? 1 : -1;
+      if (aNull && bNull) return 0;
+      return asc ? (av - bv) : (bv - av);
     });
   }
 
-  function metricSelectHtml(opts) {
-    opts = opts || {};
-    var showEvents = opts.showEvents !== false;
-    var html = '<select class="wsdc-select eg-metric-select" aria-label="Metric">' +
-      '<option value="competitors"' +
-      (state.listMetric === "competitors" ? " selected" : "") +
-      ">Competitors</option>";
-    if (showEvents) {
-      html += '<option value="events"' +
-        (state.listMetric === "events" ? " selected" : "") +
-        ">Events</option>";
-    }
-    html += '<option value="avg"' +
-      (state.listMetric === "avg" ? " selected" : "") +
-      ">Avg / event</option></select>";
+  function metricSelectHtml() {
+    var allowed = allowedListMetrics();
+    var html = '<select class="wsdc-select eg-metric-select" aria-label="Metric">';
+    allowed.forEach(function (m) {
+      html += '<option value="' + esc(m) + '"' +
+        (state.listMetric === m ? " selected" : "") + ">" +
+        esc(LIST_METRIC_LABELS[m] || m) + "</option>";
+    });
+    html += "</select>";
     return html;
   }
 
-  function listShellHtml(geoTitle, statusTitle, tbodyHtml, opts) {
+  function grainSelectHtml() {
+    var allowed = allowedListGrains();
+    if (allowed.length <= 1) {
+      return '<div class="region-list-head__title">' +
+        esc(LIST_GRAIN_LABELS[allowed[0] || "event"] || "Event") + "</div>";
+    }
+    var html = '<select class="wsdc-select eg-grain-select" aria-label="List grain">';
+    allowed.forEach(function (g) {
+      html += '<option value="' + esc(g) + '"' +
+        (state.listGrain === g ? " selected" : "") + ">" +
+        esc(LIST_GRAIN_LABELS[g] || g) + "</option>";
+    });
+    html += "</select>";
+    return '<div class="region-list-head__grain">' + html + "</div>";
+  }
+
+  function sortButtonHtml() {
+    var asc = state.listSort === "asc";
+    var label = asc ? "Sort ascending" : "Sort descending";
+    return '<button type="button" class="region-list-head__sort" aria-label="' +
+      esc(label) + '" title="' + esc(label) + '">' +
+      (asc ? "↑" : "↓") + "</button>";
+  }
+
+  function listShellHtml(statusTitle, tbodyHtml) {
     return '<div class="region-list-head">' +
       '<div class="region-list-head__geo">' +
-      '<div class="region-list-head__title">' + esc(geoTitle) + "</div>" +
-      '<div class="region-list-head__metric">' + metricSelectHtml(opts) + "</div>" +
+      grainSelectHtml() +
+      sortButtonHtml() +
+      '<div class="region-list-head__metric">' + metricSelectHtml() + "</div>" +
       "</div>" +
       '<div class="region-list-head__status">' + esc(statusTitle) + "</div>" +
       "</div>" +
@@ -1554,18 +1892,38 @@
 
   function bindSortByControls(root) {
     if (!root) return;
-    var sel = root.querySelector("select.eg-metric-select");
-    if (!sel) return;
     if (window.WsdcSelect) WsdcSelect.enhanceAll(root);
-    sel.addEventListener("change", function (ev) {
-      ev.stopPropagation();
-      var m = sel.value;
-      if (!LIST_METRICS[m] || m === state.listMetric) return;
-      if (m === "events" && state.city) return;
-      state.listMetric = m;
-      render();
-    });
-    root.querySelectorAll(".region-list-head .wsdc-dd, .region-list-head .wsdc-select-host").forEach(function (node) {
+    var metricSel = root.querySelector("select.eg-metric-select");
+    if (metricSel) {
+      metricSel.addEventListener("change", function (ev) {
+        ev.stopPropagation();
+        var m = metricSel.value;
+        if (!LIST_METRICS[m] || m === state.listMetric) return;
+        if (allowedListMetrics().indexOf(m) === -1) return;
+        state.listMetric = m;
+        render();
+      });
+    }
+    var grainSel = root.querySelector("select.eg-grain-select");
+    if (grainSel) {
+      grainSel.addEventListener("change", function (ev) {
+        ev.stopPropagation();
+        var g = grainSel.value;
+        if (allowedListGrains().indexOf(g) === -1 || g === state.listGrain) return;
+        state.listGrain = g;
+        ensureListMetric();
+        render();
+      });
+    }
+    var sortBtn = root.querySelector("button.region-list-head__sort");
+    if (sortBtn) {
+      sortBtn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        state.listSort = state.listSort === "asc" ? "desc" : "asc";
+        render();
+      });
+    }
+    root.querySelectorAll(".region-list-head .wsdc-dd, .region-list-head .wsdc-select-host, .region-list-head__sort").forEach(function (node) {
       node.addEventListener("click", function (ev) { ev.stopPropagation(); });
     });
   }
@@ -1909,19 +2267,32 @@
         status = "new";
       }
       var nPrev = useCalendar ? (priorNByKey[k] || 0) : null;
-      var nDelta = useCalendar ? (g.n - nPrev) : null;
+      var nDelta = useCalendar ? (g.n - (nPrev || 0)) : null;
       var nPct = useCalendar && nPrev ? nDelta / nPrev : null;
+      var avgNow = g.n ? g.currentAll / g.n : null;
+      var avgPrev = (useCalendar && nPrev) ? ((previous || 0) / nPrev) : null;
+      var avgDelta = (avgNow != null && avgPrev != null && g.n >= 2 && nPrev >= 2)
+        ? (avgNow - avgPrev)
+        : null;
+      var shownStatus = displayStatus(status);
+      var suppressDelta = shownStatus === "new" ||
+        (g.n > 0 && g.neu + g.restarted === g.n && (previous == null || previous === 0));
+      var path = editionPath(g.sample);
+      var bare = opts.forList ? listGrainBareLabel(g.sample) : String(g.key);
+      var full = opts.forList ? listGrainFullLabel(g.sample) : String(g.key);
       return {
         key: g.key,
         n: g.n,
         nPrev: nPrev,
-        nDelta: nDelta,
+        nDelta: suppressDelta ? null : nDelta,
         nPct: nPct,
         current: g.currentAll,
         previous: previous,
-        delta: delta,
+        delta: suppressDelta ? null : delta,
+        avgDelta: suppressDelta ? null : avgDelta,
         pct: pct,
-        status: displayStatus(status),
+        status: shownStatus,
+        suppressDelta: !!suppressDelta,
         growing: g.growing,
         declining: g.declining,
         stable: g.stable,
@@ -1930,10 +2301,14 @@
         decliningInside: !statusFilter && g.declining > 0 && status !== "declining",
         lat: g.geoN ? g.latSum / g.geoN : null,
         lon: g.geoN ? g.lonSum / g.geoN : null,
-        sample: g.sample
+        sample: g.sample,
+        path: path,
+        bareLabel: bare,
+        fullLabel: full,
+        label: bare
       };
     });
-    return sortByListMetric(regions);
+    return sortByListMetric(opts.forList ? disambiguateListLabels(regions) : regions);
   }
 
   function setMapMaxMatch(regions) {
@@ -1967,6 +2342,7 @@
   function selectCity(key) {
     hideMapTooltip();
     state.city = state.city === key ? null : key;
+    resetListGrainOnMapNav();
     writeUrl();
     render();
   }
@@ -1996,6 +2372,80 @@
       selectCity(key);
       return;
     }
+    resetListGrainOnMapNav();
+    writeUrl();
+    render();
+  }
+
+  function continentForCountryName(country) {
+    if (!country) return null;
+    var rows = (state.data && state.data.editions) || [];
+    for (var i = 0; i < rows.length; i++) {
+      var e = rows[i];
+      if (e && e.country === country && e.continent) return e.continent;
+    }
+    return null;
+  }
+
+  function drillListEntity(r) {
+    tipState.pinned = false;
+    hideMapTooltip();
+    if (!r) return;
+    var p = r.path || editionPath(r.sample || r.edition);
+    var grain = state.listGrain;
+
+    if (grain === "continent") {
+      state.continent = p.continent || r.key;
+      state.country = state.regionState = state.city = null;
+      state.level = "continent";
+    } else if (grain === "country") {
+      state.country = p.country || r.key;
+      state.continent = p.continent || state.continent ||
+        continentForCountryName(state.country);
+      state.regionState = state.city = null;
+      state.level = "country";
+    } else if (grain === "region") {
+      if (String(r.key || "").indexOf("US|") === 0 ||
+          (p.country === "United States" && p.state)) {
+        state.continent = p.continent || "America";
+        state.country = "United States";
+        state.regionState = p.state || String(r.key).slice(3);
+        state.city = null;
+        state.level = "state";
+      } else {
+        state.country = p.country || (String(r.key).indexOf("C|") === 0
+          ? String(r.key).slice(2) : r.key);
+        state.continent = p.continent || state.continent ||
+          continentForCountryName(state.country);
+        state.regionState = state.city = null;
+        state.level = "country";
+      }
+    } else if (grain === "state") {
+      state.continent = p.continent || "America";
+      state.country = "United States";
+      state.regionState = p.state || r.key;
+      state.city = null;
+      state.level = "state";
+    } else if (grain === "city" || grain === "event") {
+      if (p.country) state.country = p.country;
+      state.continent = p.continent || state.continent ||
+        continentForCountryName(state.country);
+      if (p.country === "United States" && p.state) {
+        state.regionState = p.state;
+        state.level = "state";
+      } else if (p.country) {
+        state.regionState = null;
+        state.level = "country";
+      }
+      if (p.city) {
+        state.city = p.city;
+        resetListGrainOnMapNav();
+        writeUrl();
+        render();
+        return;
+      }
+    }
+    resetListGrainOnMapNav();
     writeUrl();
     render();
   }
@@ -2014,6 +2464,7 @@
       state.continent = null;
       state.level = "world";
     }
+    resetListGrainOnMapNav();
     writeUrl();
     render();
   }
@@ -2032,6 +2483,7 @@
       state.city = null;
       state.level = "state";
     }
+    resetListGrainOnMapNav();
     writeUrl();
     render();
   }
@@ -2779,8 +3231,11 @@
 
   // Same information architecture as the side KPI card.
   function regionTooltipHtml(r) {
-    var label = r.key == null || r.key === "" ? UNKNOWN : String(r.key);
+    var label = (r && (r.label || r.bareLabel)) ||
+      (r.key == null || r.key === "" ? UNKNOWN : String(r.key));
     if (r && r.absent) {
+      var priorComp = r.previous != null ? r.previous : r.current;
+      var priorN = r.nPrev != null ? r.nPrev : r.n;
       var events = (r.absentEvents || []).slice(0, 4);
       var more = (r.absentEvents || []).length > 4
         ? ('<div class="tt-period">+' + ((r.absentEvents || []).length - 4) + " more</div>")
@@ -2797,30 +3252,33 @@
         '<div class="tt-kpi-grid tt-kpi-grid--3">' +
           '<div class="tt-kpi">' +
             '<div class="tt-kpi__lbl">Competitors (prior)</div>' +
-            '<div class="tt-kpi__val">' + fmtN(r.current) + "</div>" +
+            '<div class="tt-kpi__val">' + fmtN(priorComp) + "</div>" +
             '<div class="tt-kpi__sub"></div>' +
           "</div>" +
           '<div class="tt-kpi">' +
             '<div class="tt-kpi__lbl">Events (prior)</div>' +
-            '<div class="tt-kpi__val">' + fmtN(r.n) + "</div>" +
+            '<div class="tt-kpi__val">' + fmtN(priorN) + "</div>" +
             '<div class="tt-kpi__sub"></div>' +
           "</div>" +
           '<div class="tt-kpi">' +
             '<div class="tt-kpi__lbl">Avg / event</div>' +
-            '<div class="tt-kpi__val">' + fmtAvg(avgCompetitors(r.current, r.n)) + "</div>" +
+            '<div class="tt-kpi__val">' + fmtAvg(avgCompetitors(priorComp, priorN)) + "</div>" +
             '<div class="tt-kpi__sub"></div>' +
           "</div>" +
         "</div>" +
         (rows ? ('<div class="tt-trend" style="display:block">' + rows + more + "</div>") : "");
     }
     var st = statusFilterActive() ? state.status : r.status;
-    var hasCompDelta = r.delta != null;
-    var hasEventsDelta = !statusFilterActive() && r.nDelta != null;
+    var hasCompDelta = r.delta != null && !r.suppressDelta;
+    var hasEventsDelta = !statusFilterActive() && r.nDelta != null && !r.suppressDelta;
     var avgNowTt = avgCompetitors(r.current, r.n);
     var avgPrevTt = (!statusFilterActive() && r.nPrev)
       ? avgCompetitors(r.previous || 0, r.nPrev)
       : null;
-    var avgDeltaTt = (avgNowTt != null && avgPrevTt != null) ? (avgNowTt - avgPrevTt) : null;
+    var avgDeltaTt = r.suppressDelta ? null
+      : (r.avgDelta != null ? r.avgDelta
+        : ((avgNowTt != null && avgPrevTt != null && r.n >= 2 && r.nPrev >= 2)
+          ? (avgNowTt - avgPrevTt) : null));
     var avgPctTt = (avgDeltaTt != null && avgPrevTt) ? (avgDeltaTt / avgPrevTt) : null;
     var mix = statusFilterActive() ? "" : regionCompositionHtml(r);
     var trend = mix
@@ -3220,7 +3678,8 @@
   function showMapTooltip(ev, region, opts) {
     if (!region) return;
     opts = opts || {};
-    setMapHoverByKey(region.key);
+    // highlight defaults on; pass highlight:false for list grains with no map fill.
+    if (opts.highlight !== false) setMapHoverByKey(region.key);
     var anchor = opts.anchorAtRegion ? regionAnchorClientPoint(region) : null;
     showTip(clientPointEvent(anchor, ev), "r:" + region.key, regionTooltipHtml(region));
   }
@@ -4283,47 +4742,79 @@
     });
   }
 
-  function renderCityEventList(rows) {
-    // City list: Comp / Avg only (Event is always 1).
-    if (state.listMetric === "events") state.listMetric = "competitors";
-    var list = rows.slice().sort(function (a, b) {
-      return (b.competitors || 0) - (a.competitors || 0);
-    });
-    var absent = absentPriorInCurrentScope();
-    if (!list.length && !absent.length) {
+  function renderEventGrainList(regions) {
+    var statusFilter = statusFilterActive();
+    var statusTitle = statusFilter
+      ? (state.status.charAt(0).toUpperCase() + state.status.slice(1))
+      : "Status";
+    if (!regions.length) {
       document.getElementById("regionList").innerHTML =
-        '<div class="empty">No events in ' + esc(state.city || "this city") + "</div>";
+        '<div class="empty">No events in this filter</div>';
       return;
     }
     var byKey = {};
     var byAbsent = {};
     var body = "";
-    list.forEach(function (e) {
-      var ek = editionKey(e);
-      byKey[ek] = e;
-      var metric = e.competitors == null ? "—" : fmtN(e.competitors);
-      if (e.approx && e.competitors != null) metric += " est.";
-      body += '<tr data-event-id="' + esc(e.event_id) + '" data-edition-key="' + esc(ek) + '">' +
+    regions.forEach(function (r) {
+      byKey[r.key] = r;
+      var label = r.label || r.bareLabel || r.key;
+      var rowClass = r.absent ? " is-absent" : "";
+      var metric = formatRegionMetric(r);
+      if (!r.absent && r.edition && r.edition.approx && r.edition.competitors != null &&
+          state.listMetric === "competitors") {
+        metric += " est.";
+      }
+      if (r.absent) {
+        byAbsent[r.key] = r.edition || r.sample;
+        body += '<tr class="is-absent" data-key="' + esc(r.key) + '">' +
+          nameCellHtml(
+            '<span class="eg-row-label">' +
+              '<span class="eg-row-label-text">' + esc(label) + "</span>" +
+              metricSpanHtml(metric) +
+            "</span>"
+          ) +
+          statusCellHtml(chip("absent", { tip: r.key })) + "</tr>";
+        return;
+      }
+      var ek = r.edition ? editionKey(r.edition) : r.key;
+      var statusHtml = statusFilter
+        ? ('<span class="muted eg-row-meta">1</span>')
+        : eventStatusChip(r.edition, { tip: ek });
+      body += '<tr data-key="' + esc(r.key) + '" data-edition-key="' + esc(ek) + '">' +
         nameCellHtml(
-          '<span class="eg-row-label">' +
-            '<span class="eg-row-label-text">' + esc(e.name) + "</span>" +
+          '<button type="button" class="eg-drill" data-key="' + esc(r.key) +
+            '" aria-label="Open ' + esc(label) + '">' +
+            "<strong>" + esc(label) + "</strong>" +
             metricSpanHtml(metric) +
-          "</span>"
+          "</button>"
         ) +
-        statusCellHtml(eventStatusChip(e, { tip: ek })) + "</tr>";
-    });
-    absent.forEach(function (e) {
-      var ak = "absent:" + editionKey(e);
-      byAbsent[ak] = e;
-      var m = e.competitors == null ? "—" : (fmtN(e.competitors) + " prior");
-      body += absentListRowHtml(e, ak, m);
+        statusCellHtml(statusHtml) + "</tr>";
     });
     var el = document.getElementById("regionList");
-    el.innerHTML = listShellHtml("Event", "Status", body, { showEvents: false });
+    el.innerHTML = listShellHtml(statusTitle, body);
     bindSortByControls(el);
+    el.querySelectorAll("button.eg-drill").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        drillListEntity(byKey[btn.getAttribute("data-key")]);
+      });
+    });
+    el.querySelectorAll("tr[data-key]").forEach(function (tr) {
+      tr.addEventListener("click", function (ev) {
+        if (ev.target && ev.target.closest && ev.target.closest(".chip")) return;
+        if (ev.target && ev.target.closest && ev.target.closest("button.eg-drill")) return;
+        drillListEntity(byKey[tr.getAttribute("data-key")]);
+      });
+    });
     el.querySelectorAll("tr:not(.is-absent) .chip.has-tip").forEach(function (chipEl) {
-      var edition = byKey[chipEl.getAttribute("data-region-key")];
-      if (!edition) return;
+      var tipKey = chipEl.getAttribute("data-region-key");
+      var region = null;
+      Object.keys(byKey).forEach(function (k) {
+        if (region) return;
+        var r = byKey[k];
+        if (r.edition && editionKey(r.edition) === tipKey) region = r;
+      });
+      if (!region || !region.edition) return;
+      var edition = region.edition;
       chipEl.addEventListener("mouseenter", function (ev) {
         showEventTooltip(ev, edition, { anchorAtRegion: true, highlight: true });
       });
@@ -4342,12 +4833,11 @@
   }
 
   function renderRegions(regions) {
-    var colTitle = {
-      world: "Continent",
-      continent: "Country",
-      country: state.country === "United States" ? "State" : "City",
-      state: "City"
-    }[state.level] || "Region";
+    ensureListGrain();
+    if (state.listGrain === "event" || state.city) {
+      renderEventGrainList(regions);
+      return;
+    }
     var statusFilter = statusFilterActive();
     var statusTitle = statusFilter
       ? (state.status.charAt(0).toUpperCase() + state.status.slice(1))
@@ -4360,12 +4850,12 @@
     }
     var byKey = {};
     regions.forEach(function (r) { byKey[r.key] = r; });
+    var matchMap = listGrainMatchesMap();
     var body = "";
     regions.forEach(function (r) {
-      var label = r.key == null || r.key === "" ? UNKNOWN : String(r.key);
-      var selected = state.city && r.key === state.city;
+      var label = r.label || r.bareLabel || r.key || UNKNOWN;
+      var selected = state.city && r.path && r.path.city === state.city;
       var rowClass = (selected ? "is-selected" : "") + (r.absent ? " is-absent" : "");
-      // Filtered trend: count instead of a redundant status chip.
       var statusHtml = statusFilter
         ? ('<span class="muted eg-row-meta">' + fmtN(r.n) + "</span>")
         : chip(r.absent ? "absent" : r.status, { tip: r.key });
@@ -4381,42 +4871,53 @@
         statusCellHtml(statusHtml) + "</tr>";
     });
     var el = document.getElementById("regionList");
-    el.innerHTML = listShellHtml(colTitle, statusTitle, body, { showEvents: true });
+    el.innerHTML = listShellHtml(statusTitle, body);
     bindSortByControls(el);
     el.querySelectorAll("button.eg-drill").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        drillInto(btn.getAttribute("data-key"));
+        var region = byKey[btn.getAttribute("data-key")];
+        if (matchMap && naturalListGrain() === state.listGrain &&
+            state.listGrain !== "region" && state.listGrain !== "city") {
+          drillInto(btn.getAttribute("data-key"));
+        } else {
+          drillListEntity(region);
+        }
       });
     });
-    // Whole row click (except chips) still drills.
     el.querySelectorAll("tr[data-key]").forEach(function (tr) {
       tr.addEventListener("click", function (ev) {
         if (ev.target && ev.target.closest && ev.target.closest(".chip")) return;
         if (ev.target && ev.target.closest && ev.target.closest("button.eg-drill")) return;
-        drillInto(tr.getAttribute("data-key"));
+        var region = byKey[tr.getAttribute("data-key")];
+        if (matchMap && naturalListGrain() === state.listGrain &&
+            state.listGrain !== "region" && state.listGrain !== "city") {
+          drillInto(tr.getAttribute("data-key"));
+        } else {
+          drillListEntity(region);
+        }
       });
-      if (statusFilter) {
-        var key = tr.getAttribute("data-key");
-        var region = byKey[key];
-        if (!region) return;
-        tr.addEventListener("mouseenter", function (ev) {
-          showMapTooltip(ev, region, { anchorAtRegion: true });
-        });
-        tr.addEventListener("mousemove", function () {
-          var pt = regionAnchorClientPoint(region);
-          if (pt) moveMapTooltip(clientPointEvent(pt));
-        });
-        tr.addEventListener("mouseleave", function () {
-          hideMapTooltipSoon();
-        });
-      }
+      var key = tr.getAttribute("data-key");
+      var region = byKey[key];
+      if (!region) return;
+      var usePin = !matchMap || !!region.absent;
+      tr.addEventListener("mouseenter", function (ev) {
+        showMapTooltip(ev, region, { anchorAtRegion: true, highlight: !usePin });
+      });
+      tr.addEventListener("mousemove", function () {
+        var pt = regionAnchorClientPoint(region);
+        if (pt) moveMapTooltip(clientPointEvent(pt));
+      });
+      tr.addEventListener("mouseleave", function () {
+        hideMapTooltipSoon();
+      });
     });
     el.querySelectorAll(".chip.has-tip").forEach(function (chipEl) {
       var key = chipEl.getAttribute("data-region-key");
       var region = byKey[key];
       if (!region) return;
+      var usePin = !matchMap || !!region.absent;
       chipEl.addEventListener("mouseenter", function (ev) {
-        showMapTooltip(ev, region, { anchorAtRegion: true });
+        showMapTooltip(ev, region, { anchorAtRegion: true, highlight: !usePin });
       });
       chipEl.addEventListener("mousemove", function () {
         var pt = regionAnchorClientPoint(region);
@@ -4433,12 +4934,10 @@
 
   function render() {
     var mode = comparisonMode();
+    ensureListGrain();
     // Keep list, map, KPIs and absent checks on the same YTD/YoY window.
     var geoRows = rowsInComparisonWindow(geoScopedEditions(), mode);
     var rows = rowsInComparisonWindow(scopedEditions(), mode);
-    var listRegions = buildRegions(rows);
-    var absentRegs = absentChildRegions();
-    var listWithAbsent = listRegions.concat(absentRegs);
 
     // City selected → exclusive city-venue map (OSM + event pins).
     // Otherwise map stays on parent geography (all cities / polygons).
@@ -4449,13 +4948,22 @@
           return displayStatus(e.status) === state.status;
         })
       : rows;
-    var mapRegions = buildRegions(mapRows, null, { parentScope: citySel });
+    var mapRegions = buildRegions(mapRows, childKey, { parentScope: citySel });
+    var mapAbsent = citySel ? [] : absentChildRegions({ forList: false });
     // When a city is selected, include prior-only editions so venue pins remain.
     var cityAbsent = citySel ? absentPriorInCurrentScope() : [];
     state.mapCityEditions = citySel ? rows.concat(cityAbsent) : null;
-    var mapWithAbsent = citySel ? mapRegions : mapRegions.concat(absentRegs);
+    var mapWithAbsent = citySel ? mapRegions : mapRegions.concat(mapAbsent);
     // Intensity scale from active (non-absent) map regions only.
     setMapMaxMatch(mapRegions);
+
+    var listWithAbsent;
+    if (state.listGrain === "event" || citySel) {
+      listWithAbsent = buildEventListRows(rows);
+    } else {
+      listWithAbsent = buildRegions(rows, listGrainKey, { forList: true })
+        .concat(absentChildRegions({ forList: true }));
+    }
 
     renderBreadcrumb();
     renderKpis(geoRows, rows);
@@ -4470,11 +4978,7 @@
     var tipSeq = state.mapRenderSeq;
     scheduleMapTask(hideMapTooltip, 0, tipSeq);
     scheduleMapTask(hideMapTooltip, 120, tipSeq);
-    if (citySelectionActive()) {
-      renderCityEventList(rows);
-    } else {
-      renderRegions(listWithAbsent);
-    }
+    renderRegions(listWithAbsent);
   }
 
   function openMethod() {
@@ -4627,6 +5131,7 @@
       state.data = data;
       readUrl();
       normalizeGeoFromData();
+      resetListGrainOnMapNav();
       initControls();
       writeUrl();
       render();
