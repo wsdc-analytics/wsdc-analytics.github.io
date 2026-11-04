@@ -91,12 +91,98 @@ def test_city_keys_disambiguate_same_name() -> None:
 
 
 def test_event_metric_subset_and_fallback() -> None:
-    allowed_event = {"competitors", "d_competitors"}
+    allowed_event = {"competitors", "d_competitors", "d_competitors_pct"}
     assert "events" not in allowed_event
     assert "d_events" not in allowed_event
     assert "avg" not in allowed_event
     # Fallback family: Δ Events → Δ Competitors
     assert "d_competitors" in allowed_event
+    assert "d_competitors_pct" in allowed_event
+
+
+def allowed_list_metrics(*, grain: str, status: str) -> list[str]:
+    """Mirror event_growth_dashboard_en.html allowedListMetrics()."""
+    new_slice = status == "new"
+    if grain == "event":
+        return (
+            ["competitors"]
+            if new_slice
+            else ["competitors", "d_competitors", "d_competitors_pct"]
+        )
+    if status == "all":
+        return [
+            "competitors",
+            "events",
+            "avg",
+            "d_competitors",
+            "d_competitors_pct",
+            "d_events",
+            "d_events_pct",
+            "d_avg",
+            "d_avg_pct",
+        ]
+    if new_slice:
+        return ["competitors", "events", "avg"]
+    return [
+        "competitors",
+        "events",
+        "avg",
+        "d_competitors",
+        "d_competitors_pct",
+    ]
+
+
+def test_status_slice_metrics_relevance() -> None:
+    # New: no Δ — every row suppresses prior-edition deltas.
+    assert allowed_list_metrics(grain="country", status="new") == [
+        "competitors",
+        "events",
+        "avg",
+    ]
+    assert allowed_list_metrics(grain="event", status="new") == ["competitors"]
+    # Trend slices: paired Δ Competitors (+ %) only (no calendar Δ Events / Δ Avg).
+    for st in ("growing", "declining", "stable"):
+        assert allowed_list_metrics(grain="country", status=st) == [
+            "competitors",
+            "events",
+            "avg",
+            "d_competitors",
+            "d_competitors_pct",
+        ]
+        assert "d_avg" not in allowed_list_metrics(grain="country", status=st)
+        assert "d_events" not in allowed_list_metrics(grain="country", status=st)
+    # All: full set including % deltas.
+    full = allowed_list_metrics(grain="country", status="all")
+    assert "d_avg" in full and "d_avg_pct" in full
+    assert "d_events" in full and "d_events_pct" in full
+    assert "d_competitors_pct" in full
+    html = (REPO / "event_growth_dashboard_en.html").read_text()
+    assert 'var newSlice = status === "new"' in html
+    assert "d_competitors_pct" in html
+    assert "Δ Competitors %" in html
+
+
+def test_pct_delta_sort_and_format() -> None:
+    rows = [
+        {"key": "a", "pct": 0.20, "suppress_delta": False},
+        {"key": "b", "pct": -0.05, "suppress_delta": False},
+        {"key": "new", "pct": None, "suppress_delta": True},
+    ]
+    for r in rows:
+        if r["suppress_delta"]:
+            r["pct"] = None
+    desc = sort_rows(rows, metric="pct", ascending=False)
+    assert [r["key"] for r in desc] == ["a", "b", "new"]
+    # Mirror fmtPct in the dashboard: one decimal, signed percent.
+    def fmt_pct(p: float | None) -> str:
+        if p is None:
+            return "—"
+        v = round(p * 1000) / 10
+        return ("+" if v > 0 else "") + str(v) + "%"
+
+    assert fmt_pct(0.20) == "+20.0%"
+    assert fmt_pct(-0.05) == "-5.0%"
+    assert fmt_pct(None) == "—"
 
 
 def test_event_delta_uses_edition_delta() -> None:
@@ -243,6 +329,8 @@ if __name__ == "__main__":
     test_region_world_has_us_states_not_united_states_row()
     test_city_keys_disambiguate_same_name()
     test_event_metric_subset_and_fallback()
+    test_status_slice_metrics_relevance()
+    test_pct_delta_sort_and_format()
     test_event_delta_uses_edition_delta()
     test_new_delta_null_sorts_last()
     test_absent_delta_sorts_last_like_new()
