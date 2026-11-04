@@ -378,21 +378,21 @@
     th.hm-tier-leader { background: rgba(99, 102, 241, 0.05); }
     th.hm-tier-follower { background: rgba(244, 63, 94, 0.05); }
 
-    .wsdc-info-btn, .info-tip {
+    /* Title "i" uses shared .wsdc-info-btn (18px). Inline cell tips stay smaller. */
+    .info-tip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 50%;
       background: #fff;
       color: var(--wsdc-color-text-muted, #4b5563);
-      font: italic 600 10px/1 'DM Sans', serif;
+      font: italic 600 9px/1 'DM Sans', serif;
       cursor: help;
       padding: 0;
     }
-    .info-tip { width: 14px; height: 14px; font-size: 9px; }
     .ety-pop {
       position: fixed;
       z-index: 80;

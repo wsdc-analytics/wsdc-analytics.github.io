@@ -91,9 +91,6 @@
     .filter-field--trend .filter-label {
       margin: 0;
     }
-    .filter-field--trend .wsdc-info-btn {
-      width: 18px; height: 18px; font-size: 10px;
-    }
     .filters .wsdc-select-host,
     .filters .wsdc-dd {
       width: var(--wsdc-dd-width, 5rem);
@@ -190,9 +187,6 @@
       font-weight: var(--wsdc-font-weight-semibold);
       color: var(--wsdc-color-text-muted);
       line-height: 1.35;
-    }
-    .side-kpi__period-row .wsdc-info-btn {
-      width: 18px; height: 18px; font-size: 10px;
     }
     .side-kpi-grid {
       display: grid;
@@ -940,9 +934,12 @@
   </style>
 </head>
 <body>
-  <div class="page">
-    <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="event_growth_dashboard_en.html"></div>
-    <main class="content">
+  <main class="page">
+    <div class="dash-chrome">
+      <div data-site-chrome data-active="dashboards" data-lang="en" data-home-href="index.html" data-current-dash="event_growth_dashboard_en.html"></div>
+      <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
+    </div>
+    <section class="content">
       <header class="page-head">
         <div class="page-head__title-row">
           <h1>Event Growth Monitor</h1>
@@ -1032,8 +1029,8 @@
         </aside>
       </div>
 
-    </main>
-  </div>
+    </section>
+  </main>
 
   <!-- Outside .page like Events Calendar — avoids clipping / stacking under panels. -->
   <div class="tooltip" id="egTooltip" role="tooltip"></div>
