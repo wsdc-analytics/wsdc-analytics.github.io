@@ -416,19 +416,92 @@
       align-items: stretch;
     }
     @media (max-width: 900px) {
-      .layout { grid-template-columns: 1fr; flex: none; }
       html, body, .page { height: auto; overflow: auto; }
       .content { overflow: visible; flex: none; min-height: 0; }
-      /* After the desktop min-height:0 rule — keep a real map height. */
-      .panel--map { min-height: 320px !important; }
-      .panel--map .panel__body { min-height: 280px; }
+
+      /* Year, then Event trend left-aligned; pills share one full-width row. */
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 10px;
+      }
+      .filters .filter-field:has(#yearSelect) {
+        align-items: flex-start;
+      }
+      .filter-field--trend {
+        justify-content: flex-start;
+        align-items: center;
+        flex: 1 1 auto;
+        width: 100%;
+        gap: 6px 8px;
+      }
+      .filter-field--trend .filter-label,
+      .filter-field--trend .wsdc-info-btn {
+        flex: 0 0 auto;
+      }
+      .filters .kpis {
+        flex: 1 1 100%;
+        width: 100%;
+        justify-content: stretch;
+        flex-wrap: nowrap;
+        gap: 4px;
+      }
+      button.kpi-pill {
+        flex: 1 1 0;
+        min-width: 0;
+        justify-content: center;
+        height: 26px;
+        padding: 0 4px;
+        gap: 3px;
+        font-size: 9px;
+        letter-spacing: 0.01em;
+      }
+      button.kpi-pill .val { font-size: 10px; }
+
+      /* KPI summary → map → list (side-stack children promote into layout). */
+      .layout {
+        display: flex;
+        flex-direction: column;
+        flex: none;
+        gap: var(--wsdc-space-2);
+      }
+      .side-stack { display: contents; }
+      .side-kpi-panel { order: 1; }
+      .panel--map { order: 2; }
+      .side-detail-panel { order: 3; }
+
+      /* Tall enough for America + Europe + Asia + Australia in one world frame. */
+      .panel--map {
+        min-height: 0 !important;
+        height: auto;
+      }
+      .panel--map .panel__body {
+        flex: 0 0 auto;
+        height: min(58vh, 360px);
+        min-height: 280px;
+        max-height: 420px;
+      }
       .side-detail-panel { min-height: 220px; }
+      .side-summary { padding: 8px 10px 10px; gap: 6px; }
+      .side-kpi__val { font-size: 1.15rem; }
     }
     @media (max-width: 480px) {
       .subtitle { font-size: 12.5px; }
       .page-head h1 { font-size: 1.25rem; }
-      .filters .kpis { gap: 4px; }
-      button.kpi-pill { padding: 0 8px; height: 26px; font-size: 10px; }
+      .content { padding-left: var(--wsdc-space-3); padding-right: var(--wsdc-space-3); }
+      button.kpi-pill {
+        height: 24px;
+        padding: 0 3px;
+        font-size: 8px;
+        gap: 2px;
+      }
+      button.kpi-pill .val { font-size: 9px; }
+      .panel--map .panel__body {
+        height: min(52vh, 320px);
+        min-height: 260px;
+        max-height: 360px;
+      }
     }
     .panel {
       border: 1px solid var(--wsdc-color-border);
@@ -3173,7 +3246,9 @@
           },
           center: [10, 18],
           zoom: 1.15,
-          minZoom: 0.6,
+          // 0 so mobile world can fit America→Australia on a narrow canvas
+          // (minZoom 0.6 was clamping fitBounds into an Europe-only crop).
+          minZoom: 0,
           // City venue drill-in needs street/neighbourhood detail; higher
           // levels still cap zoom via fitToData maxZoom.
           maxZoom: 14,
@@ -4366,17 +4441,42 @@
   // Keep Americas → Australia inside the panel with air on all sides.
   var WORLD_FIT_BOUNDS = [[-150, -52], [175, 74]];
 
+  function isCompactMapLayout() {
+    var el = document.getElementById("growthMap");
+    var w = el ? el.clientWidth : 0;
+    if (w > 0) return w < 560;
+    return !!(window.matchMedia && window.matchMedia("(max-width: 900px)").matches);
+  }
+
   function fitWorldView() {
     if (!state.map || !state.mapLoaded) return;
     refreshMapSize();
+    var compact = isCompactMapLayout();
     try {
+      // Compact: force a low zoom so America + Europe + Asia + Australia all
+      // stay in frame on a narrow phone (fitBounds alone was clamped by
+      // minZoom / ran before layout height settled → Europe crop).
+      if (compact) {
+        state.map.jumpTo({ center: [15, 12], zoom: 0.35, bearing: 0, pitch: 0 });
+        state.map.fitBounds(WORLD_FIT_BOUNDS, {
+          padding: { top: 20, bottom: 24, left: 10, right: 10 },
+          duration: 0,
+          maxZoom: 0.55
+        });
+        return;
+      }
       state.map.fitBounds(WORLD_FIT_BOUNDS, {
         padding: { top: 36, bottom: 44, left: 40, right: 40 },
         duration: 0,
         maxZoom: 2.2
       });
     } catch (e) {
-      state.map.jumpTo({ center: [10, 18], zoom: 1.05 });
+      state.map.jumpTo({
+        center: [15, 12],
+        zoom: compact ? 0.35 : 1.05,
+        bearing: 0,
+        pitch: 0
+      });
     }
   }
 
@@ -4882,11 +4982,16 @@
       // City drill-in: readable street basemap. Else mute so choropleth leads.
       setBasemapOpacity(cityVenues ? 0.92 : (state.level === "world" ? 0.32 : 0.58));
       function afterPaint() {
-        refreshMapSize();
-        requestAnimationFrame(function () {
-          if (seq === state.mapRenderSeq) refreshMapSize();
-        });
-        scheduleMapTask(refreshMapSize, 120, seq);
+        function settle() {
+          if (seq !== state.mapRenderSeq) return;
+          refreshMapSize();
+          // Re-fit after layout/resize — world camera depends on final width.
+          if (state.level === "world" && !citySelectionActive()) fitWorldView();
+        }
+        settle();
+        requestAnimationFrame(settle);
+        scheduleMapTask(settle, 120, seq);
+        scheduleMapTask(settle, 320, seq);
       }
       if (cityVenues) {
         renderCityVenueMap(state.mapCityEditions);
