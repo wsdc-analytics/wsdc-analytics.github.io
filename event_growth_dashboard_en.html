@@ -417,50 +417,48 @@
     }
     @media (max-width: 900px) {
       /*
-        Locked split viewport: map stays on-screen as the “monitor”;
-        only the region list scrolls. Side KPI block is dropped for height.
-        overflow-x stays clipped so the page cannot drag sideways.
+        Page scrolls normally (subtitle / filters / KPI can leave).
+        Map sticks to the top; list panel sticks under it and scrolls inside.
+        overflow-x: clip — blocks sideways drag without breaking position:sticky.
       */
       html, body {
-        height: 100%;
+        height: auto;
         width: 100%;
         max-width: 100%;
-        overflow: hidden;
+        overflow-x: clip;
+        overflow-y: auto;
         overscroll-behavior-x: none;
       }
       .page {
-        height: 100dvh;
-        max-height: 100dvh;
+        height: auto;
         width: 100%;
         max-width: 100%;
-        overflow: hidden;
+        overflow-x: clip;
+        overflow-y: visible;
         overscroll-behavior-x: none;
       }
       .content {
-        flex: 1 1 auto;
+        overflow-x: clip;
+        overflow-y: visible;
+        flex: none;
         min-height: 0;
-        overflow: hidden;
         max-width: 100%;
         width: 100%;
       }
-      .page-head {
-        flex: 0 0 auto;
-        max-width: 100%;
-        min-width: 0;
-      }
-      .page-head .subtitle { display: none; }
       .layout,
       .filters,
+      .page-head,
       .panel--map,
+      .side-kpi-panel,
       .side-detail-panel,
-      .region-list {
+      .region-list,
+      .side-summary {
         max-width: 100%;
         min-width: 0;
       }
 
       /* Year, then Event trend left-aligned; pills share one full-width row. */
       .filters {
-        flex: 0 0 auto;
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
@@ -508,40 +506,45 @@
       }
       button.kpi-pill .val { font-size: 10px; }
 
-      /* Map → list (side-stack children promote into layout). */
+      /* KPI → map → list (side-stack children promote into layout). */
       .layout {
         display: flex;
         flex-direction: column;
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow: hidden;
+        flex: none;
         gap: var(--wsdc-space-2);
+        overflow: visible;
       }
       .side-stack { display: contents; }
-      /* Sacrifice Competitors/Events/Avg block so the map can stay visible. */
-      .side-kpi-panel { display: none; }
-      .panel--map { order: 1; }
-      .side-detail-panel { order: 2; }
+      .side-kpi-panel { order: 1; }
+      .panel--map { order: 2; }
+      .side-detail-panel { order: 3; }
 
       .panel--map {
+        position: sticky;
+        top: 0;
+        z-index: 6;
         flex: 0 0 auto;
         min-height: 0 !important;
         height: auto;
-        z-index: 2;
+        background: var(--wsdc-color-surface);
       }
       .panel--map .panel__body {
         flex: 0 0 auto;
-        /* Leave room for the list; world fit still covers four continents. */
-        height: min(42dvh, 300px);
-        min-height: 220px;
-        max-height: 340px;
+        height: min(58vh, 360px);
+        min-height: 280px;
+        max-height: 420px;
       }
+      /* Sticks under the map; further scroll happens inside the list. */
       .side-detail-panel {
-        flex: 1 1 auto;
-        min-height: 0;
+        position: sticky;
+        top: var(--eg-mobile-map-stick, 50vh);
+        z-index: 5;
+        max-height: max(140px, calc(100dvh - var(--eg-mobile-map-stick, 50vh)));
+        min-height: 140px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
+        background: var(--wsdc-color-surface);
       }
       .side-detail-panel .region-list {
         flex: 1 1 auto;
@@ -551,8 +554,11 @@
         overscroll-behavior: contain;
         -webkit-overflow-scrolling: touch;
       }
+      .side-summary { padding: 8px 10px 10px; gap: 6px; }
+      .side-kpi__val { font-size: 1.15rem; }
     }
     @media (max-width: 480px) {
+      .subtitle { font-size: 12.5px; }
       .page-head h1 { font-size: 1.25rem; }
       .content { padding-left: var(--wsdc-space-3); padding-right: var(--wsdc-space-3); }
       button.kpi-pill {
@@ -563,9 +569,9 @@
       }
       button.kpi-pill .val { font-size: 9px; }
       .panel--map .panel__body {
-        height: min(38dvh, 260px);
-        min-height: 200px;
-        max-height: 300px;
+        height: min(52vh, 320px);
+        min-height: 260px;
+        max-height: 360px;
       }
     }
     .panel {
@@ -3352,6 +3358,30 @@
     state.map.resize();
   }
 
+  /* Mobile sticky stack: list panel sits under the measured map height. */
+  function syncMobileStickyMapOffset() {
+    var root = document.documentElement;
+    var mapPanel = document.querySelector(".panel--map");
+    var compact = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+    if (!compact || !mapPanel) {
+      root.style.removeProperty("--eg-mobile-map-stick");
+      return;
+    }
+    var h = Math.ceil(mapPanel.getBoundingClientRect().height);
+    if (!(h > 0)) return;
+    var layout = document.querySelector(".layout");
+    var gap = 0;
+    if (layout) {
+      var gapCs = window.getComputedStyle(layout);
+      gap = parseFloat(gapCs.rowGap || gapCs.gap) || 0;
+    }
+    // Leave room for the list — landscape / short viewports can make map taller than the screen.
+    var vh = window.innerHeight || h;
+    var maxStick = Math.max(120, vh - 160);
+    var stick = Math.min(Math.ceil(h + gap), maxStick);
+    root.style.setProperty("--eg-mobile-map-stick", stick + "px");
+  }
+
   function setMapData(polyFc, ptsFc) {
     if (!state.map || !state.mapLoaded) return;
     clearMapHover();
@@ -5053,6 +5083,7 @@
         function settle() {
           if (seq !== state.mapRenderSeq) return;
           refreshMapSize();
+          syncMobileStickyMapOffset();
           // Re-fit after layout/resize — world camera depends on final width.
           if (state.level === "world" && !citySelectionActive()) fitWorldView();
         }
@@ -5544,9 +5575,11 @@
       resizeTimer = setTimeout(function () {
         resizeTimer = null;
         refreshMapSize();
+        syncMobileStickyMapOffset();
         if (state.level === "world" && !citySelectionActive()) fitWorldView();
       }, 120);
     });
+    syncMobileStickyMapOffset();
   }
 
   Promise.all([
