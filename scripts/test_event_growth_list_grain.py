@@ -129,14 +129,22 @@ def test_new_delta_null_sorts_last() -> None:
     assert asc[0]["key"] == "b"
 
 
-def test_absent_delta_sorts_with_values() -> None:
+def test_absent_delta_sorts_last_like_new() -> None:
     rows = [
-        {"key": "grow", "d_competitors": 20, "absent": False},
-        {"key": "gone", "d_competitors": -400, "absent": True},
-        {"key": "flat", "d_competitors": 0, "absent": False},
+        {"key": "grow", "d_competitors": 20, "absent": False, "suppress_delta": False},
+        {"key": "gone", "d_competitors": -400, "absent": True, "suppress_delta": True},
+        {"key": "flat", "d_competitors": 0, "absent": False, "suppress_delta": False},
+        {"key": "drop", "d_competitors": -50, "absent": False, "suppress_delta": False},
     ]
+    for r in rows:
+        if r["suppress_delta"]:
+            r["d_competitors"] = None
     asc = sort_rows(rows, metric="d_competitors", ascending=True)
-    assert asc[0]["key"] == "gone"
+    desc = sort_rows(rows, metric="d_competitors", ascending=False)
+    assert asc[0]["key"] == "drop"
+    assert asc[-1]["key"] == "gone"
+    assert desc[0]["key"] == "grow"
+    assert desc[-1]["key"] == "gone"
     desc_abs = sort_rows(
         [
             {"key": "live", "competitors": 100, "absent": False},
@@ -173,7 +181,7 @@ if __name__ == "__main__":
     test_event_metric_subset_and_fallback()
     test_event_delta_uses_edition_delta()
     test_new_delta_null_sorts_last()
-    test_absent_delta_sorts_with_values()
+    test_absent_delta_sorts_last_like_new()
     test_avg_delta_requires_two_events()
     test_dashboard_exposes_grain_controls()
     print("OK")

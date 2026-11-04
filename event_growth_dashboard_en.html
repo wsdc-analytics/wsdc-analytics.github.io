@@ -279,6 +279,10 @@
       white-space: normal;
       word-break: break-word;
     }
+    /* Keep pink dot mid-line with the first name line (row uses flex-start for 2-line wrap). */
+    .eg-row-main .inside-dot {
+      margin-top: 0.45em;
+    }
     .eg-row-metric {
       flex: 0 0 auto;
       margin-left: auto;
@@ -549,11 +553,15 @@
       min-width: 0;
     }
     .region-list-head__sort {
-      flex: 0 0 auto;
+      position: absolute;
+      left: calc(100% + 14px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
       width: 18px;
       height: 18px;
       padding: 0;
-      margin: 0 2px 0 auto;
+      margin: 0;
       border: 1px solid var(--wsdc-color-border, #d1d5db);
       border-radius: 50%;
       background: #fff;
@@ -570,6 +578,14 @@
       border-color: var(--wsdc-color-text-muted, #4b5563);
       color: var(--wsdc-color-text-strong, #0b1221);
       outline: none;
+    }
+    /* Metric label sits above row values; chevron + sort hang into Status gutter. */
+    .region-list-head__metric-cluster {
+      position: relative;
+      flex: 0 0 auto;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
     }
     .region-list-head__metric {
       flex: 0 0 auto;
@@ -610,6 +626,18 @@
       height: 9px;
       flex-shrink: 0;
       opacity: 0.75;
+    }
+    /* Metric only: value width aligns with numbers; caret overflows toward Status. */
+    .region-list-head__metric .wsdc-dd--field .wsdc-dd__btn {
+      position: relative;
+      gap: 0;
+    }
+    .region-list-head__metric .wsdc-dd--field .wsdc-dd__btn svg {
+      position: absolute;
+      left: calc(100% + 2px);
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
     }
     .region-list-head .wsdc-dd--field .wsdc-dd__btn:hover,
     .region-list-head .wsdc-dd--field.is-open .wsdc-dd__btn {
@@ -1098,7 +1126,7 @@
               <li>with an <em>Event trend</em> pill on, only the events with that status;</li>
               <li>it adds up entries, not unique people — a dancer who competes at three events in the region counts three times.</li>
             </ul>
-            <p>In the side list, each row shows the selected metric beside the place name. The list grain (Continent / Country / Region / City / Event) can be finer than the map level inside the current scope; Region treats US states as peers of other countries (<em>California, US</em>) and is available at World and America. Absolute metrics are Competitors, Events and Avg / event; Δ metrics use the same comparison window as the KPIs (matched open-month YTD). New entities show — in Δ so debuts do not top growth rankings; Event Δ is versus that event’s own previous edition. Use the round ↑/↓ control to flip sort direction.</p>
+            <p>In the side list, each row shows the selected metric beside the place name. The list grain (Continent / Country / Region / City / Event) can be finer than the map level inside the current scope; Region treats US states as peers of other countries (<em>California, US</em>) and is available at World and America. Absolute metrics are Competitors, Events and Avg / event; Δ metrics use the same comparison window as the KPIs (matched open-month YTD). New and Absent show — in Δ and sort after ranked rows (no current-window baseline); Event Δ is versus that event’s own previous edition. Δ Avg / event needs at least two events in both windows. Use the round ↑/↓ control to flip sort direction.</p>
           </div>
         </details>
         <details class="method-sec">
@@ -1420,21 +1448,22 @@
       var g = map[k];
       var bare = forList ? listGrainBareLabel(g.sample) : String(g.key);
       var full = forList ? listGrainFullLabel(g.sample) : String(g.key);
-      var avgPrev = g.n ? g.priorComp / g.n : null;
       return {
         key: g.key,
         n: 0,
         nPrev: g.n,
-        nDelta: -g.n,
-        nPct: -1,
+        nDelta: null,
+        nPct: null,
         current: 0,
         previous: g.priorComp,
-        delta: -g.priorComp,
-        avgDelta: (avgPrev != null && g.n >= 2) ? (0 - avgPrev) : null,
+        // Δ is N/A for Absent (no current window) — same as New: show — and
+        // sort after ranked rows. Prior totals stay on absolute metrics / tips.
+        delta: null,
+        avgDelta: null,
         pct: null,
         status: "absent",
         absent: true,
-        suppressDelta: false,
+        suppressDelta: true,
         growing: 0,
         declining: 0,
         stable: 0,
@@ -1497,15 +1526,15 @@
           key: "absent:" + editionKey(e),
           n: 0,
           nPrev: 1,
-          nDelta: -1,
+          nDelta: null,
           current: 0,
           previous: prior,
-          delta: -prior,
+          delta: null,
           avgDelta: null,
           pct: null,
           status: "absent",
           absent: true,
-          suppressDelta: false,
+          suppressDelta: true,
           growing: 0,
           declining: 0,
           stable: 0,
@@ -1766,15 +1795,15 @@
     if (m === "events") return r.n || 0;
     if (m === "avg") return r.n ? (r.current || 0) / r.n : 0;
     if (m === "d_competitors") {
-      if (r.suppressDelta) return null;
+      if (r.suppressDelta || r.absent) return null;
       return r.delta;
     }
     if (m === "d_events") {
-      if (r.suppressDelta) return null;
+      if (r.suppressDelta || r.absent) return null;
       return r.nDelta;
     }
     if (m === "d_avg") {
-      if (r.suppressDelta) return null;
+      if (r.suppressDelta || r.absent) return null;
       return r.avgDelta;
     }
     return r.current || 0;
@@ -1794,15 +1823,15 @@
       return r.n ? fmtAvg((r.current || 0) / r.n) : "—";
     }
     if (m === "d_competitors") {
-      if (r.suppressDelta) return "—";
+      if (r.suppressDelta || r.absent) return "—";
       return formatSigned(r.delta);
     }
     if (m === "d_events") {
-      if (r.suppressDelta) return "—";
+      if (r.suppressDelta || r.absent) return "—";
       return formatSigned(r.nDelta);
     }
     if (m === "d_avg") {
-      if (r.suppressDelta) return "—";
+      if (r.suppressDelta || r.absent) return "—";
       return formatSigned(r.avgDelta);
     }
     if (r.absent) return fmtN(r.previous != null ? r.previous : r.current) + " prior";
@@ -1868,9 +1897,10 @@
     return '<div class="region-list-head">' +
       '<div class="region-list-head__geo">' +
       grainSelectHtml() +
-      sortButtonHtml() +
+      '<div class="region-list-head__metric-cluster">' +
       '<div class="region-list-head__metric">' + metricSelectHtml() + "</div>" +
-      "</div>" +
+      sortButtonHtml() +
+      "</div></div>" +
       '<div class="region-list-head__status">' + esc(statusTitle) + "</div>" +
       "</div>" +
       '<div class="region-list-scroll"><table class="eg eg--compact"><tbody>' +
