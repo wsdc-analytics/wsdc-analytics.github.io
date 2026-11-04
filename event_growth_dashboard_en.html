@@ -539,8 +539,8 @@
         position: sticky;
         top: var(--eg-mobile-map-stick, 50vh);
         z-index: 5;
-        max-height: calc(100dvh - var(--eg-mobile-map-stick, 50vh));
-        min-height: 180px;
+        max-height: max(140px, calc(100dvh - var(--eg-mobile-map-stick, 50vh)));
+        min-height: 140px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -3368,7 +3368,18 @@
       return;
     }
     var h = Math.ceil(mapPanel.getBoundingClientRect().height);
-    if (h > 0) root.style.setProperty("--eg-mobile-map-stick", h + "px");
+    if (!(h > 0)) return;
+    var layout = document.querySelector(".layout");
+    var gap = 0;
+    if (layout) {
+      var gapCs = window.getComputedStyle(layout);
+      gap = parseFloat(gapCs.rowGap || gapCs.gap) || 0;
+    }
+    // Leave room for the list — landscape / short viewports can make map taller than the screen.
+    var vh = window.innerHeight || h;
+    var maxStick = Math.max(120, vh - 160);
+    var stick = Math.min(Math.ceil(h + gap), maxStick);
+    root.style.setProperty("--eg-mobile-map-stick", stick + "px");
   }
 
   function setMapData(polyFc, ptsFc) {
