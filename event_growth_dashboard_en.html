@@ -1875,14 +1875,21 @@
 
   function allowedListMetrics() {
     var grain = state.listGrain || naturalListGrain();
+    var status = state.status || "all";
+    // New editions have no prior pair → every Δ cell is "—". Hide Δ entirely.
+    var newSlice = status === "new";
     if (grain === "event" || state.city) {
-      return ["competitors", "d_competitors"];
+      return newSlice ? ["competitors"] : ["competitors", "d_competitors"];
     }
-    var out = ["competitors", "events", "avg", "d_competitors", "d_events", "d_avg"];
-    if (statusFilterActive()) {
-      out = out.filter(function (m) { return m !== "d_events"; });
+    if (status === "all") {
+      return ["competitors", "events", "avg", "d_competitors", "d_events", "d_avg"];
     }
-    return out;
+    if (newSlice) {
+      return ["competitors", "events", "avg"];
+    }
+    // Growing / Declining / Stable: calendar YTD is off under a status pill, so
+    // Δ Events / Δ Avg stay null. Paired Δ Competitors still ranks the slice.
+    return ["competitors", "events", "avg", "d_competitors"];
   }
 
   function ensureListMetric() {

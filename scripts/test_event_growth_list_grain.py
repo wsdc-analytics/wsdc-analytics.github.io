@@ -99,6 +99,51 @@ def test_event_metric_subset_and_fallback() -> None:
     assert "d_competitors" in allowed_event
 
 
+def allowed_list_metrics(*, grain: str, status: str) -> list[str]:
+    """Mirror event_growth_dashboard_en.html allowedListMetrics()."""
+    new_slice = status == "new"
+    if grain == "event":
+        return ["competitors"] if new_slice else ["competitors", "d_competitors"]
+    if status == "all":
+        return [
+            "competitors",
+            "events",
+            "avg",
+            "d_competitors",
+            "d_events",
+            "d_avg",
+        ]
+    if new_slice:
+        return ["competitors", "events", "avg"]
+    return ["competitors", "events", "avg", "d_competitors"]
+
+
+def test_status_slice_metrics_relevance() -> None:
+    # New: no Δ — every row suppresses prior-edition deltas.
+    assert allowed_list_metrics(grain="country", status="new") == [
+        "competitors",
+        "events",
+        "avg",
+    ]
+    assert allowed_list_metrics(grain="event", status="new") == ["competitors"]
+    # Trend slices: paired Δ Competitors only (no calendar Δ Events / Δ Avg).
+    for st in ("growing", "declining", "stable"):
+        assert allowed_list_metrics(grain="country", status=st) == [
+            "competitors",
+            "events",
+            "avg",
+            "d_competitors",
+        ]
+        assert "d_avg" not in allowed_list_metrics(grain="country", status=st)
+        assert "d_events" not in allowed_list_metrics(grain="country", status=st)
+    # All: full set.
+    assert "d_avg" in allowed_list_metrics(grain="country", status="all")
+    assert "d_events" in allowed_list_metrics(grain="country", status="all")
+    html = (REPO / "event_growth_dashboard_en.html").read_text()
+    assert 'var newSlice = status === "new"' in html
+    assert 'return ["competitors", "events", "avg", "d_competitors"]' in html
+
+
 def test_event_delta_uses_edition_delta() -> None:
     payload = json.loads(DATA.read_text())
     hit = next(
@@ -243,6 +288,7 @@ if __name__ == "__main__":
     test_region_world_has_us_states_not_united_states_row()
     test_city_keys_disambiguate_same_name()
     test_event_metric_subset_and_fallback()
+    test_status_slice_metrics_relevance()
     test_event_delta_uses_edition_delta()
     test_new_delta_null_sorts_last()
     test_absent_delta_sorts_last_like_new()
