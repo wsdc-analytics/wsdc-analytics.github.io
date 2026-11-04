@@ -167,19 +167,20 @@
   }
 }
 
+/* Title/methodology "i" — match Event Tiers (18px); keep inline .info-tip smaller locally. */
 .wsdc-info-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 18px;
   padding: 0;
   border: 1px solid var(--wsdc-color-border, #d1d5db);
   border-radius: 50%;
   background: var(--wsdc-color-surface, #ffffff);
   color: var(--wsdc-color-text-muted, #4b5563);
   font-family: var(--wsdc-font-sans);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: var(--wsdc-font-weight-semibold, 600);
   font-style: italic;
   line-height: 1;
@@ -199,14 +200,6 @@
 .wsdc-info-btn:focus-visible {
   outline: var(--wsdc-focus-ring);
   outline-offset: var(--wsdc-focus-offset, 2px);
-}
-
-@media (max-width: 720px) {
-  .wsdc-info-btn {
-    width: var(--wsdc-tap-min, 44px);
-    height: var(--wsdc-tap-min, 44px);
-    font-size: 14px;
-  }
 }
 
 /* Embeddable pages: safe edge padding when opened top-level */
