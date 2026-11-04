@@ -71,8 +71,6 @@
     }
     .subtitle-i { font-size: 0.85em; }
     .subtitle em { font-style: italic; color: var(--wsdc-color-text-strong); }
-    .subtitle-def { color: var(--wsdc-color-text); }
-    .subtitle-def strong { color: var(--wsdc-color-text-strong); font-weight: var(--wsdc-font-weight-bold); }
 
     .filters {
       display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
@@ -199,23 +197,36 @@
       flex-direction: column;
       gap: 4px;
       min-width: 0;
-      padding: 0 8px;
+      padding: 0 6px;
     }
     .side-kpi:first-child { padding-left: 2px; }
     .side-kpi:last-child { padding-right: 2px; }
     .side-kpi + .side-kpi {
       border-left: 1px solid var(--wsdc-color-border, #e5e7eb);
     }
+    .side-kpi__lbl-row {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      min-width: 0;
+    }
     .side-kpi__lbl {
-      font-size: 10px;
+      flex: 0 1 auto;
+      min-width: 0;
+      font-size: 9px;
       font-weight: var(--wsdc-font-weight-semibold);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--wsdc-color-text-muted);
       line-height: 1.2;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      overflow: visible;
+    }
+    .side-kpi__lbl-row .wsdc-info-btn {
+      flex: 0 0 auto;
+      width: 14px;
+      height: 14px;
+      font-size: 8px;
     }
     .side-kpi__val {
       font-size: 1.35rem;
@@ -397,8 +408,8 @@
 
     .layout {
       display: grid;
-      /* Side rail: enough for 3 KPIs + status chips; avoid stealing map width. */
-      grid-template-columns: minmax(0, 1fr) 312px;
+      /* Side rail: fit Competitors + info without label ellipsis. */
+      grid-template-columns: minmax(0, 1fr) 328px;
       gap: var(--wsdc-space-2);
       flex: 1;
       min-height: 0;
@@ -832,6 +843,19 @@
       margin-bottom: 8px;
       line-height: 1.35;
     }
+    .tooltip .tt-place {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.3em;
+      margin-bottom: 2px;
+      font-weight: var(--wsdc-font-weight-medium);
+    }
+    .tooltip .tt-flag {
+      flex: 0 0 auto;
+      font-size: 1.05em;
+      line-height: 1;
+    }
     .tooltip .tt-venue-top {
       display: flex;
       flex-wrap: wrap;
@@ -1008,7 +1032,6 @@
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
         <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date (closed months in full; the open month matched to published events only); finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
-        <p class="subtitle subtitle-def"><strong>Competitors</strong> = leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion). For a continent, country, state or city, it is the total across all events held there in the selected period. <strong>Avg / event</strong> = that total ÷ number of events (mean event size). Details in Methodology.</p>
       </header>
 
       <div class="filters">
@@ -1059,21 +1082,36 @@
               </div>
               <div class="side-kpi-grid" aria-live="polite">
                 <div class="side-kpi">
-                  <div class="side-kpi__lbl" id="kpiCompLbl">Competitors</div>
+                  <div class="side-kpi__lbl-row">
+                    <div class="side-kpi__lbl" id="kpiCompLbl">Competitors</div>
+                    <button type="button" class="wsdc-info-btn" id="kpiCompInfoBtn" aria-label="About Competitors" aria-expanded="false" aria-controls="kpiCompTipPop" title="About Competitors">
+                      <span aria-hidden="true">i</span>
+                    </button>
+                  </div>
                   <div class="side-kpi__val" id="kpiComp">—</div>
                   <div class="side-kpi__sub">
                     <span id="kpiDeltaWrap"><strong id="kpiDelta">—</strong> <span id="kpiDeltaSub"></span></span>
                   </div>
                 </div>
                 <div class="side-kpi" id="kpiEventsBlock">
-                  <div class="side-kpi__lbl">Events</div>
+                  <div class="side-kpi__lbl-row">
+                    <div class="side-kpi__lbl">Events</div>
+                    <button type="button" class="wsdc-info-btn" id="kpiEventsInfoBtn" aria-label="About Events" aria-expanded="false" aria-controls="kpiEventsTipPop" title="About Events">
+                      <span aria-hidden="true">i</span>
+                    </button>
+                  </div>
                   <div class="side-kpi__val" id="kpiEvents">—</div>
                   <div class="side-kpi__sub">
                     <span id="kpiEventsDeltaWrap"><strong id="kpiEventsDelta">—</strong> <span id="kpiEventsDeltaSub"></span></span>
                   </div>
                 </div>
                 <div class="side-kpi" id="kpiAvgBlock">
-                  <div class="side-kpi__lbl" title="Average competitors per event">Avg / event</div>
+                  <div class="side-kpi__lbl-row">
+                    <div class="side-kpi__lbl">Avg / event</div>
+                    <button type="button" class="wsdc-info-btn" id="kpiAvgInfoBtn" aria-label="About Avg / event" aria-expanded="false" aria-controls="kpiAvgTipPop" title="About Avg / event">
+                      <span aria-hidden="true">i</span>
+                    </button>
+                  </div>
                   <div class="side-kpi__val" id="kpiAvg">—</div>
                   <div class="side-kpi__sub">
                     <span id="kpiAvgDeltaWrap"><strong id="kpiAvgDelta">—</strong> <span id="kpiAvgDeltaSub"></span></span>
@@ -1102,9 +1140,20 @@
   </div>
   <div class="eg-tip-pop" id="kpiTipPop" role="tooltip" hidden>
     All: area totals, this year vs last year (YTD if the year is still open: closed months full, open month matched events only).
-    Avg / event = competitors ÷ events (mean event size); its change compares those averages.
     With a trend pill: Competitors and Avg / event compare the selected events to their own previous editions;
     Events = how many of the area’s events have that trend.
+  </div>
+  <div class="eg-tip-pop" id="kpiCompTipPop" role="tooltip" hidden>
+    Leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion).
+    For a continent, country, state or city, it is the total across all events held there in the selected period.
+  </div>
+  <div class="eg-tip-pop" id="kpiEventsTipPop" role="tooltip" hidden>
+    Number of event editions held in the selected area and period.
+    With an Event trend pill on, it counts only editions with that trend.
+  </div>
+  <div class="eg-tip-pop" id="kpiAvgTipPop" role="tooltip" hidden>
+    Competitors ÷ Events — mean event size in the selected area and period.
+    One-event places match that event’s headcount. Its change compares those averages.
   </div>
 
   <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
@@ -1126,7 +1175,7 @@
               <li>with an <em>Event trend</em> pill on, only the events with that status;</li>
               <li>it adds up entries, not unique people — a dancer who competes at three events in the region counts three times.</li>
             </ul>
-            <p>In the side list, each row shows the selected metric beside the place name. The list grain (Continent / Country / Region / City / Event) can be finer than the map level inside the current scope; Region treats US states as peers of other countries (<em>California, US</em>) and is available at World and America. Absolute metrics are Competitors, Events and Avg / event; Δ metrics use the same comparison window as the KPIs (matched open-month YTD). New and Absent show — in Δ and sort after ranked rows (no current-window baseline); Event Δ is versus that event’s own previous edition. Δ Avg / event needs at least two events in both windows. Use the round ↑/↓ control to flip sort direction.</p>
+            <p>In the side list, each row shows the selected metric beside the place name. The list grain (Continent / Country / Region / City / Event) can be finer than the map level inside the current scope; Region treats US states as peers of other countries (<em>California, US</em>) and is available at World and America. Hovering a list row highlights the matching map feature at the current map level (city pin on a country map; continent fill when the list shows events on the world map). Event tips always show flag · country · city under the title; city tips show flag · country. Absolute metrics are Competitors, Events and Avg / event; Δ metrics use the same comparison window as the KPIs (matched open-month YTD). New and Absent show — in Δ and sort after ranked rows (no current-window baseline); Event Δ is versus that event’s own previous edition. Δ Avg / event needs at least two events in both windows. Use the round ↑/↓ control to flip sort direction.</p>
           </div>
         </details>
         <details class="method-sec">
@@ -1726,6 +1775,34 @@
       eventId: e.event_id != null ? e.event_id : null,
       name: e.name || null
     };
+  }
+
+  // Map feature key for the current map level that contains this path.
+  // List city/event keys are composite; map pins/fills still use childKey
+  // (bare city / country / continent) — without this remap list hover never
+  // lights the pin (e.g. "Germany||Freiburg" vs "Freiburg").
+  function mapHoverKeyFromPath(p) {
+    if (!p) return null;
+    if (state.level === "world") return p.continent || null;
+    if (state.level === "continent") return p.country || null;
+    if (state.level === "country") {
+      if (state.country === "United States") return p.state || null;
+      return p.city || null;
+    }
+    if (state.level === "state") return p.city || null;
+    return null;
+  }
+
+  function mapFeatureKeyForRegion(r) {
+    if (!r || citySelectionActive()) return null;
+    var p = r.path || editionPath(r.sample || r.edition);
+    return mapHoverKeyFromPath(p) || (listGrainMatchesMap() ? r.key : null);
+  }
+
+  function mapFeatureKeyForEdition(e) {
+    if (!e) return null;
+    if (citySelectionActive()) return editionHoverKey(e);
+    return mapHoverKeyFromPath(editionPath(e)) || editionHoverKey(e);
   }
 
   function listGrainKey(e) {
@@ -3277,6 +3354,7 @@
         '<span class="tt-title__name">' + esc(label) + "</span>" +
         chip("absent") +
         "</div>" +
+        cityRegionPlaceLineHtml(r) +
         '<div class="tt-period">' + esc(comparisonPeriodText()) +
           " · prior period only</div>" +
         '<div class="tt-kpi-grid tt-kpi-grid--3">' +
@@ -3318,6 +3396,7 @@
       '<span class="tt-title__name">' + esc(label) + "</span>" +
       chip(st) +
       "</div>" +
+      cityRegionPlaceLineHtml(r) +
       '<div class="tt-period">' + esc(comparisonPeriodText()) + "</div>" +
       '<div class="tt-kpi-grid tt-kpi-grid--3">' +
         '<div class="tt-kpi">' +
@@ -3385,7 +3464,9 @@
         "</div>";
     }
     var comp = e && e.competitors != null ? fmtN(e.competitors) : "—";
-    var periodHead = place || ("Not in " + String(state.year || "this period"));
+    var placeHtml = eventPlaceLineHtml(e) || (place
+      ? ('<div class="tt-period">' + esc(place) + "</div>")
+      : "");
     return '<div class="tt-last-ed">' +
       lastEditionTagHtml(e) +
       '<div class="tt-last-ed__body">' +
@@ -3394,7 +3475,10 @@
           eventNameWithEditionHtml(e, { showEdition: false }) +
           eventStatusChip(e) +
         "</div>" +
-        '<div class="tt-period">' + esc(periodHead) + "</div>" +
+        placeHtml +
+        '<div class="tt-period">' +
+          esc("Not in " + String(state.year || "this period")) +
+        "</div>" +
         '<div class="tt-kpi-grid tt-kpi-grid--solo">' +
           '<div class="tt-kpi">' +
             '<div class="tt-kpi__lbl">Competitors (last edition)</div>' +
@@ -3463,6 +3547,97 @@
     return '<span class="tt-title__main">' + nameInner + "</span>";
   }
 
+  // ISO → regional-indicator emoji (same approach as secondary-role-points).
+  var COUNTRY_TO_FLAG_CODE = {
+    "United States": "US",
+    "Russia": "RU",
+    "Germany": "DE",
+    "France": "FR",
+    "Canada": "CA",
+    "Sweden": "SE",
+    "Poland": "PL",
+    "Hungary": "HU",
+    "Australia": "AU",
+    "Finland": "FI",
+    "Austria": "AT",
+    "Netherlands": "NL",
+    "United Kingdom": "GB",
+    "New Zealand": "NZ",
+    "Norway": "NO",
+    "Czech Republic": "CZ",
+    "Singapore": "SG",
+    "Italy": "IT",
+    "Israel": "IL",
+    "Republic of Korea": "KR",
+    "South Korea": "KR",
+    "Switzerland": "CH",
+    "Belgium": "BE",
+    "Latvia": "LV",
+    "Spain": "ES",
+    "Slovenia": "SI",
+    "Portugal": "PT",
+    "Romania": "RO",
+    "Ireland": "IE",
+    "Bulgaria": "BG",
+    "Malaysia": "MY",
+    "Estonia": "EE",
+    "Ukraine": "UA",
+    "Brazil": "BR",
+    "Denmark": "DK",
+    "Japan": "JP",
+    "Mexico": "MX",
+    "Argentina": "AR",
+    "South Africa": "ZA"
+  };
+
+  function countryFlagEmoji(country) {
+    var code = COUNTRY_TO_FLAG_CODE[country];
+    if (!code || code.length !== 2) return "";
+    return String.fromCodePoint(
+      127397 + code.charCodeAt(0),
+      127397 + code.charCodeAt(1)
+    );
+  }
+
+  function placeLineHtml(country, city) {
+    var ctry = country ? String(country) : "";
+    var cty = city ? String(city) : "";
+    if (!ctry && !cty) return "";
+    var flag = countryFlagEmoji(ctry);
+    var text = [ctry, cty].filter(Boolean).join(" · ");
+    return '<div class="tt-period tt-place">' +
+      (flag ? ('<span class="tt-flag" aria-hidden="true">' + flag + "</span>") : "") +
+      "<span>" + esc(text) + "</span></div>";
+  }
+
+  // Always on event tips (list can show events at any map level).
+  function eventPlaceLineHtml(e) {
+    if (!e) return "";
+    return placeLineHtml(e.country, e.city);
+  }
+
+  // City tips: flag + country (city is already the title).
+  function isCityRegionTip(r) {
+    if (!r) return false;
+    if (state.listGrain === "city") return true;
+    if (state.level === "state") return true;
+    if (state.level === "country" && state.country !== "United States") return true;
+    return false;
+  }
+
+  function cityRegionPlaceLineHtml(r) {
+    if (!isCityRegionTip(r)) return "";
+    var p = (r && r.path) || editionPath(r && (r.sample || r.edition));
+    var country = (p && p.country) ||
+      (r && r.sample && r.sample.country) ||
+      (r && r.edition && r.edition.country) ||
+      null;
+    if (!country && state.country && state.country !== "United States") {
+      country = state.country;
+    }
+    return placeLineHtml(country, null);
+  }
+
   function eventTooltipHtml(e, opts) {
     opts = opts || {};
     var lastEd = opts.lastEdition != null ? !!opts.lastEdition : isLastEditionTip(e);
@@ -3498,6 +3673,7 @@
       eventNameWithEditionHtml(e) +
       eventStatusChip(e) +
       "</div>" +
+      eventPlaceLineHtml(e) +
       '<div class="tt-period">' + esc(period) + "</div>" +
       '<div class="tt-kpi-grid tt-kpi-grid--solo">' +
         '<div class="tt-kpi">' +
@@ -3708,8 +3884,10 @@
   function showMapTooltip(ev, region, opts) {
     if (!region) return;
     opts = opts || {};
-    // highlight defaults on; pass highlight:false for list grains with no map fill.
-    if (opts.highlight !== false) setMapHoverByKey(region.key);
+    // highlight defaults on; pass highlight:false to keep tip without map glow.
+    if (opts.highlight !== false) {
+      setMapHoverByKey(opts.highlightKey || mapFeatureKeyForRegion(region));
+    }
     var anchor = opts.anchorAtRegion ? regionAnchorClientPoint(region) : null;
     showTip(clientPointEvent(anchor, ev), "r:" + region.key, regionTooltipHtml(region));
   }
@@ -3718,8 +3896,9 @@
     if (!edition) return;
     opts = opts || {};
     var ek = editionKey(edition);
-    var hoverKey = editionHoverKey(edition);
-    if (opts.anchorAtRegion || opts.highlight) setMapHoverByKey(hoverKey);
+    if (opts.highlight !== false && (opts.anchorAtRegion || opts.highlight)) {
+      setMapHoverByKey(opts.highlightKey || mapFeatureKeyForEdition(edition));
+    }
     var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(edition) : null;
     showTip(clientPointEvent(anchor, ev), "e:" + ek, eventTooltipHtml(edition));
   }
@@ -3727,8 +3906,9 @@
   function showAbsentListTooltip(ev, tipKey, edition, opts) {
     if (!edition) return;
     opts = opts || {};
-    var hoverKey = editionHoverKey(edition);
-    if (opts.anchorAtRegion || opts.highlight) setMapHoverByKey(hoverKey);
+    if (opts.highlight !== false && (opts.anchorAtRegion || opts.highlight)) {
+      setMapHoverByKey(opts.highlightKey || mapFeatureKeyForEdition(edition));
+    }
     var anchor = opts.anchorAtRegion ? editionAnchorClientPoint(edition) : null;
     showTip(
       clientPointEvent(anchor, ev),
@@ -4829,10 +5009,41 @@
       });
     });
     el.querySelectorAll("tr[data-key]").forEach(function (tr) {
+      var region = byKey[tr.getAttribute("data-key")];
       tr.addEventListener("click", function (ev) {
         if (ev.target && ev.target.closest && ev.target.closest(".chip")) return;
         if (ev.target && ev.target.closest && ev.target.closest("button.eg-drill")) return;
-        drillListEntity(byKey[tr.getAttribute("data-key")]);
+        drillListEntity(region);
+      });
+      if (!region) return;
+      if (region.absent) {
+        var absentEd = region.edition || region.sample;
+        if (!absentEd) return;
+        tr.addEventListener("mouseenter", function (ev) {
+          showAbsentListTooltip(ev, region.key, absentEd, {
+            anchorAtRegion: true,
+            highlight: true
+          });
+        });
+        tr.addEventListener("mousemove", function () {
+          var pt = editionAnchorClientPoint(absentEd);
+          if (pt) moveMapTooltip(clientPointEvent(pt));
+        });
+        tr.addEventListener("mouseleave", function () {
+          hideMapTooltipSoon();
+        });
+        return;
+      }
+      if (!region.edition) return;
+      tr.addEventListener("mouseenter", function (ev) {
+        showEventTooltip(ev, region.edition, { anchorAtRegion: true, highlight: true });
+      });
+      tr.addEventListener("mousemove", function () {
+        var pt = editionAnchorClientPoint(region.edition);
+        if (pt) moveMapTooltip(clientPointEvent(pt));
+      });
+      tr.addEventListener("mouseleave", function () {
+        hideMapTooltipSoon();
       });
     });
     el.querySelectorAll("tr:not(.is-absent) .chip.has-tip").forEach(function (chipEl) {
@@ -4929,9 +5140,8 @@
       var key = tr.getAttribute("data-key");
       var region = byKey[key];
       if (!region) return;
-      var usePin = !matchMap || !!region.absent;
       tr.addEventListener("mouseenter", function (ev) {
-        showMapTooltip(ev, region, { anchorAtRegion: true, highlight: !usePin });
+        showMapTooltip(ev, region, { anchorAtRegion: true, highlight: true });
       });
       tr.addEventListener("mousemove", function () {
         var pt = regionAnchorClientPoint(region);
@@ -4945,9 +5155,8 @@
       var key = chipEl.getAttribute("data-region-key");
       var region = byKey[key];
       if (!region) return;
-      var usePin = !matchMap || !!region.absent;
       chipEl.addEventListener("mouseenter", function (ev) {
-        showMapTooltip(ev, region, { anchorAtRegion: true, highlight: !usePin });
+        showMapTooltip(ev, region, { anchorAtRegion: true, highlight: true });
       });
       chipEl.addEventListener("mousemove", function () {
         var pt = regionAnchorClientPoint(region);
@@ -5036,15 +5245,22 @@
     if (wasOpen && btn) btn.focus();
   }
 
+  var TIP_POP_PAIRS = [
+    ["trendInfoBtn", "trendTipPop"],
+    ["kpiInfoBtn", "kpiTipPop"],
+    ["kpiCompInfoBtn", "kpiCompTipPop"],
+    ["kpiEventsInfoBtn", "kpiEventsTipPop"],
+    ["kpiAvgInfoBtn", "kpiAvgTipPop"]
+  ];
+
   function closeTipPops() {
-    ["trendTipPop", "kpiTipPop"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.classList.remove("is-open");
-      el.hidden = true;
-    });
-    ["trendInfoBtn", "kpiInfoBtn"].forEach(function (id) {
-      var btn = document.getElementById(id);
+    TIP_POP_PAIRS.forEach(function (pair) {
+      var el = document.getElementById(pair[1]);
+      if (el) {
+        el.classList.remove("is-open");
+        el.hidden = true;
+      }
+      var btn = document.getElementById(pair[0]);
       if (btn) btn.setAttribute("aria-expanded", "false");
     });
   }
@@ -5099,13 +5315,13 @@
     });
     document.getElementById("methodIslandClose").addEventListener("click", closeMethod);
     document.getElementById("methodLayerBackdrop").addEventListener("click", closeMethod);
-    document.getElementById("trendInfoBtn").addEventListener("click", function (ev) {
-      ev.stopPropagation();
-      toggleTipPop("trendInfoBtn", "trendTipPop");
-    });
-    document.getElementById("kpiInfoBtn").addEventListener("click", function (ev) {
-      ev.stopPropagation();
-      toggleTipPop("kpiInfoBtn", "kpiTipPop");
+    TIP_POP_PAIRS.forEach(function (pair) {
+      var btn = document.getElementById(pair[0]);
+      if (!btn) return;
+      btn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        toggleTipPop(pair[0], pair[1]);
+      });
     });
     document.addEventListener("keydown", function (ev) {
       if (ev.key !== "Escape") return;
@@ -5134,8 +5350,12 @@
     });
     document.addEventListener("click", function (ev) {
       var t = ev.target;
-      if (t && (t.closest && (t.closest("#trendTipPop") || t.closest("#kpiTipPop") ||
-          t.closest("#trendInfoBtn") || t.closest("#kpiInfoBtn")))) return;
+      if (t && t.closest) {
+        var keep = TIP_POP_PAIRS.some(function (pair) {
+          return t.closest("#" + pair[0]) || t.closest("#" + pair[1]);
+        });
+        if (keep) return;
+      }
       closeTipPops();
     });
     // as_of only — do not show data_through here. Matched open-month YTD is not a
