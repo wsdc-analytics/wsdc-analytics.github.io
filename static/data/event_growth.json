@@ -1,6 +1,6 @@
 {
   "as_of": "2026-11-05",
-  "generated_at": "2026-11-05T18:39:16Z",
+  "generated_at": "2026-11-05T19:11:04Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -23265,9 +23265,9 @@
       "continent": "Europe",
       "country": "Russia",
       "state": null,
-      "city": "Moscow",
-      "lat": 55.7568721,
-      "lon": 37.6150527,
+      "city": "Anapa",
+      "lat": 44.8947,
+      "lon": 37.3169,
       "competitors": 89,
       "approx": 0,
       "source": "exact",
@@ -23276,10 +23276,10 @@
       "pct": null,
       "status": "new",
       "gap_flag": null,
-      "city_lat": 55.7568721,
-      "city_lon": 37.6150527,
+      "city_lat": 44.8947,
+      "city_lon": 37.3169,
       "geo_source": "city",
-      "venue_rejected_km": 1420.6,
+      "venue_rejected_km": 521.1,
       "edition": 1,
       "new_kind": "debut"
     },
@@ -28696,7 +28696,10 @@
       "city_lon": 37.6150527,
       "geo_source": "city",
       "venue_rejected_km": 1947.8,
-      "edition": 2
+      "edition": 2,
+      "status_notes": [
+        "Held in Anapa through 2024; in Moscow from 2025"
+      ]
     },
     {
       "event_id": 48,
@@ -35528,7 +35531,7 @@
   ],
   "venue_enrichment": {
     "source": "wsdc110526.sql",
-    "enriched_at": "2026-11-05T18:52:28Z",
+    "enriched_at": "2026-11-05T19:11:04Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
@@ -35547,7 +35550,7 @@
   },
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-05T18:55:52Z",
+    "enriched_at": "2026-11-05T19:11:04Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35581,7 +35584,7 @@
       "new_debut": 86,
       "new_returning": 101,
       "new_renamed": 4,
-      "notes_move": 3,
+      "notes_move": 4,
       "notes_gap1": 54
     }
   }
