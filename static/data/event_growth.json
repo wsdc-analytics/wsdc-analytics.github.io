@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-11-03",
-  "generated_at": "2026-11-03T20:00:57Z",
+  "as_of": "2026-11-05",
+  "generated_at": "2026-11-05T11:36:00Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -18,10 +18,10 @@
     2025,
     2026
   ],
-  "n_editions": 1039,
+  "n_editions": 1040,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
-    "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new. Dashboard YTD: closed months full both years; open data_through month (while as_of is still in that month) matches prior only by event_id to published current editions (±1 month).",
+    "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
     "status": "Growing/Declining when |pct| ≥ 10% and |delta| ≥ 10; otherwise stable (when comparable)."
   },
   "editions": [
@@ -258,7 +258,11 @@
       "status": "new",
       "gap_flag": null,
       "edition": 1,
-      "new_kind": "debut"
+      "new_kind": "debut",
+      "city_lat": 48.1351253,
+      "city_lon": 11.5819806,
+      "geo_source": "city",
+      "venue_start": "2018-01-26"
     },
     {
       "event_id": 195,
@@ -386,7 +390,11 @@
       "pct": 0.423963,
       "status": "growing",
       "gap_flag": null,
-      "edition": 6
+      "edition": 6,
+      "city_lat": 45.515232,
+      "city_lon": -122.6783853,
+      "geo_source": "city",
+      "venue_start": "2018-01-19"
     },
     {
       "event_id": 289,
@@ -444,7 +452,11 @@
       "pct": 0.010417,
       "status": "stable",
       "gap_flag": null,
-      "edition": 11
+      "edition": 11,
+      "city_lat": 32.7831,
+      "city_lon": -96.8067,
+      "geo_source": "city",
+      "venue_start": "2018-01-06"
     },
     {
       "event_id": 240,
@@ -456,8 +468,8 @@
       "country": "Sweden",
       "state": null,
       "city": "Stockholm",
-      "lat": 59.499028,
-      "lon": 17.928627,
+      "lat": 59.3251172,
+      "lon": 18.0710935,
       "competitors": 137,
       "approx": 0,
       "source": "exact",
@@ -475,11 +487,8 @@
       "edition": 4,
       "city_lat": 59.3251172,
       "city_lon": 18.0710935,
-      "hotel": "HIATUS",
-      "address": "Kanalvägen 10",
-      "geo_source": "wsdc_venue",
-      "geo_fix": "inherited",
-      "venue_start": "2019-01-04"
+      "geo_source": "city",
+      "venue_start": "2018-01-05"
     },
     {
       "event_id": 12,
@@ -647,7 +656,11 @@
       "pct": -0.059172,
       "status": "stable",
       "gap_flag": null,
-      "edition": 7
+      "edition": 7,
+      "city_lat": 27.9516896,
+      "city_lon": -82.45875269999999,
+      "geo_source": "city",
+      "venue_start": "2018-02-16"
     },
     {
       "event_id": 215,
@@ -899,8 +912,8 @@
       "country": "United States",
       "state": "District of Columbia",
       "city": "Washington",
-      "lat": 39.283643,
-      "lon": -76.60309,
+      "lat": 39.283429,
+      "lon": -76.602937,
       "competitors": 802,
       "approx": 0,
       "source": "exact",
@@ -918,8 +931,8 @@
       "edition": 15,
       "city_lat": 38.9072873,
       "city_lon": -77.0369274,
-      "hotel": "Baltimore Waterfront Marriott",
-      "address": "700 Aliceanna St",
+      "hotel": "Marriott Baltimore Waterfront",
+      "address": "700 Aliceanna Street",
       "geo_source": "wsdc_venue",
       "geo_fix": "inherited",
       "venue_start": "2019-02-28"
@@ -1020,7 +1033,11 @@
       "pct": -0.204918,
       "status": "declining",
       "gap_flag": null,
-      "edition": 4
+      "edition": 4,
+      "city_lat": -32.1932173,
+      "city_lon": 151.700565,
+      "geo_source": "city",
+      "venue_start": "2018-03-16"
     },
     {
       "event_id": 259,
@@ -1156,7 +1173,11 @@
       "pct": 0.167568,
       "status": "growing",
       "gap_flag": null,
-      "edition": 2
+      "edition": 2,
+      "city_lat": 53.5488282,
+      "city_lon": 9.987170299999999,
+      "geo_source": "city",
+      "venue_start": "2018-03-30"
     },
     {
       "event_id": 218,
@@ -1324,7 +1345,11 @@
       "pct": -0.052632,
       "status": "stable",
       "gap_flag": null,
-      "edition": 4
+      "edition": 4,
+      "city_lat": 59.3251172,
+      "city_lon": 18.0710935,
+      "geo_source": "city",
+      "venue_start": "2018-04-27"
     },
     {
       "event_id": 205,
@@ -1878,7 +1903,11 @@
       "pct": -0.122449,
       "status": "declining",
       "gap_flag": null,
-      "edition": 12
+      "edition": 12,
+      "city_lat": 30.267153,
+      "city_lon": -97.7430608,
+      "geo_source": "city",
+      "venue_start": "2018-05-18"
     },
     {
       "event_id": 22,
@@ -2118,7 +2147,11 @@
       "pct": 0.211009,
       "status": "growing",
       "gap_flag": null,
-      "edition": 3
+      "edition": 3,
+      "city_lat": 33.5042779,
+      "city_lon": 126.519838,
+      "geo_source": "city",
+      "venue_start": "2018-06-22"
     },
     {
       "event_id": 76,
@@ -2216,7 +2249,11 @@
       "pct": -0.2,
       "status": "declining",
       "gap_flag": null,
-      "edition": 8
+      "edition": 8,
+      "city_lat": -36.85088270000001,
+      "city_lon": 174.7644881,
+      "geo_source": "city",
+      "venue_start": "2018-06-22"
     },
     {
       "event_id": 117,
@@ -2421,7 +2458,11 @@
       "pct": -0.503145,
       "status": "declining",
       "gap_flag": null,
-      "edition": 10
+      "edition": 10,
+      "city_lat": 29.9508941,
+      "city_lon": -90.07583559999999,
+      "geo_source": "city",
+      "venue_start": "2018-07-19"
     },
     {
       "event_id": 149,
@@ -2484,7 +2525,11 @@
       "pct": -0.407407,
       "status": "declining",
       "gap_flag": null,
-      "edition": 5
+      "edition": 5,
+      "city_lat": 26.1224386,
+      "city_lon": -80.13731740000001,
+      "geo_source": "city",
+      "venue_start": "2018-07-05"
     },
     {
       "event_id": 255,
@@ -2682,7 +2727,11 @@
       "pct": -0.202614,
       "status": "declining",
       "gap_flag": null,
-      "edition": 4
+      "edition": 4,
+      "city_lat": 63.5391027,
+      "city_lon": 19.4528047,
+      "geo_source": "city",
+      "venue_start": "2018-07-20"
     },
     {
       "event_id": 280,
@@ -2745,7 +2794,11 @@
       "pct": -0.155039,
       "status": "declining",
       "gap_flag": null,
-      "edition": 3
+      "edition": 3,
+      "city_lat": 32.0852999,
+      "city_lon": 34.78176759999999,
+      "geo_source": "city",
+      "venue_start": "2018-07-19"
     },
     {
       "event_id": 47,
@@ -3330,7 +3383,11 @@
       "pct": -0.328704,
       "status": "declining",
       "gap_flag": null,
-      "edition": 12
+      "edition": 12,
+      "city_lat": 27.9516896,
+      "city_lon": -82.45875269999999,
+      "geo_source": "city",
+      "venue_start": "2018-08-02"
     },
     {
       "event_id": 300,
@@ -5386,7 +5443,11 @@
       "edition": 11,
       "status_notes": [
         "Returned after a one-year break · last held 2017"
-      ]
+      ],
+      "city_lat": 36.1626638,
+      "city_lon": -86.7816016,
+      "geo_source": "city",
+      "venue_rejected_km": 727.1
     },
     {
       "event_id": 301,
@@ -5443,7 +5504,11 @@
       "pct": 0.006472,
       "status": "stable",
       "gap_flag": null,
-      "edition": 7
+      "edition": 7,
+      "city_lat": 45.515232,
+      "city_lon": -122.6783853,
+      "geo_source": "city",
+      "venue_rejected_km": 408.5
     },
     {
       "event_id": 289,
@@ -5505,7 +5570,11 @@
       "pct": -0.175258,
       "status": "declining",
       "gap_flag": null,
-      "edition": 12
+      "edition": 12,
+      "city_lat": 32.7831,
+      "city_lon": -96.8067,
+      "geo_source": "city",
+      "venue_rejected_km": 1001.3
     },
     {
       "event_id": 12,
@@ -6047,8 +6116,8 @@
       "country": "United States",
       "state": "District of Columbia",
       "city": "Washington",
-      "lat": 39.283643,
-      "lon": -76.60309,
+      "lat": 39.283429,
+      "lon": -76.602937,
       "competitors": 649,
       "approx": 0,
       "source": "exact",
@@ -6066,8 +6135,8 @@
       "edition": 16,
       "city_lat": 38.9072873,
       "city_lon": -77.0369274,
-      "hotel": "Baltimore Waterfront Marriott",
-      "address": "700 Aliceanna St",
+      "hotel": "Marriott Baltimore Waterfront",
+      "address": "700 Aliceanna Street",
       "geo_source": "wsdc_venue",
       "venue_start": "2019-02-28"
     },
@@ -6165,7 +6234,11 @@
       "pct": 0.082474,
       "status": "stable",
       "gap_flag": null,
-      "edition": 5
+      "edition": 5,
+      "city_lat": -32.1932173,
+      "city_lon": 151.700565,
+      "geo_source": "city",
+      "venue_start": "2019-03-15"
     },
     {
       "event_id": 259,
@@ -6489,7 +6562,11 @@
       "pct": -0.118056,
       "status": "declining",
       "gap_flag": null,
-      "edition": 5
+      "edition": 5,
+      "city_lat": 59.3251172,
+      "city_lon": 18.0710935,
+      "geo_source": "city",
+      "venue_rejected_km": 252.0
     },
     {
       "event_id": 217,
@@ -7409,7 +7486,11 @@
       "pct": 0.136364,
       "status": "growing",
       "gap_flag": null,
-      "edition": 4
+      "edition": 4,
+      "city_lat": 33.5042779,
+      "city_lon": 126.519838,
+      "geo_source": "city",
+      "venue_rejected_km": 455.8
     },
     {
       "event_id": 96,
@@ -10518,7 +10599,11 @@
       "pct": -0.17094,
       "status": "declining",
       "gap_flag": null,
-      "edition": 12
+      "edition": 12,
+      "city_lat": 36.1626638,
+      "city_lon": -86.7816016,
+      "geo_source": "city",
+      "venue_rejected_km": 727.1
     },
     {
       "event_id": 301,
@@ -10580,7 +10665,11 @@
       "pct": -0.106109,
       "status": "declining",
       "gap_flag": null,
-      "edition": 8
+      "edition": 8,
+      "city_lat": 45.515232,
+      "city_lon": -122.6783853,
+      "geo_source": "city",
+      "venue_rejected_km": 1942.7
     },
     {
       "event_id": 289,
@@ -10642,7 +10731,11 @@
       "pct": 0.2,
       "status": "growing",
       "gap_flag": null,
-      "edition": 13
+      "edition": 13,
+      "city_lat": 32.7831,
+      "city_lon": -96.8067,
+      "geo_source": "city",
+      "venue_rejected_km": 1001.3
     },
     {
       "event_id": 240,
@@ -12383,7 +12476,11 @@
       "edition": 14,
       "status_notes": [
         "Returned after a one-year break · last held 2020"
-      ]
+      ],
+      "city_lat": 32.7831,
+      "city_lon": -96.8067,
+      "geo_source": "city",
+      "venue_rejected_km": 1544.5
     },
     {
       "event_id": 273,
@@ -13552,7 +13649,11 @@
       "pct": 0.351562,
       "status": "growing",
       "gap_flag": null,
-      "edition": 5
+      "edition": 5,
+      "city_lat": 53.2226496,
+      "city_lon": 50.1728035,
+      "geo_source": "city",
+      "venue_rejected_km": 4456.8
     },
     {
       "event_id": 156,
@@ -16674,7 +16775,11 @@
       "status": "new",
       "gap_flag": null,
       "edition": 1,
-      "new_kind": "debut"
+      "new_kind": "debut",
+      "city_lat": 51.04473309999999,
+      "city_lon": -114.0718831,
+      "geo_source": "city",
+      "venue_rejected_km": 2863.9
     },
     {
       "event_id": 187,
@@ -17501,7 +17606,13 @@
       "pct": 0.046243,
       "status": "stable",
       "gap_flag": null,
-      "edition": 6
+      "edition": 6,
+      "city_lat": 53.2226496,
+      "city_lon": 50.1728035,
+      "geo_source": "city",
+      "hotel": "Dubrava",
+      "address": "Krasnoglinskoe highway 40",
+      "venue_start": "2023-07-06"
     },
     {
       "event_id": 156,
@@ -18202,7 +18313,11 @@
       "new_kind": "returning",
       "status_notes": [
         "Returned after a break · last held 2019"
-      ]
+      ],
+      "city_lat": -43.5320301,
+      "city_lon": 172.636648,
+      "geo_source": "city",
+      "venue_start": "2023-08-25"
     },
     {
       "event_id": 59,
@@ -18544,7 +18659,12 @@
       "new_kind": "returning",
       "status_notes": [
         "Returned after a break · last held 2019"
-      ]
+      ],
+      "city_lat": 33.5042779,
+      "city_lon": 126.519838,
+      "geo_source": "city",
+      "hotel": "Brown Suites",
+      "venue_start": "2023-09-22"
     },
     {
       "event_id": 131,
@@ -20216,7 +20336,8 @@
       "pct": 0.215873,
       "status": "growing",
       "gap_flag": null,
-      "edition": 5
+      "edition": 5,
+      "geo_source": "city"
     },
     {
       "event_id": 75,
@@ -20663,7 +20784,11 @@
       "pct": 0.037975,
       "status": "stable",
       "gap_flag": null,
-      "edition": 2
+      "edition": 2,
+      "city_lat": 51.04473309999999,
+      "city_lon": -114.0718831,
+      "geo_source": "city",
+      "venue_rejected_km": 2875.2
     },
     {
       "event_id": 9,
@@ -22304,7 +22429,8 @@
       "edition": 14,
       "status_notes": [
         "Returned after a one-year break · last held 2022"
-      ]
+      ],
+      "geo_source": "city"
     },
     {
       "event_id": 224,
@@ -22316,8 +22442,8 @@
       "country": "United States",
       "state": "Kansas",
       "city": "Overland Park",
-      "lat": 38.928586,
-      "lon": -94.702867,
+      "lat": 38.92832,
+      "lon": -94.65725,
       "competitors": 320,
       "approx": 0,
       "source": "exact",
@@ -22335,8 +22461,8 @@
       "edition": 7,
       "city_lat": 38.9822282,
       "city_lon": -94.6707917,
-      "hotel": "Doubletree Overland Park Kansas",
-      "address": "10100 College Boulevard",
+      "hotel": "Sheraton Overland Park",
+      "address": "6100 College Blvd",
       "geo_source": "wsdc_venue",
       "venue_start": "2024-07-18"
     },
@@ -23444,7 +23570,11 @@
       "status": "new",
       "gap_flag": null,
       "edition": 1,
-      "new_kind": "debut"
+      "new_kind": "debut",
+      "city_lat": 55.7568721,
+      "city_lon": 37.6150527,
+      "geo_source": "city",
+      "venue_rejected_km": 1420.6
     },
     {
       "event_id": 48,
@@ -27675,7 +27805,11 @@
       "status": "new",
       "gap_flag": null,
       "edition": 1,
-      "new_kind": "debut"
+      "new_kind": "debut",
+      "city_lat": 3.1319197,
+      "city_lon": 101.6840589,
+      "geo_source": "city",
+      "venue_rejected_km": 16563.8
     },
     {
       "event_id": 375,
@@ -28289,8 +28423,8 @@
       "country": "United States",
       "state": "Massachusetts",
       "city": "Woburn",
-      "lat": 42.496978,
-      "lon": -71.158867,
+      "lat": 42.497084,
+      "lon": -71.158923,
       "competitors": 369,
       "approx": 0,
       "source": "exact",
@@ -28308,9 +28442,10 @@
       "edition": 25,
       "city_lat": 42.4792649,
       "city_lon": -71.1522765,
-      "address": "15 Middlesex Canal Park Rd",
+      "address": "15 Middlesex Canal Park Dr",
       "geo_source": "wsdc_venue",
-      "venue_start": "2025-08-21"
+      "venue_start": "2025-08-21",
+      "hotel": "Crowne Plaza Boston-Woburn"
     },
     {
       "event_id": 391,
@@ -28333,7 +28468,13 @@
       "status": "new",
       "gap_flag": null,
       "edition": 1,
-      "new_kind": "debut"
+      "new_kind": "debut",
+      "city_lat": 39.1031182,
+      "city_lon": -84.5120196,
+      "geo_source": "city",
+      "hotel": "Holiday Inn West Chester Centre Park",
+      "address": "5800 Muhlhauser Road",
+      "venue_start": "2025-08-21"
     },
     {
       "event_id": 59,
@@ -28963,7 +29104,11 @@
       "pct": 0.449438,
       "status": "growing",
       "gap_flag": null,
-      "edition": 2
+      "edition": 2,
+      "city_lat": 55.7568721,
+      "city_lon": 37.6150527,
+      "geo_source": "city",
+      "venue_rejected_km": 1947.8
     },
     {
       "event_id": 48,
@@ -29476,8 +29621,8 @@
       "country": "Belgium",
       "state": null,
       "city": "Liège",
-      "lat": 50.631271,
-      "lon": 5.574587,
+      "lat": 50.670334,
+      "lon": 5.554747,
       "competitors": 351,
       "approx": 0,
       "source": "exact",
@@ -29495,8 +29640,8 @@
       "edition": 2,
       "city_lat": 50.6402286,
       "city_lon": 5.5689372,
-      "hotel": "Palais des Congrès de Liège",
-      "address": "Esplanade de l'Europe 2",
+      "hotel": "Kinepolis",
+      "address": "200 Chaussée de Tongres",
       "geo_source": "wsdc_venue",
       "venue_start": "2025-10-24"
     },
@@ -31821,8 +31966,8 @@
       "country": "Hungary",
       "state": null,
       "city": "Budapest",
-      "lat": 47.537609,
-      "lon": 19.046422,
+      "lat": 47.537605,
+      "lon": 19.046442,
       "competitors": 413,
       "approx": 0,
       "source": "exact",
@@ -31843,7 +31988,7 @@
       "hotel": "Verdi Budapest Aquincum",
       "address": "Árpád fejedelem útja 94.",
       "geo_source": "wsdc_venue",
-      "venue_start": "2026-03-11"
+      "venue_start": "2026-03-12"
     },
     {
       "event_id": 218,
@@ -33578,7 +33723,11 @@
       "pct": 0.043836,
       "status": "stable",
       "gap_flag": null,
-      "edition": 2
+      "edition": 2,
+      "city_lat": 3.1319197,
+      "city_lon": 101.6840589,
+      "geo_source": "city",
+      "venue_rejected_km": 16881.2
     },
     {
       "event_id": 375,
@@ -35001,7 +35150,13 @@
       "pct": 0.310078,
       "status": "growing",
       "gap_flag": null,
-      "edition": 3
+      "edition": 3,
+      "city_lat": 55.7568721,
+      "city_lon": 37.6150527,
+      "geo_source": "city",
+      "hotel": "Milan",
+      "address": "Shipilovskaya st., 28 А",
+      "venue_start": "2026-09-11"
     },
     {
       "event_id": 48,
@@ -35219,9 +35374,9 @@
       "city": "Augsburg",
       "lat": 48.366682,
       "lon": 10.886506,
-      "competitors": 290,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 299,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35229,9 +35384,9 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 22,
-      "pct": 0.08209,
-      "status": "stable",
+      "delta": 31,
+      "pct": 0.115672,
+      "status": "growing",
       "gap_flag": null,
       "edition": 3,
       "city_lat": 48.3705449,
@@ -35321,9 +35476,9 @@
       "city": "Costa Mesa",
       "lat": 33.683145,
       "lon": -117.884491,
-      "competitors": 461,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 423,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35331,8 +35486,8 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 77,
-      "pct": 0.200521,
+      "delta": 39,
+      "pct": 0.101562,
       "status": "growing",
       "gap_flag": null,
       "edition": 31,
@@ -35355,9 +35510,9 @@
       "city": "Milan",
       "lat": 45.53799,
       "lon": 9.23007,
-      "competitors": 416,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 382,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35365,8 +35520,8 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": -93,
-      "pct": -0.182711,
+      "delta": -127,
+      "pct": -0.249509,
       "status": "declining",
       "gap_flag": null,
       "edition": 6,
@@ -35423,9 +35578,9 @@
       "city": "Auckland",
       "lat": -36.852951,
       "lon": 174.760775,
-      "competitors": 312,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 247,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35433,8 +35588,8 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 92,
-      "pct": 0.418182,
+      "delta": 27,
+      "pct": 0.122727,
       "status": "growing",
       "gap_flag": null,
       "edition": 15,
@@ -35491,9 +35646,9 @@
       "city": "Irvine",
       "lat": 33.674595,
       "lon": -117.861073,
-      "competitors": 252,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 214,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35501,9 +35656,9 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 47,
-      "pct": 0.229268,
-      "status": "growing",
+      "delta": 9,
+      "pct": 0.043902,
+      "status": "stable",
       "gap_flag": null,
       "edition": 24,
       "city_lat": 33.6845673,
@@ -35554,9 +35709,9 @@
       "city": "Albany",
       "lat": 42.761831,
       "lon": -73.754516,
-      "competitors": 142,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 145,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35564,8 +35719,8 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": -1,
-      "pct": -0.006993,
+      "delta": 2,
+      "pct": 0.013986,
       "status": "stable",
       "gap_flag": null,
       "edition": 2,
@@ -35588,9 +35743,9 @@
       "city": "Chicago",
       "lat": 42.05232,
       "lon": -88.03351,
-      "competitors": 386,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 379,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35598,8 +35753,8 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 19,
-      "pct": 0.051771,
+      "delta": 12,
+      "pct": 0.032698,
       "status": "stable",
       "gap_flag": null,
       "edition": 19,
@@ -35622,9 +35777,9 @@
       "city": "Liège",
       "lat": 50.631274,
       "lon": 5.574591,
-      "competitors": 476,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 434,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35632,8 +35787,8 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 125,
-      "pct": 0.356125,
+      "delta": 83,
+      "pct": 0.236467,
       "status": "growing",
       "gap_flag": null,
       "edition": 3,
@@ -35656,9 +35811,9 @@
       "city": "Philadelphia",
       "lat": 40.09155,
       "lon": -75.36946,
-      "competitors": 170,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 153,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35666,9 +35821,9 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 26,
-      "pct": 0.180556,
-      "status": "growing",
+      "delta": 9,
+      "pct": 0.0625,
+      "status": "stable",
       "gap_flag": null,
       "edition": 9,
       "city_lat": 39.9525839,
@@ -35690,9 +35845,9 @@
       "city": "Düsseldorf",
       "lat": 51.205379,
       "lon": 6.855997,
-      "competitors": 311,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 273,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 10,
@@ -35700,9 +35855,9 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 43,
-      "pct": 0.160448,
-      "status": "growing",
+      "delta": 5,
+      "pct": 0.018657,
+      "status": "stable",
       "gap_flag": null,
       "edition": 8,
       "city_lat": 51.2230411,
@@ -35742,6 +35897,40 @@
       "venue_start": "2026-10-01"
     },
     {
+      "event_id": 229,
+      "name": "Scandinavian Open",
+      "year": 2026,
+      "month": 11,
+      "start": "2026-10-28",
+      "continent": "Europe",
+      "country": "Sweden",
+      "state": null,
+      "city": "Stockholm",
+      "lat": 59.367854,
+      "lon": 18.007379,
+      "competitors": 640,
+      "approx": 1,
+      "source": "estimated",
+      "prev": {
+        "year": 2025,
+        "month": 11,
+        "competitors": 617,
+        "approx": 0,
+        "source": "exact"
+      },
+      "delta": 23,
+      "pct": 0.037277,
+      "status": "stable",
+      "gap_flag": null,
+      "edition": 11,
+      "city_lat": 59.3251172,
+      "city_lon": 18.0710935,
+      "venue_start": "2026-10-28",
+      "geo_source": "wsdc_venue",
+      "hotel": "Quality hotel Strawberry Arena",
+      "address": "Råsta Strandväg 1, 169 79 Solna"
+    },
+    {
       "event_id": 340,
       "name": "Spooky Westie Weekend",
       "year": 2026,
@@ -35751,11 +35940,11 @@
       "country": "Singapore",
       "state": null,
       "city": "Singapore",
-      "lat": 1.352083,
-      "lon": 103.819836,
-      "competitors": 223,
-      "approx": 1,
-      "source": "estimated",
+      "lat": 1.29097,
+      "lon": 103.845404,
+      "competitors": 203,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 11,
@@ -35763,11 +35952,17 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 46,
-      "pct": 0.259887,
+      "delta": 26,
+      "pct": 0.146893,
       "status": "growing",
       "gap_flag": null,
-      "edition": 3
+      "edition": 3,
+      "city_lat": 1.352083,
+      "city_lon": 103.819836,
+      "venue_start": "2026-10-29",
+      "geo_source": "wsdc_venue",
+      "hotel": "Rhythm Room",
+      "address": "3B River Valley Road #02-03"
     },
     {
       "event_id": 236,
@@ -35779,11 +35974,11 @@
       "country": "Poland",
       "state": null,
       "city": "Warsaw",
-      "lat": 52.2296756,
-      "lon": 21.0122287,
-      "competitors": 476,
-      "approx": 1,
-      "source": "estimated",
+      "lat": 52.235309,
+      "lon": 20.996718,
+      "competitors": 433,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 11,
@@ -35791,16 +35986,21 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": -12,
-      "pct": -0.02459,
-      "status": "stable",
+      "delta": -55,
+      "pct": -0.112705,
+      "status": "declining",
       "gap_flag": null,
-      "edition": 14
+      "edition": 14,
+      "city_lat": 52.2296756,
+      "city_lon": 21.0122287,
+      "venue_start": "2026-10-29",
+      "geo_source": "wsdc_venue",
+      "address": "al. Jana Pawła II 21"
     }
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-03T20:01:00Z",
+    "enriched_at": "2026-11-05T11:36:04Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35824,8 +36024,8 @@
       }
     ],
     "stats": {
-      "editions": 1039,
-      "with_history": 1039,
+      "editions": 1040,
+      "with_history": 1040,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
       "split_buckets_used": 25,
@@ -35840,19 +36040,25 @@
   },
   "venue_enrichment_prior": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-03T16:54:15Z"
+    "enriched_at": "2026-11-05T08:16:31Z"
   },
   "venue_enrichment": {
-    "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-03T20:01:00Z",
+    "source": "wsdc110426.sql",
+    "enriched_at": "2026-11-05T11:38:21Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
-      "editions": 1039,
-      "prior_venue": 998,
-      "carried": 998,
-      "skipped_already_venue": 0,
-      "missing_prior": 41
+      "editions": 1040,
+      "matched": 1038,
+      "venue_applied": 1000,
+      "venue_inherited": 112,
+      "venue_rejected_drift": 16,
+      "lon_sign_fixed": 3,
+      "unmatched": 0,
+      "no_sql_geo": 22,
+      "hotel_only": 4,
+      "date_drift_skipped": 2,
+      "google_audit_preserved": 170
     }
   }
 }

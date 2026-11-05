@@ -1290,9 +1290,11 @@
     All: area totals, this year vs last year (YTD if the year is still open: closed months full, open month matched events only).
     With a trend pill: Competitors and Avg / event compare the selected events to their own previous editions;
     Events = how many of the area’s events have that trend.
+    Competitors are entries, not unique dancers (same person can count at more than one event).
   </div>
   <div class="eg-tip-pop" id="kpiCompTipPop" role="tooltip" hidden>
     Leaders + followers entered in an event’s skill-level Jack &amp; Jill divisions (Newcomer through Champion).
+    Not unique people: the same dancer counts once per event they enter — three events means three counts.
     For a continent, country, state or city, it is the total across all events held there in the selected period.
   </div>
   <div class="eg-tip-pop" id="kpiEventsTipPop" role="tooltip" hidden>
@@ -1301,6 +1303,7 @@
   </div>
   <div class="eg-tip-pop" id="kpiAvgTipPop" role="tooltip" hidden>
     Competitors ÷ Events — mean event size in the selected area and period.
+    Uses the same non-unique Competitors total (entries, not distinct dancers).
     One-event places match that event’s headcount. Its change compares those averages.
   </div>
 
@@ -1390,7 +1393,7 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261103-sync";
+  var DATA_VER = "20261105-sync";
   var LIST_METRICS = {
     competitors: true,
     events: true,
