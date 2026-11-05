@@ -325,6 +325,18 @@ def test_dashboard_mobile_world_can_zoom_out() -> None:
     assert "side-kpi-panel { order: 1; }" in html or "order: 1" in html
 
 
+def test_dashboard_state_view_uses_outline_like_country() -> None:
+    """US state drill shows state polygon + city pins (Europe country framing)."""
+    html = (REPO / "event_growth_dashboard_en.html").read_text()
+    start = html.index("function usesCountryCityMap")
+    end = html.index("\n  function ", start + 10)
+    body = html[start:end]
+    assert 'state.level === "state"' in body
+    assert "state.regionState" in body
+    assert "state-outline" in html
+    assert "us_states.geojson" in html
+
+
 if __name__ == "__main__":
     test_region_world_has_us_states_not_united_states_row()
     test_city_keys_disambiguate_same_name()
@@ -339,4 +351,5 @@ if __name__ == "__main__":
     test_map_hover_key_remaps_list_city_to_pin()
     test_dashboard_exposes_map_hover_remap_and_place()
     test_dashboard_mobile_world_can_zoom_out()
+    test_dashboard_state_view_uses_outline_like_country()
     print("OK")
