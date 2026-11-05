@@ -233,6 +233,12 @@ def hotel_match_key(hotel: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+# Dump typos / marketing variants → display name (match key is still fuzzy).
+HOTEL_NAME_CORRECTIONS: Dict[str, str] = {
+    "dearfoot inn and casino": "Deerfoot Inn and Casino",
+}
+
+
 def usable_hotel_name(hotel: Optional[str]) -> Optional[str]:
     """Return hotel string if it looks like a real venue name, else None."""
     raw = (hotel or "").strip()
@@ -243,7 +249,7 @@ def usable_hotel_name(hotel: Optional[str]) -> Optional[str]:
     key = hotel_match_key(raw)
     if key in PLACEHOLDER_HOTEL_KEYS:
         return None
-    return raw
+    return HOTEL_NAME_CORRECTIONS.get(raw.lower(), raw)
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

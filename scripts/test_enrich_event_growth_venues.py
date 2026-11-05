@@ -103,6 +103,8 @@ def test_usable_hotel_name_rejects_placeholders() -> None:
     assert usable_hotel_name("Still in negotiation") is None
     assert usable_hotel_name("TBD") is None
     assert usable_hotel_name("H4 Hotel Wyndham") == "H4 Hotel Wyndham"
+    # WSDC dump typo for Deerfoot Inn (Calgary Town Open 2026).
+    assert usable_hotel_name("Dearfoot Inn and Casino") == "Deerfoot Inn and Casino"
 
 
 def test_enrich_soft_rehome_same_hotel_closer_sibling() -> None:
