@@ -3517,8 +3517,9 @@
     return false;
   }
 
-  // Non-US country view: country outline + city pins (clear enter-country framing).
+  // Country (non-US) or US state: outline fill + city pins (same framing as Europe).
   function usesCountryCityMap() {
+    if (state.level === "state" && state.regionState) return true;
     return state.level === "country" && state.country && state.country !== "United States";
   }
 
@@ -4946,28 +4947,48 @@
   function renderCountryCityLayer(regions) {
     indexRegions(regions);
     setCityMapInteraction(false);
-    var countryName = state.country;
-    var feature = (state.geo.countries && state.geo.countries.features || []).find(function (f) {
-      return f.properties && f.properties.name === countryName;
-    });
     var outline = [];
-    if (feature) {
-      var mainland = clipRussiaToEuropeanPart(toMainlandFeature(feature));
-      if (mainland) {
-        outline.push({
-          type: "Feature",
-          id: "country-outline",
-          properties: {
-            id: "country-outline",
-            regionKey: "",
-            drillKey: "",
-            fillColor: "#9aa7b5",
-            fillOpacity: 0.38,
-            silhouette: false
-          },
-          geometry: mainland.geometry
-        });
+    var outlineId = "area-outline";
+    var feature = null;
+    var geom = null;
+
+    if (state.level === "state" && state.regionState) {
+      // Same soft grey fill as a European country — whole state under city pins.
+      feature = (state.geo.states && state.geo.states.features || []).find(function (f) {
+        return f.properties && f.properties.name === state.regionState;
+      });
+      if (feature) {
+        geom = feature.geometry;
+        outlineId = "state-outline";
       }
+    } else {
+      var countryName = state.country;
+      feature = (state.geo.countries && state.geo.countries.features || []).find(function (f) {
+        return f.properties && f.properties.name === countryName;
+      });
+      if (feature) {
+        var mainland = clipRussiaToEuropeanPart(toMainlandFeature(feature));
+        if (mainland) {
+          geom = mainland.geometry;
+          outlineId = "country-outline";
+        }
+      }
+    }
+
+    if (geom) {
+      outline.push({
+        type: "Feature",
+        id: outlineId,
+        properties: {
+          id: outlineId,
+          regionKey: "",
+          drillKey: "",
+          fillColor: "#9aa7b5",
+          fillOpacity: 0.38,
+          silhouette: false
+        },
+        geometry: geom
+      });
     }
     var pts = cityPointFeatures(regions);
     clearMapHover();
@@ -4976,8 +4997,12 @@
       { type: "FeatureCollection", features: pts }
     );
     var fitPts = pts.map(function (f) { return f.geometry.coordinates; });
-    // Prefer country polygon framing; fall back to city points (with min span).
-    fitToData(fitPts, outline, state.mapRenderSeq, { padFrac: 0.04, maxZoom: 10 });
+    // Prefer area polygon framing; fall back to city points (with min span).
+    // States can be small (RI) or huge (AK/TX) — pad + maxZoom keep cities readable.
+    fitToData(fitPts, outline, state.mapRenderSeq, {
+      padFrac: state.level === "state" ? 0.06 : 0.04,
+      maxZoom: state.level === "state" ? 9 : 10
+    });
   }
 
   function renderPolygonLayer(regions) {
