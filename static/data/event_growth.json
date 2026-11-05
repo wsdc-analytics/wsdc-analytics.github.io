@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-11-03",
-  "generated_at": "2026-11-03T20:00:57Z",
+  "as_of": "2026-11-05",
+  "generated_at": "2026-11-05T08:16:26Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -18,10 +18,10 @@
     2025,
     2026
   ],
-  "n_editions": 1039,
+  "n_editions": 1040,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
-    "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new. Dashboard YTD: closed months full both years; open data_through month (while as_of is still in that month) matches prior only by event_id to published current editions (±1 month).",
+    "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
     "status": "Growing/Declining when |pct| ≥ 10% and |delta| ≥ 10; otherwise stable (when comparable)."
   },
   "editions": [
@@ -35742,6 +35742,34 @@
       "venue_start": "2026-10-01"
     },
     {
+      "event_id": 229,
+      "name": "Scandinavian Open",
+      "year": 2026,
+      "month": 11,
+      "start": "2026-10-28",
+      "continent": "Europe",
+      "country": "Sweden",
+      "state": null,
+      "city": "Stockholm",
+      "lat": 59.3251172,
+      "lon": 18.0710935,
+      "competitors": 640,
+      "approx": 1,
+      "source": "estimated",
+      "prev": {
+        "year": 2025,
+        "month": 11,
+        "competitors": 617,
+        "approx": 0,
+        "source": "exact"
+      },
+      "delta": 23,
+      "pct": 0.037277,
+      "status": "stable",
+      "gap_flag": null,
+      "edition": 11
+    },
+    {
       "event_id": 340,
       "name": "Spooky Westie Weekend",
       "year": 2026,
@@ -35800,7 +35828,7 @@
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-03T20:01:00Z",
+    "enriched_at": "2026-11-05T08:16:30Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35824,8 +35852,8 @@
       }
     ],
     "stats": {
-      "editions": 1039,
-      "with_history": 1039,
+      "editions": 1040,
+      "with_history": 1040,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
       "split_buckets_used": 25,
@@ -35840,19 +35868,19 @@
   },
   "venue_enrichment_prior": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-03T16:54:15Z"
+    "enriched_at": "2026-11-03T20:01:00Z"
   },
   "venue_enrichment": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-03T20:01:00Z",
+    "enriched_at": "2026-11-05T08:16:31Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
-      "editions": 1039,
+      "editions": 1040,
       "prior_venue": 998,
       "carried": 998,
       "skipped_already_venue": 0,
-      "missing_prior": 41
+      "missing_prior": 42
     }
   }
 }

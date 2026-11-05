@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-03",
-  "as_of": "2026-11-03",
+  "generated_at": "2026-11-05",
+  "as_of": "2026-11-05",
   "data_through": "2026-11-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,9 +17,9 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2699,
-    "points": 736125.0,
-    "dancers": 27946
+    "events": 2700,
+    "points": 736852.0,
+    "dancers": 27967
   },
   "comparisons": {
     "week": {
@@ -30,11 +30,11 @@
         "since_previous_ended": "2026-10-31",
         "iso_week": "2026-W44",
         "bucket": "edition_start_date",
-        "event_names": "Spooky Westie Weekend, Warsaw Halloween Swing"
+        "event_names": "Scandinavian Open, Spooky Westie Weekend, Warsaw Halloween Swing"
       },
       "increment": {
-        "events": 2,
-        "points": 784.0,
+        "events": 3,
+        "points": 1511.0,
         "dancers": 12
       }
     },
@@ -42,7 +42,7 @@
       "label": "Month",
       "period": {
         "start": "2026-11-01",
-        "end": "2026-11-03",
+        "end": "2026-11-05",
         "since_previous_ended": "2026-10-31",
         "bucket": "edition_start_date",
         "event_names": ""
@@ -50,21 +50,21 @@
       "increment": {
         "events": 0,
         "points": 0.0,
-        "dancers": 30
+        "dancers": 51
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-11-03",
+        "end": "2026-11-05",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 160,
-        "points": 66210.0,
-        "dancers": 2172
+        "events": 161,
+        "points": 66937.0,
+        "dancers": 2193
       }
     }
   }
