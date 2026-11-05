@@ -1359,6 +1359,7 @@
           <div class="method-sec__body">
             <p>With <strong>All</strong>, a region’s color is the <em>area</em> trend: total competitors this period vs the same geography last period (YTD or YoY).</p>
             <p>If the area had no events in the prior period but returning editions still have a previous edition of their own (gap year for the geography), the area uses that event-pair change — so it is not labeled <strong>New</strong> merely because last year’s calendar total was zero.</p>
+            <p><strong>New</strong> on an area means that geography had no competitors in the prior window. A city that already hosted events last year stays on calendar YoY even when every current edition is a brand-new series (e.g. Ottawa 2026: Swing in Bloom after BTO Open moved) — that is <strong>Growing</strong> / <strong>Declining</strong> / <strong>Stable</strong>, not New.</p>
             <p>With a status pill active, the map instead shows where those events are: darker where more of the selected events took place.</p>
           </div>
         </details>
@@ -2568,8 +2569,11 @@
         previous = priorByKey[k] || 0;
         delta = g.currentAll - previous;
         pct = previous ? delta / previous : null;
-        // All new/restarted → New geography (not Growing from zero).
-        if (g.n > 0 && g.neu + g.restarted === g.n) {
+        // All new/restarted only forces New when the geography itself had no
+        // prior-window competitors. If the city/area already hosted events
+        // (e.g. Ottawa 2025 BTO → 2026 Swing in Bloom), use calendar YoY so
+        // a series swap is not painted New.
+        if (g.n > 0 && g.neu + g.restarted === g.n && previous === 0) {
           status = "new";
         } else if (previous === 0 && g.currentAll > 0) {
           // Geography empty in the prior calendar window. Only treat as New
