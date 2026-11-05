@@ -1,6 +1,6 @@
 {
   "as_of": "2026-11-05",
-  "generated_at": "2026-11-05T11:36:00Z",
+  "generated_at": "2026-11-05T13:32:35Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -28442,10 +28442,10 @@
       "edition": 25,
       "city_lat": 42.4792649,
       "city_lon": -71.1522765,
+      "hotel": "Crowne Plaza Boston-Woburn",
       "address": "15 Middlesex Canal Park Dr",
       "geo_source": "wsdc_venue",
-      "venue_start": "2025-08-21",
-      "hotel": "Crowne Plaza Boston-Woburn"
+      "venue_start": "2025-08-21"
     },
     {
       "event_id": 391,
@@ -35908,9 +35908,9 @@
       "city": "Stockholm",
       "lat": 59.367854,
       "lon": 18.007379,
-      "competitors": 640,
-      "approx": 1,
-      "source": "estimated",
+      "competitors": 660,
+      "approx": 0,
+      "source": "exact",
       "prev": {
         "year": 2025,
         "month": 11,
@@ -35918,17 +35918,17 @@
         "approx": 0,
         "source": "exact"
       },
-      "delta": 23,
-      "pct": 0.037277,
+      "delta": 43,
+      "pct": 0.069692,
       "status": "stable",
       "gap_flag": null,
       "edition": 11,
       "city_lat": 59.3251172,
       "city_lon": 18.0710935,
-      "venue_start": "2026-10-28",
-      "geo_source": "wsdc_venue",
       "hotel": "Quality hotel Strawberry Arena",
-      "address": "Råsta Strandväg 1, 169 79 Solna"
+      "address": "Råsta Strandväg 1, 169 79 Solna",
+      "geo_source": "wsdc_venue",
+      "venue_start": "2026-10-28"
     },
     {
       "event_id": 340,
@@ -35959,10 +35959,10 @@
       "edition": 3,
       "city_lat": 1.352083,
       "city_lon": 103.819836,
-      "venue_start": "2026-10-29",
-      "geo_source": "wsdc_venue",
       "hotel": "Rhythm Room",
-      "address": "3B River Valley Road #02-03"
+      "address": "3B River Valley Road #02-03",
+      "geo_source": "wsdc_venue",
+      "venue_start": "2026-10-29"
     },
     {
       "event_id": 236,
@@ -35993,14 +35993,14 @@
       "edition": 14,
       "city_lat": 52.2296756,
       "city_lon": 21.0122287,
-      "venue_start": "2026-10-29",
+      "address": "al. Jana Pawła II 21",
       "geo_source": "wsdc_venue",
-      "address": "al. Jana Pawła II 21"
+      "venue_start": "2026-10-29"
     }
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-05T11:36:04Z",
+    "enriched_at": "2026-11-05T13:32:39Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -36039,12 +36039,12 @@
     }
   },
   "venue_enrichment_prior": {
-    "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-05T08:16:31Z"
+    "source": "wsdc110426.sql",
+    "enriched_at": "2026-11-05T11:38:21Z"
   },
   "venue_enrichment": {
-    "source": "wsdc110426.sql",
-    "enriched_at": "2026-11-05T11:38:21Z",
+    "source": "wsdc110526.sql",
+    "enriched_at": "2026-11-05T13:33:10Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
