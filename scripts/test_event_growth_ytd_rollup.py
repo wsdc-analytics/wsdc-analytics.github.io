@@ -335,7 +335,8 @@ def region_status_from_editions(
             pair_n += 1
             pair_cur += int(e.get("competitors") or 0)
             pair_prev += int(prev["competitors"])
-    if n > 0 and neu + restarted == n:
+    # All new/restarted only forces New when the geography had no prior total.
+    if n > 0 and neu + restarted == n and previous == 0:
         return "new"
     if previous == 0 and current_all > 0:
         # Gap year for the geography: use event-pair totals when available.
@@ -356,10 +357,11 @@ def region_status_from_editions(
     return "stable"
 
 
-def test_new_cities_not_marked_growing() -> None:
+def test_true_debut_cities_stay_new() -> None:
+    """Cities with no prior-window events stay New even if all editions are new."""
     payload = json.loads(DATA.read_text())
     editions = payload["editions"]
-    for city in ("Ottawa", "Waterloo"):
+    for city in ("Waterloo",):
         cur = [
             e
             for e in editions
@@ -378,6 +380,32 @@ def test_new_cities_not_marked_growing() -> None:
         )
         assert prior == 0
         assert region_status_from_editions(cur, prior) == "new"
+
+
+def test_ottawa_2026_series_swap_is_growing_not_new() -> None:
+    """Ottawa hosted BTO in 2025; 2026 Swing in Bloom is new series but city grows."""
+    payload = json.loads(DATA.read_text())
+    editions = payload["editions"]
+    cur = [
+        e
+        for e in editions
+        if e.get("year") == 2026
+        and e.get("country") == "Canada"
+        and e.get("city") == "Ottawa"
+    ]
+    assert len(cur) == 1
+    assert cur[0].get("name") == "Swing in Bloom"
+    assert cur[0].get("status") == "new"
+    prior = sum(
+        int(e.get("competitors") or 0)
+        for e in editions
+        if e.get("year") == 2025
+        and e.get("country") == "Canada"
+        and e.get("city") == "Ottawa"
+    )
+    assert prior == 222  # BTO Open 2025
+    assert sum(int(e.get("competitors") or 0) for e in cur) == 270
+    assert region_status_from_editions(cur, prior) == "growing"
 
 
 def _geo_key(e: dict) -> tuple[str, str]:
