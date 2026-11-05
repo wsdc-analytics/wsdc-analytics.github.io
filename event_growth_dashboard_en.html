@@ -1281,14 +1281,17 @@
   <div class="tooltip" id="egTooltip" role="tooltip"></div>
   <div class="eg-tip-pop" id="trendTipPop" role="tooltip" hidden>
     Events in the selected area by change in competitors vs their previous edition.
-    Growing / Declining = at least ±10% and ±10 competitors; Stable = smaller change;
-    New = first edition, a return after a gap, or a renamed event.
+    Growing / Declining = at least ±10% and ±10 competitors; Stable = smaller change.
+    New = no comparable previous edition: debuts, returns after a multi-year gap, renamed
+    series, or a move under a new name — not only brand-new first-timers.
     Event chips may say Debut / Returning / Renamed; tips add a short note when useful.
     Click a pill to show only those events; All shows the whole area.
   </div>
   <div class="eg-tip-pop" id="kpiTipPop" role="tooltip" hidden>
     All: area totals, this year vs last year (YTD if the year is still open: closed months full, open month matched events only).
-    With a trend pill: Competitors and Avg / event compare the selected events to their own previous editions;
+    Growing / Declining / Stable: Competitors and Avg / event compare those events to their own previous editions.
+    New: Competitors and Avg are totals for new editions in the selected year (no vs-previous comparison) —
+    including debuts, returns after a multi-year gap, and renamed or relocated series.
     Events = how many of the area’s events have that trend.
     Competitors are entries, not unique dancers (same person can count at more than one event).
   </div>
@@ -3007,7 +3010,7 @@
     } else if (statusFilter && !currentRows.length) {
       foot.textContent = "No matching " + statusLabel.toLowerCase() + " events";
     } else if (statusFilter) {
-      foot.textContent = statusLabel + " events vs their previous edition";
+      foot.textContent = statusFilterPeriodLabel();
     } else if (mode.priorYear == null) {
       foot.textContent = (mode.year != null ? mode.year + " · " : "") +
         "No prior year in data";
@@ -3540,12 +3543,21 @@
     return b && b !== a ? (a + " – " + b) : a;
   }
 
+  // KPI foot + map tips when an Event trend pill is on.
+  function statusFilterPeriodLabel() {
+    var mode = comparisonMode();
+    var year = mode.year != null ? String(mode.year) : null;
+    if (state.status === "new") {
+      // New has no previous edition — do not say "vs previous edition".
+      return year ? (year + " · new events in " + year) : "New events in this view";
+    }
+    var st = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+    return st + " events vs their previous edition";
+  }
+
   function comparisonPeriodText() {
     var mode = comparisonMode();
-    if (statusFilterActive()) {
-      var st = state.status.charAt(0).toUpperCase() + state.status.slice(1);
-      return st + " events · vs previous edition";
-    }
+    if (statusFilterActive()) return statusFilterPeriodLabel();
     if (mode.priorYear == null) return String(mode.year || "—");
     if (mode.mode === "ytd") return ytdPeriodLabel(mode);
     return mode.year + " vs " + mode.priorYear + " · YoY";
