@@ -36,7 +36,8 @@ Mount point:
 | --- | --- | --- |
 | `data-active` | `home` \| `dashboards` \| `points` \| `champions` \| `calendar` \| `growth` \| `articles` \| `qa` | Highlights nav pill; `qa` lights the chat icon |
 | `data-qa-board` | board slug | Optional override for Q&A deep-link (e.g. `articles` on magazine pages) |
-| `data-lang` | `ru` \| `en` \| `es` | Initial language pills |
+| `data-lang` | `ru` \| `en` \| `es` | Page language / initial chrome lang |
+| `data-langs` | e.g. `en` or `ru,en,es` | Languages this page actually supports. Switcher shows only these. If omitted: navigate mode uses whichever `data-lang-ru/en/es` are set; otherwise only `data-lang` (no fake RU/EN/ES switcher). |
 | `data-fixed` | `true` | Fixed floating bar (homepage **and magazine articles**) |
 | `data-brand` | `logo` (default) \| `text` | WSDC logo links home |
 | `data-home-href` | URL | Logo → home (default `index.html`) |
@@ -44,6 +45,8 @@ Mount point:
 | `data-lang-mode` | `callback` \| `navigate` | Per-lang navigation or callback |
 | `data-lang-ru/en/es` | URL | Used with `data-lang-mode=navigate` |
 | `data-current-dash` | filename | Marks current Others-menu item |
+
+**Language switcher:** only render pills for available languages. A single-language page shows a non-interactive `EN` (or `RU`/`ES`) marker. When a page gains translations, add them to `data-langs` (callback) or add `data-lang-*` URLs (navigate).
 
 ### Q&A Hub entry
 
