@@ -5,6 +5,9 @@
  *   data-active          home | dashboards | points | champions | calendar | growth | articles | qa
  *   data-qa-board        optional board slug override for the Q&A chrome link
  *   data-lang            ru | en | es
+ *   data-langs           comma list of available langs for this page (e.g. "en" or "ru,en,es").
+ *                        If omitted: navigate mode uses data-lang-ru/en/es that are set;
+ *                        otherwise only data-lang (no fake multi-lang switcher).
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       text-brand / back-link home (default index.html)
@@ -94,6 +97,79 @@
     var path = window.location.pathname || "";
     var parts = path.split("/");
     return parts[parts.length - 1] || "index.html";
+  }
+
+  var ALL_LANGS = ["ru", "en", "es"];
+
+  function isLangCode(code) {
+    return ALL_LANGS.indexOf(code) !== -1;
+  }
+
+  /** Languages this page actually supports (switcher only shows these). */
+  function availableLangs(root) {
+    var raw = (root.getAttribute("data-langs") || "").trim();
+    if (raw) {
+      return raw
+        .split(/[,\s]+/)
+        .map(function (s) {
+          return String(s || "").trim().toLowerCase();
+        })
+        .filter(isLangCode);
+    }
+    var mode = root.getAttribute("data-lang-mode") || "callback";
+    if (mode === "navigate") {
+      var fromNav = ALL_LANGS.filter(function (code) {
+        return !!(root.getAttribute("data-lang-" + code) || "").trim();
+      });
+      if (fromNav.length) return fromNav;
+    }
+    var pageLang = (root.getAttribute("data-lang") || "en").toLowerCase();
+    return isLangCode(pageLang) ? [pageLang] : ["en"];
+  }
+
+  function resolveChromeLang(root, langs) {
+    var list = langs && langs.length ? langs : ["en"];
+    var pageLang = (root.getAttribute("data-lang") || list[0] || "en").toLowerCase();
+    if (!isLangCode(pageLang) || list.indexOf(pageLang) === -1) pageLang = list[0];
+    var stored = localStorage.getItem("wsdc-lang");
+    if (stored && list.indexOf(stored) !== -1) return stored;
+    return pageLang;
+  }
+
+  function langSwitcherHtml(langs, lang) {
+    if (!langs || !langs.length) langs = ["en"];
+    if (langs.length === 1) {
+      var only = langs[0];
+      return (
+        '<span class="wsdc-chrome__pill is-active is-lang-only" aria-current="true" title="' +
+        esc(only.toUpperCase()) +
+        '">' +
+        esc(only.toUpperCase()) +
+        "</span>"
+      );
+    }
+    return langs
+      .map(function (code) {
+        var pressed = code === lang;
+        return (
+          '<button type="button" class="wsdc-chrome__pill lang-btn' +
+          (pressed ? " is-active" : "") +
+          '" data-lang="' +
+          code +
+          '" aria-pressed="' +
+          pressed +
+          '" aria-label="' +
+          (code === "ru"
+            ? "Переключить на русский язык"
+            : code === "es"
+              ? "Cambiar a español"
+              : "Switch to English") +
+          '">' +
+          code.toUpperCase() +
+          "</button>"
+        );
+      })
+      .join("");
   }
 
   function withLangQuery(href, lang) {
@@ -239,11 +315,9 @@
 
   function render(root) {
     var active = root.getAttribute("data-active") || "home";
-    var lang = root.getAttribute("data-lang") || "en";
-    var stored = localStorage.getItem("wsdc-lang");
-    if (stored && ["ru", "en", "es"].indexOf(stored) !== -1) {
-      lang = stored;
-    }
+    var langsAvail = availableLangs(root);
+    var lang = resolveChromeLang(root, langsAvail);
+    root.setAttribute("data-lang", lang);
     var fixed = root.getAttribute("data-fixed") === "true";
     var brandMode = root.getAttribute("data-brand") || "logo";
     var homeHref = root.getAttribute("data-home-href") || "index.html";
@@ -310,24 +384,7 @@
       );
     }).join("");
 
-    var langs = ["ru", "en", "es"]
-      .map(function (code) {
-        var pressed = code === lang;
-        return (
-          '<button type="button" class="wsdc-chrome__pill lang-btn' +
-          (pressed ? " is-active" : "") +
-          '" data-lang="' +
-          code +
-          '" aria-pressed="' +
-          pressed +
-          '" aria-label="' +
-          (code === "ru" ? "Переключить на русский язык" : code === "es" ? "Cambiar a español" : "Switch to English") +
-          '">' +
-          code.toUpperCase() +
-          "</button>"
-        );
-      })
-      .join("");
+    var langs = langSwitcherHtml(langsAvail, lang);
 
     root.innerHTML =
       '<div class="' +

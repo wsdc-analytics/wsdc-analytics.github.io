@@ -561,6 +561,12 @@
   flex-shrink: 0;
 }
 
+/* Single available language — indicator only, not a switcher. */
+.wsdc-chrome__langs .is-lang-only {
+  cursor: default;
+  pointer-events: none;
+}
+
 .wsdc-chrome-page-pad {
   /* Space below fixed chrome for page content */
   padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
