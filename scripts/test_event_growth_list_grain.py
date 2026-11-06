@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for Event Growth list grain keys, Δ rules, and sort behavior."""
+"""Tests for Event Trends list grain keys, Δ rules, and sort behavior."""
 
 from __future__ import annotations
 

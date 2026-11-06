@@ -26,7 +26,7 @@ Companion docs:
 
 | Type | Examples | Chrome | CSS stack |
 |------|----------|--------|-----------|
-| **Product tool** | home, Calendar, Event Growth, Points, Champions, Others, rankings, dancer-profile | Required | `tokens` + `site-chrome` + `ui-primitives` + page CSS |
+| **Product tool** | home, Calendar, Event Trends, Points, Champions, Others, rankings, dancer-profile | Required | `tokens` + `site-chrome` + `ui-primitives` + page CSS |
 | **Tableau / viz shell** | `dashboard`, `navigator`, `rankings`, `dancer-profile`, `city-clouds`, secondary-role host | Required | above + `dashboard-shell.css` (token remap + viz layout) |
 | **Magazine article** | `article_*`, overview/geo/events/dancers 2025, rules, `events/*/article_*` | Required (usually `data-fixed`) | above + `article-shell.css` **after** inline styles |
 | **Embeddable** | `interactive_*`, forecast/risk cards (iframe) | **Forbidden** | `tokens` + `ui-primitives` + page CSS only |

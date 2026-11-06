@@ -11,7 +11,7 @@ Source of truth: `static/css/tokens.css` (`--wsdc-*` colors, spacing, radii, wid
 Source: `static/css/site-chrome.css` + `static/js/site-chrome.js`  
 Usage: [`SITE_CHROME.md`](SITE_CHROME.md)
 
-Mount with `<div data-site-chrome …>` — brand · Events Calendar · Event Growth · Summary Points · New Champions · Others · quiet contact · RU/EN/ES.
+Mount with `<div data-site-chrome …>` — brand · Events Calendar · Event Trends · Summary Points · New Champions · Others · quiet contact · RU/EN/ES.
 
 ## UI primitives
 

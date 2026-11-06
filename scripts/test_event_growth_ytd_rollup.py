@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression tests for Event Growth Monitor calendar YTD/YoY rollups.
+"""Regression tests for Event Trends Monitor calendar YTD/YoY rollups.
 
 Mirrors comparisonMode + region/KPI math in event_growth_dashboard_en.html:
 open year → YTD with closed months full; open data_through month matched by

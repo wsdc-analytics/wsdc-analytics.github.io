@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit Event Growth Monitor venue pins against Google Maps (report only).
+"""Audit Event Trends Monitor venue pins against Google Maps (report only).
 
 Registry GPS is typed by organizers per edition, so one hotel often lands in
 several places across years (or on a generic city-centre point). This groups
