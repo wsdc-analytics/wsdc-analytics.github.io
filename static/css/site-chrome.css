@@ -182,8 +182,11 @@
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  background: var(--wsdc-color-brand, #111827);
-  color: #fff;
+  /* Light tip surface — same family as map / page tooltips (not dark plaques). */
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text, #1f2937);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
   font-size: 12px;
   font-weight: 400;
   line-height: 1.35;
@@ -417,8 +420,10 @@
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  background: var(--wsdc-color-brand, #111827);
-  color: #fff;
+  background: var(--wsdc-color-surface, #ffffff);
+  color: var(--wsdc-color-text, #1f2937);
+  border: 1px solid var(--wsdc-color-border, #d1d5db);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
   font-size: 12px;
   font-weight: 400;
   line-height: 1.35;
@@ -684,9 +689,9 @@ a.back-link.is-on-hero:focus-visible {
     display: none;
   }
 
-  /* Row 2: equal-width Points + Champions */
-  .wsdc-chrome__cluster[data-chrome-nav="points"],
-  .wsdc-chrome__cluster[data-chrome-nav="champions"] {
+  /* Row 2: Calendar + Event Growth (primary) */
+  .wsdc-chrome__cluster[data-chrome-nav="calendar"],
+  .wsdc-chrome__cluster[data-chrome-nav="growth"] {
     order: 6;
     flex: 1 1 calc(50% - 2px);
     max-width: calc(50% - 2px);
@@ -695,20 +700,22 @@ a.back-link.is-on-hero:focus-visible {
   }
 
   .wsdc-chrome__cluster[data-chrome-nav="points"] .wsdc-chrome__pill,
-  .wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__pill {
+  .wsdc-chrome__cluster[data-chrome-nav="champions"] .wsdc-chrome__pill,
+  .wsdc-chrome__cluster[data-chrome-nav="calendar"] .wsdc-chrome__pill,
+  .wsdc-chrome__cluster[data-chrome-nav="growth"] .wsdc-chrome__pill {
     flex: 1 1 auto;
     min-width: 0;
     justify-content: center;
   }
 
-  /* Row 3: Calendar centered alone */
-  .wsdc-chrome__cluster[data-chrome-nav="calendar"] {
+  /* Row 3: Summary Points + New Champions */
+  .wsdc-chrome__cluster[data-chrome-nav="points"],
+  .wsdc-chrome__cluster[data-chrome-nav="champions"] {
     order: 7;
-    flex: 0 0 100%;
-    width: 100%;
-    max-width: 100%;
+    flex: 1 1 calc(50% - 2px);
+    max-width: calc(50% - 2px);
+    min-width: 0;
     margin: 0;
-    justify-content: center;
   }
 
   /* Tip bubbles are ported to document.body + position:fixed on mobile (see site-chrome.js). */
