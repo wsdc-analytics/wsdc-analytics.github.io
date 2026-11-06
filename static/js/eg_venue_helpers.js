@@ -1,5 +1,5 @@
 /**
- * Event Growth Monitor — venue label + co-location clustering helpers.
+ * Event Trends Monitor — venue label + co-location clustering helpers.
  * Browser: window.EGVenue. Node: module.exports.
  */
 (function (root, factory) {

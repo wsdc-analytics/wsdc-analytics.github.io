@@ -63,7 +63,7 @@ A chat-style icon sits **left of the Contacts envelope**. The glyph is the site 
 
 See [`QA_HUB.md`](QA_HUB.md).
 
-Includes quiet `i` tips for Events Calendar, Event Growth, Summary Points, New Champions, and Others (hover/focus on desktop; tap-to-toggle on mobile with viewport-fixed bubbles so they are not clipped by the chrome bar). Tip bubbles use a light (white) surface with border + soft shadow — same family as page/map tooltips, not dark plaques. Open/hover/focus uses the blue accent border+glyph (no separate outline), matching page search info buttons. Desktop order: Calendar → Growth → Points → Champions → Others. On mobile (≤720px) Others is hidden; row 2 is Calendar + Growth; row 3 is Points + Champions. Top row: logo \| Q&A chat + envelope + language pills. The Others menu lists Event Tiers → Time In Division → Secondary Role Points, then Tableau tools.
+Includes quiet `i` tips for Events Calendar, Event Trends, Summary Points, New Champions, and Others (hover/focus on desktop; tap-to-toggle on mobile with viewport-fixed bubbles so they are not clipped by the chrome bar). Tip bubbles use a light (white) surface with border + soft shadow — same family as page/map tooltips, not dark plaques. Open/hover/focus uses the blue accent border+glyph (no separate outline), matching page search info buttons. Desktop order: Calendar → Event Trends → Points → Champions → Others. On mobile (≤720px) Others is hidden; row 2 is Calendar + Event Trends; row 3 is Points + Champions. Top row: logo \| Q&A chat + envelope + language pills. The Others menu lists Event Tiers → Time In Division → Secondary Role Points, then Tableau tools.
 
 ### Back to home
 
