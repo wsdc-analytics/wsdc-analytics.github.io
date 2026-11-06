@@ -657,7 +657,7 @@ a.back-link.is-on-hero:focus-visible {
   /*
    * Mobile chrome layout:
    *  Row 1 — logo (far left) | Q&A + envelope + language pills (far right)
-   *  Row 2 — Calendar | Event Growth (equal width; Others hidden)
+   *  Row 2 — Calendar | Event Trends (equal width; Others hidden)
    *  Row 3 — Summary Points | New Champions
    */
   .wsdc-chrome {
@@ -709,7 +709,7 @@ a.back-link.is-on-hero:focus-visible {
     display: none;
   }
 
-  /* Row 2: Calendar + Event Growth (primary) */
+  /* Row 2: Calendar + Event Trends (primary) */
   .wsdc-chrome__cluster[data-chrome-nav="calendar"],
   .wsdc-chrome__cluster[data-chrome-nav="growth"] {
     order: 6;

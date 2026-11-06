@@ -4,25 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="Are WSDC events growing or shrinking — and where? Compare competitor counts by event and roll them up from world to city, with exact and estimated headcounts." />
-  <title>Event Growth Monitor | WSDC Analytics</title>
+  <title>Event Trends Monitor | WSDC Analytics</title>
   <link rel="canonical" href="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/tokens.css">
   <link rel="stylesheet" href="static/css/ui-primitives.css">
-  <link rel="stylesheet" href="static/css/site-chrome.css?v=20261106b">
+  <link rel="stylesheet" href="static/css/site-chrome.css?v=20261106c">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
   <link rel="stylesheet" href="static/vendor/maplibre/maplibre-gl.css">
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
-  <meta property="og:title" content="Event Growth Monitor | WSDC Analytics">
+  <meta property="og:title" content="Event Trends Monitor | WSDC Analytics">
   <meta property="og:description" content="See where WSDC events are growing or shrinking — map drill-down, this year vs last.">
   <meta property="og:url" content="https://wsdc-analytics.github.io/event_growth_dashboard_en.html">
   <meta property="og:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Event Growth Monitor | WSDC Analytics">
+  <meta name="twitter:title" content="Event Trends Monitor | WSDC Analytics">
   <meta name="twitter:description" content="See where WSDC events are growing or shrinking — map drill-down, this year vs last.">
   <meta name="twitter:image" content="https://wsdc-analytics.github.io/static/img/og-default.png">
   <style>
@@ -1173,7 +1173,7 @@
     <section class="content">
       <header class="page-head">
         <div class="page-head__title-row">
-          <h1>Event Growth Monitor</h1>
+          <h1>Event Trends Monitor</h1>
           <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
             <span aria-hidden="true">i</span>
           </button>
@@ -1389,7 +1389,7 @@
   </div>
 
   <script src="static/vendor/maplibre/maplibre-gl.js"></script>
-  <script src="static/js/site-chrome.js?v=20261106b"></script>
+  <script src="static/js/site-chrome.js?v=20261106c"></script>
   <script src="static/js/wsdc-select.js"></script>
   <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
   <script>
@@ -5222,7 +5222,7 @@
       afterPaint();
     }).catch(function (err) {
       if (seq !== state.mapRenderSeq) return;
-      console.error("Event Growth map failed", err);
+      console.error("Event Trends map failed", err);
       destroyMap("Map unavailable");
     });
   }
@@ -5522,7 +5522,7 @@
     try {
       renderMap(mapWithAbsent);
     } catch (err) {
-      console.error("Event Growth map failed", err);
+      console.error("Event Trends map failed", err);
       destroyMap("Map unavailable");
     }
     // Layer add can fire a synthetic mouseover under the cursor — clear it.

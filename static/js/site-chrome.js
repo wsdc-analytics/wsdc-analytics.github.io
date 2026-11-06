@@ -18,7 +18,7 @@
   "use strict";
 
   // Others menu: native HTML tools first, then Tableau embeds (existing order).
-  // Event Growth Monitor is a top-level chrome section (not in this menu).
+  // Event Trends Monitor is a top-level chrome section (not in this menu).
   var DASHBOARDS = [
     { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year", kind: "html" },
     { href: "time_in_division_dashboard_en.html", label: "Time In Division", kind: "html" },
@@ -44,7 +44,7 @@
     points: { ru: "Summary Points", en: "Summary Points", es: "Summary Points" },
     champions: { ru: "New Champions", en: "New Champions", es: "New Champions" },
     calendar: { ru: "Events Calendar", en: "Events Calendar", es: "Events Calendar" },
-    growth: { ru: "Event Growth", en: "Event Growth", es: "Event Growth" },
+    growth: { ru: "Event Trends", en: "Event Trends", es: "Event Trends" },
     contact: { ru: "Контакты", en: "Contacts", es: "Contacto" },
     qa: { ru: "Q&A Hub", en: "Q&A Hub", es: "Q&A Hub" },
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
@@ -335,7 +335,7 @@
       '">' +
       '<nav class="wsdc-chrome" aria-label="Site">' +
       brandHtml +
-      /* Desktop order: Calendar → Growth → Points → Champions → Others */
+      /* Desktop order: Calendar → Event Trends → Points → Champions → Others */
       '<div class="wsdc-chrome__cluster" data-chrome-nav="calendar">' +
       tipHtml(calendarTip, 'data-chrome-calendar-tip') +
       '<a class="wsdc-chrome__pill' +
