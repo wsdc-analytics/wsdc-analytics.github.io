@@ -95,9 +95,29 @@
   opacity: 0.92;
 }
 
-/* Logo → Dashboards tip: 40px (8px chrome gap + 32px) */
+/* Logo → first nav cluster (desktop override below adds more air). */
 .wsdc-chrome__brand + .wsdc-chrome__cluster {
   margin-left: 32px;
+}
+
+/* Desktop: more air between nav clusters (Calendar…Others). Mobile keeps tighter gaps. */
+@media (min-width: 721px) {
+  .wsdc-chrome {
+    gap: 16px;
+    padding: 10px 18px;
+  }
+
+  .wsdc-chrome__brand + .wsdc-chrome__cluster {
+    margin-left: 36px;
+  }
+
+  .wsdc-chrome__cluster {
+    gap: 6px;
+  }
+
+  .wsdc-chrome__pill {
+    padding: 0 12px;
+  }
 }
 
 .wsdc-chrome__spacer {
@@ -636,9 +656,9 @@ a.back-link.is-on-hero:focus-visible {
 
   /*
    * Mobile chrome layout:
-   *  Row 1 — logo (far left) | envelope + language pills (far right)
-   *  Row 2 — Summary Points | New Champions (equal width; Dashboards hidden)
-   *  Row 3 — Events Calendar centered
+   *  Row 1 — logo (far left) | Q&A + envelope + language pills (far right)
+   *  Row 2 — Calendar | Event Growth (equal width; Others hidden)
+   *  Row 3 — Summary Points | New Champions
    */
   .wsdc-chrome {
     display: flex;
