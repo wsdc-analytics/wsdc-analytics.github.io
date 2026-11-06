@@ -26,7 +26,7 @@ Companion docs:
 
 | Type | Examples | Chrome | CSS stack |
 |------|----------|--------|-----------|
-| **Product tool** | home, Points, Champions, Calendar, dashboards, rankings, dancer-profile | Required | `tokens` + `site-chrome` + `ui-primitives` + page CSS |
+| **Product tool** | home, Calendar, Event Growth, Points, Champions, Others, rankings, dancer-profile | Required | `tokens` + `site-chrome` + `ui-primitives` + page CSS |
 | **Tableau / viz shell** | `dashboard`, `navigator`, `rankings`, `dancer-profile`, `city-clouds`, secondary-role host | Required | above + `dashboard-shell.css` (token remap + viz layout) |
 | **Magazine article** | `article_*`, overview/geo/events/dancers 2025, rules, `events/*/article_*` | Required (usually `data-fixed`) | above + `article-shell.css` **after** inline styles |
 | **Embeddable** | `interactive_*`, forecast/risk cards (iframe) | **Forbidden** | `tokens` + `ui-primitives` + page CSS only |
@@ -71,7 +71,7 @@ Do **not** add one-off hex for text/border/surface on new UI. Legacy page locals
 
 ### Mobile chrome (≤720px)
 
-Follow existing chrome CSS: Dashboards hidden; Points + Champions equal width; Calendar centered on its row. Do not invent a third mobile nav pattern.
+Follow existing chrome CSS: Others hidden on mobile; row 2 Calendar + Growth; row 3 Points + Champions. Do not invent a third mobile nav pattern.
 
 ---
 
