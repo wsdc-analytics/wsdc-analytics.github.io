@@ -34,7 +34,7 @@ Mount point:
 
 | Attribute | Values | Notes |
 | --- | --- | --- |
-| `data-active` | `home` \| `dashboards` \| `points` \| `champions` \| `calendar` \| `articles` \| `qa` | Highlights nav pill; `qa` lights the chat icon |
+| `data-active` | `home` \| `dashboards` \| `points` \| `champions` \| `calendar` \| `growth` \| `articles` \| `qa` | Highlights nav pill; `qa` lights the chat icon |
 | `data-qa-board` | board slug | Optional override for Q&A deep-link (e.g. `articles` on magazine pages) |
 | `data-lang` | `ru` \| `en` \| `es` | Initial language pills |
 | `data-fixed` | `true` | Fixed floating bar (homepage **and magazine articles**) |
@@ -43,7 +43,7 @@ Mount point:
 | `data-path-prefix` | path | Prefix for tool + Q&A hrefs from nested pages |
 | `data-lang-mode` | `callback` \| `navigate` | Per-lang navigation or callback |
 | `data-lang-ru/en/es` | URL | Used with `data-lang-mode=navigate` |
-| `data-current-dash` | filename | Marks current Dashboards item |
+| `data-current-dash` | filename | Marks current Others-menu item |
 
 ### Q&A Hub entry
 
@@ -56,13 +56,14 @@ A chat-style icon sits **left of the Contacts envelope**. The glyph is the site 
 | `champions` | `new-champions` |
 | `points` | `summary-points` |
 | `calendar` | `calendar` |
+| `growth` | `other` (no dedicated board yet) |
 | `dashboards` | `dashboards` |
 | `articles` / `data-qa-board="articles"` | `articles` |
 | `home` / unknown / `qa` | `other` |
 
 See [`QA_HUB.md`](QA_HUB.md).
 
-Includes quiet `i` tips for Dashboards, Summary Points, New Champions, and Events Calendar (hover/focus on desktop; tap-to-toggle on mobile with viewport-fixed bubbles so they are not clipped by the chrome bar). Open/hover/focus uses the blue accent border+glyph (no separate outline), matching page search info buttons. On mobile (≤720px) Dashboards is hidden; row 2 is Summary Points + New Champions at equal width, and Events Calendar sits centered alone on row 3. Top row: logo \| Q&A chat + envelope + language pills.
+Includes quiet `i` tips for Events Calendar, Event Growth, Summary Points, New Champions, and Others (hover/focus on desktop; tap-to-toggle on mobile with viewport-fixed bubbles so they are not clipped by the chrome bar). Tip bubbles use a light (white) surface with border + soft shadow — same family as page/map tooltips, not dark plaques. Open/hover/focus uses the blue accent border+glyph (no separate outline), matching page search info buttons. Desktop order: Calendar → Growth → Points → Champions → Others. On mobile (≤720px) Others is hidden; row 2 is Calendar + Growth; row 3 is Points + Champions. Top row: logo \| Q&A chat + envelope + language pills. The Others menu lists Event Tiers → Time In Division → Secondary Role Points, then Tableau tools.
 
 ### Back to home
 

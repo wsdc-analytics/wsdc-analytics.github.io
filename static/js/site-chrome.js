@@ -2,32 +2,32 @@
  * Mount Evolved C site chrome into [data-site-chrome] placeholders.
  *
  * Attributes:
- *   data-active          home | dashboards | points | champions | calendar | articles | qa
+ *   data-active          home | dashboards | points | champions | calendar | growth | articles | qa
  *   data-qa-board        optional board slug override for the Q&A chrome link
  *   data-lang            ru | en | es
  *   data-fixed           "true" for position:fixed (homepage + magazine articles)
  *   data-brand           "logo" (default) | "text"
  *   data-home-href       text-brand / back-link home (default index.html)
  *                        Logo brand always links to https://www.worldsdc.com/
- *   data-path-prefix     prefix for dashboard / points / champions / calendar / qa hrefs (e.g. "../../" from nested pages)
+ *   data-path-prefix     prefix for dashboard / points / champions / calendar / growth / qa hrefs (e.g. "../../" from nested pages)
  *   data-lang-mode       callback | navigate (default callback)
  *   data-lang-ru/en/es   URLs when data-lang-mode=navigate
- *   data-current-dash    filename to mark current dashboard link
+ *   data-current-dash    filename to mark current Others-menu item
  */
 (function () {
   "use strict";
 
-  // Tableau embeds first, then native HTML dashboards.
+  // Others menu: native HTML tools first, then Tableau embeds (existing order).
+  // Event Growth Monitor is a top-level chrome section (not in this menu).
   var DASHBOARDS = [
+    { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year", kind: "html" },
+    { href: "time_in_division_dashboard_en.html", label: "Time In Division", kind: "html" },
+    { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points", kind: "html" },
     { href: "dashboard.html", label: "Metrics", kind: "tableau" },
     { href: "navigator.html", label: "Events Navigator", kind: "tableau" },
     { href: "rankings.html", label: "Dancer's Ranking", kind: "tableau" },
     { href: "dancer-profile.html", label: "Dancer Profile", kind: "tableau" },
     { href: "city-clouds.html", label: "Top 10 Countries", kind: "tableau" },
-    { href: "secondary_role_distribution_dashboard_en.html", label: "Secondary Role Points", kind: "html" },
-    { href: "time_in_division_dashboard_en.html", label: "Time In Division", kind: "html" },
-    { href: "event_tiers_by_year_dashboard_en.html", label: "Event Tiers By Year", kind: "html" },
-    { href: "event_growth_dashboard_en.html", label: "Event Growth Monitor", kind: "html" },
   ];
 
   function withPathPrefix(root, href) {
@@ -40,10 +40,11 @@
   var WSDC_SITE_URL = "https://www.worldsdc.com/";
 
   var LABELS = {
-    dashboards: { ru: "Дашборды", en: "Dashboards", es: "Paneles" },
+    dashboards: { ru: "Другое", en: "Others", es: "Otros" },
     points: { ru: "Summary Points", en: "Summary Points", es: "Summary Points" },
     champions: { ru: "New Champions", en: "New Champions", es: "New Champions" },
     calendar: { ru: "Events Calendar", en: "Events Calendar", es: "Events Calendar" },
+    growth: { ru: "Event Growth", en: "Event Growth", es: "Event Growth" },
     contact: { ru: "Контакты", en: "Contacts", es: "Contacto" },
     qa: { ru: "Q&A Hub", en: "Q&A Hub", es: "Q&A Hub" },
     email: { ru: "Написать на email", en: "Send email", es: "Enviar email" },
@@ -55,9 +56,9 @@
       es: "Sitio del World Swing Dance Council",
     },
     dashTip: {
-      ru: "Информационные дашборды WSDC",
-      en: "WSDC informational dashboards",
-      es: "Paneles informativos WSDC",
+      ru: "Другие дашборды и инструменты по теме сайта",
+      en: "Other dashboards and tools related to the site",
+      es: "Otros paneles y herramientas relacionados con el sitio",
     },
     pointsTip: {
       ru: "Очки, начисленные по ивентам",
@@ -73,6 +74,11 @@
       ru: "Календарь ожидаемых, подтверждённых и hiatus ивентов WSDC",
       en: "Year calendar of expected, confirmed, and hiatus WSDC events",
       es: "Calendario anual de eventos WSDC esperados, confirmados y en hiatus",
+    },
+    growthTip: {
+      ru: "Где растёт или падает число участников WSDC-ивентов",
+      en: "Where WSDC event competitor counts grow or shrink",
+      es: "Dónde crece o baja el número de participantes en eventos WSDC",
     },
   };
 
@@ -101,6 +107,7 @@
     champions: "new-champions",
     points: "summary-points",
     calendar: "calendar",
+    growth: "other",
     dashboards: "dashboards",
     articles: "articles",
     qa: "other",
@@ -247,12 +254,14 @@
     var pointsActive = active === "points" ? " is-active" : "";
     var championsActive = active === "champions" ? " is-active" : "";
     var calendarActive = active === "calendar" ? " is-active" : "";
+    var growthActive = active === "growth" ? " is-active" : "";
     var homeLabel = LABELS.home[lang] || LABELS.home.en;
     var wsdcLabel = LABELS.wsdcSite[lang] || LABELS.wsdcSite.en;
     var dashTip = LABELS.dashTip[lang] || LABELS.dashTip.en;
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
     var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
     var calendarTip = LABELS.calendarTip[lang] || LABELS.calendarTip.en;
+    var growthTip = LABELS.growthTip[lang] || LABELS.growthTip.en;
 
     var brandHtml;
     if (brandMode === "text") {
@@ -275,38 +284,31 @@
         '"><span class="wsdc-chrome__brand-logo"><img src="https://www.worldsdc.com/wp-content/uploads/2019/10/WSDC_WHITE.gif" alt="WSDC" height="22" loading="eager"></span></a>';
     }
 
-    var dashItems = DASHBOARDS.slice()
-      .sort(function (a, b) {
-        var aTab = a.kind === "tableau" ? 0 : 1;
-        var bTab = b.kind === "tableau" ? 0 : 1;
-        return aTab - bTab;
-      })
-      .map(function (d) {
-        var cur = d.href === currentDash ? " is-current" : "";
-        var href = withPathPrefix(root, d.href);
-        var isTableau = d.kind === "tableau";
-        var badge = isTableau ? tableauBadgeHtml(root) : "";
-        var aria = esc(d.label) + (isTableau ? " (Tableau)" : "");
-        return (
-          '<li role="none"><a href="' +
-          esc(href) +
-          '" role="menuitem" data-dash-href="' +
-          esc(d.href) +
-          '" data-dash-kind="' +
-          esc(d.kind || "html") +
-          '" class="wsdc-chrome__menu-link' +
-          cur +
-          '" aria-label="' +
-          aria +
-          '">' +
-          '<span class="wsdc-chrome__menu-label">' +
-          esc(d.label) +
-          "</span>" +
-          badge +
-          "</a></li>"
-        );
-      })
-      .join("");
+    var dashItems = DASHBOARDS.map(function (d) {
+      var cur = d.href === currentDash ? " is-current" : "";
+      var href = withPathPrefix(root, d.href);
+      var isTableau = d.kind === "tableau";
+      var badge = isTableau ? tableauBadgeHtml(root) : "";
+      var aria = esc(d.label) + (isTableau ? " (Tableau)" : "");
+      return (
+        '<li role="none"><a href="' +
+        esc(href) +
+        '" role="menuitem" data-dash-href="' +
+        esc(d.href) +
+        '" data-dash-kind="' +
+        esc(d.kind || "html") +
+        '" class="wsdc-chrome__menu-link' +
+        cur +
+        '" aria-label="' +
+        aria +
+        '">' +
+        '<span class="wsdc-chrome__menu-label">' +
+        esc(d.label) +
+        "</span>" +
+        badge +
+        "</a></li>"
+      );
+    }).join("");
 
     var langs = ["ru", "en", "es"]
       .map(function (code) {
@@ -333,21 +335,30 @@
       '">' +
       '<nav class="wsdc-chrome" aria-label="Site">' +
       brandHtml +
-      '<div class="wsdc-chrome__cluster" data-chrome-nav="dashboards">' +
-      tipHtml(dashTip, 'data-chrome-dash-tip') +
-      '<div class="wsdc-chrome__dd" data-chrome-dd>' +
-      '<button type="button" class="wsdc-chrome__pill' +
-      dashActive +
-      '" data-chrome-dash-btn aria-expanded="false" aria-haspopup="true" aria-controls="wsdcChromeDashMenu">' +
-      '<span data-chrome-dash-label>' +
-      esc(LABELS.dashboards[lang] || LABELS.dashboards.en) +
+      /* Desktop order: Calendar → Growth → Points → Champions → Others */
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="calendar">' +
+      tipHtml(calendarTip, 'data-chrome-calendar-tip') +
+      '<a class="wsdc-chrome__pill' +
+      calendarActive +
+      '" href="' +
+      esc(withPathPrefix(root, "events-calendar.html")) +
+      '" id="eventsCalendarBtn">' +
+      '<span data-chrome-calendar-label>' +
+      esc(LABELS.calendar[lang] || LABELS.calendar.en) +
       "</span>" +
-      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-      "</button>" +
-      '<ul class="wsdc-chrome__menu" id="wsdcChromeDashMenu" role="menu" data-chrome-dash-menu aria-hidden="true">' +
-      dashItems +
-      "</ul>" +
+      "</a>" +
       "</div>" +
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="growth">' +
+      tipHtml(growthTip, 'data-chrome-growth-tip') +
+      '<a class="wsdc-chrome__pill' +
+      growthActive +
+      '" href="' +
+      esc(withPathPrefix(root, "event_growth_dashboard_en.html")) +
+      '" id="eventGrowthBtn">' +
+      '<span data-chrome-growth-label>' +
+      esc(LABELS.growth[lang] || LABELS.growth.en) +
+      "</span>" +
+      "</a>" +
       "</div>" +
       '<div class="wsdc-chrome__cluster" data-chrome-nav="points">' +
       tipHtml(pointsTip, 'data-chrome-points-tip') +
@@ -373,17 +384,21 @@
       "</span>" +
       "</a>" +
       "</div>" +
-      '<div class="wsdc-chrome__cluster" data-chrome-nav="calendar">' +
-      tipHtml(calendarTip, 'data-chrome-calendar-tip') +
-      '<a class="wsdc-chrome__pill' +
-      calendarActive +
-      '" href="' +
-      esc(withPathPrefix(root, "events-calendar.html")) +
-      '" id="eventsCalendarBtn">' +
-      '<span data-chrome-calendar-label>' +
-      esc(LABELS.calendar[lang] || LABELS.calendar.en) +
+      '<div class="wsdc-chrome__cluster" data-chrome-nav="dashboards">' +
+      tipHtml(dashTip, 'data-chrome-dash-tip') +
+      '<div class="wsdc-chrome__dd" data-chrome-dd>' +
+      '<button type="button" class="wsdc-chrome__pill' +
+      dashActive +
+      '" data-chrome-dash-btn aria-expanded="false" aria-haspopup="true" aria-controls="wsdcChromeDashMenu">' +
+      '<span data-chrome-dash-label>' +
+      esc(LABELS.dashboards[lang] || LABELS.dashboards.en) +
       "</span>" +
-      "</a>" +
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      "</button>" +
+      '<ul class="wsdc-chrome__menu" id="wsdcChromeDashMenu" role="menu" data-chrome-dash-menu aria-hidden="true">' +
+      dashItems +
+      "</ul>" +
+      "</div>" +
       "</div>" +
       '<div class="wsdc-chrome__spacer" aria-hidden="true"></div>' +
       '<div class="wsdc-chrome__qa" data-chrome-qa>' +
@@ -452,6 +467,7 @@
     var pointsTip = LABELS.pointsTip[lang] || LABELS.pointsTip.en;
     var championsTip = LABELS.championsTip[lang] || LABELS.championsTip.en;
     var calendarTip = LABELS.calendarTip[lang] || LABELS.calendarTip.en;
+    var growthTip = LABELS.growthTip[lang] || LABELS.growthTip.en;
 
     var dashLabel = root.querySelector("[data-chrome-dash-label]");
     if (dashLabel) dashLabel.textContent = LABELS.dashboards[lang] || LABELS.dashboards.en;
@@ -461,6 +477,8 @@
     if (championsLabel) championsLabel.textContent = LABELS.champions[lang] || LABELS.champions.en;
     var calendarLabel = root.querySelector("[data-chrome-calendar-label]");
     if (calendarLabel) calendarLabel.textContent = LABELS.calendar[lang] || LABELS.calendar.en;
+    var growthLabel = root.querySelector("[data-chrome-growth-label]");
+    if (growthLabel) growthLabel.textContent = LABELS.growth[lang] || LABELS.growth.en;
     var contactBtn = root.querySelector("[data-chrome-contact-btn]");
     if (contactBtn) contactBtn.setAttribute("aria-label", LABELS.contact[lang] || LABELS.contact.en);
     var qaBtn = root.querySelector("[data-chrome-qa-btn]");
@@ -521,6 +539,12 @@
       calendarTipEl.textContent = calendarTip;
       var tipWrap4 = calendarTipEl.closest(".wsdc-chrome__tip") || root.querySelector('[data-chrome-nav="calendar"] .wsdc-chrome__tip');
       if (tipWrap4) tipWrap4.setAttribute("aria-label", calendarTip);
+    }
+    var growthTipEl = document.querySelector("[data-chrome-growth-tip]");
+    if (growthTipEl) {
+      growthTipEl.textContent = growthTip;
+      var tipWrap5 = growthTipEl.closest(".wsdc-chrome__tip") || root.querySelector('[data-chrome-nav="growth"] .wsdc-chrome__tip');
+      if (tipWrap5) tipWrap5.setAttribute("aria-label", growthTip);
     }
 
     root.querySelectorAll(".lang-btn").forEach(function (btn) {
