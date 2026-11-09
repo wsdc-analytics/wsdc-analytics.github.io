@@ -17,9 +17,9 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2702,
+    "events": 2701,
     "points": 737224.0,
-    "dancers": 27978
+    "dancers": 27973
   },
   "comparisons": {
     "week": {
@@ -30,12 +30,12 @@
         "since_previous_ended": "2026-10-31",
         "iso_week": "2026-W45",
         "bucket": "edition_start_date",
-        "event_names": "Moscow Westie Fest, Tampa Bay Classic"
+        "event_names": "Moscow Westie Fest"
       },
       "increment": {
-        "events": 2,
+        "events": 1,
         "points": 374.0,
-        "dancers": 51
+        "dancers": 46
       }
     },
     "month": {
@@ -45,12 +45,12 @@
         "end": "2026-11-09",
         "since_previous_ended": "2026-10-31",
         "bucket": "edition_start_date",
-        "event_names": "Moscow Westie Fest, Tampa Bay Classic"
+        "event_names": "Moscow Westie Fest"
       },
       "increment": {
-        "events": 2,
+        "events": 1,
         "points": 374.0,
-        "dancers": 62
+        "dancers": 57
       }
     },
     "year": {
@@ -62,9 +62,9 @@
         "bucket": "event_year"
       },
       "increment": {
-        "events": 163,
+        "events": 162,
         "points": 67311.0,
-        "dancers": 2204
+        "dancers": 2199
       }
     }
   }

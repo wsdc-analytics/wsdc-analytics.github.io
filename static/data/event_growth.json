@@ -1,6 +1,6 @@
 {
   "as_of": "2026-11-09",
-  "generated_at": "2026-11-09T09:50:56Z",
+  "generated_at": "2026-11-09T10:36:59Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -18,7 +18,7 @@
     2025,
     2026
   ],
-  "n_editions": 1042,
+  "n_editions": 1041,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
     "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
@@ -35371,34 +35371,6 @@
       "venue_start": "2026-10-29"
     },
     {
-      "event_id": 137,
-      "name": "Tampa Bay Classic",
-      "year": 2026,
-      "month": 11,
-      "start": "2026-11-05",
-      "continent": "America",
-      "country": "United States",
-      "state": "Florida",
-      "city": "Tampa",
-      "lat": 27.9516896,
-      "lon": -82.45875269999999,
-      "competitors": 79,
-      "approx": 1,
-      "source": "unique_scored",
-      "prev": {
-        "year": 2025,
-        "month": 11,
-        "competitors": 227,
-        "approx": 0,
-        "source": "exact"
-      },
-      "delta": -148,
-      "pct": -0.651982,
-      "status": "declining",
-      "gap_flag": null,
-      "edition": 16
-    },
-    {
       "event_id": 236,
       "name": "Warsaw Halloween Swing",
       "year": 2026,
@@ -35434,7 +35406,7 @@
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-09T09:50:58Z",
+    "enriched_at": "2026-11-09T10:37:03Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35458,8 +35430,8 @@
       }
     ],
     "stats": {
-      "editions": 1042,
-      "with_history": 1042,
+      "editions": 1041,
+      "with_history": 1041,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
       "split_buckets_used": 25,
@@ -35473,20 +35445,20 @@
     }
   },
   "venue_enrichment_prior": {
-    "source": "wsdc110526.sql",
-    "enriched_at": "2026-11-05T19:11:04Z"
+    "source": "carry_forward:.prior_event_growth.json",
+    "enriched_at": "2026-11-09T09:50:58Z"
   },
   "venue_enrichment": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-09T09:50:58Z",
+    "enriched_at": "2026-11-09T10:37:04Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
-      "editions": 1042,
+      "editions": 1041,
       "prior_venue": 1002,
       "carried": 1002,
       "skipped_already_venue": 0,
-      "missing_prior": 40
+      "missing_prior": 39
     }
   }
 }
