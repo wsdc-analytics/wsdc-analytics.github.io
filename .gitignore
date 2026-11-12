@@ -27,3 +27,7 @@ static/data/wsdc_venue_lookup.json
 
 # Venue audit reports + Google lookup cache (audit_event_growth_venues.py)
 output/
+
+# Nominatim raw cache for city boundary build (regenerate via
+# scripts/build_event_growth_city_boundaries.py)
+scripts/.cache/

@@ -1426,7 +1426,7 @@
   "use strict";
 
   // Bumped by scripts/sync_analytics_site.sh after each full-parse data push.
-  var DATA_VER = "20261112-sync";
+  var DATA_VER = "20261112-cities";
   var LIST_METRICS = {
     competitors: true,
     events: true,
@@ -1509,6 +1509,7 @@
     geo: {
       countries: null,
       states: null,
+      cities: null,
       loading: null
     }
   };
@@ -3542,7 +3543,7 @@
   }
 
   function loadGeo() {
-    if (state.geo.countries && state.geo.states) {
+    if (state.geo.countries && state.geo.states && state.geo.cities) {
       return Promise.resolve();
     }
     if (state.geo.loading) return state.geo.loading;
@@ -3555,10 +3556,16 @@
       fetch("static/data/geo/us_states.geojson" + bust).then(function (r) {
         if (!r.ok) throw new Error("us_states.geojson");
         return r.json();
-      })
+      }),
+      // Optional: city admin polygons for venue drill-in (circle fallback if absent).
+      fetch("static/data/geo/cities.geojson" + bust).then(function (r) {
+        if (!r.ok) return EMPTY_FC;
+        return r.json();
+      }).catch(function () { return EMPTY_FC; })
     ]).then(function (parts) {
       state.geo.countries = parts[0];
       state.geo.states = parts[1];
+      state.geo.cities = parts[2] || EMPTY_FC;
       state.geo.loading = null;
     }).catch(function (err) {
       state.geo.loading = null;
@@ -4966,24 +4973,197 @@
     } catch (e) { /* ignore */ }
   }
 
-  // Compact city map: OSM streets + venue pins only (no country/state fill).
+  // City drill-in: OSM basemap (stronger than country) + venue pins + soft
+  // city silhouette (same fill/stroke language as country/state outline).
+  // Frame like a country map — whole city context, all venues visible without
+  // zooming into a random street block around one hotel.
+  // Still stronger than country (~0.58), muted enough for the city disc to read.
+  var CITY_VENUE_BASEMAP_OPACITY = 0.78;
+  var CITY_VENUE_FIT = {
+    cityVenue: true,
+    // ~0.45° ≈ 45–50 km floor: city / metro overview (was 0.12° ≈ hotel block).
+    minSpanDeg: 0.45,
+    padFrac: 0.18,
+    maxZoom: 11,
+    padding: 44
+  };
+  // Soft grey fill matches country-outline in renderCountryCityLayer.
+  var CITY_OUTLINE_FILL = "#9aa7b5";
+  var CITY_OUTLINE_OPACITY = 0.42;
+  // Fallback disc when cities.geojson has no match for this city.
+  var CITY_OUTLINE_MIN_RADIUS_DEG = 0.16;
+  var CITY_OUTLINE_PAD = 1.45;
+  var CITY_OUTLINE_STEPS = 64;
+
+  function cityCentroidLngLat(editions) {
+    var lat = null;
+    var lon = null;
+    var n = 0;
+    (editions || []).forEach(function (e) {
+      var la = e.city_lat != null ? e.city_lat : null;
+      var lo = e.city_lon != null ? e.city_lon : null;
+      if (la == null || lo == null) return;
+      lat = (lat == null ? 0 : lat) + la;
+      lon = (lon == null ? 0 : lon) + lo;
+      n += 1;
+    });
+    if (!n) return null;
+    return [lon / n, lat / n];
+  }
+
+  function circlePolygonLngLat(lng, lat, radiusDeg, steps) {
+    var ring = [];
+    var n = Math.max(16, steps | 0);
+    // Cosine scale so the disc stays roughly round in Mercator near mid-latitudes.
+    var cosLat = Math.max(0.2, Math.cos((lat * Math.PI) / 180));
+    var i;
+    for (i = 0; i <= n; i += 1) {
+      var t = (i / n) * Math.PI * 2;
+      ring.push([
+        lng + (radiusDeg / cosLat) * Math.cos(t),
+        lat + radiusDeg * Math.sin(t)
+      ]);
+    }
+    return { type: "Polygon", coordinates: [ring] };
+  }
+
+  function cityBoundaryLookupKey(cityName, country, regionState) {
+    if (!cityName || !country) return null;
+    if (country === "United States" && regionState) {
+      return cityName + "|" + country + "|" + regionState;
+    }
+    return cityName + "|" + country;
+  }
+
+  function findCityBoundaryFeature(cityName, country, regionState) {
+    var feats = state.geo.cities && state.geo.cities.features;
+    if (!feats || !feats.length || !cityName) return null;
+    var id = cityBoundaryLookupKey(cityName, country, regionState);
+    var i;
+    var f;
+    if (id) {
+      for (i = 0; i < feats.length; i += 1) {
+        f = feats[i];
+        if (f && f.properties && f.properties.id === id && f.geometry) return f;
+      }
+    }
+    // Name + country match (non-US / missing state on polygon).
+    for (i = 0; i < feats.length; i += 1) {
+      f = feats[i];
+      if (!f || !f.properties || !f.geometry) continue;
+      if (f.properties.name !== cityName) continue;
+      if (f.properties.country !== country) continue;
+      if (country === "United States" && regionState && f.properties.state &&
+          f.properties.state !== regionState) continue;
+      return f;
+    }
+    return null;
+  }
+
+  function cityOutlineStyleProps(id) {
+    return {
+      id: id || "city-outline",
+      regionKey: "",
+      drillKey: "",
+      fillColor: CITY_OUTLINE_FILL,
+      fillOpacity: CITY_OUTLINE_OPACITY,
+      // false → white MAP_LINE stroke (same as country/state outline)
+      silhouette: false
+    };
+  }
+
+  function cityVenueOutlineFeature(editions, pts) {
+    var real = findCityBoundaryFeature(state.city, state.country, state.regionState);
+    if (real && real.geometry) {
+      return {
+        type: "Feature",
+        id: "city-outline",
+        properties: cityOutlineStyleProps("city-outline"),
+        geometry: real.geometry
+      };
+    }
+    // Fallback: soft disc when OSM admin poly is missing.
+    var centroid = cityCentroidLngLat(editions);
+    var coords = (pts || []).map(function (f) {
+      return f && f.geometry && f.geometry.coordinates;
+    }).filter(Boolean);
+    if (!centroid && coords.length) {
+      var sx = 0;
+      var sy = 0;
+      coords.forEach(function (c) { sx += c[0]; sy += c[1]; });
+      centroid = [sx / coords.length, sy / coords.length];
+    }
+    if (!centroid) return null;
+    var maxDist = 0;
+    coords.forEach(function (c) {
+      var dx = (c[0] - centroid[0]) * Math.max(0.2, Math.cos((centroid[1] * Math.PI) / 180));
+      var dy = c[1] - centroid[1];
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d > maxDist) maxDist = d;
+    });
+    var radiusDeg = Math.max(CITY_OUTLINE_MIN_RADIUS_DEG, maxDist * CITY_OUTLINE_PAD);
+    return {
+      type: "Feature",
+      id: "city-outline",
+      properties: cityOutlineStyleProps("city-outline"),
+      geometry: circlePolygonLngLat(
+        centroid[0],
+        centroid[1],
+        radiusDeg,
+        CITY_OUTLINE_STEPS
+      )
+    };
+  }
+
+  function fitCityVenueMap(pts, editions, seq) {
+    if (!pts || !pts.length) return;
+    var coords = pts.map(function (f) { return f.geometry.coordinates; });
+    // Include city centroid so a single hotel isn't framed as a random street.
+    var centroid = cityCentroidLngLat(editions);
+    if (centroid) coords.push(centroid);
+    var outline = state.cityVenueOutline || [];
+    var hasReal = !!(outline[0] && outline[0].geometry &&
+      outline[0].geometry.type && outline[0].geometry.type.indexOf("Polygon") >= 0 &&
+      findCityBoundaryFeature(state.city, state.country, state.regionState));
+    // Real admin poly: frame like country (tight pad). Disc fallback: keep metro floor.
+    var fitOpts = hasReal
+      ? {
+          cityVenue: true,
+          padFrac: 0.08,
+          maxZoom: 11,
+          padding: 40,
+          minSpanDeg: 0.08
+        }
+      : CITY_VENUE_FIT;
+    fitToData(
+      coords,
+      outline.length ? outline : null,
+      seq != null ? seq : state.mapRenderSeq,
+      fitOpts
+    );
+  }
+
   function renderCityVenueMap(editions) {
     var list = editions || [];
     var pts = eventPointFeatures(list);
     // Never leave a blank panel: fall back to city centroid if no venue coords.
     if (!pts.length) {
-      var lat = null;
-      var lon = null;
-      var n = 0;
-      list.forEach(function (e) {
-        var la = e.city_lat != null ? e.city_lat : e.lat;
-        var lo = e.city_lon != null ? e.city_lon : e.lon;
-        if (la == null || lo == null) return;
-        lat = (lat == null ? 0 : lat) + la;
-        lon = (lon == null ? 0 : lon) + lo;
-        n += 1;
-      });
-      if (n) {
+      var centroid = cityCentroidLngLat(list);
+      if (!centroid) {
+        var lat = null;
+        var lon = null;
+        var n = 0;
+        list.forEach(function (e) {
+          var la = e.city_lat != null ? e.city_lat : e.lat;
+          var lo = e.city_lon != null ? e.city_lon : e.lon;
+          if (la == null || lo == null) return;
+          lat = (lat == null ? 0 : lat) + la;
+          lon = (lon == null ? 0 : lon) + lo;
+          n += 1;
+        });
+        if (n) centroid = [lon / n, lat / n];
+      }
+      if (centroid) {
         var fake = {
           key: state.city || "city",
           status: "stable",
@@ -4992,8 +5172,8 @@
         };
         pts = [pointFeature(
           "city-fallback",
-          lon / n,
-          lat / n,
+          centroid[0],
+          centroid[1],
           fake,
           12,
           state.city || "",
@@ -5003,19 +5183,17 @@
       }
     }
     clearMapHover();
-    setMapData(EMPTY_FC, { type: "FeatureCollection", features: pts });
+    state.cityVenuePts = pts;
+    var outlineFeat = cityVenueOutlineFeature(list, pts);
+    var outline = outlineFeat ? [outlineFeat] : [];
+    state.cityVenueOutline = outline;
+    setMapData(
+      { type: "FeatureCollection", features: outline },
+      { type: "FeatureCollection", features: pts }
+    );
     setCityMapInteraction(true);
     if (!pts.length) return;
-    var coords = pts.map(function (f) { return f.geometry.coordinates; });
-    // ~0.12° ≈ 10–13 km floor so a single hotel still shows neighbourhood
-    // streets; multi-venue cities use their natural span + modest padding.
-    fitToData(coords, null, state.mapRenderSeq, {
-      cityVenue: true,
-      minSpanDeg: 0.12,
-      padFrac: 0.22,
-      maxZoom: 13,
-      padding: 36
-    });
+    fitCityVenueMap(pts, list, state.mapRenderSeq);
   }
 
   function renderPointLayer(regions) {
@@ -5254,14 +5432,24 @@
       if (seq !== state.mapRenderSeq) return;
       var cityVenues = citySelectionActive() &&
         state.mapCityEditions && state.mapCityEditions.length;
-      // City drill-in: readable street basemap. Else mute so choropleth leads.
-      setBasemapOpacity(cityVenues ? 0.92 : (state.level === "world" ? 0.32 : 0.58));
+      // City: stronger OSM than country (venues readable). Else mute for choropleth.
+      setBasemapOpacity(
+        cityVenues
+          ? CITY_VENUE_BASEMAP_OPACITY
+          : (state.level === "world" ? 0.32 : 0.58)
+      );
       function afterPaint() {
         function settle() {
           if (seq !== state.mapRenderSeq) return;
           refreshMapSize();
           syncMobileStickyMapOffset();
-          // Re-fit after layout/resize — world camera depends on final width.
+          // Re-fit after layout/resize — world + city cameras depend on final size.
+          if (cityVenues) {
+            if (state.cityVenuePts && state.cityVenuePts.length) {
+              fitCityVenueMap(state.cityVenuePts, state.mapCityEditions, seq);
+            }
+            return;
+          }
           if (state.level === "world" && !citySelectionActive()) fitWorldView();
         }
         settle();
@@ -5270,10 +5458,20 @@
         scheduleMapTask(settle, 320, seq);
       }
       if (cityVenues) {
-        renderCityVenueMap(state.mapCityEditions);
-        afterPaint();
-        return;
+        // Need cities.geojson (admin outlines) — same loader as country/state maps.
+        return loadGeo().then(function () {
+          if (seq !== state.mapRenderSeq) return;
+          renderCityVenueMap(state.mapCityEditions);
+          afterPaint();
+        }).catch(function (err) {
+          if (seq !== state.mapRenderSeq) return;
+          console.error("City geo load failed, venue map without outline", err);
+          renderCityVenueMap(state.mapCityEditions);
+          afterPaint();
+        });
       }
+      state.cityVenuePts = null;
+      state.cityVenueOutline = null;
       if (usesPolygons() || usesCountryCityMap()) {
         return loadGeo().then(function () {
           if (seq !== state.mapRenderSeq) return;
