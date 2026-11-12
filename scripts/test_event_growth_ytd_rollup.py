@@ -304,15 +304,14 @@ def test_us_2026_kpi_matches_region_rollup() -> None:
     )
     assert us["mode"] == "ytd"
     assert us["open_month_is_partial"] is True
-    # US has no open-month 2026 editions yet → prior open month held out;
-    # closed-month totals match the previous through-month==10 snapshot.
-    assert us["events"] == 67
-    assert us["events_prior"] == 69
-    assert us["current"] == 22779
-    assert us["previous"] == 22302
-    assert us["delta"] == 477
+    # YTD snapshot drifts as as_of / calendar refresh adds closed US weekends.
+    assert us["events"] == 69
+    assert us["events_prior"] == 70
+    assert us["current"] == 23188
+    assert us["previous"] == 22529
+    assert us["delta"] == 659
     assert us["pct"] is not None
-    assert round(us["pct"] * 1000) == 21  # +2.1%
+    assert round(us["pct"] * 1000) == 29  # +2.9%
 
 
 def region_status_from_editions(
@@ -797,6 +796,7 @@ def test_edition_enrichment_meta() -> None:
     assert 272 in split_ids
     # Loaded from pipeline reset_edition_ordinal flags (not GGP 342).
     assert 221 in split_ids
+    assert 177 in split_ids  # River City Swing → Jax Westie Fest
     assert 342 not in split_ids
 
 
