@@ -267,14 +267,39 @@ def drift_to_city_km(
     vlat: float,
     vlon: float,
 ) -> Optional[float]:
-    """Smallest haversine to city, trying lon sign flip. None if no city point."""
+    """Smallest haversine to city, trying lon sign flip + lat/lon swap."""
     if city_lat is None or city_lon is None:
         return None
     clat_f = float(city_lat)
     clon_f = float(city_lon)
     drift = haversine_km(clat_f, clon_f, vlat, vlon)
-    alt = haversine_km(clat_f, clon_f, vlat, -vlon)
-    return min(drift, alt)
+    alt_sign = haversine_km(clat_f, clon_f, vlat, -vlon)
+    alt_swap = haversine_km(clat_f, clon_f, vlon, vlat)
+    return min(drift, alt_sign, alt_swap)
+
+
+# Hard repairs for known dump typos that are not sign-flip / lat-lon-swap
+# (event_id, edition year) → (lat, lon).
+DUMP_VENUE_COORD_FIXES: Dict[Tuple[int, int], Tuple[float, float]] = {
+    # Mediterranean Open: Hotel Don Angel is in Santa Susanna (~2.72°E);
+    # 2026 CE used 2.16°E (wrong suburb).
+    (375, 2025): (41.63383, 2.72075),
+    (375, 2026): (41.63383, 2.72075),
+    # Finnfest 2018: CE GPS missing; same-hotel inherit pulled Tampere Ilves
+    # onto a Helsinki edition — pin city centroid instead.
+    (254, 2018): (60.169856, 24.938379),
+    # Swing Fiction 2023–24: "TBD" placeholder landed near Ostrava (~140 km).
+    (331, 2023): (49.19506, 16.606837),
+    (331, 2024): (49.19506, 16.606837),
+    # Festival City Swing 2026: hotel is Edinburgh Radisson Royal Mile;
+    # inherit grabbed Newcastle Airport Britannia from the 2027 CE row.
+    (371, 2026): (55.95984, -3.195034),
+    # Hungarian Open 2026: Verdi Aquincum dump typo; 2027 CE has the hotel.
+    (206, 2026): (47.537609, 19.046422),
+    # Trinity Swing: Carrickdale GPS was near Belfast; 2027 CE has Dundalk-area.
+    (363, 2025): (54.0374, -6.184847),
+    (363, 2026): (54.0374, -6.184847),
+}
 
 
 def iter_competitionevents(sql_path: Path) -> Iterable[VenueRow]:
@@ -560,6 +585,8 @@ def enrich_editions(
         "hotel_only": 0,
         "date_drift_skipped": 0,
         "google_audit_preserved": 0,
+        "lat_lon_swap_fixed": 0,
+        "dump_coord_fixed": 0,
     }
     for ed in editions:
         eid = ed.get("event_id")
@@ -639,12 +666,24 @@ def enrich_editions(
         vlat_f = float(vlat)  # type: ignore[arg-type]
         vlon_f = float(vlon)  # type: ignore[arg-type]
         lon_flipped = False
+        lat_lon_swapped = False
+        dump_fixed = False
+
+        # Known dump typos (not recoverable by sign-flip / swap heuristics).
+        dump_fix = DUMP_VENUE_COORD_FIXES.get((int(eid), int(ed.get("year") or 0)))
+        if dump_fix is not None:
+            vlat_f, vlon_f = float(dump_fix[0]), float(dump_fix[1])
+            dump_fixed = True
+            inherited = False
+            inherit_from = None
+            stats["dump_coord_fixed"] = stats.get("dump_coord_fixed", 0) + 1
+
         if city_lat is not None and city_lon is not None:
             clat_f = float(city_lat)
             clon_f = float(city_lon)
             drift = haversine_km(clat_f, clon_f, vlat_f, vlon_f)
             # Common dump bug: longitude sign flipped (e.g. Monterey +121 → −121).
-            if drift > max_drift_km:
+            if not dump_fixed and drift > max_drift_km:
                 alt_lon = -vlon_f
                 alt_drift = haversine_km(clat_f, clon_f, vlat_f, alt_lon)
                 if alt_drift <= max_drift_km and alt_drift < drift:
@@ -652,10 +691,24 @@ def enrich_editions(
                     drift = alt_drift
                     lon_flipped = True
                     stats["lon_sign_fixed"] += 1
-            if drift > max_drift_km or (
-                not inherited
-                and usable_hotel_name(row.hotel)
-                and drift > SOFT_CITY_DRIFT_KM
+            # Common dump bug: latitude/longitude columns swapped (e.g. Ufa
+            # Honey Fest 55.96/54.73 instead of 54.73/55.96).
+            if not dump_fixed and drift > SOFT_CITY_DRIFT_KM:
+                swap_drift = haversine_km(clat_f, clon_f, vlon_f, vlat_f)
+                if swap_drift <= max_drift_km and swap_drift + 5.0 < drift:
+                    vlat_f, vlon_f = vlon_f, vlat_f
+                    drift = swap_drift
+                    lat_lon_swapped = True
+                    lon_flipped = False
+                    stats["lat_lon_swap_fixed"] = stats.get("lat_lon_swap_fixed", 0) + 1
+            # Never let sibling inherit clobber an explicit DUMP_VENUE_COORD_FIXES pin.
+            if not dump_fixed and (
+                drift > max_drift_km
+                or (
+                    not inherited
+                    and usable_hotel_name(row.hotel)
+                    and drift > SOFT_CITY_DRIFT_KM
+                )
             ):
                 # Bad / loose GPS on this year's row: try a sibling with the same
                 # hotel and a tighter city drift (Mexico coords; Orléans typo).
@@ -673,11 +726,16 @@ def enrich_editions(
                     sib_lat = float(sibling.lat)  # type: ignore[arg-type]
                     sib_lon = float(sibling.lon)  # type: ignore[arg-type]
                     sib_drift = haversine_km(clat_f, clon_f, sib_lat, sib_lon)
+                    # Prefer sibling when it is clearly closer; also try swap on sibling.
+                    sib_swap = haversine_km(clat_f, clon_f, sib_lon, sib_lat)
+                    if sib_swap + 5.0 < sib_drift and sib_swap <= max_drift_km:
+                        sib_lat, sib_lon, sib_drift = sib_lon, sib_lat, sib_swap
                     if sib_drift + 1.0 < drift:
                         vlat_f, vlon_f = sib_lat, sib_lon
                         inherit_from = sibling
                         inherited = True
                         lon_flipped = False
+                        lat_lon_swapped = False
                         drift = sib_drift
                 if drift > max_drift_km and not inherited:
                     stats["venue_rejected_drift"] += 1
@@ -714,11 +772,15 @@ def enrich_editions(
             for gk in ("google_venue_name", "google_place_id"):
                 if gk in ed:
                     del ed[gk]
-            if inherited:
-                ed["geo_fix"] = "inherited"
-                stats["venue_inherited"] += 1
+            if dump_fixed:
+                ed["geo_fix"] = "dump_fix"
+            elif lat_lon_swapped:
+                ed["geo_fix"] = "lat_lon_swap"
             elif lon_flipped:
                 ed["geo_fix"] = "lon_sign"
+            elif inherited:
+                ed["geo_fix"] = "inherited"
+                stats["venue_inherited"] += 1
             elif "geo_fix" in ed:
                 del ed["geo_fix"]
         ed["geo_source"] = "wsdc_venue"

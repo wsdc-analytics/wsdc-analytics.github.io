@@ -264,6 +264,141 @@ def test_enrich_lon_sign_fix() -> None:
     assert editions[0]["hotel"] == "Hyatt"
 
 
+def test_enrich_lat_lon_swap_fix() -> None:
+    # Honey Fest dump: latitude/longitude columns swapped (~156 km from Ufa).
+    by = build_lookup_by_event(
+        [
+            VenueRow(
+                345,
+                date(2025, 4, 24),
+                55.9579,
+                54.7348,
+                'Art Hall "Cherdak"',
+                "Verhnetorgovaia ploscad, 1,",
+                "Ufa",
+                3180,
+            ),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 345,
+            "year": 2025,
+            "month": 4,
+            "start": "2025-04-24",
+            "lat": 54.73479,
+            "lon": 55.95786,
+            "city": "Ufa",
+            "country": "Russia",
+        }
+    ]
+    stats = enrich_editions(editions, by, 200.0, 45)
+    assert stats["lat_lon_swap_fixed"] == 1
+    assert stats["venue_applied"] == 1
+    assert abs(editions[0]["lat"] - 54.7348) < 0.001
+    assert abs(editions[0]["lon"] - 55.9579) < 0.001
+    assert editions[0].get("geo_fix") == "lat_lon_swap"
+
+
+def test_enrich_dump_coord_fix_mediterranean() -> None:
+    # Mediterranean Open 2026 CE lon typo (2.16 vs Santa Susanna 2.72).
+    by = build_lookup_by_event(
+        [
+            VenueRow(
+                375,
+                date(2026, 7, 9),
+                41.634078,
+                2.161222,
+                "Hotel Don Angel",
+                "",
+                "Santa Susanna",
+                3404,
+            ),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 375,
+            "year": 2026,
+            "month": 7,
+            "start": "2026-07-09",
+            "lat": 41.3874,
+            "lon": 2.1686,
+            "city": "Barcelona",
+            "country": "Spain",
+        }
+    ]
+    stats = enrich_editions(editions, by, 200.0, 45)
+    assert stats["dump_coord_fixed"] == 1
+    assert stats["venue_applied"] == 1
+    assert abs(editions[0]["lat"] - 41.63383) < 0.001
+    assert abs(editions[0]["lon"] - 2.72075) < 0.001
+    assert editions[0].get("geo_fix") == "dump_fix"
+
+
+def test_enrich_dump_fix_not_clobbered_by_far_sibling() -> None:
+    # dump_fix must win even when a same-hotel sibling is closer to city.
+    by = build_lookup_by_event(
+        [
+            VenueRow(375, date(2026, 7, 9), 41.634078, 2.161222, "Hotel Don Angel", "", "Santa Susanna", 1),
+            VenueRow(375, date(2025, 7, 11), 41.3874, 2.1686, "Hotel Don Angel", "", "Barcelona", 2),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 375,
+            "year": 2026,
+            "month": 7,
+            "start": "2026-07-09",
+            "lat": 41.3874,
+            "lon": 2.1686,
+            "city": "Barcelona",
+            "country": "Spain",
+        }
+    ]
+    stats = enrich_editions(editions, by, 200.0, 45)
+    assert stats["dump_coord_fixed"] == 1
+    assert abs(editions[0]["lon"] - 2.72075) < 0.001
+    assert editions[0].get("geo_fix") == "dump_fix"
+
+
+def test_enrich_dump_coord_fix_trinity_and_aquincum() -> None:
+    by = build_lookup_by_event(
+        [
+            VenueRow(363, date(2025, 2, 7), 54.694252, -5.944177, "Carrickdale Hotel & Spa", "", "Dundalk", 1),
+            VenueRow(206, date(2026, 5, 22), 47.669578, 19.549823, "Verdi Budapest Aquincum Hotel ****", "", "Budapest", 2),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 363,
+            "year": 2025,
+            "month": 2,
+            "start": "2025-02-07",
+            "lat": 54.0025,
+            "lon": -6.3883,
+            "city": "Dundalk",
+            "country": "Ireland",
+        },
+        {
+            "event_id": 206,
+            "year": 2026,
+            "month": 5,
+            "start": "2026-05-22",
+            "lat": 47.4979,
+            "lon": 19.0402,
+            "city": "Budapest",
+            "country": "Hungary",
+        },
+    ]
+    stats = enrich_editions(editions, by, 200.0, 45)
+    assert stats["dump_coord_fixed"] == 2
+    assert abs(editions[0]["lat"] - 54.0374) < 0.001
+    assert abs(editions[0]["lon"] - (-6.184847)) < 0.001
+    assert abs(editions[1]["lat"] - 47.537609) < 0.001
+    assert abs(editions[1]["lon"] - 19.046422) < 0.001
+
+
 def test_enrich_idempotent_city_centroid() -> None:
     by = build_lookup_by_event(
         [VenueRow(10, date(2026, 6, 1), 30.33, -97.70, "DT", "", "Austin", 1)]
@@ -461,6 +596,10 @@ if __name__ == "__main__":
     test_match_venue_rejects_far_dates()
     test_enrich_hotel_only_when_venue_accepted()
     test_enrich_lon_sign_fix()
+    test_enrich_lat_lon_swap_fix()
+    test_enrich_dump_coord_fix_mediterranean()
+    test_enrich_dump_fix_not_clobbered_by_far_sibling()
+    test_enrich_dump_coord_fix_trinity_and_aquincum()
     test_enrich_idempotent_city_centroid()
     test_usable_lat_lon_rejects_null_island()
     test_enrich_hotel_only_when_sql_missing_gps()
