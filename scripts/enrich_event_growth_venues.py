@@ -309,7 +309,7 @@ def _save_hotel_geo_cache(cache: Dict[str, Any]) -> None:
     )
 
 
-def fetch_url_text(url: str, timeout: float = 25.0) -> Optional[str]:
+def fetch_url_text(url: str, timeout: float = 25.0, max_bytes: int = 2_000_000) -> Optional[str]:
     """Fetch HTML/text; return None on HTTP/network errors."""
     raw = (url or "").strip()
     if not raw or not raw.lower().startswith(("http://", "https://")):
@@ -318,7 +318,7 @@ def fetch_url_text(url: str, timeout: float = 25.0) -> Optional[str]:
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+            return resp.read(max_bytes).decode(charset, errors="replace")
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError):
         return None
 
@@ -519,15 +519,18 @@ def resolve_hotel_geo(
     )
     store = cache if cache is not None else _load_hotel_geo_cache()
     cached = store.get(cache_key)
-    if isinstance(cached, dict) and cached.get("lat") is not None:
+    if isinstance(cached, dict):
+        # Misses are stored as {"miss": True} without lat — honor them so we do
+        # not re-hit hotel sites / Nominatim on every enrichment pass.
         if cached.get("miss"):
             return None
-        pair = _parse_lat_lon_pair(cached.get("lat"), cached.get("lon"))
-        if pair:
-            la, lo = pair
-            drift = drift_to_city_km(city_lat, city_lon, la, lo)
-            if drift is None or drift <= max_drift_km:
-                return la, lo, str(cached.get("geo_fix") or "hotel_url")
+        if cached.get("lat") is not None:
+            pair = _parse_lat_lon_pair(cached.get("lat"), cached.get("lon"))
+            if pair:
+                la, lo = pair
+                drift = drift_to_city_km(city_lat, city_lon, la, lo)
+                if drift is None or drift <= max_drift_km:
+                    return la, lo, str(cached.get("geo_fix") or "hotel_url")
 
     def _ok(la: float, lo: float) -> bool:
         drift = drift_to_city_km(city_lat, city_lon, la, lo)

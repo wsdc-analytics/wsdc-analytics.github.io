@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from datetime import date
 from pathlib import Path
+from typing import Optional
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -656,6 +657,38 @@ def test_enrich_hotel_url_after_dump_gps_rejected() -> None:
     assert abs(editions[0]["lat"] - 3.1178) < 1e-4
 
 
+def test_resolve_hotel_geo_honors_miss_cache() -> None:
+    calls = {"n": 0}
+
+    def fetch(_url: str) -> Optional[str]:
+        calls["n"] += 1
+        return None
+
+    def nom(**_kwargs):  # type: ignore[no-untyped-def]
+        calls["n"] += 1
+        return None
+
+    cache: dict = {
+        "https://example.com/|milan|addr|moscow|russia": {"miss": True, "url": "https://example.com/"}
+    }
+    hit = resolve_hotel_geo(
+        hotel_url="https://example.com/",
+        hotel="Milan",
+        address="addr",
+        city="Moscow",
+        country="Russia",
+        city_lat=55.76,
+        city_lon=37.62,
+        max_drift_km=200.0,
+        cache=cache,
+        fetch_html=fetch,
+        nominatim=nom,
+        sleep_s=0.0,
+    )
+    assert hit is None
+    assert calls["n"] == 0
+
+
 def test_resolve_hotel_geo_prefers_page_over_nominatim() -> None:
     html = '{"@type":"Hotel","geo":{"latitude":55.62,"longitude":37.72}}'
     # wrap as script for extractor path via fetch_html returning full page
@@ -745,6 +778,7 @@ if __name__ == "__main__":
     test_extract_coords_from_html_json_ld_and_yandex()
     test_enrich_hotel_url_when_sql_missing_gps()
     test_enrich_hotel_url_after_dump_gps_rejected()
+    test_resolve_hotel_geo_honors_miss_cache()
     test_resolve_hotel_geo_prefers_page_over_nominatim()
     test_enrich_preserves_google_audit_coords()
     print("OK")
