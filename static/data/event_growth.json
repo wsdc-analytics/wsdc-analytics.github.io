@@ -27406,8 +27406,8 @@
       "country": "Malaysia",
       "state": null,
       "city": "Kuala Lumpur",
-      "lat": 3.1319197,
-      "lon": 101.6840589,
+      "lat": 3.11797,
+      "lon": 101.67819,
       "competitors": 365,
       "approx": 0,
       "source": "exact",
@@ -27420,8 +27420,10 @@
       "new_kind": "debut",
       "city_lat": 3.1319197,
       "city_lon": 101.6840589,
-      "geo_source": "city",
-      "venue_rejected_km": 16563.8
+      "geo_source": "wsdc_venue",
+      "geo_fix": "hotel_url",
+      "venue_start": "2025-07-10",
+      "hotel": "Cititel Mid Valley"
     },
     {
       "event_id": 375,
@@ -28052,8 +28054,8 @@
       "country": "United States",
       "state": "Ohio",
       "city": "Cincinnati",
-      "lat": 39.1031182,
-      "lon": -84.5120196,
+      "lat": 39.317798,
+      "lon": -84.434595,
       "competitors": 173,
       "approx": 0,
       "source": "exact",
@@ -28066,10 +28068,11 @@
       "new_kind": "debut",
       "city_lat": 39.1031182,
       "city_lon": -84.5120196,
-      "geo_source": "city",
+      "geo_source": "wsdc_venue",
       "hotel": "Holiday Inn West Chester Centre Park",
       "address": "5800 Muhlhauser Road",
-      "venue_start": "2025-08-21"
+      "venue_start": "2025-08-21",
+      "geo_fix": "hotel_url"
     },
     {
       "event_id": 59,
@@ -33250,8 +33253,8 @@
       "country": "Malaysia",
       "state": null,
       "city": "Kuala Lumpur",
-      "lat": 3.1319197,
-      "lon": 101.6840589,
+      "lat": 3.11797,
+      "lon": 101.67819,
       "competitors": 381,
       "approx": 0,
       "source": "exact",
@@ -33269,8 +33272,10 @@
       "edition": 2,
       "city_lat": 3.1319197,
       "city_lon": 101.6840589,
-      "geo_source": "city",
-      "venue_rejected_km": 16881.2
+      "geo_source": "wsdc_venue",
+      "geo_fix": "hotel_url",
+      "venue_start": "2026-07-09",
+      "hotel": "Cititel Mid Valley"
     },
     {
       "event_id": 375,
@@ -34666,8 +34671,8 @@
       "country": "Russia",
       "state": null,
       "city": "Moscow",
-      "lat": 55.7568721,
-      "lon": 37.6150527,
+      "lat": 55.618745,
+      "lon": 37.715138,
       "competitors": 169,
       "approx": 0,
       "source": "exact",
@@ -34685,10 +34690,11 @@
       "edition": 3,
       "city_lat": 55.7568721,
       "city_lon": 37.6150527,
-      "geo_source": "city",
+      "geo_source": "wsdc_venue",
       "hotel": "Milan",
       "address": "Shipilovskaya st., 28 А",
-      "venue_start": "2026-09-11"
+      "venue_start": "2026-09-11",
+      "geo_fix": "hotel_url"
     },
     {
       "event_id": 48,
@@ -35790,23 +35796,25 @@
   },
   "venue_enrichment": {
     "source": "wsdc110526.sql",
-    "enriched_at": "2026-11-12T18:00:12Z",
+    "enriched_at": "2026-11-12T18:42:03Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
       "editions": 1046,
       "matched": 1044,
-      "venue_applied": 1008,
+      "venue_applied": 1012,
       "venue_inherited": 139,
-      "venue_rejected_drift": 14,
+      "venue_rejected_drift": 12,
       "lon_sign_fixed": 3,
       "unmatched": 0,
-      "no_sql_geo": 22,
-      "hotel_only": 4,
+      "no_sql_geo": 20,
+      "hotel_only": 2,
       "date_drift_skipped": 2,
       "google_audit_preserved": 0,
       "lat_lon_swap_fixed": 2,
-      "dump_coord_fixed": 9
+      "dump_coord_fixed": 9,
+      "hotel_url_geo": 4,
+      "nominatim_hotel_geo": 0
     }
   }
 }

@@ -7,7 +7,12 @@ year — NYE editions often have start in Dec of the prior year), and replaces
 city-centroid lat/lon with venue coordinates when they look sane (within
 MAX_DRIFT_KM of the city point).
 
-Hotel/address are attached only when venue coords are accepted.
+When CE latitude/longitude is missing (0,0) or rejected for city drift, falls
+back to competitionevents.hotel_url: scrape embedded geo (JSON-LD / maps), then
+Nominatim on hotel+address near the city. Pins are still drift-checked.
+
+Hotel/address are attached only when venue coords are accepted (or as a tip
+when GPS could not be resolved).
 
 Usage:
   python3 scripts/enrich_event_growth_venues.py \\
@@ -30,14 +35,21 @@ import json
 import math
 import re
 import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_GROWTH = REPO / "static" / "data" / "event_growth.json"
+HOTEL_GEO_CACHE = REPO / "scripts" / ".cache" / "hotel_url_geo.json"
+HOTEL_GEO_UA = "wsdc-analytics-venue-enrich/1.0 (github.com/wsdc-analytics)"
+HOTEL_GEO_FETCH_GAP_S = 1.1
 
 # Reject registry coords that land far from the edition's city point
 # (catches bad dumps like Washington DC → Melbourne).
@@ -136,6 +148,7 @@ class VenueRow:
     address: str
     city: str
     ce_id: int
+    hotel_url: str = ""
 
 
 def split_mysql_values(body: str) -> List[Optional[str]]:
@@ -278,6 +291,295 @@ def drift_to_city_km(
     return min(drift, alt_sign, alt_swap)
 
 
+def _load_hotel_geo_cache() -> Dict[str, Any]:
+    if not HOTEL_GEO_CACHE.is_file():
+        return {}
+    try:
+        data = json.loads(HOTEL_GEO_CACHE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _save_hotel_geo_cache(cache: Dict[str, Any]) -> None:
+    HOTEL_GEO_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    HOTEL_GEO_CACHE.write_text(
+        json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def fetch_url_text(url: str, timeout: float = 25.0) -> Optional[str]:
+    """Fetch HTML/text; return None on HTTP/network errors."""
+    raw = (url or "").strip()
+    if not raw or not raw.lower().startswith(("http://", "https://")):
+        return None
+    req = urllib.request.Request(raw, headers={"User-Agent": HOTEL_GEO_UA})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            charset = resp.headers.get_content_charset() or "utf-8"
+            return resp.read().decode(charset, errors="replace")
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError):
+        return None
+
+
+def _parse_lat_lon_pair(a: Any, b: Any) -> Optional[Tuple[float, float]]:
+    try:
+        la = float(a)
+        lo = float(b)
+    except (TypeError, ValueError):
+        return None
+    if not usable_lat_lon(la, lo):
+        return None
+    # Heuristic: if first looks like lon (|v|>90) and second like lat, swap.
+    if abs(la) > 90.0 and abs(lo) <= 90.0:
+        la, lo = lo, la
+    if not usable_lat_lon(la, lo):
+        return None
+    return la, lo
+
+
+def extract_coords_from_html(html: str) -> Optional[Tuple[float, float]]:
+    """Pull lat/lon from hotel pages (JSON-LD geo, maps embeds, meta tags)."""
+    if not html:
+        return None
+
+    # schema.org JSON-LD (Hotel / Place / LocalBusiness).
+    for m in re.finditer(
+        r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+        html,
+        re.I | re.S,
+    ):
+        raw = m.group(1).strip()
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        stack: List[Any] = [data]
+        while stack:
+            node = stack.pop()
+            if isinstance(node, list):
+                stack.extend(node)
+                continue
+            if not isinstance(node, dict):
+                continue
+            geo = node.get("geo")
+            if isinstance(geo, dict):
+                pair = _parse_lat_lon_pair(geo.get("latitude"), geo.get("longitude"))
+                if pair:
+                    return pair
+            if isinstance(geo, str) and "," in geo:
+                parts = [p.strip() for p in geo.split(",")]
+                if len(parts) >= 2:
+                    pair = _parse_lat_lon_pair(parts[0], parts[1])
+                    if pair:
+                        return pair
+            for key in ("latitude", "lat"):
+                if key in node and ("longitude" in node or "lon" in node or "lng" in node):
+                    lon_v = node.get("longitude", node.get("lon", node.get("lng")))
+                    pair = _parse_lat_lon_pair(node.get(key), lon_v)
+                    if pair:
+                        return pair
+            stack.extend(v for v in node.values() if isinstance(v, (dict, list)))
+
+    # Yandex Maps ll=lon,lat (common on RU hotel sites).
+    m = re.search(r"[?&]ll=(-?\d+\.\d+)%2C(-?\d+\.\d+)", html, re.I)
+    if m:
+        # Yandex order is lon,lat — force that interpretation.
+        try:
+            lon_f = float(m.group(1))
+            lat_f = float(m.group(2))
+            if usable_lat_lon(lat_f, lon_f):
+                return lat_f, lon_f
+        except ValueError:
+            pass
+
+    # Google Maps @lat,lon or /maps?q=lat,lon
+    for pat in (
+        r"@(-?\d+\.\d+),(-?\d+\.\d+)",
+        r"[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)",
+        r"[?&]ll=(-?\d+\.\d+),(-?\d+\.\d+)",
+    ):
+        m = re.search(pat, html)
+        if not m:
+            continue
+        pair = _parse_lat_lon_pair(m.group(1), m.group(2))
+        if pair:
+            return pair
+
+    # geo.position / ICBM meta: "lat;lon" or "lat lon"
+    m = re.search(
+        r'(?:name|property)=["\'](?:geo\.position|ICBM)["\'][^>]*content=["\']([^"\']+)',
+        html,
+        re.I,
+    ) or re.search(
+        r'content=["\']([^"\']+)["\'][^>]*(?:name|property)=["\'](?:geo\.position|ICBM)["\']',
+        html,
+        re.I,
+    )
+    if m:
+        bits = re.split(r"[;\s,]+", m.group(1).strip())
+        if len(bits) >= 2:
+            pair = _parse_lat_lon_pair(bits[0], bits[1])
+            if pair:
+                return pair
+    return None
+
+
+def nominatim_search_hotel(
+    *,
+    hotel: str,
+    address: str,
+    city: str,
+    country: str,
+    city_lat: Optional[float],
+    city_lon: Optional[float],
+) -> Optional[Tuple[float, float]]:
+    """Geocode hotel/address near the edition city via Nominatim."""
+    parts = [p for p in (hotel, address, city, country) if (p or "").strip()]
+    if not parts:
+        return None
+
+    def _query(bounded: bool) -> Optional[Tuple[float, float]]:
+        params: Dict[str, Any] = {
+            "q": ", ".join(parts),
+            "format": "json",
+            "limit": 3,
+        }
+        if city_lat is not None and city_lon is not None:
+            clat = float(city_lat)
+            clon = float(city_lon)
+            # Soft bias toward city; retry unbounded if the box is empty.
+            params["viewbox"] = f"{clon - 1},{clat + 1},{clon + 1},{clat - 1}"
+            if bounded:
+                params["bounded"] = 1
+        qs = urllib.parse.urlencode(params)
+        url = f"https://nominatim.openstreetmap.org/search?{qs}"
+        req = urllib.request.Request(url, headers={"User-Agent": HOTEL_GEO_UA})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                hits = json.loads(resp.read().decode("utf-8"))
+        except (
+            urllib.error.HTTPError,
+            urllib.error.URLError,
+            TimeoutError,
+            json.JSONDecodeError,
+            ValueError,
+        ):
+            return None
+        if not isinstance(hits, list):
+            return None
+        for hit in hits:
+            if not isinstance(hit, dict):
+                continue
+            pair = _parse_lat_lon_pair(hit.get("lat"), hit.get("lon"))
+            if pair:
+                return pair
+        return None
+
+    hit = _query(bounded=True)
+    if hit is not None:
+        return hit
+    return _query(bounded=False)
+
+
+def resolve_hotel_geo(
+    *,
+    hotel_url: str,
+    hotel: str,
+    address: str,
+    city: str,
+    country: str,
+    city_lat: Optional[float],
+    city_lon: Optional[float],
+    max_drift_km: float,
+    cache: Optional[Dict[str, Any]] = None,
+    fetch_html: Callable[[str], Optional[str]] = fetch_url_text,
+    nominatim: Callable[..., Optional[Tuple[float, float]]] = nominatim_search_hotel,
+    sleep_s: float = HOTEL_GEO_FETCH_GAP_S,
+) -> Optional[Tuple[float, float, str]]:
+    """When CE GPS is missing/rejected: hotel_url page first, then Nominatim.
+
+    Returns (lat, lon, geo_fix) when the pin is within max_drift_km of city.
+    """
+    url = (hotel_url or "").strip()
+    hotel_name = usable_hotel_name(hotel) or ""
+    addr = (address or "").strip()
+    if not url and not hotel_name and not addr:
+        return None
+
+    cache_key = "|".join(
+        [
+            url.lower(),
+            hotel_match_key(hotel_name),
+            addr.lower(),
+            (city or "").strip().lower(),
+            (country or "").strip().lower(),
+        ]
+    )
+    store = cache if cache is not None else _load_hotel_geo_cache()
+    cached = store.get(cache_key)
+    if isinstance(cached, dict) and cached.get("lat") is not None:
+        if cached.get("miss"):
+            return None
+        pair = _parse_lat_lon_pair(cached.get("lat"), cached.get("lon"))
+        if pair:
+            la, lo = pair
+            drift = drift_to_city_km(city_lat, city_lon, la, lo)
+            if drift is None or drift <= max_drift_km:
+                return la, lo, str(cached.get("geo_fix") or "hotel_url")
+
+    def _ok(la: float, lo: float) -> bool:
+        drift = drift_to_city_km(city_lat, city_lon, la, lo)
+        return drift is None or drift <= max_drift_km
+
+    # 1) Scrape hotel website for embedded coordinates.
+    if url:
+        if sleep_s > 0:
+            time.sleep(sleep_s)
+        html = fetch_html(url)
+        if html:
+            pair = extract_coords_from_html(html)
+            if pair and _ok(pair[0], pair[1]):
+                store[cache_key] = {
+                    "lat": pair[0],
+                    "lon": pair[1],
+                    "geo_fix": "hotel_url",
+                    "url": url,
+                }
+                if cache is None:
+                    _save_hotel_geo_cache(store)
+                return pair[0], pair[1], "hotel_url"
+
+    # 2) Nominatim on hotel + address near city.
+    if hotel_name or addr:
+        if sleep_s > 0:
+            time.sleep(sleep_s)
+        pair = nominatim(
+            hotel=hotel_name,
+            address=addr,
+            city=(city or "").strip(),
+            country=(country or "").strip(),
+            city_lat=city_lat,
+            city_lon=city_lon,
+        )
+        if pair and _ok(pair[0], pair[1]):
+            store[cache_key] = {
+                "lat": pair[0],
+                "lon": pair[1],
+                "geo_fix": "nominatim_hotel",
+                "url": url or None,
+            }
+            if cache is None:
+                _save_hotel_geo_cache(store)
+            return pair[0], pair[1], "nominatim_hotel"
+
+    store[cache_key] = {"miss": True, "url": url or None}
+    if cache is None:
+        _save_hotel_geo_cache(store)
+    return None
+
+
 # Hard repairs for known dump typos that are not sign-flip / lat-lon-swap
 # (event_id, edition year) → (lat, lon).
 DUMP_VENUE_COORD_FIXES: Dict[Tuple[int, int], Tuple[float, float]] = {
@@ -333,6 +635,8 @@ def iter_competitionevents(sql_path: Path) -> Iterable[VenueRow]:
 
             def get(name: str) -> Optional[str]:
                 assert col_index is not None
+                if name not in col_index:
+                    return None
                 return fields[col_index[name]]
 
             eid = parse_int(get("event_id"))
@@ -353,6 +657,7 @@ def iter_competitionevents(sql_path: Path) -> Iterable[VenueRow]:
                 address=(get("address") or "").strip(),
                 city=(get("city") or "").strip(),
                 ce_id=parse_int(get("id")) or 0,
+                hotel_url=(get("hotel_url") or "").strip(),
             )
 
 
@@ -567,11 +872,46 @@ def carry_forward_venue_fields(
     return stats
 
 
+def _apply_resolved_venue(
+    ed: Dict[str, Any],
+    *,
+    lat: float,
+    lon: float,
+    hotel: Optional[str],
+    address: str,
+    venue_start: str,
+    geo_fix: str,
+) -> None:
+    """Write an accepted venue pin (hotel_url / nominatim / dump GPS)."""
+    ed["lat"] = round(lat, 6)
+    ed["lon"] = round(lon, 6)
+    ed["geo_source"] = "wsdc_venue"
+    ed["geo_fix"] = geo_fix
+    ed["venue_start"] = venue_start
+    for gk in ("google_venue_name", "google_place_id"):
+        if gk in ed:
+            del ed[gk]
+    if hotel:
+        ed["hotel"] = hotel
+    elif "hotel" in ed:
+        del ed["hotel"]
+    if address:
+        ed["address"] = address
+    elif "address" in ed:
+        del ed["address"]
+    if "venue_rejected_km" in ed:
+        del ed["venue_rejected_km"]
+
+
 def enrich_editions(
     editions: List[Dict[str, Any]],
     by_event: Dict[int, List[VenueRow]],
     max_drift_km: float,
     max_date_drift_days: int,
+    hotel_geo_resolver: Optional[
+        Callable[..., Optional[Tuple[float, float, str]]]
+    ] = None,
+    hotel_geo_cache: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, int]:
     stats = {
         "editions": len(editions),
@@ -587,7 +927,16 @@ def enrich_editions(
         "google_audit_preserved": 0,
         "lat_lon_swap_fixed": 0,
         "dump_coord_fixed": 0,
+        "hotel_url_geo": 0,
+        "nominatim_hotel_geo": 0,
     }
+    resolve = hotel_geo_resolver or resolve_hotel_geo
+    persist_cache = hotel_geo_cache is None and hotel_geo_resolver is None
+    geo_cache = (
+        hotel_geo_cache
+        if hotel_geo_cache is not None
+        else (_load_hotel_geo_cache() if hotel_geo_resolver is None else {})
+    )
     for ed in editions:
         eid = ed.get("event_id")
         if eid is None:
@@ -643,6 +992,39 @@ def enrich_editions(
                 max_drift_km,
             )
             if inherit_from is None:
+                # Missing CE GPS: try hotel_url page (then Nominatim near city).
+                resolved = None
+                if (row.hotel_url or "").strip() or hotel_geo_resolver is not None:
+                    resolved = resolve(
+                        hotel_url=row.hotel_url,
+                        hotel=row.hotel,
+                        address=row.address,
+                        city=row.city or str(ed.get("city") or ""),
+                        country=str(ed.get("country") or ""),
+                        city_lat=float(city_lat) if city_lat is not None else None,
+                        city_lon=float(city_lon) if city_lon is not None else None,
+                        max_drift_km=max_drift_km,
+                        cache=geo_cache,
+                        sleep_s=0.0 if hotel_geo_resolver else HOTEL_GEO_FETCH_GAP_S,
+                    )
+                if resolved is not None:
+                    rlat, rlon, rfix = resolved
+                    hotel_only = usable_hotel_name(row.hotel)
+                    _apply_resolved_venue(
+                        ed,
+                        lat=rlat,
+                        lon=rlon,
+                        hotel=hotel_only,
+                        address=(row.address or "").strip(),
+                        venue_start=row.start.isoformat(),
+                        geo_fix=rfix,
+                    )
+                    stats["venue_applied"] += 1
+                    if rfix == "hotel_url":
+                        stats["hotel_url_geo"] += 1
+                    elif rfix == "nominatim_hotel":
+                        stats["nominatim_hotel_geo"] += 1
+                    continue
                 stats["no_sql_geo"] += 1
                 clear_venue_fields(ed)
                 ed["geo_source"] = "city"
@@ -738,6 +1120,39 @@ def enrich_editions(
                         lat_lon_swapped = False
                         drift = sib_drift
                 if drift > max_drift_km and not inherited:
+                    # Bad CE GPS: fall back to hotel_url page / Nominatim.
+                    resolved = None
+                    if (row.hotel_url or "").strip() or hotel_geo_resolver is not None:
+                        resolved = resolve(
+                            hotel_url=row.hotel_url,
+                            hotel=row.hotel,
+                            address=row.address,
+                            city=row.city or str(ed.get("city") or ""),
+                            country=str(ed.get("country") or ""),
+                            city_lat=clat_f,
+                            city_lon=clon_f,
+                            max_drift_km=max_drift_km,
+                            cache=geo_cache,
+                            sleep_s=0.0 if hotel_geo_resolver else HOTEL_GEO_FETCH_GAP_S,
+                        )
+                    if resolved is not None:
+                        rlat, rlon, rfix = resolved
+                        hotel_only = usable_hotel_name(row.hotel)
+                        _apply_resolved_venue(
+                            ed,
+                            lat=rlat,
+                            lon=rlon,
+                            hotel=hotel_only,
+                            address=(row.address or "").strip(),
+                            venue_start=row.start.isoformat(),
+                            geo_fix=rfix,
+                        )
+                        stats["venue_applied"] += 1
+                        if rfix == "hotel_url":
+                            stats["hotel_url_geo"] += 1
+                        elif rfix == "nominatim_hotel":
+                            stats["nominatim_hotel_geo"] += 1
+                        continue
                     stats["venue_rejected_drift"] += 1
                     clear_venue_fields(ed)
                     ed["geo_source"] = "city"
@@ -796,6 +1211,8 @@ def enrich_editions(
             del ed["venue_rejected_km"]
         stats["venue_applied"] += 1
 
+    if persist_cache:
+        _save_hotel_geo_cache(geo_cache)
     return stats
 
 
@@ -809,6 +1226,7 @@ def venue_row_to_dict(row: VenueRow) -> Dict[str, Any]:
         "address": row.address or None,
         "city": row.city or None,
         "ce_id": row.ce_id,
+        "hotel_url": row.hotel_url or None,
     }
 
 
