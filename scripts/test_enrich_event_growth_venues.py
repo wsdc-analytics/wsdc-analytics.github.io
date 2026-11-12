@@ -14,9 +14,11 @@ from enrich_event_growth_venues import (  # noqa: E402
     build_lookup_by_event,
     carry_forward_venue_fields,
     enrich_editions,
+    extract_coords_from_html,
     fold_merged_venue_lookups,
     haversine_km,
     match_venue,
+    resolve_hotel_geo,
     split_mysql_values,
     usable_hotel_name,
     usable_lat_lon,
@@ -549,6 +551,141 @@ def test_carry_forward_venue_fields_from_prior_growth() -> None:
     assert rebuilt[1]["geo_source"] == "city"
 
 
+def test_extract_coords_from_html_json_ld_and_yandex() -> None:
+    html = """
+    <script type="application/ld+json">
+    {"@type":"Hotel","geo":"55.618745, 37.715138"}
+    </script>
+    """
+    pair = extract_coords_from_html(html)
+    assert pair is not None
+    assert abs(pair[0] - 55.618745) < 1e-6
+    assert abs(pair[1] - 37.715138) < 1e-6
+
+    yandex = 'https://yandex.ru/maps/?ll=37.715021%2C55.618791&z=16'
+    pair2 = extract_coords_from_html(yandex)
+    assert pair2 is not None
+    assert abs(pair2[0] - 55.618791) < 1e-6
+    assert abs(pair2[1] - 37.715021) < 1e-6
+
+
+def test_enrich_hotel_url_when_sql_missing_gps() -> None:
+    """Sea Dance–style: 0,0 GPS + hotel_url → pin from hotel site resolver."""
+    by = build_lookup_by_event(
+        [
+            VenueRow(
+                338,
+                date(2026, 9, 11),
+                None,
+                None,
+                "Milan",
+                "Shipilovskaya st., 28 А",
+                "Moscow",
+                3593,
+                hotel_url="https://www.hotelmilan.ru/",
+            ),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 338,
+            "year": 2026,
+            "month": 9,
+            "start": "2026-09-11",
+            "lat": 55.7568721,
+            "lon": 37.6150527,
+            "city": "Moscow",
+            "country": "Russia",
+        }
+    ]
+
+    def resolver(**kwargs):  # type: ignore[no-untyped-def]
+        assert "hotelmilan" in (kwargs.get("hotel_url") or "")
+        return (55.618745, 37.715138, "hotel_url")
+
+    stats = enrich_editions(
+        editions, by, 200.0, 45, hotel_geo_resolver=resolver
+    )
+    assert stats["hotel_url_geo"] == 1
+    assert editions[0]["geo_source"] == "wsdc_venue"
+    assert editions[0]["geo_fix"] == "hotel_url"
+    assert editions[0]["hotel"] == "Milan"
+    assert abs(editions[0]["lat"] - 55.618745) < 1e-5
+    # Far from Red Square city centroid, but still in Moscow metro.
+    assert abs(editions[0]["lat"] - editions[0]["city_lat"]) > 0.05
+
+
+def test_enrich_hotel_url_after_dump_gps_rejected() -> None:
+    by = build_lookup_by_event(
+        [
+            VenueRow(
+                99,
+                date(2025, 6, 1),
+                1.0,
+                1.0,  # near null-island — far from KL
+                "Cititel Mid Valley",
+                "Mid Valley",
+                "Kuala Lumpur",
+                1,
+                hotel_url="https://www.cititelmidvalley.com/",
+            ),
+        ]
+    )
+    editions = [
+        {
+            "event_id": 99,
+            "year": 2025,
+            "month": 6,
+            "start": "2025-06-01",
+            "lat": 3.139,
+            "lon": 101.687,
+            "city": "Kuala Lumpur",
+            "country": "Malaysia",
+        }
+    ]
+
+    def resolver(**kwargs):  # type: ignore[no-untyped-def]
+        return (3.1178, 101.676, "hotel_url")
+
+    stats = enrich_editions(
+        editions, by, 200.0, 45, hotel_geo_resolver=resolver
+    )
+    assert stats["venue_rejected_drift"] == 0
+    assert stats["hotel_url_geo"] == 1
+    assert editions[0]["geo_fix"] == "hotel_url"
+    assert abs(editions[0]["lat"] - 3.1178) < 1e-4
+
+
+def test_resolve_hotel_geo_prefers_page_over_nominatim() -> None:
+    html = '{"@type":"Hotel","geo":{"latitude":55.62,"longitude":37.72}}'
+    # wrap as script for extractor path via fetch_html returning full page
+    page = f'<script type="application/ld+json">{html}</script>'
+
+    def fetch(_url: str) -> str:
+        return page
+
+    def nom(**_kwargs):  # type: ignore[no-untyped-def]
+        raise AssertionError("Nominatim must not run when page geo works")
+
+    hit = resolve_hotel_geo(
+        hotel_url="https://www.hotelmilan.ru/",
+        hotel="Milan",
+        address="Shipilovskaya",
+        city="Moscow",
+        country="Russia",
+        city_lat=55.76,
+        city_lon=37.62,
+        max_drift_km=200.0,
+        cache={},
+        fetch_html=fetch,
+        nominatim=nom,
+        sleep_s=0.0,
+    )
+    assert hit is not None
+    assert hit[2] == "hotel_url"
+    assert abs(hit[0] - 55.62) < 1e-6
+
+
 def test_enrich_preserves_google_audit_coords() -> None:
     by = build_lookup_by_event(
         [
@@ -605,5 +742,9 @@ if __name__ == "__main__":
     test_enrich_hotel_only_when_sql_missing_gps()
     test_enrich_inherits_coords_when_sql_missing_gps()
     test_carry_forward_venue_fields_from_prior_growth()
+    test_extract_coords_from_html_json_ld_and_yandex()
+    test_enrich_hotel_url_when_sql_missing_gps()
+    test_enrich_hotel_url_after_dump_gps_rejected()
+    test_resolve_hotel_geo_prefers_page_over_nominatim()
     test_enrich_preserves_google_audit_coords()
     print("OK")
