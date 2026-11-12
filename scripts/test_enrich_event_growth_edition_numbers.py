@@ -77,6 +77,9 @@ def test_load_edition_series_splits_from_pipeline_aliases() -> None:
     assert 221 in by_id  # Gateway
     assert 264 in by_id  # UpTown
     assert 68 in by_id  # The Open
+    assert 177 in by_id  # Jax Westie Fest (ex River City Swing)
+    assert by_id[177]["early_year_max"] == 2023
+    assert by_id[177]["late_year_min"] == 2024
     # Same series across rename — must NOT reset
     assert 324 not in by_id  # BTO Open → Calgary Town Open
     assert 342 not in by_id  # GGP
