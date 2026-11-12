@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-09",
-  "as_of": "2026-11-09",
+  "generated_at": "2026-11-11",
+  "as_of": "2026-11-11",
   "data_through": "2026-11-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,9 +17,9 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2701,
-    "points": 737224.0,
-    "dancers": 27973
+    "events": 2704,
+    "points": 738473.0,
+    "dancers": 28015
   },
   "comparisons": {
     "week": {
@@ -30,41 +30,41 @@
         "since_previous_ended": "2026-10-31",
         "iso_week": "2026-W45",
         "bucket": "edition_start_date",
-        "event_names": "Moscow Westie Fest"
+        "event_names": "Moscow Westie Fest, Sea to Sky, Simply Adelaide West Coast Swing, Tampa Bay Classic, Westie Pink City"
       },
       "increment": {
-        "events": 1,
-        "points": 374.0,
-        "dancers": 46
+        "events": 5,
+        "points": 1640.0,
+        "dancers": 79
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-11-01",
-        "end": "2026-11-09",
+        "end": "2026-11-11",
         "since_previous_ended": "2026-10-31",
         "bucket": "edition_start_date",
-        "event_names": "Moscow Westie Fest"
+        "event_names": "Moscow Westie Fest, Sea to Sky, Simply Adelaide West Coast Swing, Tampa Bay Classic, Westie Pink City"
       },
       "increment": {
-        "events": 1,
-        "points": 374.0,
-        "dancers": 57
+        "events": 5,
+        "points": 1640.0,
+        "dancers": 99
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-11-09",
+        "end": "2026-11-11",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 162,
-        "points": 67311.0,
-        "dancers": 2199
+        "events": 166,
+        "points": 68577.0,
+        "dancers": 2241
       }
     }
   }
