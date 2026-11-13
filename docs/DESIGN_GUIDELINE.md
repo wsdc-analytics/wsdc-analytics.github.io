@@ -111,6 +111,7 @@ Keep one human-readable format across Event Trends tips, Summary Points, and New
 - USA state is the **two-letter** code; non-US rows omit state codes.
 - Prefer ISO `start_date` / `end_date`; if only a legacy `dates` string exists, parse into the same `D Mon YYYY` range before display.
 - New Champions threshold row: label `Threshold event:` then one place-line with **event name · place · dates**.
+- Expanded New Champions body opens with **`Path to Champions`** plus a one-line lede (“as of the threshold event”), then All-Stars / Champions totals and path subsections — not a bare dump of stats.
 
 ### Year section counters (New Champions)
 

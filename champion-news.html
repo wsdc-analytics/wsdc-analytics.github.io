@@ -570,12 +570,29 @@
         .badge-required { background: #dcfce7; color: #166534; }
         .badge-leader { background: var(--color-accent-soft); color: #1e40af; }
         .badge-follower { background: #fce7f3; color: #9d174d; }
+        .news-path-head {
+            margin: 4px 0 0;
+        }
+        .news-path-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 650;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+        .news-path-lede {
+            margin: 3px 0 0;
+            font-size: 12.5px;
+            line-height: 1.4;
+            color: var(--text-tertiary);
+        }
         .news-totals {
             display: flex;
             flex-wrap: wrap;
             gap: 8px 16px;
-            margin-top: 14px;
-            margin-bottom: 14px;
+            margin-top: 10px;
+            margin-bottom: 12px;
             font-size: 13px;
             color: var(--text-secondary);
         }
@@ -752,7 +769,7 @@
                             <li>One card = one threshold crossing for one dancer in one role (leader or follower).</li>
                             <li><span class="legend-pill legend-pill-yellow"></span><strong>Allowed</strong> — cumulative All-Stars points reach <code>150+</code>.</li>
                             <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> — All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>.</li>
-                            <li><strong>Click a card</strong> to expand totals and path details (first points, counts, top events/cities, continents).</li>
+                            <li><strong>Click a card</strong> to open <em>Path to Champions</em> — All-Stars / Champions totals and milestones as of that threshold event.</li>
                             <li>Each year row shows quiet role×status totals (L/F + A/R) for that calendar year.</li>
                         </ul>
                     </div>
@@ -1153,12 +1170,16 @@
       }
 
       function pathHtml(path, alsTotal, chmpTotal) {
+        const head = `<div class="news-path-head">
+          <h3 class="news-path-title">Path to Champions</h3>
+          <p class="news-path-lede">Points and milestones as of the threshold event.</p>
+        </div>`;
         const totals = `<div class="news-totals">
           <span>⭐ All-Stars: <strong>${esc(alsTotal)}</strong></span>
           <span>👑 Champions: <strong>${esc(chmpTotal)}</strong></span>
         </div>`;
         if (!path) {
-          return `${totals}<div class="path-body"><p>No path data.</p></div>`;
+          return `${head}${totals}<div class="path-body"><p>No path data.</p></div>`;
         }
         const fp = path.first_points;
         const fa = path.first_all_stars;
@@ -1193,7 +1214,7 @@
         const ca = continentLine(path.continents_all_stars);
         if (ct) html += `<h4>Total Points by continent</h4><p>${ct}</p>`;
         if (ca) html += `<h4>All-Star points by continent</h4><p>${ca}</p>`;
-        return `${totals}<div class="path-body">${html}</div>`;
+        return `${head}${totals}<div class="path-body">${html}</div>`;
       }
 
       function cardHtml(ev) {
