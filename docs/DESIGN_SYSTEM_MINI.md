@@ -33,6 +33,10 @@ Buttons, pills, fields, filter bar, info button, page header, pill dropdown (`.w
 | Product / magazine | Required |
 | iframe embeddable (`interactive_*`, forecast cards) | Forbidden — tokens + primitives only |
 
+## Catalog rows (Points / Champions)
+
+Underline list rows (not boxed cards); place `flag` + `Country · City` (USA `City, ST`); dates `D Mon YYYY – D Mon YYYY`; Champions year headers use `Total N · incl.` + breakdown. Details: guideline §5.
+
 ## Accessibility baseline
 
 - Every interactive icon/button gets `aria-label`.
