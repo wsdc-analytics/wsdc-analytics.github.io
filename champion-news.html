@@ -218,47 +218,80 @@
             margin: 0;
         }
         .search-no-results.visible { display: block; }
-        .how-to-read {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin: 24px 0 32px;
-            overflow: hidden;
-            box-shadow: var(--shadow-card);
-        }
-        .how-to-read.expanded { border-color: #cbd5e1; }
-        .how-to-read-header {
-            padding: 16px 20px;
-            cursor: pointer;
-            user-select: none;
+        .page-title-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            transition: background var(--transition);
-            font-weight: 600;
-            color: var(--text-primary);
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
         }
-        .how-to-read-header:hover { background: var(--bg-tertiary); }
-        .how-to-read-header:active { transform: scale(0.995); }
-        .how-to-read-header .chevron {
-            flex-shrink: 0;
-            width: 18px;
-            height: 18px;
-            color: var(--text-tertiary);
-            transition: transform var(--transition);
+        .page-title-row .wsdc-page-title { margin-bottom: 0; }
+        .method-layer {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2200;
         }
-        .how-to-read.expanded .how-to-read-header .chevron { transform: rotate(180deg); }
-        .how-to-read-body {
-            padding: 0 22px 20px;
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.65;
+        .method-layer.is-open { display: block; }
+        .method-layer__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.28);
         }
-        .how-to-read-body.collapsed { display: none; }
-        .how-to-read-body ul { margin: 0 0 0 18px; }
-        .how-to-read-body li { margin-bottom: 6px; }
-        .how-to-read-body code {
+        .method-island {
+            position: absolute;
+            left: 24px;
+            top: 72px;
+            width: min(420px, calc(100vw - 24px));
+            max-height: min(70vh, 560px);
+            overflow: auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+            border: 1px solid #e5e7eb;
+        }
+        .method-island__head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #eef2f7;
+        }
+        .method-island__head h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-primary-dark);
+            margin: 0;
+        }
+        .method-island__close {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            font: 600 12px inherit;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .method-island__body { padding: 8px 14px 14px; }
+        .method-sec { border-bottom: 1px solid #eef2f7; }
+        .method-sec:last-of-type { border-bottom: 0; }
+        .method-sec > summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 10px 0;
+            font-weight: 700;
+            font-size: 13px;
+            color: #0b1221;
+        }
+        .method-sec > summary::-webkit-details-marker { display: none; }
+        .method-sec__body {
+            padding: 0 0 10px;
+            font-size: 12.5px;
+            line-height: 1.45;
+            color: #4b5563;
+        }
+        .method-sec__body ul { margin: 0 0 0 1.1em; }
+        .method-sec__body li + li { margin-top: 4px; }
+        .method-sec__body code {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             font-size: 0.92em;
             background: var(--bg-tertiary);
@@ -275,17 +308,6 @@
         }
         .legend-pill-yellow { background: #fef9c3; box-shadow: inset 0 0 0 1px #eab30855; }
         .legend-pill-green { background: #dcfce7; box-shadow: inset 0 0 0 1px #22c55e55; }
-        .summary-date {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin: 28px 0 16px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .year-body > .date-block:first-child .summary-date { margin-top: 16px; }
         .year-block { margin-top: 8px; }
         .year-block + .year-block { margin-top: 12px; }
         .year-header {
@@ -319,12 +341,35 @@
             display: inline-flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
+            gap: 8px 12px;
             font-weight: 500;
             font-size: 11px;
             letter-spacing: 0;
             line-height: 1;
             color: var(--text-tertiary);
+        }
+        .year-counts__total {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .year-counts__total-n {
+            font-variant-numeric: tabular-nums;
+            color: var(--text-primary);
+        }
+        .year-counts__incl {
+            color: var(--text-tertiary);
+            font-weight: 500;
+            font-size: 11px;
+        }
+        .year-counts__breakdown {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
         .year-count {
             display: inline-flex;
@@ -409,38 +454,39 @@
         .year-body.collapsed { display: none; }
         .year-block.is-hidden { display: none; }
         .news-card {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin-bottom: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-card);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0;
+            margin-bottom: 0;
+            overflow: visible;
+            box-shadow: none;
             scroll-margin-top: 20px;
-            transition: box-shadow var(--transition), border-color var(--transition);
+            transition: opacity 160ms ease;
         }
-        .news-card:hover { box-shadow: var(--shadow-card-hover); border-color: #cbd5e1; }
-        .news-card.expanded { border-color: #cbd5e1; box-shadow: var(--shadow-card-hover); }
+        .news-card:hover { opacity: 0.92; box-shadow: none; border-color: var(--border-color); }
+        .news-card.expanded { opacity: 1; box-shadow: none; border-color: var(--border-color); }
         .news-card.is-hidden { display: none; }
         .news-card.is-match {
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.22);
+            outline: none;
+            box-shadow: inset 3px 0 0 var(--color-accent);
         }
         .news-header {
-            padding: 18px 22px;
+            padding: 15px 0;
             cursor: pointer;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            transition: background var(--transition);
+            gap: 12px;
+            transition: none;
         }
-        .news-header:hover { background: var(--bg-card-hover); }
-        .news-header:active { transform: scale(0.997); }
+        .news-header:hover { background: transparent; }
+        .news-header:active { transform: none; }
         .news-header .chevron {
             flex-shrink: 0;
-            width: 20px;
-            height: 20px;
-            margin-top: 2px;
+            width: 18px;
+            height: 18px;
+            margin-top: 0;
             color: var(--text-tertiary);
             transition: transform var(--transition), color var(--transition);
         }
@@ -452,6 +498,7 @@
             font-weight: 600;
             font-size: 17px;
             letter-spacing: -0.01em;
+            line-height: 1.25;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -476,17 +523,41 @@
         }
         .news-meta {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 6px;
-            line-height: 1.45;
+            line-height: 1.4;
         }
-        .news-meta .meta-label {
-            display: block;
+        .news-meta__label {
             color: var(--text-tertiary);
-            margin-bottom: 2px;
+            font-weight: 500;
         }
         .news-meta strong { color: var(--text-primary); font-weight: 600; }
-        .news-meta .meta-location::before { content: ' · '; }
+        .news-place-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 6px 8px;
+            margin-top: 5px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        .news-place-line .news-event-name {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .news-place-line .news-place {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .news-place-line .news-flag { line-height: 1; }
+        .news-place-line .news-dates {
+            margin-top: 0;
+            font-size: 12.5px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
         .badge {
             font-size: 11px;
             font-weight: 500;
@@ -510,8 +581,8 @@
         }
         .news-totals strong { color: var(--text-primary); font-weight: 600; }
         .news-body {
-            padding: 0 22px 20px;
-            border-top: 1px solid var(--border-color);
+            padding: 0 0 12px;
+            border-top: none;
         }
         .news-body.collapsed { display: none; }
         .news-body:not(.collapsed) {
@@ -587,20 +658,13 @@
                 padding: 24px 16px 48px;
             }
             h1 { font-size: 26px; }
-            .how-to-read-header { padding: 14px 16px; }
-            .how-to-read-body { padding: 0 16px 16px; font-size: 13px; }
-            .news-header { padding: 14px 16px; }
+            .news-header { padding: 14px 0; }
             .news-name {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 8px;
             }
-            .news-meta .meta-location {
-                display: block;
-                margin-top: 2px;
-            }
-            .news-meta .meta-location::before { content: none; }
-            .news-body { padding: 0 16px 18px; }
+            .news-body { padding: 0 0 14px; }
             .search-help .info-tooltip {
                 left: 0;
                 right: auto;
@@ -615,9 +679,7 @@
         }
         @media (prefers-reduced-motion: reduce) {
             .news-body:not(.collapsed) { animation: none; }
-            .news-header:active,
-            .how-to-read-header:active,
-            .search-help .info-icon:active { transform: none; }
+            .news-header:active { transform: none; }
         }
     </style>
 </head>
@@ -628,17 +690,16 @@
     <div class="container">
         <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
         <header class="wsdc-page-header">
-        <h1 class="wsdc-page-title">New Champions</h1>
+        <div class="page-title-row">
+            <h1 class="wsdc-page-title">New Champions</h1>
+            <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="About this page" aria-expanded="false" aria-controls="methodIsland" title="About this page">
+                <span aria-hidden="true">i</span>
+            </button>
+        </div>
         <p class="wsdc-page-subtitle subtitle">Dancers who crossed the threshold for transitioning into Champions.</p>
         </header>
 
         <div class="page-search wsdc-filter-bar">
-            <div class="search-help">
-                <span class="info-icon wsdc-info-btn" tabindex="0" role="img" aria-label="Brief search instructions (hover or focus to read)">
-                    <span aria-hidden="true">i</span>
-                    <span class="info-tooltip">Type a dancer surname, given name, or WSDC number. Use role and status filters on the right. Matching cards stay visible; clear filters to show the full chronology again.</span>
-                </span>
-            </div>
             <div class="search-box">
                 <input type="search" class="search-input wsdc-field" id="search-input"
                        placeholder="Surname or WSDC #…"
@@ -671,26 +732,39 @@
             </div>
         </div>
 
-        <div class="how-to-read" id="how-to-read">
-            <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-read-body">
-                <span>How to read this page</span>
-                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-            <div class="how-to-read-body collapsed" id="how-to-read-body">
-                <ul>
-                    <li>This page covers New Champions crossings from <strong>2025 onward</strong> (earlier years are not included).</li>
-                    <li>One card = one threshold crossing for one dancer in one role (leader or follower).</li>
-                    <li><span class="legend-pill legend-pill-yellow"></span><strong>Allowed</strong> - cumulative All-Stars points reach <code>150+</code>.</li>
-                    <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> - All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>.</li>
-                    <li><strong>Click a card</strong> to expand totals and path details (first points, counts, top events/cities, continents).</li>
-                    <li>Each year row shows quiet role×status totals (L/F + A/R) for that calendar year.</li>
-                    <li>Filter by surname / WSDC #, role, or status in the search row.</li>
-                </ul>
-            </div>
-        </div>
-
         <p class="search-no-results" id="search-no-results">No dancers match your search.</p>
         <main id="catalog" aria-live="polite"><div class="loading">Loading...</div></main>
+    </div>
+
+    <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+        <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+        <div class="method-island" id="methodIsland" role="dialog" aria-modal="true" aria-labelledby="methodIslandTitle">
+            <div class="method-island__head">
+                <h2 id="methodIslandTitle">About this page</h2>
+                <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+            </div>
+            <div class="method-island__body">
+                <details class="method-sec" open>
+                    <summary>How to read</summary>
+                    <div class="method-sec__body">
+                        <ul>
+                            <li>This page covers New Champions crossings from <strong>2025 onward</strong> (earlier years are not included).</li>
+                            <li>One card = one threshold crossing for one dancer in one role (leader or follower).</li>
+                            <li><span class="legend-pill legend-pill-yellow"></span><strong>Allowed</strong> — cumulative All-Stars points reach <code>150+</code>.</li>
+                            <li><span class="legend-pill legend-pill-green"></span><strong>Required</strong> — All-Stars reach <code>225+</code>, or Champions reach <code>10+</code>.</li>
+                            <li><strong>Click a card</strong> to expand totals and path details (first points, counts, top events/cities, continents).</li>
+                            <li>Each year row shows quiet role×status totals (L/F + A/R) for that calendar year.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="method-sec">
+                    <summary>Search</summary>
+                    <div class="method-sec__body">
+                        <p>Type a dancer surname, given name, or WSDC number. Use role and status filters on the right. Matching cards stay visible; clear filters to show the full chronology again.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
     </div>
 
     <script src="static/js/site-chrome.js?v=20261106d" defer></script>
@@ -701,12 +775,38 @@
       const filterRoleWrap = document.querySelector('.wsdc-dd[data-filter="role"]');
       const filterStatusWrap = document.querySelector('.wsdc-dd[data-filter="status"]');
       const searchNoResults = document.getElementById('search-no-results');
-      const howTo = document.getElementById('how-to-read');
-      const howHeader = howTo.querySelector('.how-to-read-header');
-      const howBody = document.getElementById('how-to-read-body');
       const chevronSvg = '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
       const currentYear = new Date().getFullYear();
       const filterState = { role: '', status: '' };
+
+      function openMethod() {
+        const layer = document.getElementById('methodLayer');
+        const btn = document.getElementById('methodInfoBtn');
+        if (!layer || !btn) return;
+        layer.hidden = false;
+        layer.classList.add('is-open');
+        layer.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById('methodIslandClose')?.focus();
+      }
+      function closeMethod() {
+        const layer = document.getElementById('methodLayer');
+        const btn = document.getElementById('methodInfoBtn');
+        if (!layer || !btn) return;
+        const wasOpen = layer.classList.contains('is-open');
+        layer.classList.remove('is-open');
+        layer.hidden = true;
+        layer.setAttribute('aria-hidden', 'true');
+        btn.setAttribute('aria-expanded', 'false');
+        if (wasOpen) btn.focus();
+      }
+      document.getElementById('methodInfoBtn')?.addEventListener('click', () => {
+        const layer = document.getElementById('methodLayer');
+        if (layer?.classList.contains('is-open')) closeMethod();
+        else openMethod();
+      });
+      document.getElementById('methodIslandClose')?.addEventListener('click', closeMethod);
+      document.getElementById('methodLayerBackdrop')?.addEventListener('click', closeMethod);
 
       function setDropdownValue(wrap, value) {
         if (!wrap) return;
@@ -756,19 +856,9 @@
       bindFilterDropdown(filterStatusWrap, 'status');
       document.addEventListener('click', closeAllFilterDropdowns);
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeAllFilterDropdowns();
-      });
-
-      function toggleHowTo() {
-        const open = howTo.classList.toggle('expanded');
-        howBody.classList.toggle('collapsed', !open);
-        howHeader.setAttribute('aria-expanded', String(open));
-      }
-      howHeader.addEventListener('click', toggleHowTo);
-      howHeader.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggleHowTo();
+        if (e.key === 'Escape') {
+          if (document.getElementById('methodLayer')?.classList.contains('is-open')) closeMethod();
+          else closeAllFilterDropdowns();
         }
       });
 
@@ -792,7 +882,7 @@
       }
 
       function fmtMonthYear(iso, year, month) {
-        // Database-style month+year: "Mar 14"
+        // Compact path labels: "Mar 14"
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         let y = year != null && year !== '' ? Number(year) : NaN;
         let m = month != null && month !== '' ? Number(month) : NaN;
@@ -813,6 +903,216 @@
         if (!y || !m || m < 1 || m > 12) return esc(iso || '');
         const yy = String(y).slice(-2);
         return `${months[m - 1]} ${yy}`;
+      }
+
+      /** Event Trends tip style: "5 Nov 2026". */
+      function fmtEventTrendsDate(iso, year, month, day) {
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const raw = String(iso || '').trim();
+        let y = year != null && year !== '' ? Number(year) : NaN;
+        let m = month != null && month !== '' ? Number(month) : NaN;
+        let d = day != null && day !== '' ? Number(day) : NaN;
+        if (raw) {
+          const isoYmd = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+          const dmy = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+          if (isoYmd) {
+            y = Number(isoYmd[1]);
+            m = Number(isoYmd[2]);
+            d = Number(isoYmd[3]);
+          } else if (dmy) {
+            d = Number(dmy[1]);
+            m = Number(dmy[2]);
+            y = Number(dmy[3]);
+          }
+        }
+        if (!y || !m || m < 1 || m > 12 || !d) {
+          return fmtMonthYear(iso, year, month);
+        }
+        return `${d} ${months[m - 1]} ${y}`;
+      }
+
+      const US_STATE_NAME_TO_CODE = {
+        Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR', California: 'CA', Colorado: 'CO',
+        Connecticut: 'CT', Delaware: 'DE', Florida: 'FL', Georgia: 'GA', Hawaii: 'HI', Idaho: 'ID',
+        Illinois: 'IL', Indiana: 'IN', Iowa: 'IA', Kansas: 'KS', Kentucky: 'KY', Louisiana: 'LA',
+        Maine: 'ME', Maryland: 'MD', Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN',
+        Mississippi: 'MS', Missouri: 'MO', Montana: 'MT', Nebraska: 'NE', Nevada: 'NV',
+        'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY',
+        'North Carolina': 'NC', 'North Dakota': 'ND', Ohio: 'OH', Oklahoma: 'OK', Oregon: 'OR',
+        Pennsylvania: 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD',
+        Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT', Virginia: 'VA', Washington: 'WA',
+        'West Virginia': 'WV', Wisconsin: 'WI', Wyoming: 'WY', 'District of Columbia': 'DC'
+      };
+
+      function usStateCode(stateName) {
+        const raw = String(stateName || '').trim();
+        if (!raw) return '';
+        if (/^[A-Za-z]{2}$/.test(raw)) return raw.toUpperCase();
+        return US_STATE_NAME_TO_CODE[raw] || '';
+      }
+
+      function normalizeEventKey(name) {
+        return String(name || '')
+          .toLowerCase()
+          .replace(/&/g, ' and ')
+          .replace(/[^a-z0-9]+/g, ' ')
+          .replace(/\bjack and jill\b/g, 'jj')
+          .replace(/\bj and j\b/g, 'jj')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function eventKeysMatch(a, b) {
+        if (!a || !b) return false;
+        if (a === b) return true;
+        // Soft: shorter key must be a whole-token prefix of the longer one
+        // ("madjam" → "madjam mid atlantic…", not "open" → "german open").
+        const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+        if (short.length < 5) return false;
+        return long.startsWith(short + ' ');
+      }
+
+      /** Summary Points / Event Trends place: flag + USA · City, ST (or Country · City). */
+      function formatChampionPlaceLine(ev) {
+        const flag = ev.flag || '';
+        let country = String(ev.threshold_country || '').trim();
+        let city = String(ev.threshold_city || '').trim();
+        const loc = String(ev.threshold_location || '').trim();
+        const isUs = /^united states$/i.test(country) || /^usa$/i.test(country) || flag === '🇺🇸';
+        if (isUs) {
+          country = 'USA';
+          let stateCode = '';
+          if (loc) {
+            const parts = loc.split(',').map(p => p.trim()).filter(Boolean);
+            if (parts.length >= 2) {
+              const maybeState = parts[parts.length - 1].replace(/\.\s*$/, '');
+              const code = usStateCode(maybeState);
+              if (code) {
+                stateCode = code;
+                if (!city) city = parts[0];
+              }
+            }
+          }
+          if (city && stateCode) city = `${city}, ${stateCode}`;
+          else if (!city && stateCode) city = stateCode;
+        } else if (country) {
+          // Strip trailing country from "Munich, Germany"
+          if (loc && loc.includes(',')) {
+            const parts = loc.split(',').map(p => p.trim()).filter(Boolean);
+            const last = (parts[parts.length - 1] || '').replace(/\.\s*$/, '');
+            if (parts.length >= 2 && normalize(last) === normalize(country)) {
+              city = city || parts.slice(0, -1).join(', ');
+            } else if (!city) {
+              city = loc;
+            }
+          } else if (!city && loc) {
+            city = loc;
+          }
+          if (/^republic of korea$/i.test(country) || /^korea$/i.test(country)) country = 'South Korea';
+        } else if (loc) {
+          city = loc;
+        }
+        const text = [country, city].filter(Boolean).join(' · ');
+        return { flag, text };
+      }
+
+      /** Parse "Nov 05 - 08, 2026" / "Mar 5 - Mar 9, 2026" into ISO start/end. */
+      function parsePointsDatesString(datesStr) {
+        const s = String(datesStr || '').trim();
+        if (!s) return null;
+        const months = {
+          jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+          jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12
+        };
+        const m = s.match(
+          /^([A-Za-z]+)\s+(\d{1,2})(?:\s*[-–]\s*(?:([A-Za-z]+)\s+)?(\d{1,2}))?,\s*(\d{4})$/
+        );
+        if (!m) return null;
+        const m1 = months[m[1].slice(0, 3).toLowerCase()];
+        const d1 = Number(m[2]);
+        const y = Number(m[5]);
+        if (!m1 || !d1 || !y) return null;
+        const m2name = m[3] || m[1];
+        const m2 = months[m2name.slice(0, 3).toLowerCase()] || m1;
+        const d2 = m[4] ? Number(m[4]) : d1;
+        const pad = n => String(n).padStart(2, '0');
+        return {
+          start: `${y}-${pad(m1)}-${pad(d1)}`,
+          end: `${y}-${pad(m2)}-${pad(d2)}`
+        };
+      }
+
+      let eventDateLookup = [];
+
+      function buildEventDateLookup(pointsData) {
+        const rows = [];
+        (pointsData && pointsData.summaries || []).forEach(block => {
+          (block.events || []).forEach(ev => {
+            let start = String(ev.start_date || '').slice(0, 10);
+            let end = String(ev.end_date || '').slice(0, 10);
+            if ((!start || !end) && ev.dates) {
+              const parsed = parsePointsDatesString(ev.dates);
+              if (parsed) {
+                start = start || parsed.start;
+                end = end || parsed.end;
+              }
+            }
+            if (!start && !end) return;
+            rows.push({
+              key: normalizeEventKey(ev.name),
+              name: ev.name,
+              start,
+              end: end || start
+            });
+          });
+        });
+        eventDateLookup = rows;
+      }
+
+      function lookupEventDateRange(ev) {
+        const key = normalizeEventKey(ev.threshold_event);
+        const thresh = String(ev.threshold_date || '').slice(0, 10);
+        const threshNum = thresh ? Number(thresh.replace(/-/g, '')) : NaN;
+        if (!key) return null;
+        const exact = eventDateLookup.filter(r => r.key === key);
+        const soft = exact.length ? [] : eventDateLookup.filter(r => eventKeysMatch(r.key, key));
+        const cands = exact.length ? exact : soft;
+        if (!cands.length) return null;
+        // Prefer a range whose start is within ~2 weeks of threshold_date.
+        const MAX_DIST = 14;
+        let best = null;
+        let bestDist = Infinity;
+        cands.forEach(c => {
+          const sd = c.start ? Number(String(c.start).replace(/-/g, '')) : NaN;
+          if (!threshNum || Number.isNaN(sd)) return;
+          // YYYYMMDD numeric distance is fine within the same month/nearby months.
+          const y1 = Math.floor(threshNum / 10000);
+          const y2 = Math.floor(sd / 10000);
+          const m1 = Math.floor((threshNum % 10000) / 100);
+          const m2 = Math.floor((sd % 10000) / 100);
+          const d1 = threshNum % 100;
+          const d2 = sd % 100;
+          const dist = Math.abs(
+            Date.UTC(y1, m1 - 1, d1) - Date.UTC(y2, m2 - 1, d2)
+          ) / 86400000;
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = c;
+          }
+        });
+        if (!best || bestDist > MAX_DIST) return null;
+        return best;
+      }
+
+      function formatThresholdEventDates(ev) {
+        const hit = lookupEventDateRange(ev);
+        if (hit && hit.start) {
+          const a = fmtEventTrendsDate(hit.start);
+          const b = fmtEventTrendsDate(hit.end || hit.start);
+          if (a && b) return b !== a ? `${a} – ${b}` : a;
+          if (a) return a;
+        }
+        return fmtEventTrendsDate(ev.threshold_date, ev.event_year, ev.event_month);
       }
 
       function eventParenLine(ev) {
@@ -901,9 +1201,23 @@
         const badgeClass = status === 'required' ? 'badge-required' : 'badge-allowed';
         const roleClass = (ev.role || '').toLowerCase() === 'follower' ? 'badge-follower' : 'badge-leader';
         const badgeLabel = status === 'required' ? 'Required' : 'Allowed';
-        const loc = [ev.flag, ev.threshold_location].filter(Boolean).join(' ');
         const name = ev.dancer_name || ev.title || '';
-        const searchBlob = normalize([name, surnameOf(name), ev.dancer_id, ev.role, ev.status, ev.threshold_event].join(' '));
+        const eventName = String(ev.threshold_event || '').trim();
+        const searchBlob = normalize([name, surnameOf(name), ev.dancer_id, ev.role, ev.status, eventName].join(' '));
+        const place = formatChampionPlaceLine(ev);
+        const dates = formatThresholdEventDates(ev);
+        const placeBits = [];
+        if (eventName) placeBits.push(`<span class="news-event-name">${esc(eventName)}</span>`);
+        if (place.flag || place.text) {
+          placeBits.push(
+            `<span class="news-place">${place.flag ? `<span class="news-flag" aria-hidden="true">${esc(place.flag)}</span>` : ''}` +
+            `${place.text ? `<span>${esc(place.text)}</span>` : ''}</span>`
+          );
+        }
+        if (dates) placeBits.push(`<span class="news-dates">${esc(dates)}</span>`);
+        const placeLineHtml = placeBits.length
+          ? `<div class="news-place-line">${placeBits.join('<span aria-hidden="true">·</span>')}</div>`
+          : '';
         return `
           <article class="news-card"
                    id="${esc(ev.slug)}"
@@ -925,12 +1239,8 @@
                     <span class="badge ${badgeClass}">${badgeLabel}</span>
                   </span>
                 </div>
-                <p class="news-meta">
-                  <span class="meta-label">Threshold event</span>
-                  <strong>${esc(ev.threshold_event)}</strong>
-                  · ${fmtMonthYear(ev.threshold_date, ev.event_year, ev.event_month)}
-                  ${loc ? `<span class="meta-location">${esc(loc)}</span>` : ''}
-                </p>
+                <p class="news-meta"><span class="news-meta__label">Threshold event:</span></p>
+                ${placeLineHtml}
               </div>
               ${chevronSvg}
             </div>
@@ -998,7 +1308,12 @@
         counts[key] = (counts[key] || 0) + 1;
       }
 
+      function yearTotal(counts) {
+        return YEAR_COUNT_SPECS.reduce((sum, spec) => sum + (counts[spec.role + '-' + spec.status] || 0), 0);
+      }
+
       function yearCountsHtml(counts) {
+        const total = yearTotal(counts);
         const parts = YEAR_COUNT_SPECS.map(spec => {
           const key = spec.role + '-' + spec.status;
           const n = counts[key] || 0;
@@ -1019,15 +1334,28 @@
           })
           .filter(Boolean)
           .join(', ');
+        const aria = total
+          ? `Total ${total}${summary ? `, including ${summary}` : ''}`
+          : 'No transitions';
         return (
-          `<span class="year-counts" aria-label="${esc(summary || 'No transitions')}">` +
-            parts +
+          `<span class="year-counts" aria-label="${esc(aria)}">` +
+            `<span class="year-counts__total">` +
+              `<span>Total</span>` +
+              `<span class="year-counts__total-n" data-year-total>${total}</span>` +
+              `<span class="year-counts__incl">incl.</span>` +
+            `</span>` +
+            `<span class="year-counts__breakdown">${parts}</span>` +
           `</span>`
         );
       }
 
       function fillYearCounts(wrap, counts) {
         if (!wrap) return;
+        const total = yearTotal(counts);
+        const totalEl = wrap.querySelector('[data-year-total]');
+        if (totalEl) totalEl.textContent = String(total);
+        const inclEl = wrap.querySelector('.year-counts__incl');
+        if (inclEl) inclEl.hidden = total === 0;
         YEAR_COUNT_SPECS.forEach(spec => {
           const key = spec.role + '-' + spec.status;
           const n = counts[key] || 0;
@@ -1045,7 +1373,10 @@
           })
           .filter(Boolean)
           .join(', ');
-        wrap.setAttribute('aria-label', summary || 'No transitions');
+        wrap.setAttribute(
+          'aria-label',
+          total ? `Total ${total}${summary ? `, including ${summary}` : ''}` : 'No transitions'
+        );
       }
 
       function postDateYear(raw) {
@@ -1115,12 +1446,17 @@
         searchNoResults.classList.toggle('visible', filtering && visible === 0);
       }
 
-      fetch('static/data/champion_news.json')
-        .then(r => {
+      Promise.all([
+        fetch('static/data/champion_news.json').then(r => {
           if (!r.ok) throw new Error('Failed to fetch champion_news.json');
           return r.json();
-        })
-        .then(data => {
+        }),
+        fetch('static/data/points_summaries.json')
+          .then(r => (r.ok ? r.json() : null))
+          .catch(() => null)
+      ])
+        .then(([data, pointsData]) => {
+          buildEventDateLookup(pointsData);
           const summaries = data.summaries || [];
           if (!summaries.length) {
             catalog.innerHTML = '<div class="empty">No New Champions yet. New Allowed / Required transitions appear here after full-parse (cutoff 25&nbsp;Jul&nbsp;2026).</div>';
@@ -1150,8 +1486,7 @@
             html += `<span class="year-header__main"><span class="year-label">${esc(label)}</span>${yearCountsHtml(counts)}</span>${chevronSvg}</div>`;
             html += `<div class="year-body${open ? '' : ' collapsed'}">`;
             byYear.get(year).forEach(block => {
-              const header = esc(formatPostDate(block.post_date));
-              html += `<section class="date-block"><div class="summary-date">${header}</div>`;
+              html += `<section class="date-block">`;
               (block.events || []).forEach(ev => { html += cardHtml(ev); });
               html += '</section>';
             });

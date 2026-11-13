@@ -89,10 +89,38 @@ Follow existing chrome CSS: Others hidden on mobile; row 2 Calendar + Growth; ro
 - Page header pattern: title + one subtitle + optional actions row (`.wsdc-page-header`).
 - Full-bleed Tableau hosts: use [`dashboard-shell.css`](../static/css/dashboard-shell.css) instead of copying dead header/dropdown CSS; keep chrome + `wsdc-back` only.
 
+### Catalog list rows (Summary Points, New Champions)
+
+Use **underline rows**, not boxed cards — same quiet list language as home / Event Trends tips:
+
+- Row chrome: transparent surface, `border-bottom` only, no box-shadow / filled card hover.
+- Header flex: `align-items: center` so the expand chevron sits vertically mid-row (not pinned to the top line).
+- Vertical padding ≈ `15px 0`; keep ~5–6px between title → place → dates so lines are readable, not cramped.
+- **Do not** show publication / post dates as a visible list header. Grouping may still use post date internally; newest-first is enough in the UI.
+- Method / “how to read” copy lives in a title-row `.wsdc-info-btn` → method island dialog (not an inline accordion card).
+
+### Place & date strings (shared with Event Trends)
+
+Keep one human-readable format across Event Trends tips, Summary Points, and New Champions:
+
+| Field | Format | Example |
+|-------|--------|---------|
+| Place | `flag` + `Country · City` (USA → `USA · City, ST`) | `🇺🇸 USA · Tampa, FL` |
+| Event dates | `D Mon YYYY` start–end with en dash | `5 Nov 2026 – 8 Nov 2026` |
+
+- USA state is the **two-letter** code; non-US rows omit state codes.
+- Prefer ISO `start_date` / `end_date`; if only a legacy `dates` string exists, parse into the same `D Mon YYYY` range before display.
+- New Champions threshold row: label `Threshold event:` then one place-line with **event name · place · dates**.
+
+### Year section counters (New Champions)
+
+When a year header shows role/status chips, lead with **`Total N · incl.`** then the colored L/F × Allowed/Required breakdown — not chips alone.
+
 ### Spacing
 
 - Page horizontal pad: ≥12–16px; section vertical rhythm from `--wsdc-space-6` / `--wsdc-space-8`.
 - Control clusters: gap `--wsdc-space-2` / `--wsdc-space-3` (8–12px).
+- Summary Points geo filters: keep `--wsdc-dd-width` wide enough that labels like **All continents** are not clipped (~9rem); filter gap ≥10px.
 
 ---
 

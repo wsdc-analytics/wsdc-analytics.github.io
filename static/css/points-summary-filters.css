@@ -31,7 +31,7 @@
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: flex-start;
-  gap: 4px 6px;
+  gap: 4px 10px;
   flex: 1 1 auto;
   min-width: 0;
   overflow: visible;
@@ -95,10 +95,10 @@
   cursor: default;
 }
 
-#ptsContinentFilterDd { --wsdc-dd-width: 7.25rem; }
-#ptsCountryFilterDd { --wsdc-dd-width: 8rem; }
-#ptsStateFilterDd { --wsdc-dd-width: 6.5rem; }
-#ptsCityFilterDd { --wsdc-dd-width: 8.5rem; }
+#ptsContinentFilterDd { --wsdc-dd-width: 9rem; }
+#ptsCountryFilterDd { --wsdc-dd-width: 9rem; }
+#ptsStateFilterDd { --wsdc-dd-width: 7rem; }
+#ptsCityFilterDd { --wsdc-dd-width: 9rem; }
 
 /* Event counts in dropdown options (Events Calendar month-count style) */
 .page-toolbar .pts-filter-count {

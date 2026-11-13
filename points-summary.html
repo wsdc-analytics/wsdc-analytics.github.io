@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="static/css/tokens.css">
     <link rel="stylesheet" href="static/css/ui-primitives.css">
     <link rel="stylesheet" href="static/css/site-chrome.css?v=20261106d">
-    <link rel="stylesheet" href="static/css/points-summary-filters.css?v=20261007g">
+    <link rel="stylesheet" href="static/css/points-summary-filters.css?v=20261113a">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" href="static/data/points_summaries.json" as="fetch" crossorigin>
     <script src="static/js/analytics.js" defer></script>
@@ -188,100 +188,125 @@
             font-size: 30px;
             font-weight: 700;
             letter-spacing: -0.02em;
-            margin-bottom: 8px;
+            margin-bottom: 0;
             color: var(--color-primary-dark);
         }
+        .page-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .page-title-row .wsdc-page-title { margin-bottom: 0; }
         .subtitle {
             color: var(--text-secondary);
             font-size: 16px;
             margin-bottom: 24px;
         }
-        .how-to-read {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin-bottom: 32px;
-            overflow: hidden;
-            box-shadow: var(--shadow-card);
+        .legend-pill {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-right: 6px;
         }
-        .how-to-read.expanded { border-color: #cbd5e1; }
-        .how-to-read-header {
-            padding: 16px 20px;
+        .legend-pill-yellow { background: #fef9c3; box-shadow: inset 0 0 0 1px #eab30855; }
+        .legend-pill-green { background: #dcfce7; box-shadow: inset 0 0 0 1px #22c55e55; }
+        .method-layer {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2200;
+        }
+        .method-layer.is-open { display: block; }
+        .method-layer__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.28);
+        }
+        .method-island {
+            position: absolute;
+            left: 24px;
+            top: 72px;
+            width: min(420px, calc(100vw - 24px));
+            max-height: min(70vh, 560px);
+            overflow: auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+            border: 1px solid #e5e7eb;
+        }
+        .method-island__head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #eef2f7;
+        }
+        .method-island__head h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-primary-dark);
+            margin: 0;
+        }
+        .method-island__close {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            font: 600 12px inherit;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .method-island__body { padding: 8px 14px 14px; }
+        .method-sec { border-bottom: 1px solid #eef2f7; }
+        .method-sec:last-of-type { border-bottom: 0; }
+        .method-sec > summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 10px 0;
+            font-weight: 700;
+            font-size: 13px;
+            color: #0b1221;
+        }
+        .method-sec > summary::-webkit-details-marker { display: none; }
+        .method-sec__body {
+            padding: 0 0 10px;
+            font-size: 12.5px;
+            line-height: 1.45;
+            color: #4b5563;
+        }
+        .method-sec__body ul { margin: 0 0 0 1.1em; }
+        .method-sec__body li + li { margin-top: 4px; }
+        .method-sec__body p + p { margin-top: 8px; }
+        .year-section {
+            margin-bottom: 8px;
+        }
+        .year-header {
+            padding: 14px 0;
             cursor: pointer;
             user-select: none;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            transition: background var(--transition);
-            font-weight: 600;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0;
+            font-weight: 650;
+            font-size: 18px;
+            letter-spacing: -0.02em;
             color: var(--text-primary);
+            margin-bottom: 4px;
+            transition: color var(--transition);
         }
-        .how-to-read-header:hover { background: var(--bg-tertiary); }
-        .how-to-read-header .chevron {
+        .year-header:hover { color: var(--color-accent); }
+        .year-header .chevron {
             flex-shrink: 0;
             width: 18px;
             height: 18px;
-            color: var(--text-tertiary);
-            transition: transform var(--transition);
-        }
-        .how-to-read.expanded .how-to-read-header .chevron { transform: rotate(180deg); }
-        .how-to-read-body {
-            padding: 0 22px 20px;
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.65;
-        }
-        .how-to-read-body.collapsed { display: none; }
-        .how-to-read-body ul {
-            margin: 0 0 0 18px;
-        }
-        .how-to-read-body li {
-            margin-bottom: 6px;
-        }
-        .how-to-read-body code {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.92em;
-            background: var(--bg-tertiary);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .summary-date {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin: 40px 0 16px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .summary-date:first-of-type { margin-top: 0; }
-        .year-section {
-            margin-bottom: 24px;
-        }
-        .year-header {
-            padding: 14px 20px;
-            cursor: pointer;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            transition: background var(--transition);
-        }
-        .year-header:hover { background: var(--bg-tertiary); }
-        .year-header .chevron {
-            flex-shrink: 0;
-            width: 20px;
-            height: 20px;
             color: var(--text-tertiary);
             transition: transform var(--transition);
         }
@@ -291,41 +316,65 @@
         }
         .year-body.collapsed { display: none; }
         .event-card {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin-bottom: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-card);
-            transition: box-shadow var(--transition), border-color var(--transition);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0;
+            margin-bottom: 0;
+            overflow: visible;
+            box-shadow: none;
+            transition: opacity 160ms ease;
         }
-        .event-card:hover { box-shadow: var(--shadow-card-hover); border-color: #cbd5e1; }
-        .event-card.expanded { border-color: #cbd5e1; box-shadow: var(--shadow-card-hover); }
+        .event-card:hover { opacity: 0.92; box-shadow: none; border-color: var(--border-color); }
+        .event-card.expanded { opacity: 1; box-shadow: none; border-color: var(--border-color); }
         .event-card { scroll-margin-top: 20px; }
         .event-header {
-            padding: 18px 22px;
+            padding: 15px 0;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            transition: background var(--transition);
+            gap: 12px;
+            transition: none;
         }
-        .event-header:hover { background: var(--bg-card-hover); }
+        .event-header:hover { background: transparent; }
         .event-header .chevron {
             flex-shrink: 0;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
+            margin-top: 0;
             color: var(--text-tertiary);
             transition: transform var(--transition), color var(--transition);
         }
         .event-card.expanded .event-header .chevron { transform: rotate(180deg); color: var(--color-accent); }
-        .event-name { font-weight: 600; font-size: 17px; letter-spacing: -0.01em; }
+        .event-name {
+            font-weight: 600;
+            font-size: 17px;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+            color: var(--text-primary);
+        }
+        .event-place {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        .event-place .event-flag { line-height: 1; }
+        .event-dates {
+            margin-top: 5px;
+            font-size: 12.5px;
+            line-height: 1.4;
+            color: var(--text-tertiary);
+        }
         .event-meta { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
         .event-body {
-            padding: 0 22px 24px;
-            border-top: 1px solid var(--border-color);
-            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+            padding: 0 0 14px;
+            border-top: none;
+            background: transparent;
         }
         .event-body.collapsed { display: none; }
         .event-body:not(.collapsed) { animation: fadeSlide 0.25s ease; }
@@ -451,10 +500,8 @@
                 overflow-x: hidden;
                 padding: 24px 16px 48px;
             }
-            .how-to-read-header { padding: 14px 16px; }
-            .how-to-read-body { padding: 0 16px 16px; font-size: 13px; }
-            .event-header { padding: 14px 16px; }
-            .event-body { padding: 0 16px 20px; }
+            .event-header { padding: 14px 0; }
+            .event-body { padding: 0 0 14px; }
             .divisions-grid { gap: 16px; padding-top: 16px; }
             .division-block { padding: 12px 14px; }
             .place-row {
@@ -581,17 +628,16 @@
     <div class="container">
                 <a class="wsdc-back" href="index.html?lang=en" data-wsdc-back id="backLink">Back to home</a>
         <header class="wsdc-page-header">
-        <h1 class="wsdc-page-title">Summary Points</h1>
-        <p class="wsdc-page-subtitle subtitle">Weekly points awarded by event, organized by publication date.</p>
+        <div class="page-title-row">
+            <h1 class="wsdc-page-title">Summary Points</h1>
+            <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="About this page" aria-expanded="false" aria-controls="methodIsland" title="About this page">
+                <span aria-hidden="true">i</span>
+            </button>
+        </div>
+        <p class="wsdc-page-subtitle subtitle">Weekly points awarded by event, newest results first.</p>
         </header>
         <div class="page-toolbar wsdc-filter-bar">
             <div class="page-toolbar__search">
-                <div class="search-help">
-                    <span class="info-icon wsdc-info-btn" aria-label="Brief search instructions (hover or focus to read)" role="img">
-                        <span aria-hidden="true">i</span>
-                        <span class="info-tooltip"><span class="info-tooltip-main">Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</span><span class="info-tooltip-note"><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</span></span>
-                    </span>
-                </div>
                 <div class="search-box">
                     <input type="search" class="search-input wsdc-field" id="search-input" placeholder="Event name, city, or dancer…" autocomplete="off" aria-label="Search by event name, city, or dancer; use sectioned suggestions when available" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-controls="search-suggestions">
                     <div class="search-suggestions" id="search-suggestions" role="region" aria-label="Matching dancers, cities, and events"></div>
@@ -644,25 +690,41 @@
                 </div>
             </div>
         </div>
-        <div class="how-to-read" id="how-to-read">
-            <div class="how-to-read-header" role="button" tabindex="0" aria-expanded="false" aria-controls="how-to-read-body">
-                <span>How to read this page</span>
-                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-            <div class="how-to-read-body collapsed" id="how-to-read-body">
-                <ul>
-                    <li>This shows <strong>points awarded</strong> to dancers, not full event results.</li>
-                    <li><strong>Events</strong> are grouped by the date results were posted.</li>
-                    <li><strong>Click an event</strong> to expand and see divisions (Champions, All-Star, Advanced).</li>
-                    <li><strong>(+X)</strong> — Registry points awarded for that placement.</li>
-                    <li><strong>[N]</strong> — total points in that division after this event.</li>
-                    <li><span class="legend-pill legend-pill-yellow"></span> — reached ALLOWED threshold (dancer can now compete in the next division).</li>
-                    <li><span class="legend-pill legend-pill-green"></span> — reached REQUIRED threshold (dancer must now compete in the next division) or earned first points in Intermediate/Advanced/All-Stars.</li>
-                </ul>
-            </div>
-        </div>
         <p class="search-no-results" id="search-no-results">No events match your search.</p>
         <main id="catalog" aria-live="polite"></main>
+    </div>
+
+    <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
+        <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
+        <div class="method-island" id="methodIsland" role="dialog" aria-modal="true" aria-labelledby="methodIslandTitle">
+            <div class="method-island__head">
+                <h2 id="methodIslandTitle">About this page</h2>
+                <button type="button" class="method-island__close" id="methodIslandClose">Close</button>
+            </div>
+            <div class="method-island__body">
+                <details class="method-sec" open>
+                    <summary>How to read</summary>
+                    <div class="method-sec__body">
+                        <ul>
+                            <li>This shows <strong>points awarded</strong> to dancers, not full event results.</li>
+                            <li><strong>Events</strong> are grouped by the date results were posted.</li>
+                            <li><strong>Click an event</strong> to expand and see divisions (Champions, All-Star, Advanced).</li>
+                            <li><strong>(+X)</strong> — Registry points awarded for that placement.</li>
+                            <li><strong>[N]</strong> — total points in that division after this event.</li>
+                            <li><span class="legend-pill legend-pill-yellow"></span> — reached ALLOWED threshold (dancer can now compete in the next division).</li>
+                            <li><span class="legend-pill legend-pill-green"></span> — reached REQUIRED threshold (dancer must now compete in the next division) or earned first points in Intermediate/Advanced/All-Stars.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="method-sec">
+                    <summary>Search</summary>
+                    <div class="method-sec__body">
+                        <p>Start typing a dancer name, an event name, or the beginning of a city — then choose from the suggestions.</p>
+                        <p><strong>Note:</strong> Only events from summaries posted from November&nbsp;2025 onward appear here.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
     </div>
 
     <script src="static/js/site-chrome.js?v=20261106d" defer></script>
@@ -676,22 +738,37 @@
             window.history.scrollRestoration = 'manual';
         }
 
-        const howToReadEl = document.getElementById('how-to-read');
-        function toggleHowToRead() {
-            const body = howToReadEl.querySelector('.how-to-read-body');
-            const header = howToReadEl.querySelector('.how-to-read-header');
-            body.classList.toggle('collapsed');
-            const expanded = !body.classList.contains('collapsed');
-            howToReadEl.classList.toggle('expanded', expanded);
-            header.setAttribute('aria-expanded', String(expanded));
+        function openMethod() {
+            const layer = document.getElementById('methodLayer');
+            const btn = document.getElementById('methodInfoBtn');
+            if (!layer || !btn) return;
+            layer.hidden = false;
+            layer.classList.add('is-open');
+            layer.setAttribute('aria-hidden', 'false');
+            btn.setAttribute('aria-expanded', 'true');
+            document.getElementById('methodIslandClose')?.focus();
         }
-        howToReadEl?.addEventListener('click', function(e) {
-            if (e.target.closest('.how-to-read-header')) toggleHowToRead();
+        function closeMethod() {
+            const layer = document.getElementById('methodLayer');
+            const btn = document.getElementById('methodInfoBtn');
+            if (!layer || !btn) return;
+            const wasOpen = layer.classList.contains('is-open');
+            layer.classList.remove('is-open');
+            layer.hidden = true;
+            layer.setAttribute('aria-hidden', 'true');
+            btn.setAttribute('aria-expanded', 'false');
+            if (wasOpen) btn.focus();
+        }
+        document.getElementById('methodInfoBtn')?.addEventListener('click', function () {
+            const layer = document.getElementById('methodLayer');
+            if (layer?.classList.contains('is-open')) closeMethod();
+            else openMethod();
         });
-        howToReadEl?.querySelector('.how-to-read-header')?.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleHowToRead();
+        document.getElementById('methodIslandClose')?.addEventListener('click', closeMethod);
+        document.getElementById('methodLayerBackdrop')?.addEventListener('click', closeMethod);
+        document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape' && document.getElementById('methodLayer')?.classList.contains('is-open')) {
+                closeMethod();
             }
         });
 
@@ -716,11 +793,15 @@
             if (yearSection) {
                 yearSection.classList.add('expanded');
                 const yearBody = yearSection.querySelector('.year-body');
+                const yearHeader = yearSection.querySelector('.year-header');
                 if (yearBody) yearBody.classList.remove('collapsed');
+                if (yearHeader) yearHeader.setAttribute('aria-expanded', 'true');
             }
             const body = target.querySelector('.event-body');
             if (body) body.classList.remove('collapsed');
             target.classList.add('expanded');
+            const eventHeader = target.querySelector('.event-header');
+            if (eventHeader) eventHeader.setAttribute('aria-expanded', 'true');
             void body?.offsetHeight;
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
@@ -772,20 +853,33 @@
 
                 const currentYear = new Date().getFullYear();
                 catalog.innerHTML = renderByYear(summaries, currentYear);
+                function bindToggle(el, toggle) {
+                    el.addEventListener('click', toggle);
+                    el.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggle();
+                        }
+                    });
+                }
                 document.querySelectorAll('.year-header').forEach(el => {
-                    el.addEventListener('click', () => {
+                    bindToggle(el, () => {
                         const section = el.closest('.year-section');
                         const body = section.querySelector('.year-body');
                         body.classList.toggle('collapsed');
-                        section.classList.toggle('expanded', !body.classList.contains('collapsed'));
+                        const open = !body.classList.contains('collapsed');
+                        section.classList.toggle('expanded', open);
+                        el.setAttribute('aria-expanded', String(open));
                     });
                 });
                 document.querySelectorAll('.event-header').forEach(el => {
-                    el.addEventListener('click', () => {
+                    bindToggle(el, () => {
                         const card = el.closest('.event-card');
                         const body = el.nextElementSibling;
                         body.classList.toggle('collapsed');
-                        card.classList.toggle('expanded', !body.classList.contains('collapsed'));
+                        const open = !body.classList.contains('collapsed');
+                        card.classList.toggle('expanded', open);
+                        el.setAttribute('aria-expanded', String(open));
                     });
                 });
                 expandAndScrollToHash();
@@ -899,18 +993,6 @@
                             const yearBody = sec.querySelector('.year-body');
                             if (yearBody) yearBody.classList.remove('collapsed');
                         }
-                        sec.querySelectorAll('.summary-date').forEach(dateEl => {
-                            let hasVisible = false;
-                            let el = dateEl.nextElementSibling;
-                            while (el && !el.classList.contains('summary-date')) {
-                                if (el.classList.contains('event-card') && el.style.display !== 'none') {
-                                    hasVisible = true;
-                                    break;
-                                }
-                                el = el.nextElementSibling;
-                            }
-                            dateEl.style.display = hasVisible ? '' : 'none';
-                        });
                     });
                     if ((q || activeDancerNorm || geoFiltersActive()) && !anyVisible) noResults.classList.add('visible');
                     updateDancerHighlights();
@@ -990,7 +1072,7 @@
                 const expanded = year === String(currentYear);
                 return `
                 <div class="year-section ${expanded ? 'expanded' : ''}" data-year="${year}">
-                    <div class="year-header">
+                    <div class="year-header" role="button" tabindex="0" aria-expanded="${expanded ? 'true' : 'false'}">
                         <span>${year}</span>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
@@ -1009,7 +1091,7 @@
                 eventsByContinent[c].push(ev);
             });
             const order = ['Europe', 'America', 'Australia', 'Asia', 'South America', 'Africa', 'Other'];
-            let html = `<div class="summary-date">${s.post_date}</div>`;
+            let html = '';
             for (const c of order) {
                 if (!eventsByContinent[c]) continue;
                 for (const ev of eventsByContinent[c]) {
@@ -1567,6 +1649,97 @@
             return s.replace(/,\s*\d{4}\s*$/, '').trim();
         }
 
+        const US_STATE_NAME_TO_CODE = {
+            Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR', California: 'CA', Colorado: 'CO',
+            Connecticut: 'CT', Delaware: 'DE', Florida: 'FL', Georgia: 'GA', Hawaii: 'HI', Idaho: 'ID',
+            Illinois: 'IL', Indiana: 'IN', Iowa: 'IA', Kansas: 'KS', Kentucky: 'KY', Louisiana: 'LA',
+            Maine: 'ME', Maryland: 'MD', Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN',
+            Mississippi: 'MS', Missouri: 'MO', Montana: 'MT', Nebraska: 'NE', Nevada: 'NV',
+            'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY',
+            'North Carolina': 'NC', 'North Dakota': 'ND', Ohio: 'OH', Oklahoma: 'OK', Oregon: 'OR',
+            Pennsylvania: 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD',
+            Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT', Virginia: 'VA', Washington: 'WA',
+            'West Virginia': 'WV', Wisconsin: 'WI', Wyoming: 'WY', 'District of Columbia': 'DC'
+        };
+
+        function usStateCode(stateName) {
+            const raw = String(stateName || '').trim();
+            if (!raw) return '';
+            if (/^[A-Za-z]{2}$/.test(raw)) return raw.toUpperCase();
+            return US_STATE_NAME_TO_CODE[raw] || '';
+        }
+
+        /** Event Trends–style place line: flag + country · city (, ST for USA). */
+        function formatEventPlaceLine(ev, geo) {
+            const flag = ev.flag || '';
+            let country = (geo && geo.country) || '';
+            let city = (geo && geo.city) || '';
+            const state = (geo && geo.state) || '';
+            if (country === US_COUNTRY || /^united states$/i.test(country) || /^usa$/i.test(country)) {
+                country = 'USA';
+                const code = usStateCode(state);
+                if (city && code) city = `${city}, ${code}`;
+                else if (!city && code) city = code;
+            }
+            const text = [country, city].filter(Boolean).join(' · ');
+            return { flag, text };
+        }
+
+        /** Event Trends Monitor tip style: "5 Nov 2026". */
+        function fmtEventTrendsDate(iso) {
+            const raw = String(iso || '').slice(0, 10);
+            const p = raw.split('-');
+            if (p.length !== 3) return '';
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const m = months[Number(p[1]) - 1];
+            if (!m) return raw;
+            return `${Number(p[2])} ${m} ${p[0]}`;
+        }
+
+        /** Parse "Nov 05 - 08, 2026" / "Mar 5 - Mar 9, 2026" into ISO start/end. */
+        function parsePointsDatesString(datesStr) {
+            const s = String(datesStr || '').trim();
+            if (!s) return null;
+            const months = {
+                jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+                jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12
+            };
+            const m = s.match(
+                /^([A-Za-z]+)\s+(\d{1,2})(?:\s*[-–]\s*(?:([A-Za-z]+)\s+)?(\d{1,2}))?,\s*(\d{4})$/
+            );
+            if (!m) return null;
+            const m1 = months[m[1].slice(0, 3).toLowerCase()];
+            const d1 = Number(m[2]);
+            const y = Number(m[5]);
+            if (!m1 || !d1 || !y) return null;
+            const m2name = m[3] || m[1];
+            const m2 = months[m2name.slice(0, 3).toLowerCase()] || m1;
+            const d2 = m[4] ? Number(m[4]) : d1;
+            const pad = n => String(n).padStart(2, '0');
+            return {
+                start: `${y}-${pad(m1)}-${pad(d1)}`,
+                end: `${y}-${pad(m2)}-${pad(d2)}`
+            };
+        }
+
+        function formatEventDateRange(ev) {
+            let start = String(ev.start_date || '').slice(0, 10);
+            let end = String(ev.end_date || '').slice(0, 10);
+            if ((!start || !end) && ev.dates) {
+                const parsed = parsePointsDatesString(ev.dates);
+                if (parsed) {
+                    start = start || parsed.start;
+                    end = end || parsed.end;
+                }
+            }
+            const a = fmtEventTrendsDate(start);
+            const b = fmtEventTrendsDate(end);
+            if (a && b) return b !== a ? `${a} – ${b}` : a;
+            if (a) return a;
+            return simplifyEventDatesDisplay(ev.dates);
+        }
+
         function renderEvent(ev, postDate) {
             const slug = ev.slug || makeEventSlug(ev.name, postDate);
             const searchText = buildEventSearchText(ev);
@@ -1605,15 +1778,25 @@
                 });
                 divs += `<div class="division-block ${divClass(d.division)}"><div class="division-title">${escapeHtml(d.division)}</div>${placesHtml}</div>`;
             });
-            const displayLocation = formatDisplayLocation(ev.location, ev.flag);
-            const displayDates = simplifyEventDatesDisplay(ev.dates);
             const geo = parsePointsEventGeo(ev);
+            const place = formatEventPlaceLine(ev, geo);
+            const displayDates = formatEventDateRange(ev);
+            const edition = ev.edition != null && String(ev.edition).trim() !== ''
+                ? ` <span class="event-edition">#${escapeHtml(String(ev.edition))}</span>`
+                : '';
+            const placeHtml = place.text
+                ? `<div class="event-place">${place.flag ? `<span class="event-flag" aria-hidden="true">${escapeHtml(place.flag)}</span>` : ''}<span>${escapeHtml(place.text)}</span></div>`
+                : '';
+            const datesHtml = displayDates
+                ? `<div class="event-dates">${escapeHtml(displayDates)}</div>`
+                : '';
             return `
                 <div class="event-card" id="event-${slug || ''}" data-search-text="${escapeAttr(searchText)}" data-dancers="${escapeAttr(dancerTokens)}" data-geo-continent="${escapeAttr(geo.continent)}" data-geo-country="${escapeAttr(geo.country)}" data-geo-state="${escapeAttr(geo.state)}" data-geo-city="${escapeAttr(geo.city)}">
-                    <div class="event-header">
+                    <div class="event-header" role="button" tabindex="0" aria-expanded="false">
                         <div>
-                            <div class="event-name">${ev.flag || ''} ${escapeHtml(ev.name)}</div>
-                            <div class="event-meta">${escapeHtml(displayLocation)} &middot; ${escapeHtml(displayDates)}</div>
+                            <div class="event-name">${escapeHtml(ev.name)}${edition}</div>
+                            ${placeHtml}
+                            ${datesHtml}
                         </div>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>

@@ -30,6 +30,9 @@ Full rules: [`DESIGN_GUIDELINE.md`](DESIGN_GUIDELINE.md).
 - [ ] Filter dropdowns use `.wsdc-dd` / `select.wsdc-select` (no native OS popup menus)
 - [ ] Filter/search/actions sit in a consistent toolbar region
 - [ ] One clear primary action per region
+- [ ] Catalog lists (Points / Champions): underline rows, centered chevron, no publication-date headers
+- [ ] Place/date copy matches Event Trends (`flag` + `Country · City` / `D Mon YYYY` ranges)
+- [ ] Expandable year/event headers: `role="button"`, `tabindex="0"`, `aria-expanded`, Enter/Space
 
 ## Typography & color
 
