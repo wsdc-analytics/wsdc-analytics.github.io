@@ -1037,37 +1037,6 @@ h1 {
   bottom: 8px;
 }
 
-.l2-row__venue {
-  margin-top: 4px;
-  font-size: 12px;
-  line-height: 1.35;
-  color: var(--text-secondary, #4b5563);
-}
-
-.l2-row__venue .tt-venue-lbl {
-  color: var(--text-tertiary, #6b7280);
-  font-weight: 500;
-}
-
-.l2-row__venue .tt-venue-name {
-  color: var(--text-secondary, #4b5563);
-  font-weight: 500;
-}
-
-.l2-row__venue .tt-venue-map {
-  color: var(--color-accent, #2563eb);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.l2-row__venue .tt-venue-map:hover {
-  text-decoration: underline;
-}
-
-.l2-row__venue .tt-venue-sep {
-  color: var(--text-tertiary, #6b7280);
-}
-
 .no-geo {
   font-size: 11px;
   color: var(--text-tertiary);
@@ -1337,6 +1306,52 @@ h1 {
 
 .l2-event-card__web:active {
   transform: scale(0.94);
+}
+
+.l2-event-card__venue {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin: 3px 0 0;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--text-secondary, #4b5563);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.l2-event-card__venue .tt-venue-lbl {
+  flex: 0 0 auto;
+  color: var(--text-tertiary, #6b7280);
+  font-weight: 500;
+  margin-right: 0.25em;
+}
+
+.l2-event-card__venue .tt-venue-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary, #4b5563);
+  font-weight: 500;
+}
+
+.l2-event-card__venue .tt-venue-map {
+  flex: 0 0 auto;
+  color: var(--color-accent, #2563eb);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.l2-event-card__venue .tt-venue-map:hover {
+  text-decoration: underline;
+}
+
+.l2-event-card__venue .tt-venue-sep {
+  flex: 0 0 auto;
+  color: var(--text-tertiary, #6b7280);
 }
 
 .l2-event-card .badges {

@@ -34,7 +34,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="preload" href="static/data/events_year_calendar.json?v=20261112-sync" as="fetch" crossorigin>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20261114f">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20261114h">
     <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
@@ -2222,7 +2222,8 @@
           e.start_date
         )
       : null;
-    enterCityVenueMap(e, WsdcCityVenue.mergeVenueContext(e, interimEdition));
+    var interimCtx = WsdcCityVenue.mergeVenueContext(e, interimEdition);
+    enterCityVenueMap(e, interimCtx);
 
     ensureCityVenueData()
       .then(function (data) {
@@ -2233,8 +2234,16 @@
           e.year,
           e.start_date
         );
-        enterCityVenueMap(e, WsdcCityVenue.mergeVenueContext(e, edition));
-        refreshL2ListVenueLines();
+        var nextCtx = WsdcCityVenue.mergeVenueContext(e, edition);
+        enterCityVenueMap(e, nextCtx);
+        // Rebuild card only when Venue line gains hotel/coords after the join.
+        if (
+          (interimCtx.hotel || "") !== (nextCtx.hotel || "") ||
+          interimCtx.lat !== nextCtx.lat ||
+          interimCtx.lon !== nextCtx.lon
+        ) {
+          refreshOpenEventCard();
+        }
       })
       .catch(function () {
         if (String(state.selectedEventId) !== String(selectedId)) return;
@@ -2326,35 +2335,12 @@
       rows.forEach(function (e) {
         var where = [e.city, e.country].filter(Boolean).join(", ");
         var dates = formatEventDateRange(e);
-        var venueHtml = "";
-        if (
-          state.selectedEventId != null &&
-          String(state.selectedEventId) === String(e.id) &&
-          typeof WsdcCityVenue !== "undefined"
-        ) {
-          var edition = state.growthEditions
-            ? WsdcCityVenue.findGrowthEdition(
-                state.growthEditions,
-                e.event_id,
-                e.year,
-                e.start_date
-              )
-            : null;
-          var venueCtx = WsdcCityVenue.mergeVenueContext(e, edition);
-          venueHtml = WsdcCityVenue.venueLineHtml(venueCtx, {
-            esc: esc,
-            venueLabel: t("venueLabel"),
-            mapLabel: t("venueMap"),
-            wrapClass: "l2-row__venue"
-          });
-        }
         html +=
           '<button type="button" class="l2-row" data-id="' + esc(e.id) + '">' +
           '<div class="tooltip-row__main">' +
           '<div class="tooltip-row__name">' + esc(e.name) + "</div>" +
           (where ? '<div class="tooltip-row__where">' + esc(where) + "</div>" : "") +
           (dates ? '<div class="l2-row__dates">' + esc(dates) + "</div>" : "") +
-          venueHtml +
           "</div>" +
           '<div class="tooltip-row__meta">' +
           '<span class="badge ' + tipKindClass(e.kind) + '">' +
@@ -2375,21 +2361,28 @@
       row.addEventListener("focus", function () { setHoverEvent(id); });
       row.addEventListener("blur", function () { setHoverEvent(null); });
       row.addEventListener("click", function () { selectEvent(id); });
-      row.querySelectorAll(".tt-venue-map").forEach(function (link) {
-        link.addEventListener("click", function (ev) {
-          ev.stopPropagation();
-        });
-      });
     });
   }
 
-  function refreshL2ListVenueLines() {
-    if (!state.selectedDay) return;
-    var list = document.getElementById("eventList");
-    if (!list) return;
-    list.innerHTML = buildL2ListHtml(eventsForDay(state.selectedDay));
-    wireL2ListInteractions();
-    paintRowHighlights();
+  function buildEventCardVenueHtml(e) {
+    if (!e || typeof WsdcCityVenue === "undefined") return "";
+    var edition = state.growthEditions
+      ? WsdcCityVenue.findGrowthEdition(
+          state.growthEditions,
+          e.event_id,
+          e.year,
+          e.start_date
+        )
+      : null;
+    return WsdcCityVenue.venueLineHtml(
+      WsdcCityVenue.mergeVenueContext(e, edition),
+      {
+        esc: esc,
+        venueLabel: t("venueLabel"),
+        mapLabel: t("venueMap"),
+        wrapClass: "l2-event-card__venue"
+      }
+    );
   }
 
   function populateDayIsland(iso) {
@@ -2948,6 +2941,7 @@
         '" title="' + esc(t("website")) + '">↗</a>';
     }
     titleRow += "</div>";
+    titleRow += buildEventCardVenueHtml(e);
 
     var seriesHead = '<div class="l2-event-card__series-head">' + titleRow;
     if (where) seriesHead += '<p class="event-meta l2-event-card__where">' + esc(where) + "</p>";
@@ -3159,7 +3153,6 @@
     paintMarkerStyles();
     hideEventCard();
     exitCityVenueMap();
-    refreshL2ListVenueLines();
   }
 
   function findEventById(id) {
@@ -3189,13 +3182,7 @@
     paintRowHighlights();
     paintMarkerStyles();
     showEventCard(e);
-    refreshL2ListVenueLines();
     focusMapOnEvent(e);
-    // After growth data loads, refresh Venue line if it was empty on first paint.
-    ensureCityVenueData().then(function () {
-      if (String(state.selectedEventId) !== String(id)) return;
-      refreshL2ListVenueLines();
-    }).catch(function () { /* ignore */ });
   }
 
   function setYear(y) {
@@ -3400,7 +3387,7 @@
     }
     // Don't rebuild the card under interactive children (site link / tips) —
     // that would destroy the target mid-click and cancel navigation.
-    if (e.target.closest("a, .l2-event-card__web, .l2-info-tip")) return;
+    if (e.target.closest("a, .l2-event-card__web, .l2-event-card__venue, .l2-info-tip")) return;
     // Any other click in the L2 card resets spark year to the default edition.
     if (state.l2SparkEditionKey) {
       state.l2SparkEditionKey = null;
