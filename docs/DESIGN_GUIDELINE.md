@@ -123,7 +123,7 @@ When one event is selected in the day island (not the multi-marker day overview)
 
 - Map shows the **real city admin polygon** from `static/data/geo/cities.geojson` plus a **venue/city pin** (Calendar never draws the soft-disc circle; if the poly is missing, pin-only at city zoom). Event Trends may still use soft-disc when a poly is absent.
 - Venue data comes from a **lazy join** to existing `event_growth.json` (`event_id` + `year`) — do not bake a parallel venue file into the calendar JSON.
-- Selected list row shows **`Venue: … · Map`** (i18n via Calendar dictionaries); omit the line when neither hotel nor Maps URL exists.
+- Stats card shows **`Venue: … · Map`** directly under the event title + site link (i18n via Calendar dictionaries); omit the line when neither hotel nor Maps URL exists. Do not put this line on the right-hand list row. Long hotel names ellipsize; **Map** must stay visible.
 - Shared helpers live in `static/js/wsdc_city_venue.js` (Calendar + Event Trends).
 - Selected-mode map needs a readable min-height (~280px desktop / ~220px mobile); day-overview sizing stays as-is.
 
