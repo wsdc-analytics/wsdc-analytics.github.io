@@ -34,7 +34,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="preload" href="static/data/events_year_calendar.json?v=20261112-sync" as="fetch" crossorigin>
-    <link rel="stylesheet" href="static/css/events-calendar.css?v=20260913d">
+    <link rel="stylesheet" href="static/css/events-calendar.css?v=20261114f">
     <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WSDC Analytics">
@@ -240,6 +240,8 @@
     </div>
     <script src="static/js/site-chrome.js?v=20261106d"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
+    <script src="static/js/wsdc_city_venue.js?v=20261114b"></script>
     <script>
 (function () {
   "use strict";
@@ -285,6 +287,8 @@
       empty: "No day-precision events for this year yet.",
       day: "Day",
       noGeo: "Some events have no coordinates - listed below only.",
+      venueLabel: "Venue:",
+      venueMap: "Map",
       website: "Event website",
       starts: "Starts",
       ends: "Ends",
@@ -357,6 +361,8 @@
       empty: "Для этого года пока нет дат с точностью до дня.",
       day: "День",
       noGeo: "У части ивентов нет координат - только список.",
+      venueLabel: "Venue:",
+      venueMap: "Карта",
       website: "Сайт ивента",
       starts: "Старт",
       ends: "Конец",
@@ -428,6 +434,8 @@
       empty: "Aún no hay eventos con fecha exacta para este año.",
       day: "Dia",
       noGeo: "Algunos eventos no tienen coordenadas - solo en la lista.",
+      venueLabel: "Venue:",
+      venueMap: "Mapa",
       website: "Sitio del evento",
       starts: "Inicio",
       ends: "Fin",
@@ -489,6 +497,14 @@
     map: null,
     markers: null,
     markerById: {},
+    cityVenueLayer: null,
+    cityVenueMarker: null,
+    cityVenueMode: false,
+    islandHeightBeforeCity: null,
+    cityVenueFit: null,
+    growthEditions: null,
+    citiesGeo: null,
+    cityVenueLoad: null,
     eventCards: null,
     l2SparkMetric: "unique_dancers",
     l2SparkEditionKey: null,
@@ -1904,18 +1920,337 @@
     });
   }
 
+  function ensureCityVenueData() {
+    if (state.growthEditions && state.citiesGeo) {
+      return Promise.resolve({
+        editions: state.growthEditions,
+        cities: state.citiesGeo
+      });
+    }
+    if (state.cityVenueLoad) return state.cityVenueLoad;
+    // Fetch independently so one failure does not drop the other.
+    state.cityVenueLoad = Promise.all([
+      fetch("static/data/event_growth.json")
+        .then(function (r) {
+          if (!r.ok) throw new Error("event_growth.json");
+          return r.json();
+        })
+        .then(function (data) {
+          state.growthEditions = (data && data.editions) || [];
+          return state.growthEditions;
+        })
+        .catch(function () {
+          if (!state.growthEditions) state.growthEditions = [];
+          return state.growthEditions;
+        }),
+      fetch("static/data/geo/cities.geojson")
+        .then(function (r) {
+          if (!r.ok) throw new Error("cities.geojson");
+          return r.json();
+        })
+        .then(function (data) {
+          state.citiesGeo = data || { type: "FeatureCollection", features: [] };
+          return state.citiesGeo;
+        })
+        .catch(function () {
+          if (!state.citiesGeo) {
+            state.citiesGeo = { type: "FeatureCollection", features: [] };
+          }
+          return state.citiesGeo;
+        })
+    ]).then(function () {
+      return { editions: state.growthEditions || [], cities: state.citiesGeo };
+    });
+    return state.cityVenueLoad;
+  }
+
+  function clearCityVenueMapLayers() {
+    if (state.cityVenueLayer && state.map) {
+      try { state.map.removeLayer(state.cityVenueLayer); } catch (e) { /* ignore */ }
+    }
+    if (state.cityVenueMarker && state.map) {
+      try { state.map.removeLayer(state.cityVenueMarker); } catch (e2) { /* ignore */ }
+    }
+    state.cityVenueLayer = null;
+    state.cityVenueMarker = null;
+    state.cityVenueMode = false;
+    if (state.markers && state.map && !state.map.hasLayer(state.markers)) {
+      state.markers.addTo(state.map);
+    }
+  }
+
+  function expandIslandForCityMap() {
+    if (isMobileL2Layout()) return;
+    var island = document.getElementById("dayIsland");
+    if (!island || !state.l2Open) return;
+    var cur = readIslandRect(island);
+    if (state.islandHeightBeforeCity == null) {
+      state.islandHeightBeforeCity = cur.height;
+    }
+    var mapCol = document.getElementById("dayMapCol");
+    var card = mapCol && mapCol.querySelector(".l2-event-card.is-open");
+    var head = island.querySelector(".day-island__head");
+    var cardH = card ? Math.ceil(card.getBoundingClientRect().height) : 280;
+    var headH = head ? Math.ceil(head.getBoundingClientRect().height) : 40;
+    // Card + compact city map band + chrome — keep stats full size, grow island modestly.
+    var mapBand = 300;
+    var need = headH + cardH + mapBand + 24;
+    var nextH = Math.max(state.islandHeightBeforeCity + 100, need);
+    var vv = window.visualViewport;
+    var vh = vv && vv.height ? vv.height : (window.innerHeight || document.documentElement.clientHeight);
+    var maxH = Math.max(220, vh - 16);
+    nextH = Math.min(nextH, maxH);
+    var top = cur.top;
+    if (top + nextH > vh - 8) {
+      top = Math.max(8, vh - 8 - nextH);
+    }
+    if (nextH <= cur.height + 4 && Math.abs(top - cur.top) < 2) return;
+    applyIslandRect(island, {
+      left: cur.left,
+      top: top,
+      width: cur.width,
+      height: nextH
+    });
+  }
+
+  function restoreIslandAfterCityMap() {
+    if (state.islandHeightBeforeCity == null) return;
+    var island = document.getElementById("dayIsland");
+    if (!island) {
+      state.islandHeightBeforeCity = null;
+      return;
+    }
+    var cur = readIslandRect(island);
+    applyIslandRect(island, {
+      left: cur.left,
+      top: cur.top,
+      width: cur.width,
+      height: state.islandHeightBeforeCity
+    });
+    state.islandHeightBeforeCity = null;
+  }
+
+  function boundsForCityVenue(outlineFeat, pin) {
+    var bounds = null;
+    if (outlineFeat && outlineFeat.geometry) {
+      try {
+        bounds = L.geoJSON(outlineFeat).getBounds();
+      } catch (e) {
+        bounds = null;
+      }
+    }
+    if (pin && isFinite(Number(pin.lat)) && isFinite(Number(pin.lon))) {
+      var ll = L.latLng(Number(pin.lat), Number(pin.lon));
+      bounds = bounds && bounds.isValid() ? bounds.extend(ll) : L.latLngBounds([ll, ll]);
+    }
+    return bounds && bounds.isValid() ? bounds : null;
+  }
+
+  function fitCityVenueLeaflet(outlineFeat, pin, hasRealBoundary) {
+    if (!state.map) return;
+    state.cityVenueFit = {
+      outlineFeat: outlineFeat || null,
+      pin: pin || null,
+      hasRealBoundary: !!hasRealBoundary
+    };
+    // Always frame the UNION of city polygon + venue pin so both stay in view
+    // (many hotels sit outside the admin polygon — Round Rock, airport hotels, etc.).
+    var bounds = boundsForCityVenue(outlineFeat, pin);
+    if (!bounds) {
+      if (pin) state.map.setView([Number(pin.lat), Number(pin.lon)], 13, { animate: true });
+      return;
+    }
+    var pinOutside = false;
+    if (pin && hasRealBoundary && outlineFeat) {
+      try {
+        var polyOnly = L.geoJSON(outlineFeat).getBounds();
+        pinOutside = polyOnly && polyOnly.isValid() &&
+          !polyOnly.contains(L.latLng(Number(pin.lat), Number(pin.lon)));
+      } catch (e2) {
+        pinOutside = false;
+      }
+    }
+    // Modest pad: keep poly + outside hotels in view without overshooting zoom-out.
+    var frac = pinOutside ? 0.18 : 0.12;
+    var padPx = pinOutside ? 48 : 40;
+    state.map.fitBounds(bounds.pad(frac), {
+      padding: [padPx, padPx],
+      maxZoom: pinOutside ? 12 : 13,
+      animate: true
+    });
+    // After layout, ensure BOTH pin and city poly bbox stay inside the visible pane.
+    window.setTimeout(function () {
+      if (!state.map || !state.cityVenueMode) return;
+      var fit = state.cityVenueFit;
+      var again = boundsForCityVenue(fit && fit.outlineFeat, fit && fit.pin);
+      if (!again) return;
+      var view = state.map.getBounds();
+      var ok = view.contains(again.getSouthWest()) && view.contains(again.getNorthEast());
+      if (fit && fit.pin) {
+        ok = ok && view.pad(-0.02).contains(
+          L.latLng(Number(fit.pin.lat), Number(fit.pin.lon))
+        );
+      }
+      if (ok) return;
+      state.map.fitBounds(again.pad(0.22), {
+        padding: [56, 56],
+        maxZoom: 11,
+        animate: true
+      });
+    }, preferReducedMotion() ? 0 : 360);
+  }
+
+  function enterCityVenueMap(calendarEvent, venueCtx) {
+    if (!state.map || !calendarEvent || typeof WsdcCityVenue === "undefined") return;
+    ensureMap();
+
+    var editions = venueCtx ? [venueCtx] : [];
+    var pin = WsdcCityVenue.resolvePinLatLon(venueCtx, calendarEvent);
+    var pts = [];
+    if (pin) {
+      pts.push({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [pin.lon, pin.lat] },
+        properties: {}
+      });
+    }
+    // Only draw a real admin polygon (never the soft-disc circle on Calendar).
+    var citiesReady = !!(state.citiesGeo && state.citiesGeo.features && state.citiesGeo.features.length);
+    var outlineFeat = citiesReady
+      ? WsdcCityVenue.cityVenueOutlineFeature({
+          citiesFc: state.citiesGeo,
+          city: calendarEvent.city || (venueCtx && venueCtx.city),
+          country: calendarEvent.country || (venueCtx && venueCtx.country),
+          state: calendarEvent.state || (venueCtx && venueCtx.state),
+          editions: editions.length ? editions : [{
+            city_lat: calendarEvent.lat,
+            city_lon: calendarEvent.lon
+          }],
+          pts: pts,
+          allowSoftDisc: false
+        })
+      : null;
+    var hasReal = !!(outlineFeat && outlineFeat.properties && outlineFeat.properties.realBoundary);
+
+    // Nothing to show → keep day multi-marker overview.
+    if (!pin && !hasReal) {
+      if (state.cityVenueMode) exitCityVenueMap();
+      return;
+    }
+
+    clearCityVenueMapLayers();
+    if (state.markers && state.map.hasLayer(state.markers)) {
+      state.map.removeLayer(state.markers);
+    }
+    state.cityVenueMode = true;
+
+    var layers = [];
+    if (hasReal) {
+      layers.push(L.geoJSON(outlineFeat, {
+        style: function () {
+          return {
+            color: "#ffffff",
+            weight: 1.75,
+            fillColor: "#9aa7b5",
+            fillOpacity: 0.42,
+            interactive: false
+          };
+        }
+      }));
+    }
+    if (layers.length) {
+      state.cityVenueLayer = L.layerGroup(layers).addTo(state.map);
+    }
+    if (pin) {
+      var isVenue = pin.source === "venue";
+      state.cityVenueMarker = L.circleMarker([pin.lat, pin.lon], {
+        radius: isVenue ? 9 : 8,
+        color: "#2563eb",
+        weight: 2,
+        fillColor: statusColor(calendarEvent.status),
+        fillOpacity: isVenue ? 1 : 0.85
+      }).addTo(state.map);
+    }
+    expandIslandForCityMap();
+    // Fit after layout/height change so polygon + venue pin share the pane.
+    var runFit = function () {
+      if (!state.map || !state.cityVenueMode) return;
+      expandIslandForCityMap();
+      state.map.invalidateSize({ animate: false });
+      fitCityVenueLeaflet(outlineFeat, pin, hasReal);
+    };
+    runFit();
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(runFit);
+    });
+    // One more fit after the island height transition settles.
+    window.setTimeout(runFit, preferReducedMotion() ? 0 : 280);
+    refreshDayMapSize(preferReducedMotion() ? 0 : 160);
+  }
+
+  function exitCityVenueMap() {
+    if (!state.cityVenueMode && !state.cityVenueLayer && !state.cityVenueMarker) {
+      restoreIslandAfterCityMap();
+      state.cityVenueFit = null;
+      return;
+    }
+    clearCityVenueMapLayers();
+    state.cityVenueFit = null;
+    restoreIslandAfterCityMap();
+    if (state.markers && state.map && !state.map.hasLayer(state.markers)) {
+      state.markers.addTo(state.map);
+    }
+    if (state.map) state.map.invalidateSize({ animate: false });
+    fitDayMap(dayMapBounds(), { animate: true });
+    refreshDayMapSize(preferReducedMotion() ? 0 : 80);
+  }
+
   function focusMapOnEvent(e) {
-    if (!state.map || typeof e.lat !== "number" || typeof e.lon !== "number") return;
-    state.map.flyTo([e.lat, e.lon], 5, { duration: 0.55 });
+    if (!e || typeof WsdcCityVenue === "undefined") {
+      if (state.map && e && typeof e.lat === "number" && typeof e.lon === "number") {
+        state.map.flyTo([e.lat, e.lon], 5, { duration: 0.55 });
+      }
+      return;
+    }
+    var selectedId = state.selectedEventId;
+    // Immediate calendar-only city view so A→B does not keep stale outline.
+    var interimEdition = state.growthEditions
+      ? WsdcCityVenue.findGrowthEdition(
+          state.growthEditions,
+          e.event_id,
+          e.year,
+          e.start_date
+        )
+      : null;
+    enterCityVenueMap(e, WsdcCityVenue.mergeVenueContext(e, interimEdition));
+
+    ensureCityVenueData()
+      .then(function (data) {
+        if (String(state.selectedEventId) !== String(selectedId)) return;
+        var edition = WsdcCityVenue.findGrowthEdition(
+          data.editions,
+          e.event_id,
+          e.year,
+          e.start_date
+        );
+        enterCityVenueMap(e, WsdcCityVenue.mergeVenueContext(e, edition));
+        refreshL2ListVenueLines();
+      })
+      .catch(function () {
+        if (String(state.selectedEventId) !== String(selectedId)) return;
+        enterCityVenueMap(e, WsdcCityVenue.mergeVenueContext(e, null));
+      });
   }
 
   function ensureMap() {
     if (state.map) return;
     state.map = L.map("dayMap", {
       scrollWheelZoom: false,
-      zoomControl: true,
+      // Bottom-right: top-left zoom sits under the stats card when has-event.
+      zoomControl: false,
       attributionControl: false
     });
+    L.control.zoom({ position: "bottomright" }).addTo(state.map);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap",
       maxZoom: 18
@@ -1991,12 +2326,35 @@
       rows.forEach(function (e) {
         var where = [e.city, e.country].filter(Boolean).join(", ");
         var dates = formatEventDateRange(e);
+        var venueHtml = "";
+        if (
+          state.selectedEventId != null &&
+          String(state.selectedEventId) === String(e.id) &&
+          typeof WsdcCityVenue !== "undefined"
+        ) {
+          var edition = state.growthEditions
+            ? WsdcCityVenue.findGrowthEdition(
+                state.growthEditions,
+                e.event_id,
+                e.year,
+                e.start_date
+              )
+            : null;
+          var venueCtx = WsdcCityVenue.mergeVenueContext(e, edition);
+          venueHtml = WsdcCityVenue.venueLineHtml(venueCtx, {
+            esc: esc,
+            venueLabel: t("venueLabel"),
+            mapLabel: t("venueMap"),
+            wrapClass: "l2-row__venue"
+          });
+        }
         html +=
           '<button type="button" class="l2-row" data-id="' + esc(e.id) + '">' +
           '<div class="tooltip-row__main">' +
           '<div class="tooltip-row__name">' + esc(e.name) + "</div>" +
           (where ? '<div class="tooltip-row__where">' + esc(where) + "</div>" : "") +
           (dates ? '<div class="l2-row__dates">' + esc(dates) + "</div>" : "") +
+          venueHtml +
           "</div>" +
           '<div class="tooltip-row__meta">' +
           '<span class="badge ' + tipKindClass(e.kind) + '">' +
@@ -2017,14 +2375,35 @@
       row.addEventListener("focus", function () { setHoverEvent(id); });
       row.addEventListener("blur", function () { setHoverEvent(null); });
       row.addEventListener("click", function () { selectEvent(id); });
+      row.querySelectorAll(".tt-venue-map").forEach(function (link) {
+        link.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+        });
+      });
     });
+  }
+
+  function refreshL2ListVenueLines() {
+    if (!state.selectedDay) return;
+    var list = document.getElementById("eventList");
+    if (!list) return;
+    list.innerHTML = buildL2ListHtml(eventsForDay(state.selectedDay));
+    wireL2ListInteractions();
+    paintRowHighlights();
   }
 
   function populateDayIsland(iso) {
     var events = eventsForDay(iso);
     document.getElementById("dayIslandTitle").textContent = formatDayHeading(iso);
     ensureMap();
+    // Prefetch growth + city polygons so selected-event map can show a real boundary.
+    ensureCityVenueData().catch(function () { /* ignore */ });
+    clearCityVenueMapLayers();
+    restoreIslandAfterCityMap();
     state.markers.clearLayers();
+    if (state.markers && state.map && !state.map.hasLayer(state.markers)) {
+      state.markers.addTo(state.map);
+    }
     state.markerById = {};
     var withGeo = events.filter(function (e) {
       return typeof e.lat === "number" && typeof e.lon === "number";
@@ -2144,6 +2523,8 @@
     state.skipDayTip = false;
     state.l2SparkMetric = "unique_dancers";
     state.l2SparkEditionKey = null;
+    clearCityVenueMapLayers();
+    state.islandHeightBeforeCity = null;
     document.getElementById("eventDetail").classList.remove("is-open");
     document.getElementById("eventDetail").innerHTML = "";
     var mapCol = document.getElementById("dayMapCol");
@@ -2777,7 +3158,8 @@
     paintRowHighlights();
     paintMarkerStyles();
     hideEventCard();
-    fitDayMap(dayMapBounds(), { animate: true });
+    exitCityVenueMap();
+    refreshL2ListVenueLines();
   }
 
   function findEventById(id) {
@@ -2807,7 +3189,13 @@
     paintRowHighlights();
     paintMarkerStyles();
     showEventCard(e);
+    refreshL2ListVenueLines();
     focusMapOnEvent(e);
+    // After growth data loads, refresh Venue line if it was empty on first paint.
+    ensureCityVenueData().then(function () {
+      if (String(state.selectedEventId) !== String(id)) return;
+      refreshL2ListVenueLines();
+    }).catch(function () { /* ignore */ });
   }
 
   function setYear(y) {

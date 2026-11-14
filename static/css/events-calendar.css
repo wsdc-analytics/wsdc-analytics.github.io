@@ -930,12 +930,6 @@ h1 {
   opacity: 1;
 }
 
-/* Keep open L2 analytics above the Leaflet map so tip bubbles are not covered. */
-.day-island__map-col.has-event .l2-event-card.is-open {
-  position: relative;
-  z-index: 6;
-}
-
 @media (hover: hover) and (pointer: fine) {
   .day-island:has(.l2-info-tip:hover),
   .day-island:has(.l2-info-tip:focus-visible),
@@ -1003,7 +997,11 @@ h1 {
 }
 
 .day-island__map-col.has-event {
-  grid-template-rows: auto minmax(0, max-content) minmax(88px, 1fr);
+  /* Stats card keeps natural height; map gets a taller dedicated band.
+     overflow:hidden so a tall card cannot paint over the map (and clip the poly). */
+  grid-template-rows: auto minmax(0, max-content) minmax(280px, 1fr);
+  overflow: hidden;
+  min-height: 0;
 }
 
 .day-island__map-col #noGeoNote {
@@ -1023,7 +1021,51 @@ h1 {
 .day-island__map-col.has-event #dayMap {
   grid-area: secondary;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  min-height: 280px;
+  /* Own stacking context so Leaflet zoom stays on the map, not under the card. */
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.day-island__map-col.has-event #dayMap .leaflet-control-container {
+  z-index: 500;
+}
+
+.day-island__map-col.has-event #dayMap .leaflet-bottom.leaflet-right {
+  right: 8px;
+  bottom: 8px;
+}
+
+.l2-row__venue {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-secondary, #4b5563);
+}
+
+.l2-row__venue .tt-venue-lbl {
+  color: var(--text-tertiary, #6b7280);
+  font-weight: 500;
+}
+
+.l2-row__venue .tt-venue-name {
+  color: var(--text-secondary, #4b5563);
+  font-weight: 500;
+}
+
+.l2-row__venue .tt-venue-map {
+  color: var(--color-accent, #2563eb);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.l2-row__venue .tt-venue-map:hover {
+  text-decoration: underline;
+}
+
+.l2-row__venue .tt-venue-sep {
+  color: var(--text-tertiary, #6b7280);
 }
 
 .no-geo {
@@ -1136,9 +1178,13 @@ h1 {
 }
 
 .day-island__map-col.has-event .l2-event-card.is-open {
+  position: relative;
+  z-index: 3;
   height: auto;
   align-self: start;
   padding-bottom: 12px;
+  max-height: none;
+  overflow: visible;
 }
 
 .day-island__map-col.has-event .l2-event-card.is-open .l2-event-card__grid {
@@ -2276,6 +2322,11 @@ h1 {
     height: min(42vw, 240px);
     min-height: 180px;
     max-height: 260px;
+  }
+  .day-island__map-col.has-event #dayMap {
+    height: min(52vw, 280px);
+    min-height: 220px;
+    max-height: 300px;
   }
   .day-island__list {
     order: 2;
