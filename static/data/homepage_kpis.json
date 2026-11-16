@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-12",
-  "as_of": "2026-11-12",
+  "generated_at": "2026-11-16",
+  "as_of": "2026-11-16",
   "data_through": "2026-11-30",
   "source_dir": "/home/runner/work/wsdc-data-pipeline/wsdc-data-pipeline/data",
   "methodology": {
@@ -17,54 +17,54 @@
     "year_note": "Year increment uses WSDC event_year (not calendar end_date year), so late-December New Year events count toward the new year. Events = distinct event_name in results for that event_year; points = sum for those events; dancers = new dancers whose first points were at an event_year in this year."
   },
   "totals": {
-    "events": 2706,
-    "points": 738766.0,
-    "dancers": 28022
+    "events": 2710,
+    "points": 740444.0,
+    "dancers": 28063
   },
   "comparisons": {
     "week": {
       "label": "Week",
       "period": {
-        "start": "2026-11-02",
-        "end": "2026-11-08",
+        "start": "2026-11-09",
+        "end": "2026-11-15",
         "since_previous_ended": "2026-10-31",
-        "iso_week": "2026-W45",
+        "iso_week": "2026-W46",
         "bucket": "edition_start_date",
-        "event_names": "Moscow Westie Fest, Mountain Magic, Sea to Sky, Simply Adelaide West Coast Swing, Tampa Bay Classic, Westie Pink City"
+        "event_names": "Autumn Swing Challenge, Flowstate | West Coast Swing & Zouk Festival, Midnight Madness, Northeast Swing Classic"
       },
       "increment": {
-        "events": 6,
-        "points": 1916.0,
-        "dancers": 86
+        "events": 4,
+        "points": 1678.0,
+        "dancers": 51
       }
     },
     "month": {
       "label": "Month",
       "period": {
         "start": "2026-11-01",
-        "end": "2026-11-12",
+        "end": "2026-11-16",
         "since_previous_ended": "2026-10-31",
         "bucket": "edition_start_date",
-        "event_names": "Moscow Westie Fest, Mountain Magic, Sea to Sky, Simply Adelaide West Coast Swing, Tampa Bay Classic, Westie Pink City"
+        "event_names": "Autumn Swing Challenge, Flowstate | West Coast Swing & Zouk Festival, Midnight Madness, Moscow Westie Fest, Mountain Magic, Northeast Swing Classic, Sea to Sky, Simply Adelaide West Coast Swing, Tampa Bay Classic, Westie Pink City"
       },
       "increment": {
-        "events": 6,
-        "points": 1916.0,
-        "dancers": 106
+        "events": 10,
+        "points": 3594.0,
+        "dancers": 147
       }
     },
     "year": {
       "label": "Year",
       "period": {
         "start": "2026-01-01",
-        "end": "2026-11-12",
+        "end": "2026-11-16",
         "since_previous_ended": "2025-12-31",
         "bucket": "event_year"
       },
       "increment": {
-        "events": 167,
-        "points": 68853.0,
-        "dancers": 2248
+        "events": 171,
+        "points": 70531.0,
+        "dancers": 2289
       }
     }
   }
