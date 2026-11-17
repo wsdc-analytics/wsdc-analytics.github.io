@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-11-16",
-  "generated_at": "2026-11-16T21:09:00Z",
+  "as_of": "2026-11-17",
+  "generated_at": "2026-11-17T02:16:50Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -18,7 +18,7 @@
     2025,
     2026
   ],
-  "n_editions": 1050,
+  "n_editions": 1051,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
     "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
@@ -35722,11 +35722,39 @@
       "address": "15 rue Charles Lindberg",
       "geo_source": "wsdc_venue",
       "venue_start": "2026-11-06"
+    },
+    {
+      "event_id": 270,
+      "name": "Westie's Angels",
+      "year": 2026,
+      "month": 11,
+      "start": "2026-11-12",
+      "continent": "Europe",
+      "country": "France",
+      "state": null,
+      "city": "Lyon",
+      "lat": 45.764043,
+      "lon": 4.835659,
+      "competitors": 312,
+      "approx": 1,
+      "source": "estimated",
+      "prev": {
+        "year": 2025,
+        "month": 11,
+        "competitors": 301,
+        "approx": 0,
+        "source": "exact"
+      },
+      "delta": 11,
+      "pct": 0.036545,
+      "status": "stable",
+      "gap_flag": null,
+      "edition": 10
     }
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-16T21:09:03Z",
+    "enriched_at": "2026-11-17T02:16:53Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35755,8 +35783,8 @@
       }
     ],
     "stats": {
-      "editions": 1050,
-      "with_history": 1050,
+      "editions": 1051,
+      "with_history": 1051,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
       "split_buckets_used": 31,
@@ -35770,20 +35798,20 @@
     }
   },
   "venue_enrichment_prior": {
-    "source": "wsdc110526.sql",
-    "enriched_at": "2026-11-15T17:20:42Z"
+    "source": "carry_forward:.prior_event_growth.json",
+    "enriched_at": "2026-11-16T21:09:03Z"
   },
   "venue_enrichment": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-16T21:09:03Z",
+    "enriched_at": "2026-11-17T02:16:53Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
-      "editions": 1050,
+      "editions": 1051,
       "prior_venue": 1012,
       "carried": 1012,
       "skipped_already_venue": 0,
-      "missing_prior": 38
+      "missing_prior": 39
     }
   }
 }
