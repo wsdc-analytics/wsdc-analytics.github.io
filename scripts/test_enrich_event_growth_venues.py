@@ -782,3 +782,56 @@ if __name__ == "__main__":
     test_resolve_hotel_geo_prefers_page_over_nominatim()
     test_enrich_preserves_google_audit_coords()
     print("OK")
+
+
+def test_sanitize_growth_strips_nan():
+    from enrich_event_growth_venues import finite_or_none, sanitize_growth_for_json
+    import json
+    import math
+
+    assert finite_or_none(float("nan")) is None
+    assert finite_or_none(50.8) == 50.8
+    growth = {"editions": [{"city_lat": float("nan"), "lat": 50.84}]}
+    safe = sanitize_growth_for_json(growth)
+    assert safe["editions"][0]["city_lat"] is None
+    raw = json.dumps(safe, allow_nan=False)
+    assert "NaN" not in raw
+
+
+def test_enrich_preserves_venue_when_city_centroid_nan():
+    """Builder NaN city coords must not poison JSON after venue apply."""
+    from enrich_event_growth_venues import enrich_editions, VenueRow
+    from datetime import date
+
+    editions = [{
+        "event_id": 400,
+        "year": 2026,
+        "month": 8,
+        "name": "Manneken Swing",
+        "city": "Brussels",
+        "country": "Belgium",
+        "lat": float("nan"),
+        "lon": float("nan"),
+        "start": "2026-08-21",
+    }]
+    by_event = {
+        400: [VenueRow(
+            ce_id=1,
+            event_id=400,
+            start=date(2026, 8, 21),
+            lat=50.84233,
+            lon=4.37352,
+            hotel="Hotel Test",
+            address="Brussels",
+            hotel_url="",
+            city="Brussels",
+        )]
+    }
+    enrich_editions(editions, by_event, max_drift_km=200.0, max_date_drift_days=45)
+    ed = editions[0]
+    assert ed.get("geo_source") == "wsdc_venue"
+    assert ed["lat"] == 50.84233
+    # city_lat should be absent/None, not NaN
+    import math
+    cl = ed.get("city_lat")
+    assert cl is None or (isinstance(cl, float) and math.isfinite(cl))
