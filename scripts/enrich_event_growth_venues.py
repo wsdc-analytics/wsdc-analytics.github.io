@@ -265,6 +265,34 @@ def usable_hotel_name(hotel: Optional[str]) -> Optional[str]:
     return HOTEL_NAME_CORRECTIONS.get(raw.lower(), raw)
 
 
+def finite_or_none(value: Any) -> Optional[float]:
+    """Coerce to float, or None for missing / NaN / Inf (not JSON-safe)."""
+    if value is None:
+        return None
+    try:
+        num = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(num):
+        return None
+    return num
+
+
+def sanitize_growth_for_json(growth: Dict[str, Any]) -> Dict[str, Any]:
+    """Replace non-finite floats with None so browsers can JSON.parse the file."""
+
+    def _scrub(value: Any) -> Any:
+        if isinstance(value, float) and not math.isfinite(value):
+            return None
+        if isinstance(value, dict):
+            return {k: _scrub(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [_scrub(v) for v in value]
+        return value
+
+    return _scrub(growth)  # type: ignore[return-value]
+
+
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     r = 6371.0
     p1, p2 = math.radians(lat1), math.radians(lat2)
@@ -864,10 +892,18 @@ def carry_forward_venue_fields(
             stats["missing_prior"] += 1
             continue
         # Keep builder city centroids for drift checks / re-enrich.
-        if ed.get("city_lat") is None and ed.get("lat") is not None:
-            ed["city_lat"] = ed["lat"]
-        if ed.get("city_lon") is None and ed.get("lon") is not None:
-            ed["city_lon"] = ed["lon"]
+        if finite_or_none(ed.get("city_lat")) is None:
+            city_lat = finite_or_none(ed.get("lat"))
+            if city_lat is not None:
+                ed["city_lat"] = city_lat
+            elif "city_lat" in ed:
+                del ed["city_lat"]
+        if finite_or_none(ed.get("city_lon")) is None:
+            city_lon = finite_or_none(ed.get("lon"))
+            if city_lon is not None:
+                ed["city_lon"] = city_lon
+            elif "city_lon" in ed:
+                del ed["city_lon"]
         for field in _VENUE_CARRY_KEYS:
             if field in prior:
                 ed[field] = prior[field]
@@ -964,22 +1000,36 @@ def enrich_editions(
                 stats["unmatched"] += 1
             clear_venue_fields(ed)
             # Restore city centroid if we previously overwrote lat/lon.
-            if ed.get("city_lat") is not None:
-                ed["lat"] = ed["city_lat"]
-            if ed.get("city_lon") is not None:
-                ed["lon"] = ed["city_lon"]
+            city_lat_restore = finite_or_none(ed.get("city_lat"))
+            city_lon_restore = finite_or_none(ed.get("city_lon"))
+            if city_lat_restore is not None:
+                ed["lat"] = city_lat_restore
+            if city_lon_restore is not None:
+                ed["lon"] = city_lon_restore
             ed["geo_source"] = "city"
             continue
 
         stats["matched"] += 1
 
         # Preserve original city centroid for idempotent re-runs + drift checks.
-        if "city_lat" not in ed and ed.get("lat") is not None:
-            ed["city_lat"] = ed["lat"]
-        if "city_lon" not in ed and ed.get("lon") is not None:
-            ed["city_lon"] = ed["lon"]
-        city_lat = ed.get("city_lat", ed.get("lat"))
-        city_lon = ed.get("city_lon", ed.get("lon"))
+        if finite_or_none(ed.get("city_lat")) is None:
+            city_from_lat = finite_or_none(ed.get("lat"))
+            if city_from_lat is not None:
+                ed["city_lat"] = city_from_lat
+            elif "city_lat" in ed:
+                del ed["city_lat"]
+        if finite_or_none(ed.get("city_lon")) is None:
+            city_from_lon = finite_or_none(ed.get("lon"))
+            if city_from_lon is not None:
+                ed["city_lon"] = city_from_lon
+            elif "city_lon" in ed:
+                del ed["city_lon"]
+        city_lat = finite_or_none(ed.get("city_lat"))
+        if city_lat is None:
+            city_lat = finite_or_none(ed.get("lat"))
+        city_lon = finite_or_none(ed.get("city_lon"))
+        if city_lon is None:
+            city_lon = finite_or_none(ed.get("lon"))
 
         vlat, vlon = row.lat, row.lon
         inherited = False
@@ -1401,8 +1451,9 @@ def main() -> int:
         )
         print(f"Wrote {args.lookup_out}")
 
+    safe_growth = sanitize_growth_for_json(growth)
     args.growth.write_text(
-        json.dumps(growth, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(safe_growth, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
         encoding="utf-8",
     )
     print(f"Wrote {args.growth}")
