@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-11-19",
-  "generated_at": "2026-11-19T20:11:19Z",
+  "as_of": "2026-11-24",
+  "generated_at": "2026-11-24T06:28:19Z",
   "data_through": "2026-11",
   "year_floor": 2018,
   "thresholds": {
@@ -18,7 +18,7 @@
     2025,
     2026
   ],
-  "n_editions": 1051,
+  "n_editions": 1052,
   "methodology": {
     "metric": "Competitors = sum of Leader+Follower headcounts over skill levels Newcomer, Novice, Intermediate, Advanced, All-Star, Champion. Exact from competitions dump when ≥2 skill divisions have both counts; otherwise Chart-5 tier midpoint estimate (~); else unique scored dancers.",
     "comparison": "Each edition vs the event's previous scored edition. One calendar year skipped → compare and mark after_1yr_break. Two or more years skipped → restarted (no %). No previous → new.",
@@ -6035,38 +6035,27 @@
       "venue_start": "2019-03-22"
     },
     {
-      "event_id": 170,
+      "event_id": 416,
       "name": "Russian Open WCS Championships",
       "year": 2019,
       "month": 3,
       "start": "2019-03-28",
-      "continent": "Europe",
-      "country": "Russia",
-      "state": null,
-      "city": "Moscow",
-      "lat": 55.366725,
-      "lon": 37.746833,
-      "competitors": 168,
-      "approx": 0,
-      "source": "cr",
-      "prev": {
-        "year": 2018,
-        "month": 3,
-        "competitors": 205,
-        "approx": 0,
-        "source": "exact"
-      },
-      "delta": -37,
-      "pct": -0.180488,
-      "status": "declining",
+      "continent": "America",
+      "country": "United States",
+      "state": "California",
+      "city": "San Diego",
+      "lat": 32.715738,
+      "lon": -117.1610838,
+      "competitors": 193,
+      "approx": 1,
+      "source": "estimated",
+      "prev": null,
+      "delta": null,
+      "pct": null,
+      "status": "new",
       "gap_flag": null,
-      "edition": 9,
-      "city_lat": 55.7568721,
-      "city_lon": 37.6150527,
-      "hotel": "Atlas Park Hotel",
-      "address": "Sudakovo, 92",
-      "geo_source": "wsdc_venue",
-      "venue_start": "2019-03-28"
+      "edition": 1,
+      "new_kind": "debut"
     },
     {
       "event_id": 246,
@@ -11122,19 +11111,20 @@
       "approx": 0,
       "source": "exact",
       "prev": {
-        "year": 2019,
+        "year": 2018,
         "month": 3,
-        "competitors": 168,
+        "competitors": 205,
         "approx": 0,
-        "source": "cr"
+        "source": "exact"
       },
-      "delta": 2,
-      "pct": 0.011905,
-      "status": "stable",
-      "gap_flag": "after_1yr_break",
-      "edition": 10,
+      "delta": null,
+      "pct": null,
+      "status": "restarted",
+      "gap_flag": "restarted",
+      "edition": 9,
+      "new_kind": "returning",
       "status_notes": [
-        "Returned after a one-year break · last held 2019"
+        "Returned after a break · last held 2018"
       ],
       "city_lat": 55.7568721,
       "city_lon": 37.6150527,
@@ -33658,7 +33648,7 @@
       "continent": "Europe",
       "country": "Belgium",
       "state": null,
-      "city": "Bruxelles",
+      "city": "Brussels",
       "lat": 50.84233,
       "lon": 4.37352,
       "competitors": 237,
@@ -33671,8 +33661,8 @@
       "gap_flag": null,
       "edition": 1,
       "new_kind": "debut",
-      "city_lat": 50.84770289999999,
-      "city_lon": 4.357200100000001,
+      "city_lat": NaN,
+      "city_lon": NaN,
       "hotel": "Concert Noble",
       "address": "Rue d'Arlon, 82",
       "geo_source": "wsdc_venue",
@@ -35330,6 +35320,34 @@
       "edition": 9
     },
     {
+      "event_id": 181,
+      "name": "DC Swing eXperience (DCSX)",
+      "year": 2026,
+      "month": 11,
+      "start": "2026-11-19",
+      "continent": "America",
+      "country": "United States",
+      "state": "Virginia",
+      "city": "Herndon",
+      "lat": 38.9695545,
+      "lon": -77.3860976,
+      "competitors": 626,
+      "approx": 1,
+      "source": "estimated",
+      "prev": {
+        "year": 2025,
+        "month": 11,
+        "competitors": 566,
+        "approx": 0,
+        "source": "exact"
+      },
+      "delta": 60,
+      "pct": 0.106007,
+      "status": "growing",
+      "gap_flag": null,
+      "edition": 14
+    },
+    {
       "event_id": 365,
       "name": "Flowstate | West Coast Swing & Zouk Festival",
       "year": 2026,
@@ -35754,7 +35772,7 @@
   ],
   "edition_enrichment": {
     "source": "event_editions.csv",
-    "enriched_at": "2026-11-19T20:11:22Z",
+    "enriched_at": "2026-11-24T06:28:21Z",
     "series_splits": [
       {
         "event_id": 264,
@@ -35783,35 +35801,35 @@
       }
     ],
     "stats": {
-      "editions": 1051,
-      "with_history": 1051,
+      "editions": 1052,
+      "with_history": 1052,
       "missing_history": 0,
       "edition_gt_1_at_floor": 134,
       "split_buckets_used": 31,
       "cross_brand_prev_cleared": 5,
       "prev_restored": 0,
-      "new_debut": 86,
-      "new_returning": 101,
+      "new_debut": 87,
+      "new_returning": 102,
       "new_renamed": 5,
       "notes_move": 4,
-      "notes_gap1": 55
+      "notes_gap1": 54
     }
   },
   "venue_enrichment_prior": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-17T17:19:39Z"
+    "enriched_at": "2026-11-19T20:11:22Z"
   },
   "venue_enrichment": {
     "source": "carry_forward:.prior_event_growth.json",
-    "enriched_at": "2026-11-19T20:11:22Z",
+    "enriched_at": "2026-11-24T06:28:21Z",
     "max_drift_km": 200.0,
     "max_date_drift_days": 45,
     "stats": {
-      "editions": 1051,
+      "editions": 1052,
       "prior_venue": 1012,
-      "carried": 1012,
+      "carried": 1011,
       "skipped_already_venue": 0,
-      "missing_prior": 39
+      "missing_prior": 41
     }
   }
 }
