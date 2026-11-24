@@ -1,6 +1,6 @@
 {
   "as_of": "2026-11-24",
-  "generated_at": "2026-11-24T06:27:53Z",
+  "generated_at": "2026-11-24T19:20:07Z",
   "years": [
     2024,
     2025,
@@ -26,7 +26,7 @@
     "2025": 177,
     "2026": 187,
     "2027": 196,
-    "2028": 149
+    "2028": 150
   },
   "disclaimer": {
     "en": "Expected events are projected from the latest confirmed edition (±1 week per WSDC Registry Rules) for the current year and near-future years in the selector. They stay unconfirmed until published on the WSDC calendar; hiatus stops the projection.",
@@ -1217,7 +1217,7 @@
       "continent": "America",
       "lat": 38.62742799999999,
       "lon": -90.1982439,
-      "url": "http://gatewayswing.com/",
+      "url": null,
       "year": 2024,
       "source": "edition_calendar_dates",
       "has_results": true
@@ -5767,9 +5767,9 @@
       "continent": "America",
       "lat": 30.3297566,
       "lon": -81.6591529,
-      "url": "http://www.floridadanceevents.com",
+      "url": "http://www.jaxwestiefest.com",
       "year": 2025,
-      "source": "event_editions",
+      "source": "edition_calendar_dates",
       "has_results": true
     },
     {
@@ -8470,7 +8470,7 @@
       "continent": "America",
       "lat": 38.62742799999999,
       "lon": -90.1982439,
-      "url": "http://gatewayswing.com/",
+      "url": null,
       "year": 2026,
       "source": "event_editions",
       "has_results": true
@@ -9831,9 +9831,9 @@
       "continent": "America",
       "lat": 30.3297566,
       "lon": -81.6591529,
-      "url": "http://www.floridadanceevents.com",
+      "url": "http://www.jaxwestiefest.com",
       "year": 2026,
-      "source": "event_editions",
+      "source": "edition_calendar_dates",
       "has_results": true
     },
     {
@@ -10881,15 +10881,15 @@
       "weekend_key": "2026-11-19",
       "status": "confirmed",
       "kind": "registry",
-      "city": "Washington",
+      "city": "Herndon",
       "country": "United States",
-      "state": "District of Columbia",
+      "state": "Virginia",
       "continent": "America",
-      "lat": 38.9072873,
-      "lon": -77.0369274,
-      "url": "http://www.dcswingexperience.com/",
+      "lat": 38.9695545,
+      "lon": -77.3860976,
+      "url": "http://www.dcswingexperience.com",
       "year": 2026,
-      "source": "scheduled_events",
+      "source": "edition_calendar_dates",
       "has_results": true
     },
     {
@@ -14110,7 +14110,7 @@
       "continent": "America",
       "lat": 30.3297566,
       "lon": -81.6591529,
-      "url": "http://www.floridadanceevents.com",
+      "url": "http://www.jaxwestiefest.com",
       "year": 2027,
       "source": "expected_yoy",
       "projected_from_year": 2026,
@@ -15102,7 +15102,7 @@
       "has_results": true
     },
     {
-      "id": "expected:365:2027-11-12",
+      "id": "confirmed:365:2027-11-12",
       "event_id": 365,
       "name": "Flowstate | West Coast Swing & Zouk Festival",
       "start_date": "2027-11-12",
@@ -15110,7 +15110,7 @@
       "weekend_start": "2027-11-11",
       "weekend_end": "2027-11-14",
       "weekend_key": "2027-11-11",
-      "status": "expected",
+      "status": "confirmed",
       "kind": "registry",
       "city": "London",
       "country": "United Kingdom",
@@ -15118,12 +15118,9 @@
       "continent": "Europe",
       "lat": 51.5072178,
       "lon": -0.1275862,
-      "url": "http://www.Flowstatefest.com",
+      "url": "https://flowstatefest.com/",
       "year": 2027,
-      "source": "expected_yoy",
-      "projected_from_year": 2026,
-      "projected_from_start": "2026-11-13",
-      "has_results": true
+      "source": "scheduled_events"
     },
     {
       "id": "confirmed:181:2027-11-18",
@@ -15136,15 +15133,15 @@
       "weekend_key": "2027-11-18",
       "status": "confirmed",
       "kind": "registry",
-      "city": "Herndon",
+      "city": "Washington",
       "country": "United States",
-      "state": "Virginia",
+      "state": "District of Columbia",
       "continent": "America",
-      "lat": 38.9695545,
-      "lon": -77.3860976,
-      "url": "https://www.dcswingexperience.com",
+      "lat": 38.9072873,
+      "lon": -77.0369274,
+      "url": "https://www.dcswingexperience.com/",
       "year": 2027,
-      "source": "edition_calendar_dates"
+      "source": "scheduled_events"
     },
     {
       "id": "expected:68:2027-11-24",
@@ -18710,6 +18707,29 @@
       "projected_from_start": "2027-11-11"
     },
     {
+      "id": "expected:365:2028-11-10",
+      "event_id": 365,
+      "name": "Flowstate | West Coast Swing & Zouk Festival",
+      "start_date": "2028-11-10",
+      "end_date": "2028-11-12",
+      "weekend_start": "2028-11-09",
+      "weekend_end": "2028-11-12",
+      "weekend_key": "2028-11-09",
+      "status": "expected",
+      "kind": "registry",
+      "city": "London",
+      "country": "United Kingdom",
+      "state": null,
+      "continent": "Europe",
+      "lat": 51.5072178,
+      "lon": -0.1275862,
+      "url": "https://flowstatefest.com/",
+      "year": 2028,
+      "source": "expected_yoy",
+      "projected_from_year": 2027,
+      "projected_from_start": "2027-11-12"
+    },
+    {
       "id": "expected:181:2028-11-16",
       "event_id": 181,
       "name": "DCSX (DC Swing e Xperience)",
@@ -18720,13 +18740,13 @@
       "weekend_key": "2028-11-16",
       "status": "expected",
       "kind": "registry",
-      "city": "Herndon",
+      "city": "Washington",
       "country": "United States",
-      "state": "Virginia",
+      "state": "District of Columbia",
       "continent": "America",
-      "lat": 38.9695545,
-      "lon": -77.3860976,
-      "url": "https://www.dcswingexperience.com",
+      "lat": 38.9072873,
+      "lon": -77.0369274,
+      "url": "https://www.dcswingexperience.com/",
       "year": 2028,
       "source": "expected_yoy",
       "projected_from_year": 2027,
