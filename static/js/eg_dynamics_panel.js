@@ -55,41 +55,70 @@
 
   function renderLineSvg(model, highlightKey, opts) {
     opts = opts || {};
-    var skipPoints = !!opts.skipPoints;
+    var tierDots = !!opts.tierDots;
     var parts = [];
     parts.push(
-      '<svg viewBox="0 0 ' + model.width + " " + model.height +
-      '" role="img" aria-hidden="true">'
+      '<svg class="dyn-chart-svg" viewBox="0 0 ' + model.width + " " +
+      model.height + '" role="img" aria-hidden="true">'
     );
-    // No average reference lines — period averages live in the KPI row only.
+    // Hover guide (updated from JS).
+    parts.push(
+      '<line class="dyn-year-guide" x1="0" x2="0" y1="' + model.padT +
+      '" y2="' + (model.height - model.padB) +
+      '" stroke="#94a3b8" stroke-width="1" opacity="0" />'
+    );
+    // Solid colored lines only. Gaps where a year has no editions.
     model.lines.forEach(function (line) {
       var dim = !!(highlightKey && String(line.key) !== String(highlightKey));
       var op = dim ? 0.14 : 1;
-      var sw = dim ? 1.25 : (highlightKey ? 2.4 : 1.75);
+      var sw = dim ? 1.2 : (highlightKey ? 2.35 : 1.8);
       line.segs.forEach(function (seg) {
-        if (seg.length < 2) return;
-        var hasPartial = seg.some(function (p) { return p.partial; });
-        parts.push(
-          '<path data-line="' + esc(line.key) + '" d="' + pathD(seg) +
-          '" fill="none" stroke="' + esc(line.color) +
-          '" stroke-width="' + sw + '" opacity="' + op + '"' +
-          (hasPartial ? ' stroke-dasharray="5 4"' : "") + "/>"
-        );
-      });
-      if (skipPoints) return;
-      line.points.forEach(function (p) {
-        parts.push(
-          '<circle class="dyn-pt" data-line="' + esc(line.key) +
-          '" data-label="' + esc(line.label) +
-          '" data-year="' + esc(String(p.year)) +
-          '" data-value="' + esc(String(p.v)) +
-          '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-          '" r="' + (dim ? 2.2 : 3.2) + '" fill="' + esc(line.color) +
-          '" opacity="' + op + '"/>'
-        );
+        if (seg.length >= 2) {
+          parts.push(
+            '<path data-line="' + esc(line.key) + '" d="' + pathD(seg) +
+            '" fill="none" stroke="' + esc(line.color) +
+            '" stroke-width="' + sw + '" opacity="' + op +
+            '" stroke-linecap="round" stroke-linejoin="round"/>'
+          );
+        } else if (seg.length === 1) {
+          // Single active year — small mark so the series is still visible.
+          parts.push(
+            '<circle data-line="' + esc(line.key) + '" cx="' +
+            seg[0].x.toFixed(1) + '" cy="' + seg[0].y.toFixed(1) +
+            '" r="2.5" fill="' + esc(line.color) + '" opacity="' + op + '"/>'
+          );
+        }
       });
     });
-    // year ticks
+    if (tierDots) {
+      model.lines.forEach(function (line) {
+        line.points.forEach(function (p) {
+          var tier = p.meta && p.meta.tier;
+          parts.push(
+            '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+            '" r="3.5" fill="' + esc(tierColor(tier)) +
+            '" stroke="#fff" stroke-width="0.8">' +
+            "<title>" + esc(line.label) + " · tier " +
+            esc(String(tier || "—")) + " · " + esc(fmtN(p.v)) +
+            "</title></circle>"
+          );
+        });
+      });
+    }
+    // Invisible year hit strips for shared tooltip.
+    model.years.forEach(function (y, i) {
+      var x = model.xAt(i);
+      var half = model.years.length > 1
+        ? Math.abs(model.xAt(1) - model.xAt(0)) / 2
+        : 16;
+      parts.push(
+        '<rect class="dyn-year-hit" data-year-idx="' + i +
+        '" data-year="' + esc(String(y)) + '" x="' + (x - half).toFixed(1) +
+        '" y="' + model.padT + '" width="' + (half * 2).toFixed(1) +
+        '" height="' + (model.height - model.padT - model.padB) +
+        '" fill="transparent"/>'
+      );
+    });
     model.years.forEach(function (y, i) {
       var x = model.xAt(i);
       parts.push(
@@ -98,7 +127,6 @@
         esc(String(y)) + "</text>"
       );
     });
-    // y labels
     parts.push(
       '<text x="4" y="' + (model.padT + 8) +
       '" font-size="9" fill="#94a3b8">' + esc(fmtN(model.max)) + "</text>"
@@ -248,7 +276,8 @@
 
   function chartBlock(title, metric, bd, highlightKey, years) {
     var EG = root.EGDynamics;
-    var model = EG.lineChartModel(buildSeriesList(bd), {
+    var series = buildSeriesList(bd);
+    var model = EG.lineChartModel(series, {
       metric: metric,
       years: years,
       width: 300,
@@ -257,6 +286,21 @@
       padR: 8,
       padT: 10,
       padB: 22
+    });
+    var tipYears = years.map(function (y, i) {
+      return {
+        year: y,
+        x: model.xAt(i),
+        rows: model.lines.map(function (line) {
+          var pt = line.byYear && line.byYear[String(y)];
+          return {
+            key: line.key,
+            label: line.label,
+            color: line.color,
+            value: pt ? pt.v : null
+          };
+        })
+      };
     });
     var legend = model.lines.map(function (l) {
       var hi = highlightKey && String(l.key) === String(highlightKey) ? " is-hi" : "";
@@ -267,6 +311,9 @@
     return '<div class="dyn-chart" data-metric="' + esc(metric) + '">' +
       '<div class="dyn-chart__title">' + esc(title) + "</div>" +
       renderLineSvg(model, highlightKey) +
+      '<script type="application/json" class="dyn-chart-tipdata">' +
+      JSON.stringify(tipYears).replace(/</g, "\\u003c") +
+      "</script>" +
       '<div class="dyn-chart__legend">' + legend + "</div>" +
       "</div>";
   }
@@ -451,25 +498,7 @@
       padT: 12,
       padB: 28
     });
-    // Paths only from renderLineSvg; points are tier-colored (not division color).
-    var svg = renderLineSvg(model, null, { skipPoints: true });
-    var dots = [];
-    model.lines.forEach(function (line) {
-      line.points.forEach(function (p) {
-        var tier = p.meta && p.meta.tier;
-        dots.push(
-          '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-          '" r="3.5" fill="' + esc(tierColor(tier)) +
-          '" stroke="#fff" stroke-width="0.8">' +
-          "<title>" + esc(line.label) + " · tier " + esc(String(tier || "—")) +
-          " · " + esc(fmtN(p.v)) + "</title></circle>"
-        );
-      });
-    });
-    svg = svg.replace(
-      "</svg>",
-      dots.join("") + "</svg>"
-    );
+    var svg = renderLineSvg(model, null, { tierDots: true });
     return '<div class="dyn-chart"><div class="dyn-chart__title">Division headcount (' +
       esc(role) + ") — point color = tier</div>" + svg +
       '<div class="dyn-chart__legend">' +
@@ -685,39 +714,51 @@
         host.render();
       });
     });
-    rootEl.querySelectorAll(".dyn-pt").forEach(function (pt) {
-      pt.addEventListener("mousemove", function (ev) {
-        var label = pt.getAttribute("data-label") || pt.getAttribute("data-line");
-        var year = pt.getAttribute("data-year");
-        var value = pt.getAttribute("data-value");
-        var msg = "<strong>" + esc(label) + "</strong><br>" +
-          esc(String(year)) + " · " + esc(fmtN(Number(value)));
-        var line = pt.getAttribute("data-line");
-        if (host.state.dynEventId != null && line === "__event__") {
-          var EG = root.EGDynamics;
-          var ym = String(year || "");
-          var m = /^(\d{2})\/(\d{2})$/.exec(ym);
-          if (m) {
-            var fullY = 2000 + Number(m[1]);
-            var mon = Number(m[2]);
-            var ed = host.editions().find(function (e) {
-              return Number(e.event_id) === Number(host.state.dynEventId) &&
-                Number(e.year) === fullY && Number(e.month) === mon;
-            });
-            if (ed) {
-              var conc = EG.concurrentEditions(ed, host.editions());
-              if (conc.length) {
-                msg += "<br>" + conc.length + " same-weekend: " +
-                  esc(conc.slice(0, 3).map(function (c) { return c.name; }).join(", "));
-              }
-            }
-          }
+    rootEl.querySelectorAll(".dyn-chart").forEach(function (chart) {
+      var dataEl = chart.querySelector(".dyn-chart-tipdata");
+      if (!dataEl) return;
+      var tipYears = [];
+      try {
+        tipYears = JSON.parse(dataEl.textContent || "[]");
+      } catch (err) {
+        tipYears = [];
+      }
+      if (!tipYears.length) return;
+      var svg = chart.querySelector(".dyn-chart-svg");
+      var guide = chart.querySelector(".dyn-year-guide");
+      function paintYear(idx, clientX, clientY) {
+        var row = tipYears[idx];
+        if (!row) return;
+        if (guide) {
+          guide.setAttribute("x1", String(row.x));
+          guide.setAttribute("x2", String(row.x));
+          guide.setAttribute("opacity", "0.55");
         }
-        showFloatTip(body, msg, ev.clientX, ev.clientY);
+        var html = "<div class=\"dyn-float-tip__y\">" + esc(String(row.year)) + "</div>";
+        row.rows.forEach(function (r) {
+          html += '<div class="dyn-float-tip__row">' +
+            '<i class="dyn-chart__swatch" style="background:' + esc(r.color) + '"></i>' +
+            "<span>" + esc(r.label) + "</span>" +
+            "<strong>" + (r.value == null ? "—" : esc(fmtN(r.value))) +
+            "</strong></div>";
+        });
+        showFloatTip(body, html, clientX, clientY);
+      }
+      chart.querySelectorAll(".dyn-year-hit").forEach(function (hit) {
+        hit.addEventListener("mousemove", function (ev) {
+          paintYear(Number(hit.getAttribute("data-year-idx")), ev.clientX, ev.clientY);
+        });
+        hit.addEventListener("mouseleave", function () {
+          if (guide) guide.setAttribute("opacity", "0");
+          hideFloatTip(body);
+        });
       });
-      pt.addEventListener("mouseleave", function () {
-        hideFloatTip(body);
-      });
+      if (svg) {
+        svg.addEventListener("mouseleave", function () {
+          if (guide) guide.setAttribute("opacity", "0");
+          hideFloatTip(body);
+        });
+      }
     });
   }
 

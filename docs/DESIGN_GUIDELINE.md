@@ -133,7 +133,7 @@ Descriptive multi-year view (not growing/declining). Entry: **Dynamics** on the 
 
 - Opens an L2 panel synced with map geography (`drillInto` / breadcrumbs). URL: `mode=dynamics&from=&to=&grain=&event=&edition=`.
 - Metrics by year for the current geo: **entries**, **events**, **entries/event**. KPI row = period averages over **full** years only (partial `data_through` year excluded from averages; dashed on series when shown).
-- Charts: **top-5 breakdown lines only** (no Total / Other / average reference lines — Total dwarfs small regions). Table lists all rows with sparklines. Click a row or legend to highlight; second row click drills (or opens an event).
+- Charts: **top-5 solid colored lines only** (no Total / Other / average lines / dashed segments / bright point markers). Years with no editions are **gaps** (line breaks), not zeros. Hover a year → shared tooltip listing all series values for that year. Table lists all rows with sparklines. Click a row or legend to highlight; second row click drills (or opens an event).
 - From / To / grain use the same `wsdc-select` header language as the main Monitor list (no bordered filter chrome). Grain lives in the Dynamics panel header.
 - Event level: editions line, ranked editions table, division headcount lines with **tier-colored** points and L/F toggle; same-weekend competitors on point hover.
 - Edition card: hypothesis chips (`editionFlags`) + facts (divisions × roles Δ, continent same-weekend list, venue/dates vs prior). Concurrent rule: overlapping dates + same continent (manual exclusions later).

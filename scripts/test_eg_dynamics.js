@@ -110,11 +110,35 @@ assert.ok(ids.indexOf("venue_move") >= 0, "venue_move flag");
 assert.ok(ids.indexOf("date_shift") >= 0, "date_shift flag");
 assert.ok(ids.indexOf("gap") >= 0, "gap flag");
 
+// Missing years gap: zero-event years are null, not 0.
+var gapSeries = EG.seriesByYear(
+  [
+    { event_id: 1, year: 2020, competitors: 100, continent: "Asia", country: "Israel" },
+    { event_id: 1, year: 2022, competitors: 80, continent: "Asia", country: "Israel" }
+  ],
+  { country: "Israel" },
+  { from: 2020, to: 2022 },
+  "2026-11"
+);
+assert.strictEqual(gapSeries[0].entries, 100);
+assert.strictEqual(gapSeries[1].entries, null, "gap year is null");
+assert.strictEqual(gapSeries[1].missing, true);
+assert.strictEqual(gapSeries[2].entries, 80);
+var gapModel = EG.lineChartModel([{
+  key: "il",
+  label: "Israel",
+  color: "#000",
+  points: gapSeries,
+  avg: null
+}], { metric: "entries", years: [2020, 2021, 2022] });
+assert.strictEqual(gapModel.lines[0].segs.length, 2, "line breaks across missing year");
+
 console.log("eg_dynamics smoke OK", {
   worldYears: world.length,
   continents: bd.rows.length,
   avgEntries: Math.round(avg.entries),
   concurrentSample: seaConc.length,
   clamp: c1,
-  flagIds: ids
+  flagIds: ids,
+  gapSegs: gapModel.lines[0].segs.length
 });
