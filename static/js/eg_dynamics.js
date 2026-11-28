@@ -10,7 +10,7 @@
   if (root) {
     root.EGDynamics = api;
   }
-})(typeof globalThis !== "undefined" ? globalThis : this, function () { // v=20261128b
+})(typeof globalThis !== "undefined" ? globalThis : this, function () { // v=20261128d
   "use strict";
 
   var DYNAMICS_RULES = {
@@ -153,7 +153,16 @@
     });
     return years.map(function (y) {
       var row = byYear[y];
-      row.entriesPerEvent = row.events ? row.entries / row.events : null;
+      // No editions that year → gap in the line (do not pin to zero).
+      if (!row.events) {
+        row.entries = null;
+        row.events = null;
+        row.entriesPerEvent = null;
+        row.missing = true;
+      } else {
+        row.entriesPerEvent = row.entries / row.events;
+        row.missing = false;
+      }
       return row;
     });
   }
@@ -172,20 +181,26 @@
     var sumE = 0;
     var sumN = 0;
     var sumAvg = 0;
+    var nActive = 0;
     var nAvg = 0;
     rows.forEach(function (r) {
+      if (r.missing || r.entries == null) return;
       sumE += r.entries || 0;
       sumN += r.events || 0;
+      nActive += 1;
       if (r.entriesPerEvent != null && isFinite(r.entriesPerEvent)) {
         sumAvg += r.entriesPerEvent;
         nAvg += 1;
       }
     });
+    if (!nActive) {
+      return { entries: null, events: null, entriesPerEvent: null, nYears: 0 };
+    }
     return {
-      entries: sumE / rows.length,
-      events: sumN / rows.length,
+      entries: sumE / nActive,
+      events: sumN / nActive,
       entriesPerEvent: nAvg ? sumAvg / nAvg : null,
-      nYears: rows.length
+      nYears: nActive
     };
   }
 
@@ -272,7 +287,8 @@
       var series = seriesByYear(g.editions, null, range, dataThrough);
       var sumEntries = 0;
       series.forEach(function (p) {
-        if (!p.partial) sumEntries += p.entries;
+        if (p.missing || p.partial || p.entries == null) return;
+        sumEntries += p.entries;
       });
       return {
         key: g.key,
@@ -615,9 +631,11 @@
       var pts = s.points || [];
       var segs = [];
       var cur = [];
+      var byYear = {};
       pts.forEach(function (p, i) {
         var v = p[metric];
-        if (v == null || !isFinite(v)) {
+        // Missing / no editions that year → break the polyline (no zero pin).
+        if (v == null || !isFinite(v) || p.missing) {
           if (cur.length) {
             segs.push(cur);
             cur = [];
@@ -625,21 +643,15 @@
           return;
         }
         var pt = {
-          x: xAt(i, pts.length),
+          x: xAt(i, pts.length || years.length),
           y: yAt(v),
           v: v,
           year: p.year,
-          partial: !!p.partial,
+          i: i,
           meta: p
         };
-        if (cur.length && cur[cur.length - 1].partial !== pt.partial) {
-          // Keep continuity: end previous seg and start new with shared point.
-          cur.push(pt);
-          segs.push(cur);
-          cur = [pt];
-        } else {
-          cur.push(pt);
-        }
+        byYear[String(p.year)] = pt;
+        cur.push(pt);
       });
       if (cur.length) segs.push(cur);
       return {
@@ -649,18 +661,8 @@
         avg: s.avg,
         avgY: s.avg != null && isFinite(s.avg) ? yAt(s.avg) : null,
         segs: segs,
-        points: pts.map(function (p, i) {
-          var v = p[metric];
-          if (v == null || !isFinite(v)) return null;
-          return {
-            x: xAt(i, pts.length),
-            y: yAt(v),
-            v: v,
-            year: p.year,
-            partial: !!p.partial,
-            meta: p
-          };
-        }).filter(Boolean)
+        byYear: byYear,
+        points: Object.keys(byYear).map(function (k) { return byYear[k]; })
       };
     });
     return {

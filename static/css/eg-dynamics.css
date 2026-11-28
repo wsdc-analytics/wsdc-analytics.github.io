@@ -232,8 +232,9 @@
   position: absolute;
   z-index: 5;
   display: none;
-  max-width: 240px;
-  padding: 6px 8px;
+  min-width: 140px;
+  max-width: 260px;
+  padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
   background: #fff;
@@ -244,6 +245,23 @@
   pointer-events: none;
 }
 .dyn-float-tip.is-open { display: block; }
+.dyn-float-tip__y {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #0b1221;
+}
+.dyn-float-tip__row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+  margin-top: 3px;
+}
+.dyn-float-tip__row strong {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+.dyn-year-hit { cursor: crosshair; }
 
 .dyn-table-wrap {
   overflow: auto;
