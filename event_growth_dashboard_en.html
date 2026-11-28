@@ -1436,8 +1436,8 @@
   <script src="static/js/wsdc-select.js"></script>
   <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
   <script src="static/js/wsdc_city_venue.js?v=20261114b"></script>
-  <script src="static/js/eg_dynamics.js?v=20261128a"></script>
-  <script src="static/js/eg_dynamics_panel.js?v=20261128a"></script>
+  <script src="static/js/eg_dynamics.js?v=20261128b"></script>
+  <script src="static/js/eg_dynamics_panel.js?v=20261128b"></script>
   <script>
 (function () {
   "use strict";
@@ -2026,16 +2026,15 @@
           }
         }
         if (!sample) return;
-        var prevGrain = state.listGrain;
+        // Let drillListEntity → resetListGrainOnMapNav own listGrain for the new level.
         state.listGrain = grain;
+        state.dynHighlightKey = null;
+        state.dynGrain = null;
         drillListEntity({
           key: key,
           sample: sample,
           path: editionPath(sample)
         });
-        state.listGrain = prevGrain;
-        state.dynHighlightKey = null;
-        state.dynGrain = null;
         if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
       }
     };
@@ -4195,14 +4194,20 @@
   }
 
   function attachEditionEnds(growth, tiers) {
-    var byKey = {};
+    var byYm = {};
+    var byYear = {};
     ((tiers && tiers.editions) || []).forEach(function (t) {
       if (t.event_id == null || t.year == null || !t.end) return;
-      byKey[String(t.event_id) + ":" + t.year] = t.end;
+      var yk = String(t.event_id) + ":" + t.year;
+      byYear[yk] = t.end;
+      if (t.month != null) {
+        byYm[yk + ":" + t.month] = t.end;
+      }
     });
     ((growth && growth.editions) || []).forEach(function (e) {
       if (e.end) return;
-      var end = byKey[String(e.event_id) + ":" + e.year];
+      var yk = String(e.event_id) + ":" + e.year;
+      var end = (e.month != null && byYm[yk + ":" + e.month]) || byYear[yk];
       if (end) e.end = end;
     });
   }

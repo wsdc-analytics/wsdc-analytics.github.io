@@ -10,7 +10,7 @@
   if (root) {
     root.EGDynamics = api;
   }
-})(typeof globalThis !== "undefined" ? globalThis : this, function () { // v=20261128a
+})(typeof globalThis !== "undefined" ? globalThis : this, function () { // v=20261128b
   "use strict";
 
   var DYNAMICS_RULES = {
@@ -69,6 +69,35 @@
     var y;
     for (y = a; y <= b; y += 1) out.push(y);
     return out;
+  }
+
+  /**
+   * Clamp from/to into available years list; ensure from ≤ to.
+   * @returns {{ from: number, to: number }}
+   */
+  function clampPeriod(fromY, toY, years) {
+    var list = (years || []).map(Number).filter(isFinite).sort(function (a, b) {
+      return a - b;
+    });
+    var lo = list.length ? list[0] : 2018;
+    var hi = list.length ? list[list.length - 1] : 2026;
+    function parseYear(v, fallback) {
+      if (v == null || v === "") return fallback;
+      var n = Number(v);
+      return isFinite(n) ? n : fallback;
+    }
+    var from = parseYear(fromY, lo);
+    var to = parseYear(toY, hi);
+    if (from < lo) from = lo;
+    if (to > hi) to = hi;
+    if (from > hi) from = hi;
+    if (to < lo) to = lo;
+    if (from > to) {
+      var tmp = from;
+      from = to;
+      to = tmp;
+    }
+    return { from: from, to: to };
   }
 
   function matchesGeo(e, geoFilter) {
@@ -263,11 +292,6 @@
     var other = null;
     if (rest.length) {
       var otherEds = [];
-      rest.forEach(function (r) {
-        otherEds = otherEds.concat(r.editions || groups[r.key].editions);
-      });
-      // Rebuild from leftover editions.
-      otherEds = [];
       rest.forEach(function (r) {
         (groups[r.key].editions || []).forEach(function (e) {
           otherEds.push(e);
@@ -668,6 +692,7 @@
     parseThroughYearMonth: parseThroughYearMonth,
     isPartialYear: isPartialYear,
     yearsInRange: yearsInRange,
+    clampPeriod: clampPeriod,
     matchesGeo: matchesGeo,
     filterEditions: filterEditions,
     seriesByYear: seriesByYear,

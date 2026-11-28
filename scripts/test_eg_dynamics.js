@@ -73,10 +73,48 @@ var flags = EG.editionFlags(
 );
 assert.ok(Array.isArray(flags));
 
+// clampPeriod: invert, out-of-range, nulls
+var years = growth.years;
+var c1 = EG.clampPeriod(2030, 2010, years);
+assert.ok(c1.from <= c1.to, "clamp from<=to");
+assert.ok(c1.from >= years[0] && c1.to <= years[years.length - 1], "clamp in years");
+var c2 = EG.clampPeriod(null, null, years);
+assert.deepStrictEqual(c2, { from: years[0], to: years[years.length - 1] });
+
+// concurrent: known Europe weekend with overlaps
+var allWithEnds = editions.map(function (e) {
+  var tr = EG.findTiersRow(tiers.editions, e.event_id, e.year, e.month);
+  return Object.assign({}, e, { end: tr ? tr.end : e.start });
+});
+var sea = allWithEnds.find(function (e) {
+  return e.name && e.name.indexOf("Sea Sun and Swing") === 0 && e.year === 2024;
+});
+assert.ok(sea, "Sea Sun and Swing 2024 present");
+var seaConc = EG.concurrentEditions(sea, allWithEnds);
+assert.ok(seaConc.length >= 1, "Sea Sun has concurrent on continent");
+assert.ok(seaConc.every(function (c) {
+  return c.continent === sea.continent;
+}), "concurrent same continent");
+
+// editionFlags: synthetic venue move + hotel change
+var fakePrev = {
+  lat: 48.85, lon: 2.35, hotel: "Old Hotel", start: "2023-06-01"
+};
+var fakeCur = {
+  lat: 45.46, lon: 9.19, hotel: "New Hotel", start: "2024-07-15",
+  gap_flag: "after_1yr_break", continent: "Europe"
+};
+var synFlags = EG.editionFlags(fakeCur, fakePrev, null, null);
+var ids = synFlags.map(function (f) { return f.id; });
+assert.ok(ids.indexOf("venue_move") >= 0, "venue_move flag");
+assert.ok(ids.indexOf("date_shift") >= 0, "date_shift flag");
+assert.ok(ids.indexOf("gap") >= 0, "gap flag");
+
 console.log("eg_dynamics smoke OK", {
   worldYears: world.length,
   continents: bd.rows.length,
   avgEntries: Math.round(avg.entries),
-  concurrentSample: conc.length,
-  flags: flags.map(function (f) { return f.id; })
+  concurrentSample: seaConc.length,
+  clamp: c1,
+  flagIds: ids
 });
