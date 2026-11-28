@@ -56,34 +56,23 @@
   function renderLineSvg(model, highlightKey, opts) {
     opts = opts || {};
     var skipPoints = !!opts.skipPoints;
-    var EG = root.EGDynamics;
     var parts = [];
     parts.push(
       '<svg viewBox="0 0 ' + model.width + " " + model.height +
       '" role="img" aria-hidden="true">'
     );
-    // avg dashed
+    // No average reference lines — period averages live in the KPI row only.
     model.lines.forEach(function (line) {
-      if (line.avgY == null) return;
-      if (highlightKey && line.key !== highlightKey && line.key !== "__total__") return;
-      parts.push(
-        '<line x1="' + model.padL + '" x2="' + (model.width - model.padR) +
-        '" y1="' + line.avgY.toFixed(1) + '" y2="' + line.avgY.toFixed(1) +
-        '" stroke="' + EG.AVG_COLOR +
-        '" stroke-width="1" stroke-dasharray="4 3" opacity="0.85"/>'
-      );
-    });
-    model.lines.forEach(function (line) {
-      var dim = highlightKey && line.key !== highlightKey && line.key !== "__total__";
-      var op = dim ? 0.18 : 1;
+      var dim = !!(highlightKey && String(line.key) !== String(highlightKey));
+      var op = dim ? 0.14 : 1;
+      var sw = dim ? 1.25 : (highlightKey ? 2.4 : 1.75);
       line.segs.forEach(function (seg) {
         if (seg.length < 2) return;
-        // If any point is partial, draw that segment dashed.
         var hasPartial = seg.some(function (p) { return p.partial; });
         parts.push(
-          '<path d="' + pathD(seg) + '" fill="none" stroke="' + esc(line.color) +
-          '" stroke-width="' + (line.key === "__total__" ? 2.25 : 1.5) +
-          '" opacity="' + op + '"' +
+          '<path data-line="' + esc(line.key) + '" d="' + pathD(seg) +
+          '" fill="none" stroke="' + esc(line.color) +
+          '" stroke-width="' + sw + '" opacity="' + op + '"' +
           (hasPartial ? ' stroke-dasharray="5 4"' : "") + "/>"
         );
       });
@@ -91,9 +80,12 @@
       line.points.forEach(function (p) {
         parts.push(
           '<circle class="dyn-pt" data-line="' + esc(line.key) +
+          '" data-label="' + esc(line.label) +
           '" data-year="' + esc(String(p.year)) +
+          '" data-value="' + esc(String(p.v)) +
           '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-          '" r="3" fill="' + esc(line.color) + '" opacity="' + op + '"/>'
+          '" r="' + (dim ? 2.2 : 3.2) + '" fill="' + esc(line.color) +
+          '" opacity="' + op + '"/>'
         );
       });
     });
@@ -182,85 +174,81 @@
     return parts.join("");
   }
 
-  function periodControlsHtml(host) {
-    var years = host.years();
-    var from = host.state.dynFrom;
-    var to = host.state.dynTo;
-    var through = host.dataThrough();
-    function opts(selected) {
-      return years.map(function (y) {
-        return '<option value="' + y + '"' +
-          (Number(y) === Number(selected) ? " selected" : "") + ">" +
-          y + "</option>";
-      }).join("");
-    }
-    return '<div class="dyn-period">' +
-      '<label>From<select id="dynFrom">' + opts(from) + "</select></label>" +
-      '<label>To<select id="dynTo">' + opts(to) + "</select></label>" +
-      (through
-        ? '<div class="dyn-period__note">Partial year ' +
-          esc(String(through).slice(0, 4)) + " shown dashed · excluded from averages</div>"
-        : "") +
-      "</div>";
+  var GRAIN_LABELS = {
+    continent: "Continents",
+    country: "Countries",
+    region: "Regions",
+    state: "States",
+    city: "Cities",
+    event: "Events"
+  };
+
+  function yearOptsHtml(years, selected) {
+    return years.map(function (y) {
+      return '<option value="' + y + '"' +
+        (Number(y) === Number(selected) ? " selected" : "") + ">" +
+        y + "</option>";
+    }).join("");
   }
 
-  function kpiHtml(avgs, yearsLabel) {
-    return '<div class="dyn-kpis">' +
-      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Avg entries / year</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmtN(avgs.entries)) + "</div>" +
-      '<div class="dyn-kpi__sub">' + esc(yearsLabel) + "</div></div>" +
-      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Avg events / year</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmtN(avgs.events)) + "</div>" +
-      '<div class="dyn-kpi__sub">' + esc(yearsLabel) + "</div></div>" +
-      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Avg entries / event</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmt1(avgs.entriesPerEvent)) + "</div>" +
-      '<div class="dyn-kpi__sub">' + esc(yearsLabel) + "</div></div>" +
-      "</div>";
-  }
-
-  function buildSeriesList(bd, metric) {
+  function headControlsHtml(host) {
     var EG = root.EGDynamics;
-    var avgObj = EG.periodAverages(bd.total);
-    var list = [{
-      key: "__total__",
-      label: "Total",
-      color: EG.TOTAL_COLOR,
-      points: bd.total,
-      avg: metric === "entries" ? avgObj.entries
-        : metric === "events" ? avgObj.events
-        : avgObj.entriesPerEvent
-    }];
+    var s = host.state;
+    var years = host.years();
+    var allowed = EG.allowedGrains(s.level, s.continent, s.country, s.city);
+    var grain = s.dynGrain;
+    if (!grain || allowed.indexOf(grain) === -1) {
+      grain = EG.naturalGrain(s.level, s.country, s.city);
+      s.dynGrain = grain;
+    }
+    var grainHtml;
+    if (allowed.length <= 1) {
+      grainHtml = '<span class="dyn-muted">' +
+        esc(GRAIN_LABELS[allowed[0] || "event"] || "Events") + "</span>";
+    } else {
+      grainHtml = '<select id="dynGrain" class="wsdc-select eg-grain-select" aria-label="Breakdown">' +
+        allowed.map(function (g) {
+          return '<option value="' + g + '"' +
+            (g === grain ? " selected" : "") + ">" +
+            esc(GRAIN_LABELS[g] || g) + "</option>";
+        }).join("") +
+        "</select>";
+    }
+    return '<select id="dynFrom" class="wsdc-select" aria-label="From year">' +
+      yearOptsHtml(years, s.dynFrom) + "</select>" +
+      '<select id="dynTo" class="wsdc-select" aria-label="To year">' +
+      yearOptsHtml(years, s.dynTo) + "</select>" +
+      grainHtml;
+  }
 
-    (bd.top || []).forEach(function (row, i) {
-      var a = row.averages || {};
-      list.push({
+  function kpiHtml(avgs) {
+    return '<div class="dyn-kpis">' +
+      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / year</div>' +
+      '<div class="dyn-kpi__val">' + esc(fmtN(avgs.entries)) + "</div></div>" +
+      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Events / year</div>' +
+      '<div class="dyn-kpi__val">' + esc(fmtN(avgs.events)) + "</div></div>" +
+      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / event</div>' +
+      '<div class="dyn-kpi__val">' + esc(fmt1(avgs.entriesPerEvent)) + "</div></div>" +
+      "</div>";
+  }
+
+  /** Chart series: top-N breakdown only (no Total / Other / average lines). */
+  function buildSeriesList(bd) {
+    var EG = root.EGDynamics;
+    return (bd.top || []).map(function (row, i) {
+      return {
         key: row.key,
         label: row.label,
         color: EG.colorForIndex(i),
         points: row.series,
-        avg: metric === "entries" ? a.entries
-          : metric === "events" ? a.events
-          : a.entriesPerEvent
-      });
+        avg: null
+      };
     });
-    if (bd.other) {
-      var oa = bd.other.averages || {};
-      list.push({
-        key: "__other__",
-        label: "Other",
-        color: EG.OTHER_COLOR,
-        points: bd.other.series,
-        avg: metric === "entries" ? oa.entries
-          : metric === "events" ? oa.events
-          : oa.entriesPerEvent
-      });
-    }
-    return list;
   }
 
   function chartBlock(title, metric, bd, highlightKey, years) {
     var EG = root.EGDynamics;
-    var model = EG.lineChartModel(buildSeriesList(bd, metric), {
+    var model = EG.lineChartModel(buildSeriesList(bd), {
       metric: metric,
       years: years,
       width: 300,
@@ -270,15 +258,16 @@
       padT: 10,
       padB: 22
     });
-    var legend = model.lines.slice(0, 7).map(function (l) {
-      return '<span><i class="dyn-chart__swatch" style="background:' +
-        esc(l.color) + '"></i>' + esc(l.label) + "</span>";
+    var legend = model.lines.map(function (l) {
+      var hi = highlightKey && String(l.key) === String(highlightKey) ? " is-hi" : "";
+      return '<button type="button" class="' + hi + '" data-dyn-legend="' +
+        esc(String(l.key)) + '"><i class="dyn-chart__swatch" style="background:' +
+        esc(l.color) + '"></i>' + esc(l.label) + "</button>";
     }).join("");
     return '<div class="dyn-chart" data-metric="' + esc(metric) + '">' +
       '<div class="dyn-chart__title">' + esc(title) + "</div>" +
       renderLineSvg(model, highlightKey) +
       '<div class="dyn-chart__legend">' + legend + "</div>" +
-      '<div class="dyn-chart__tip" data-dyn-tip></div>' +
       "</div>";
   }
 
@@ -286,9 +275,9 @@
     var EG = root.EGDynamics;
     var rows = bd.rows || [];
     var head =
-      "<thead><tr><th>" + esc(grain) +
-      "</th><th class=\"num\">Avg entries</th><th class=\"num\">Avg events</th>" +
-      "<th class=\"num\">Avg / event</th><th>Trend</th></tr></thead>";
+      "<thead><tr><th>" + esc(GRAIN_LABELS[grain] || grain) +
+      "</th><th class=\"num\">Entries / year</th><th class=\"num\">Events / year</th>" +
+      "<th class=\"num\">Entries / event</th><th>Trend</th></tr></thead>";
     var body = rows.map(function (r) {
       var vals = (r.series || []).map(function (p) {
         return p.partial ? null : p.entries;
@@ -309,32 +298,6 @@
       head + "<tbody>" + body + "</tbody></table></div>";
   }
 
-  function grainSelectHtml(host) {
-    var EG = root.EGDynamics;
-    var s = host.state;
-    var allowed = EG.allowedGrains(s.level, s.continent, s.country, s.city);
-    var grain = s.dynGrain;
-    if (!grain || allowed.indexOf(grain) === -1) {
-      grain = EG.naturalGrain(s.level, s.country, s.city);
-    }
-    var labels = {
-      continent: "Continents",
-      country: "Countries",
-      region: "Regions",
-      state: "States",
-      city: "Cities",
-      event: "Events"
-    };
-    return '<div class="dyn-toolbar"><label for="dynGrain">Breakdown</label>' +
-      '<select id="dynGrain">' +
-      allowed.map(function (g) {
-        return '<option value="' + g + '"' +
-          (g === grain ? " selected" : "") + ">" +
-          esc(labels[g] || g) + "</option>";
-      }).join("") +
-      "</select></div>";
-  }
-
   function renderGeoView(host) {
     var EG = root.EGDynamics;
     var s = host.state;
@@ -352,19 +315,14 @@
       host.editions(), geo, grain, range, through, EG.DYNAMICS_RULES.topN
     );
     var avgs = EG.periodAverages(bd.total);
-    var yearsLabel = avgs.nYears
-      ? ("Full years in " + s.dynFrom + "–" + s.dynTo + " (n=" + avgs.nYears + ")")
-      : "No full years in range";
     var years = EG.yearsInRange(s.dynFrom, s.dynTo);
     var hi = s.dynHighlightKey;
-    return periodControlsHtml(host) +
-      kpiHtml(avgs, yearsLabel) +
+    return kpiHtml(avgs) +
       '<div class="dyn-charts is-geo">' +
       chartBlock("Entries / year", "entries", bd, hi, years) +
       chartBlock("Events / year", "events", bd, hi, years) +
       chartBlock("Entries / event", "entriesPerEvent", bd, hi, years) +
       "</div>" +
-      grainSelectHtml(host) +
       tableHtml(bd, hi, grain);
   }
 
@@ -405,7 +363,7 @@
       label: "Entries",
       color: EG.TOTAL_COLOR,
       points: modelPts,
-      avg: series.average
+      avg: null
     }], {
       metric: "entries",
       years: years,
@@ -438,24 +396,19 @@
       }).join("") +
       "</tbody></table></div>";
 
-    return periodControlsHtml(host) +
-      '<button type="button" class="dyn-back-link" data-dyn-jump="back-event">← Back to geography</button>' +
-      '<div class="dyn-kpis"><div class="dyn-kpi"><div class="dyn-kpi__lbl">Avg entries / edition</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmtN(series.average)) + "</div>" +
-      '<div class="dyn-kpi__sub">' + esc(String(series.editions.length)) +
-      " editions in range</div></div></div>" +
+    return '<button type="button" class="dyn-back-link" data-dyn-jump="back-event">← Back to geography</button>' +
+      '<div class="dyn-kpis"><div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / edition</div>' +
+      '<div class="dyn-kpi__val">' + esc(fmtN(series.average)) + "</div></div></div>" +
       '<div class="dyn-charts"><div class="dyn-chart">' +
       '<div class="dyn-chart__title">Entries by edition</div>' +
       renderLineSvg(model, null) +
-      '<div class="dyn-chart__tip" data-dyn-tip>Hover a point for concurrent events · click a row for edition card</div>' +
       "</div></div>" +
-      '<div class="dyn-toolbar"><span class="dyn-muted">Divisions</span>' +
       '<div class="dyn-seg" role="group" aria-label="Role">' +
       '<button type="button" data-dyn-role="Leader" aria-pressed="' +
       (role === "Leader" ? "true" : "false") + '">Leader</button>' +
       '<button type="button" data-dyn-role="Follower" aria-pressed="' +
       (role === "Follower" ? "true" : "false") + '">Follower</button>' +
-      "</div></div>" +
+      "</div>" +
       divChart +
       "<h3 style=\"font-size:12px;margin:12px 0 6px\">Editions ranked</h3>" +
       table;
@@ -611,14 +564,11 @@
       (edition.end ? " – " + esc(String(edition.end)) : "") +
       " · <strong>Entries:</strong> " + esc(fmtN(edition.competitors)) + "</p>";
 
-    return periodControlsHtml(host) +
-      '<button type="button" class="dyn-back-link" data-dyn-jump="back-edition">← Back to event</button>' +
+    return '<button type="button" class="dyn-back-link" data-dyn-jump="back-edition">← Back to event</button>' +
       "<h3 style=\"font-size:14px;margin:0 0 8px\">" +
       esc(edition.name) + " · " + esc(s.dynEditionKey) + "</h3>" +
       flagsHtml +
       '<div class="dyn-blocks">' +
-      '<div class="dyn-block"><h3>Hypothesis flags</h3>' +
-      '<p class="dyn-muted">Automatic signals — not verdicts. Use the facts below.</p></div>' +
       '<div class="dyn-block"><h3>Divisions × roles</h3>' +
       '<div class="dyn-table-wrap"><table class="dyn-table"><thead><tr>' +
       "<th>Division</th><th>Role</th><th class=\"num\">Entries</th>" +
@@ -637,7 +587,34 @@
     return renderGeoView(host);
   }
 
+  function ensureFloatTip(body) {
+    var tip = body.querySelector(".dyn-float-tip");
+    if (tip) return tip;
+    tip = document.createElement("div");
+    tip.className = "dyn-float-tip";
+    tip.setAttribute("role", "tooltip");
+    body.appendChild(tip);
+    return tip;
+  }
+
+  function showFloatTip(body, html, clientX, clientY) {
+    var tip = ensureFloatTip(body);
+    var rect = body.getBoundingClientRect();
+    tip.innerHTML = html;
+    tip.classList.add("is-open");
+    var x = clientX - rect.left + body.scrollLeft + 12;
+    var y = clientY - rect.top + body.scrollTop + 12;
+    tip.style.left = x + "px";
+    tip.style.top = y + "px";
+  }
+
+  function hideFloatTip(body) {
+    var tip = body.querySelector(".dyn-float-tip");
+    if (tip) tip.classList.remove("is-open");
+  }
+
   function wire(host, rootEl) {
+    var body = rootEl.querySelector("#dynBody") || rootEl;
     var from = rootEl.querySelector("#dynFrom");
     var to = rootEl.querySelector("#dynTo");
     if (from) {
@@ -687,6 +664,14 @@
         }
       });
     });
+    rootEl.querySelectorAll("[data-dyn-legend]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-dyn-legend");
+        host.state.dynHighlightKey =
+          String(host.state.dynHighlightKey) === String(key) ? null : key;
+        host.render();
+      });
+    });
     rootEl.querySelectorAll("[data-dyn-edition]").forEach(function (tr) {
       tr.addEventListener("click", function () {
         host.state.dynEditionKey = tr.getAttribute("data-dyn-edition");
@@ -701,21 +686,19 @@
       });
     });
     rootEl.querySelectorAll(".dyn-pt").forEach(function (pt) {
-      pt.addEventListener("mouseenter", function () {
-        var tip = pt.closest(".dyn-chart") &&
-          pt.closest(".dyn-chart").querySelector("[data-dyn-tip]");
-        if (!tip) return;
+      pt.addEventListener("mousemove", function (ev) {
+        var label = pt.getAttribute("data-label") || pt.getAttribute("data-line");
         var year = pt.getAttribute("data-year");
+        var value = pt.getAttribute("data-value");
+        var msg = "<strong>" + esc(label) + "</strong><br>" +
+          esc(String(year)) + " · " + esc(fmtN(Number(value)));
         var line = pt.getAttribute("data-line");
-        var msg = line + " · " + year;
         if (host.state.dynEventId != null && line === "__event__") {
           var EG = root.EGDynamics;
           var ym = String(year || "");
-          // year axis labels are yy/mm in event view
           var m = /^(\d{2})\/(\d{2})$/.exec(ym);
           if (m) {
             var fullY = 2000 + Number(m[1]);
-            if (fullY < 1990) fullY = 1900 + Number(m[1]);
             var mon = Number(m[2]);
             var ed = host.editions().find(function (e) {
               return Number(e.event_id) === Number(host.state.dynEventId) &&
@@ -724,15 +707,16 @@
             if (ed) {
               var conc = EG.concurrentEditions(ed, host.editions());
               if (conc.length) {
-                msg += " · " + conc.length + " same-weekend: " +
-                  conc.slice(0, 3).map(function (c) { return c.name; }).join(", ");
-              } else {
-                msg += " · no same-weekend competitors on continent";
+                msg += "<br>" + conc.length + " same-weekend: " +
+                  esc(conc.slice(0, 3).map(function (c) { return c.name; }).join(", "));
               }
             }
           }
         }
-        tip.textContent = msg;
+        showFloatTip(body, msg, ev.clientX, ev.clientY);
+      });
+      pt.addEventListener("mouseleave", function () {
+        hideFloatTip(body);
       });
     });
   }
@@ -742,10 +726,21 @@
     var body = document.getElementById("dynBody");
     var crumb = document.getElementById("dynCrumb");
     var title = document.getElementById("dynTitle");
+    var headControls = document.getElementById("dynHeadControls");
     if (!layer || !body || !host.state.dynOpen) return;
     if (title) title.textContent = "Dynamics · " + scopeTitle(host);
     if (crumb) crumb.innerHTML = crumbHtml(host);
+    if (headControls) {
+      var showGrain = host.state.dynEventId == null && !host.state.dynEditionKey;
+      headControls.innerHTML = showGrain ? headControlsHtml(host) : (
+        '<select id="dynFrom" class="wsdc-select" aria-label="From year">' +
+        yearOptsHtml(host.years(), host.state.dynFrom) + "</select>" +
+        '<select id="dynTo" class="wsdc-select" aria-label="To year">' +
+        yearOptsHtml(host.years(), host.state.dynTo) + "</select>"
+      );
+    }
     body.innerHTML = renderBody(host);
+    if (window.WsdcSelect) WsdcSelect.enhanceAll(layer);
     wire(host, layer);
   }
 
