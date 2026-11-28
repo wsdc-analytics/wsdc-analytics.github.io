@@ -189,6 +189,22 @@
   border-bottom: 1px solid #eef2f7;
   margin-bottom: 4px;
 }
+.dyn-table-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin: 0 0 8px;
+  padding: 0 2px;
+}
+.dyn-table-head__grain,
+.dyn-table-head__metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
 .dyn-chart {
   padding: 2px 0 6px;
   background: #fff;
@@ -242,7 +258,7 @@
 
 .dyn-float-tip {
   position: absolute;
-  z-index: 5;
+  z-index: 30;
   display: none;
   min-width: 140px;
   max-width: 260px;
@@ -333,12 +349,15 @@
 }
 .dyn-spark-wrap {
   display: inline-flex;
-  cursor: help;
 }
 .dyn-spark {
   width: 72px;
   height: 22px;
   display: block;
+  overflow: visible;
+}
+.dyn-spark-mark {
+  cursor: help;
 }
 .visually-hidden {
   position: absolute;

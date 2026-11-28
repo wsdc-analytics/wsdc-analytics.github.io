@@ -575,16 +575,28 @@
   }
 
   /**
-   * Gray sparkline geometry + min/max marks + summary stats.
-   * Missing / non-finite values are skipped (not pinned to zero).
+   * Gray sparkline geometry + min/max marks.
+   * `values` may be numbers or `{ year, v }` (missing/non-finite skipped).
    */
   function sparklineModel(values, w, h, pad) {
     pad = pad == null ? 2 : pad;
-    var vals = [];
-    (values || []).forEach(function (v) {
-      if (v != null && isFinite(Number(v))) vals.push(Number(v));
+    var pts = [];
+    (values || []).forEach(function (item, i) {
+      if (item != null && typeof item === "object") {
+        var ov = item.v != null ? item.v : item.value;
+        if (ov != null && isFinite(Number(ov))) {
+          pts.push({
+            year: item.year != null ? item.year : i,
+            v: Number(ov)
+          });
+        }
+        return;
+      }
+      if (item != null && isFinite(Number(item))) {
+        pts.push({ year: i, v: Number(item) });
+      }
     });
-    if (!vals.length) {
+    if (!pts.length) {
       return {
         path: "",
         marks: [],
@@ -594,6 +606,7 @@
         n: 0
       };
     }
+    var vals = pts.map(function (p) { return p.v; });
     var min = Math.min.apply(null, vals);
     var max = Math.max.apply(null, vals);
     var sum = 0;
@@ -614,14 +627,21 @@
     var minI = vals.indexOf(min);
     var maxI = vals.indexOf(max);
     var marks = [];
+    function markAt(i, kind) {
+      var p = xy(vals[i], i);
+      marks.push({
+        x: p.x,
+        y: p.y,
+        kind: kind,
+        v: vals[i],
+        year: pts[i].year
+      });
+    }
     if (minI === maxI) {
-      var both = xy(vals[minI], minI);
-      marks.push({ x: both.x, y: both.y, kind: "both", v: vals[minI] });
+      markAt(minI, "both");
     } else {
-      var pMin = xy(vals[minI], minI);
-      var pMax = xy(vals[maxI], maxI);
-      marks.push({ x: pMin.x, y: pMin.y, kind: "min", v: min });
-      marks.push({ x: pMax.x, y: pMax.y, kind: "max", v: max });
+      markAt(minI, "min");
+      markAt(maxI, "max");
     }
     return {
       path: path,

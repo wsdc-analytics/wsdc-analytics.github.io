@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20261106d">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
-  <link rel="stylesheet" href="static/css/eg-dynamics.css?v=20261128g">
+  <link rel="stylesheet" href="static/css/eg-dynamics.css?v=20261128h">
   <link rel="stylesheet" href="static/vendor/maplibre/maplibre-gl.css">
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
@@ -1437,8 +1437,8 @@
   <script src="static/js/wsdc-select.js"></script>
   <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
   <script src="static/js/wsdc_city_venue.js?v=20261114b"></script>
-  <script src="static/js/eg_dynamics.js?v=20261128g"></script>
-  <script src="static/js/eg_dynamics_panel.js?v=20261128g"></script>
+  <script src="static/js/eg_dynamics.js?v=20261128h"></script>
+  <script src="static/js/eg_dynamics_panel.js?v=20261128h"></script>
   <script>
 (function () {
   "use strict";
@@ -1537,6 +1537,8 @@
     dynGrain: null,
     dynHighlightKey: null,
     dynCompareKeys: [],
+    dynShowTotal: true,
+    dynMetric: "entries",
     dynEventId: null,
     dynEditionKey: null,
     dynRole: "Leader",
@@ -2006,6 +2008,7 @@
         state.dynEditionKey = null;
         state.dynHighlightKey = null;
         state.dynCompareKeys = [];
+        state.dynShowTotal = true;
         jumpTo(action);
       },
       drillRow: function (key) {
@@ -2016,6 +2019,7 @@
           state.dynEditionKey = null;
           state.dynHighlightKey = null;
           state.dynCompareKeys = [];
+          state.dynShowTotal = true;
           writeUrl();
           if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
           return;
@@ -2034,6 +2038,7 @@
         state.listGrain = grain;
         state.dynHighlightKey = null;
         state.dynCompareKeys = [];
+        state.dynShowTotal = true;
         state.dynGrain = null;
         drillListEntity({
           key: key,
@@ -2158,6 +2163,7 @@
       state.dynGrain = EGDynamics.naturalGrain(state.level, state.country, state.city);
       state.dynHighlightKey = null;
       state.dynCompareKeys = [];
+      state.dynShowTotal = true;
       if (state.dynEventId == null) state.dynEditionKey = null;
     }
   }
