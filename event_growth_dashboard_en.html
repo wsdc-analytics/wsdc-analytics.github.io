@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20261106d">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
-  <link rel="stylesheet" href="static/css/eg-dynamics.css?v=20261128d">
+  <link rel="stylesheet" href="static/css/eg-dynamics.css?v=20261128g">
   <link rel="stylesheet" href="static/vendor/maplibre/maplibre-gl.css">
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
@@ -1437,8 +1437,8 @@
   <script src="static/js/wsdc-select.js"></script>
   <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
   <script src="static/js/wsdc_city_venue.js?v=20261114b"></script>
-  <script src="static/js/eg_dynamics.js?v=20261128d"></script>
-  <script src="static/js/eg_dynamics_panel.js?v=20261128d"></script>
+  <script src="static/js/eg_dynamics.js?v=20261128g"></script>
+  <script src="static/js/eg_dynamics_panel.js?v=20261128g"></script>
   <script>
 (function () {
   "use strict";
@@ -1536,6 +1536,7 @@
     dynTo: null,
     dynGrain: null,
     dynHighlightKey: null,
+    dynCompareKeys: [],
     dynEventId: null,
     dynEditionKey: null,
     dynRole: "Leader",
@@ -2004,6 +2005,7 @@
         state.dynEventId = null;
         state.dynEditionKey = null;
         state.dynHighlightKey = null;
+        state.dynCompareKeys = [];
         jumpTo(action);
       },
       drillRow: function (key) {
@@ -2013,6 +2015,7 @@
           state.dynEventId = Number(key);
           state.dynEditionKey = null;
           state.dynHighlightKey = null;
+          state.dynCompareKeys = [];
           writeUrl();
           if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
           return;
@@ -2030,6 +2033,7 @@
         // Let drillListEntity → resetListGrainOnMapNav own listGrain for the new level.
         state.listGrain = grain;
         state.dynHighlightKey = null;
+        state.dynCompareKeys = [];
         state.dynGrain = null;
         drillListEntity({
           key: key,
@@ -2153,6 +2157,7 @@
     if (state.dynOpen && typeof EGDynamics !== "undefined") {
       state.dynGrain = EGDynamics.naturalGrain(state.level, state.country, state.city);
       state.dynHighlightKey = null;
+      state.dynCompareKeys = [];
       if (state.dynEventId == null) state.dynEditionKey = null;
     }
   }

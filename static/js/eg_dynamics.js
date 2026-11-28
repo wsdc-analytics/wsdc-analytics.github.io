@@ -571,21 +571,66 @@
   }
 
   function sparklinePath(values, w, h, pad) {
+    return sparklineModel(values, w, h, pad).path;
+  }
+
+  /**
+   * Gray sparkline geometry + min/max marks + summary stats.
+   * Missing / non-finite values are skipped (not pinned to zero).
+   */
+  function sparklineModel(values, w, h, pad) {
     pad = pad == null ? 2 : pad;
-    var vals = (values || []).map(function (v) {
-      return isFinite(Number(v)) ? Number(v) : 0;
+    var vals = [];
+    (values || []).forEach(function (v) {
+      if (v != null && isFinite(Number(v))) vals.push(Number(v));
     });
-    if (!vals.length) return "";
+    if (!vals.length) {
+      return {
+        path: "",
+        marks: [],
+        min: null,
+        max: null,
+        avg: null,
+        n: 0
+      };
+    }
     var min = Math.min.apply(null, vals);
     var max = Math.max.apply(null, vals);
+    var sum = 0;
+    vals.forEach(function (v) { sum += v; });
+    var avg = sum / vals.length;
     var span = max - min || 1;
     var plotW = w - pad * 2;
     var plotH = h - pad * 2;
-    return vals.map(function (v, i) {
+    function xy(v, i) {
       var x = pad + (vals.length === 1 ? plotW / 2 : (i / (vals.length - 1)) * plotW);
       var y = pad + plotH - ((v - min) / span) * plotH;
-      return (i ? "L" : "M") + x.toFixed(1) + "," + y.toFixed(1);
+      return { x: x, y: y };
+    }
+    var path = vals.map(function (v, i) {
+      var p = xy(v, i);
+      return (i ? "L" : "M") + p.x.toFixed(1) + "," + p.y.toFixed(1);
     }).join(" ");
+    var minI = vals.indexOf(min);
+    var maxI = vals.indexOf(max);
+    var marks = [];
+    if (minI === maxI) {
+      var both = xy(vals[minI], minI);
+      marks.push({ x: both.x, y: both.y, kind: "both", v: vals[minI] });
+    } else {
+      var pMin = xy(vals[minI], minI);
+      var pMax = xy(vals[maxI], maxI);
+      marks.push({ x: pMin.x, y: pMin.y, kind: "min", v: min });
+      marks.push({ x: pMax.x, y: pMax.y, kind: "max", v: max });
+    }
+    return {
+      path: path,
+      marks: marks,
+      min: min,
+      max: max,
+      avg: avg,
+      n: vals.length
+    };
   }
 
   function lineChartModel(seriesList, opts) {
@@ -712,6 +757,7 @@
     findTiersRow: findTiersRow,
     eventEditionSeries: eventEditionSeries,
     sparklinePath: sparklinePath,
+    sparklineModel: sparklineModel,
     lineChartModel: lineChartModel,
     colorForIndex: colorForIndex
   };

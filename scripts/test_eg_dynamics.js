@@ -133,6 +133,13 @@ var gapModel = EG.lineChartModel([{
 }], { metric: "entries", years: [2020, 2021, 2022] });
 assert.strictEqual(gapModel.lines[0].segs.length, 2, "line breaks across missing year");
 
+var spark = EG.sparklineModel([10, 40, 25, null, 5], 72, 22, 3);
+assert.ok(spark.path, "spark path");
+assert.strictEqual(spark.max, 40);
+assert.strictEqual(spark.min, 5);
+assert.ok(spark.marks.length >= 2, "min and max marks");
+assert.ok(spark.avg > 0 && spark.avg < 40);
+
 console.log("eg_dynamics smoke OK", {
   worldYears: world.length,
   continents: bd.rows.length,
