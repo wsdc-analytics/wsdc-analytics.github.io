@@ -127,6 +127,18 @@ When one event is selected in the day island (not the multi-marker day overview)
 - Shared helpers live in `static/js/wsdc_city_venue.js` (Calendar + Event Trends).
 - Selected-mode map needs a readable min-height (~280px desktop / ~220px mobile); day-overview sizing stays as-is.
 
+### Event Trends — Dynamics L2
+
+Descriptive multi-year view (not growing/declining). Entry: **Dynamics** on the Event Trends title row.
+
+- Opens an L2 panel synced with map geography (`drillInto` / breadcrumbs). URL: `mode=dynamics&from=&to=&grain=&event=&edition=`.
+- Metrics by year for the current geo: **entries**, **events**, **entries/event**. KPI cards = averages over **full** years only; the partial `data_through` year is drawn dashed and excluded from averages.
+- Charts: absolute values + dashed period average; breakdown = total + top-5 + Other; table under charts with sparklines. First click highlights, second click drills (or opens an event).
+- Grain switch mirrors the main list (`allowedListGrains` / `naturalListGrain`).
+- Event level: editions line, ranked editions table, division headcount lines with **tier-colored** points and L/F toggle; same-weekend competitors on point hover.
+- Edition card: hypothesis chips (`editionFlags`) + facts (divisions × roles Δ, continent same-weekend list, venue/dates vs prior). Concurrent rule: overlapping dates + same continent (manual exclusions later).
+- Pure helpers: `static/js/eg_dynamics.js`; panel UI: `static/js/eg_dynamics_panel.js` + `static/css/eg-dynamics.css`.
+
 ### Spacing
 
 - Page horizontal pad: ≥12–16px; section vertical rhythm from `--wsdc-space-6` / `--wsdc-space-8`.
