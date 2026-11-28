@@ -93,6 +93,7 @@
     if (tierDots) {
       model.lines.forEach(function (line) {
         line.points.forEach(function (p) {
+          if (!p) return;
           var tier = p.meta && p.meta.tier;
           parts.push(
             '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
@@ -166,8 +167,18 @@
     return "World";
   }
 
+  function eventSample(host) {
+    if (host.state.dynEventId == null) return null;
+    var eid = Number(host.state.dynEventId);
+    var hit = host.editions().find(function (e) {
+      return Number(e.event_id) === eid;
+    });
+    return hit || null;
+  }
+
   function crumbHtml(host) {
     var s = host.state;
+    var sample = eventSample(host);
     var parts = [];
     function add(label, action, current) {
       if (parts.length) parts.push('<span class="sep">/</span>');
@@ -180,24 +191,31 @@
         );
       }
     }
-    add("World", "world", !s.continent && !s.dynEventId);
-    if (s.continent) {
-      add(s.continent, "continent", !!s.continent && !s.country && !s.dynEventId);
+    var atEvent = s.dynEventId != null;
+    var atEdition = !!s.dynEditionKey;
+    add("World", "world", !s.continent && !atEvent);
+    if (s.continent || (sample && sample.continent)) {
+      add(s.continent || sample.continent, "continent",
+        !s.country && !s.city && !atEvent);
     }
-    if (s.country) {
-      add(s.country, "country", !!s.country && !s.regionState && !s.city && !s.dynEventId);
+    if (s.country || (sample && sample.country)) {
+      add(s.country || sample.country, "country",
+        !s.regionState && !s.city && !atEvent);
     }
-    if (s.regionState) {
-      add(s.regionState, "state", !!s.regionState && !s.city && !s.dynEventId);
+    if (s.regionState || (sample && sample.country === "United States" && sample.state)) {
+      add(s.regionState || sample.state, "state", !s.city && !atEvent);
     }
-    if (s.city) {
-      add(s.city, "city", !!s.city && s.dynEventId == null);
+    var cityLabel = s.city || (sample && sample.city);
+    if (cityLabel) {
+      add(cityLabel, "city", !atEvent);
     }
-    if (s.dynEventId != null) {
-      add(scopeTitle(host), "event", s.dynEditionKey == null);
+    if (atEvent) {
+      var evLabel = (sample && sample.name) || ("Event " + s.dynEventId);
+      add(evLabel, "event", !atEdition);
     }
-    if (s.dynEditionKey) {
-      add(s.dynEditionKey, "edition", true);
+    if (atEdition) {
+      // Year only in the trail (month kept in dynEditionKey for lookup).
+      add(String(s.dynEditionKey).split("-")[0], "edition", true);
     }
     return parts.join("");
   }
@@ -292,7 +310,7 @@
         year: y,
         x: model.xAt(i),
         rows: model.lines.map(function (line) {
-          var pt = line.byYear && line.byYear[String(y)];
+          var pt = line.points && line.points[i];
           return {
             key: line.key,
             label: line.label,
@@ -373,6 +391,15 @@
       tableHtml(bd, hi, grain);
   }
 
+  function editionKey(e) {
+    return e.year + "-" + String(e.month).padStart(2, "0");
+  }
+
+  function editionAxisLabels(editions) {
+    // Year on the axis; duplicate years stay as the same label (rare).
+    return editions.map(function (e) { return String(e.year); });
+  }
+
   function renderEventView(host) {
     var EG = root.EGDynamics;
     var s = host.state;
@@ -381,28 +408,14 @@
     var series = EG.eventEditionSeries(
       host.editions(), s.dynEventId, range, through
     );
-    var points = series.editions.map(function (e) {
-      return {
-        year: e.year,
-        month: e.month,
-        entries: e.entries,
-        events: 1,
-        entriesPerEvent: e.entries,
-        partial: e.partial,
-        start: e.start,
-        key: e.year + "-" + String(e.month).padStart(2, "0")
-      };
-    });
-    // Use edition index on x via synthetic year labels
-    var years = points.map(function (p) {
-      return String(p.year).slice(2) + "/" + String(p.month).padStart(2, "0");
-    });
-    var modelPts = points.map(function (p, i) {
+    var years = editionAxisLabels(series.editions);
+    var modelPts = series.editions.map(function (e, i) {
       return {
         year: years[i],
-        entries: p.entries,
-        partial: p.partial,
-        meta: p
+        entries: e.entries,
+        missing: !e.entries && e.entries !== 0,
+        partial: e.partial,
+        meta: e
       };
     });
     var model = EG.lineChartModel([{
@@ -421,6 +434,19 @@
       padT: 12,
       padB: 28
     });
+    var tipYears = years.map(function (y, i) {
+      var ed = series.editions[i];
+      return {
+        year: y,
+        x: model.xAt(i),
+        rows: [{
+          key: "__event__",
+          label: "Entries",
+          color: EG.TOTAL_COLOR,
+          value: ed ? ed.entries : null
+        }]
+      };
+    });
 
     var role = s.dynRole || "Leader";
     var divChart = renderDivisionChart(host, series.editions, role);
@@ -433,23 +459,24 @@
       "<th>Edition</th><th class=\"num\">Entries</th><th class=\"num\">vs avg</th>" +
       "<th></th></tr></thead><tbody>" +
       ranked.map(function (e, i) {
-        var key = e.year + "-" + String(e.month).padStart(2, "0");
+        var key = editionKey(e);
         var tag = i === 0 ? "Best" : (i === ranked.length - 1 ? "Lowest" : "");
         return '<tr data-dyn-edition="' + esc(key) + '">' +
-          "<td>" + esc(key) + (e.partial ? " · partial" : "") + "</td>" +
+          "<td>" + esc(String(e.year)) + "</td>" +
           '<td class="num">' + esc(fmtN(e.entries)) + "</td>" +
           '<td class="num">' + esc(fmtPct(e.pctFromAvg)) + "</td>" +
           "<td>" + esc(tag) + "</td></tr>";
       }).join("") +
       "</tbody></table></div>";
 
-    return '<button type="button" class="dyn-back-link" data-dyn-jump="back-event">← Back to geography</button>' +
-      '<div class="dyn-kpis"><div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / edition</div>' +
+    return '<div class="dyn-kpis"><div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / edition</div>' +
       '<div class="dyn-kpi__val">' + esc(fmtN(series.average)) + "</div></div></div>" +
       '<div class="dyn-charts"><div class="dyn-chart">' +
       '<div class="dyn-chart__title">Entries by edition</div>' +
       renderLineSvg(model, null) +
-      "</div></div>" +
+      '<script type="application/json" class="dyn-chart-tipdata">' +
+      JSON.stringify(tipYears).replace(/</g, "\\u003c") +
+      "</script></div></div>" +
       '<div class="dyn-seg" role="group" aria-label="Role">' +
       '<button type="button" data-dyn-role="Leader" aria-pressed="' +
       (role === "Leader" ? "true" : "false") + '">Leader</button>' +
@@ -464,9 +491,7 @@
   function renderDivisionChart(host, eventEditions, role) {
     var EG = root.EGDynamics;
     var tiers = host.tiersEditions();
-    var years = eventEditions.map(function (e) {
-      return String(e.year).slice(2) + "/" + String(e.month).padStart(2, "0");
-    });
+    var years = editionAxisLabels(eventEditions);
     var seriesList = EG.DYNAMICS_RULES.divisions.map(function (div, i) {
       var points = eventEditions.map(function (e, idx) {
         var row = EG.findTiersRow(tiers, e.event_id, e.year, e.month);
@@ -476,7 +501,7 @@
         return {
           year: years[idx],
           entries: n,
-          partial: !!e.partial,
+          missing: false,
           meta: { div: div, tier: tier, edition: e }
         };
       });
@@ -498,15 +523,35 @@
       padT: 12,
       padB: 28
     });
+    var tipYears = years.map(function (y, i) {
+      return {
+        year: y,
+        x: model.xAt(i),
+        rows: model.lines.map(function (line) {
+          var pt = line.points && line.points[i];
+          var tier = pt && pt.meta && pt.meta.tier;
+          return {
+            key: line.key,
+            label: line.label + (tier != null ? (" · T" + tier) : ""),
+            color: line.color,
+            value: pt ? pt.v : null
+          };
+        })
+      };
+    });
     var svg = renderLineSvg(model, null, { tierDots: true });
-    return '<div class="dyn-chart"><div class="dyn-chart__title">Division headcount (' +
-      esc(role) + ") — point color = tier</div>" + svg +
-      '<div class="dyn-chart__legend">' +
+    return '<div class="dyn-chart dyn-chart--divisions">' +
+      '<div class="dyn-chart__title">Division headcount (' + esc(role) + ")</div>" +
+      '<div class="dyn-chart__legend dyn-chart__legend--divisions">' +
       EG.DYNAMICS_RULES.divisions.map(function (d, i) {
         return '<span><i class="dyn-chart__swatch" style="background:' +
           EG.colorForIndex(i) + '"></i>' + esc(d) + "</span>";
       }).join("") +
-      "</div></div>";
+      "</div>" +
+      svg +
+      '<script type="application/json" class="dyn-chart-tipdata">' +
+      JSON.stringify(tipYears).replace(/</g, "\\u003c") +
+      "</script></div>";
   }
 
   function renderEditionCard(host) {
@@ -593,10 +638,7 @@
       (edition.end ? " – " + esc(String(edition.end)) : "") +
       " · <strong>Entries:</strong> " + esc(fmtN(edition.competitors)) + "</p>";
 
-    return '<button type="button" class="dyn-back-link" data-dyn-jump="back-edition">← Back to event</button>' +
-      "<h3 style=\"font-size:14px;margin:0 0 8px\">" +
-      esc(edition.name) + " · " + esc(s.dynEditionKey) + "</h3>" +
-      flagsHtml +
+    return flagsHtml +
       '<div class="dyn-blocks">' +
       '<div class="dyn-block"><h3>Divisions × roles</h3>' +
       '<div class="dyn-table-wrap"><table class="dyn-table"><thead><tr>' +
@@ -631,8 +673,24 @@
     var rect = body.getBoundingClientRect();
     tip.innerHTML = html;
     tip.classList.add("is-open");
+    // Measure after paint so we can clamp inside the L2 body.
+    var tipW = tip.offsetWidth || 180;
+    var tipH = tip.offsetHeight || 80;
+    var pad = 8;
     var x = clientX - rect.left + body.scrollLeft + 12;
     var y = clientY - rect.top + body.scrollTop + 12;
+    var maxX = body.scrollLeft + body.clientWidth - tipW - pad;
+    var maxY = body.scrollTop + body.clientHeight - tipH - pad;
+    var minX = body.scrollLeft + pad;
+    var minY = body.scrollTop + pad;
+    if (x > maxX) x = Math.max(minX, maxX);
+    if (y > maxY) {
+      // Flip above the cursor when near the bottom edge.
+      y = clientY - rect.top + body.scrollTop - tipH - 12;
+    }
+    if (x < minX) x = minX;
+    if (y < minY) y = minY;
+    if (y > maxY) y = Math.max(minY, maxY);
     tip.style.left = x + "px";
     tip.style.top = y + "px";
   }
@@ -769,7 +827,8 @@
     var title = document.getElementById("dynTitle");
     var headControls = document.getElementById("dynHeadControls");
     if (!layer || !body || !host.state.dynOpen) return;
-    if (title) title.textContent = "Dynamics · " + scopeTitle(host);
+    // Panel title stays "Dynamics"; geography/event path lives only in the crumb.
+    if (title) title.textContent = "Dynamics";
     if (crumb) crumb.innerHTML = crumbHtml(host);
     if (headControls) {
       var showGrain = host.state.dynEventId == null && !host.state.dynEditionKey;

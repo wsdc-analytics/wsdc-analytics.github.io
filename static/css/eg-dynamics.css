@@ -202,6 +202,17 @@
   font-size: 10px;
   color: #64748b;
 }
+.dyn-chart__legend--divisions {
+  margin: 0 0 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eef2f7;
+  font-size: 11px;
+  color: #334155;
+  gap: 8px 14px;
+}
+.dyn-chart__legend--divisions span {
+  font-weight: 600;
+}
 .dyn-chart__legend button {
   display: inline-flex;
   align-items: center;
@@ -230,10 +241,10 @@
 
 .dyn-float-tip {
   position: absolute;
-  z-index: 5;
+  z-index: 30;
   display: none;
   min-width: 140px;
-  max-width: 260px;
+  max-width: 240px;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #e5e7eb;

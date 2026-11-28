@@ -632,6 +632,8 @@
       var segs = [];
       var cur = [];
       var byYear = {};
+      // Index-aligned with input points / years (keeps duplicate year labels distinct).
+      var points = [];
       pts.forEach(function (p, i) {
         var v = p[metric];
         // Missing / no editions that year → break the polyline (no zero pin).
@@ -640,6 +642,7 @@
             segs.push(cur);
             cur = [];
           }
+          points.push(null);
           return;
         }
         var pt = {
@@ -651,6 +654,7 @@
           meta: p
         };
         byYear[String(p.year)] = pt;
+        points.push(pt);
         cur.push(pt);
       });
       if (cur.length) segs.push(cur);
@@ -662,7 +666,7 @@
         avgY: s.avg != null && isFinite(s.avg) ? yAt(s.avg) : null,
         segs: segs,
         byYear: byYear,
-        points: Object.keys(byYear).map(function (k) { return byYear[k]; })
+        points: points
       };
     });
     return {
