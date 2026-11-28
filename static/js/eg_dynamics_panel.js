@@ -121,9 +121,14 @@
     });
     model.years.forEach(function (y, i) {
       var x = model.xAt(i);
+      var anchor = "middle";
+      if (model.years.length > 1) {
+        if (i === 0) anchor = "start";
+        else if (i === model.years.length - 1) anchor = "end";
+      }
       parts.push(
         '<text x="' + x.toFixed(1) + '" y="' + (model.height - 6) +
-        '" text-anchor="middle" font-size="9" fill="#94a3b8">' +
+        '" text-anchor="' + anchor + '" font-size="9" fill="#94a3b8">' +
         esc(String(y)) + "</text>"
       );
     });
@@ -220,70 +225,141 @@
   }
 
   function headControlsHtml(host) {
+    var years = host.years();
+    var s = host.state;
+    // Years stay in the island header; grain + metric live in the table toolbar
+    // (same pattern as Event Trends list head).
+    return '<select id="dynFrom" class="wsdc-select" aria-label="From year">' +
+      yearOptsHtml(years, s.dynFrom) + "</select>" +
+      '<select id="dynTo" class="wsdc-select" aria-label="To year">' +
+      yearOptsHtml(years, s.dynTo) + "</select>";
+  }
+
+  function grainSelectHtml(host) {
     var EG = root.EGDynamics;
     var s = host.state;
-    var years = host.years();
     var allowed = EG.allowedGrains(s.level, s.continent, s.country, s.city);
     var grain = s.dynGrain;
     if (!grain || allowed.indexOf(grain) === -1) {
       grain = EG.naturalGrain(s.level, s.country, s.city);
       s.dynGrain = grain;
     }
-    var grainHtml;
     if (allowed.length <= 1) {
-      grainHtml = '<span class="dyn-muted">' +
+      return '<span class="dyn-muted">' +
         esc(GRAIN_LABELS[allowed[0] || "event"] || "Events") + "</span>";
-    } else {
-      grainHtml = '<select id="dynGrain" class="wsdc-select eg-grain-select" aria-label="Breakdown">' +
-        allowed.map(function (g) {
-          return '<option value="' + g + '"' +
-            (g === grain ? " selected" : "") + ">" +
-            esc(GRAIN_LABELS[g] || g) + "</option>";
-        }).join("") +
-        "</select>";
     }
-    return '<select id="dynFrom" class="wsdc-select" aria-label="From year">' +
-      yearOptsHtml(years, s.dynFrom) + "</select>" +
-      '<select id="dynTo" class="wsdc-select" aria-label="To year">' +
-      yearOptsHtml(years, s.dynTo) + "</select>" +
-      grainHtml;
+    return '<select id="dynGrain" class="wsdc-select eg-grain-select" aria-label="Breakdown">' +
+      allowed.map(function (g) {
+        return '<option value="' + g + '"' +
+          (g === grain ? " selected" : "") + ">" +
+          esc(GRAIN_LABELS[g] || g) + "</option>";
+      }).join("") +
+      "</select>";
   }
 
-  function kpiHtml(avgs) {
-    return '<div class="dyn-kpis">' +
-      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / year</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmtN(avgs.entries)) + "</div></div>" +
-      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Events / year</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmtN(avgs.events)) + "</div></div>" +
-      '<div class="dyn-kpi"><div class="dyn-kpi__lbl">Entries / event</div>' +
-      '<div class="dyn-kpi__val">' + esc(fmt1(avgs.entriesPerEvent)) + "</div></div>" +
-      "</div>";
+  var COMPARE_MAX = 5;
+  var METRIC_OPTS = [
+    { id: "entries", label: "Entries / year", fmt: "n" },
+    { id: "events", label: "Events / year", fmt: "n" },
+    { id: "entriesPerEvent", label: "Entries / event", fmt: "1" }
+  ];
+
+  function metricMeta(id) {
+    for (var i = 0; i < METRIC_OPTS.length; i++) {
+      if (METRIC_OPTS[i].id === id) return METRIC_OPTS[i];
+    }
+    return METRIC_OPTS[0];
   }
 
-  /** Chart series: top-N breakdown only (no Total / Other / average lines). */
-  function buildSeriesList(bd) {
+  function dynMetricOf(host) {
+    var id = host.state.dynMetric || "entries";
+    return metricMeta(id).id;
+  }
+
+  function fmtMetric(fmt, n) {
+    return fmt === "1" ? fmt1(n) : fmtN(n);
+  }
+
+  function compareKeysOf(host) {
+    if (!Array.isArray(host.state.dynCompareKeys)) host.state.dynCompareKeys = [];
+    return host.state.dynCompareKeys;
+  }
+
+  function showTotalOf(host) {
+    if (host.state.dynShowTotal == null) host.state.dynShowTotal = true;
+    return !!host.state.dynShowTotal;
+  }
+
+  function compareColor(EG, keys, key) {
+    var i = keys.indexOf(String(key));
+    if (i < 0) return null;
+    return EG.colorForIndex(i);
+  }
+
+  function toggleCompareKey(host, key) {
+    var keys = compareKeysOf(host).slice();
+    var k = String(key);
+    var i = keys.indexOf(k);
+    if (i >= 0) {
+      keys.splice(i, 1);
+      if (!keys.length) host.state.dynShowTotal = true;
+    } else if (keys.length < COMPARE_MAX) {
+      // First selection: drop Total so the line is readable (can re-enable).
+      if (!keys.length) host.state.dynShowTotal = false;
+      keys.push(k);
+    } else {
+      return false;
+    }
+    host.state.dynCompareKeys = keys;
+    return true;
+  }
+
+  /**
+   * Default: Total alone. With compare rows: selected lines only,
+   * unless dynShowTotal is still on.
+   */
+  function buildSeriesList(bd, compareKeys, showTotal) {
     var EG = root.EGDynamics;
-    return (bd.top || []).map(function (row, i) {
-      return {
+    var keys = compareKeys || [];
+    var list = [];
+    var includeTotal = showTotal || !keys.length;
+    if (includeTotal) {
+      list.push({
+        key: "__total__",
+        label: "Total",
+        color: EG.TOTAL_COLOR,
+        points: bd.total || [],
+        avg: null
+      });
+    }
+    var byKey = {};
+    (bd.rows || []).forEach(function (row) {
+      byKey[String(row.key)] = row;
+    });
+    keys.forEach(function (key, i) {
+      var row = byKey[String(key)];
+      if (!row) return;
+      list.push({
         key: row.key,
         label: row.label,
         color: EG.colorForIndex(i),
         points: row.series,
         avg: null
-      };
+      });
     });
+    return list;
   }
 
-  function chartBlock(title, metric, bd, highlightKey, years) {
+  function metricCard(label, metric, valueHtml, bd, years, compareKeys, showTotal) {
     var EG = root.EGDynamics;
-    var series = buildSeriesList(bd);
+    var series = buildSeriesList(bd, compareKeys, showTotal);
     var model = EG.lineChartModel(series, {
       metric: metric,
       years: years,
       width: 300,
       height: 160,
       padL: 34,
-      padR: 8,
+      padR: 20,
       padT: 10,
       padB: 22
     });
@@ -292,7 +368,8 @@
         year: y,
         x: model.xAt(i),
         rows: model.lines.map(function (line) {
-          var pt = line.byYear && line.byYear[String(y)];
+          var pt = (line.points && line.points[i]) ||
+            (line.byYear && line.byYear[String(y)]);
           return {
             key: line.key,
             label: line.label,
@@ -302,47 +379,134 @@
         })
       };
     });
-    var legend = model.lines.map(function (l) {
-      var hi = highlightKey && String(l.key) === String(highlightKey) ? " is-hi" : "";
-      return '<button type="button" class="' + hi + '" data-dyn-legend="' +
-        esc(String(l.key)) + '"><i class="dyn-chart__swatch" style="background:' +
-        esc(l.color) + '"></i>' + esc(l.label) + "</button>";
-    }).join("");
-    return '<div class="dyn-chart" data-metric="' + esc(metric) + '">' +
-      '<div class="dyn-chart__title">' + esc(title) + "</div>" +
-      renderLineSvg(model, highlightKey) +
+    return '<div class="dyn-metric-card" data-metric="' + esc(metric) + '">' +
+      '<div class="dyn-metric-card__head">' +
+      '<div class="dyn-kpi__lbl">' + esc(label) + "</div>" +
+      '<div class="dyn-kpi__val">' + valueHtml + "</div>" +
+      "</div>" +
+      '<div class="dyn-chart">' +
+      renderLineSvg(model, null) +
       '<script type="application/json" class="dyn-chart-tipdata">' +
       JSON.stringify(tipYears).replace(/</g, "\\u003c") +
-      "</script>" +
-      '<div class="dyn-chart__legend">' + legend + "</div>" +
-      "</div>";
+      "</script></div></div>";
   }
 
-  function tableHtml(bd, highlightKey, grain) {
+  function sparkSvgHtml(pts) {
     var EG = root.EGDynamics;
+    var m = EG.sparklineModel(pts, 72, 22, 3);
+    if (!m.path) {
+      return '<span class="dyn-muted">—</span>';
+    }
+    // No native <title> — only the shared white float tip (avoids double tooltips).
+    var marks = (m.marks || []).map(function (mk) {
+      var fill = mk.kind === "min" ? "#dc2626"
+        : (mk.kind === "max" ? "#16a34a" : "#64748b");
+      var tip = String(mk.year) + " · " + fmtN(mk.v);
+      return '<circle class="dyn-spark-mark" data-spark-tip="' + esc(tip) +
+        '" cx="' + mk.x.toFixed(1) + '" cy="' + mk.y.toFixed(1) +
+        '" r="2.6" fill="' + fill + '"/>';
+    }).join("");
+    return '<span class="dyn-spark-wrap">' +
+      '<svg class="dyn-spark" viewBox="0 0 72 22" aria-hidden="true">' +
+      '<path d="' + m.path +
+      '" fill="none" stroke="#94a3b8" stroke-width="1.4"' +
+      ' stroke-linecap="round" stroke-linejoin="round"/>' +
+      marks + "</svg></span>";
+  }
+
+  /** Trend-column metric only (does not change the three KPI cards / value cols). */
+  function trendMetricSelectHtml(selected) {
+    return '<select id="dynTrendMetric" class="wsdc-select eg-metric-select" aria-label="Trend metric">' +
+      METRIC_OPTS.map(function (m) {
+        return '<option value="' + m.id + '"' +
+          (m.id === selected ? " selected" : "") + ">" +
+          esc(m.label) + "</option>";
+      }).join("") +
+      "</select>";
+  }
+
+  function tableHtml(host, bd, compareKeys, grain, trendMetric, showTotal) {
+    var EG = root.EGDynamics;
+    var keys = compareKeys || [];
     var rows = bd.rows || [];
-    var head =
-      "<thead><tr><th>" + esc(GRAIN_LABELS[grain] || grain) +
-      "</th><th class=\"num\">Entries / year</th><th class=\"num\">Events / year</th>" +
-      "<th class=\"num\">Entries / event</th><th>Trend</th></tr></thead>";
+    var trendMeta = metricMeta(trendMetric);
+    // Grain: compact Monitor-style control above the table.
+    var toolbar =
+      '<div class="dyn-table-head">' +
+      '<div class="dyn-table-head__grain">' + grainSelectHtml(host) + "</div>" +
+      "</div>";
+    var thead =
+      "<thead><tr>" +
+      '<th class="dyn-col-check" scope="col"><span class="visually-hidden">Compare</span></th>' +
+      "<th>" + esc(GRAIN_LABELS[grain] || grain) + "</th>" +
+      '<th class="num">Entries / year</th>' +
+      '<th class="num">Events / year</th>' +
+      '<th class="num">Entries / event</th>' +
+      '<th class="dyn-col-trend" scope="col">' +
+      '<div class="dyn-trend-head">' +
+      '<span class="dyn-trend-head__lbl">Trend</span>' +
+      trendMetricSelectHtml(trendMetric) +
+      "</div></th></tr></thead>";
+
+    var totalChecked = !!showTotal || !keys.length;
+    var totalSwatch = totalChecked
+      ? '<i class="dyn-chart__swatch" style="background:' + esc(EG.TOTAL_COLOR) +
+        '" aria-hidden="true"></i>'
+      : "";
+    var totalAv = EG.periodAverages(bd.total || []);
+    var totalSparkPts = (bd.total || []).map(function (p) {
+      return (p.partial || p.missing) ? null
+        : { year: p.year, v: p[trendMetric] };
+    }).filter(Boolean);
+    var totalRow =
+      '<tr class="' + (totalChecked ? "is-compare" : "") +
+      '" data-dyn-total-row="1">' +
+      '<td class="dyn-col-check"><label class="dyn-compare">' +
+      '<input type="checkbox" data-dyn-total="1"' +
+      (totalChecked ? " checked" : "") +
+      (!keys.length ? " disabled" : "") +
+      ' aria-label="Show Total"/>' + totalSwatch + "</label></td>" +
+      "<td><strong>Total</strong></td>" +
+      '<td class="num">' + esc(fmtN(totalAv.entries)) + "</td>" +
+      '<td class="num">' + esc(fmtN(totalAv.events)) + "</td>" +
+      '<td class="num">' + esc(fmt1(totalAv.entriesPerEvent)) + "</td>" +
+      "<td>" + sparkSvgHtml(totalSparkPts) + "</td></tr>";
+
     var body = rows.map(function (r) {
-      var vals = (r.series || []).map(function (p) {
-        return p.partial ? null : p.entries;
-      }).filter(function (v) { return v != null; });
-      var spark = EG.sparklinePath(vals, 72, 22, 2);
-      var hi = highlightKey && String(r.key) === String(highlightKey) ? " is-hi" : "";
+      var sparkPts = (r.series || []).map(function (p) {
+        return (p.partial || p.missing) ? null
+          : { year: p.year, v: p[trendMetric] };
+      }).filter(Boolean);
+      var checked = keys.indexOf(String(r.key)) !== -1;
+      var color = compareColor(EG, keys, r.key);
       var a = r.averages || {};
-      return '<tr class="' + hi + '" data-dyn-row="' + esc(String(r.key)) + '">' +
+      var swatch = checked && color
+        ? '<i class="dyn-chart__swatch" style="background:' + esc(color) +
+          '" aria-hidden="true"></i>'
+        : "";
+      return '<tr class="' + (checked ? "is-compare" : "") +
+        '" data-dyn-row="' + esc(String(r.key)) + '">' +
+        '<td class="dyn-col-check">' +
+        '<label class="dyn-compare">' +
+        '<input type="checkbox" data-dyn-compare="' + esc(String(r.key)) + '"' +
+        (checked ? " checked" : "") +
+        (!checked && keys.length >= COMPARE_MAX ? " disabled" : "") +
+        ' aria-label="Compare ' + esc(r.label) + '"/>' +
+        swatch + "</label></td>" +
         "<td>" + esc(r.label) + "</td>" +
         '<td class="num">' + esc(fmtN(a.entries)) + "</td>" +
         '<td class="num">' + esc(fmtN(a.events)) + "</td>" +
         '<td class="num">' + esc(fmt1(a.entriesPerEvent)) + "</td>" +
-        '<td><svg class="dyn-spark" viewBox="0 0 72 22"><path d="' +
-        spark + '" fill="none" stroke="#2563eb" stroke-width="1.5"/></svg></td>' +
+        "<td>" + sparkSvgHtml(sparkPts) + "</td>" +
         "</tr>";
     }).join("");
-    return '<div class="dyn-table-wrap"><table class="dyn-table">' +
-      head + "<tbody>" + body + "</tbody></table></div>";
+    return '<div class="dyn-table-wrap">' + toolbar +
+      '<table class="dyn-table">' + thead + "<tbody>" + totalRow + body +
+      "</tbody></table>" +
+      '<p class="dyn-compare-hint dyn-muted">Default: Total. Check rows to compare ' +
+      "(Total turns off automatically — re-check Total to overlay). " +
+      "Trend sparklines follow " + esc(trendMeta.label) +
+      ". Double-click a row to drill in.</p></div>";
   }
 
   function renderGeoView(host) {
@@ -358,19 +522,30 @@
       grain = EG.naturalGrain(s.level, s.country, s.city);
       s.dynGrain = grain;
     }
+    var trendMetric = dynMetricOf(host);
+    host.state.dynMetric = trendMetric;
     var bd = EG.breakdown(
       host.editions(), geo, grain, range, through, EG.DYNAMICS_RULES.topN
     );
     var avgs = EG.periodAverages(bd.total);
     var years = EG.yearsInRange(s.dynFrom, s.dynTo);
-    var hi = s.dynHighlightKey;
-    return kpiHtml(avgs) +
-      '<div class="dyn-charts is-geo">' +
-      chartBlock("Entries / year", "entries", bd, hi, years) +
-      chartBlock("Events / year", "events", bd, hi, years) +
-      chartBlock("Entries / event", "entriesPerEvent", bd, hi, years) +
+    var compareKeys = compareKeysOf(host).filter(function (k) {
+      return (bd.rows || []).some(function (r) {
+        return String(r.key) === String(k);
+      });
+    });
+    host.state.dynCompareKeys = compareKeys;
+    var showTotal = showTotalOf(host);
+    if (!compareKeys.length) showTotal = true;
+    return '<div class="dyn-charts is-geo">' +
+      metricCard("Entries / year", "entries", esc(fmtN(avgs.entries)),
+        bd, years, compareKeys, showTotal) +
+      metricCard("Events / year", "events", esc(fmtN(avgs.events)),
+        bd, years, compareKeys, showTotal) +
+      metricCard("Entries / event", "entriesPerEvent",
+        esc(fmt1(avgs.entriesPerEvent)), bd, years, compareKeys, showTotal) +
       "</div>" +
-      tableHtml(bd, hi, grain);
+      tableHtml(host, bd, compareKeys, grain, trendMetric, showTotal);
   }
 
   function renderEventView(host) {
@@ -417,7 +592,7 @@
       width: 640,
       height: 200,
       padL: 40,
-      padR: 12,
+      padR: 22,
       padT: 12,
       padB: 28
     });
@@ -494,7 +669,7 @@
       width: 640,
       height: 220,
       padL: 36,
-      padR: 10,
+      padR: 22,
       padT: 12,
       padB: 28
     });
@@ -631,8 +806,22 @@
     var rect = body.getBoundingClientRect();
     tip.innerHTML = html;
     tip.classList.add("is-open");
+    var tipW = tip.offsetWidth || 180;
+    var tipH = tip.offsetHeight || 80;
+    var pad = 8;
     var x = clientX - rect.left + body.scrollLeft + 12;
     var y = clientY - rect.top + body.scrollTop + 12;
+    var maxX = body.scrollLeft + body.clientWidth - tipW - pad;
+    var maxY = body.scrollTop + body.clientHeight - tipH - pad;
+    var minX = body.scrollLeft + pad;
+    var minY = body.scrollTop + pad;
+    if (x > maxX) x = Math.max(minX, maxX);
+    if (y > maxY) {
+      y = clientY - rect.top + body.scrollTop - tipH - 12;
+    }
+    if (x < minX) x = minX;
+    if (y < minY) y = minY;
+    if (y > maxY) y = Math.max(minY, maxY);
     tip.style.left = x + "px";
     tip.style.top = y + "px";
   }
@@ -673,7 +862,16 @@
       grain.addEventListener("change", function () {
         host.state.dynGrain = grain.value;
         host.state.dynHighlightKey = null;
+        host.state.dynCompareKeys = [];
+        host.state.dynShowTotal = true;
         host.writeUrl();
+        host.render();
+      });
+    }
+    var trendMetricSel = rootEl.querySelector("#dynTrendMetric");
+    if (trendMetricSel) {
+      trendMetricSel.addEventListener("change", function () {
+        host.state.dynMetric = trendMetricSel.value;
         host.render();
       });
     }
@@ -682,23 +880,64 @@
         host.jump(btn.getAttribute("data-dyn-jump"));
       });
     });
-    rootEl.querySelectorAll("[data-dyn-row]").forEach(function (tr) {
-      tr.addEventListener("click", function () {
-        var key = tr.getAttribute("data-dyn-row");
-        if (String(host.state.dynHighlightKey) === String(key)) {
-          host.drillRow(key);
-        } else {
-          host.state.dynHighlightKey = key;
-          host.render();
+    var totalInp = rootEl.querySelector("[data-dyn-total]");
+    if (totalInp) {
+      totalInp.addEventListener("click", function (ev) { ev.stopPropagation(); });
+      totalInp.addEventListener("change", function () {
+        if (!compareKeysOf(host).length) {
+          totalInp.checked = true;
+          host.state.dynShowTotal = true;
+          return;
         }
+        host.state.dynShowTotal = !!totalInp.checked;
+        host.render();
+      });
+    }
+    rootEl.querySelectorAll("[data-dyn-compare]").forEach(function (inp) {
+      inp.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+      });
+      inp.addEventListener("change", function () {
+        var key = inp.getAttribute("data-dyn-compare");
+        var keys = compareKeysOf(host);
+        var on = keys.indexOf(String(key)) !== -1;
+        if (inp.checked && !on) {
+          if (!toggleCompareKey(host, key)) {
+            inp.checked = false;
+            return;
+          }
+        } else if (!inp.checked && on) {
+          toggleCompareKey(host, key);
+        }
+        host.render();
       });
     });
-    rootEl.querySelectorAll("[data-dyn-legend]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var key = btn.getAttribute("data-dyn-legend");
-        host.state.dynHighlightKey =
-          String(host.state.dynHighlightKey) === String(key) ? null : key;
+    rootEl.querySelectorAll("[data-dyn-row]").forEach(function (tr) {
+      tr.addEventListener("click", function (ev) {
+        if (ev.target && ev.target.closest &&
+            (ev.target.closest("[data-dyn-compare]") ||
+             ev.target.closest("[data-dyn-total]") ||
+             ev.target.closest(".dyn-spark-wrap"))) {
+          return;
+        }
+        var key = tr.getAttribute("data-dyn-row");
+        toggleCompareKey(host, key);
         host.render();
+      });
+      tr.addEventListener("dblclick", function () {
+        var key = tr.getAttribute("data-dyn-row");
+        host.drillRow(key);
+      });
+    });
+    rootEl.querySelectorAll(".dyn-spark-mark").forEach(function (mark) {
+      mark.addEventListener("mousemove", function (ev) {
+        var t = mark.getAttribute("data-spark-tip") || "";
+        if (!t) return;
+        showFloatTip(body, '<div class="dyn-float-tip__y">' + esc(t) + "</div>",
+          ev.clientX, ev.clientY);
+      });
+      mark.addEventListener("mouseleave", function () {
+        hideFloatTip(body);
       });
     });
     rootEl.querySelectorAll("[data-dyn-edition]").forEach(function (tr) {
@@ -819,6 +1058,8 @@
     if (!layer) return;
     host.state.dynOpen = false;
     host.state.dynHighlightKey = null;
+    host.state.dynCompareKeys = [];
+    host.state.dynShowTotal = true;
     host.state.dynEventId = null;
     host.state.dynEditionKey = null;
     layer.classList.remove("is-open");

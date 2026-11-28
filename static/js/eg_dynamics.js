@@ -571,21 +571,86 @@
   }
 
   function sparklinePath(values, w, h, pad) {
+    return sparklineModel(values, w, h, pad).path;
+  }
+
+  /**
+   * Gray sparkline geometry + min/max marks.
+   * `values` may be numbers or `{ year, v }` (missing/non-finite skipped).
+   */
+  function sparklineModel(values, w, h, pad) {
     pad = pad == null ? 2 : pad;
-    var vals = (values || []).map(function (v) {
-      return isFinite(Number(v)) ? Number(v) : 0;
+    var pts = [];
+    (values || []).forEach(function (item, i) {
+      if (item != null && typeof item === "object") {
+        var ov = item.v != null ? item.v : item.value;
+        if (ov != null && isFinite(Number(ov))) {
+          pts.push({
+            year: item.year != null ? item.year : i,
+            v: Number(ov)
+          });
+        }
+        return;
+      }
+      if (item != null && isFinite(Number(item))) {
+        pts.push({ year: i, v: Number(item) });
+      }
     });
-    if (!vals.length) return "";
+    if (!pts.length) {
+      return {
+        path: "",
+        marks: [],
+        min: null,
+        max: null,
+        avg: null,
+        n: 0
+      };
+    }
+    var vals = pts.map(function (p) { return p.v; });
     var min = Math.min.apply(null, vals);
     var max = Math.max.apply(null, vals);
+    var sum = 0;
+    vals.forEach(function (v) { sum += v; });
+    var avg = sum / vals.length;
     var span = max - min || 1;
     var plotW = w - pad * 2;
     var plotH = h - pad * 2;
-    return vals.map(function (v, i) {
+    function xy(v, i) {
       var x = pad + (vals.length === 1 ? plotW / 2 : (i / (vals.length - 1)) * plotW);
       var y = pad + plotH - ((v - min) / span) * plotH;
-      return (i ? "L" : "M") + x.toFixed(1) + "," + y.toFixed(1);
+      return { x: x, y: y };
+    }
+    var path = vals.map(function (v, i) {
+      var p = xy(v, i);
+      return (i ? "L" : "M") + p.x.toFixed(1) + "," + p.y.toFixed(1);
     }).join(" ");
+    var minI = vals.indexOf(min);
+    var maxI = vals.indexOf(max);
+    var marks = [];
+    function markAt(i, kind) {
+      var p = xy(vals[i], i);
+      marks.push({
+        x: p.x,
+        y: p.y,
+        kind: kind,
+        v: vals[i],
+        year: pts[i].year
+      });
+    }
+    if (minI === maxI) {
+      markAt(minI, "both");
+    } else {
+      markAt(minI, "min");
+      markAt(maxI, "max");
+    }
+    return {
+      path: path,
+      marks: marks,
+      min: min,
+      max: max,
+      avg: avg,
+      n: vals.length
+    };
   }
 
   function lineChartModel(seriesList, opts) {
@@ -712,6 +777,7 @@
     findTiersRow: findTiersRow,
     eventEditionSeries: eventEditionSeries,
     sparklinePath: sparklinePath,
+    sparklineModel: sparklineModel,
     lineChartModel: lineChartModel,
     colorForIndex: colorForIndex
   };
