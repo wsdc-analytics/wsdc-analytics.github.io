@@ -189,21 +189,120 @@
   border-bottom: 1px solid #eef2f7;
   margin-bottom: 4px;
 }
+/* Monitor-style compact grain control above the breakdown table. */
 .dyn-table-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: 8px 12px;
   margin: 0 0 8px;
-  padding: 0 2px;
+  padding: 5px 8px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #64748b;
+  line-height: 1.2;
 }
-.dyn-table-head__grain,
-.dyn-table-head__metric {
+.dyn-table-head__grain {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
+}
+.dyn-table-head .wsdc-select-host,
+.dyn-table-head .wsdc-dd {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+.dyn-table-head .wsdc-dd--field .wsdc-dd__btn {
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  gap: 2px;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: uppercase;
+  line-height: 1;
+  justify-content: flex-start;
+}
+.dyn-table-head .wsdc-dd--field .wsdc-dd__btn svg {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+.dyn-table-head .wsdc-dd--field .wsdc-dd__btn:hover,
+.dyn-table-head .wsdc-dd--field.is-open .wsdc-dd__btn {
+  color: #0b1221;
+  background: transparent;
+  border: 0;
+}
+.dyn-table-head .wsdc-dd__menu {
+  min-width: 9rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+  font-size: 12px;
+}
+.dyn-trend-head {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+.dyn-trend-head__lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #64748b;
+}
+.dyn-col-trend .wsdc-select-host,
+.dyn-col-trend .wsdc-dd {
+  width: auto;
+  min-width: 0;
+}
+.dyn-col-trend .wsdc-dd--field .wsdc-dd__btn {
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  gap: 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #64748b;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  justify-content: flex-end;
+}
+.dyn-col-trend .wsdc-dd--field .wsdc-dd__btn svg {
+  width: 9px;
+  height: 9px;
+  opacity: 0.75;
+}
+.dyn-col-trend .wsdc-dd__menu {
+  min-width: 10rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+  font-size: 12px;
 }
 .dyn-chart {
   padding: 2px 0 6px;

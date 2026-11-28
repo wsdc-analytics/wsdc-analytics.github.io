@@ -356,12 +356,12 @@
     var model = EG.lineChartModel(series, {
       metric: metric,
       years: years,
-      width: 640,
-      height: 200,
-      padL: 40,
-      padR: 22,
-      padT: 12,
-      padB: 28
+      width: 300,
+      height: 160,
+      padL: 34,
+      padR: 20,
+      padT: 10,
+      padB: 22
     });
     var tipYears = years.map(function (y, i) {
       return {
@@ -397,14 +397,14 @@
     if (!m.path) {
       return '<span class="dyn-muted">—</span>';
     }
+    // No native <title> — only the shared white float tip (avoids double tooltips).
     var marks = (m.marks || []).map(function (mk) {
       var fill = mk.kind === "min" ? "#dc2626"
         : (mk.kind === "max" ? "#16a34a" : "#64748b");
       var tip = String(mk.year) + " · " + fmtN(mk.v);
       return '<circle class="dyn-spark-mark" data-spark-tip="' + esc(tip) +
         '" cx="' + mk.x.toFixed(1) + '" cy="' + mk.y.toFixed(1) +
-        '" r="2.6" fill="' + fill + '"><title>' + esc(tip) +
-        "</title></circle>";
+        '" r="2.6" fill="' + fill + '"/>';
     }).join("");
     return '<span class="dyn-spark-wrap">' +
       '<svg class="dyn-spark" viewBox="0 0 72 22" aria-hidden="true">' +
@@ -414,8 +414,9 @@
       marks + "</svg></span>";
   }
 
-  function metricSelectHtml(selected) {
-    return '<select id="dynMetric" class="wsdc-select eg-metric-select" aria-label="Metric">' +
+  /** Trend-column metric only (does not change the three KPI cards / value cols). */
+  function trendMetricSelectHtml(selected) {
+    return '<select id="dynTrendMetric" class="wsdc-select eg-metric-select" aria-label="Trend metric">' +
       METRIC_OPTS.map(function (m) {
         return '<option value="' + m.id + '"' +
           (m.id === selected ? " selected" : "") + ">" +
@@ -424,22 +425,28 @@
       "</select>";
   }
 
-  function tableHtml(host, bd, compareKeys, grain, metric, showTotal) {
+  function tableHtml(host, bd, compareKeys, grain, trendMetric, showTotal) {
     var EG = root.EGDynamics;
     var keys = compareKeys || [];
     var rows = bd.rows || [];
-    var meta = metricMeta(metric);
+    var trendMeta = metricMeta(trendMetric);
+    // Grain: compact Monitor-style control above the table.
     var toolbar =
       '<div class="dyn-table-head">' +
       '<div class="dyn-table-head__grain">' + grainSelectHtml(host) + "</div>" +
-      '<div class="dyn-table-head__metric">' + metricSelectHtml(metric) +
-      "</div></div>";
+      "</div>";
     var thead =
       "<thead><tr>" +
       '<th class="dyn-col-check" scope="col"><span class="visually-hidden">Compare</span></th>' +
       "<th>" + esc(GRAIN_LABELS[grain] || grain) + "</th>" +
-      '<th class="num">' + esc(meta.label) + "</th>" +
-      '<th scope="col">Trend</th></tr></thead>';
+      '<th class="num">Entries / year</th>' +
+      '<th class="num">Events / year</th>' +
+      '<th class="num">Entries / event</th>' +
+      '<th class="dyn-col-trend" scope="col">' +
+      '<div class="dyn-trend-head">' +
+      '<span class="dyn-trend-head__lbl">Trend</span>' +
+      trendMetricSelectHtml(trendMetric) +
+      "</div></th></tr></thead>";
 
     var totalChecked = !!showTotal || !keys.length;
     var totalSwatch = totalChecked
@@ -448,7 +455,8 @@
       : "";
     var totalAv = EG.periodAverages(bd.total || []);
     var totalSparkPts = (bd.total || []).map(function (p) {
-      return (p.partial || p.missing) ? null : { year: p.year, v: p[metric] };
+      return (p.partial || p.missing) ? null
+        : { year: p.year, v: p[trendMetric] };
     }).filter(Boolean);
     var totalRow =
       '<tr class="' + (totalChecked ? "is-compare" : "") +
@@ -459,12 +467,15 @@
       (!keys.length ? " disabled" : "") +
       ' aria-label="Show Total"/>' + totalSwatch + "</label></td>" +
       "<td><strong>Total</strong></td>" +
-      '<td class="num">' + esc(fmtMetric(meta.fmt, totalAv[metric])) + "</td>" +
+      '<td class="num">' + esc(fmtN(totalAv.entries)) + "</td>" +
+      '<td class="num">' + esc(fmtN(totalAv.events)) + "</td>" +
+      '<td class="num">' + esc(fmt1(totalAv.entriesPerEvent)) + "</td>" +
       "<td>" + sparkSvgHtml(totalSparkPts) + "</td></tr>";
 
     var body = rows.map(function (r) {
       var sparkPts = (r.series || []).map(function (p) {
-        return (p.partial || p.missing) ? null : { year: p.year, v: p[metric] };
+        return (p.partial || p.missing) ? null
+          : { year: p.year, v: p[trendMetric] };
       }).filter(Boolean);
       var checked = keys.indexOf(String(r.key)) !== -1;
       var color = compareColor(EG, keys, r.key);
@@ -483,7 +494,9 @@
         ' aria-label="Compare ' + esc(r.label) + '"/>' +
         swatch + "</label></td>" +
         "<td>" + esc(r.label) + "</td>" +
-        '<td class="num">' + esc(fmtMetric(meta.fmt, a[metric])) + "</td>" +
+        '<td class="num">' + esc(fmtN(a.entries)) + "</td>" +
+        '<td class="num">' + esc(fmtN(a.events)) + "</td>" +
+        '<td class="num">' + esc(fmt1(a.entriesPerEvent)) + "</td>" +
         "<td>" + sparkSvgHtml(sparkPts) + "</td>" +
         "</tr>";
     }).join("");
@@ -492,7 +505,8 @@
       "</tbody></table>" +
       '<p class="dyn-compare-hint dyn-muted">Default: Total. Check rows to compare ' +
       "(Total turns off automatically — re-check Total to overlay). " +
-      "Double-click a row to drill in.</p></div>";
+      "Trend sparklines follow " + esc(trendMeta.label) +
+      ". Double-click a row to drill in.</p></div>";
   }
 
   function renderGeoView(host) {
@@ -508,9 +522,8 @@
       grain = EG.naturalGrain(s.level, s.country, s.city);
       s.dynGrain = grain;
     }
-    var metric = dynMetricOf(host);
-    host.state.dynMetric = metric;
-    var meta = metricMeta(metric);
+    var trendMetric = dynMetricOf(host);
+    host.state.dynMetric = trendMetric;
     var bd = EG.breakdown(
       host.editions(), geo, grain, range, through, EG.DYNAMICS_RULES.topN
     );
@@ -524,16 +537,15 @@
     host.state.dynCompareKeys = compareKeys;
     var showTotal = showTotalOf(host);
     if (!compareKeys.length) showTotal = true;
-    var kpiSeries = buildSeriesList(bd, compareKeys, showTotal);
-    var kpiAvgs = compareKeys.length && !showTotal && kpiSeries.length === 1
-      ? EG.periodAverages(kpiSeries[0].points)
-      : avgs;
-    return '<div class="dyn-charts">' +
-      metricCard(meta.label, metric,
-        esc(fmtMetric(meta.fmt, kpiAvgs[metric])),
+    return '<div class="dyn-charts is-geo">' +
+      metricCard("Entries / year", "entries", esc(fmtN(avgs.entries)),
         bd, years, compareKeys, showTotal) +
+      metricCard("Events / year", "events", esc(fmtN(avgs.events)),
+        bd, years, compareKeys, showTotal) +
+      metricCard("Entries / event", "entriesPerEvent",
+        esc(fmt1(avgs.entriesPerEvent)), bd, years, compareKeys, showTotal) +
       "</div>" +
-      tableHtml(host, bd, compareKeys, grain, metric, showTotal);
+      tableHtml(host, bd, compareKeys, grain, trendMetric, showTotal);
   }
 
   function renderEventView(host) {
@@ -856,10 +868,10 @@
         host.render();
       });
     }
-    var metricSel = rootEl.querySelector("#dynMetric");
-    if (metricSel) {
-      metricSel.addEventListener("change", function () {
-        host.state.dynMetric = metricSel.value;
+    var trendMetricSel = rootEl.querySelector("#dynTrendMetric");
+    if (trendMetricSel) {
+      trendMetricSel.addEventListener("change", function () {
+        host.state.dynMetric = trendMetricSel.value;
         host.render();
       });
     }
