@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="static/css/ui-primitives.css">
   <link rel="stylesheet" href="static/css/site-chrome.css?v=20261106d">
   <link rel="stylesheet" href="static/css/dashboard-shell.css">
+  <link rel="stylesheet" href="static/css/eg-dynamics.css?v=20261128a">
   <link rel="stylesheet" href="static/vendor/maplibre/maplibre-gl.css">
   <script src="static/js/analytics.js" defer></script>
   <meta property="og:type" content="website">
@@ -1206,6 +1207,7 @@
           <button type="button" class="wsdc-info-btn" id="methodInfoBtn" aria-label="Methodology" aria-expanded="false" aria-controls="methodIsland" title="Methodology">
             <span aria-hidden="true">i</span>
           </button>
+          <button type="button" class="dyn-btn" id="dynOpenBtn" aria-pressed="false" aria-controls="dynLayer" title="Multi-year dynamics">Dynamics</button>
           <span class="page-head__updated" id="updatedStamp">—</span>
         </div>
         <p class="subtitle">Are WSDC events growing or shrinking — and where? This tool compares competitor counts at every event with its previous edition and rolls them up by continent, country, state and city. For the current year it compares year-to-date (closed months in full; the open month matched to published events only); finished years compare full years. Click the map or the list to drill down, and use the <em>Event trend</em> pills to focus on growing, declining, stable or new events.</p>
@@ -1339,6 +1341,18 @@
     One-event places match that event’s headcount. Its change compares those averages.
   </div>
 
+  <div class="dyn-layer" id="dynLayer" hidden aria-hidden="true">
+    <div class="dyn-layer__backdrop" id="dynLayerBackdrop"></div>
+    <div class="dyn-island" id="dynIsland" role="dialog" aria-modal="true" aria-labelledby="dynTitle">
+      <div class="dyn-island__head">
+        <h2 id="dynTitle">Dynamics</h2>
+        <nav class="dyn-island__crumb" id="dynCrumb" aria-label="Dynamics geography"></nav>
+        <button type="button" class="dyn-island__close" id="dynCloseBtn">Close</button>
+      </div>
+      <div class="dyn-island__body" id="dynBody"></div>
+    </div>
+  </div>
+
   <div class="method-layer" id="methodLayer" hidden aria-hidden="true">
     <div class="method-layer__backdrop" id="methodLayerBackdrop"></div>
     <div class="method-island" id="methodIsland" role="dialog" aria-modal="true" aria-labelledby="methodIslandTitle">
@@ -1422,6 +1436,8 @@
   <script src="static/js/wsdc-select.js"></script>
   <script src="static/js/eg_venue_helpers.js?v=20261031-eg"></script>
   <script src="static/js/wsdc_city_venue.js?v=20261114b"></script>
+  <script src="static/js/eg_dynamics.js?v=20261128a"></script>
+  <script src="static/js/eg_dynamics_panel.js?v=20261128a"></script>
   <script>
 (function () {
   "use strict";
@@ -1512,7 +1528,17 @@
       states: null,
       cities: null,
       loading: null
-    }
+    },
+    // Dynamics L2 (descriptive multi-year view — not growing/declining).
+    dynOpen: false,
+    dynFrom: null,
+    dynTo: null,
+    dynGrain: null,
+    dynHighlightKey: null,
+    dynEventId: null,
+    dynEditionKey: null,
+    dynRole: "Leader",
+    tiersData: null
   };
 
   var EMPTY_FC = { type: "FeatureCollection", features: [] };
@@ -1858,6 +1884,13 @@
     if (state.city && state.level !== "country" && state.level !== "state") {
       state.city = null;
     }
+    state.dynOpen = q.get("mode") === "dynamics";
+    if (q.get("from")) state.dynFrom = Number(q.get("from"));
+    if (q.get("to")) state.dynTo = Number(q.get("to"));
+    if (q.get("grain")) state.dynGrain = q.get("grain");
+    if (q.get("event")) state.dynEventId = Number(q.get("event"));
+    else state.dynEventId = null;
+    state.dynEditionKey = q.get("edition") || null;
   }
 
   // Fill / correct parents from data (orphan country, mismatched continent).
@@ -1909,8 +1942,103 @@
     if (state.country) q.set("country", state.country);
     if (state.regionState) q.set("state", state.regionState);
     if (state.city) q.set("city", state.city);
+    if (state.dynOpen) {
+      q.set("mode", "dynamics");
+      if (state.dynFrom != null) q.set("from", String(state.dynFrom));
+      if (state.dynTo != null) q.set("to", String(state.dynTo));
+      if (state.dynGrain) q.set("grain", state.dynGrain);
+      if (state.dynEventId != null) q.set("event", String(state.dynEventId));
+      if (state.dynEditionKey) q.set("edition", state.dynEditionKey);
+    }
     var next = q.toString();
     history.replaceState(null, "", next ? ("?" + next) : location.pathname);
+  }
+
+  function dynHost() {
+    return {
+      state: state,
+      editions: function () {
+        return (state.data && state.data.editions) || [];
+      },
+      tiersEditions: function () {
+        return (state.tiersData && state.tiersData.editions) || [];
+      },
+      years: function () {
+        return (state.data && state.data.years) || [];
+      },
+      dataThrough: function () {
+        return state.data && state.data.data_through;
+      },
+      writeUrl: writeUrl,
+      render: function () {
+        if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
+      },
+      jump: function (action) {
+        if (action === "back-edition") {
+          state.dynEditionKey = null;
+          writeUrl();
+          if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
+          return;
+        }
+        if (action === "back-event") {
+          state.dynEventId = null;
+          state.dynEditionKey = null;
+          writeUrl();
+          render();
+          return;
+        }
+        if (action === "event") {
+          state.dynEditionKey = null;
+          writeUrl();
+          if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
+          return;
+        }
+        if (action === "city") {
+          state.dynEventId = null;
+          state.dynEditionKey = null;
+          writeUrl();
+          render();
+          return;
+        }
+        state.dynEventId = null;
+        state.dynEditionKey = null;
+        state.dynHighlightKey = null;
+        jumpTo(action);
+      },
+      drillRow: function (key) {
+        var grain = state.dynGrain ||
+          (window.EGDynamics && EGDynamics.naturalGrain(state.level, state.country, state.city));
+        if (grain === "event") {
+          state.dynEventId = Number(key);
+          state.dynEditionKey = null;
+          state.dynHighlightKey = null;
+          writeUrl();
+          if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
+          return;
+        }
+        // Reuse list drill with a synthetic region row.
+        var sample = null;
+        var eds = (state.data && state.data.editions) || [];
+        for (var i = 0; i < eds.length; i++) {
+          if (window.EGDynamics && EGDynamics.grainKey(eds[i], grain) === key) {
+            sample = eds[i];
+            break;
+          }
+        }
+        if (!sample) return;
+        var prevGrain = state.listGrain;
+        state.listGrain = grain;
+        drillListEntity({
+          key: key,
+          sample: sample,
+          path: editionPath(sample)
+        });
+        state.listGrain = prevGrain;
+        state.dynHighlightKey = null;
+        state.dynGrain = null;
+        if (window.EGDynamicsPanel) EGDynamicsPanel.render(dynHost());
+      }
+    };
   }
 
   function avgCompetitors(total, n) {
@@ -2022,6 +2150,11 @@
   function resetListGrainOnMapNav() {
     state.listGrain = naturalListGrain();
     ensureListMetric();
+    if (state.dynOpen && typeof EGDynamics !== "undefined") {
+      state.dynGrain = EGDynamics.naturalGrain(state.level, state.country, state.city);
+      state.dynHighlightKey = null;
+      if (state.dynEventId == null) state.dynEditionKey = null;
+    }
   }
 
   function listGrainMatchesMap() {
@@ -5729,6 +5862,9 @@
     scheduleMapTask(hideMapTooltip, 0, tipSeq);
     scheduleMapTask(hideMapTooltip, 120, tipSeq);
     renderRegions(listWithAbsent);
+    if (state.dynOpen && window.EGDynamicsPanel) {
+      EGDynamicsPanel.render(dynHost());
+    }
   }
 
   function openMethod() {
@@ -5826,6 +5962,20 @@
     });
     document.getElementById("methodIslandClose").addEventListener("click", closeMethod);
     document.getElementById("methodLayerBackdrop").addEventListener("click", closeMethod);
+    document.getElementById("dynOpenBtn").addEventListener("click", function () {
+      if (state.dynOpen) EGDynamicsPanel.close(dynHost());
+      else {
+        closeMethod();
+        closeTipPops();
+        EGDynamicsPanel.open(dynHost());
+      }
+    });
+    document.getElementById("dynCloseBtn").addEventListener("click", function () {
+      EGDynamicsPanel.close(dynHost());
+    });
+    document.getElementById("dynLayerBackdrop").addEventListener("click", function () {
+      EGDynamicsPanel.close(dynHost());
+    });
     TIP_POP_PAIRS.forEach(function (pair) {
       var btn = document.getElementById(pair[0]);
       if (!btn) return;
@@ -5836,7 +5986,8 @@
     });
     document.addEventListener("keydown", function (ev) {
       if (ev.key !== "Escape") return;
-      if (document.getElementById("methodLayer").classList.contains("is-open")) closeMethod();
+      if (state.dynOpen) EGDynamicsPanel.close(dynHost());
+      else if (document.getElementById("methodLayer").classList.contains("is-open")) closeMethod();
       else if (tipState.pinned) hideMapTooltip();
       else closeTipPops();
     });
@@ -5907,12 +6058,16 @@
       var data = pair[0];
       attachEditionEnds(data, pair[1]);
       state.data = data;
+      state.tiersData = pair[1];
       readUrl();
       normalizeGeoFromData();
       resetListGrainOnMapNav();
       initControls();
       writeUrl();
       render();
+      if (state.dynOpen && window.EGDynamicsPanel) {
+        EGDynamicsPanel.open(dynHost());
+      }
     })
     .catch(function (err) {
       var list = document.getElementById("regionList");
