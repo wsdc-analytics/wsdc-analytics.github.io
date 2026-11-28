@@ -53,7 +53,9 @@
     return map[t] || "#94a3b8";
   }
 
-  function renderLineSvg(model, highlightKey) {
+  function renderLineSvg(model, highlightKey, opts) {
+    opts = opts || {};
+    var skipPoints = !!opts.skipPoints;
     var EG = root.EGDynamics;
     var parts = [];
     parts.push(
@@ -76,8 +78,6 @@
       var op = dim ? 0.18 : 1;
       line.segs.forEach(function (seg) {
         if (seg.length < 2) return;
-        var dashed = seg.some(function (p) { return p.partial; }) &&
-          seg.every(function (p) { return p.partial || seg.indexOf(p) === 0; });
         // If any point is partial, draw that segment dashed.
         var hasPartial = seg.some(function (p) { return p.partial; });
         parts.push(
@@ -87,6 +87,7 @@
           (hasPartial ? ' stroke-dasharray="5 4"' : "") + "/>"
         );
       });
+      if (skipPoints) return;
       line.points.forEach(function (p) {
         parts.push(
           '<circle class="dyn-pt" data-line="' + esc(line.key) +
@@ -219,23 +220,16 @@
 
   function buildSeriesList(bd, metric) {
     var EG = root.EGDynamics;
+    var avgObj = EG.periodAverages(bd.total);
     var list = [{
       key: "__total__",
       label: "Total",
       color: EG.TOTAL_COLOR,
       points: bd.total,
-      avg: EG.periodAverages(bd.total).entriesPerEvent != null || metric !== "entriesPerEvent"
-        ? EG.periodAverages(bd.total)[
-            metric === "entries" ? "entries" :
-            metric === "events" ? "events" : "entriesPerEvent"
-          ]
-        : null
+      avg: metric === "entries" ? avgObj.entries
+        : metric === "events" ? avgObj.events
+        : avgObj.entriesPerEvent
     }];
-    // Fix avg per metric properly:
-    var avgObj = EG.periodAverages(bd.total);
-    list[0].avg = metric === "entries" ? avgObj.entries
-      : metric === "events" ? avgObj.events
-      : avgObj.entriesPerEvent;
 
     (bd.top || []).forEach(function (row, i) {
       var a = row.averages || {};
@@ -504,9 +498,8 @@
       padT: 12,
       padB: 28
     });
-    // Recolor points by tier
-    var svg = renderLineSvg(model, null);
-    // Overlay tier-colored dots via second pass HTML note
+    // Paths only from renderLineSvg; points are tier-colored (not division color).
+    var svg = renderLineSvg(model, null, { skipPoints: true });
     var dots = [];
     model.lines.forEach(function (line) {
       line.points.forEach(function (p) {
@@ -649,16 +642,22 @@
     var to = rootEl.querySelector("#dynTo");
     if (from) {
       from.addEventListener("change", function () {
-        host.state.dynFrom = Number(from.value);
-        if (host.state.dynFrom > host.state.dynTo) host.state.dynTo = host.state.dynFrom;
+        var c = root.EGDynamics.clampPeriod(
+          Number(from.value), host.state.dynTo, host.years()
+        );
+        host.state.dynFrom = c.from;
+        host.state.dynTo = c.to;
         host.writeUrl();
         host.render();
       });
     }
     if (to) {
       to.addEventListener("change", function () {
-        host.state.dynTo = Number(to.value);
-        if (host.state.dynTo < host.state.dynFrom) host.state.dynFrom = host.state.dynTo;
+        var c = root.EGDynamics.clampPeriod(
+          host.state.dynFrom, Number(to.value), host.years()
+        );
+        host.state.dynFrom = c.from;
+        host.state.dynTo = c.to;
         host.writeUrl();
         host.render();
       });
@@ -756,12 +755,13 @@
     if (!layer) return;
     host.state.dynOpen = true;
     var years = host.years();
-    if (host.state.dynFrom == null) {
-      host.state.dynFrom = years[0] || 2018;
-    }
-    if (host.state.dynTo == null) {
-      host.state.dynTo = years[years.length - 1] || 2026;
-    }
+    var clamped = root.EGDynamics.clampPeriod(
+      host.state.dynFrom,
+      host.state.dynTo,
+      years
+    );
+    host.state.dynFrom = clamped.from;
+    host.state.dynTo = clamped.to;
     if (!host.state.dynGrain) {
       host.state.dynGrain = root.EGDynamics.naturalGrain(
         host.state.level, host.state.country, host.state.city
@@ -773,8 +773,8 @@
     if (btn) btn.setAttribute("aria-pressed", "true");
     host.writeUrl();
     render(host);
-    var close = document.getElementById("dynCloseBtn");
-    if (close) close.focus();
+    var closeBtn = document.getElementById("dynCloseBtn");
+    if (closeBtn) closeBtn.focus();
   }
 
   function close(host) {
@@ -783,6 +783,8 @@
     if (!layer) return;
     host.state.dynOpen = false;
     host.state.dynHighlightKey = null;
+    host.state.dynEventId = null;
+    host.state.dynEditionKey = null;
     layer.classList.remove("is-open");
     layer.hidden = true;
     layer.setAttribute("aria-hidden", "true");
